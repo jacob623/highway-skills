@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://highway-skills.local/contracts/catalog.schema.json",
+  "title": "Skill Catalog",
+  "description": "Schema for the generated, authoritative catalog at catalog/index.json. This is the machine-readable contract external tooling (including a future, out-of-scope overlap-detection application) consumes.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["generated_at", "entries", "overlap_flags"],
+  "properties": {
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "name", "description", "compatibility", "version", "source_path"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$", "description": "Derived from the skill's directory name; independent of `name`." },
+          "name": { "type": "string", "minLength": 1, "description": "Human-readable display name; free-form, not required to match `id`." },
+          "description": { "type": "string", "minLength": 1, "maxLength": 500, "description": "One-line purpose and when to use — carries 'applicability' for catalog discovery. 'When not to use' remains body-only in the skill's SKILL.md." },
+          "compatibility": {
+            "type": "string",
+            "enum": ["all", "github-copilot", "claude-code", "cursor"]
+          },
+          "version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+          "source_path": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "overlap_flags": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["skill_a", "skill_b", "reason"],
+        "properties": {
+          "skill_a": { "type": "string" },
+          "skill_b": { "type": "string" },
+          "reason": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  }
+}

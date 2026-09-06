@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://highway-skills.local/contracts/skill-frontmatter.schema.json",
+  "title": "Canonical Skill Frontmatter",
+  "description": "Schema for the YAML frontmatter of a canonical skill at skills/<id>/SKILL.md. Restricted to the portable Agent Skills open-standard subset so the same file is valid, unmodified, for GitHub Copilot and Claude Code.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "description", "compatibility", "metadata"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Human-readable display name. Free-form text; independent of the skill's directory name. The skill's `id` is always derived solely from its directory name (kebab-case), never from this field."
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 500,
+      "description": "One-line purpose AND when to use (this is the sole carrier of 'applicability' in the generated catalog per FR-001/spec.md Key Entities). 'When not to use' detail remains in the skill body only and is intentionally not exposed in the catalog."
+    },
+    "license": {
+      "type": "string",
+      "description": "Optional license identifier for the skill content."
+    },
+    "compatibility": {
+      "type": "string",
+      "enum": ["all", "github-copilot", "claude-code", "cursor"],
+      "description": "Which of the 3 in-scope agents (FR-010) this skill targets. Defaults to 'all'."
+    },
+    "metadata": {
+      "type": "object",
+      "required": ["version"],
+      "properties": {
+        "version": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+\\.\\d+$",
+          "description": "Per-skill semantic version, MAJOR.MINOR.PATCH (FR-007)."
+        },
+        "agent_exceptions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["agent", "deviation"],
+            "properties": {
+              "agent": {
+                "type": "string",
+                "enum": ["github-copilot", "claude-code", "cursor"]
+              },
+              "deviation": {
+                "type": "string",
+                "minLength": 1,
+                "description": "The exact, isolated agent-specific deviation being declared (FR-002)."
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": true
+    }
+  }
+}
