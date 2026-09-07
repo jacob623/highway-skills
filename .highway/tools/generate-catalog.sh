@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Builds catalog/index.json + catalog/index.md from skills/*/SKILL.md frontmatter, per
-# specs/001-multi-agent-skill-suite/contracts/catalog.schema.json.
+# specs/006-help-skill/contracts/catalog.schema.json (supersedes
+# specs/001-multi-agent-skill-suite/contracts/catalog.schema.json by adding "usage").
 #
 # Usage: .highway/tools/generate-catalog.sh
 # Exit 0: catalog written.
@@ -71,6 +72,7 @@ for ((i = 0; i < skill_count; i++)); do
 	skill_file="$dir/SKILL.md"
 	name="$(fm_get "$skill_file" name || true)"
 	description="$(fm_get "$skill_file" description || true)"
+	usage="$(fm_get "$skill_file" usage || true)"
 	compatibility="$(fm_get "$skill_file" compatibility || true)"
 	[[ -z "$compatibility" ]] && compatibility="all"
 	version="$(fm_get_nested "$skill_file" metadata version || true)"
@@ -81,6 +83,7 @@ for ((i = 0; i < skill_count; i++)); do
 		      "id": "$(printf '%s' "$id" | json_escape)",
 		      "name": "$(printf '%s' "$name" | json_escape)",
 		      "description": "$(printf '%s' "$description" | json_escape)",
+		      "usage": "$(printf '%s' "$usage" | json_escape)",
 		      "compatibility": "$(printf '%s' "$compatibility" | json_escape)",
 		      "version": "$(printf '%s' "$version" | json_escape)",
 		      "source_path": "$(printf '%s' "$source_path" | json_escape)"
@@ -125,18 +128,19 @@ mkdir -p "$CATALOG_DIR"
 	echo
 	echo "_Generated at: ${generated_at}_"
 	echo
-	echo "| ID | Name | Description | Compatibility | Version |"
-	echo "|---|---|---|---|---|"
+	echo "| ID | Name | Description | Usage | Compatibility | Version |"
+	echo "|---|---|---|---|---|---|"
 	for ((i = 0; i < skill_count; i++)); do
 		dir="${skill_dirs[$i]%/}"
 		id="$(basename "$dir")"
 		skill_file="$dir/SKILL.md"
 		name="$(fm_get "$skill_file" name || true)"
 		description="$(fm_get "$skill_file" description || true)"
+		usage="$(fm_get "$skill_file" usage || true)"
 		compatibility="$(fm_get "$skill_file" compatibility || true)"
 		[[ -z "$compatibility" ]] && compatibility="all"
 		version="$(fm_get_nested "$skill_file" metadata version || true)"
-		echo "| $id | $name | $description | $compatibility | $version |"
+		echo "| $id | $name | $description | $usage | $compatibility | $version |"
 	done
 	echo
 	echo "## Overlap Flags"

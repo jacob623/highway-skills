@@ -1,6 +1,7 @@
 ---
-name: Valid Skill Fixture
+name: valid-skill
 description: "A fully conformant fixture skill used only by the tests to validate the authoring framework."
+usage: "Not invoked directly; used only as fixture input to the test suite."
 compatibility: all
 metadata:
   version: 1.0.0
@@ -29,3 +30,8 @@ A confirmation message.
 ## Error Handling
 - If validation exits non-zero, abort and report the failing rule id.
 - If the fixture file is missing, escalate to the maintainer.
+
+## Example
+```text
+.highway/tools/validate-skill.sh .highway/tools/tests/fixtures/valid-skill
+```

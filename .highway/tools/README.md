@@ -45,7 +45,7 @@ reported as an `ERROR: [DEPENDENCY] ...` finding, per
 | `lib/constitution.sh` | Parses the rule inventory, rule fields, and token lists from the constitution. |
 | `lib/body-scan.sh` | Annotates each body line with its section, fenced-block state, and list membership, so no check parses Markdown for itself. |
 | `lib/rule-checks.sh` | One check per enforceable rule, the rule-id-to-check registry, and the template rule-exemption list. |
-| `lib/schema-validate.sh` | Identity and frontmatter shape checks, plus the seven required body sections, for a skill. |
+| `lib/schema-validate.sh` | Identity and frontmatter shape checks, plus the eight required body sections, for a skill. |
 | `lib/library-schema.sh` | Minimal frontmatter shape checks (`name`, `description`) for a shared library file. |
 | `lib/dependency-check.sh` | Resolves a skill's `metadata.dependencies` entries against `.highway/library/` and flags a missing path or version mismatch. |
 
@@ -63,7 +63,9 @@ Iterates `.highway/skills/*/SKILL.md`, validates each via `validate-skill.sh`, a
 Regenerates the per-agent adapters for every valid skill under `.highway/skills/`, into
 `.github/skills/<id>/SKILL.md`, `.claude/skills/<id>/SKILL.md`, and `.cursor/rules/<id>.mdc` (at
 the true repository root, not under `.highway/`), per
-[contracts/agent-adapter-contract.md](../../specs/001-multi-agent-skill-suite/contracts/agent-adapter-contract.md).
+[contracts/agent-adapter-contract.md](../../specs/009-skill-id-namespace-alignment/contracts/agent-adapter-contract.md).
+`<id>` is already the full agent-facing identifier (e.g. `highway-help`) — this generator injects
+no namespace prefix of its own.
 
 - **Exit 0**: all adapters regenerated (or confirmed already up to date).
 - **Exit 1**: any skill fails validation (no partial adapter set is written), or a target file was
@@ -109,10 +111,10 @@ properties and shaped around skill-only fields.
 
 Adding a 4th (or Nth) agent requires **only** a change to `.highway/tools/generate-agent-adapters.sh`'s
 declarative agent config table — never an edit to any file under `.highway/skills/`. See
-[contracts/agent-adapter-contract.md](../../specs/001-multi-agent-skill-suite/contracts/agent-adapter-contract.md)
+[contracts/agent-adapter-contract.md](../../specs/009-skill-id-namespace-alignment/contracts/agent-adapter-contract.md)
 for the full contract. Procedure:
 
-1. Add one row to the `AGENT_IDS` / `AGENT_TARGET_PATTERNS` / `AGENT_TRANSFORMS` arrays at the
+1. Add one row to the `AGENT_IDS` / `AGENT_TARGET_TEMPLATES` / `AGENT_TRANSFORMS` arrays at the
    top of `.highway/tools/generate-agent-adapters.sh` (agent id, target path pattern, transform
    name).
 2. If the new agent needs a transform other than `identity-copy`, implement that transform as a

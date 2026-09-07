@@ -32,6 +32,9 @@ trap cleanup EXIT
 # --- Part 1: valid skill produces a well-shaped, single-entry catalog ---
 mkdir -p "$SKILL_DIR"
 cp "$FIXTURES/valid-skill/SKILL.md" "$SKILL_DIR/SKILL.md"
+# The fixture's frontmatter name is authored to match the fixture's own directory id
+# (`valid-skill`); rewrite it to this temp skill's id so it still satisfies sv_validate_name.
+sed -i.bak "s/^name: .*/name: $TMP_ID/" "$SKILL_DIR/SKILL.md" && rm -f "$SKILL_DIR/SKILL.md.bak"
 
 if ! "$GENERATE" >/tmp/generate-catalog.$$.log 2>&1; then
 	echo "FAIL: .highway/tools/generate-catalog.sh exited non-zero on a valid skill set"
@@ -52,7 +55,7 @@ if ! grep -q "\"id\": \"$TMP_ID\"" "$CATALOG_JSON"; then
 	fail=1
 fi
 
-for field in name description compatibility version source_path; do
+for field in name description usage compatibility version source_path; do
 	if ! grep -q "\"$field\":" "$CATALOG_JSON"; then
 		echo "FAIL: catalog/index.json entry missing field '$field'"
 		fail=1

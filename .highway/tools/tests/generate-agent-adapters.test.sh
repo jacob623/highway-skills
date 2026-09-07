@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Tests .highway/tools/generate-agent-adapters.sh end-to-end using a temporary skill under skills/,
-# then cleans up so skills/ is left empty (FR-011).
+# then cleans up its own temporary fixture only; `.highway/skills/highway-help/` is a real,
+# permanent skill (feature 006; renamed by feature 009) and is left untouched.
 set -u
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -17,6 +18,7 @@ GH_TARGET="$REPO_ROOT/.github/skills/$TMP_ID/SKILL.md"
 CLAUDE_TARGET="$REPO_ROOT/.claude/skills/$TMP_ID/SKILL.md"
 CURSOR_TARGET="$REPO_ROOT/.cursor/rules/$TMP_ID.mdc"
 SPECKIT_SENTINEL="$REPO_ROOT/.github/skills/speckit-tasks/SKILL.md"
+MANIFEST="$HIGHWAY_ROOT/tools/.adapter-manifest"
 
 fail=0
 
@@ -25,16 +27,18 @@ cleanup() {
 		"$REPO_ROOT/.github/skills/$TMP_ID" \
 		"$REPO_ROOT/.claude/skills/$TMP_ID" \
 		"$CURSOR_TARGET"
-	local manifest="$HIGHWAY_ROOT/tools/.adapter-manifest"
-	if [[ -f "$manifest" ]]; then
-		grep -vF "$TMP_ID" "$manifest" >"$manifest.tmp" || true
-		mv "$manifest.tmp" "$manifest"
+	if [[ -f "$MANIFEST" ]]; then
+		grep -vF "$TMP_ID" "$MANIFEST" >"$MANIFEST.tmp" || true
+		mv "$MANIFEST.tmp" "$MANIFEST"
 	fi
 }
 trap cleanup EXIT
 
 mkdir -p "$SKILL_SRC_DIR"
 cp "$FIXTURES/valid-skill/SKILL.md" "$SKILL_SRC_DIR/SKILL.md"
+# The fixture's frontmatter name is authored to match the fixture's own directory id
+# (`valid-skill`); rewrite it to this temp skill's id so it still satisfies sv_validate_name.
+sed -i.bak "s/^name: .*/name: $TMP_ID/" "$SKILL_SRC_DIR/SKILL.md" && rm -f "$SKILL_SRC_DIR/SKILL.md.bak"
 
 speckit_before="$(sha256sum "$SPECKIT_SENTINEL" 2>/dev/null || shasum -a 256 "$SPECKIT_SENTINEL")"
 

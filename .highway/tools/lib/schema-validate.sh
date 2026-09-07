@@ -7,15 +7,26 @@ readonly SV_ID_REGEX='^[a-z0-9]+(-[a-z0-9]+)*$'
 readonly SV_VERSION_REGEX='^[0-9]+\.[0-9]+\.[0-9]+$'
 readonly SV_VALID_AGENTS='github-copilot claude-code cursor'
 readonly SV_VALID_COMPATIBILITY='all github-copilot claude-code cursor'
-# Seven required sections. SV_SECTION_RULE_TAGS is parallel: the constitution rule that owns
+# Eight required sections. SV_SECTION_RULE_TAGS is parallel: the constitution rule that owns
 # each section's presence, or SCHEMA where no single rule governs it.
-readonly SV_REQUIRED_SECTIONS=("Purpose" "When to use" "When not to use" "Inputs" "Outputs" "Verification" "Error Handling")
-readonly SV_SECTION_RULE_TAGS=("P7.1" "SCHEMA" "SCHEMA" "SCHEMA" "SCHEMA" "P8.3" "SCHEMA")
+readonly SV_REQUIRED_SECTIONS=("Purpose" "When to use" "When not to use" "Inputs" "Outputs" "Verification" "Error Handling" "Example")
+readonly SV_SECTION_RULE_TAGS=("P7.1" "SCHEMA" "SCHEMA" "SCHEMA" "SCHEMA" "P8.3" "SCHEMA" "SCHEMA")
 
 sv_validate_id() {
 	local id="$1"
 	if [[ ! "$id" =~ $SV_ID_REGEX ]]; then
 		echo "ERROR: [SCHEMA] invalid id '$id' -- directory name must match ${SV_ID_REGEX} (kebab-case)"
+		return 1
+	fi
+	return 0
+}
+
+# Frontmatter `name` MUST equal the directory-derived id exactly, byte-for-byte
+# (specs/009-skill-id-namespace-alignment/contracts/skill-authoring-contract.md).
+sv_validate_name() {
+	local name="$1" id="$2"
+	if [[ "$name" != "$id" ]]; then
+		echo "ERROR: [SCHEMA] frontmatter 'name' ('$name') does not match directory-derived id '$id'"
 		return 1
 	fi
 	return 0
@@ -28,6 +39,18 @@ sv_validate_description() {
 		ok=1
 	elif (( ${#desc} > 500 )); then
 		echo "ERROR: [SCHEMA] field 'description' exceeds 500 characters (got ${#desc})"
+		ok=1
+	fi
+	return $ok
+}
+
+sv_validate_usage() {
+	local usage="$1" ok=0
+	if [[ -z "$usage" ]]; then
+		echo "ERROR: [SCHEMA] missing required field 'usage'"
+		ok=1
+	elif (( ${#usage} > 500 )); then
+		echo "ERROR: [SCHEMA] field 'usage' exceeds 500 characters (got ${#usage})"
 		ok=1
 	fi
 	return $ok

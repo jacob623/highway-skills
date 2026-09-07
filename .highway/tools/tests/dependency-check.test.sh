@@ -37,21 +37,21 @@ cat >"$TARGET_FILE" <<-'EOF'
 EOF
 
 skill_with_dependency() {
-	local dep_path="$1" dep_version="$2"
+	local id="$1" dep_path="$2" dep_version="$3"
 	awk -v path="$dep_path" -v dv="$dep_version" '
 		/^metadata:/ { print; getline; print; print "  dependencies:"; print "    - path: " path; print "      version: " dv; next }
 		{ print }
-	' "$FIXTURES/valid-skill/SKILL.md"
+	' "$FIXTURES/valid-skill/SKILL.md" | sed "s/^name: .*/name: $id/"
 }
 
 mkdir -p "$TMP_SKILLS_DIR/valid-with-dep"
-skill_with_dependency "$TARGET_REL" "1.0.0" >"$TMP_SKILLS_DIR/valid-with-dep/SKILL.md"
+skill_with_dependency "valid-with-dep" "$TARGET_REL" "1.0.0" >"$TMP_SKILLS_DIR/valid-with-dep/SKILL.md"
 
 mkdir -p "$TMP_SKILLS_DIR/missing-dep"
-skill_with_dependency "content/knowledge/does-not-exist-$$.md" "1.0.0" >"$TMP_SKILLS_DIR/missing-dep/SKILL.md"
+skill_with_dependency "missing-dep" "content/knowledge/does-not-exist-$$.md" "1.0.0" >"$TMP_SKILLS_DIR/missing-dep/SKILL.md"
 
 mkdir -p "$TMP_SKILLS_DIR/stale-dep"
-skill_with_dependency "$TARGET_REL" "0.9.0" >"$TMP_SKILLS_DIR/stale-dep/SKILL.md"
+skill_with_dependency "stale-dep" "$TARGET_REL" "0.9.0" >"$TMP_SKILLS_DIR/stale-dep/SKILL.md"
 
 # A resolvable dependency at the pinned version produces zero [DEPENDENCY] findings.
 out="$("$VALIDATE" "$TMP_SKILLS_DIR/valid-with-dep" 2>&1)"

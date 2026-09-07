@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 # Regenerates the per-agent adapters for every valid skill under skills/ into
 # .github/skills/<id>/SKILL.md, .claude/skills/<id>/SKILL.md, and .cursor/rules/<id>.mdc, per
-# specs/001-multi-agent-skill-suite/contracts/agent-adapter-contract.md.
+# specs/009-skill-id-namespace-alignment/contracts/agent-adapter-contract.md. <id> is already
+# the full agent-facing identifier (e.g. highway-help) -- this generator injects no namespace
+# prefix of its own; the prefix lives once, at the source directory name.
 #
 # Usage: .highway/tools/generate-agent-adapters.sh
 # Exit 0: all adapters (re)generated / confirmed up to date.
