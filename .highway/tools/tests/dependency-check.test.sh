@@ -11,7 +11,7 @@ HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 VALIDATE="$HIGHWAY_ROOT/tools/validate-skill.sh"
 FIXTURES="$SCRIPT_DIR/fixtures"
 
-TARGET_REL="content/knowledge/dep-check-target-$$.md"
+TARGET_REL="library/knowledge/dep-check-target-$$.md"
 TARGET_FILE="$HIGHWAY_ROOT/$TARGET_REL"
 TMP_SKILLS_DIR="$(mktemp -d)"
 

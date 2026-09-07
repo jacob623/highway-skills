@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# Validates one shared content file (template, knowledge, or governance) against the
+# Validates one shared library file (template, knowledge, or governance) against the
 # constitution at .specify/memory/constitution.md, the same way validate-skill.sh validates a
-# skill. See specs/004-shared-content-library/contracts/content-validation-output.md.
+# skill. See specs/005-rename-content-to-library/contracts/library-validation-output.md.
 #
-# Usage: .highway/tools/validate-content.sh <content-file>
+# Usage: .highway/tools/validate-library.sh <library-file>
 # Exit 0: no check failed. Exit 1: at least one check failed.
 set -u
 
@@ -12,8 +12,8 @@ HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 REPO_ROOT="$(cd "$HIGHWAY_ROOT/.." && pwd)"
 # shellcheck source=tools/lib/frontmatter.sh
 source "$SCRIPT_DIR/lib/frontmatter.sh"
-# shellcheck source=tools/lib/content-schema.sh
-source "$SCRIPT_DIR/lib/content-schema.sh"
+# shellcheck source=tools/lib/library-schema.sh
+source "$SCRIPT_DIR/lib/library-schema.sh"
 # shellcheck source=tools/lib/constitution.sh
 source "$SCRIPT_DIR/lib/constitution.sh"
 # shellcheck source=tools/lib/body-scan.sh
@@ -22,15 +22,15 @@ source "$SCRIPT_DIR/lib/body-scan.sh"
 source "$SCRIPT_DIR/lib/rule-checks.sh"
 
 if [[ $# -ne 1 ]]; then
-	echo "ERROR: [SCHEMA] usage: .highway/tools/validate-content.sh <content-file>" >&2
+	echo "ERROR: [SCHEMA] usage: .highway/tools/validate-library.sh <library-file>" >&2
 	exit 1
 fi
 
-content_file="$1"
+library_file="$1"
 constitution="$(con_file "$REPO_ROOT")"
 
-if [[ ! -f "$content_file" ]]; then
-	echo "ERROR: [SCHEMA] no content file found at '$content_file'" >&2
+if [[ ! -f "$library_file" ]]; then
+	echo "ERROR: [SCHEMA] no library file found at '$library_file'" >&2
 	exit 1
 fi
 
@@ -39,21 +39,21 @@ if [[ ! -f "$constitution" ]]; then
 	exit 1
 fi
 
-# --- Content type detection (FR-001 through FR-004) ----------------------------------------
+# --- Library type detection (FR-001 through FR-004) -----------------------------------------
 
-content_type=""
-case "$content_file" in
-	*/content/templates/*) content_type="template" ;;
-	*/content/knowledge/*) content_type="knowledge" ;;
-	*/content/governance/*) content_type="governance" ;;
+library_type=""
+case "$library_file" in
+	*/library/templates/*) library_type="template" ;;
+	*/library/knowledge/*) library_type="knowledge" ;;
+	*/library/governance/*) library_type="governance" ;;
 esac
 
-if [[ -z "$content_type" ]]; then
-	echo "ERROR: [CONTENT-TYPE] '$content_file' is not located under content/templates/, content/knowledge/, or content/governance/" >&2
+if [[ -z "$library_type" ]]; then
+	echo "ERROR: [LIBRARY-TYPE] '$library_file' is not located under library/templates/, library/knowledge/, or library/governance/" >&2
 	exit 1
 fi
 
-name="$(fm_get "$content_file" name || true)"
+name="$(fm_get "$library_file" name || true)"
 
 errors=""
 failed_rules=""
@@ -66,13 +66,13 @@ collect() {
 
 # --- Schema-level checks (minimal frontmatter shape, FR-014) --------------------------------
 
-collect "$(cs_validate_name "$name")"
-collect "$(cs_validate_description "$(fm_get "$content_file" description || true)")"
+collect "$(ls_validate_name "$name")"
+collect "$(ls_validate_description "$(fm_get "$library_file" description || true)")"
 
 # --- Rule-level checks --------------------------------------------------------------------
 
 template_exempt=""
-if [[ "$content_type" == "template" ]]; then
+if [[ "$library_type" == "template" ]]; then
 	template_exempt="$(rc_template_exempt_ids)"
 fi
 
@@ -102,7 +102,7 @@ while IFS= read -r rule_line; do
 		continue
 	fi
 
-	findings="$("$check_fn" "$content_file")"
+	findings="$("$check_fn" "$library_file")"
 	status=$?
 
 	case $status in
@@ -142,9 +142,8 @@ count() { printf '%s' "$1" | tr ' ' '\n' | grep -cv '^$' | tr -d ' '; }
 
 if [[ -n "$errors" ]]; then
 	finding_count="$(printf '%s' "$errors" | grep -c '^ERROR: ' | tr -d ' ')"
-	echo "FAILED: content '$content_type/$name' violates $finding_count rule(s)"
+	echo "FAILED: library '$library_type/$name' violates $finding_count rule(s)"
 	exit 1
 fi
 
-echo "OK: content '$content_type/$name' is valid ($(count "$checked") rules checked, $(count "$deferred") deferred, $(count "$unchecked") unchecked)"
-exit 0
+echo "OK: library '$library_type/$name' is valid ($(count "$checked") rules checked, $(count "$deferred") deferred, $(count "$unchecked") unchecked)"

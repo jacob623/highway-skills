@@ -32,8 +32,8 @@ Deferred and unchecked rules do not affect exit status. Enforcing a subset of th
 intended state, so unverified must not read as failed. The output format is a contract; see
 `specs/003-constitution-enforcement/contracts/validation-output.md`.
 
-Also checks every `metadata.dependencies` entry against `.highway/content/` (see
-`.highway/tools/validate-content.sh` below): a missing path or a stale pinned version is
+Also checks every `metadata.dependencies` entry against `.highway/library/` (see
+`.highway/tools/validate-library.sh` below): a missing path or a stale pinned version is
 reported as an `ERROR: [DEPENDENCY] ...` finding, per
 `specs/004-shared-content-library/contracts/dependency-validation-output.md`.
 
@@ -46,8 +46,8 @@ reported as an `ERROR: [DEPENDENCY] ...` finding, per
 | `lib/body-scan.sh` | Annotates each body line with its section, fenced-block state, and list membership, so no check parses Markdown for itself. |
 | `lib/rule-checks.sh` | One check per enforceable rule, the rule-id-to-check registry, and the template rule-exemption list. |
 | `lib/schema-validate.sh` | Identity and frontmatter shape checks, plus the seven required body sections, for a skill. |
-| `lib/content-schema.sh` | Minimal frontmatter shape checks (`name`, `description`) for a shared content file. |
-| `lib/dependency-check.sh` | Resolves a skill's `metadata.dependencies` entries against `.highway/content/` and flags a missing path or version mismatch. |
+| `lib/library-schema.sh` | Minimal frontmatter shape checks (`name`, `description`) for a shared library file. |
+| `lib/dependency-check.sh` | Resolves a skill's `metadata.dependencies` entries against `.highway/library/` and flags a missing path or version mismatch. |
 
 ### `.highway/tools/generate-catalog.sh`
 
@@ -76,10 +76,10 @@ the true repository root, not under `.highway/`), per
 Discovers and runs every `*.test.sh` under `.highway/tools/tests/`, prints a pass/fail summary,
 and exits non-zero if any test fails.
 
-### `.highway/tools/validate-content.sh <content-file>`
+### `.highway/tools/validate-library.sh <library-file>`
 
-Validates one shared content file (template, knowledge, or governance) under
-`.highway/content/`, the same way `validate-skill.sh` validates a skill: minimal frontmatter
+Validates one shared library file (template, knowledge, or governance) under
+`.highway/library/`, the same way `validate-skill.sh` validates a skill: minimal frontmatter
 (`name`, `description`, `metadata.version`) plus the constitution's rule-content checks. A
 template file is exempt from the four checks that key on MUST/SHOULD keyword text (P1.1, P1.3,
 P7.4, P7.5), reported N/A rather than skipped, since a template's placeholder text can
@@ -87,22 +87,22 @@ legitimately contain those words without being a rule statement.
 
 - **Exit 0**: no check failed.
 - **Exit 1**: at least one check failed, or the file is not located under
-  `content/templates/`, `content/knowledge/`, or `content/governance/` (tagged
-  `[CONTENT-TYPE]`).
+  `library/templates/`, `library/knowledge/`, or `library/governance/` (tagged
+  `[LIBRARY-TYPE]`).
 
 Output format is a contract; see
-`specs/004-shared-content-library/contracts/content-validation-output.md`.
+`specs/005-rename-content-to-library/contracts/library-validation-output.md`.
 
-### `.highway/tools/generate-content-catalog.sh`
+### `.highway/tools/generate-library-catalog.sh`
 
-Iterates `.highway/content/{templates,knowledge,governance}/*.md` (excluding each directory's
-`README.md`), validates each via `validate-content.sh`, and writes
-`.highway/catalog/content-index.json` + `.highway/catalog/content-index.md` — a sibling listing
+Iterates `.highway/library/{templates,knowledge,governance}/*.md` (excluding each directory's
+`README.md`), validates each via `validate-library.sh`, and writes
+`.highway/catalog/library-index.json` + `.highway/catalog/library-index.md` — a sibling listing
 to the skill catalog, kept separate since the skill catalog's schema is closed to additional
 properties and shaped around skill-only fields.
 
 - **Exit 0**: catalog written.
-- **Exit 1**: at least one file under `.highway/content/` is invalid; the catalog is **not**
+- **Exit 1**: at least one file under `.highway/library/` is invalid; the catalog is **not**
   written (no partial catalog), and the failing file's path is named in the error output.
 
 ## Adding a New Agent (FR-004, SC-002)

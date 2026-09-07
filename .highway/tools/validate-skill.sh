@@ -65,7 +65,7 @@ if [[ -n "$agent_exceptions" ]]; then
 	collect "$(printf '%s\n' "$agent_exceptions" | sv_validate_agent_exceptions)"
 fi
 
-# --- Dependency checks (metadata.dependencies -> .highway/content/) -----------------------
+# --- Dependency checks (metadata.dependencies -> .highway/library/) -----------------------
 
 dependency_findings="$(dc_validate_dependencies "$skill_file" "$HIGHWAY_ROOT")"
 if [[ -n "$dependency_findings" ]]; then

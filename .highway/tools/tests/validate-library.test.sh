@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
-# Tests .highway/tools/validate-content.sh against the fixtures in
-# tools/tests/fixtures/content/. See
-# specs/004-shared-content-library/contracts/content-validation-output.md.
+# Tests .highway/tools/validate-library.sh against the fixtures in
+# tools/tests/fixtures/library/. See
+# specs/005-rename-content-to-library/contracts/library-validation-output.md.
 set -u
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-VALIDATE="$HIGHWAY_ROOT/tools/validate-content.sh"
-FIXTURES="$SCRIPT_DIR/fixtures/content"
+VALIDATE="$HIGHWAY_ROOT/tools/validate-library.sh"
+FIXTURES="$SCRIPT_DIR/fixtures/library"
 
 fail=0
 
@@ -70,7 +70,7 @@ fi
 # version format has exactly one owner, same as for a skill).
 assert_single_failure "$FIXTURES/templates/invalid-missing-version/output-shape.md" "P7.2"
 
-# A file outside the three recognized content directories fails content-type detection.
-assert_single_failure "$FIXTURES/invalid-orphan/orphan.md" "CONTENT-TYPE"
+# A file outside the three recognized library directories fails library-type detection.
+assert_single_failure "$FIXTURES/invalid-orphan/orphan.md" "LIBRARY-TYPE"
 
 exit $fail

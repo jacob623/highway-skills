@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://highway-skills.local/contracts/library-catalog.schema.json",
+  "title": "Shared Library Catalog",
+  "description": "Schema for the generated, authoritative sibling listing at catalog/library-index.json. Supersedes specs/004-shared-content-library/contracts/content-catalog.schema.json (renamed content_type field and content-index.json filename); that document remains an unedited historical record of feature 004's original schema, per FR-007. Kept separate from catalog.schema.json (which governs skills): that schema is closed to additional properties and shaped around skill-only fields.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["generated_at", "entries"],
+  "properties": {
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["library_type", "name", "description", "version", "source_path"],
+        "properties": {
+          "library_type": {
+            "type": "string",
+            "enum": ["template", "knowledge", "governance"]
+          },
+          "name": { "type": "string", "minLength": 1 },
+          "description": { "type": "string", "minLength": 1, "maxLength": 500 },
+          "version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+          "source_path": { "type": "string", "minLength": 1, "description": "Framework-relative path (relative to .highway/), e.g. library/templates/foo.md" }
+        }
+      }
+    }
+  }
+}
