@@ -42,6 +42,14 @@ rc_registered_ids() {
 	rc_registry | cut -f1
 }
 
+# Prints the rule ids a template-type content file is exempt from: the four checks built on
+# bs_normative_lines, whose placeholder "MUST"/"SHOULD" text can misfire (research.md Decision
+# 1). Reported N/A with condition N2 by the caller, not skipped silently.
+# Usage: rc_template_exempt_ids
+rc_template_exempt_ids() {
+	printf '%s\n' P1.1 P1.3 P7.4 P7.5
+}
+
 # --- P1.1: each normative line carries exactly one keyword -------------------------------
 
 rc_check_P1_1() {

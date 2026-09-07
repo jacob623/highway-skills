@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://highway-skills.local/contracts/content-catalog.schema.json",
+  "title": "Shared Content Catalog",
+  "description": "Schema for the generated, authoritative sibling listing at catalog/content-index.json. Kept separate from catalog.schema.json (which governs skills) per feature 004 clarification: that schema is closed to additional properties and shaped around skill-only fields.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["generated_at", "entries"],
+  "properties": {
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["content_type", "name", "description", "version", "source_path"],
+        "properties": {
+          "content_type": {
+            "type": "string",
+            "enum": ["template", "knowledge", "governance"]
+          },
+          "name": { "type": "string", "minLength": 1 },
+          "description": { "type": "string", "minLength": 1, "maxLength": 500 },
+          "version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+          "source_path": { "type": "string", "minLength": 1, "description": "Framework-relative path (relative to .highway/), e.g. content/templates/foo.md" }
+        }
+      }
+    }
+  }
+}
