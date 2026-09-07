@@ -45,6 +45,9 @@ cp "$GENERATOR" "$BACKUP"
 
 mkdir -p "$SKILL_SRC_DIR"
 cp "$FIXTURES/valid-skill/SKILL.md" "$SKILL_SRC_DIR/SKILL.md"
+# The fixture's frontmatter name is authored to match the fixture's own directory id
+# (`valid-skill`); rewrite it to this temp skill's id so it still satisfies sv_validate_name.
+sed -i.bak "s/^name: .*/name: $TMP_ID/" "$SKILL_SRC_DIR/SKILL.md" && rm -f "$SKILL_SRC_DIR/SKILL.md.bak"
 
 skills_before="$(skills_snapshot)"
 

@@ -57,7 +57,9 @@ collect() {
 # --- Schema-level checks (identity and frontmatter shape) ---------------------------------
 
 collect "$(sv_validate_id "$id")"
+collect "$(sv_validate_name "$(fm_get "$skill_file" name || true)" "$id")"
 collect "$(sv_validate_description "$(fm_get "$skill_file" description || true)")"
+collect "$(sv_validate_usage "$(fm_get "$skill_file" usage || true)")"
 collect "$(sv_validate_compatibility "$(fm_get "$skill_file" compatibility || true)")"
 
 agent_exceptions="$(fm_get_agent_exceptions "$skill_file")"

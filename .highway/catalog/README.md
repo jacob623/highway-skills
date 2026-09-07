@@ -4,9 +4,10 @@ This directory holds the **generated** skill catalog and the **generated** share
 catalog. Nothing here is hand-edited.
 
 - `index.json` — authoritative, machine-readable skill catalog. Conforms to
-  [../../specs/001-multi-agent-skill-suite/contracts/catalog.schema.json](../../specs/001-multi-agent-skill-suite/contracts/catalog.schema.json).
-  This is the contract a future, out-of-scope external application would consume to perform
-  automated overlap detection.
+  [../../specs/006-help-skill/contracts/catalog.schema.json](../../specs/006-help-skill/contracts/catalog.schema.json)
+  (supersedes [../../specs/001-multi-agent-skill-suite/contracts/catalog.schema.json](../../specs/001-multi-agent-skill-suite/contracts/catalog.schema.json)
+  by adding the required `usage` field). This is the contract a future, out-of-scope external
+  application would consume to perform automated overlap detection.
 - `index.md` — generated, human-readable rendering of `index.json`, for browsing the catalog
   without parsing JSON.
 

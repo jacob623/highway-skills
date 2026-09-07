@@ -8,8 +8,10 @@ text lives; everything below cites rule ids so the two cannot drift apart (P7.3)
 `.highway/tools/validate-skill.sh <skill-dir>` to see which rules are checked automatically and
 which are left to you.
 
-This repository ships **framework only** — no concrete skill topics are included here (FR-011 of
-feature 001). Skills are added by separate, follow-on work.
+This repository shipped **framework only** at first (FR-011 of feature 001), with
+`.highway/skills/highway-help/` as the first authored skill (feature 006; renamed from
+`.highway/skills/help/` by feature 009). Additional skill topics are added by separate,
+follow-on work.
 
 ## Directory layout
 
@@ -17,15 +19,18 @@ feature 001). Skills are added by separate, follow-on work.
 .highway/skills/<id>/SKILL.md
 ```
 
-The `<id>` is the directory name, kebab-case, unique across `.highway/skills/`. A skill's id is
-derived solely from its directory name, never from the `name` field.
+The `<id>` is the directory name, kebab-case, unique across `.highway/skills/`, and is already
+the full agent-facing identifier (e.g. `highway-help`) -- no namespace prefix is injected later.
+A skill's id is derived solely from its directory name; the `name` field MUST equal that id
+exactly, byte-for-byte (see the `name` row below).
 
 ## Required frontmatter
 
 ```yaml
 ---
-name: Human Readable Display Name
+name: skill-id
 description: "One-line purpose AND when to use (<= 500 characters)."
+usage: "One-line guidance on how to invoke/use the skill (<= 500 characters)."
 compatibility: all # or one of: github-copilot | claude-code | cursor
 metadata:
   version: 1.0.0
@@ -37,15 +42,16 @@ metadata:
 
 | Field | Required | Governing rule | Notes |
 |---|---|---|---|
-| `name` | Yes | — | Free-form display name. Never required to match the directory-derived id. |
+| `name` | Yes | SCHEMA | MUST equal the directory-derived id exactly, byte-for-byte (case, whitespace, and punctuation all count). Enforced by `sv_validate_name`. |
 | `description` | Yes | — | Non-empty, <= 500 characters. Sole carrier of applicability in the generated catalog. Keep "when not to use" detail in the body. |
+| `usage` | Yes | — | Non-empty, <= 500 characters. One-line guidance on how to invoke/use the skill; carried into the generated catalog for discovery (the help skill's all-skills listing). |
 | `compatibility` | No | — | One of `all`, `github-copilot`, `claude-code`, `cursor`. Defaults to `all`. |
 | `metadata.version` | Yes | P7.2 | Semantic version. See the Skill Versioning Policy in the constitution's Governance section. |
 | `metadata.agent_exceptions` | No | P2.2 | List of `{agent, deviation}`, each naming one supported agent. |
 
 ## Required body sections
 
-Seven sections, each non-empty:
+Eight sections, each non-empty:
 
 | Section | Governing rule | What it holds |
 |---|---|---|
@@ -56,6 +62,7 @@ Seven sections, each non-empty:
 | `## Outputs` | — | What exists after the skill is followed. |
 | `## Verification` | P8.3, P8.4, P4.2 | At least one command, file state, or output string to check. |
 | `## Error Handling` | P5.1, P5.2, P5.3 | One list item per failure condition, each naming one next action. |
+| `## Example` | — | Exactly one copy-able example: the literal invocation MUST be an inline code span (backtick-wrapped, not solely a fenced block), so it can be selected and copied on its own; a fenced block MAY still show accompanying sample output below it. |
 
 ## Writing the rules inside a skill
 

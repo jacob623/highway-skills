@@ -12,13 +12,17 @@ tmp_root="$(mktemp -d)"
 trap 'rm -rf "$tmp_root"' EXIT
 
 # Writes a conforming skill to $1/SKILL.md. Callers then mutate one section to seed a violation.
+# `name` is set to $1's own basename so it satisfies sv_validate_name regardless of which temp
+# directory a given case uses.
 write_base_skill() {
-	local dir="$1"
+	local dir="$1" id
+	id="$(basename "$dir")"
 	mkdir -p "$dir"
 	cat >"$dir/SKILL.md" <<'EOF'
 ---
 name: Seed Skill
 description: "Conforming baseline that each case mutates to seed exactly one violation."
+usage: "Not invoked directly; used only as a seed fixture for rule-checks.test.sh."
 compatibility: all
 metadata:
   version: 1.0.0
@@ -45,7 +49,13 @@ Confirm the output names the violated rule id.
 
 ## Error Handling
 - If no rule id is reported, abort and report the missed detection.
+
+## Example
+```text
+.highway/tools/validate-skill.sh <this-dir>
+```
 EOF
+	sed -i.bak "s/^name: .*/name: $id/" "$dir/SKILL.md" && rm -f "$dir/SKILL.md.bak"
 }
 
 # assert_reports <case-name> <expected-rule-id> <skill-dir>

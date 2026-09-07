@@ -1,6 +1,7 @@
 ---
-name: Bad Id Fixture
+name: invalid_skill_bad_id
 description: "Fixture whose directory name is not kebab-case, to test the id failure path."
+usage: "Not invoked directly; used only as fixture input to the test suite."
 compatibility: all
 metadata:
   version: 1.0.0
@@ -27,3 +28,8 @@ An error message naming the offending field.
 
 ## Error Handling
 - If validation exits zero, abort and report the missed detection.
+
+## Example
+```text
+.highway/tools/validate-skill.sh <this-dir>
+```
