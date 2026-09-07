@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
-# Minimal frontmatter checks for a shared content file (template, knowledge, or governance).
+# Minimal frontmatter checks for a shared library file (template, knowledge, or governance).
 # Every finding is tagged [SCHEMA], mirroring lib/schema-validate.sh's convention for skills.
 # Requires frontmatter.sh to be sourced first.
 #
-# A content file's required frontmatter is smaller than a skill's: name, description,
+# A library file's required frontmatter is smaller than a skill's: name, description,
 # metadata.version only -- no compatibility, since that field is agent/adapter-specific and
-# does not apply to shared content (FR-014).
+# does not apply to shared library content (FR-014).
 
-# Usage: cs_validate_name <name>
-cs_validate_name() {
+# Usage: ls_validate_name <name>
+ls_validate_name() {
 	local name="$1"
 	if [[ -z "$name" ]]; then
 		echo "ERROR: [SCHEMA] missing required field 'name'"
@@ -17,10 +17,10 @@ cs_validate_name() {
 	return 0
 }
 
-# Usage: cs_validate_description <description>
+# Usage: ls_validate_description <description>
 # Reuses the same 500-character threshold sv_validate_description already applies to skills
-# (research.md Decision 6): no unstated, undecided number for content files.
-cs_validate_description() {
+# (research.md Decision 6): no unstated, undecided number for library files.
+ls_validate_description() {
 	local desc="$1" ok=0
 	if [[ -z "$desc" ]]; then
 		echo "ERROR: [SCHEMA] missing required field 'description'"
