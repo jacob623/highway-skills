@@ -108,3 +108,43 @@ fm_get_agent_exceptions() {
 		[[ -n "$a" ]] && printf '%s|%s\n' "$a" "$d"
 	done
 }
+
+# Prints each metadata.dependencies entry as "path|version" (one per line). Structurally
+# mirrors fm_get_agent_exceptions above.
+# Usage: fm_get_dependencies <file>
+fm_get_dependencies() {
+	local file="$1"
+	fm_block "$file" | awk '
+		BEGIN { in_parent = 0; in_list = 0; path = ""; version = "" }
+		function flush() {
+			if (path != "") print path "|" version
+			path = ""; version = ""
+		}
+		{
+			if ($0 ~ /^[^[:space:]]/) {
+				if ($0 ~ /^metadata:/) { in_parent = 1; next }
+				else { if (in_parent) flush(); in_parent = 0; in_list = 0 }
+			}
+			if (in_parent && $0 ~ /^[[:space:]]+dependencies:/) { in_list = 1; next }
+			if (in_parent && in_list) {
+				if ($0 ~ /^[[:space:]]+-[[:space:]]*path:/) {
+					flush()
+					line = $0; sub(/^[[:space:]]+-[[:space:]]*path:/, "", line)
+					gsub(/^[[:space:]]+|[[:space:]]+$/, "", line)
+					path = line
+				} else if ($0 ~ /version:/) {
+					line = $0; sub(/^[[:space:]]*version:/, "", line)
+					gsub(/^[[:space:]]+|[[:space:]]+$/, "", line)
+					version = line
+				} else if ($0 !~ /^[[:space:]]/) {
+					in_list = 0
+				}
+			}
+		}
+		END { flush() }
+	' | while IFS='|' read -r p v; do
+		p="$(printf '%s' "$p" | sed -e 's/^["'"'"']//' -e 's/["'"'"']$//')"
+		v="$(printf '%s' "$v" | sed -e 's/^["'"'"']//' -e 's/["'"'"']$//')"
+		[[ -n "$p" ]] && printf '%s|%s\n' "$p" "$v"
+	done
+}

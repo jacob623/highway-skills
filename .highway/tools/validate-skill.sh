@@ -22,6 +22,8 @@ source "$SCRIPT_DIR/lib/constitution.sh"
 source "$SCRIPT_DIR/lib/body-scan.sh"
 # shellcheck source=tools/lib/rule-checks.sh
 source "$SCRIPT_DIR/lib/rule-checks.sh"
+# shellcheck source=tools/lib/dependency-check.sh
+source "$SCRIPT_DIR/lib/dependency-check.sh"
 
 if [[ $# -ne 1 ]]; then
 	echo "ERROR: [SCHEMA] usage: .highway/tools/validate-skill.sh <skill-dir>" >&2
@@ -61,6 +63,16 @@ collect "$(sv_validate_compatibility "$(fm_get "$skill_file" compatibility || tr
 agent_exceptions="$(fm_get_agent_exceptions "$skill_file")"
 if [[ -n "$agent_exceptions" ]]; then
 	collect "$(printf '%s\n' "$agent_exceptions" | sv_validate_agent_exceptions)"
+fi
+
+# --- Dependency checks (metadata.dependencies -> .highway/content/) -----------------------
+
+dependency_findings="$(dc_validate_dependencies "$skill_file" "$HIGHWAY_ROOT")"
+if [[ -n "$dependency_findings" ]]; then
+	while IFS= read -r finding; do
+		[[ -z "$finding" ]] && continue
+		collect "ERROR: [DEPENDENCY] $finding"
+	done <<< "$dependency_findings"
 fi
 
 # Required-section findings are tagged with the rule that owns each section.
