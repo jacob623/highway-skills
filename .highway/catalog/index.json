@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-08T11:59:17Z",
+  "generated_at": "2026-09-08T21:10:17Z",
   "entries": [
     {
       "id": "highway-help",
@@ -9,6 +9,15 @@
       "compatibility": "all",
       "version": "3.0.1",
       "source_path": "skills/highway-help/SKILL.md"
+    },
+    {
+      "id": "highway-inquiry",
+      "name": "highway-inquiry",
+      "description": "Manages the requirements discovery questionnaire that Highway skills ask from, adding, changing, removing and reordering its questions on request.",
+      "usage": "Invoke as `/highway-inquiry` and state what to change, for example `/highway-inquiry add a question about data retention`.",
+      "compatibility": "all",
+      "version": "1.0.0",
+      "source_path": "skills/highway-inquiry/SKILL.md"
     }
   ],
   "overlap_flags": []

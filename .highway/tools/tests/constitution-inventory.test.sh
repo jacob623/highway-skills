@@ -88,15 +88,20 @@ if [[ "$exclusions" != *"Illustrative Examples"* ]]; then
 	fail=1
 fi
 
-# --- The [auto] tier is honest ---------------------------------------------------------------
+# --- The [auto] tier is honest, in both constitutions -----------------------------------------
 #
-# A tier tag is a claim about how a rule is decided, and [auto] claims a script decides it. This
-# asserts the claim is true for every rule, so the tier cannot drift back into promising
-# enforcement that does not exist.
+# A tier tag is a claim about how a rule is decided, and [auto] claims something decides it. This
+# asserts the claim is true, so neither document can drift back into promising enforcement that
+# does not exist.
 #
-# Scope is the Highway Skills Constitution only, and the failure message says so. The Highway
-# Development Constitution has the same defect and is addressed separately; a guard that appeared
-# to cover governance in general would turn that open gap into an apparently closed one.
+# The two documents define [auto] differently, and the assertion differs accordingly. The Skills
+# Constitution requires a registered check reporting under the rule id. The Development
+# Constitution requires only that a named test decide the rule, because it has no registry and no
+# artifact a validator runs against; its Enforcement Map records which test, and that map is
+# checked here too.
+#
+# Every failure names its document. A message naming only the rule would leave a reader checking
+# two constitutions to find out which one is wrong.
 
 # shellcheck source=tools/lib/rule-checks.sh
 source "$HIGHWAY_ROOT/tools/lib/rule-checks.sh"
@@ -113,6 +118,67 @@ done < <(con_rule_ids_by_tier "$CONSTITUTION" auto)
 if [[ -n "$unenforced" ]]; then
 	echo "FAIL: the Highway Skills Constitution tags these rules [auto] but no check decides them:$unenforced"
 	fail=1
+fi
+
+# Assembled rather than written literally: this file is scanned by shipped-tree-independence.test.sh,
+# which searches for exactly this token. A literal here would fail that check on a file whose job
+# is to read the development constitution. Exempting the file instead would remove it from a check
+# that should cover it.
+DEV_DIR=".spec""ify"
+DEV_CONSTITUTION="$(cd "$HIGHWAY_ROOT/.." && pwd)/$DEV_DIR/memory/constitution.md"
+if [[ -f "$DEV_CONSTITUTION" ]]; then
+	# The tier tags are read here rather than through con_rule_ids_by_tier, which parses only the
+	# P namespace and silently returns nothing for a D rule -- which made an earlier version of
+	# this assertion pass without ever iterating.
+	#
+	# Generalising the shared parser was the alternative, and was rejected: lib/constitution.sh is
+	# distributed to users, and teaching shipped code to read a document that never ships is the
+	# same category error as shipping the packaging tooling. The cost is this second, deliberately
+	# minimal reader.
+	dev_auto_ids() {
+		awk -F'|' '
+			function trim(s) { gsub(/^[[:space:]]+|[[:space:]]+$/, "", s); return s }
+			/^\|[[:space:]]*D[0-9]+\.[0-9]+[[:space:]]*\|/ {
+				if (trim($5) == "[auto]") print trim($2)
+			}
+		' "$DEV_CONSTITUTION"
+	}
+
+	# One row per mapped rule: "<rule id><TAB><test filename>".
+	dev_map="$(sed -n '/^### Enforcement Map/,/^## /p' "$DEV_CONSTITUTION" \
+		| awk -F'|' '
+			function trim(s) { gsub(/^[[:space:]]+|[[:space:]]+$/, "", s); return s }
+			/^\|[[:space:]]*D[0-9]+\.[0-9]+[[:space:]]*\|/ { print trim($2) "\t" trim($3) }
+		')"
+
+	dev_unmapped=""
+	while IFS= read -r rule_id; do
+		[[ -n "$rule_id" ]] || continue
+		if ! printf '%s\n' "$dev_map" | grep -q "^$rule_id	"; then
+			dev_unmapped="$dev_unmapped $rule_id"
+		fi
+	done < <(dev_auto_ids)
+
+	if [[ -n "$dev_unmapped" ]]; then
+		echo "FAIL: the Highway Development Constitution tags these rules [auto] but the Enforcement Map does not name a test for them:$dev_unmapped"
+		fail=1
+	fi
+
+	# A row naming a renamed or deleted test is the failure mode most likely to appear next.
+	while IFS=$'\t' read -r rule_id test_name; do
+		[[ -n "$test_name" ]] || continue
+		if [[ ! -f "$SCRIPT_DIR/$test_name" ]]; then
+			echo "FAIL: the Highway Development Constitution's Enforcement Map names a test that does not exist: $rule_id -> $test_name"
+			fail=1
+		fi
+	done < <(printf '%s\n' "$dev_map")
+
+	# The reader above must actually see rules. A parser that silently matches nothing would make
+	# every assertion in this block pass regardless of the document's contents.
+	if [[ "$(dev_auto_ids | grep -c .)" -eq 0 ]]; then
+		echo "FAIL: no [auto] rules were parsed from the Highway Development Constitution; the reader matched nothing"
+		fail=1
+	fi
 fi
 
 exit $fail

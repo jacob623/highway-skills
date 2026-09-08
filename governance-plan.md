@@ -4,8 +4,8 @@ Sequenced plan for establishing Highway's governance layers. This document is du
 context: it is written to survive across sessions so the sequence, rationale, and exact command
 invocations do not have to be reconstructed from conversation history.
 
-**Status**: Phases 1, 2, 2b, 3 and 4 complete. Next action is Phase 4b, or clearing the Gate that
-blocks Phase 5.
+**Status**: Phases 1, 2, 2b, 3, 4 and 4b complete. The Gate is cleared. Next action is Phase 4c,
+or Phase 5 — they are independent, and Phase 4c guards a defect that grows with each skill added.
 
 **Last reviewed**: 2026-09-08
 
@@ -83,8 +83,9 @@ Worked examples:
 | 2b | Close the authoring-rule gap and the constitution backlog | Spec | 1 | ✅ Complete (feature 011) |
 | 3 | Packaging contract and verification | Spec | 0/1 | ✅ Complete (feature 012) |
 | 4 | Make the Skills Constitution's `[auto]` tier honest | Spec | 1 | ✅ Complete (feature 013) |
-| 4b | Make the Development Constitution's `[auto]` tier honest | Spec | 0 | Phase 4 complete |
-| — | **Gate**: a second skill exists | — | — | Blocks Phase 5 |
+| 4b | Make the Development Constitution's `[auto]` tier honest | Spec | 0 | ✅ Complete (feature 014) |
+| 4c | Keep the catalog and adapters true to the skills on disk | Spec | 0/1 | Gate cleared |
+| — | **Gate**: a second skill exists | — | — | ✅ Cleared (feature 015) |
 | 5 | Author the Experience Standard | Spec | 2 | Gate passed |
 | 6 | Enforce the Experience Standard | Spec | 2 | Phase 5 complete |
 | 7 | Build the `nfrs` and `controls` skills | Spec | 2 governs; 3 is the subject | Phase 6 complete |
@@ -373,7 +374,34 @@ exist. This phase is the remainder, not the whole layer.
 
 ### Phase 4b — Make the Development Constitution's `[auto]` tier honest
 
-**Layer**: 0 **Type**: Spec
+**Layer**: 0 **Type**: Spec (`specs/014-dev-tier-honesty`)
+
+**Status**: ✅ **Complete**, 2026-09-08. 24 tasks; 16 tests passing. Development constitution 1.1.0
+(MINOR). Tier counts `[auto]` 10 → 6, `[agent-checkable]` 14 → 18. `D_AUTO_TIER_ENFORCEMENT`
+closed; the follow-up list is empty. The guard now covers both constitutions and names the
+offending document in every failure.
+
+**The decision worth remembering**: `[auto]` means something *different* in the two documents, and
+the Development Constitution now says so. There it means a test in `run-all.sh` decides the rule
+and an **Enforcement Map** names which one. It does **not** require reporting under the rule id,
+because that is Layer 1 machinery — no validator runs against a `tasks.md` or a working tree. The
+same tag is used in both because it answers the same reader question: will something catch me.
+
+**Three findings worth carrying forward**:
+
+1. **`lib/constitution.sh` is P-namespace-bound.** `con_rules()` matches `P[0-9]+\.[0-9]+` and
+   returns nothing for a `D` rule. The first version of the extended guard therefore passed
+   without ever iterating. Generalising the shared parser was rejected — it is distributed to
+   users, and teaching shipped code to read a document that never ships is the same category
+   error as shipping the packaging tooling. The guard carries its own minimal reader, plus an
+   assertion that the reader matched something, so the vacuity cannot recur silently.
+2. **The guard's own file tripped `shipped-tree-independence`**, because it must name the
+   development constitution's path. Resolved by assembling the token at runtime, the precedent
+   feature 012 set, rather than exempting the file from a check that should cover it.
+3. **D6.2 was retagged rather than widened.** Measured: 145 link targets repository-wide, 8
+   unresolvable, none a genuine defect. Two were in `.highway/DISTRIBUTION.md`, which is authored
+   for the distributed tree where it lands at the root and where those targets do resolve. A
+   whole-tree check would need four exemption classes and would flag a correct document.
 
 **Goal**: The `D` namespace stops claiming automation it does not have.
 
@@ -421,9 +449,151 @@ single new check.
 
 ---
 
+### Phase 4c — Keep the catalog and adapters true to the skills on disk
+
+**Layer**: 0 governs the build step; Layer 1 artifacts are its subject **Type**: Spec
+
+**Goal**: Adding, changing, or removing a skill leaves the catalog, the adapters, and the
+distribution manifest agreeing with what is actually in `.highway/skills/`.
+
+**Why this exists**: `highway-help` answers from `.highway/catalog/index.json`, and an agent sees
+a skill through its generated adapters. Both are produced from the skills directory and neither is
+checked against it. A skill can therefore be present and unlisted, or listed and absent, with
+every gate passing.
+
+**The verified gap** (2026-09-08). No rule in any of the three governance documents requires a
+skill to be registered. The nearest obligation is D4.1 — re-running a generator must produce no
+diff — which does cover a stale catalog in substance, but arrives sideways through
+generated-artifact integrity rather than as a stated rule an author would find. Nothing enforces
+it: `generate-catalog.test.sh` checks the catalog's structure, never its contents against the
+skills on disk.
+
+**Three cases, and only one of them is the obvious one**:
+
+| Case | What breaks | Severity |
+|---|---|---|
+| **Added** | Skill exists, catalog has no entry. `highway-help` cannot see it. Feature 015 also found the adapters are silently excluded from the distribution unless manifest rows are added by hand. | Invisible skill |
+| **Changed** | Description, usage, or version moves in the source and the catalog still reports the old value. `highway-help` answers confidently and wrongly. No rule states the obligation and no test detects the violation — see below. | Silent misinformation |
+| **Removed** | **Worst.** Neither generator prunes — verified. A deleted skill leaves a catalog entry, three orphaned adapters, rows in `.adapter-manifest`, and rows in `.distribution-manifest`. Because those rows say `include`, **the orphaned adapters still ship**. A recipient gets a skill with no source, listed by `highway-help`, that nobody can maintain. | Ships a ghost |
+
+**Decided: this becomes a stated rule, not a check alone.** Feature 011 settled the general
+question — a test without a written rule leaves the constraint discoverable only by failing the
+suite — and the routing test in §2 places it: the obligation constrains generated artifacts of the
+build, so it is **Layer 0** and takes `D` ids.
+
+**Why the existing rules do not already cover this.** Two of them look as though they might, and
+neither does. Verified 2026-09-08:
+
+| Rule | What it actually says | Why it falls short |
+|---|---|---|
+| D4.1 | *"A generated artifact MUST NOT be hand-edited."* Observable: re-running its generator produces no diff. | The **rule** is about hand-editing. Someone asking "must I regenerate after changing a skill's description?" finds no answer in it. Its Observable happens to detect staleness, but an obligation that exists only as a side-effect of an Observable is exactly what a stated rule is for. Worse, its Enforcement Map row names `generate-agent-adapters.test.sh`, which asserts hand-edit refusal for adapters and never regenerates the catalog at all. |
+| D4.4 | A change to a **generator** must be followed by regeneration. | The generator is unchanged when a skill's description moves. This is the sibling case, not this one. |
+
+`generate-catalog.test.sh` looks like it closes the gap and does not: it runs the generator twice
+against **unchanged** inputs, which is D4.2's determinism, never comparing the committed catalog
+against the current skills.
+
+So three obligations are missing, in three different directions:
+
+| ID | Rule | Observable | Tier |
+|---|---|---|---|
+| D4.5 | Every skill in the source MUST have its generated artifacts. | Each directory under `.highway/skills/` has a catalog entry, an adapter in each agent tree, and a distribution manifest row for each adapter. | [auto] |
+| D4.6 | A generated artifact MUST NOT name a skill absent from the source. | No catalog entry, adapter file, adapter manifest row, or distribution manifest row names a skill with no directory under `.highway/skills/`. | [auto] |
+| D4.7 | A change to a generator's input MUST be followed by regeneration. | Re-running every generator leaves no diff against the committed artifacts, aside from a recorded generation timestamp. | [auto] |
+
+D4.5 catches the added skill, D4.6 the orphan left by a removed one, and D4.7 the stale entry left
+by a changed one. D4.7 is the sibling of D4.4 — that one covers a changed generator, this one a
+changed input — and its Observable deliberately carries the same timestamp exception D4.2 needs,
+because `generate-catalog.sh` writes one.
+
+**D4.7 is not a restatement of D4.1.** D4.1 prohibits touching the output; D4.7 requires
+refreshing it after touching the input. Different obligations, and the non-restatement rules turn
+on rule text rather than on Observables, which the two necessarily share.
+
+All three are `[auto]`, so all three need Enforcement Map rows naming the test that decides them,
+per the definition feature 014 wrote. Adding three rules is a MINOR amendment: `1.1.0 → 1.2.0`.
+
+**D4.7 passes today** — verified 2026-09-08 by regenerating the catalog and diffing against the
+committed copy, ignoring `generated_at`: no difference. So enabling it invalidates no conforming
+work and the amendment stays MINOR rather than MAJOR. Confirm that again before enabling, because
+the classification depends on it.
+
+**Both existing skills already conform** — verified 2026-09-08:
+
+| Skill | Catalog | Adapters | Distribution rows | Adapter manifest rows |
+|---|---|---|---|---|
+| `highway-help` | present | 3 of 3 | 3 | 4 |
+| `highway-inquiry` | present | 3 of 3 | 3 | 4 |
+
+No orphan exists in either direction. That is not a reason to skip this phase — it is the reason
+to do it now. `highway-inquiry` conforms only because feature 015 added its manifest rows by hand
+after planning happened to notice they were missing. Nothing would have caught the omission, and
+nothing catches the next one.
+
+**Use `highway-inquiry` as the subject of the failure proofs.** Because it conforms, each of the
+four correspondences can be broken for it and then restored — remove its catalog entry, an adapter,
+an adapter manifest row, a distribution manifest row — confirming the check fails each time and
+passes again once restored. A round trip proves more than watching a check pass: it shows the
+check is reading the thing it claims to read.
+
+The check must be written over the set of skills present, not over an enumeration of the two that
+exist today. An enumerated list is the defect this phase exists to remove.
+
+**Prerequisite**: The Gate is cleared, which matters more than it sounds. With one skill this
+defect was unobservable; the manifest's per-skill rows looked like a complete list rather than an
+enumeration waiting to fall behind.
+
+**Command**:
+
+```text
+/speckit.specify "I want the catalog and the generated agent adapters to stay true to the skills actually present in .highway/skills/, across adding, changing, and removing a skill, and I want that written as rules rather than left as tests somebody discovers by failing. Add three rules to the Highway Development Constitution at .specify/memory/constitution.md, under Principle IV, as a MINOR amendment taking it from 1.1.0 to 1.2.0. D4.5: every skill in the source MUST have its generated artifacts, observable as each directory under .highway/skills/ having a catalog entry, an adapter in each agent tree, and a distribution manifest row for each adapter. D4.6: a generated artifact MUST NOT name a skill absent from the source, observable as no catalog entry, adapter file, adapter manifest row, or distribution manifest row naming a skill with no directory under .highway/skills/. D4.7: a change to a generator's input MUST be followed by regeneration, observable as re-running every generator leaving no diff against the committed artifacts aside from a recorded generation timestamp. Tag all three [auto] and give each a row in the Enforcement Map naming the test that decides it, per the definition feature 014 recorded. D4.7 is needed because nothing today states or detects that a skill's description, usage, or version going stale in the catalog is a violation: D4.1's rule text is about hand-editing rather than currency, its Enforcement Map row names generate-agent-adapters.test.sh which never regenerates the catalog, and generate-catalog.test.sh only runs the generator twice against unchanged inputs, which is determinism rather than currency. D4.7 is not a restatement of D4.1 -- D4.1 prohibits touching the output, D4.7 requires refreshing it after touching the input -- and the non-restatement rules turn on rule text rather than on Observables, which these two necessarily share. Verify before enabling D4.7 that the committed catalog already matches the current skills, because if it does not this becomes a MAJOR amendment rather than a MINOR one; it did match on 2026-09-08. Enforce all three by extending the existing adapter-coverage.test.sh rather than adding a second mechanism that asserts an overlapping property, and write the checks over the set of skills present rather than over a list of the ones that exist today, because an enumerated list is the defect being removed. Both existing skills conform as of 2026-09-08, so use highway-inquiry as the subject of the failure proofs: break each correspondence for it in turn -- remove its catalog entry, then an adapter, then an adapter manifest row, then a distribution manifest row, then change its description without regenerating -- confirming the check fails each time and passes again once restored. A round trip proves the check is reading what it claims to read, where watching it pass proves nothing. Take care that a currency check does not leave regenerated files behind when it finishes. At the end, confirm every skill present conforms, naming highway-help and highway-inquiry explicitly. Decide separately whether the generators should prune what they no longer produce, or whether pruning stays a deliberate manual step that the check reports -- pruning is a delete, and a generator that deletes needs more care than one that writes."
+```
+
+**Done when**:
+
+- D4.5, D4.6 and D4.7 are in the Development Constitution, tagged `[auto]`, each with an
+  Enforcement Map row naming the test that decides it.
+- The amendment is recorded as MINOR, `1.1.0 → 1.2.0`, with its reasoning, including confirmation
+  that the committed catalog matched the current skills before D4.7 was enabled.
+- The checks are written over the set of skills present, not over an enumerated list.
+- The checks fail when a skill has no catalog entry, when an entry names no skill, when an adapter
+  exists for no skill, when a manifest row names a skill that is gone, and when a skill's
+  description changes without regeneration.
+- Each of those five failures has been observed and then restored, using `highway-inquiry` as the
+  subject, so the checks are shown to read what they claim to read.
+- The currency check leaves no regenerated file behind when it finishes.
+- Every skill present conforms — `highway-help` and `highway-inquiry` both named and confirmed.
+- Whether generators prune is decided and recorded.
+- No orphaned adapter can reach a distribution.
+
+---
+
 ### Gate — A second skill exists
 
-**Blocks**: Phase 5.
+**Blocked**: Phase 5, until cleared.
+
+**Status**: ✅ **Cleared**, 2026-09-08 by `highway-inquiry` (`specs/015-requirements-inquiry`).
+26 tasks; 17 tests passing. It maintains the requirements discovery questionnaire at
+`.highway/library/templates/requirements-inquiry.md`, so it asks the user questions, writes a file
+they own, and produces derived content — the three behaviours the standard needs to generalise
+from.
+
+**Authored before the standard it will be held to**, as this gate anticipated. Phase 5 should
+expect to revise it, the same relationship `highway-help` had to Layer 1.
+
+**Two findings worth carrying forward**:
+
+1. **A new skill's adapters were silently excluded from the distribution.** The manifest
+   classifies adapters by exact path, and only `highway-help` had rows. A second skill's adapters
+   matched the parent `exclude`, so packaging succeeded and the recipient's agent could not see
+   the skill. Fixed with three rows and `adapter-coverage.test.sh`, which fails for any skill
+   whose adapters are not included. The Skill Content Gate does not catch this — it asks whether
+   skill content conforms, not whether the skill reaches anyone.
+2. **P8.1 forced the questionnaire's rendering.** It requires every ordered list to restart at 1,
+   reading each as a sequence of workflow steps. Questions numbered globally across sections —
+   which is what makes "question 12" unambiguous — failed it. The questions are written as a bold
+   number and text rather than as a Markdown ordered list, because they are not steps. Worth
+   revisiting if a library exemption for P8.1 is ever wanted.
 
 Phase 5 must not begin while `highway-help` is the only skill in the catalog. The Experience
 Standard needs at least one skill that exercises the behaviours it intends to govern: user

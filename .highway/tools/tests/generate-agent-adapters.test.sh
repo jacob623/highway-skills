@@ -88,4 +88,19 @@ if [[ "$speckit_before" != "$speckit_after" ]]; then
 	fail=1
 fi
 
+# A generated artifact that was hand-edited must not be silently overwritten: the edit would
+# vanish with no indication it ever existed. Enforces D4.1, which the Enforcement Map in the
+# development constitution names this test for.
+if [[ -f "$GH_TARGET" ]]; then
+	printf '\nhand-edited line\n' >>"$GH_TARGET"
+	if "$GENERATE" >/dev/null 2>&1; then
+		echo "FAIL: the generator overwrote a hand-edited adapter instead of refusing"
+		fail=1
+	fi
+	if ! grep -q '^hand-edited line$' "$GH_TARGET"; then
+		echo "FAIL: a hand-edited adapter was overwritten; the edit was lost"
+		fail=1
+	fi
+fi
+
 exit $fail

@@ -1,6 +1,6 @@
 <!--
 Sync Impact Report
-Version change: none → 1.0.0 (initial ratification)
+Version change: none → 1.0.0 (initial ratification); amended 1.0.0 → 1.1.0 on 2026-09-08
 Bump rationale: this is the first version of a new document. It is not an amendment to any
   existing constitution. The `D` namespace is introduced here and has no prior version.
 
@@ -57,11 +57,65 @@ Templates and dependent artifacts:
   - The Highway Skills Constitution is unaffected. It keeps its own version, its own namespace,
     and its own amendment history.
 
-Follow-up TODOs:
-  - TODO(D_AUTO_TIER_ENFORCEMENT): ten of the twenty-five rules are tagged [auto] but no script
-    enforces them yet. Until one exists, an [auto] tag records that a rule is mechanically
-    decidable, not that it is mechanically decided. This mirrors the precedent already set by the
-    Highway Skills Constitution, which carries the same class of follow-up.
+Follow-up TODOs closed by amendment 1.1.0:
+  - D_AUTO_TIER_ENFORCEMENT: satisfied. See the 1.1.0 entry below for the evidence.
+
+Follow-up TODOs: none.
+
+--- Amendment 1.0.0 → 1.1.0 (MINOR), 2026-09-08 ---
+Bump rationale: two sections are added — Tier Definitions and the Enforcement Map. Classified
+  against this document's Versioning Policy rather than by analogy: MINOR covers a principle or
+  rule added without invalidating conforming work, and a section is added. The four retags are
+  neither MAJOR (nothing removed, redefined, or strengthened) nor PATCH (a tier tag is not
+  wording repair), and the higher classification governs.
+Why this was needed: ten rules were tagged [auto] while no script decided any of them by name.
+  The tag had been borrowed from the Highway Skills Constitution, where it means a registered
+  check reports under the rule ID in a coverage summary. This layer has no registry, no coverage
+  summary, and no artifact a validator runs against, so the tag was applied by an analogy that
+  does not hold.
+Added sections:
+  - Tier Definitions: states what each tier obliges in this document, and states explicitly that
+    [auto] here means less than [auto] in the Highway Skills Constitution — a test decides the
+    rule, without the additional obligation to report under its rule ID.
+  - Enforcement Map: binds every [auto] rule to the test that decides it. constitution-inventory
+    .test.sh asserts both that every [auto] rule appears and that every named test exists, so the
+    table cannot silently go stale.
+Removed sections: none. Added rules: none. Removed rules: none. Rule count: 25, unchanged.
+Modified rules — tier only; every rule text and Observable is unchanged:
+  - D3.1, D3.2 retagged [auto] → [agent-checkable]. Each is a claim about the suite state at a
+    moment relative to an edit. No check run at one moment can observe two moments and the work
+    between them; an agent can.
+  - D4.4 retagged [auto] → [agent-checkable]. It constrains what a person did after changing a
+    generator, which is not a property of any file.
+  - D6.2 retagged [auto] → [agent-checkable]. This one is a judgement and is recorded as such.
+    Cross-references are decided automatically inside the packaged tree by
+    distribution-packaging.test.sh, but the Observable says "the tree that contains the
+    document", and no check covers repository-only documents. Measured 2026-09-08: 145 link
+    targets across the repository, 8 unresolvable, and none a genuine defect — four are
+    deliberate illustrations in spec records and a fixture, two were an extraction artifact, and
+    two are in .highway/DISTRIBUTION.md, which is authored for the distributed tree where it
+    lands at the root and where those targets do resolve. Widening the check would require
+    exempting fenced code, deliberate illustrations, fixtures, and relocated documents, and would
+    flag a correct document. Partial automation tagged [auto] is the dishonesty this amendment
+    exists to remove, so the tier now says judgement.
+Newly enforced:
+  - D5.4 gains spec-record.test.sh, asserting feature directory numbers are contiguous from 001
+    with no gap and no duplicate. It was the only rule that was both unenforced and trivially
+    checkable, so it was enforced rather than retagged.
+  - D4.1 gains assertions in generate-agent-adapters.test.sh that a hand-edited adapter is
+    refused rather than silently overwritten. The generator already refused; nothing asserted it.
+Tier counts: [auto] 10 → 6; [agent-checkable] 14 → 18; [human-review] 1, unchanged.
+Conformance impact: none. Enabling D5.4's check invalidates no conforming work — verified before
+  it was enabled that specs/ holds 001 through 014 contiguously. Had a gap existed, this would
+  have been a MAJOR amendment under the "previously conforming work now fails" clause.
+Evidence closing the D_AUTO_TIER_ENFORCEMENT follow-up: every rule tagged [auto] now appears in the
+  Enforcement Map naming a test that exists; the four rules no test decides carry a tier that
+  says so; and constitution-inventory.test.sh fails if either constitution drifts, naming the
+  offending rule and its document.
+A policy gap, recorded not fixed: the Versioning Policy below does not name a tier change. It
+  fell to MINOR here only because sections were added for another reason. The Highway Skills
+  Constitution has the identical gap. Both would benefit from a clause naming tier changes, which
+  is a separate PATCH amendment to each.
 -->
 
 # Highway Development Constitution (Layer 0)
@@ -83,6 +137,44 @@ Highway Skills Constitution.
 | **Completed spec** | A spec directory whose feature has been implemented and whose tasks are all marked complete. |
 | **Behavioral change** | A change that alters the output, exit code, or accepted input of any script or skill. |
 | **Verdict** | One of exactly three tokens: PASS, FAIL, N/A. |
+
+## Tier Definitions
+
+A tier tag states how a rule is decided, so a reader knows whether something will catch a
+violation or whether they must check it themselves.
+
+| Tier | What it obliges in this document |
+|---|---|
+| `[auto]` | A test run by `.highway/tools/tests/run-all.sh` decides the rule, and the Enforcement Map below names that test. |
+| `[agent-checkable]` | An agent or person performs the check and reports the result. No test decides it. |
+| `[human-review]` | A human judgement is required; neither a test nor an agent can decide it. |
+
+**This differs from the Highway Skills Constitution, deliberately.** There, `[auto]` additionally
+requires that the rule be decided by a registered check reporting under its own rule ID in a
+coverage summary. That is not a definition of the tier; it is a description of machinery Layer 1
+has and this layer does not. No validator runs against a `tasks.md`, a `plan.md`, or a working
+tree, and building one to make a tag literally true would be a large amount of tooling for no
+gain in what a reader learns.
+
+The same tag is nonetheless used in both documents, because it answers the same reader question in
+both: will something catch me. A distinct name such as `[test-enforced]` was considered and
+rejected — it would imply the Layer 1 tier is something other than test-enforced, which it is not,
+since `validate-skill.sh` is run by the same suite.
+
+### Enforcement Map
+
+Every rule tagged `[auto]` appears here exactly once, naming the test that decides it. A test
+named here must exist. Both properties are asserted by `constitution-inventory.test.sh`, so this
+table cannot silently go stale.
+
+| Rule | Enforced by | Note |
+|---|---|---|
+| D1.1 | shipped-tree-independence.test.sh | Scans the distributed path set for the prohibited tokens; seeds a probe to prove it can fail |
+| D1.2 | distribution-packaging.test.sh | Runs the distribution's own validator against a tree with the development directories absent |
+| D4.1 | generate-agent-adapters.test.sh | Asserts the generator refuses to overwrite a target that was hand-edited after it was produced |
+| D4.2 | generate-catalog.test.sh | Asserts re-running with unchanged inputs produces no difference aside from the recorded timestamp the Observable excepts |
+| D4.3 | distribution-packaging.test.sh | Asserts refusal to overwrite an untracked directory and a modified file, naming each |
+| D5.4 | spec-record.test.sh | Asserts feature directory numbers are contiguous from 001 with no gap and no duplicate |
 
 ## Core Principles
 
@@ -128,8 +220,8 @@ is the worked example.
 
 | ID | Rule | Observable | Tier |
 |---|---|---|---|
-| D3.1 | A change MUST begin from a passing test suite. | `.highway/tools/tests/run-all.sh` exits 0 before the first edit. | [auto] |
-| D3.2 | A change MUST end with a passing test suite. | `.highway/tools/tests/run-all.sh` exits 0 after the final edit. | [auto] |
+| D3.1 | A change MUST begin from a passing test suite. | `.highway/tools/tests/run-all.sh` exits 0 before the first edit. | [agent-checkable] |
+| D3.2 | A change MUST end with a passing test suite. | `.highway/tools/tests/run-all.sh` exits 0 after the final edit. | [agent-checkable] |
 | D3.3 | A behavioral change MUST add or amend at least one test. | The change includes an edit to a file under `.highway/tools/tests/`. | [agent-checkable] |
 | D3.4 | A new validation check MUST be evaluated against every existing fixture before it is enabled. | Each fixture's expected verdict under the new check is recorded before the check is wired in. | [agent-checkable] |
 | D3.5 | A test MUST NOT be weakened to accommodate a change. | No assertion is removed or loosened without a recorded reason naming the superseded behavior. | [human-review] |
@@ -144,7 +236,7 @@ artifact already in the repository.
 | D4.1 | A generated artifact MUST NOT be hand-edited. | Re-running its generator produces no diff. | [auto] |
 | D4.2 | A generator MUST produce identical output from unchanged inputs. | Two consecutive runs differ in no byte other than a recorded generation timestamp. | [auto] |
 | D4.3 | A generator MUST refuse to overwrite a target it did not produce. | The run exits non-zero and names the file. | [auto] |
-| D4.4 | A change to a generator MUST be followed by regeneration of every artifact it produces. | No diff remains after running the generator. | [auto] |
+| D4.4 | A change to a generator MUST be followed by regeneration of every artifact it produces. | No diff remains after running the generator. | [agent-checkable] |
 
 Rationale: Generated artifacts are the product surface; drift between source and output ships
 directly to users.
@@ -166,7 +258,7 @@ reconstruct why a decision was made.
 | ID | Rule | Observable | Tier |
 |---|---|---|---|
 | D6.1 | Live documentation MUST be updated in the change that invalidates it. | Each document naming the changed behavior is edited in the same change. | [agent-checkable] |
-| D6.2 | A documentation cross-reference MUST resolve. | Each referenced path exists in the tree that contains the document. | [auto] |
+| D6.2 | A documentation cross-reference MUST resolve. | Each referenced path exists in the tree that contains the document. | [agent-checkable] |
 
 Rationale: D6.2 is scoped to the containing tree so that a reference valid in development but
 dangling in the package is a FAIL.
@@ -228,4 +320,4 @@ Highway Skills Constitution prevails for artifact content and this document prev
 This document is subject to D1.3, D1.4, and D5.3. Every amendment records a review against those
 rule IDs.
 
-**Version**: 1.0.0 | **Ratified**: 2026-09-08 | **Last Amended**: 2026-09-08
+**Version**: 1.1.0 | **Ratified**: 2026-09-08 | **Last Amended**: 2026-09-08

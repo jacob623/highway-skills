@@ -6,3 +6,7 @@
 .claude/skills/highway-help/SKILL.md	highway-help	3.0.1	83085906caa5760fd9a0e7755e79626967ff1c5e078ff439b3ecb15725eae805
 .cursor/rules/highway-help.mdc	highway-help	3.0.1	4a0ed870503dc52918f0e3bcd1ec8dbda4e4342b71b94f1b52a57c026c861162
 .mock-agent-4/skills/highway-help/SKILL.md	highway-help	3.0.1	83085906caa5760fd9a0e7755e79626967ff1c5e078ff439b3ecb15725eae805
+.github/skills/highway-inquiry/SKILL.md	highway-inquiry	1.0.0	0bafc5ef487d210d69deca015806ec124afe9d24932eecbe7106c55e52f4737d
+.claude/skills/highway-inquiry/SKILL.md	highway-inquiry	1.0.0	0bafc5ef487d210d69deca015806ec124afe9d24932eecbe7106c55e52f4737d
+.cursor/rules/highway-inquiry.mdc	highway-inquiry	1.0.0	6afa361f3f7b6b5f0838614f157407b4ba8cda146e8b93b51651466d6c3d93c5
+.mock-agent-4/skills/highway-inquiry/SKILL.md	highway-inquiry	1.0.0	0bafc5ef487d210d69deca015806ec124afe9d24932eecbe7106c55e52f4737d
