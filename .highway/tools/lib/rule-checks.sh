@@ -24,6 +24,7 @@ rc_registry() {
 		P7.5	rc_check_P7_5	N2
 		P8.1	rc_check_P8_1	N2
 		P8.3	rc_check_P8_3	-
+		P8.7	rc_check_P8_7	-
 	EOF
 }
 
@@ -48,6 +49,15 @@ rc_registered_ids() {
 # Usage: rc_template_exempt_ids
 rc_template_exempt_ids() {
 	printf '%s\n' P1.1 P1.3 P7.4 P7.5
+}
+
+# Prints the rule ids every library file is exempt from, regardless of library type. P8.7's
+# subject is a skill, which is copied into each agent adapter tree; a library file is never
+# copied, so a relative link in one resolves. Reported N/A with a condition by the caller, not
+# skipped silently.
+# Usage: rc_library_exempt_ids
+rc_library_exempt_ids() {
+	printf '%s\n' P8.7
 }
 
 # --- P1.1: each normative line carries exactly one keyword -------------------------------
@@ -255,4 +265,29 @@ rc_check_P8_3() {
 	body="$(bs_section "$file" "Verification" | awk -F'\t' '$7 != "" { print $7 }')"
 	[[ -z "$body" ]] && return 0
 	return 0
+}
+
+# --- P8.7: no Markdown link target is a relative filesystem path ---------------------------
+# A SKILL.md is copied byte-for-byte into every agent adapter tree, and no sibling file travels
+# with it, so a relative target resolves in the source tree and nowhere else. Only link targets
+# are examined: a path inside a fenced block or inline code is a command example, correct as
+# written. An absolute URL and a same-document anchor both resolve everywhere and are permitted.
+
+rc_check_P8_7() {
+	local file="$1" out found=0
+	out="$(bs_scan "$file" | awk -F'\t' '
+		$3 == 0 && $7 ~ /\]\(/ {
+			t = $7
+			while (match(t, /\]\([^)]*\)/)) {
+				tok = substr(t, RSTART + 2, RLENGTH - 3)
+				t = substr(t, RSTART + RLENGTH)
+				if (tok == "") continue
+				if (tok ~ /^#/) continue
+				if (tok ~ /^[a-zA-Z][a-zA-Z0-9+.-]*:/) continue
+				printf("line %d: link target %s is a relative path and resolves only in the source tree\n", $1, tok)
+			}
+		}
+	')"
+	[[ -n "$out" ]] && { printf '%s\n' "$out"; found=1; }
+	return $found
 }

@@ -173,6 +173,20 @@ d="$tmp_root/p75"; write_base_skill "$d"
 } >>"$d/SKILL.md"
 assert_reports "P7.5 oversized section" "P7.5" "$d"
 
+# --- P8.7: a Markdown link target that is a relative path ------------------------------------
+
+d="$tmp_root/p87"; write_base_skill "$d"
+printf '\nSee [the standard](../governance/constitution.md) for detail.\n' >>"$d/SKILL.md"
+assert_reports "P8.7 relative link target" "P8.7" "$d"
+
+# A command example naming a path is not a link and must not be flagged.
+d="$tmp_root/p87-ok"; write_base_skill "$d"
+printf '\nRun `.highway/tools/validate-skill.sh <dir>` and read [the site](https://example.org).\n' >>"$d/SKILL.md"
+if ! "$VALIDATE" "$d" >/dev/null 2>&1; then
+	echo "FAIL[P8.7 false positive]: a command example or absolute URL was reported as a relative link"
+	fail=1
+fi
+
 # --- Finding line format matches the contract -----------------------------------------------------------------------------
 
 d="$tmp_root/format"; write_base_skill "$d"

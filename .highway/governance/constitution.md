@@ -1,50 +1,66 @@
 <!--
 Sync Impact Report
-Version change: 2.0.0 → 2.0.1 (PATCH)
-Bump rationale: no principle is added, removed, or redefined. Three rules that could not be
-  decided as written are made decidable. No rule text changes; three Observables are made
-  specific and two Tier tags are corrected downward.
-Modified principles: none renamed, none restructured. The eight principles and all 48 rule
-  IDs are unchanged.
-Modified rules:
-  - P7.1 Observable: "contains one Purpose statement" (location unspecified, so no check could
-    be written) → names a body section titled "## Purpose" holding exactly one sentence.
-  - P2.1 Observable: now references the "## Purpose" section, since P2.1 depends on P7.1.
-  - P1.4 Tier: [auto] → [agent-checkable]. Deciding whether a parenthetical states a countable
-    condition requires judgment, so the [auto] tag promised enforcement that cannot be built.
-  - P4.4 Tier: [auto] → [agent-checkable], for the same reason applied to units.
-  - P3.2 and P3.5 Observables: now reference the citation format defined below.
-Added content:
-  - Citation Format subsection under Approved Authority Sources, defining the bracketed
-    [AS-N: identifier] token. This is what keeps P3.5 honestly [auto].
+Version change: 2.0.1 → 2.1.0 (MINOR)
+Bump rationale: one rule is added. No principle is added, removed, or redefined; no existing
+  rule text, Observable, or Tier tag changes. Classified against this document's Versioning
+  Policy rather than by analogy to a previous amendment: MINOR covers a rule added without
+  invalidating a conforming artifact, and MAJOR would require an obligation strengthened so
+  that a previously conforming artifact now fails. No registered skill fails P8.7 — verified by
+  scanning every Markdown link target under .highway/skills/ and the test fixtures, which found
+  exactly one, in _authoring-standard.md, which is not a skill. Nothing conforming is
+  invalidated, so MINOR is correct and MAJOR is not.
+Added rules:
+  - P8.7: a skill MUST NOT link to a relative path. Observable: no Markdown link target in the
+    skill body is a relative filesystem path. Tier [auto], Principle VIII, no N/A condition.
+Why Principle VIII: the rule concerns whether a skill works as delivered, which is that
+  principle's subject. P8.6 already prohibits relying on an unstated environment default; a
+  rule prohibiting a reference to something the recipient does not have sits beside it, and
+  both fail the same way — the skill looks correct where it was written and breaks where it is
+  used. Principle II was rejected because its rules govern naming a model, vendor, or tool.
+Why a prohibition rather than a resolution test: a SKILL.md is copied byte-identically into
+  three further trees, one of which is a flat file rather than a directory, and no sibling file
+  is ever copied alongside it. A relative target is resolved against the directory holding the
+  file, so the same target resolves differently in each of the four places a skill is read and
+  exists in at most one. No relative target can satisfy every reader, so the general obligation
+  reduces to a prohibition, decidable from the text alone with no filesystem access.
+Scope of the rule: a Markdown link target only. A path inside inline code or a fenced block is
+  a command example, correct as written; treating it as a reference would force correct content
+  to be mangled. An absolute URL is permitted, because it resolves identically from every
+  location.
+Modified principles: none renamed, none restructured. The eight principles are unchanged.
 Added sections: none. Removed sections: none.
-Tier counts: [auto] 16 → 14; [agent-checkable] 32 → 34; [human-review] 0, unchanged.
-  The amendment request stated 15; the arithmetic is 16 minus P1.4 minus P4.4, and P3.5
-  retains its [auto] tag because the citation format is now defined. The verified count is
-  recorded here.
-Conformance impact: no obligation is weakened. Pinning Purpose to a named section is a
-  strengthening in principle, because a skill that declared its Purpose only in frontmatter
-  would have satisfied the 2.0.0 wording and fails the 2.0.1 wording. PATCH is recorded
-  because the set of affected artifacts is empty: no skill exists, and P7.1 was undecidable
-  under 2.0.0, so no artifact was ever shown to conform to it. See Follow-up TODOs.
+Rule count: 48 → 49. Tier counts: [auto] 14 → 15; [agent-checkable] 34, unchanged;
+  [human-review] 0, unchanged.
+Conformance impact: no obligation is weakened and no conforming artifact is invalidated. The
+  rule is preventive: feature 010 removed the only two links a skill body ever carried, so the
+  repository already satisfies P8.7 before it is written. Its value is entirely in what it
+  prevents, and the skills planned next are the most likely yet to reach for a link.
+Relationship to the Highway Development Constitution: that document carries a rule requiring a
+  documentation cross-reference to resolve within the tree containing the document. It governs
+  live documentation in this repository, which exists in one place. P8.7 governs a skill, which
+  exists in four. Neither reproduces the other's rule sentence and each governs an artifact
+  class the other does not, so the non-restatement rules are satisfied.
 Templates and dependent artifacts:
   - Development workflow scaffolds reference no rule IDs; no update required.
   - The completed feature records for feature 001 (multi-agent skill suite) and feature 002
     (highway folder consolidation) are retained unchanged as historical artifacts.
-  - .highway/tools/lib/schema-validate.sh lists six required body sections; P7.1 now requires a
-    seventh. Listed under Follow-up TODOs; not modified by this amendment.
+  - .highway/skills/_authoring-standard.md cites P8.7 by ID and restates no rule text, per P7.3.
+  - .highway/tools/lib/rule-checks.sh registers a check for P8.7 so the rule is decided
+    automatically and reported under its own ID.
+Follow-up TODOs closed by this amendment, each with the evidence that its work was already
+  complete. None required implementation; all three were verified on 2026-09-08:
+  - PURPOSE_SECTION_ENFORCEMENT: satisfied. SV_REQUIRED_SECTIONS in
+    .highway/tools/lib/schema-validate.sh already lists "Purpose" among the required body
+    sections, and every fixture declares a "## Purpose" section.
+  - BUMP_TYPE_REVIEW: its condition never triggered. The reclassification was contingent on a
+    skill being authored that declared Purpose outside a "## Purpose" section; highway-help
+    exists and declares one, so no reclassification is warranted.
+  - AUTHORING_STANDARD_REALIGNMENT: satisfied. .highway/skills/_authoring-standard.md cites 28
+    distinct rule IDs, restates no rule text, and contains no section by that name.
+    authoring-standard.test.sh enforces the citation count and the non-restatement, and passes.
 Follow-up TODOs:
-  - TODO(PURPOSE_SECTION_ENFORCEMENT): add "Purpose" to the required body sections in
-    .highway/tools/lib/schema-validate.sh, and add a "## Purpose" section to every test fixture
-    and worked example, which currently have none.
-  - TODO(AUTHORING_STANDARD_REALIGNMENT): rewrite the Constitution Compliance Checklist in
-    .highway/skills/_authoring-standard.md to cite rule IDs P1.1-P8.6 instead of restating
-    principle text, per P7.3.
-  - TODO(AUTO_TIER_ENFORCEMENT): extend .highway/tools/validate-skill.sh to enforce the 14
-    rules tagged [auto] in this document.
-  - TODO(BUMP_TYPE_REVIEW): if a skill is authored before this is revisited and it declares
-    Purpose outside a "## Purpose" section, reclassify this amendment as MAJOR per the
-    Constitution Versioning Policy.
+  - TODO(AUTO_TIER_ENFORCEMENT): extend .highway/tools/validate-skill.sh to enforce the rules
+    tagged [auto] in this document that no script decides yet.
 -->
 
 # Highway Skills Constitution
@@ -219,6 +235,7 @@ imposes on code.
 | P8.4 | The Verification section MUST name at least one command, file state, or output string to check. | One checkable item is named. | [agent-checkable] |
 | P8.5 | A skill MUST require the agent to read and state project configuration that changes its output. | Each configuration-dependent step directs the agent to read and report that value. | [agent-checkable] |
 | P8.6 | A skill MUST NOT rely on an environment default it has not stated. | Every default value the skill assumes appears in its text. | [agent-checkable] |
+| P8.7 | A skill MUST NOT link to a relative path. | No Markdown link target in the skill body is a relative filesystem path. | [auto] |
 
 Rationale: Repeatability is what allows a skill to be reused without re-verifying it every
 time.
@@ -426,4 +443,4 @@ every other skill's version. This is the policy referenced by P7.7.
 - **MINOR**: a capability is added while every existing contract element continues to hold.
 - **PATCH**: wording repair with no change to Inputs, Outputs, or Verification.
 
-**Version**: 2.0.1 | **Ratified**: 2026-09-06 | **Last Amended**: 2026-09-06
+**Version**: 2.1.0 | **Ratified**: 2026-09-06 | **Last Amended**: 2026-09-08

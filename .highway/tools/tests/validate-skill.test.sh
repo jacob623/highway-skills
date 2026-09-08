@@ -46,6 +46,7 @@ assert_exit_nonzero_naming "$FIXTURES/invalid-skill-long-description" "descripti
 assert_exit_nonzero_naming "$FIXTURES/invalid-skill-missing-usage" "usage"
 assert_exit_nonzero_naming "$FIXTURES/invalid-skill-missing-example" "'## Example'"
 assert_exit_nonzero_naming "$FIXTURES/invalid-skill-name-mismatch" "does not match directory-derived id"
+assert_exit_nonzero_naming "$FIXTURES/invalid-skill-relative-link" "is a relative path"
 
 # Every skill-shaped artifact in the repository that is meant to be valid must pass, so that an
 # author copying one inherits a conforming skill (SC-001).
@@ -79,5 +80,6 @@ assert_single_failure "$FIXTURES/invalid-skill-long-description" "SCHEMA"
 assert_single_failure "$FIXTURES/invalid-skill-missing-usage" "SCHEMA"
 assert_single_failure "$FIXTURES/invalid-skill-missing-example" "SCHEMA"
 assert_single_failure "$FIXTURES/invalid-skill-name-mismatch" "SCHEMA"
+assert_single_failure "$FIXTURES/invalid-skill-relative-link" "P8.7"
 
 exit $fail

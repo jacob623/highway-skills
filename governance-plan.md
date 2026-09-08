@@ -4,7 +4,7 @@ Sequenced plan for establishing Highway's governance layers. This document is du
 context: it is written to survive across sessions so the sequence, rationale, and exact command
 invocations do not have to be reconstructed from conversation history.
 
-**Status**: Phases 1 and 2 complete. Next action is Phase 2b.
+**Status**: Phases 1, 2 and 2b complete. Next action is Phase 3 or Phase 4 — they are independent.
 
 **Last reviewed**: 2026-09-08
 
@@ -79,7 +79,7 @@ Worked examples:
 |---|---|---|---|---|
 | 1 | Relocate constitution and sever development coupling | Spec | 1 | ✅ Complete (feature 010) |
 | 2 | Ratify the Development Constitution | Command | 0 | ✅ Complete (v1.0.0, 2026-09-08) |
-| 2b | Close the authoring-rule gap and the constitution backlog | Spec | 1 | Phase 2 complete |
+| 2b | Close the authoring-rule gap and the constitution backlog | Spec | 1 | ✅ Complete (feature 011) |
 | 3 | Packaging contract and verification | Spec | 0/1 | Phase 2b complete |
 | 4 | Automate the constitution's `[auto]` tier | Spec | 1 | Phase 2b complete |
 | — | **Gate**: a second skill exists | — | — | Blocks Phase 5 |
@@ -185,7 +185,19 @@ those record *why* the draft is worded as it is and are not part of the document
 
 ### Phase 2b — Close the authoring-rule gap and the constitution backlog
 
-**Layer**: 1 **Type**: Spec
+**Layer**: 1 **Type**: Spec (`specs/011-skill-path-resolvability`)
+
+**Status**: ✅ **Complete**, 2026-09-08. 22 tasks; 14 tests passing. `P8.7` added (constitution
+2.1.0, MINOR), decided automatically by `rc_check_P8_7` and reported under its own id, cited from
+the authoring standard, and reachable from the front page. All three stale follow-up entries
+removed with evidence; only `AUTO_TIER_ENFORCEMENT` remains.
+
+**One finding worth carrying forward**: the rule is a prohibition rather than a resolution test,
+because a `SKILL.md` is copied byte-for-byte into three further trees and no sibling file travels
+with it — so no relative link target can resolve anywhere but the source tree. A second finding:
+`validate-library.sh` shares the rule registry, so `rc_library_exempt_ids` was added to keep a
+rule about skills from judging library content, which is never copied and whose relative links do
+resolve.
 
 **Goal**: The no-upward-reference boundary is a stated rule an author can read, not only a test
 they can fail. The constitution's follow-up backlog is emptied of everything except the tooling
@@ -216,10 +228,12 @@ is a MINOR amendment to that document.
 
 - The constitution carries a new rule on path resolvability, with an Observable and a tier, and a
   MINOR version increment recorded in its Sync Impact Report.
+- A check decides that rule automatically for every skill and is demonstrably capable of failing.
 - `_authoring-standard.md` cites that rule by id and restates no rule text.
 - The root `README.md` points at the governance documents.
-- Three of the four follow-up TODOs are removed; only `AUTO_TIER_ENFORCEMENT` remains, owned by
-  Phase 4.
+- All three stale follow-up TODOs are removed; only `AUTO_TIER_ENFORCEMENT` remains, owned by
+  Phase 4. All three were verified already satisfied on 2026-09-08 — none required implementation
+  work, only removal with the evidence recorded.
 
 ---
 
@@ -278,7 +292,7 @@ exist. This phase is the remainder, not the whole layer.
 |---|---|---|
 | `PURPOSE_SECTION_ENFORCEMENT` | Already satisfied — `SV_REQUIRED_SECTIONS` includes `Purpose` | Phase 2b removes the entry |
 | `BUMP_TYPE_REVIEW` | Resolvable — `highway-help` exists and declares `## Purpose`, so the reclassification condition never triggered | Phase 2b removes the entry |
-| `AUTHORING_STANDARD_REALIGNMENT` | Open | Phase 2b |
+| `AUTHORING_STANDARD_REALIGNMENT` | Already satisfied — the standard cites 28 distinct rule ids, restates no rule text, and has no section by that name; `authoring-standard.test.sh` enforces both and passes | Phase 2b removes the entry |
 | `AUTO_TIER_ENFORCEMENT` | Open | **This phase** |
 
 **Command**:

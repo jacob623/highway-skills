@@ -74,6 +74,8 @@ template_exempt=""
 if [[ "$library_type" == "template" ]]; then
 	template_exempt="$(rc_template_exempt_ids)"
 fi
+# Applies to every library type, unlike template_exempt above.
+library_exempt="$(rc_library_exempt_ids)"
 
 checked=""
 na=""
@@ -91,6 +93,11 @@ while IFS= read -r rule_line; do
 	fi
 
 	if [[ -n "$template_exempt" ]] && printf '%s\n' "$template_exempt" | grep -qx "$rule_id"; then
+		na="$na ${rule_id}=N2"
+		continue
+	fi
+
+	if printf '%s\n' "$library_exempt" | grep -qx "$rule_id"; then
 		na="$na ${rule_id}=N2"
 		continue
 	fi

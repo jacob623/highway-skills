@@ -64,6 +64,19 @@ Eight sections, each non-empty:
 | `## Error Handling` | P5.1, P5.2, P5.3 | One list item per failure condition, each naming one next action. |
 | `## Example` | — | Exactly one copy-able example: the literal invocation MUST be an inline code span (backtick-wrapped, not solely a fenced block), so it can be selected and copied on its own; a fenced block MAY still show accompanying sample output below it. |
 
+## Linking out of a skill
+
+Governed by P8.7. Your `SKILL.md` is copied verbatim into every agent's own directory, and nothing
+else travels with it, so a Markdown link to a relative path resolves only where you wrote it and
+is dead everywhere the skill is actually read.
+
+Name a path in prose or in a command example as much as you like — those are instructions, not
+links, and the check ignores them. An absolute URL is fine too. What P8.7 rejects is a Markdown
+link target that is a relative path. To point at another document in this framework, name it
+instead of linking it.
+
+`.highway/tools/validate-skill.sh` decides this for you and reports it under P8.7.
+
 ## Writing the rules inside a skill
 
 Cited rules, not restated. Read the rule text in the constitution.
