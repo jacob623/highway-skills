@@ -5,13 +5,12 @@ set -u
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-REPO_ROOT="$(cd "$HIGHWAY_ROOT/.." && pwd)"
 # shellcheck source=tools/lib/constitution.sh
 source "$HIGHWAY_ROOT/tools/lib/constitution.sh"
 
 VALIDATE="$HIGHWAY_ROOT/tools/validate-skill.sh"
 FIXTURES="$SCRIPT_DIR/fixtures"
-CONSTITUTION="$REPO_ROOT/.specify/memory/constitution.md"
+CONSTITUTION="$HIGHWAY_ROOT/governance/constitution.md"
 fail=0
 
 output="$("$VALIDATE" "$FIXTURES/valid-skill" 2>/dev/null)"

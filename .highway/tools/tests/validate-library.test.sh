@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Tests .highway/tools/validate-library.sh against the fixtures in
 # tools/tests/fixtures/library/. See
-# specs/005-rename-content-to-library/contracts/library-validation-output.md.
+# feature 005 (rename content to library).
 set -u
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

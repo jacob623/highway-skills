@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Validates one shared library file (template, knowledge, or governance) against the
-# constitution at .specify/memory/constitution.md, the same way validate-skill.sh validates a
-# skill. See specs/005-rename-content-to-library/contracts/library-validation-output.md.
+# constitution at .highway/governance/constitution.md, the same way validate-skill.sh validates a
+# skill. Output format is a contract: per feature 005 (rename content to library).
 #
 # Usage: .highway/tools/validate-library.sh <library-file>
 # Exit 0: no check failed. Exit 1: at least one check failed.
@@ -9,7 +9,6 @@ set -u
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-REPO_ROOT="$(cd "$HIGHWAY_ROOT/.." && pwd)"
 # shellcheck source=tools/lib/frontmatter.sh
 source "$SCRIPT_DIR/lib/frontmatter.sh"
 # shellcheck source=tools/lib/library-schema.sh
@@ -27,7 +26,7 @@ if [[ $# -ne 1 ]]; then
 fi
 
 library_file="$1"
-constitution="$(con_file "$REPO_ROOT")"
+constitution="$(con_file "$HIGHWAY_ROOT")"
 
 if [[ ! -f "$library_file" ]]; then
 	echo "ERROR: [SCHEMA] no library file found at '$library_file'" >&2
@@ -75,6 +74,8 @@ template_exempt=""
 if [[ "$library_type" == "template" ]]; then
 	template_exempt="$(rc_template_exempt_ids)"
 fi
+# Applies to every library type, unlike template_exempt above.
+library_exempt="$(rc_library_exempt_ids)"
 
 checked=""
 na=""
@@ -92,6 +93,11 @@ while IFS= read -r rule_line; do
 	fi
 
 	if [[ -n "$template_exempt" ]] && printf '%s\n' "$template_exempt" | grep -qx "$rule_id"; then
+		na="$na ${rule_id}=N2"
+		continue
+	fi
+
+	if printf '%s\n' "$library_exempt" | grep -qx "$rule_id"; then
 		na="$na ${rule_id}=N2"
 		continue
 	fi

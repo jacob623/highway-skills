@@ -18,12 +18,14 @@ rc_registry() {
 		P4.2	rc_check_P4_2	N2
 		P5.2	rc_check_P5_2	N2
 		P5.3	rc_check_P5_3	N2
+		P6.4	rc_check_P6_4	-
 		P7.1	rc_check_P7_1	-
 		P7.2	rc_check_P7_2	-
 		P7.4	rc_check_P7_4	-
 		P7.5	rc_check_P7_5	N2
 		P8.1	rc_check_P8_1	N2
 		P8.3	rc_check_P8_3	-
+		P8.7	rc_check_P8_7	-
 	EOF
 }
 
@@ -48,6 +50,16 @@ rc_registered_ids() {
 # Usage: rc_template_exempt_ids
 rc_template_exempt_ids() {
 	printf '%s\n' P1.1 P1.3 P7.4 P7.5
+}
+
+# Prints the rule ids every library file is exempt from, regardless of library type. P8.7's
+# subject is a skill, which is copied into each agent adapter tree; a library file is never
+# copied, so a relative link in one resolves. Reported N/A with a condition by the caller, not
+# skipped silently.
+# Usage: rc_library_exempt_ids
+rc_library_exempt_ids() {
+	printf '%s
+' P8.7 P6.4
 }
 
 # --- P1.1: each normative line carries exactly one keyword -------------------------------
@@ -255,4 +267,77 @@ rc_check_P8_3() {
 	body="$(bs_section "$file" "Verification" | awk -F'\t' '$7 != "" { print $7 }')"
 	[[ -z "$body" ]] && return 0
 	return 0
+}
+
+# --- P8.7: no Markdown link target is a relative filesystem path ---------------------------
+# A SKILL.md is copied byte-for-byte into every agent adapter tree, and no sibling file travels
+# with it, so a relative target resolves in the source tree and nowhere else. Only link targets
+# are examined: a path inside a fenced block or inline code is a command example, correct as
+# written. An absolute URL and a same-document anchor both resolve everywhere and are permitted.
+
+rc_check_P8_7() {
+	local file="$1" out found=0
+	out="$(bs_scan "$file" | awk -F'\t' '
+		$3 == 0 && $7 ~ /\]\(/ {
+			t = $7
+			while (match(t, /\]\([^)]*\)/)) {
+				tok = substr(t, RSTART + 2, RLENGTH - 3)
+				t = substr(t, RSTART + RLENGTH)
+				if (tok == "") continue
+				if (tok ~ /^#/) continue
+				if (tok ~ /^[a-zA-Z][a-zA-Z0-9+.-]*:/) continue
+				printf("line %d: link target %s is a relative path and resolves only in the source tree\n", $1, tok)
+			}
+		}
+	')"
+	[[ -n "$out" ]] && { printf '%s\n' "$out"; found=1; }
+	return $found
+}
+
+# Resolves the constitution the way validate-skill.sh does, so a token list is read from the same
+# document the rules came from and CONSTITUTION_FILE overrides behave identically. Needed because
+# a check receives only the file under test.
+rc_constitution_file() {
+	if [[ -n "${CONSTITUTION_FILE:-}" ]]; then
+		printf '%s' "$CONSTITUTION_FILE"
+		return 0
+	fi
+	local lib_dir
+	lib_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+	printf '%s' "$lib_dir/../../governance/constitution.md"
+}
+
+# The sections that state when a skill does and does not apply. A decision criterion lives in one
+# of these, so scoping structurally avoids having to recognise a criterion by meaning.
+RC_P6_4_SECTIONS="When to use|When not to use"
+
+rc_check_P6_4() {
+	local file="$1" found=0 out tokens
+	tokens="$(con_token_list "$(rc_constitution_file)" "Prohibited Nondeterministic Criterion Tokens")"
+	# No list means nothing to enforce; a missing list is the inventory test's concern, not this.
+	[[ -n "$tokens" ]] || return 0
+	# Flattened to one line: awk -v rejects an embedded newline, and does so by failing the whole
+	# program rather than the assignment, which reads as every artifact passing.
+	tokens="$(printf '%s' "$tokens" | tr '\n' '|')"
+
+	out="$(bs_scan "$file" | awk -F'\t' -v toks="$tokens" -v secs="$RC_P6_4_SECTIONS" '
+		BEGIN { n = split(toks, T, "|") }
+		$3 == 1 { next }
+		$2 !~ "^(" secs ")$" { next }
+		$7 ~ /^##[[:space:]]/ { next }
+		{
+			line = tolower($7)
+			for (i = 1; i <= n; i++) {
+				tok = tolower(T[i])
+				if (tok == "") continue
+				# Whole-word match, so "prefer" does not also fire on "preferred".
+				if (line ~ ("(^|[^a-z])" tok "([^a-z]|$)")) {
+					printf("line %d: decision criterion references \047%s\047, which makes the decision depend on when it is read, on chance, or on taste\n", $1, T[i])
+					next
+				}
+			}
+		}
+	')"
+	[[ -n "$out" ]] && { printf '%s\n' "$out"; found=1; }
+	return $found
 }

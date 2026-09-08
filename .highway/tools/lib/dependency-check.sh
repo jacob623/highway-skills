@@ -5,7 +5,7 @@
 # Two failure outcomes, both printed with no rule-id prefix (validate-skill.sh tags them
 # [DEPENDENCY]): a path that does not exist, or a pinned version that no longer matches the
 # target's current metadata.version. See
-# specs/004-shared-content-library/contracts/dependency-validation-output.md.
+# feature 004 (shared content library).
 
 # Usage: dc_validate_dependencies <skill_file> <highway_root>
 # Prints zero or more finding messages (one per line). Returns 1 if any were printed, else 0.

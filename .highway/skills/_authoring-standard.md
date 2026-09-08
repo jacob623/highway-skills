@@ -3,7 +3,7 @@
 Practical guide for writing a skill at `.highway/skills/<id>/SKILL.md`.
 
 This document does not restate the rules. The constitution at
-[.specify/memory/constitution.md](../../.specify/memory/constitution.md) is the only place rule
+[.highway/governance/constitution.md](../governance/constitution.md) is the only place rule
 text lives; everything below cites rule ids so the two cannot drift apart (P7.3). Run
 `.highway/tools/validate-skill.sh <skill-dir>` to see which rules are checked automatically and
 which are left to you.
@@ -63,6 +63,36 @@ Eight sections, each non-empty:
 | `## Verification` | P8.3, P8.4, P4.2 | At least one command, file state, or output string to check. |
 | `## Error Handling` | P5.1, P5.2, P5.3 | One list item per failure condition, each naming one next action. |
 | `## Example` | — | Exactly one copy-able example: the literal invocation MUST be an inline code span (backtick-wrapped, not solely a fenced block), so it can be selected and copied on its own; a fenced block MAY still show accompanying sample output below it. |
+
+## Linking out of a skill
+
+Governed by P8.7. Your `SKILL.md` is copied verbatim into every agent's own directory, and nothing
+else travels with it, so a Markdown link to a relative path resolves only where you wrote it and
+is dead everywhere the skill is actually read.
+
+Name a path in prose or in a command example as much as you like — those are instructions, not
+links, and the check ignores them. An absolute URL is fine too. What P8.7 rejects is a Markdown
+link target that is a relative path. To point at another document in this framework, name it
+instead of linking it.
+
+`.highway/tools/validate-skill.sh` decides this for you and reports it under P8.7.
+
+## Stating when your skill applies
+
+Governed by P6.4. Your `When to use` and `When not to use` sections are where an agent decides
+whether to run your skill at all, so a criterion there that depends on when it is read, on chance,
+or on taste makes the same input produce different decisions on different days.
+
+The vocabulary this rejects is not left to interpretation. It is declared in the constitution as
+the Prohibited Nondeterministic Criterion Tokens list, in three groups — time, randomness, and
+agent preference — and the check reads that list rather than carrying its own copy. If you think a
+term belongs there, or does not, amend the list; that is a governance change, not a code change.
+
+The rule is scoped to those two sections. Describing your skill's output as reporting the latest
+entry is prose, not a decision criterion, and is not flagged. Saying to use your skill when
+something is *currently* stale is a criterion, and is.
+
+`.highway/tools/validate-skill.sh` decides this for you and reports it under P6.4.
 
 ## Writing the rules inside a skill
 

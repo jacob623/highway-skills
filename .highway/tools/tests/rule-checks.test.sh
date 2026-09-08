@@ -173,6 +173,35 @@ d="$tmp_root/p75"; write_base_skill "$d"
 } >>"$d/SKILL.md"
 assert_reports "P7.5 oversized section" "P7.5" "$d"
 
+# --- P8.7: a Markdown link target that is a relative path ------------------------------------
+
+d="$tmp_root/p87"; write_base_skill "$d"
+printf '\nSee [the standard](../governance/constitution.md) for detail.\n' >>"$d/SKILL.md"
+assert_reports "P8.7 relative link target" "P8.7" "$d"
+
+# A command example naming a path is not a link and must not be flagged.
+d="$tmp_root/p87-ok"; write_base_skill "$d"
+printf '\nRun `.highway/tools/validate-skill.sh <dir>` and read [the site](https://example.org).\n' >>"$d/SKILL.md"
+if ! "$VALIDATE" "$d" >/dev/null 2>&1; then
+	echo "FAIL[P8.7 false positive]: a command example or absolute URL was reported as a relative link"
+	fail=1
+fi
+
+# --- P6.4: a decision criterion that depends on when it is read, on chance, or on taste ---------
+
+d="$tmp_root/p64"; write_base_skill "$d"
+sed -i.bak 's|^- Use when seeding a violation of one rule\.$|- Use when the catalog is currently stale.|' "$d/SKILL.md" && rm -f "$d/SKILL.md.bak"
+assert_reports "P6.4 nondeterministic decision criterion" "P6.4" "$d"
+
+# The rule governs decision criteria, not prose. The same token outside the sections that state
+# when a skill applies must not be flagged, or every skill describing its own output fails.
+d="$tmp_root/p64-ok"; write_base_skill "$d"
+sed -i.bak 's|^Provide a conforming baseline that each test case mutates\.$|Provide a baseline that reports the latest catalog entry and prefers compact output.|' "$d/SKILL.md" && rm -f "$d/SKILL.md.bak"
+if ! "$VALIDATE" "$d" >/dev/null 2>&1; then
+	echo "FAIL[P6.4 false positive]: a prohibited token outside a decision-criteria section was reported"
+	fail=1
+fi
+
 # --- Finding line format matches the contract -----------------------------------------------------------------------------
 
 d="$tmp_root/format"; write_base_skill "$d"

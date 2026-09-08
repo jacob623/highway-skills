@@ -1,429 +1,231 @@
 <!--
 Sync Impact Report
-Version change: 2.0.0 → 2.0.1 (PATCH)
-Bump rationale: no principle is added, removed, or redefined. Three rules that could not be
-  decided as written are made decidable. No rule text changes; three Observables are made
-  specific and two Tier tags are corrected downward.
-Modified principles: none renamed, none restructured. The eight principles and all 48 rule
-  IDs are unchanged.
-Modified rules:
-  - P7.1 Observable: "contains one Purpose statement" (location unspecified, so no check could
-    be written) → names a body section titled "## Purpose" holding exactly one sentence.
-  - P2.1 Observable: now references the "## Purpose" section, since P2.1 depends on P7.1.
-  - P1.4 Tier: [auto] → [agent-checkable]. Deciding whether a parenthetical states a countable
-    condition requires judgment, so the [auto] tag promised enforcement that cannot be built.
-  - P4.4 Tier: [auto] → [agent-checkable], for the same reason applied to units.
-  - P3.2 and P3.5 Observables: now reference the citation format defined below.
-Added content:
-  - Citation Format subsection under Approved Authority Sources, defining the bracketed
-    [AS-N: identifier] token. This is what keeps P3.5 honestly [auto].
-Added sections: none. Removed sections: none.
-Tier counts: [auto] 16 → 14; [agent-checkable] 32 → 34; [human-review] 0, unchanged.
-  The amendment request stated 15; the arithmetic is 16 minus P1.4 minus P4.4, and P3.5
-  retains its [auto] tag because the citation format is now defined. The verified count is
-  recorded here.
-Conformance impact: no obligation is weakened. Pinning Purpose to a named section is a
-  strengthening in principle, because a skill that declared its Purpose only in frontmatter
-  would have satisfied the 2.0.0 wording and fails the 2.0.1 wording. PATCH is recorded
-  because the set of affected artifacts is empty: no skill exists, and P7.1 was undecidable
-  under 2.0.0, so no artifact was ever shown to conform to it. See Follow-up TODOs.
+Version change: none → 1.0.0 (initial ratification)
+Bump rationale: this is the first version of a new document. It is not an amendment to any
+  existing constitution. The `D` namespace is introduced here and has no prior version.
+
+Relationship to the file previously at this path: the Highway Skills Constitution occupied
+  `.specify/memory/constitution.md` until feature 010 (constitution relocation) moved it to
+  `.highway/governance/constitution.md`, because the validators that read it are distributed to
+  users while this directory is not. A placeholder held this path in the interval; this document
+  replaces that placeholder. No rule, Observable, or tier from the Highway Skills Constitution is
+  carried over, restated, or superseded here. The two documents govern different artifacts.
+
+Added principles (6, all new):
+  - I. Layer Separation and Shippability (D1.1-D1.6)
+  - II. Environment and Dependency Discipline (D2.1-D2.4)
+  - III. Verification Before and After (D3.1-D3.5)
+  - IV. Generated Artifact Integrity (D4.1-D4.4)
+  - V. Specification Record Integrity (D5.1-D5.4)
+  - VI. Documentation Currency (D6.1-D6.2)
+Rule count: 25. Tier counts: [auto] 10, [agent-checkable] 14, [human-review] 1.
+
+Added sections: Definitions, Core Principles, Declared Toolchain, Principle Precedence,
+  Quality Gates and Binary Trigger Tests, Constitution Check Output Shape, Governance,
+  Versioning Policy, Self-Application.
+Removed sections: none.
+Modified principles: none renamed or restructured; no prior version exists.
+
+Verification performed before ratification (2026-09-08). Every rule was checked against the
+  repository so that no rule fails on the day it is adopted:
+  - D1.1: 0 occurrences of a prohibited token across the distributed path set.
+  - D1.2: validate-skill.sh exits 0 against a tree containing only .highway/.
+  - D2.1: no associative array, mapfile, readarray, ${var^^}, or &>> found.
+  - D2.2: the Declared Toolchain list was derived by scanning every script under .highway/tools/
+    rather than estimated. Version control is deliberately absent; zero invocations were found,
+    and the packaged tree is not a repository.
+  - D2.3: `sort -V` is the only non-POSIX flag in use. It is accepted by both GNU coreutils and
+    Apple's sort (verified on macOS 26.5.2, sort 2.3-Apple (199)), so it satisfies the rule as
+    worded. An earlier draft phrased this rule as "no GNU-only flag", which would have failed on
+    a usage that is in fact portable; the Observable now tests both target platforms instead.
+  - D3.1 / D3.2: .highway/tools/tests/run-all.sh reports 14 passed, 0 failed.
+  - D4.2: generate-catalog.sh writes a generation timestamp, so consecutive runs differ in that
+    field alone; catalog content is stable and all three agent adapters are byte-identical across
+    runs. The Observable excludes a recorded generation timestamp for this reason, rather than
+    deferring the conflict to a TODO.
+  - D5.4: feature directories 001-010 are contiguous.
+
+Self-application review (required by the Self-Application section):
+  - D1.3: PASS. No rule sentence from the Highway Skills Constitution appears here.
+  - D1.4: PASS. Where the same discipline is wanted, the other document is cited by name and its
+    rules by ID.
+  - D5.3: N/A. This document supersedes no document; it is an initial ratification.
+
 Templates and dependent artifacts:
-  - .specify/templates/ scaffolds reference no rule IDs; no update required.
-  - specs/001-multi-agent-skill-suite and specs/002-highway-folder-consolidation are completed
-    feature records, retained unchanged as historical artifacts.
-  - .highway/tools/lib/schema-validate.sh lists six required body sections; P7.1 now requires a
-    seventh. Listed under Follow-up TODOs; not modified by this amendment.
+  - The plan template's Constitution Check section is satisfied by the Constitution Check Output
+    Shape defined below; no template edit is required.
+  - The Highway Skills Constitution is unaffected. It keeps its own version, its own namespace,
+    and its own amendment history.
+
 Follow-up TODOs:
-  - TODO(PURPOSE_SECTION_ENFORCEMENT): add "Purpose" to the required body sections in
-    .highway/tools/lib/schema-validate.sh, and add a "## Purpose" section to every test fixture
-    and worked example, which currently have none.
-  - TODO(AUTHORING_STANDARD_REALIGNMENT): rewrite the Constitution Compliance Checklist in
-    .highway/skills/_authoring-standard.md to cite rule IDs P1.1-P8.6 instead of restating
-    principle text, per P7.3.
-  - TODO(AUTO_TIER_ENFORCEMENT): extend .highway/tools/validate-skill.sh to enforce the 14
-    rules tagged [auto] in this document.
-  - TODO(BUMP_TYPE_REVIEW): if a skill is authored before this is revisited and it declares
-    Purpose outside a "## Purpose" section, reclassify this amendment as MAJOR per the
-    Constitution Versioning Policy.
+  - TODO(D_AUTO_TIER_ENFORCEMENT): ten of the twenty-five rules are tagged [auto] but no script
+    enforces them yet. Until one exists, an [auto] tag records that a rule is mechanically
+    decidable, not that it is mechanically decided. This mirrors the precedent already set by the
+    Highway Skills Constitution, which carries the same class of follow-up.
 -->
 
-# Highway Skills Constitution
+# Highway Development Constitution (Layer 0)
+
+**Scope**: This document governs how the Highway project is *built*. It states no obligation about
+the content of any shipped artifact.
+
+Rule IDs use the `D` (Development) namespace and never collide with the `P` namespace of the
+Highway Skills Constitution.
 
 ## Definitions
 
-These definitions are normative. A term defined here carries this meaning everywhere in this
-document and in every skill governed by it.
-
 | Term | Definition |
 |---|---|
-| **MUST**, **MUST NOT** | An absolute obligation. A conforming artifact satisfies it in every case. Non-satisfaction is a FAIL. |
-| **SHOULD** | An obligation that applies unless the artifact contains a written exception naming the condition that displaces it. Absent that written exception, SHOULD is evaluated as MUST. |
-| **Skill** | A single file, `SKILL.md`, plus its directory, that instructs an agent how to perform one category of task. |
-| **Agent** | Any automated system that reads a skill and acts on it, or that evaluates an artifact against this constitution. |
-| **Normative rule** | A line containing MUST, MUST NOT, or SHOULD that states an obligation. |
-| **MUST-level rule** | A normative rule whose keyword is MUST or MUST NOT. The hyphenated token `MUST-level` names this category and is not itself a keyword occurrence. |
-| **Normative section** | A body section of a skill that contains at least one normative rule. |
-| **Skill contract** | A skill's declared Inputs, declared Outputs, and Verification criteria, taken together. |
-| **Behavioral guarantee** | A statement in a skill asserting what will be true after the skill is followed. |
-| **Breaking change** | A change that removes, narrows, or redefines any element of a skill contract or behavioral guarantee. |
-| **Observable** | The specific condition, countable property, or command result that decides PASS or FAIL for one rule. |
-| **Tier** | How a rule is decided: `[auto]`, `[agent-checkable]`, or `[human-review]`, defined in the Compliance Review Protocol. |
-| **Security-affecting** | Guidance that touches any item in the Security Gate trigger list. |
-| **Declared input** | A value, file, or precondition named in a skill's Inputs section. |
-| **Verdict** | One of exactly three tokens: PASS, FAIL, N/A. No other token is a verdict. |
-
-### Prohibited Vagueness List
-
-The following terms carry no decidable meaning on their own. Two locations are excluded from
-every check that references this list: occurrences inside this list itself, and occurrences
-inside the section titled "Illustrative Examples (Non-Normative)".
-
-> appropriate, reasonable, reasonably, competent, clean, best, proper, adequate, sufficient,
-> proportional, material, materially, significant, genuine, genuinely, broadly recognized,
-> well-known, obvious, non-obvious, class of, sensitive, robust, effective, as needed,
-> where relevant, if necessary
-
-### Approved Authority Sources
-
-This list is closed. A citation that names no item on this list does not satisfy P3.1.
-
-| ID | Source |
-|---|---|
-| **AS-1** | A published standard from ISO, IETF (RFC), W3C, or ECMA |
-| **AS-2** | OWASP Top 10, OWASP ASVS, or a CWE entry |
-| **AS-3** | A NIST publication, including the SP 800 series |
-| **AS-4** | The official documentation of a language, runtime, or tool named in the skill's Purpose |
-| **AS-5** | A peer-reviewed publication, cited by title and year |
-| **AS-6** | A written policy file stored in this repository, cited by path |
-
-#### Citation Format
-
-A citation is the token `AS-N` followed by a colon and the section, control, or heading
-identifier, enclosed in square brackets:
-
-    [AS-2: A03:2021 Injection]
-    [AS-6: .highway/skills/_authoring-standard.md]
-
-A citation written in any other form does not satisfy P3.2 or P3.5.
+| **Shipped artifact** | Any file included in the packaged distribution: `.highway/skills/`, `.highway/library/`, `.highway/catalog/`, `.highway/governance/`, and the generated agent adapter trees. |
+| **Development artifact** | Any file excluded from the packaged distribution: `.specify/`, `specs/`, and the `speckit-*` agent skills. |
+| **Generated artifact** | A file produced by a script under `.highway/tools/` and recorded in a manifest. |
+| **Live documentation** | A document that describes current behavior: tool READMEs, the authoring standard, the root README. |
+| **Completed spec** | A spec directory whose feature has been implemented and whose tasks are all marked complete. |
+| **Behavioral change** | A change that alters the output, exit code, or accepted input of any script or skill. |
+| **Verdict** | One of exactly three tokens: PASS, FAIL, N/A. |
 
 ## Core Principles
 
-Every rule below carries four elements, per row: a stable ID, exactly one keyword, an
-Observable, and a Tier tag. A rule that cannot be given an Observable is rewritten or removed,
-never softened. Rule IDs are stable across amendments; a retired ID is never reused.
-
-### I. Unambiguous, Actionable Directives
+### I. Layer Separation and Shippability
 
 | ID | Rule | Observable | Tier |
 |---|---|---|---|
-| P1.1 | A normative rule MUST contain exactly one keyword. | The rule line contains one of MUST, MUST NOT, SHOULD, and no second keyword. Occurrences of the token `MUST-level` are not counted. | [auto] |
-| P1.2 | A normative rule MUST state exactly one obligation. | The rule states one required action; it joins no second obligation with "and" or "or". | [agent-checkable] |
-| P1.3 | A normative rule MUST NOT exceed 25 words. | Word count of the rule text is 25 or fewer. | [auto] |
-| P1.4 | A skill MUST NOT use a Prohibited Vagueness List term in a normative rule without an inline parenthetical defining a countable condition. | Each occurrence of a listed term is followed by a parenthetical stating a number, unit, or enumerated set. | [agent-checkable] |
-| P1.5 | A skill MUST name every tool, file, and prior step it depends on. | Each dependency appears by name in the Inputs section. | [agent-checkable] |
-| P1.6 | A skill MUST NOT instruct an agent to request clarification about the meaning of the skill's own steps. | No step directs the agent to ask what a step means. | [agent-checkable] |
-| P1.7 | A skill MUST require clarification when a declared input is absent or self-contradictory. | The Error Handling section names this condition and directs escalation. | [agent-checkable] |
+| D1.1 | A shipped artifact MUST NOT reference a development artifact. | No file in the declared distributed path set contains the string `.specify/` or `specs/`. | [auto] |
+| D1.2 | The packaged tree MUST validate with development artifacts absent. | `validate-skill.sh` exits 0 against a copy of the tree from which `.specify/` and `specs/` have been removed. | [auto] |
+| D1.3 | This document MUST NOT restate rule text defined in the Highway Skills Constitution. | Rules are cited by ID; no rule sentence is duplicated. | [agent-checkable] |
+| D1.4 | A document in this repository MUST NOT restate rule text defined in a constitution. | The document cites rule IDs in place of rule text. | [agent-checkable] |
+| D1.5 | A plan that creates or modifies a skill or library file MUST record a Constitution Check against the Highway Skills Constitution. | The plan names rule IDs drawn from that document. | [agent-checkable] |
+| D1.6 | The distributed path set MUST be declared in exactly one place. | Each check that needs the set reads that one declaration. | [agent-checkable] |
 
-Rationale: One obligation per addressable line is what allows a rule to be cited, checked, and
-failed on its own.
+Rationale: A defect that crosses this boundary is invisible in the development tree and visible
+only to users.
 
-### II. Technology-Agnostic Portability
-
-| ID | Rule | Observable | Tier |
-|---|---|---|---|
-| P2.1 | A skill MUST NOT name a model, vendor, or tool in a normative rule unless its stated Purpose names that technology. | Every technology named in a rule also appears in the `## Purpose` section. | [agent-checkable] |
-| P2.2 | A skill that depends on a named technology MUST declare that dependency. | The technology appears by name in the Inputs section. | [agent-checkable] |
-| P2.3 | A technology-specific example MUST be labeled "Illustrative". | The example carries the literal word "Illustrative". | [auto] |
-| P2.4 | An illustrative example MUST sit outside every numbered rule list. | No example text appears inside a rule table or numbered rule list. | [agent-checkable] |
-| P2.5 | A skill MUST state outcomes as verifiable properties rather than as named implementations. | Each stated outcome names a checkable property, not a specific product. | [agent-checkable] |
-
-Rationale: A skill that hard-codes an incidental technology stops working when that technology
-is replaced.
-
-### III. Grounding in Approved Authority Sources
+### II. Environment and Dependency Discipline
 
 | ID | Rule | Observable | Tier |
 |---|---|---|---|
-| P3.1 | Every MUST-level rule in a skill MUST cite one Approved Authority Source. | The rule names an AS-1 through AS-6 source. | [agent-checkable] |
-| P3.2 | A citation MUST name the source and its specific section, control, or identifier. | The citation matches the Citation Format and its identifier field is non-empty. | [agent-checkable] |
-| P3.3 | A skill MUST NOT encode a naming, formatting, or architectural preference as a MUST-level rule without a citation. | Every such rule carries an AS-1 through AS-6 citation. | [agent-checkable] |
-| P3.4 | A rule that applies only under a condition MUST state that condition. | The rule text contains an explicit "when", "if", or "unless" clause. | [agent-checkable] |
-| P3.5 | A skill MUST NOT cite a source outside the Approved Authority Sources list. | Every citation matches the Citation Format and its `AS-N` token resolves to AS-1 through AS-6. | [auto] |
+| D2.1 | A script MUST run under Bash 3.2.57. | The script uses no associative array, `mapfile`, `readarray`, `${var^^}`, or `&>>`. | [agent-checkable] |
+| D2.2 | A script MUST NOT invoke a utility outside the declared toolchain. | Each external command invoked appears in the Declared Toolchain list below. | [agent-checkable] |
+| D2.3 | A utility flag MUST work on both target platforms. | The flag is accepted by both GNU coreutils and the Apple/BSD variant of that utility. | [agent-checkable] |
+| D2.4 | A change MUST NOT add a runtime dependency. | The change introduces no package manager, interpreter, or binary absent from the declared toolchain. | [agent-checkable] |
 
-Rationale: A closed source list makes grounding decidable instead of leaving it to the
-evaluator's knowledge.
+**Declared Toolchain** (referenced by D2.2 and D2.4). External utilities only; shell builtins are
+excluded:
 
-### IV. Measurable Quality Gates
+> `awk`, `basename`, `cat`, `comm`, `cp`, `cut`, `date`, `diff`, `dirname`, `find`, `grep`,
+> `head`, `mkdir`, `mktemp`, `mv`, `rm`, `sed`, `sha256sum`, `shasum`, `sort`, `tail`, `tr`,
+> `uniq`, `wc`, `xargs`
 
-| ID | Rule | Observable | Tier |
-|---|---|---|---|
-| P4.1 | Every quality claim MUST be paired with one check that returns pass or fail. | The claim is followed by a named command, threshold, or file-state check. | [agent-checkable] |
-| P4.2 | A skill MUST NOT use "secure", "performant", or "maintainable" as an acceptance criterion. | None of the three words appears in an acceptance criterion. | [auto] |
-| P4.3 | Each applicable gate MUST name its verification command or check in the skill. | For each gate whose trigger is true, a named check appears. | [agent-checkable] |
-| P4.4 | A numeric threshold MUST state a number and a unit. | The threshold contains a numeral and a unit token. | [agent-checkable] |
-| P4.5 | A skill MUST NOT instruct disabling verification, hardcoding credentials, or bypassing input validation. | No step directs any of these three actions. | [agent-checkable] |
-| P4.6 | A skill MUST require the agent to report a suspected vulnerability rather than altering it silently. | The Error Handling section directs reporting on this condition. | [agent-checkable] |
+Version control is not on this list. The toolchain must run in a distributed tree, which is not a
+repository.
 
-Rationale: A quality goal with no check attached cannot be satisfied on purpose, only by
-accident.
+Rationale: The toolchain must run unmodified on the default shell and utilities of the target
+platform. D2.3 tests portability across the two platforms actually targeted rather than
+conformance to POSIX, because a flag can be non-POSIX and still universally available — `sort -V`
+is the worked example.
 
-### V. Reusable Patterns and Defined Error Handling
+### III. Verification Before and After
 
 | ID | Rule | Observable | Tier |
 |---|---|---|---|
-| P5.1 | Every workflow step MUST define its failure detection condition. | Each step has a stated exit code, output string, or file state that signals failure. | [agent-checkable] |
-| P5.2 | Every failure condition MUST name exactly one next action from: retry, abort, escalate, fall back. | The condition names one of the four tokens. | [auto] |
-| P5.3 | A retry action MUST state a maximum attempt count. | A numeral follows the retry instruction. | [auto] |
-| P5.4 | A fall back action MUST name its alternative by identifier. | The alternative is named by step number, command, or skill id. | [agent-checkable] |
-| P5.5 | A skill MUST NOT leave a step without an error path. | Every numbered step maps to an Error Handling entry. | [agent-checkable] |
-| P5.6 | A skill MUST apply to two or more triggering scenarios. | The "When to use" section lists at least two scenarios. | [agent-checkable] |
+| D3.1 | A change MUST begin from a passing test suite. | `.highway/tools/tests/run-all.sh` exits 0 before the first edit. | [auto] |
+| D3.2 | A change MUST end with a passing test suite. | `.highway/tools/tests/run-all.sh` exits 0 after the final edit. | [auto] |
+| D3.3 | A behavioral change MUST add or amend at least one test. | The change includes an edit to a file under `.highway/tools/tests/`. | [agent-checkable] |
+| D3.4 | A new validation check MUST be evaluated against every existing fixture before it is enabled. | Each fixture's expected verdict under the new check is recorded before the check is wired in. | [agent-checkable] |
+| D3.5 | A test MUST NOT be weakened to accommodate a change. | No assertion is removed or loosened without a recorded reason naming the superseded behavior. | [human-review] |
 
-Rationale: Undefined error paths are where agent behavior stops being predictable.
+Rationale: D3.4 exists because an unconditional new check silently changes the verdict of every
+artifact already in the repository.
 
-### VI. Deterministic, Explicit Decision Criteria
-
-| ID | Rule | Observable | Tier |
-|---|---|---|---|
-| P6.1 | Every choice between two or more actions MUST be governed by an ordered list, a decision table, or a numeric threshold. | The choice point is followed by one of those three structures. | [agent-checkable] |
-| P6.2 | Decision criteria MUST cover every input they can receive. | The structure ends with an explicit default or "otherwise" branch. | [agent-checkable] |
-| P6.3 | A skill MUST NOT leave a choice to agent discretion without naming its bounding constraints. | Each discretionary point lists the constraints that bound it. | [agent-checkable] |
-| P6.4 | A decision criterion MUST NOT reference time, randomness, or agent preference. | No criterion names a clock, a random value, or a preference. | [auto] |
-| P6.5 | Ordered criteria MUST be evaluated in their stated order. | The structure states its evaluation order explicitly. | [agent-checkable] |
-| P6.6 | Applying the criteria to identical inputs MUST select the same action every run. | No branch condition depends on a value outside the declared inputs. | [agent-checkable] |
-
-Rationale: Verdict invariance across evaluators is possible only when the decision path is
-fully written down.
-
-### VII. Long-Term Maintainability
+### IV. Generated Artifact Integrity
 
 | ID | Rule | Observable | Tier |
 |---|---|---|---|
-| P7.1 | A skill MUST declare exactly one Purpose. | A section titled `## Purpose` is present and contains exactly one sentence. | [auto] |
-| P7.2 | A skill MUST carry a semantic version. | `metadata.version` matches MAJOR.MINOR.PATCH. | [auto] |
-| P7.3 | A skill MUST NOT restate a normative rule defined in another skill. | Duplicated rules are replaced by a cross-reference naming the other skill id. | [agent-checkable] |
-| P7.4 | A skill MUST NOT contain more than 12 MUST-level rules. | Count of MUST and MUST NOT rules is 12 or fewer. | [auto] |
-| P7.5 | A normative section MUST NOT exceed 400 words. | Word count per normative section is 400 or fewer. | [auto] |
-| P7.6 | A skill exceeding P7.4 or P7.5 MUST be split into two or more skills. | Each resulting skill satisfies P7.4 and P7.5. | [agent-checkable] |
-| P7.7 | A breaking change to a skill contract MUST increment MAJOR per the Skill Versioning Policy. | The version increment matches the change classification. | [agent-checkable] |
+| D4.1 | A generated artifact MUST NOT be hand-edited. | Re-running its generator produces no diff. | [auto] |
+| D4.2 | A generator MUST produce identical output from unchanged inputs. | Two consecutive runs differ in no byte other than a recorded generation timestamp. | [auto] |
+| D4.3 | A generator MUST refuse to overwrite a target it did not produce. | The run exits non-zero and names the file. | [auto] |
+| D4.4 | A change to a generator MUST be followed by regeneration of every artifact it produces. | No diff remains after running the generator. | [auto] |
 
-Rationale: A skill is a long-lived artifact and is held to the maintainability standard it
-imposes on code.
+Rationale: Generated artifacts are the product surface; drift between source and output ships
+directly to users.
 
-### VIII. Reliability and Repeatability
+### V. Specification Record Integrity
 
 | ID | Rule | Observable | Tier |
 |---|---|---|---|
-| P8.1 | Workflow steps MUST be numbered. | Each step carries a sequential numeral. | [auto] |
-| P8.2 | A skill MUST state every ordering dependency between its steps. | Each dependent step names the step it follows. | [agent-checkable] |
-| P8.3 | A skill MUST contain a Verification section. | A section titled Verification is present and non-empty. | [auto] |
-| P8.4 | The Verification section MUST name at least one command, file state, or output string to check. | One checkable item is named. | [agent-checkable] |
-| P8.5 | A skill MUST require the agent to read and state project configuration that changes its output. | Each configuration-dependent step directs the agent to read and report that value. | [agent-checkable] |
-| P8.6 | A skill MUST NOT rely on an environment default it has not stated. | Every default value the skill assumes appears in its text. | [agent-checkable] |
+| D5.1 | A completed spec directory MUST NOT be edited. | No diff appears under a completed spec directory. | [agent-checkable] |
+| D5.2 | A correction to a completed spec MUST ship as a new spec. | The new spec exists under its own numbered directory. | [agent-checkable] |
+| D5.3 | A superseding document MUST name every element it changes. | Each changed field is listed; unlisted elements carry forward unchanged. | [agent-checkable] |
+| D5.4 | A feature directory number MUST be sequential. | The number is one greater than the highest existing directory number. | [auto] |
 
-Rationale: Repeatability is what allows a skill to be reused without re-verifying it every
-time.
+Rationale: The spec record is an append-only history; editing it destroys the ability to
+reconstruct why a decision was made.
+
+### VI. Documentation Currency
+
+| ID | Rule | Observable | Tier |
+|---|---|---|---|
+| D6.1 | Live documentation MUST be updated in the change that invalidates it. | Each document naming the changed behavior is edited in the same change. | [agent-checkable] |
+| D6.2 | A documentation cross-reference MUST resolve. | Each referenced path exists in the tree that contains the document. | [auto] |
+
+Rationale: D6.2 is scoped to the containing tree so that a reference valid in development but
+dangling in the package is a FAIL.
 
 ## Principle Precedence
 
-When two rules conflict, the rule belonging to the higher-ranked principle prevails. This
-ordering is total: every pair of principles has a defined winner.
+When two rules conflict, the higher-ranked principle prevails. The ordering is total.
 
 | Rank | Principle | Reason for rank |
 |---|---|---|
-| 1 | IV. Measurable Quality Gates | Carries the security-affecting rules P4.5 and P4.6. |
-| 2 | I. Unambiguous, Actionable Directives | A rule that cannot be read one way cannot be applied at all. |
-| 3 | VI. Deterministic, Explicit Decision Criteria | Determines which action an agent selects at runtime. |
-| 4 | V. Reusable Patterns and Defined Error Handling | Governs behavior when a step fails. |
-| 5 | VIII. Reliability and Repeatability | Governs whether the outcome can be confirmed. |
-| 6 | VII. Long-Term Maintainability | Governs cost over time rather than correctness now. |
-| 7 | II. Technology-Agnostic Portability | Governs reach across environments. |
-| 8 | III. Grounding in Approved Authority Sources | Governs provenance of a rule already stated. |
+| 1 | I. Layer Separation and Shippability | A violation reaches users and is invisible in development. |
+| 2 | II. Environment and Dependency Discipline | A violation prevents execution on the target platform. |
+| 3 | III. Verification Before and After | Detects violations of every other principle. |
+| 4 | IV. Generated Artifact Integrity | Affects the product surface but is detectable by regeneration. |
+| 5 | V. Specification Record Integrity | Affects history rather than current correctness. |
+| 6 | VI. Documentation Currency | Affects comprehension rather than behavior. |
 
-**Security override**: a rule tagged security-affecting outranks every rule in every principle,
-including rank 1 rules that are not security-affecting.
-
-**Tie-break for rules of equal rank** (two rules within one principle), applied in this order:
-
-1. A MUST NOT rule prevails over a MUST rule, which prevails over a SHOULD rule.
-2. If step 1 does not resolve, the rule with the lower rule number prevails.
-
-These two steps always resolve, because no two rules share a rule number.
+**Tie-break within one principle**: a MUST NOT rule prevails over a MUST rule; if unresolved, the
+lower rule number prevails.
 
 ## Quality Gates and Binary Trigger Tests
 
-Each gate below applies to a skill only when its trigger test evaluates true. A gate whose
-trigger evaluates false is recorded as N/A under condition N1. No gate uses a scope phrase
-broader than its trigger list.
+A gate applies only when its trigger evaluates true. A gate whose trigger is false is recorded N/A.
 
-### Code Generation Gate
-
-**Trigger**: the skill instructs an agent to create or modify a source file.
-
-When triggered, the skill MUST name the command an agent runs to confirm correctness before
-reporting the task complete. The named command MUST be one of: a test command, a build
-command, or a lint command.
-
-### Testing Gate
-
-**Trigger**: the skill instructs an agent to create or modify executable behavior.
-
-When triggered, the skill MUST state the required test action using this table, and MUST state
-what result counts as passing.
-
-| Change type | Required test action |
-|---|---|
-| New behavior added | Add a test asserting the new behavior; the test fails before the change and passes after. |
-| Existing behavior modified | Update the test that asserts the old behavior to assert the new behavior. |
-| Defect repaired | Add a test that reproduces the defect and fails before the repair. |
-| Refactor with no behavior change | Run the existing suite unchanged; every test passes. |
-| Dependency version changed | Run the existing suite unchanged; every test passes. |
-| Comment, documentation, or formatting change only | No test action required. |
-
-### Security Gate
-
-**Trigger**: the skill's guidance touches any of: authentication, authorization, input
-handling, secrets or credentials, network calls, file writes outside the working directory,
-deserialization of external data, cryptography, or dependency selection.
-
-When triggered, the skill MUST cite AS-2 and MUST satisfy P4.5 and P4.6. Rules produced under
-this gate are security-affecting and take the Security override in Principle Precedence.
-
-### Maintainability Gate
-
-**Trigger**: the skill produces or modifies a file that is retained after the task completes.
-
-When triggered, the skill MUST require a comment only where the comment states intent that the
-code does not state, and MUST NOT require a comment that restates the adjacent line.
-
-### Performance Gate
-
-**Trigger**: the skill's guidance names a loop over unbounded input, a network call, a
-database query, or a file-system scan.
-
-When triggered, the skill MUST require the agent to state the cost as either an algorithmic
-complexity expression or a measured number with a unit.
-
-## Compliance Review Protocol
-
-### Tiers
-
-| Tag | Meaning | Who decides |
+| Gate | Trigger | Rules evaluated |
 |---|---|---|
-| `[auto]` | Decidable by a deterministic script with no model involved. | Tooling |
-| `[agent-checkable]` | Decidable by any conforming agent from the artifact text alone, with no judgment and no knowledge beyond this document. | Agent |
-| `[human-review]` | Requires human judgment. | Human |
+| **Packaging Gate** | The change touches a shipped path. | D1.1, D1.2, D6.2 |
+| **Toolchain Gate** | The change touches a file under `.highway/tools/`. | D2.1–D2.4 |
+| **Generator Gate** | The change touches a `generate-*.sh` script. | D4.1–D4.4 |
+| **Validation Gate** | The change adds or modifies a validation check. | D3.4, D3.5 |
+| **Spec Record Gate** | The change touches a directory under `specs/`. | D5.1–D5.4 |
+| **Skill Content Gate** | The change creates or modifies a file under `.highway/skills/` or `.highway/library/`. | Delegated to the Highway Skills Constitution per D1.5 |
 
-A reviewing agent MUST NOT emit a verdict for a rule tagged `[human-review]`. Those rule IDs
-are listed in a separate DEFERRED block for a human. DEFERRED is a block name, not a verdict.
+## Constitution Check Output Shape
 
-### Required output shape
+A plan records two parts:
 
-A review emits exactly one line per rule ID, in ascending rule ID order, in this form:
+1. **Process gates** — a verdict for every gate whose trigger evaluates true, by rule ID.
+2. **Skill content gates** — when the Skill Content Gate triggers, a verdict against the Highway
+   Skills Constitution by rule ID; otherwise `N/A: Skill Content Gate not triggered`.
 
-    <RULE-ID> | <VERDICT> | <EVIDENCE>
-
-- `<VERDICT>` is exactly one of `PASS`, `FAIL`, `N/A`. No other token is permitted.
-- A `PASS` line MUST carry evidence: either quoted text of 25 words or fewer copied from the
-  artifact, or a file path plus a line number.
-- A `FAIL` line MUST carry either the same evidence form pointing at the violation, or the
-  literal token `ABSENT` when the required element does not exist.
-- An `N/A` line MUST name one condition ID from the table below. An `N/A` line that names no
-  condition ID is itself recorded as a `FAIL`.
-
-After the per-rule lines, the review emits a DEFERRED block listing every `[human-review]` rule
-ID, then a single summary line stating the count of each verdict.
-
-### Permitted N/A conditions
-
-This list is closed.
-
-| ID | Condition |
-|---|---|
-| **N1** | The rule belongs to a quality gate whose trigger test evaluates false. |
-| **N2** | The rule governs a skill section that this artifact type is not required to contain. |
-| **N3** | The rule governs amendment of this constitution, and the reviewed artifact is not this constitution. |
-| **N4** | The rule's stated scope names an artifact type that the reviewed artifact is not. |
-
-### Merge decision
-
-One or more `FAIL` verdicts blocks merge. A review containing an unresolved DEFERRED block
-blocks merge until a human records a verdict for each deferred rule ID.
-
-## Skill Authoring Workflow
-
-1. Write the skill with all required sections present: Purpose, When to use, When not to use,
-   Inputs, Outputs, Verification, Error Handling.
-2. Evaluate each of the five quality gate triggers and record which evaluate true.
-3. Run the Compliance Review Protocol against every rule ID in this document.
-4. Resolve every `FAIL` before requesting merge.
-
-### Overlap resolution
-
-Count the MUST-level rules in the new skill that restate a MUST-level rule in an existing
-skill. Divide by the count of MUST-level rules in the new skill.
-
-- If the result exceeds 0.50, consolidate the two skills into one.
-- Otherwise, remove the restated rules and replace them with a cross-reference naming the
-  other skill's id.
-
-Exactly one branch applies to any input, so this rule selects one action every time.
-
-### Breaking changes
-
-A change to a skill contract or a behavioral guarantee MUST be named in the change description
-and classified per the Skill Versioning Policy.
-
-## Illustrative Examples (Non-Normative)
-
-These examples illustrate two principles. They state no obligation and are excluded from every
-compliance review.
-
-**Illustrative, for Principle I:**
-
-| Non-compliant | Compliant |
-|---|---|
-| "Add adequate test coverage for the change." | "Add one test asserting the new behavior. The test fails before the change and passes after." |
-
-**Illustrative, for Principle VI:**
-
-| Non-compliant | Compliant |
-|---|---|
-| "Choose the best error-handling strategy for the situation." | "If the failure is a network timeout, retry up to 3 times. If the failure is a 4xx response, abort. Otherwise, escalate." |
+A plan with any FAIL does not proceed to tasks.
 
 ## Governance
 
-This constitution supersedes every other skill-authoring document in this repository when a
-conflict exists. Conflicts between rules inside this document are resolved by Principle
-Precedence.
+This document governs development activity only. Where it and the Highway Skills Constitution both
+apply, they apply to different artifacts and cannot conflict; if an apparent conflict arises, the
+Highway Skills Constitution prevails for artifact content and this document prevails for process.
 
-Every new or amended skill MUST pass the Compliance Review Protocol before merge. A skill that
-cannot satisfy a rule MUST record a written exception in the skill file naming the rule ID and
-the condition that displaces it; silent deviation is a FAIL.
+### Versioning Policy
+
+- **MAJOR**: a principle is removed or redefined, or an obligation is strengthened so that
+  previously conforming work now fails.
+- **MINOR**: a principle or rule is added without invalidating conforming work.
+- **PATCH**: wording repair with no change to any Observable.
 
 ### Self-Application
 
-This constitution is itself subject to P1.1 through P1.4 (clarity), P6.4 and P6.6
-(determinism), and P7.3 (non-duplication). Every amendment MUST record a review against those
-rule IDs. Rules P7.4 and P7.5 state limits on skills and do not apply to this document.
+This document is subject to D1.3, D1.4, and D5.3. Every amendment records a review against those
+rule IDs.
 
-### Constitution Versioning Policy
-
-Amendments are made by editing this file and MUST include an updated Sync Impact Report as an
-HTML comment at the top of the file. Versioning follows semantic versioning:
-
-- **MAJOR**: a principle or governance rule is removed or redefined, or an obligation is
-  strengthened so that a previously conforming artifact now fails.
-- **MINOR**: a principle, section, or rule is added without invalidating a conforming artifact.
-- **PATCH**: wording or typo repair with no change to any Observable.
-
-### Skill Versioning Policy
-
-Each skill carries its own semantic version, independent of this document's version and of
-every other skill's version. This is the policy referenced by P7.7.
-
-- **MAJOR**: a breaking change, as defined in Definitions, to the skill contract or a
-  behavioral guarantee.
-- **MINOR**: a capability is added while every existing contract element continues to hold.
-- **PATCH**: wording repair with no change to Inputs, Outputs, or Verification.
-
-**Version**: 2.0.1 | **Ratified**: 2026-09-06 | **Last Amended**: 2026-09-06
+**Version**: 1.0.0 | **Ratified**: 2026-09-08 | **Last Amended**: 2026-09-08

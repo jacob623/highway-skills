@@ -3,7 +3,7 @@
 # at the real $HIGHWAY_ROOT (FR-007), not fixture-relative, so this test generates its target
 # file and skill fixtures at run time under temp locations rather than using static
 # tools/tests/fixtures/ files -- mirroring generate-catalog.test.sh's temp-real-artifact
-# pattern. See specs/004-shared-content-library/contracts/dependency-validation-output.md.
+# pattern. Per feature 004 (shared content library).
 set -u
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

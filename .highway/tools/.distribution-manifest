@@ -1,0 +1,50 @@
+# Distribution classification. Read by generate-distribution.sh and by
+# shipped-tree-independence.test.sh, so the set of distributed paths is declared exactly once
+# (D1.6). Three tab-delimited fields: classification, source, destination.
+#
+# classification  include | exclude
+# source          repository-relative path
+# destination     repository-relative path in the distribution, or - for unchanged
+#
+# The most specific matching record wins, so a directory may be included while a child is
+# excluded. A path matching no record is reported as unclassified and fails the run: a new
+# directory must be classified deliberately rather than defaulting to either answer.
+#
+# Development-only paths are written without a trailing slash on purpose. The verification
+# searches distributed files for '.specify/' and 'specs/', and this file is excluded from the
+# distribution anyway, but the shorter form keeps it from matching under either condition.
+
+# --- Agent adapter trees: the highway-* entries ship, their speckit-* siblings do not ---
+exclude	.claude	-
+include	.claude/skills/highway-help	-
+exclude	.cursor	-
+include	.cursor/rules/highway-help.mdc	-
+exclude	.github	-
+include	.github/skills/highway-help	-
+
+# --- The framework directory: excluded by default so each child is a deliberate decision ---
+exclude	.highway	-
+include	.highway/skills	-
+include	.highway/library	-
+include	.highway/catalog	-
+include	.highway/governance	-
+include	.highway/tools	-
+
+# --- Toolchain carve-outs ---
+# Fixtures are deliberately non-conformant; they exist to make checks fail.
+exclude	.highway/tools/tests	-
+# Packaging is a repository operation. A recipient never packages, and shipping these would put
+# this file's own development-path references inside the distribution it is used to verify.
+exclude	.highway/tools/generate-distribution.sh	-
+exclude	.highway/tools/lib/distribution.sh	-
+exclude	.highway/tools/.distribution-manifest	-
+
+# --- The distribution's front page, which cannot occupy the repository root ---
+include	.highway/DISTRIBUTION.md	README.md
+
+# --- Development-only ---
+exclude	.gitignore	-
+exclude	.specify	-
+exclude	specs	-
+exclude	README.md	-
+exclude	governance-plan.md	-

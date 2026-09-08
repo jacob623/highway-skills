@@ -1,19 +1,20 @@
 #!/usr/bin/env bash
 # Reads the constitution as data. This file holds no rule text, no tier, and no token list of
 # its own -- everything is parsed at run time so the tooling cannot drift from the constitution
-# (see specs/003-constitution-enforcement/research.md Decision 1 and Decision 5).
+# (per feature 003 (constitution enforcement), Decision 1 and Decision 5).
 
 # Default location; callers may override by exporting CONSTITUTION_FILE.
 : "${CONSTITUTION_FILE:=}"
 
-# Resolves the constitution path, preferring an explicit override.
-# Usage: con_file <repo_root>
+# Resolves the constitution path, preferring an explicit override. Anchored at the framework
+# root, not the repository root, so the document resolves in a tree holding only .highway/.
+# Usage: con_file <highway_root>
 con_file() {
-	local repo_root="$1"
+	local highway_root="$1"
 	if [[ -n "$CONSTITUTION_FILE" ]]; then
 		printf '%s' "$CONSTITUTION_FILE"
 	else
-		printf '%s' "$repo_root/.specify/memory/constitution.md"
+		printf '%s' "$highway_root/governance/constitution.md"
 	fi
 }
 

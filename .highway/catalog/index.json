@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-07T17:27:39Z",
+  "generated_at": "2026-09-08T11:59:17Z",
   "entries": [
     {
       "id": "highway-help",
@@ -7,7 +7,7 @@
       "description": "Prints registration details for one named skill, or a discovery listing of every registered skill when none is named.",
       "usage": "Invoke as `/highway-help` for all skills, or `/highway-help <skill-id>` for one named skill's registration details.",
       "compatibility": "all",
-      "version": "3.0.0",
+      "version": "3.0.1",
       "source_path": "skills/highway-help/SKILL.md"
     }
   ],
