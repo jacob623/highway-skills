@@ -1,66 +1,53 @@
 <!--
 Sync Impact Report
-Version change: 2.0.1 → 2.1.0 (MINOR)
-Bump rationale: one rule is added. No principle is added, removed, or redefined; no existing
-  rule text, Observable, or Tier tag changes. Classified against this document's Versioning
-  Policy rather than by analogy to a previous amendment: MINOR covers a rule added without
-  invalidating a conforming artifact, and MAJOR would require an obligation strengthened so
-  that a previously conforming artifact now fails. No registered skill fails P8.7 — verified by
-  scanning every Markdown link target under .highway/skills/ and the test fixtures, which found
-  exactly one, in _authoring-standard.md, which is not a skill. Nothing conforming is
-  invalidated, so MINOR is correct and MAJOR is not.
-Added rules:
-  - P8.7: a skill MUST NOT link to a relative path. Observable: no Markdown link target in the
-    skill body is a relative filesystem path. Tier [auto], Principle VIII, no N/A condition.
-Why Principle VIII: the rule concerns whether a skill works as delivered, which is that
-  principle's subject. P8.6 already prohibits relying on an unstated environment default; a
-  rule prohibiting a reference to something the recipient does not have sits beside it, and
-  both fail the same way — the skill looks correct where it was written and breaks where it is
-  used. Principle II was rejected because its rules govern naming a model, vendor, or tool.
-Why a prohibition rather than a resolution test: a SKILL.md is copied byte-identically into
-  three further trees, one of which is a flat file rather than a directory, and no sibling file
-  is ever copied alongside it. A relative target is resolved against the directory holding the
-  file, so the same target resolves differently in each of the four places a skill is read and
-  exists in at most one. No relative target can satisfy every reader, so the general obligation
-  reduces to a prohibition, decidable from the text alone with no filesystem access.
-Scope of the rule: a Markdown link target only. A path inside inline code or a fenced block is
-  a command example, correct as written; treating it as a reference would force correct content
-  to be mangled. An absolute URL is permitted, because it resolves identically from every
-  location.
-Modified principles: none renamed, none restructured. The eight principles are unchanged.
-Added sections: none. Removed sections: none.
-Rule count: 48 → 49. Tier counts: [auto] 14 → 15; [agent-checkable] 34, unchanged;
-  [human-review] 0, unchanged.
-Conformance impact: no obligation is weakened and no conforming artifact is invalidated. The
-  rule is preventive: feature 010 removed the only two links a skill body ever carried, so the
-  repository already satisfies P8.7 before it is written. Its value is entirely in what it
-  prevents, and the skills planned next are the most likely yet to reach for a link.
-Relationship to the Highway Development Constitution: that document carries a rule requiring a
-  documentation cross-reference to resolve within the tree containing the document. It governs
-  live documentation in this repository, which exists in one place. P8.7 governs a skill, which
-  exists in four. Neither reproduces the other's rule sentence and each governs an artifact
-  class the other does not, so the non-restatement rules are satisfied.
+Version change: 2.1.0 → 2.2.0 (MINOR)
+Bump rationale: a section is added — the Prohibited Nondeterministic Criterion Tokens list.
+  Classified against this document's Versioning Policy rather than by analogy: MINOR covers a
+  principle, section, or rule added without invalidating a conforming artifact, and a section is
+  added. The P2.3 retag considered alone would have been neither MAJOR (nothing removed,
+  redefined, or strengthened) nor MINOR (nothing added), leaving PATCH by elimination; the higher
+  classification governs, so the amendment is MINOR. No obligation is strengthened: P6.4's rule
+  text is unchanged and only its enforcement becomes real, so a skill that violated it was always
+  violating it and simply was not told.
+Added sections:
+  - Prohibited Nondeterministic Criterion Tokens: the vocabulary P6.4 prohibits in a decision
+    criterion, in three groups — time, randomness, and agent preference. Declared here rather
+    than inside a script so the boundary is reviewable and changing it is an amendment. Carries
+    the same two exclusions as the Prohibited Vagueness List.
+Removed sections: none.
+Added rules: none. Removed rules: none. Rule count: 49, unchanged.
+Modified rules:
+  - P2.3 retagged [auto] → [agent-checkable]. Rule text and Observable are unchanged. Reason:
+    checking for the literal word "Illustrative" is trivial, but deciding whether a passage is a
+    technology-specific example is semantic, and no mechanical proxy covers it honestly. Treating
+    a language-tagged fenced block as the signal was considered and rejected because it
+    under-detects — an example in inline prose or an untagged fence would pass while the tier
+    still claimed full automation, which is a subtler form of the same false claim.
+Tier counts: [auto] 15 → 14 (P2.3 leaves); [agent-checkable] 34 → 35; [human-review] 0,
+  unchanged.
+Enforcement change: P6.4 is now decided automatically by rc_check_P6_4 and reported under its own
+  rule ID. The check is scoped to the "When to use" and "When not to use" sections, because a
+  decision criterion lives there and scoping structurally avoids having to recognise a criterion
+  by meaning. It is exempted for library files, which have no such sections.
+Conformance impact: no conforming artifact is invalidated. Verified 2026-09-08 before the check
+  was registered: all eight skill fixtures, highway-help, _authoring-standard.md, and every
+  library file pass P6.4, and no fixture's verdict changes.
+Provenance: this amendment is the work feature 003 deferred to "amendment 2.0.2", which never
+  happened — this document went 2.0.1 → 2.1.0 and skipped it. Tasks T046 and T047 of that
+  feature are superseded here and are left unedited in their own spec record.
 Templates and dependent artifacts:
-  - Development workflow scaffolds reference no rule IDs; no update required.
-  - The completed feature records for feature 001 (multi-agent skill suite) and feature 002
-    (highway folder consolidation) are retained unchanged as historical artifacts.
-  - .highway/skills/_authoring-standard.md cites P8.7 by ID and restates no rule text, per P7.3.
-  - .highway/tools/lib/rule-checks.sh registers a check for P8.7 so the rule is decided
-    automatically and reported under its own ID.
-Follow-up TODOs closed by this amendment, each with the evidence that its work was already
-  complete. None required implementation; all three were verified on 2026-09-08:
-  - PURPOSE_SECTION_ENFORCEMENT: satisfied. SV_REQUIRED_SECTIONS in
-    .highway/tools/lib/schema-validate.sh already lists "Purpose" among the required body
-    sections, and every fixture declares a "## Purpose" section.
-  - BUMP_TYPE_REVIEW: its condition never triggered. The reclassification was contingent on a
-    skill being authored that declared Purpose outside a "## Purpose" section; highway-help
-    exists and declares one, so no reclassification is warranted.
-  - AUTHORING_STANDARD_REALIGNMENT: satisfied. .highway/skills/_authoring-standard.md cites 28
-    distinct rule IDs, restates no rule text, and contains no section by that name.
-    authoring-standard.test.sh enforces the citation count and the non-restatement, and passes.
-Follow-up TODOs:
-  - TODO(AUTO_TIER_ENFORCEMENT): extend .highway/tools/validate-skill.sh to enforce the rules
-    tagged [auto] in this document that no script decides yet.
+  - .highway/skills/_authoring-standard.md cites P6.4 by ID and restates no rule text, per P7.3.
+  - .highway/tools/lib/rule-checks.sh registers rc_check_P6_4 and exempts it for library files.
+  - .highway/tools/tests/constitution-inventory.test.sh asserts that every rule this document
+    tags [auto] has a registered check, so the tier cannot drift back out of honesty. That guard
+    covers this document only, and says so; the Highway Development Constitution has the same
+    defect and is addressed separately.
+Follow-up TODOs closed by this amendment:
+  - AUTO_TIER_ENFORCEMENT: satisfied. Two rules were tagged [auto] with no script deciding them,
+    which the validator reported in every run as "UNCHECKED: P2.3 P6.4". P6.4 now has a check;
+    P2.3 is retagged to the tier that describes how it is actually decided. The unchecked group
+    is empty for every skill, and the inventory test fails if that ceases to be true.
+Follow-up TODOs: none.
 -->
 
 # Highway Skills Constitution
@@ -98,6 +85,19 @@ inside the section titled "Illustrative Examples (Non-Normative)".
 > proportional, material, materially, significant, genuine, genuinely, broadly recognized,
 > well-known, obvious, non-obvious, class of, sensitive, robust, effective, as needed,
 > where relevant, if necessary
+
+### Prohibited Nondeterministic Criterion Tokens
+
+The following terms make a decision criterion depend on when it is read, on chance, or on the
+reader's taste, so the same input can yield different decisions. This list is referenced by P6.4,
+which applies to the sections of a skill that state when it does and does not apply. Two locations
+are excluded from every check that references this list: occurrences inside this list itself, and
+occurrences inside the section titled "Illustrative Examples (Non-Normative)".
+
+> currently, nowadays, recently, lately, at present, for now, latest, most recent, up to date,
+> random, randomly, at random, arbitrary, arbitrarily, whichever, any of them,
+> prefer, prefers, prefer to, preferred, preferably, preference, idiomatic, cleaner, nicer,
+> tasteful, feels right
 
 ### Approved Authority Sources
 
@@ -149,7 +149,7 @@ failed on its own.
 |---|---|---|---|
 | P2.1 | A skill MUST NOT name a model, vendor, or tool in a normative rule unless its stated Purpose names that technology. | Every technology named in a rule also appears in the `## Purpose` section. | [agent-checkable] |
 | P2.2 | A skill that depends on a named technology MUST declare that dependency. | The technology appears by name in the Inputs section. | [agent-checkable] |
-| P2.3 | A technology-specific example MUST be labeled "Illustrative". | The example carries the literal word "Illustrative". | [auto] |
+| P2.3 | A technology-specific example MUST be labeled "Illustrative". | The example carries the literal word "Illustrative". | [agent-checkable] |
 | P2.4 | An illustrative example MUST sit outside every numbered rule list. | No example text appears inside a rule table or numbered rule list. | [agent-checkable] |
 | P2.5 | A skill MUST state outcomes as verifiable properties rather than as named implementations. | Each stated outcome names a checkable property, not a specific product. | [agent-checkable] |
 
@@ -443,4 +443,4 @@ every other skill's version. This is the policy referenced by P7.7.
 - **MINOR**: a capability is added while every existing contract element continues to hold.
 - **PATCH**: wording repair with no change to Inputs, Outputs, or Verification.
 
-**Version**: 2.1.0 | **Ratified**: 2026-09-06 | **Last Amended**: 2026-09-08
+**Version**: 2.2.0 | **Ratified**: 2026-09-06 | **Last Amended**: 2026-09-08

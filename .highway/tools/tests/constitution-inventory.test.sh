@@ -88,4 +88,31 @@ if [[ "$exclusions" != *"Illustrative Examples"* ]]; then
 	fail=1
 fi
 
+# --- The [auto] tier is honest ---------------------------------------------------------------
+#
+# A tier tag is a claim about how a rule is decided, and [auto] claims a script decides it. This
+# asserts the claim is true for every rule, so the tier cannot drift back into promising
+# enforcement that does not exist.
+#
+# Scope is the Highway Skills Constitution only, and the failure message says so. The Highway
+# Development Constitution has the same defect and is addressed separately; a guard that appeared
+# to cover governance in general would turn that open gap into an apparently closed one.
+
+# shellcheck source=tools/lib/rule-checks.sh
+source "$HIGHWAY_ROOT/tools/lib/rule-checks.sh"
+
+registered="$(rc_registered_ids | tr ' ' '\n' | sort -u)"
+unenforced=""
+while IFS= read -r rule_id; do
+	[[ -n "$rule_id" ]] || continue
+	if ! printf '%s\n' "$registered" | grep -qx "$rule_id"; then
+		unenforced="$unenforced $rule_id"
+	fi
+done < <(con_rule_ids_by_tier "$CONSTITUTION" auto)
+
+if [[ -n "$unenforced" ]]; then
+	echo "FAIL: the Highway Skills Constitution tags these rules [auto] but no check decides them:$unenforced"
+	fail=1
+fi
+
 exit $fail

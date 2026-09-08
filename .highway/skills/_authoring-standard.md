@@ -77,6 +77,23 @@ instead of linking it.
 
 `.highway/tools/validate-skill.sh` decides this for you and reports it under P8.7.
 
+## Stating when your skill applies
+
+Governed by P6.4. Your `When to use` and `When not to use` sections are where an agent decides
+whether to run your skill at all, so a criterion there that depends on when it is read, on chance,
+or on taste makes the same input produce different decisions on different days.
+
+The vocabulary this rejects is not left to interpretation. It is declared in the constitution as
+the Prohibited Nondeterministic Criterion Tokens list, in three groups — time, randomness, and
+agent preference — and the check reads that list rather than carrying its own copy. If you think a
+term belongs there, or does not, amend the list; that is a governance change, not a code change.
+
+The rule is scoped to those two sections. Describing your skill's output as reporting the latest
+entry is prose, not a decision criterion, and is not flagged. Saying to use your skill when
+something is *currently* stale is a criterion, and is.
+
+`.highway/tools/validate-skill.sh` decides this for you and reports it under P6.4.
+
 ## Writing the rules inside a skill
 
 Cited rules, not restated. Read the rule text in the constitution.

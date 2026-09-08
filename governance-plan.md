@@ -4,7 +4,7 @@ Sequenced plan for establishing Highway's governance layers. This document is du
 context: it is written to survive across sessions so the sequence, rationale, and exact command
 invocations do not have to be reconstructed from conversation history.
 
-**Status**: Phases 1, 2, 2b and 3 complete. Next action is Phase 4, or clearing the Gate that
+**Status**: Phases 1, 2, 2b, 3 and 4 complete. Next action is Phase 4b, or clearing the Gate that
 blocks Phase 5.
 
 **Last reviewed**: 2026-09-08
@@ -82,7 +82,8 @@ Worked examples:
 | 2 | Ratify the Development Constitution | Command | 0 | ✅ Complete (v1.0.0, 2026-09-08) |
 | 2b | Close the authoring-rule gap and the constitution backlog | Spec | 1 | ✅ Complete (feature 011) |
 | 3 | Packaging contract and verification | Spec | 0/1 | ✅ Complete (feature 012) |
-| 4 | Automate the constitution's `[auto]` tier | Spec | 1 | Phase 2b complete |
+| 4 | Make the Skills Constitution's `[auto]` tier honest | Spec | 1 | ✅ Complete (feature 013) |
+| 4b | Make the Development Constitution's `[auto]` tier honest | Spec | 0 | Phase 4 complete |
 | — | **Gate**: a second skill exists | — | — | Blocks Phase 5 |
 | 5 | Author the Experience Standard | Spec | 2 | Gate passed |
 | 6 | Enforce the Experience Standard | Spec | 2 | Phase 5 complete |
@@ -302,12 +303,40 @@ deploy.
 
 ---
 
-### Phase 4 — Automate the constitution's `[auto]` tier
+### Phase 4 — Make the Skills Constitution's `[auto]` tier honest
 
-**Layer**: 1 **Type**: Spec
+**Layer**: 1 **Type**: Spec (`specs/013-auto-tier-honesty`)
+
+**Status**: ✅ **Complete**, 2026-09-08. 26 tasks; 15 tests passing. Constitution 2.2.0 (MINOR).
+`P6.4` is decided by `rc_check_P6_4` against a token list declared in the constitution; `P2.3` is
+retagged `[agent-checkable]`. The `UNCHECKED` group is empty for every skill and the inventory
+test fails if that ceases to be true. `AUTO_TIER_ENFORCEMENT` removed; the follow-up list is
+empty.
+
+**Two findings worth carrying forward**: the first pre-evaluation run reported every fixture as
+passing, and every one of those results was false — `awk -v` rejects an embedded newline and
+fails the whole program, so the check never ran. D3.4's "evaluate before enabling" caught it
+exactly as intended. Second, the guard is scoped to this document and says so in its failure
+message; an unscoped guard would have reported all-clear while the development constitution
+carried the same defect.
 
 **Goal**: Every rule tagged `[auto]` is actually checked by a script, so the tier tag stops
 promising enforcement that does not exist.
+
+**The gap is two rules, not fourteen.** Verified 2026-09-08: fifteen `P` rules carry `[auto]`,
+thirteen have registered checks, and the validator names the exceptions itself in every run —
+`UNCHECKED: P2.3 P6.4`. An earlier draft of the command below said fourteen; that figure was
+wrong and is corrected here. The thirty-four rules shown as `DEFERRED` are `[agent-checkable]` and
+`[human-review]`, correctly not automated.
+
+**This is a prior decision arriving late.** Feature 003 analysed both rules and deferred them to
+"amendment 2.0.2", which never happened — the constitution went `2.0.1 → 2.1.0` during feature
+011, skipping it. Its tasks T046 and T047 are still unchecked. Feature 013 is that amendment.
+
+**Resolution**: P6.4 gets a real check, backed by a token list declared in the constitution
+(matching the Prohibited Vagueness List precedent). P2.3 is retagged `[agent-checkable]`, because
+deciding whether an example is technology-specific is semantic and every mechanical proxy
+under-detects.
 
 **Why now**: Independent of Phases 3, 5, 6, and 7. Can run whenever convenient after Phase 2b.
 
@@ -338,6 +367,57 @@ exist. This phase is the remainder, not the whole layer.
 - Every `[auto]`-tagged rule has a mechanical check, or has been retagged with a recorded reason.
 - `AUTO_TIER_ENFORCEMENT` is removed from the constitution's Sync Impact Report, leaving it empty.
 - Every existing fixture's verdict is unchanged except where deliberately updated.
+- The guard states which governing document it covers.
+
+---
+
+### Phase 4b — Make the Development Constitution's `[auto]` tier honest
+
+**Layer**: 0 **Type**: Spec
+
+**Goal**: The `D` namespace stops claiming automation it does not have.
+
+**Why this is a separate phase rather than a TODO**: it was going to be a `TODO(...)` entry. The
+evidence in this repository says that mechanism decays. Feature 011 found three of four `TODO`
+entries already satisfied but never removed; feature 003's two deferred tasks sat unnoticed for
+the life of the project and were found only by grep. Numbered phases in this document have
+actually been executed. So this is a phase.
+
+**The verified gap** (2026-09-08): ten of twenty-five `D` rules are tagged `[auto]`. Three `D`
+ids appear anywhere under `.highway/tools/` — `D1.6`, `D3.5`, `D4.3` — and all three are comment
+citations, not checks. In practice no `D` rule is decided by a script. The constitution records
+this as `TODO(D_AUTO_TIER_ENFORCEMENT)`.
+
+**Why it is genuinely harder than Phase 4**, and must not be assumed to be the same shape:
+
+- There is no validator to extend. `validate-skill.sh` runs against a `SKILL.md`; nothing runs
+  against a `tasks.md`, a `plan.md`, or a working tree.
+- Several `D` rules are about *process over time*, not about a file. D3.1 and D3.2 require a
+  passing suite before and after a change — that is a claim about two moments, which a static
+  check cannot observe.
+- Some are already enforced in substance by named tests rather than by rule id. D1.1 is decided by
+  `shipped-tree-independence.test.sh`; D1.2 and D4.3 by `distribution-packaging.test.sh`. The
+  honest question for those is whether "a test enforces it" counts as `[auto]`, or whether `[auto]`
+  requires reporting under the rule id as the `P` side does.
+
+That last question should be settled first. It may resolve most of the gap without writing a
+single new check.
+
+**Prerequisite**: Phase 4 complete, so the `P`-side pattern and the guard exist to follow.
+
+**Command**:
+
+```text
+/speckit.specify "I want the Highway Development Constitution's [auto] tier to be honest, the same way feature 013 made the Skills Constitution's tier honest. Ten of its twenty-five D rules are tagged [auto], but no script decides any of them by rule id: only D1.6, D3.5 and D4.3 appear anywhere under .highway/tools/, and all three are comment citations rather than checks. Before writing anything, settle what [auto] means for a Layer 0 rule, because there is no validator that runs against a tasks.md or a plan.md the way validate-skill.sh runs against a SKILL.md. Several D rules are already enforced in substance by named tests — D1.1 by shipped-tree-independence.test.sh, D1.2 and D4.3 by distribution-packaging.test.sh — so decide first whether an enforcing test counts as [auto] or whether [auto] requires reporting under the rule id, and record that decision. Then either enforce each remaining [auto] rule under that definition or retag it, recording each retag as an amendment. Rules that constrain process across time rather than the content of a file, such as D3.1 and D3.2 requiring a passing suite before and after a change, are the hardest cases and may not be automatable at all. Extend the tier-honesty guard added by feature 013 to cover this document too, so both constitutions are checked rather than one. Remove TODO(D_AUTO_TIER_ENFORCEMENT) once the tier is honest."
+```
+
+**Done when**:
+
+- What `[auto]` means for a Layer 0 rule is written down, not assumed.
+- Every `D` rule tagged `[auto]` meets that definition, or has been retagged with a recorded
+  reason.
+- The tier-honesty guard covers both constitutions.
+- `TODO(D_AUTO_TIER_ENFORCEMENT)` is removed, leaving the follow-up list empty.
 
 ---
 
