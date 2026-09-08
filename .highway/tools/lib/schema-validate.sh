@@ -22,7 +22,7 @@ sv_validate_id() {
 }
 
 # Frontmatter `name` MUST equal the directory-derived id exactly, byte-for-byte
-# (specs/009-skill-id-namespace-alignment/contracts/skill-authoring-contract.md).
+# (per feature 009 (skill id namespace alignment)).
 sv_validate_name() {
 	local name="$1" id="$2"
 	if [[ "$name" != "$id" ]]; then

@@ -4,7 +4,7 @@ description: "Prints registration details for one named skill, or a discovery li
 usage: "Invoke as `/highway-help` for all skills, or `/highway-help <skill-id>` for one named skill's registration details."
 compatibility: all
 metadata:
-  version: 3.0.0
+  version: 3.0.1
 ---
 
 ## Purpose
@@ -43,8 +43,8 @@ Print a registered skill's own registration details, or list every registered sk
 ## Outputs
 
 - Single-Skill mode: exactly six labeled lines — `Name:`, `Description:`, `Dependencies:`,
-  `Version:`, `Usage:`, `Example:` — in that order, per
-  [contracts/help-output-contract.md](../../../specs/009-skill-id-namespace-alignment/contracts/help-output-contract.md).
+  `Version:`, `Usage:`, `Example:` — in that order, per the help output contract defined by
+  feature 009 (skill id namespace alignment).
   `Name:` is the resolved catalog `id`, read verbatim — already the full agent-facing
   identifier, so no prefix is concatenated. `Example:` presents its invocation value as an
   inline code span (backtick-wrapped), containing only the runnable invocation.
@@ -66,8 +66,8 @@ Print a registered skill's own registration details, or list every registered sk
 - Request help with no identifier declared and confirm one block per entry currently in
   `.highway/catalog/index.json`, matching entry count exactly, each with a `Help:` line reading
   `/highway-help <id>`.
-- See [quickstart.md](../../../specs/009-skill-id-namespace-alignment/quickstart.md) for the
-  full set of checked scenarios.
+- See the checked scenarios recorded by feature 009 (skill id namespace alignment) for the
+  full set.
 
 ## Error Handling
 
@@ -87,7 +87,7 @@ Print a registered skill's own registration details, or list every registered sk
 Name: highway-help
 Description: Prints registration details for one named skill, or a discovery listing of every registered skill when none is named.
 Dependencies: none
-Version: 3.0.0
+Version: 3.0.1
 Usage: Invoke as `/highway-help` for all skills, or `/highway-help <skill-id>` for one named skill's registration details.
 Example: `/highway-help highway-help`
 ```

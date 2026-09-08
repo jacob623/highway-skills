@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Builds catalog/library-index.json + catalog/library-index.md from .highway/library/*/*.md
 # frontmatter, per
-# specs/005-rename-content-to-library/contracts/library-catalog.schema.json.
+# feature 005 (rename content to library).
 #
 # Usage: .highway/tools/generate-library-catalog.sh
 # Exit 0: catalog written.

@@ -5,12 +5,11 @@ set -u
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-REPO_ROOT="$(cd "$HIGHWAY_ROOT/.." && pwd)"
 # shellcheck source=tools/lib/constitution.sh
 source "$HIGHWAY_ROOT/tools/lib/constitution.sh"
 
 STANDARD="$HIGHWAY_ROOT/skills/_authoring-standard.md"
-CONSTITUTION="$REPO_ROOT/.specify/memory/constitution.md"
+CONSTITUTION="$HIGHWAY_ROOT/governance/constitution.md"
 fail=0
 
 if [[ ! -f "$STANDARD" ]]; then

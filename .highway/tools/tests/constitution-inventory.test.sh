@@ -5,11 +5,10 @@ set -u
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-REPO_ROOT="$(cd "$HIGHWAY_ROOT/.." && pwd)"
 # shellcheck source=tools/lib/constitution.sh
 source "$HIGHWAY_ROOT/tools/lib/constitution.sh"
 
-CONSTITUTION="$REPO_ROOT/.specify/memory/constitution.md"
+CONSTITUTION="$HIGHWAY_ROOT/governance/constitution.md"
 fail=0
 
 # --- The parsed inventory matches the constitution itself ---------------------------------

@@ -5,7 +5,7 @@ set -u
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # HIGHWAY_ROOT (.highway/) holds the generator + skill sources; REPO_ROOT (one level up) is
-# where agent adapters are actually written -- see specs/002-highway-folder-consolidation/research.md.
+# where agent adapters are actually written -- per feature 002 (highway folder consolidation).
 HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 REPO_ROOT="$(cd "$HIGHWAY_ROOT/.." && pwd)"
 GENERATOR="$HIGHWAY_ROOT/tools/generate-agent-adapters.sh"

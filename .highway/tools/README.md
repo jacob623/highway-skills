@@ -7,7 +7,7 @@ runtime — POSIX shell (`bash`, `awk`, `sed`, `grep`) only.
 
 ### `.highway/tools/validate-skill.sh <skill-dir>`
 
-Validates one skill directory against the constitution at `.specify/memory/constitution.md` and
+Validates one skill directory against the constitution at `.highway/governance/constitution.md` and
 against [skills/_authoring-standard.md](../skills/_authoring-standard.md).
 
 Rule ids, tier tags, and token lists are read from the constitution at run time. No rule content
@@ -29,13 +29,12 @@ UNCHECKED: machine-decidable rules with no check registered yet
 ```
 
 Deferred and unchecked rules do not affect exit status. Enforcing a subset of the rules is the
-intended state, so unverified must not read as failed. The output format is a contract; see
-`specs/003-constitution-enforcement/contracts/validation-output.md`.
+intended state, so unverified must not read as failed. The output format is a contract, per
+feature 003 (constitution enforcement).
 
 Also checks every `metadata.dependencies` entry against `.highway/library/` (see
 `.highway/tools/validate-library.sh` below): a missing path or a stale pinned version is
-reported as an `ERROR: [DEPENDENCY] ...` finding, per
-`specs/004-shared-content-library/contracts/dependency-validation-output.md`.
+reported as an `ERROR: [DEPENDENCY] ...` finding, per feature 004 (shared content library).
 
 ### Libraries
 
@@ -62,8 +61,7 @@ Iterates `.highway/skills/*/SKILL.md`, validates each via `validate-skill.sh`, a
 
 Regenerates the per-agent adapters for every valid skill under `.highway/skills/`, into
 `.github/skills/<id>/SKILL.md`, `.claude/skills/<id>/SKILL.md`, and `.cursor/rules/<id>.mdc` (at
-the true repository root, not under `.highway/`), per
-[contracts/agent-adapter-contract.md](../../specs/009-skill-id-namespace-alignment/contracts/agent-adapter-contract.md).
+the true repository root, not under `.highway/`), per feature 009 (skill id namespace alignment).
 `<id>` is already the full agent-facing identifier (e.g. `highway-help`) — this generator injects
 no namespace prefix of its own.
 
@@ -92,8 +90,7 @@ legitimately contain those words without being a rule statement.
   `library/templates/`, `library/knowledge/`, or `library/governance/` (tagged
   `[LIBRARY-TYPE]`).
 
-Output format is a contract; see
-`specs/005-rename-content-to-library/contracts/library-validation-output.md`.
+Output format is a contract, per feature 005 (rename content to library).
 
 ### `.highway/tools/generate-library-catalog.sh`
 
@@ -111,7 +108,7 @@ properties and shaped around skill-only fields.
 
 Adding a 4th (or Nth) agent requires **only** a change to `.highway/tools/generate-agent-adapters.sh`'s
 declarative agent config table — never an edit to any file under `.highway/skills/`. See
-[contracts/agent-adapter-contract.md](../../specs/009-skill-id-namespace-alignment/contracts/agent-adapter-contract.md)
+feature 009 (skill id namespace alignment)
 for the full contract. Procedure:
 
 1. Add one row to the `AGENT_IDS` / `AGENT_TARGET_TEMPLATES` / `AGENT_TRANSFORMS` arrays at the

@@ -3,7 +3,7 @@
 Practical guide for writing a skill at `.highway/skills/<id>/SKILL.md`.
 
 This document does not restate the rules. The constitution at
-[.specify/memory/constitution.md](../../.specify/memory/constitution.md) is the only place rule
+[.highway/governance/constitution.md](../governance/constitution.md) is the only place rule
 text lives; everything below cites rule ids so the two cannot drift apart (P7.3). Run
 `.highway/tools/validate-skill.sh <skill-dir>` to see which rules are checked automatically and
 which are left to you.

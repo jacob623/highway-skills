@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Regenerates the per-agent adapters for every valid skill under skills/ into
 # .github/skills/<id>/SKILL.md, .claude/skills/<id>/SKILL.md, and .cursor/rules/<id>.mdc, per
-# specs/009-skill-id-namespace-alignment/contracts/agent-adapter-contract.md. <id> is already
+# feature 009 (skill id namespace alignment). <id> is already
 # the full agent-facing identifier (e.g. highway-help) -- this generator injects no namespace
 # prefix of its own; the prefix lives once, at the source directory name.
 #
@@ -21,8 +21,8 @@ set -u
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # HIGHWAY_ROOT is the .highway/ framework root (holds skill sources + the manifest); REPO_ROOT
 # is the true repository root, one level further up, used only for agent adapter target paths.
-# The two differ since the .highway/ consolidation (specs/002-highway-folder-consolidation/research.md
-# Decision 1) -- do not conflate them.
+# The two differ since the .highway/ consolidation (per feature 002 (highway folder
+# consolidation), Decision 1) -- do not conflate them.
 HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 REPO_ROOT="$(cd "$HIGHWAY_ROOT/.." && pwd)"
 # shellcheck source=tools/lib/frontmatter.sh

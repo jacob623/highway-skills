@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Walks a SKILL.md body once and annotates every line, so that no rule check has to parse
 # Markdown for itself. Fence state is running state and cannot be decided from a line in
-# isolation (see specs/003-constitution-enforcement/research.md Decision 2).
+# isolation (per feature 003 (constitution enforcement), Decision 2).
 
 # Emits one TAB-delimited record per body line:
 #   line_no  section  in_fence  is_list  is_ordered  ordered_num  text

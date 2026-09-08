@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# Validates one skill directory against the constitution at .specify/memory/constitution.md and
-# against .highway/skills/_authoring-standard.md.
+# Validates one skill directory against the constitution at .highway/governance/constitution.md
+# and against .highway/skills/_authoring-standard.md.
 #
 # Usage: .highway/tools/validate-skill.sh <skill-dir>
-# Output format is a contract: see specs/003-constitution-enforcement/contracts/validation-output.md
+# Output format is a contract: per feature 003 (constitution enforcement).
 # Exit 0: no check failed. Exit 1: at least one check failed.
 # Deferred and unchecked rules never affect exit status; enforcing a subset of the rules is the
 # intended state, so unverified must not read as failed.
@@ -11,7 +11,6 @@ set -u
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-REPO_ROOT="$(cd "$HIGHWAY_ROOT/.." && pwd)"
 # shellcheck source=tools/lib/frontmatter.sh
 source "$SCRIPT_DIR/lib/frontmatter.sh"
 # shellcheck source=tools/lib/schema-validate.sh
@@ -33,7 +32,7 @@ fi
 skill_dir="${1%/}"
 skill_file="$skill_dir/SKILL.md"
 id="$(basename "$skill_dir")"
-constitution="$(con_file "$REPO_ROOT")"
+constitution="$(con_file "$HIGHWAY_ROOT")"
 
 if [[ ! -f "$skill_file" ]]; then
 	echo "ERROR: [SCHEMA] no SKILL.md found at '$skill_file'" >&2

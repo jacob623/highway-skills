@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Builds catalog/index.json + catalog/index.md from skills/*/SKILL.md frontmatter, per
-# specs/006-help-skill/contracts/catalog.schema.json (supersedes
-# specs/001-multi-agent-skill-suite/contracts/catalog.schema.json by adding "usage").
+# feature 006 (help skill), which supersedes feature 001 (multi-agent skill suite) by adding
+# "usage".
 #
 # Usage: .highway/tools/generate-catalog.sh
 # Exit 0: catalog written.
@@ -10,8 +10,8 @@
 set -u
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-# HIGHWAY_ROOT is the .highway/ framework root; distinct from the true repo root (see
-# specs/002-highway-folder-consolidation/research.md Decision 1). This script never writes
+# HIGHWAY_ROOT is the .highway/ framework root; distinct from the true repo root (per
+# feature 002 (highway folder consolidation), Decision 1). This script never writes
 # outside .highway/, so it needs no separate REPO_ROOT.
 HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 # shellcheck source=tools/lib/frontmatter.sh
