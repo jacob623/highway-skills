@@ -47,6 +47,7 @@ reported as an `ERROR: [DEPENDENCY] ...` finding, per feature 004 (shared conten
 | `lib/schema-validate.sh` | Identity and frontmatter shape checks, plus the eight required body sections, for a skill. |
 | `lib/library-schema.sh` | Minimal frontmatter shape checks (`name`, `description`) for a shared library file. |
 | `lib/dependency-check.sh` | Resolves a skill's `metadata.dependencies` entries against `.highway/library/` and flags a missing path or version mismatch. |
+| `lib/distribution.sh` | Classifies a repository path as included in or excluded from the user-facing distribution, by reading `.distribution-manifest`. |
 
 ### `.highway/tools/generate-catalog.sh`
 
@@ -75,6 +76,30 @@ no namespace prefix of its own.
 
 Discovers and runs every `*.test.sh` under `.highway/tools/tests/`, prints a pass/fail summary,
 and exits non-zero if any test fails.
+
+### `.highway/tools/generate-distribution.sh <target-directory>`
+
+Produces the user-facing distribution from this repository, then verifies it before accepting it.
+What ships is read from `.distribution-manifest`, never hard-coded in the script, so the path set
+has exactly one declaration. Artifacts are copied rather than regenerated, because
+`generate-catalog.sh` records a timestamp and regenerating would break byte-identical output.
+
+Three verifications must all pass, or no distribution is produced:
+
+1. No distributed file references a development-only location.
+2. Every documentation cross-reference resolves to a path inside the distribution.
+3. The distribution's **own** copy of `validate-skill.sh` succeeds against every skill it
+   contains, with no constitution override. The repository's copy is deliberately not used: it
+   resolves its governing document relative to its own location, so it succeeds against a tree
+   containing neither toolchain nor governing document and proves nothing about self-containment.
+
+- **Exit 0**: distribution produced and all three verifications passed.
+- **Exit 1**: a verification failed (the candidate is removed, not left in place), a repository
+   path is unclassified, or the target exists and was not produced by this generator (refuses to
+   overwrite, names the file).
+
+The packaging tooling itself is excluded from the distribution. A recipient never packages, and
+the script necessarily contains the development-path tokens that verification 1 searches for.
 
 ### `.highway/tools/validate-library.sh <library-file>`
 

@@ -14,33 +14,37 @@ set -u
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 REPO_ROOT="$(cd "$HIGHWAY_ROOT/.." && pwd)"
+# shellcheck source=tools/lib/distribution.sh
+source "$HIGHWAY_ROOT/tools/lib/distribution.sh"
 SELF="shipped-tree-independence.test.sh"
 fail=0
 
-# The distributed path set, declared once. Adding a distributed location is one new loop here.
-# The list names what ships rather than what does not: a newly added directory is out of scope
-# until deliberately included, which fails in the safer direction.
-shopt -s nullglob
-TARGETS=("$HIGHWAY_ROOT")
-for d in "$REPO_ROOT"/.github/skills/highway-*; do TARGETS+=("$d"); done
-for d in "$REPO_ROOT"/.claude/skills/highway-*; do TARGETS+=("$d"); done
-for f in "$REPO_ROOT"/.cursor/rules/highway-*; do TARGETS+=("$f"); done
-shopt -u nullglob
+# The distributed path set comes from .distribution-manifest, which declares it once (D1.6).
+# Classification is per file rather than per directory because the two differ: the packaging
+# tooling lives under an included directory but is itself excluded, and it necessarily contains
+# the very tokens this check searches for.
+#
+# The test directory is then added back deliberately. The manifest excludes it, because its
+# fixtures are non-conformant on purpose and must not reach a user, but feature 010 chose to scan
+# fixtures here with no exemption, and narrowing that would weaken the check (D3.5). The scanned
+# set is the distribution plus the tests, not the distribution alone.
+scan_targets() {
+	local rel
+	while IFS= read -r rel; do
+		[[ "$(dist_classify "$rel")" == "include" ]] && echo "$REPO_ROOT/$rel"
+	done < <(find "$REPO_ROOT" -type f -not -path "$REPO_ROOT/.git/*" 2>/dev/null \
+		| sed "s|^$REPO_ROOT/||")
+	find "$HIGHWAY_ROOT/tools/tests" -type f 2>/dev/null
+}
 
 # Reports "<file>:<line>: <text>". The skip is applied to the file path so this check does not
 # match the very tokens it searches for in its own source.
 find_violations() {
 	local skip="${1:-}"
-	grep -rnF -e '.specify/' -e 'specs/' "${TARGETS[@]}" 2>/dev/null \
-		| awk -F: -v skip="$skip" '
-			{
-				file = $1; line = $2
-				text = $0
-				sub("^" file ":" line ":", "", text)
-				if (skip != "" && index(file, skip) > 0) next
-				print file ":" line ": " text
-			}
-		'
+	scan_targets | while IFS= read -r f; do
+		[[ -n "$skip" && "$f" == *"$skip"* ]] && continue
+		grep -nF -e '.specify/' -e 'specs/' "$f" 2>/dev/null | sed "s|^|$f:|"
+	done
 }
 
 violations="$(find_violations "$SELF")"
@@ -58,6 +62,18 @@ rm -f "$probe"
 
 if [[ "$probe_hits" -eq 0 ]]; then
 	echo "FAIL: the shipped-tree check did not detect a deliberately seeded violation"
+	fail=1
+fi
+
+# A fixture is not part of the distribution but must still be scanned. Seeding one proves the
+# deliberate addition of the test directory above has not been silently dropped.
+fixture_probe="$HIGHWAY_ROOT/tools/tests/fixtures/shipped-tree-fixture-probe-$$.tmp"
+printf 'see .specify/memory/constitution.md for details\n' >"$fixture_probe"
+fixture_hits="$(find_violations "$SELF" | grep -c "shipped-tree-fixture-probe-$$" | tr -d ' ')"
+rm -f "$fixture_probe"
+
+if [[ "$fixture_hits" -eq 0 ]]; then
+	echo "FAIL: the shipped-tree check no longer scans fixtures; its scope has been narrowed"
 	fail=1
 fi
 

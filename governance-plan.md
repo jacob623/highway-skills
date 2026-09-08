@@ -4,7 +4,8 @@ Sequenced plan for establishing Highway's governance layers. This document is du
 context: it is written to survive across sessions so the sequence, rationale, and exact command
 invocations do not have to be reconstructed from conversation history.
 
-**Status**: Phases 1, 2 and 2b complete. Next action is Phase 3 or Phase 4 — they are independent.
+**Status**: Phases 1, 2, 2b and 3 complete. Next action is Phase 4, or clearing the Gate that
+blocks Phase 5.
 
 **Last reviewed**: 2026-09-08
 
@@ -80,7 +81,7 @@ Worked examples:
 | 1 | Relocate constitution and sever development coupling | Spec | 1 | ✅ Complete (feature 010) |
 | 2 | Ratify the Development Constitution | Command | 0 | ✅ Complete (v1.0.0, 2026-09-08) |
 | 2b | Close the authoring-rule gap and the constitution backlog | Spec | 1 | ✅ Complete (feature 011) |
-| 3 | Packaging contract and verification | Spec | 0/1 | Phase 2b complete |
+| 3 | Packaging contract and verification | Spec | 0/1 | ✅ Complete (feature 012) |
 | 4 | Automate the constitution's `[auto]` tier | Spec | 1 | Phase 2b complete |
 | — | **Gate**: a second skill exists | — | — | Blocks Phase 5 |
 | 5 | Author the Experience Standard | Spec | 2 | Gate passed |
@@ -240,6 +241,20 @@ is a MINOR amendment to that document.
 ### Phase 3 — Packaging contract and verification
 
 **Layer**: 0 governs it; Layer 1 artifacts are its subject **Type**: Spec
+(`specs/012-distribution-packaging`)
+
+**Status**: ✅ **Complete**, 2026-09-08. 26 tasks; 15 tests passing.
+`generate-distribution.sh` produces the distribution from `.distribution-manifest`, verifies it
+with three checks, and refuses to overwrite a target it did not produce. Two runs are
+byte-identical.
+
+**Two findings worth carrying forward**: the packaging tooling had to be excluded from the
+distribution it produces, because `generate-distribution.sh` necessarily contains the literal
+development-path tokens its own verification searches for — including it would make every
+distribution fail its own check. That in turn forced classification to be evaluated per file
+rather than per directory, since the excluded tooling sits inside an included directory. The same
+problem then appeared in the new test, resolved by assembling the token at runtime rather than
+exempting the file, so no check lost coverage.
 
 **Goal**: Producing the user-facing distribution is a repeatable, verified build step rather than a
 manual strip.
@@ -255,11 +270,28 @@ future feature can silently reintroduce a development-tree dependency.
 /speckit.specify "I want a repeatable packaging step that produces the user-facing Highway distribution from this repository, because I develop Highway with Spec Kit but ship it without Spec Kit, and today that strip is manual and unverified. Every path in the repository must be declared as either shipped or development-only, with no ambiguity, and the packaging tool must read that declaration rather than hard-coding a list. After packaging, the tool must verify the result is self-contained: no file in the package references .specify/ or specs/, every documentation cross-reference in the package resolves to a path inside the package, and the skill validator runs successfully against the packaged tree with the development directories absent. Packaging the same commit twice must produce byte-identical output. Follow the same drift-refusal and hash-manifest pattern that generate-agent-adapters.sh already uses. Add tests so that a packaging regression fails in the test suite rather than at a user. I also need to decide and record whether the package includes the authoring toolchain under .highway/tools/ and the Layer 1 constitution, or only the runtime skills, catalog, library, and agent adapters."
 ```
 
-**Decision to make during this phase**: runtime-only package versus full package. The full package
-makes `.highway/governance/constitution.md` a published contract, which means `P`-rule IDs become
-part of the public API and must be versioned accordingly. Designing for the full package now costs
-little; retrofitting a public rule-ID contract later is expensive. Shipping runtime-only first
-while designing for full is a reasonable middle.
+**Decision recorded 2026-09-08**: **runtime plus toolchain, minus tests**. The distribution
+carries skills, catalog, library, agent adapters, `.highway/tools/` and `.highway/governance/`.
+It excludes `.highway/tools/tests/`, whose fixtures are deliberately non-conformant and which
+nothing outside that directory references. The distribution also gets its own front page, because
+the repository's addresses a contributor and references a development-only location.
+
+Runtime-only was recorded first and reversed the same day. Three findings drove the reversal:
+
+1. **The rule-id contract cost was already borne.** The constitution already states that rule IDs
+   are stable across amendments and a retired ID is never reused. Shipping the toolchain makes an
+   existing commitment visible rather than creating a new one.
+2. **It repairs D1.2.** Under runtime-only, D1.2's Observable described a tree containing the
+   validator, which the distribution was not — logged as amendment debt. With the toolchain
+   included the rule is literally true again and no amendment is needed.
+3. **Self-containment becomes provable.** The validator resolves its governing document relative
+   to its own location, so under runtime-only, running it against the distribution proved only
+   that skill content was conformant. Run from *inside* the distribution it proves the toolchain
+   is self-contained, which was the original intent.
+
+Shipping the validator alone was considered and rejected: the generators write to the directory
+above the framework root, so without them a recipient could validate a skill they had no way to
+deploy.
 
 **Done when**:
 
