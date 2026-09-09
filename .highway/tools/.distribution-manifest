@@ -38,10 +38,10 @@ include	.github/skills/highway-profile	-
 exclude	.highway	-
 include	.highway/skills	-
 include	.highway/library	-
+include	.highway/library/templates/output/profile.yaml	-
 include	.highway/catalog	-
 include	.highway/governance	-
 include	.highway/tools	-
-include	.highway/profile.yaml	-
 
 # --- Toolchain carve-outs ---
 # Fixtures are deliberately non-conformant; they exist to make checks fail.

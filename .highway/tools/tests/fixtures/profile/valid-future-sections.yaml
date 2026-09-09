@@ -1,11 +1,14 @@
----
 metadata:
   version: 1.0.0
   description: "Repository-wide organizational context for Highway guidance."
+organization:
+  name: "Example Org"
+  industry: "Technology"
 constraints:
   compliance:
     required:
       - SOC 2
+strategic_directions: {}
 preferences:
   cloud:
     preferred:
@@ -22,4 +25,3 @@ operating_model:
   delivery: product-teams
 vendor_strategy:
   default: strategic-partners
----

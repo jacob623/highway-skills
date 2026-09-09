@@ -1,21 +1,15 @@
 #!/usr/bin/env bash
-# Shared helpers for the retained organizational profile. The profile uses the repository's
-# controlled YAML-frontmatter shape; this is intentionally not a general-purpose YAML parser.
+# Shared helpers for the retained organizational profile. This is intentionally not a
+# general-purpose YAML parser.
 
 profile_frontmatter() {
 	local file="$1"
-	awk '
-		/^---[[:space:]]*$/ { delim++; if (delim == 2) exit; next }
-		delim == 1 { print }
-	' "$file"
+	cat "$file"
 }
 
 profile_body() {
 	local file="$1"
-	awk '
-		/^---[[:space:]]*$/ { delim++; next }
-		delim >= 2 { print }
-	' "$file"
+	cat "$file"
 }
 
 profile_top_level_keys() {
@@ -53,15 +47,30 @@ profile_metadata_field() {
 profile_key_rank() {
 	case "$1" in
 		metadata) echo 1 ;;
-		constraints) echo 2 ;;
-		strategic_directions) echo 3 ;;
-		preferences) echo 4 ;;
-		business_context) echo 5 ;;
-		architecture_principles) echo 6 ;;
-		approved_technologies) echo 7 ;;
-		prohibited_technologies) echo 8 ;;
-		operating_model) echo 9 ;;
-		vendor_strategy) echo 10 ;;
+		organization) echo 2 ;;
+		constraints) echo 3 ;;
+		strategic_directions) echo 4 ;;
+		preferences) echo 5 ;;
+		business_context) echo 6 ;;
+		architecture_principles) echo 7 ;;
+		approved_technologies) echo 8 ;;
+		prohibited_technologies) echo 9 ;;
+		operating_model) echo 10 ;;
+		vendor_strategy) echo 11 ;;
 		*) echo 0 ;;
 	esac
+}
+
+profile_next_version() {
+	local version="$1" operation="$2"
+	local major minor patch
+	IFS='.' read -r major minor patch <<< "$version"
+	case "$operation" in
+		add|update|remove) patch=$((patch + 1)) ;;
+		reset) minor=$((minor + 1)); patch=0 ;;
+		schema-breaking) major=$((major + 1)); minor=0; patch=0 ;;
+		*) return 1 ;;
+	esac
+
+	printf '%s.%s.%s\n' "$major" "$minor" "$patch"
 }

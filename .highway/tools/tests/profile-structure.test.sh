@@ -24,7 +24,7 @@ expect_invalid() {
 	fi
 }
 
-expect_valid "$HIGHWAY_ROOT/profile.yaml"
+expect_valid "$HIGHWAY_ROOT/library/templates/output/profile.yaml"
 expect_valid "$FIXTURES/valid-populated.yaml"
 expect_valid "$FIXTURES/valid-future-sections.yaml"
 expect_invalid "$FIXTURES/malformed.yaml"

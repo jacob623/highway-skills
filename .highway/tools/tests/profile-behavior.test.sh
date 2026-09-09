@@ -5,7 +5,9 @@ set -u
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 SKILL="$HIGHWAY_ROOT/skills/highway-profile/SKILL.md"
-PROFILE="$HIGHWAY_ROOT/profile.yaml"
+PROFILE="$HIGHWAY_ROOT/library/templates/output/profile.yaml"
+# shellcheck source=tools/lib/profile.sh
+source "$HIGHWAY_ROOT/tools/lib/profile.sh"
 fail=0
 
 require_text() {
@@ -16,7 +18,7 @@ require_text() {
 	fi
 }
 
-require_text "$SKILL" '.highway/library/templates/output/highway-profile.md'
+require_text "$SKILL" '.highway/library/templates/output/profile.yaml'
 require_text "$SKILL" 'setup'
 require_text "$SKILL" 'configure'
 require_text "$SKILL" 'view'
@@ -47,6 +49,16 @@ require_text "$SKILL" 'without creating a file'
 after="$(shasum -a 256 "$PROFILE" | awk '{print $1}')"
 if [[ "$before" != "$after" ]]; then
 	echo "FAIL: read-only checks changed the distributed profile"
+	fail=1
+fi
+
+[[ "$(profile_next_version 1.0.0 add)" == "1.0.1" ]] || { echo "FAIL: add version increment"; fail=1; }
+[[ "$(profile_next_version 1.0.1 update)" == "1.0.2" ]] || { echo "FAIL: update version increment"; fail=1; }
+[[ "$(profile_next_version 1.0.2 remove)" == "1.0.3" ]] || { echo "FAIL: remove version increment"; fail=1; }
+[[ "$(profile_next_version 1.0.3 reset)" == "1.1.0" ]] || { echo "FAIL: reset version increment"; fail=1; }
+[[ "$(profile_next_version 1.1.0 schema-breaking)" == "2.0.0" ]] || { echo "FAIL: schema-breaking version increment"; fail=1; }
+if profile_next_version 1.0.0 declined >/dev/null 2>&1; then
+	echo "FAIL: declined operation produced a version"
 	fail=1
 fi
 
