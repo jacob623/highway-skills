@@ -41,6 +41,17 @@ if "$GEN" "$second" >/dev/null 2>&1; then
 	fi
 fi
 
+# --- Sweep residue from an interrupted earlier run ------------------------------------------------
+#
+# Every probe below is named with this run's PID, so a probe left behind by a run that was killed
+# before its cleanup carries a different PID and is never removed by any later run. It then fails
+# whichever test next builds a distribution -- reporting a dangling cross-reference rather than the
+# abandoned probe -- which sends the reader looking in the wrong place. Observed twice.
+rm -f "$REPO_ROOT"/distribution-probe-*.md \
+	"$HIGHWAY_ROOT"/catalog/distribution-devref-probe-*.md \
+	"$HIGHWAY_ROOT"/catalog/distribution-link-probe-*.md \
+	"$HIGHWAY_ROOT"/catalog/distribution-reject-probe-*.md
+
 # --- Probe: an undeclared repository path is reported, not silently classified ---
 
 probe_path="$REPO_ROOT/distribution-probe-$$.md"

@@ -34,6 +34,17 @@ cleanup() {
 }
 trap cleanup EXIT
 
+# Residue from a run killed before its cleanup carries a different PID, so no later run removes it.
+# Its manifest rows then fail the correspondence check as orphans naming a skill with no source.
+rm -rf "$HIGHWAY_ROOT"/skills/test-adapter-fixture-* \
+	"$REPO_ROOT"/.github/skills/test-adapter-fixture-* \
+	"$REPO_ROOT"/.claude/skills/test-adapter-fixture-* \
+	"$REPO_ROOT"/.cursor/rules/test-adapter-fixture-*.mdc
+if [[ -f "$MANIFEST" ]] && grep -q 'test-adapter-fixture-' "$MANIFEST"; then
+	grep -v 'test-adapter-fixture-' "$MANIFEST" >"$MANIFEST.tmp" || true
+	mv "$MANIFEST.tmp" "$MANIFEST"
+fi
+
 mkdir -p "$SKILL_SRC_DIR"
 cp "$FIXTURES/valid-skill/SKILL.md" "$SKILL_SRC_DIR/SKILL.md"
 # The fixture's frontmatter name is authored to match the fixture's own directory id
@@ -86,6 +97,21 @@ speckit_after="$(sha256sum "$SPECKIT_SENTINEL" 2>/dev/null || shasum -a 256 "$SP
 if [[ "$speckit_before" != "$speckit_after" ]]; then
 	echo "FAIL: existing speckit-* file $SPECKIT_SENTINEL was modified"
 	fail=1
+fi
+
+# A generated artifact that was hand-edited must not be silently overwritten: the edit would
+# vanish with no indication it ever existed. Enforces D4.1, which the Enforcement Map in the
+# development constitution names this test for.
+if [[ -f "$GH_TARGET" ]]; then
+	printf '\nhand-edited line\n' >>"$GH_TARGET"
+	if "$GENERATE" >/dev/null 2>&1; then
+		echo "FAIL: the generator overwrote a hand-edited adapter instead of refusing"
+		fail=1
+	fi
+	if ! grep -q '^hand-edited line$' "$GH_TARGET"; then
+		echo "FAIL: a hand-edited adapter was overwritten; the edit was lost"
+		fail=1
+	fi
 fi
 
 exit $fail

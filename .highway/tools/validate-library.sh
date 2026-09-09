@@ -37,7 +37,23 @@ if [[ ! -f "$constitution" ]]; then
 	echo "ERROR: [SCHEMA] constitution not found at '$constitution'" >&2
 	exit 1
 fi
+# --- Framework containment ---------------------------------------------------------------------
 
+# A file outside this framework root belongs to the user, not to Highway, and is not judged here.
+# Without this the classification below matches on a path glob alone, so the same user file is
+# judged when named by an absolute path and declined when named by a relative one -- containment
+# that depends on how a path is typed is not containment.
+#
+# Scoped to the framework root rather than to its library/ subdirectory: the test fixtures live
+# under tools/tests/fixtures/library/, so the narrower scope would decline every one of them.
+library_file_abs="$(cd "$(dirname "$library_file")" 2>/dev/null && pwd)/$(basename "$library_file")"
+case "$library_file_abs" in
+	"$HIGHWAY_ROOT"/*) ;;
+	*)
+		echo "ERROR: [OUT-OF-SCOPE] '$library_file' is outside the Highway framework root; it belongs to the repository and is not validated here" >&2
+		exit 1
+		;;
+esac
 # --- Library type detection (FR-001 through FR-004) -----------------------------------------
 
 library_type=""

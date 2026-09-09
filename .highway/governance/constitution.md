@@ -1,5 +1,18 @@
 <!--
 Sync Impact Report
+Version change: 2.2.0 → 2.3.0 (MINOR)
+Bump rationale: Principle IX and rule P9.1 are added without invalidating a conforming skill;
+  the two existing file-emitting skills are migrated and verified before the rule is enabled.
+  The shared output-template citation is an authoring obligation and does not prescribe user-owned
+  record values.
+Added principle: IX. Shared Output Contracts (P9.1).
+Added rule: P9.1, requiring file-emitting skills to cite a complete shared output template.
+Verified before enabling: highway-nfrs and highway-controls cite complete templates and preserve
+  their existing frontmatter and body contracts.
+Self-application review: P1.1, P1.3, P6.4, P6.6, and P7.3 PASS; the amendment names the new
+  rule and distinguishes citation from runtime output conformance.
+
+Previous amendment:
 Version change: 2.1.0 → 2.2.0 (MINOR)
 Bump rationale: a section is added — the Prohibited Nondeterministic Criterion Tokens list.
   Classified against this document's Versioning Policy rather than by analogy: MINOR covers a
@@ -239,6 +252,15 @@ imposes on code.
 
 Rationale: Repeatability is what allows a skill to be reused without re-verifying it every
 time.
+
+### IX. Shared Output Contracts
+
+| ID | Rule | Observable | Tier |
+|---|---|---|---|
+| P9.1 | A skill that emits a file MUST cite a shared template for that file's complete structure. | The Outputs section names a path under `.highway/library/templates/output/` and does not restate the template's frontmatter or body structure as a separate contract. | [auto] |
+
+Rationale: A shared complete skeleton prevents two skills producing the same kind of record from
+silently diverging in metadata or body structure.
 
 ## Principle Precedence
 

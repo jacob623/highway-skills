@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Builds catalog/library-index.json + catalog/library-index.md from .highway/library/*/*.md
+# Builds catalog/library-index.json + catalog/library-index.md from .highway/library/**/*.md
 # frontmatter, per
 # feature 005 (rename content to library).
 #
@@ -28,10 +28,10 @@ json_escape() {
 library_files=()
 shopt -s nullglob
 for library_type in templates knowledge governance; do
-	for f in "$LIBRARY_DIR/$library_type"/*.md; do
+	while IFS= read -r f; do
 		[[ "$(basename "$f")" == "README.md" ]] && continue
 		library_files+=("$f")
-	done
+	done < <(find "$LIBRARY_DIR/$library_type" -type f -name '*.md' -print | sort)
 done
 shopt -u nullglob
 file_count=${#library_files[@]}

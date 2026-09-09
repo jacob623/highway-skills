@@ -4,7 +4,7 @@ description: "Prints registration details for one named skill, or a discovery li
 usage: "Invoke as `/highway-help` for all skills, or `/highway-help <skill-id>` for one named skill's registration details."
 compatibility: all
 metadata:
-  version: 3.0.1
+  version: 3.0.4
 ---
 
 ## Purpose
@@ -15,7 +15,7 @@ Print a registered skill's own registration details, or list every registered sk
 
 - A skill identifier is declared: show that one skill's Name, Description, Dependencies,
   Version, Usage, and Example.
-- No skill identifier is declared: list every registered skill's Name, Usage, and a copy-able
+- No skill identifier is declared: list every registered skill's Name, Description, and a copy-able
   Help command.
 - Confirming a skill exists, or discovering what a skill's exact invocation syntax is, before
   using it.
@@ -42,6 +42,8 @@ Print a registered skill's own registration details, or list every registered sk
 
 ## Outputs
 
+Satisfies `X1.1`, `X1.2`, `X1.3` and `X5.1` of the Highway Experience Standard.
+
 - Single-Skill mode: exactly six labeled lines — `Name:`, `Description:`, `Dependencies:`,
   `Version:`, `Usage:`, `Example:` — in that order, per the help output contract defined by
   feature 009 (skill id namespace alignment).
@@ -50,7 +52,7 @@ Print a registered skill's own registration details, or list every registered sk
   inline code span (backtick-wrapped), containing only the runnable invocation.
   `Dependencies:` reads `none` when `metadata.dependencies` is empty, otherwise a
   comma-separated `path@version` list.
-- All-Skills mode: one `Name:`/`Usage:`/`Help: /highway-help <id>` block per catalog entry, in
+- All-Skills mode: one `Name:`/`Description:`/`Help: /highway-help <id>` block per catalog entry, in
   catalog order, one entry per registered skill, or the exact line
   `No skills are registered yet.` when the catalog is empty. `Name:` is resolved the same way as
   Single-Skill mode.
@@ -58,6 +60,8 @@ Print a registered skill's own registration details, or list every registered sk
   registered skill entries.
 
 ## Verification
+
+This self-check exercises `X1.1`, `X1.2`, `X1.3` and `X5.1`.
 
 - Run `.highway/tools/validate-skill.sh .highway/skills/highway-help` and confirm exit 0.
 - Request help for `highway-help` itself and confirm the response has exactly six fields in the
@@ -87,7 +91,7 @@ Print a registered skill's own registration details, or list every registered sk
 Name: highway-help
 Description: Prints registration details for one named skill, or a discovery listing of every registered skill when none is named.
 Dependencies: none
-Version: 3.0.1
+Version: 3.0.4
 Usage: Invoke as `/highway-help` for all skills, or `/highway-help <skill-id>` for one named skill's registration details.
 Example: `/highway-help highway-help`
 ```

@@ -1,14 +1,41 @@
 {
-  "generated_at": "2026-09-08T11:59:17Z",
+  "generated_at": "2026-09-09T11:38:56Z",
   "entries": [
+    {
+      "id": "highway-controls",
+      "name": "highway-controls",
+      "description": "Manages the repository-wide Control baseline, adding, updating, removing and replacing the Controls that govern the repository.",
+      "usage": "Invoke as `/highway-controls` and state what to change, for example `/highway-controls add a control requiring administrative access to use MFA`.",
+      "compatibility": "all",
+      "version": "1.0.1",
+      "source_path": "skills/highway-controls/SKILL.md"
+    },
     {
       "id": "highway-help",
       "name": "highway-help",
       "description": "Prints registration details for one named skill, or a discovery listing of every registered skill when none is named.",
       "usage": "Invoke as `/highway-help` for all skills, or `/highway-help <skill-id>` for one named skill's registration details.",
       "compatibility": "all",
-      "version": "3.0.1",
+      "version": "3.0.4",
       "source_path": "skills/highway-help/SKILL.md"
+    },
+    {
+      "id": "highway-inquiry",
+      "name": "highway-inquiry",
+      "description": "Manages the requirements discovery questionnaire that Highway skills ask from, adding, changing, removing and reordering its questions on request.",
+      "usage": "Invoke as `/highway-inquiry` and state what to change, for example `/highway-inquiry add a question about data retention`.",
+      "compatibility": "all",
+      "version": "1.0.2",
+      "source_path": "skills/highway-inquiry/SKILL.md"
+    },
+    {
+      "id": "highway-nfrs",
+      "name": "highway-nfrs",
+      "description": "Manages the repository-wide Non-Functional Requirement baseline; use it to add, update, remove, replace, or inspect NFRs.",
+      "usage": "Invoke as `/highway-nfrs` and state the NFR baseline change in plain language.",
+      "compatibility": "all",
+      "version": "1.0.1",
+      "source_path": "skills/highway-nfrs/SKILL.md"
     }
   ],
   "overlap_flags": []

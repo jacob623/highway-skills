@@ -26,6 +26,8 @@ rc_registry() {
 		P8.1	rc_check_P8_1	N2
 		P8.3	rc_check_P8_3	-
 		P8.7	rc_check_P8_7	-
+		P9.1	rc_check_P9_1	N4
+		X1.4	rc_check_X1_4	N3
 	EOF
 }
 
@@ -294,6 +296,29 @@ rc_check_P8_7() {
 	return $found
 }
 
+# --- P9.1: file-emitting skills cite a complete shared output template ---------------------
+# A skill with no declared file path is not subject to this rule. The semantic comparison of a
+# cited template with a produced artifact remains an agent-checkable X/D review.
+rc_check_P9_1() {
+	local file="$1" outputs outputs_without_links
+	outputs="$(awk '
+		/^## Outputs[[:space:]]*$/ { capture = 1; next }
+		capture && /^## / { exit }
+		capture { print }
+	' "$file")"
+	outputs_without_links="$(printf '%s\n' "$outputs" | sed -E 's/\[[^]]*\]\([^)]*\)//g')"
+
+	if [[ -z "$outputs_without_links" || "$outputs_without_links" != *\.md* ]]; then
+		return 2
+	fi
+
+	if ! printf '%s\n' "$outputs_without_links" | grep -Eq '\.highway/library/templates/output/[^[:space:]`]+\.md'; then
+		echo "Outputs section emits a file but cites no complete template under .highway/library/templates/output/"
+		return 1
+	fi
+	return 0
+}
+
 # Resolves the constitution the way validate-skill.sh does, so a token list is read from the same
 # document the rules came from and CONSTITUTION_FILE overrides behave identically. Needed because
 # a check receives only the file under test.
@@ -340,4 +365,23 @@ rc_check_P6_4() {
 	')"
 	[[ -n "$out" ]] && { printf '%s\n' "$out"; found=1; }
 	return $found
+}
+
+# X1.4 -- a specimen agrees with the metadata it repeats.
+# The Example section is a recorded specimen of the skill's output. Where it repeats a value the
+# frontmatter also declares, the two must match: a specimen that contradicts the skill it
+# illustrates misinforms every reader who trusts it, and it is copied verbatim into each agent
+# tree. Returns 2 where the Example repeats no such value, which is the common case.
+rc_check_X1_4() {
+	local file="$1" declared shown
+	declared="$(awk '/^  version:/ { sub(/^  version:[[:space:]]*/, ""); print; exit }' "$file")"
+	shown="$(awk '/^## Example/ { f = 1 } f && /^Version:/ { sub(/^Version:[[:space:]]*/, ""); print; exit }' "$file")"
+
+	[[ -z "$declared" || -z "$shown" ]] && return 2
+
+	if [[ "$declared" != "$shown" ]]; then
+		echo "Example shows version '$shown' but the skill declares '$declared'"
+		return 1
+	fi
+	return 0
 }

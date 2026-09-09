@@ -193,6 +193,12 @@ d="$tmp_root/p64"; write_base_skill "$d"
 sed -i.bak 's|^- Use when seeding a violation of one rule\.$|- Use when the catalog is currently stale.|' "$d/SKILL.md" && rm -f "$d/SKILL.md.bak"
 assert_reports "P6.4 nondeterministic decision criterion" "P6.4" "$d"
 
+# --- P9.1: a file output without a shared complete template ---------------------------------
+
+d="$tmp_root/p91"; write_base_skill "$d"
+sed -i.bak 's/^A confirmation message\.$/A file at library\/governance\/example.md./' "$d/SKILL.md" && rm -f "$d/SKILL.md.bak"
+assert_reports "P9.1 uncited file output" "P9.1" "$d"
+
 # The rule governs decision criteria, not prose. The same token outside the sections that state
 # when a skill applies must not be flagged, or every skill describing its own output fails.
 d="$tmp_root/p64-ok"; write_base_skill "$d"
@@ -230,12 +236,18 @@ if [[ -z "$na_line" ]]; then
 	fail=1
 else
 	for entry in $na_line; do
-		if [[ ! "$entry" =~ ^P[0-9]+\.[0-9]+=N[0-9]+$ ]]; then
+		if [[ ! "$entry" =~ ^[PX][0-9]+\.[0-9]+=N[0-9]+$ ]]; then
 			echo "FAIL[na]: not-applicable entry '$entry' does not name a permitted condition"
 			fail=1
 		fi
 	done
 fi
+
+# --- X1.4: an Example whose version contradicts the frontmatter -------------------------------------
+
+d="$tmp_root/x14"; write_base_skill "$d"
+printf '\n## Example\nVersion: 9.9.9\n' >>"$d/SKILL.md"
+assert_reports "X1.4 specimen disagrees" "X1.4" "$d"
 
 # --- Every enforced rule has a seeded case above ------------------------------------------------------------------------------
 

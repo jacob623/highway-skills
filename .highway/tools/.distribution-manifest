@@ -17,10 +17,19 @@
 # --- Agent adapter trees: the highway-* entries ship, their speckit-* siblings do not ---
 exclude	.claude	-
 include	.claude/skills/highway-help	-
+include	.claude/skills/highway-controls	-
+include	.claude/skills/highway-inquiry	-
+include	.claude/skills/highway-nfrs	-
 exclude	.cursor	-
 include	.cursor/rules/highway-help.mdc	-
+include	.cursor/rules/highway-controls.mdc	-
+include	.cursor/rules/highway-inquiry.mdc	-
+include	.cursor/rules/highway-nfrs.mdc	-
 exclude	.github	-
 include	.github/skills/highway-help	-
+include	.github/skills/highway-controls	-
+include	.github/skills/highway-inquiry	-
+include	.github/skills/highway-nfrs	-
 
 # --- The framework directory: excluded by default so each child is a deliberate decision ---
 exclude	.highway	-
@@ -48,3 +57,4 @@ exclude	.specify	-
 exclude	specs	-
 exclude	README.md	-
 exclude	governance-plan.md	-
+exclude	nfr-plan.md	-

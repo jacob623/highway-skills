@@ -1,0 +1,1 @@
+- [X] T001 missing-artifact.md change: required marker

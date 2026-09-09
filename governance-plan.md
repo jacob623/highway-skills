@@ -4,8 +4,10 @@ Sequenced plan for establishing Highway's governance layers. This document is du
 context: it is written to survive across sessions so the sequence, rationale, and exact command
 invocations do not have to be reconstructed from conversation history.
 
-**Status**: Phases 1, 2, 2b, 3 and 4 complete. Next action is Phase 4b, or clearing the Gate that
-blocks Phase 5.
+**Status**: Phases 1, 2, 2b, 3, 4, 4b, 4c, 5 and 6 complete. Phase 7 is delivered with recorded
+gaps — both skills ship; five of `highway-nfrs`'s functional requirements are unimplemented.
+Phases 8 and 9 remain deferred and independent. Phase 10 is complete through Feature 021 and owns
+the rule defects that let those gaps pass every gate. Phase 11 is proposed and independent.
 
 **Last reviewed**: 2026-09-08
 
@@ -83,11 +85,16 @@ Worked examples:
 | 2b | Close the authoring-rule gap and the constitution backlog | Spec | 1 | ✅ Complete (feature 011) |
 | 3 | Packaging contract and verification | Spec | 0/1 | ✅ Complete (feature 012) |
 | 4 | Make the Skills Constitution's `[auto]` tier honest | Spec | 1 | ✅ Complete (feature 013) |
-| 4b | Make the Development Constitution's `[auto]` tier honest | Spec | 0 | Phase 4 complete |
-| — | **Gate**: a second skill exists | — | — | Blocks Phase 5 |
-| 5 | Author the Experience Standard | Spec | 2 | Gate passed |
-| 6 | Enforce the Experience Standard | Spec | 2 | Phase 5 complete |
-| 7 | Build the `nfrs` and `controls` skills | Spec | 2 governs; 3 is the subject | Phase 6 complete |
+| 4b | Make the Development Constitution's `[auto]` tier honest | Spec | 0 | ✅ Complete (feature 014) |
+| 4c | Keep the catalog and adapters true to the skills on disk | Spec | 0/1 | ✅ Complete (016) |
+| — | **Gate**: a second skill exists | — | — | ✅ Cleared (feature 015) |
+| 5 | Author the Experience Standard | Spec | 2 | ✅ Complete (017) |
+| 6 | Enforce the Experience Standard | Spec | 2 | ✅ Complete (018) |
+| 7 | Build the `nfrs` and `controls` skills | Spec | 2 governs; 3 is the subject | 🔶 Delivered with recorded gaps — `highway-controls` (019) and `highway-nfrs` (020) both ship; five FRs unimplemented |
+| 8 | Make a skill's help detail answerable for itself | Spec | 1 | Deferred — independent of all other phases |
+| 9 | Make artifact versions accountable | Spec | 1, and a cross-layer question | Deferred — independent of all other phases |
+| 10 | Make a completion claim accountable | Spec | 0 | ✅ Complete (feature 021) |
+| 11 | Require shared templates for a skill's emitted output | Spec | 1 states the obligation; 0 states the drift guard | Proposed — independent of all other phases |
 
 Phases 3 and 4 are independent of each other and may run in either order.
 
@@ -373,7 +380,34 @@ exist. This phase is the remainder, not the whole layer.
 
 ### Phase 4b — Make the Development Constitution's `[auto]` tier honest
 
-**Layer**: 0 **Type**: Spec
+**Layer**: 0 **Type**: Spec (`specs/014-dev-tier-honesty`)
+
+**Status**: ✅ **Complete**, 2026-09-08. 24 tasks; 16 tests passing. Development constitution 1.1.0
+(MINOR). Tier counts `[auto]` 10 → 6, `[agent-checkable]` 14 → 18. `D_AUTO_TIER_ENFORCEMENT`
+closed; the follow-up list is empty. The guard now covers both constitutions and names the
+offending document in every failure.
+
+**The decision worth remembering**: `[auto]` means something *different* in the two documents, and
+the Development Constitution now says so. There it means a test in `run-all.sh` decides the rule
+and an **Enforcement Map** names which one. It does **not** require reporting under the rule id,
+because that is Layer 1 machinery — no validator runs against a `tasks.md` or a working tree. The
+same tag is used in both because it answers the same reader question: will something catch me.
+
+**Three findings worth carrying forward**:
+
+1. **`lib/constitution.sh` is P-namespace-bound.** `con_rules()` matches `P[0-9]+\.[0-9]+` and
+   returns nothing for a `D` rule. The first version of the extended guard therefore passed
+   without ever iterating. Generalising the shared parser was rejected — it is distributed to
+   users, and teaching shipped code to read a document that never ships is the same category
+   error as shipping the packaging tooling. The guard carries its own minimal reader, plus an
+   assertion that the reader matched something, so the vacuity cannot recur silently.
+2. **The guard's own file tripped `shipped-tree-independence`**, because it must name the
+   development constitution's path. Resolved by assembling the token at runtime, the precedent
+   feature 012 set, rather than exempting the file from a check that should cover it.
+3. **D6.2 was retagged rather than widened.** Measured: 145 link targets repository-wide, 8
+   unresolvable, none a genuine defect. Two were in `.highway/DISTRIBUTION.md`, which is authored
+   for the distributed tree where it lands at the root and where those targets do resolve. A
+   whole-tree check would need four exemption classes and would flag a correct document.
 
 **Goal**: The `D` namespace stops claiming automation it does not have.
 
@@ -421,9 +455,187 @@ single new check.
 
 ---
 
+### Phase 4c — Keep the catalog and adapters true to the skills on disk
+
+**Layer**: 0 governs the build step; Layer 1 artifacts are its subject **Type**: Spec
+(`specs/016-artifact-correspondence`)
+
+**Status**: ✅ **Complete**, 2026-09-08. 37 tasks; 17 tests passing. Development constitution 1.2.0
+(MINOR). `D4.5`, `D4.6` and `D4.7` added, all `[auto]`, all decided by `adapter-coverage.test.sh`,
+each with an Enforcement Map row. A Correspondence Gate was added because the Generator Gate
+triggers on a change to a generator, which is the wrong trigger for rules violated by changing a
+generator's *input*.
+
+**Two live violations were found, both committed, both passing a green suite**:
+
+1. **The library catalog was stale.** Feature 015 added the requirements questionnaire and never
+   regenerated `library-index.json`, which recorded `"entries": []`. The artifact that feature
+   exists to deliver was absent from the library index. Found by the D4.7 prototype on its first
+   run, before it was written as a test.
+2. **Four orphan rows in `.adapter-manifest`** — three naming `sample-echo`, a fixture skill that
+   no longer exists, and one naming `help` at version 2.0.0, the pre-rename id left over from
+   feature 009. None of the four files existed on disk.
+
+Both were repaired before the rules were enabled. That ordering is what kept the amendment MINOR:
+enabling a rule against a tree that violates it is a strengthening, which the versioning policy
+classifies MAJOR. Repairing a defect is not the same as redefining a rule.
+
+**Three findings worth carrying forward**:
+
+1. **The pre-evaluation required by D3.4 changed the design twice.** It found that
+   `.github/skills/` holds ten `speckit-*` directories that this repository does not generate — a
+   naive orphan scan over the agent trees would have flagged every one. The manifests, not the
+   directories, are the authority on which adapters are ours.
+2. **A failure proof found a gap the spec had not.** Removing a skill's adapter manifest rows
+   produced *no* failure, because D4.5's Observable listed the catalog, the adapters, and the
+   distribution rows but not the adapter manifest. The Observable was widened and the check added.
+   The task deliberately said to record the verdict rather than assume it, which is why it was
+   caught.
+3. **Currency is checked by regenerating into a temp tree, never in place.** The generators
+   resolve every path from their own location, so a copy is self-contained. Regenerate-and-restore
+   would leave the repository modified whenever the check exited between the two steps.
+
+**Goal**: Adding, changing, or removing a skill leaves the catalog, the adapters, and the
+distribution manifest agreeing with what is actually in `.highway/skills/`.
+
+**Why this exists**: `highway-help` answers from `.highway/catalog/index.json`, and an agent sees
+a skill through its generated adapters. Both are produced from the skills directory and neither is
+checked against it. A skill can therefore be present and unlisted, or listed and absent, with
+every gate passing.
+
+**The verified gap** (2026-09-08). No rule in any of the three governance documents requires a
+skill to be registered. The nearest obligation is D4.1 — re-running a generator must produce no
+diff — which does cover a stale catalog in substance, but arrives sideways through
+generated-artifact integrity rather than as a stated rule an author would find. Nothing enforces
+it: `generate-catalog.test.sh` checks the catalog's structure, never its contents against the
+skills on disk.
+
+**Three cases, and only one of them is the obvious one**:
+
+| Case | What breaks | Severity |
+|---|---|---|
+| **Added** | Skill exists, catalog has no entry. `highway-help` cannot see it. Feature 015 also found the adapters are silently excluded from the distribution unless manifest rows are added by hand. | Invisible skill |
+| **Changed** | Description, usage, or version moves in the source and the catalog still reports the old value. `highway-help` answers confidently and wrongly. No rule states the obligation and no test detects the violation — see below. | Silent misinformation |
+| **Removed** | **Worst.** Neither generator prunes — verified. A deleted skill leaves a catalog entry, three orphaned adapters, rows in `.adapter-manifest`, and rows in `.distribution-manifest`. Because those rows say `include`, **the orphaned adapters still ship**. A recipient gets a skill with no source, listed by `highway-help`, that nobody can maintain. | Ships a ghost |
+
+**Decided: this becomes a stated rule, not a check alone.** Feature 011 settled the general
+question — a test without a written rule leaves the constraint discoverable only by failing the
+suite — and the routing test in §2 places it: the obligation constrains generated artifacts of the
+build, so it is **Layer 0** and takes `D` ids.
+
+**Why the existing rules do not already cover this.** Two of them look as though they might, and
+neither does. Verified 2026-09-08:
+
+| Rule | What it actually says | Why it falls short |
+|---|---|---|
+| D4.1 | *"A generated artifact MUST NOT be hand-edited."* Observable: re-running its generator produces no diff. | The **rule** is about hand-editing. Someone asking "must I regenerate after changing a skill's description?" finds no answer in it. Its Observable happens to detect staleness, but an obligation that exists only as a side-effect of an Observable is exactly what a stated rule is for. Worse, its Enforcement Map row names `generate-agent-adapters.test.sh`, which asserts hand-edit refusal for adapters and never regenerates the catalog at all. |
+| D4.4 | A change to a **generator** must be followed by regeneration. | The generator is unchanged when a skill's description moves. This is the sibling case, not this one. |
+
+`generate-catalog.test.sh` looks like it closes the gap and does not: it runs the generator twice
+against **unchanged** inputs, which is D4.2's determinism, never comparing the committed catalog
+against the current skills.
+
+So three obligations are missing, in three different directions:
+
+| ID | Rule | Observable | Tier |
+|---|---|---|---|
+| D4.5 | Every skill in the source MUST have its generated artifacts. | Each directory under `.highway/skills/` has a catalog entry, an adapter in each agent tree, and a distribution manifest row for each adapter. | [auto] |
+| D4.6 | A generated artifact MUST NOT name a skill absent from the source. | No catalog entry, adapter file, adapter manifest row, or distribution manifest row names a skill with no directory under `.highway/skills/`. | [auto] |
+| D4.7 | A change to a generator's input MUST be followed by regeneration. | Re-running every generator leaves no diff against the committed artifacts, aside from a recorded generation timestamp. | [auto] |
+
+D4.5 catches the added skill, D4.6 the orphan left by a removed one, and D4.7 the stale entry left
+by a changed one. D4.7 is the sibling of D4.4 — that one covers a changed generator, this one a
+changed input — and its Observable deliberately carries the same timestamp exception D4.2 needs,
+because `generate-catalog.sh` writes one.
+
+**D4.7 is not a restatement of D4.1.** D4.1 prohibits touching the output; D4.7 requires
+refreshing it after touching the input. Different obligations, and the non-restatement rules turn
+on rule text rather than on Observables, which the two necessarily share.
+
+All three are `[auto]`, so all three need Enforcement Map rows naming the test that decides them,
+per the definition feature 014 wrote. Adding three rules is a MINOR amendment: `1.1.0 → 1.2.0`.
+
+**D4.7 passes today** — verified 2026-09-08 by regenerating the catalog and diffing against the
+committed copy, ignoring `generated_at`: no difference. So enabling it invalidates no conforming
+work and the amendment stays MINOR rather than MAJOR. Confirm that again before enabling, because
+the classification depends on it.
+
+**Both existing skills already conform** — verified 2026-09-08:
+
+| Skill | Catalog | Adapters | Distribution rows | Adapter manifest rows |
+|---|---|---|---|---|
+| `highway-help` | present | 3 of 3 | 3 | 4 |
+| `highway-inquiry` | present | 3 of 3 | 3 | 4 |
+
+No orphan exists in either direction. That is not a reason to skip this phase — it is the reason
+to do it now. `highway-inquiry` conforms only because feature 015 added its manifest rows by hand
+after planning happened to notice they were missing. Nothing would have caught the omission, and
+nothing catches the next one.
+
+**Use `highway-inquiry` as the subject of the failure proofs.** Because it conforms, each of the
+four correspondences can be broken for it and then restored — remove its catalog entry, an adapter,
+an adapter manifest row, a distribution manifest row — confirming the check fails each time and
+passes again once restored. A round trip proves more than watching a check pass: it shows the
+check is reading the thing it claims to read.
+
+The check must be written over the set of skills present, not over an enumeration of the two that
+exist today. An enumerated list is the defect this phase exists to remove.
+
+**Prerequisite**: The Gate is cleared, which matters more than it sounds. With one skill this
+defect was unobservable; the manifest's per-skill rows looked like a complete list rather than an
+enumeration waiting to fall behind.
+
+**Command**:
+
+```text
+/speckit.specify "I want the catalog and the generated agent adapters to stay true to the skills actually present in .highway/skills/, across adding, changing, and removing a skill, and I want that written as rules rather than left as tests somebody discovers by failing. Add three rules to the Highway Development Constitution at .specify/memory/constitution.md, under Principle IV, as a MINOR amendment taking it from 1.1.0 to 1.2.0. D4.5: every skill in the source MUST have its generated artifacts, observable as each directory under .highway/skills/ having a catalog entry, an adapter in each agent tree, and a distribution manifest row for each adapter. D4.6: a generated artifact MUST NOT name a skill absent from the source, observable as no catalog entry, adapter file, adapter manifest row, or distribution manifest row naming a skill with no directory under .highway/skills/. D4.7: a change to a generator's input MUST be followed by regeneration, observable as re-running every generator leaving no diff against the committed artifacts aside from a recorded generation timestamp. Tag all three [auto] and give each a row in the Enforcement Map naming the test that decides it, per the definition feature 014 recorded. D4.7 is needed because nothing today states or detects that a skill's description, usage, or version going stale in the catalog is a violation: D4.1's rule text is about hand-editing rather than currency, its Enforcement Map row names generate-agent-adapters.test.sh which never regenerates the catalog, and generate-catalog.test.sh only runs the generator twice against unchanged inputs, which is determinism rather than currency. D4.7 is not a restatement of D4.1 -- D4.1 prohibits touching the output, D4.7 requires refreshing it after touching the input -- and the non-restatement rules turn on rule text rather than on Observables, which these two necessarily share. Verify before enabling D4.7 that the committed catalog already matches the current skills, because if it does not this becomes a MAJOR amendment rather than a MINOR one; it did match on 2026-09-08. Enforce all three by extending the existing adapter-coverage.test.sh rather than adding a second mechanism that asserts an overlapping property, and write the checks over the set of skills present rather than over a list of the ones that exist today, because an enumerated list is the defect being removed. Both existing skills conform as of 2026-09-08, so use highway-inquiry as the subject of the failure proofs: break each correspondence for it in turn -- remove its catalog entry, then an adapter, then an adapter manifest row, then a distribution manifest row, then change its description without regenerating -- confirming the check fails each time and passes again once restored. A round trip proves the check is reading what it claims to read, where watching it pass proves nothing. Take care that a currency check does not leave regenerated files behind when it finishes. At the end, confirm every skill present conforms, naming highway-help and highway-inquiry explicitly. Decide separately whether the generators should prune what they no longer produce, or whether pruning stays a deliberate manual step that the check reports -- pruning is a delete, and a generator that deletes needs more care than one that writes."
+```
+
+**Done when**:
+
+- D4.5, D4.6 and D4.7 are in the Development Constitution, tagged `[auto]`, each with an
+  Enforcement Map row naming the test that decides it.
+- The amendment is recorded as MINOR, `1.1.0 → 1.2.0`, with its reasoning, including confirmation
+  that the committed catalog matched the current skills before D4.7 was enabled.
+- The checks are written over the set of skills present, not over an enumerated list.
+- The checks fail when a skill has no catalog entry, when an entry names no skill, when an adapter
+  exists for no skill, when a manifest row names a skill that is gone, and when a skill's
+  description changes without regeneration.
+- Each of those five failures has been observed and then restored, using `highway-inquiry` as the
+  subject, so the checks are shown to read what they claim to read.
+- The currency check leaves no regenerated file behind when it finishes.
+- Every skill present conforms — `highway-help` and `highway-inquiry` both named and confirmed.
+- Whether generators prune is decided and recorded.
+- No orphaned adapter can reach a distribution.
+
+---
+
 ### Gate — A second skill exists
 
-**Blocks**: Phase 5.
+**Blocked**: Phase 5, until cleared.
+
+**Status**: ✅ **Cleared**, 2026-09-08 by `highway-inquiry` (`specs/015-requirements-inquiry`).
+26 tasks; 17 tests passing. It maintains the requirements discovery questionnaire at
+`.highway/library/templates/requirements-inquiry.md`, so it asks the user questions, writes a file
+they own, and produces derived content — the three behaviours the standard needs to generalise
+from.
+
+**Authored before the standard it will be held to**, as this gate anticipated. Phase 5 should
+expect to revise it, the same relationship `highway-help` had to Layer 1.
+
+**Two findings worth carrying forward**:
+
+1. **A new skill's adapters were silently excluded from the distribution.** The manifest
+   classifies adapters by exact path, and only `highway-help` had rows. A second skill's adapters
+   matched the parent `exclude`, so packaging succeeded and the recipient's agent could not see
+   the skill. Fixed with three rows and `adapter-coverage.test.sh`, which fails for any skill
+   whose adapters are not included. The Skill Content Gate does not catch this — it asks whether
+   skill content conforms, not whether the skill reaches anyone.
+2. **P8.1 forced the questionnaire's rendering.** It requires every ordered list to restart at 1,
+   reading each as a sequence of workflow steps. Questions numbered globally across sections —
+   which is what makes "question 12" unambiguous — failed it. The questions are written as a bold
+   number and text rather than as a Markdown ordered list, because they are not steps. Worth
+   revisiting if a library exemption for P8.1 is ever wanted.
 
 Phase 5 must not begin while `highway-help` is the only skill in the catalog. The Experience
 Standard needs at least one skill that exercises the behaviours it intends to govern: user
@@ -443,7 +655,44 @@ skill and is exactly how `highway-help` informed Layer 1.
 
 ### Phase 5 — Author the Experience Standard
 
-**Layer**: 2 **Type**: Spec
+**Layer**: 2 **Type**: Spec (`specs/017-experience-standard`)
+
+**Status**: ✅ **Complete**, 2026-09-08. 38 tasks; 17 tests passing. Experience Standard 1.0.0 with
+8 `X` rules, all `[agent-checkable]`, plus 2 recorded candidates. Both skills cite the rules they
+satisfy; `highway-help` 3.0.1 → 3.0.2 and `highway-inquiry` 1.0.0 → 1.0.1, both PATCH.
+
+**The finding that shaped the document**: checking candidate rules against the 49 `P` rules found a
+near-exact collision. The obvious first rule — *a skill must ask rather than guess when the
+intended action is ambiguous* — **is `P1.7`**. Two more sat close: `P5.2` and `P4.6`. The boundary
+that resolved it, and that the standard now rests on:
+
+> `P` owns whether a behaviour must exist. `X` owns what that behaviour must look like.
+
+`P1.7` requires a skill to ask; it says nothing about what the asking contains. `highway-inquiry`
+already goes further than `P1.7` requires, aborting *"naming every candidate question"*, and that
+surplus is Layer 2 material. A third collision surfaced during implementation: `P6.6` is a
+determinism rule, but about which *action* is selected rather than what an artifact *contains*.
+
+**Three findings worth carrying forward**:
+
+1. **The best-evidenced rule came from a disagreement, not agreement.** `highway-help` prints an
+   exact error string; `highway-inquiry` deliberately omits rule identifiers for framework-owned
+   parts — *"Loud about their content, quiet about the framework's."* Mandating either style makes
+   one skill wrong. `X5.1` is what both satisfy: a message must name something its reader can act
+   on. Two skills agreeing may be one author's habit; two differing with a stated reason is a real
+   distinction.
+2. **Five of eight rules rest on a single skill**, not three as first drafted. The Sync Impact
+   Report initially undercounted, and the discrepancy surfaced only when the Sample column was
+   read back mechanically. `X1.3` rests on `highway-help` alone for the opposite reason to the
+   others — `highway-inquiry` has no empty-result case.
+3. **The restatement review restated.** The first draft paraphrased `P1.7` as "requires
+   clarification when an input is absent or self-contradictory", which is that rule's text minus
+   one word. Rewritten to state the *distinction* and cite the ID. A review that reproduces what it
+   is distinguishing from defeats itself.
+
+**`D4.7`'s first outing on another feature**: editing both skills left the catalog and four
+adapters stale, `adapter-coverage.test.sh` named all six, and regeneration cleared it. The rule
+written in Phase 4c did the job it was written for.
 
 **Goal**: A ratified Layer 2 document defining what Highway skills emit and how they interact.
 
@@ -472,7 +721,43 @@ that cites it.
 
 ### Phase 6 — Enforce the Experience Standard
 
-**Layer**: 2 **Type**: Spec
+**Layer**: 2 **Type**: Spec (`specs/018-experience-enforcement`)
+
+**Status**: ✅ **Complete**, 2026-09-08. 42 tasks; 17 tests passing. Experience Standard 1.1.0
+(MINOR). All nine `X` rules are inventoried and appear in exactly one coverage group; `UNCHECKED`
+is empty for both skills. `highway-help` 3.0.2 → 3.0.3, `highway-inquiry` 1.0.1 → 1.0.2.
+
+**The measured outcome, reported rather than targeted**: of nine `X` rules, **one** is decided by
+a script and **eight** remain `[agent-checkable]`. Seven govern runtime output — prompt wording,
+message content, artifact contents — that no static check reading a `SKILL.md` can observe. The
+inventory, not the automation, is what this phase delivered.
+
+**The one automated rule was derived from a defect, not reasoned toward.** `X1.4` — a specimen
+agrees with the metadata it repeats — was added because the drift was found first: `highway-help`'s
+Example showed `Version: 3.0.1` against a frontmatter of `3.0.2`, introduced by feature 017 and
+copied into three agent trees. Rules found this way come with their own failing case; rules reasoned
+toward tend to arrive with a proxy that cannot fail.
+
+**It caught its own author within seconds.** Bumping `highway-help` to 3.0.3 during this feature
+left the Example at 3.0.2, and the newly enabled check reported it immediately. The same defect,
+by the same hand, twice in one day — which is the argument for the rule better than any reasoning.
+
+**Four findings worth carrying forward**:
+
+1. **The P-namespace binding appeared a third time.** `con_rules()` matched `P[0-9]+\.[0-9]+`
+   (feature 014 found this), and so did the N/A-entry assertion in `rule-checks.test.sh`. Widening
+   the shared pattern is not enough — every consumer that re-derives a namespace needs checking.
+2. **Two existing tests caught the change before any new test did.** `coverage-summary.test.sh`
+   failed because the validator reported 57 ids against an expectation built from one document, and
+   `rule-checks.test.sh` refused a rule registered without a seeded violation case. Both were
+   strengthened rather than weakened, per `D3.5`.
+3. **A planned check was abandoned on evidence.** Comparing an Example against the field list its
+   Outputs section declares looked feasible and is not: extracting `highway-help`'s six declared
+   labels returns eight, because two recur in prose describing another mode. Recorded as a
+   candidate in the standard rather than shipped as a proxy that would pass by luck.
+4. **Scoping is now a stated contract.** Once the pattern accepts `X`, only the caller's document
+   list keeps experience rules away from library content. `validate-library.sh` loads the
+   constitution alone, and says why at the call site.
 
 **Goal**: `X` rules are checked by the same machinery that checks `P` rules.
 
@@ -500,6 +785,46 @@ the `X` rules its own self-check exercises.
 ### Phase 7 — Build the `nfrs` and `controls` skills
 
 **Layer**: 2 governs them; Layer 3 is their subject matter **Type**: Spec
+
+**Status**: 🔶 **Delivered with recorded gaps**, 2026-09-08. `highway-controls` complete
+(`specs/019-repository-controls`): 47 tasks; 18 tests passing. `highway-nfrs` shipped
+(`specs/020-highway-nfrs`): 54 tasks; 20 tests passing; registered, generated and validated. Five
+functional requirements are unimplemented — FR-002, FR-020, FR-024, FR-027 and FR-032 — and
+several tasks were marked complete without the work they describe. Both baselines are usable and
+the containment boundary holds; the shortfall is in advice wording, ambiguity branches and test
+depth. Phase 10 owns the rule defects that let it through; the residual FR work belongs to a new
+numbered spec under D5.2, not to an edit of 020.
+
+**The containment guard is now structural rather than intended.** `validate-library.sh` declines
+any file outside the framework root, so a user's Control is never judged by Highway's authoring
+rules. Before this, the same file was judged when named by an absolute path and declined when named
+by a relative one — containment that depended on how someone typed a path. Measured beforehand:
+thirteen Controls written with an uppercase keyword fail `P7.4`, and a Control over twenty-five
+words fails `P1.3`, reported as though the user's policy were a skill.
+
+**Four findings worth carrying forward**:
+
+1. **The scope had to be the framework root, not its library directory.** Fixtures live under
+   `tools/tests/fixtures/library/`, so the narrower reading would have declined every one and
+   bought containment by breaking the tests that prove it.
+2. **`P7.4` was never close to binding — 4 of 12.** The plan treated a split as likely and made it
+   a measured decision rather than a guess. What kept the count low was putting artifact shape in
+   Outputs as *description*: the budget is for obligations on the agent, not for structure.
+   `highway-help` states zero and is fully specified.
+3. **`P6.4` rejected the word "preference"** in a sentence saying what a Control is *not*. The
+   nondeterministic-token check reads lines, not intent. Reworded rather than exempted.
+4. **Test residue cost time twice before being fixed.** Two tests seed probes into the live tree
+   and clean up only on a normal exit, so a killed run leaves artifacts named with a dead PID that
+   no later run claims. Worse, tests run in name order, so the residue fails whichever test sorts
+   first — an orphaned adapter row failed `adapter-coverage`, and an abandoned link probe failed
+   `distribution-packaging`, each naming a defect that did not exist. Fixed with a sweep in
+   `run-all.sh`, at the suite level, because sweeping in the owning test is too late.
+
+**Decisions recorded during specification**, each resolving a contradiction in the original draft:
+Controls live at the project root rather than under `.highway/`; files carry YAML frontmatter with
+a Markdown body; the catalog is prose; the next identifier is recorded rather than computed, so
+removal cannot free an identifier for reuse; and **a Control carries no version of its own**, since
+two counters over one baseline can disagree with nothing saying which is authoritative.
 
 **Goal**: Ship the governance skills that let a user author NFRs and controls over their own
 architecture.
@@ -534,6 +859,324 @@ re-validates a skill that already exists rather than creating it from nothing.
 - Both skills validate against the constitution and cite the `X` rules they satisfy.
 - No skill writes Layer 3 content under `.highway/`.
 - A test confirms a user-authored artifact is never validated against Highway's governance.
+
+---
+
+### Phase 8 — Make a skill's help detail answerable for itself
+
+**Layer**: 1 **Type**: Spec
+
+**Status**: Deferred by decision, 2026-09-08. Independent of every other phase; can run whenever.
+
+**Goal**: A skill's `description` and `usage` are required to be *true*, not merely present and
+well-formed.
+
+**Why this is not covered by Phase 4c.** `highway-help` answers from the catalog, and the catalog
+is generated from each skill's frontmatter. `D4.7` guarantees the catalog faithfully mirrors the
+`SKILL.md`. It guarantees nothing about whether the `SKILL.md` is accurate. Change a skill's
+behaviour, update its body, leave the frontmatter alone, and every gate passes while `highway-help`
+describes a skill that no longer exists. Phase 4c closed catalog-vs-source drift; this closes
+source-vs-reality drift.
+
+**The verified gap** (2026-09-08). `highway-inquiry`'s description was set to *"Generates
+architecture diagrams from a running Kubernetes cluster and exports them as SVG"* and the validator
+returned `OK: skill 'highway-inquiry' is valid (13 rules checked, 35 deferred, 0 unchecked)`,
+exit 0. Nothing objected, and `D4.7` would then have propagated it into the catalog faithfully.
+
+What exists today, and what each stops short of:
+
+| Mechanism | Covers | Does not cover |
+|---|---|---|
+| `schema-validate.sh` | `description` and `usage` must be **present** | Whether either says anything true |
+| `P7.2` | Version **format** is `MAJOR.MINOR.PATCH` | Whether it was bumped |
+| `P7.7` | A breaking contract change increments MAJOR | Description and usage accuracy |
+| `D6.1` | Live documentation updated when invalidated | **Defined** as tool READMEs, the authoring standard, the root README — a `SKILL.md`'s frontmatter is not in that list |
+| `D4.7` | The catalog matches the source | Whether the source is right |
+
+**This is Layer 1, not Layer 0.** The routing test in §2 places it: the obligation constrains a
+`SKILL.md`, so it takes `P` ids and lives in the shipping constitution, phrased for a skill author
+rather than a maintainer. Same reasoning as Phase 2b.
+
+**Two rules, deliberately split by what can honestly be automated**:
+
+| ID | Rule | Observable | Tier |
+|---|---|---|---|
+| P7.8 | A change to a skill's behaviour MUST be accompanied by a review of its description and usage. | The change either edits both fields or records that neither needed editing. | [agent-checkable] |
+| P7.9 | A skill's usage MUST name its own invocation. | The `usage` field contains the skill id. | [auto] |
+
+P7.8 is `[agent-checkable]` because accuracy is semantic and every mechanical proxy under-detects.
+Tagging it `[auto]` would reintroduce exactly the dishonesty Phases 4 and 4b removed. P7.9 is the
+weaker mechanical partner, and it catches the real copy-paste-a-sibling-skill error.
+
+**P7.9 passes today** — verified 2026-09-08: both `highway-help` and `highway-inquiry` name their
+own id in `usage`. So it would enable without invalidating conforming work, keeping the amendment
+MINOR. Re-verify before enabling, as Phase 4c showed that assumption can be wrong.
+
+**Prerequisite**: None. Independent of Phases 5, 6 and 7.
+
+**Command**:
+
+```text
+/speckit.specify "I want a skill's help detail to be answerable for itself, because highway-help reads each skill's frontmatter and nothing requires that frontmatter to be true. Verified 2026-09-08: setting highway-inquiry's description to 'Generates architecture diagrams from a running Kubernetes cluster and exports them as SVG' produced OK: skill 'highway-inquiry' is valid, exit 0, and D4.7 would then propagate that faithfully into the catalog. D4.7 closed catalog-versus-source drift; this closes source-versus-reality drift, which is a different gap. Add two rules to the Highway Skills Constitution at .highway/governance/constitution.md as a MINOR amendment. P7.8: a change to a skill's behaviour MUST be accompanied by a review of its description and usage, observable as the change either editing both fields or recording that neither needed editing, tagged [agent-checkable] because accuracy is semantic and every mechanical proxy under-detects -- tagging it [auto] would reintroduce the dishonesty features 013 and 014 removed. P7.9: a skill's usage MUST name its own invocation, observable as the usage field containing the skill id, tagged [auto] and decided by a registered check reporting under its own rule id in the existing coverage summary, the way every other [auto] P rule is. Place these in Layer 1 rather than Layer 0: the routing test says a rule constraining a SKILL.md is Layer 1, and the rule must be phrased for a skill author rather than a maintainer, the same decision feature 011 made. Verify before enabling P7.9 that both existing skills already name their own id in usage -- they did on 2026-09-08 -- because if that is not true the amendment is MAJOR rather than MINOR. Evaluate the new check against every existing fixture before enabling it, per D3.4, and prove it can fail by changing a skill's usage so it no longer names its id, confirming the check fails and passes again once restored. Cite both rules by id from .highway/skills/_authoring-standard.md rather than restating their text, per P7.3. Consider separately whether the frontmatter should be named in the definition of live documentation, or whether that definition should stay Layer 0 and this obligation stay Layer 1 -- do not do both, because that would restate one rule in two documents."
+```
+
+**Done when**:
+
+- `P7.8` and `P7.9` are in the Highway Skills Constitution with Observables and tiers, recorded as
+  a MINOR amendment in its Sync Impact Report.
+- `P7.9` is decided by a registered check reporting under its own rule id, and the `UNCHECKED`
+  group stays empty.
+- The check has been observed failing and then passing again after restoration.
+- `_authoring-standard.md` cites both rules by id and restates neither.
+- Confirmation is recorded that both existing skills satisfied `P7.9` before it was enabled.
+
+---
+
+### Phase 9 — Make artifact versions accountable
+
+**Layer**: 1 for the library rule; the shared-semantics part does not route cleanly and that is the
+first thing to settle **Type**: Spec
+
+**Status**: Deferred by decision, 2026-09-08. Independent of every other phase.
+
+**Goal**: A version number on any artifact means something, and something requires it to move.
+
+**The verified gap** (2026-09-08). Two findings, and only the first is straightforward:
+
+1. **Nothing governs when a library file's version changes.** `P7.2` validates that
+   `metadata.version` matches `MAJOR.MINOR.PATCH`; no rule requires it to move when the content
+   does. Measured: zero `P` rules mention library versioning at all.
+   `library/templates/requirements-inquiry.md` sits at 1.0.0 and could be rewritten entirely with
+   nothing objecting. This is the same shape as the defect Phase 8 records — a field that exists,
+   looks maintained, and is accountable to nothing.
+2. **Four MAJOR clauses exist across the governance documents**, sharing a shape but not a
+   subject:
+
+| Document | What MAJOR is about |
+|---|---|
+| Skills Constitution, document policy | A principle or governance rule removed or redefined |
+| Skills Constitution, Skill Versioning Policy | A breaking change to the skill contract |
+| Experience Standard | A rule removed or redefined |
+| Development Constitution | A principle removed or redefined |
+
+These are **not** a `D1.4` violation — they constrain different artifacts. But the repetition is
+real, and a fifth is about to appear when `highway-controls` versions a Control baseline.
+
+**Why this is not one universal scheme.** "Breaking" is defined relative to a consumer, and the
+consumers differ: a skill's consumer is an agent invoking it, a library file's is a skill reading
+it, a control baseline's is an auditor or a design citing a `CTL` identifier. A single definition
+covering all three would have to be abstract enough to decide nothing — which is the defect
+Phases 4, 4b and 6 each removed.
+
+**The routing problem, to settle first.** A shared versioning vocabulary constrains every artifact
+and fits none of the four layers cleanly. That question is the whole difficulty of this phase and
+should not be answered under time pressure inside a feature about something else. It is why the
+library rule below is separable and the semantics work is not.
+
+**Note on automation.** The library-currency rule cannot be `[auto]`. Detecting that content
+changed requires comparing against a previous state, and version control is deliberately absent
+from the Declared Toolchain because the packaged tree is not a repository. It lands
+`[agent-checkable]`, like `P7.7`, and that is honest rather than a shortfall.
+
+**Prerequisite**: None. Independent of Phases 5, 6, 7 and 8.
+
+**Command**:
+
+```text
+/speckit.specify "I want a version number on a Highway artifact to mean something and to be required to move. Two findings, verified 2026-09-08. First, nothing governs when a library file's version changes: P7.2 validates that metadata.version matches MAJOR.MINOR.PATCH, but no rule requires it to move when the content does, and zero P rules mention library versioning at all -- library/templates/requirements-inquiry.md sits at 1.0.0 and could be rewritten entirely with nothing objecting. Add a rule to the Highway Skills Constitution requiring that a library file's version change when its content changes, tagged [agent-checkable] because detecting a content change requires comparing against a previous state and version control is deliberately absent from the Declared Toolchain. Do not tag it [auto] and do not write a proxy check that cannot fail. Second, and separately, four MAJOR clauses exist across the governance documents -- the Skills Constitution's own policy, its Skill Versioning Policy, the Experience Standard, and the Development Constitution -- sharing a shape but constraining different artifacts, and a fifth arrives when highway-controls versions a Control baseline. Before factoring anything, settle where a shared versioning vocabulary belongs, because it constrains every artifact and fits none of the four layers cleanly under the routing test. Decide that question first and record the answer; only then decide whether to state the shared semantics once and have each artifact type define what constitutes a breaking change for it, citing rather than restating. Do not produce a single universal definition of breaking: the consumers differ -- a skill's consumer is an agent invoking it, a library file's is a skill reading it, a control baseline's is an auditor citing an identifier -- and one definition covering all three would be abstract enough to decide nothing, which is the defect features 013, 014 and 018 each removed."
+```
+
+**Done when**:
+
+- A rule requires a library file's version to change when its content changes, tagged honestly.
+- Where a shared versioning vocabulary belongs is decided and recorded, or recorded as deliberately
+  not factored, with the reason.
+- No universal definition of "breaking" is introduced that covers artifacts with different
+  consumers.
+- No rule is tagged `[auto]` without a check that decides it.
+
+---
+
+### Phase 10 — Make a completion claim accountable
+
+**Layer**: 0 **Type**: Spec
+
+**Status**: Complete, 2026-09-08, through `specs/021-completion-claim-accountability`. The
+Development Constitution is 1.3.0 with D3.6 and D7.1-D7.3; D7.2 is enforced by
+`completion-coverage.test.sh`. Historical features without coverage are reported as missing rather
+than rewritten, and Feature 020's five residual requirements remain deferred.
+
+**Goal**: A task marked complete, and a report saying a feature is done, are required to be *true*.
+Today both are self-asserted and nothing objects.
+
+**The verified gap** (2026-09-08, from feature 020). Every gate passed: `run-all.sh` reported
+`20 passed, 0 failed`, `adapter-coverage.test.sh` passed, both skill validators returned valid, the
+requirements checklist read 16 of 16, and all 54 tasks were marked `[X]`. The feature was reported
+complete. It was not:
+
+| Claim | Reality | What should have caught it |
+|---|---|---|
+| T052 — quickstart scenarios run against isolated fixtures | Never run; scenarios 2 and 4–6 are interactive and 1 and 3 were not executed | Nothing requires a completed task's described work to exist |
+| T011, T012, T021–T023, T028, T029, T039–T041 — behavioral assertions added to `nfr-management.test.sh` | The file contains no Add, `next_id`, Remove, Set, high-water, Update, PATCH, or ambiguity assertion; it greps skill prose for fifteen fixed strings | Nothing requires a test to be capable of failing for the behavior it claims |
+| T009 — shared fixtures added | Fixtures created under `tools/tests/fixtures/nfr/`; no test references them | Same as above |
+| T017, T018, T036, T039 — skill content added | Generator-exclusion assertions, the prose-rule exemption, the improved-alternative obligation, and the update-versus-replace branch are all absent | Nothing traces a requirement to the artifact satisfying it |
+| FR-002, FR-020, FR-024, FR-027, FR-032 satisfied | Unimplemented | Same as above |
+
+**Why the existing rules do not cover this.** Each of the four nearest rules is satisfied by the
+work as delivered, which is the point:
+
+| Rule | Says | Why it passed anyway |
+|---|---|---|
+| `D3.1`/`D3.2` | Begin and end from a passing suite | The suite passed at both ends. A suite of prose greps passes easily |
+| `D3.3` | A behavioral change MUST add or amend at least one test | Two test files were added. The rule counts edits, not assertions |
+| `D3.5` | A test MUST NOT be weakened | Nothing was weakened. The tests were born weak |
+| `D4.5`/`D4.7` | Generated artifacts correspond to source | They do. Correspondence says nothing about whether the source satisfies its spec |
+
+The shape is the one Phase 8 records at Layer 1: a field that exists, looks maintained, and is
+accountable to nothing. Here the field is a checkbox.
+
+**This is Layer 0, all four rules.** The routing test in §2 places them without argument: they
+constrain a `tasks.md`, a `spec.md`, a test file, and a maintainer's report — artifacts that exist
+only to build Highway and never ship. No part of this phase touches a `SKILL.md`, so no `P` rule
+is involved and no amendment to the shipping constitution is needed.
+
+**Four rules, tiered by what can honestly be decided mechanically**:
+
+| ID | Rule | Observable | Tier |
+|---|---|---|---|
+| D3.6 | A test MUST be observed failing for the behavior it claims to cover before that behavior is marked complete. | The failing run and its message are recorded before the implementation that makes it pass. | [agent-checkable] |
+| D7.1 | A task MUST NOT be marked complete unless the artifact it names contains the change it describes. | Each `[X]` task's named path exists and contains the described change. | [agent-checkable] |
+| D7.2 | A completed feature MUST record a requirement-coverage mapping. | Every requirement id in `spec.md` appears exactly once in the feature's coverage record, against a satisfying artifact or a stated deferral. | [auto] |
+| D7.3 | A completion report MUST state requirement coverage separately from check results. | The report makes the suite result and the requirement coverage two distinct claims. | [agent-checkable] |
+
+D7.1 and D7.3 are `[agent-checkable]` because deciding whether a file *contains the change a
+sentence describes* is semantic, and every mechanical proxy under-detects. Tagging either `[auto]`
+would reintroduce exactly the dishonesty Phases 4 and 4b removed. D7.2 is the mechanical partner
+and is genuinely decidable — comparing two sets of ids needs no judgment — and it is the rule that
+would have caught FR-002, FR-020, FR-024, FR-027 and FR-032 before the feature was reported
+complete.
+
+**D3.6 is the generalisation of an existing precedent, not a new idea.** `D3.4` already requires a
+new validation check to be evaluated before it is enabled, and Phase 8's Done-when already requires
+a check to be *observed failing and then passing again*. D3.6 states for tests what `D3.4` states
+for checks. Placing it in Principle III keeps the verification rules together; D7.x opens a new
+principle because completion integrity is about the record rather than the run.
+
+**What deliberately stays out.** No rule here says a test must be behavioral rather than static.
+A prose-contract test is the correct instrument when the artifact under test is agent instructions
+rather than executable code, which is exactly what a `SKILL.md` is. The defect in feature 020 was
+not that the tests were static; it was that the tasks claimed assertions the tests did not contain.
+D3.6 and D7.1 address the claim, not the technique.
+
+**Prerequisite**: None. Independent of Phases 5, 6, 7, 8 and 9.
+
+**Command**:
+
+```text
+/speckit.specify "I want a completion claim to be accountable, because today a task is marked complete by asserting it and nothing objects. Verified 2026-09-08 in feature 020: the suite reported 20 passed 0 failed, adapter coverage passed, both skill validators returned valid, the requirements checklist read 16 of 16, all 54 tasks were marked complete, and the feature was reported done -- while five functional requirements were unimplemented, one task claimed a quickstart run that never happened, ten tasks claimed behavioral assertions that the test file does not contain, and one task created fixtures that no test references. The four nearest existing rules all passed: D3.1 and D3.2 because the suite was green at both ends, D3.3 because it counts test-file edits rather than assertions, D3.5 because nothing was weakened -- the tests were born weak -- and D4.5 and D4.7 because generated artifacts corresponded to a source that did not satisfy its spec. Add four rules to the Highway Development Constitution at .specify/memory/constitution.md as a MINOR amendment, all Layer 0 because they constrain a tasks.md, a spec.md, a test file and a maintainer's report, none of which ship. D3.6 in Principle III: a test MUST be observed failing for the behavior it claims to cover before that behavior is marked complete, observable as the failing run and its message being recorded before the implementation that makes it pass, tagged [agent-checkable]; this generalises D3.4 from validation checks to tests. Open a new Principle VII for completion integrity. D7.1: a task MUST NOT be marked complete unless the artifact it names contains the change it describes, observable as each completed task's named path existing and containing the described change, tagged [agent-checkable] because deciding whether a file contains what a sentence describes is semantic. D7.2: a completed feature MUST record a requirement-coverage mapping, observable as every requirement id in spec.md appearing exactly once in the coverage record against a satisfying artifact or a stated deferral, tagged [auto] and decided by a registered check, because comparing two sets of ids needs no judgment. D7.3: a completion report MUST state requirement coverage separately from check results, tagged [agent-checkable]. Do not tag D7.1 or D7.3 [auto] and do not write a proxy check that cannot fail, because that is the dishonesty features 013 and 014 removed. Add the D7.2 check to the test suite with an Enforcement Map entry naming it, evaluate it against every existing completed feature before enabling it per D3.4, and prove it can fail by removing a requirement id from a coverage record. Do not add any rule requiring a test to be behavioral rather than static: a prose-contract test is correct when the artifact under test is agent instructions, and the defect was the claim, not the technique."
+```
+
+**Done when**:
+
+- `D3.6` and `D7.1`–`D7.3` are in the Development Constitution with Observables and tiers, recorded
+  as a MINOR amendment in its Sync Impact Report.
+- A new Principle VII exists for completion integrity, and Principle III carries `D3.6`.
+- `D7.2` is decided by a registered check named in the Enforcement Map, evaluated against every
+  completed feature before it was enabled, and observed failing and then passing again.
+- `D7.1` and `D7.3` are tagged `[agent-checkable]`, with no proxy check that cannot fail.
+- Feature 020's coverage record exists and names FR-002, FR-020, FR-024, FR-027 and FR-032 as
+  unsatisfied, so the first artifact the new rule produces is an honest one.
+- No rule is added requiring a test to be behavioral rather than static.
+
+---
+
+### Phase 11 — Require shared templates for a skill's emitted output
+
+**Layer**: 1 states the citation obligation; 2 states retained-file frontmatter; 0 states the drift guard **Type**: Spec
+
+**Status**: Proposed, 2026-09-09. Independent of every other phase.
+
+**Goal**: A skill that emits a file draws that file's full structure — frontmatter *and* body,
+not frontmatter alone — from a shared template under `.highway/library/templates/output/`, cited
+rather than restated, so two skills emitting the same kind of record cannot silently diverge in
+their fields, their section order, or their prose shape.
+
+**The verified state, not yet a defect** (2026-09-09). `highway-nfrs` and `highway-controls`
+currently declare near-identical output on both counts. Frontmatter: `id`, `title`, `status`, plus
+a cross-reference array (`controls: []` on an NFR, `nfrs: []` on a Control). Body: each Outputs
+section describes the same shape — a Markdown statement followed by a rationale. Both alignments
+exist only because both skills were authored in the same phase by the same hand. Nothing requires
+either to hold, and nothing would catch the next skill, or an edit to either one, drifting from
+the other in its fields, its section order, or both. This is the same shape of gap Phase 7 closed
+for containment before it was violated rather than after: fix the missing guard while there are
+only two skills to check, not after a third makes divergence likely.
+
+**A near-collision was checked before drafting rule text, per the precedent Phase 5 set.**
+`X1.1` already requires a skill to declare the shape of what it emits, and `X1.2` already requires
+emitted content to follow that declared shape — and "shape" there already means the whole file,
+not only its frontmatter. A cited template is one way of declaring a shape, so neither rule needs
+amending — the gap is not "nothing governs output shape", it is "nothing requires the declaration
+to route through shared, citable machinery instead of independent prose in each skill". That is a
+citation discipline, the same shape as `P7.3` (no restating another skill's rule) and `D1.3`/`D1.4`
+(no restating rule text) — so this becomes one `P` rule, not a new `X` rule. Keeping this out of
+the `X` namespace is what keeps the amendment small.
+
+**Three rules, in three governance documents**:
+
+| ID | Document | Rule | Observable | Tier |
+|---|---|---|---|---|
+| P9.1 | Highway Skills Constitution (new Principle IX) | A skill that emits a file MUST cite a template rather than restate the file's structure. | The Outputs section names a path under `.highway/library/templates/output/` in place of describing frontmatter fields or body sections directly. | [auto] |
+| D8.1 | Development Constitution (new Principle VIII) | A change to a shared library artifact MUST be followed by re-validation of every skill that cites it. | Each skill naming that artifact is re-checked, and its emitted output still matches, in both frontmatter and body. | [agent-checkable] |
+| X1.5 | Experience Standard (X1 — Output structure) | Every retained file artifact emitted by a skill MUST include frontmatter. | Each retained emitted file begins with frontmatter; transient messages and other non-file output are excluded. | [agent-checkable] |
+
+D8.1 is `[agent-checkable]`, not `[auto]`, because deciding whether a skill's *emitted* output —
+frame or body — still matches a changed template is a runtime, semantic question — the same
+reasoning that keeps `D7.1` and `D3.5` off the `[auto]` tier. Tagging it `[auto]` here would be the
+exact dishonesty Phases 4 and 4b removed. Principle VIII is new in the `D` namespace, generalized
+to "a shared library artifact" rather than named for templates specifically, because
+`requirements-inquiry.md` is already such an artifact and Phase 9's still-open library-versioning
+question is the same kinship of problem: multiple things depending on one shared file that nothing
+currently tracks the currency of. This phase does not attempt to resolve Phase 9; it should not
+contradict whatever Phase 9 eventually decides about library-file versioning.
+
+**Naming**: `.highway/library/templates/` already holds `requirements-inquiry.md`, a
+question-content template `highway-inquiry` reads from — a different sense of "template" than an
+output-file skeleton. New output templates live under a `templates/output/` subdirectory, and each
+file there is a full skeleton — frontmatter block and body sections together — not a fragment
+covering only one part, so the two senses of "template" never collide on disk or in a validator's
+search path.
+
+**This is a retroactive strengthening, not a green-field rule.** Verified 2026-09-09: neither
+`highway-nfrs` nor `highway-controls` cites an external template today — both declare their full
+output shape, frontmatter and body alike, inline in prose. Enabling P9.1 against the tree as it
+stands fails both immediately. Per `D3.4`'s evaluate-before-enable discipline and the precedent
+Phase 4c set, the extraction — writing `templates/output/nfr-record.md` and
+`templates/output/control-record.md` as complete skeletons, and pointing each skill's Outputs
+section at its template instead of its inline description — must happen in the same change that
+turns the rule on, or the amendment is MAJOR rather than MINOR.
+
+**Prerequisite**: None. Independent of Phases 5 through 10.
+
+**Command**:
+
+```text
+/speckit.specify "I want every Highway skill that emits a file to cite a shared template covering that file's full structure -- frontmatter and body alike, not frontmatter alone -- rather than restate that structure in its own prose, so two skills emitting the same kind of record cannot silently diverge in either part. Verified 2026-09-09: highway-nfrs and highway-controls currently declare near-identical output on both counts -- frontmatter of id, title, status, plus a cross-reference array, and a body of a statement followed by a rationale -- but only because both were authored together, and nothing requires either alignment to hold. Before writing rule text I checked for a collision with the Experience Standard's X1.1 and X1.2, which already require a skill to declare its output shape, whole-file, and to follow it: a cited template is one way of declaring a shape, so neither needs amending, and this stays a single new P rule about citation discipline rather than a new X rule -- the same shape as P7.3 and D1.3/D1.4, which require citing rather than restating. Add P9.1 to the Highway Skills Constitution at .highway/governance/constitution.md, in a new Principle IX: a skill that emits a file MUST cite a template rather than restate the file's structure, observable as the Outputs section naming a path under .highway/library/templates/output/ in place of describing frontmatter fields or body sections directly, tagged [auto]. Add D8.1 to the Development Constitution at .specify/memory/constitution.md, in a new Principle VIII generalized to shared library artifacts rather than named for templates specifically, because requirements-inquiry.md is already such an artifact: a change to a shared library artifact MUST be followed by re-validation of every skill that cites it, observable as each citing skill being re-checked and its emitted output still matching in both frontmatter and body, tagged [agent-checkable] because deciding whether an emitted output still matches a changed template is semantic, and tagging it [auto] here would be the same dishonesty features 013 and 014 removed. Create .highway/library/templates/output/nfr-record.md and .highway/library/templates/output/control-record.md as complete skeletons -- frontmatter block and body section structure together -- holding exactly what both skills already declare, in a new templates/output/ subdirectory kept separate from requirements-inquiry.md, which is a question-content template rather than an output-file skeleton and must not be confused with one. Update highway-nfrs and highway-controls to cite their template paths from Outputs instead of restating frontmatter or body structure, bump each skill's version as a PATCH since the emitted output does not change, and regenerate the catalog and adapters. Verify before enabling P9.1 that both skills conform once the citation is added, per D3.4, because if either does not this becomes a MAJOR amendment instead of a MINOR one. Record both amendments in each document's Sync Impact Report. Do not write a rule requiring an emitted record's content -- only its declared structure -- since a template governs form and this project's containment principle already settles that a user's own values within that structure are never Highway's to judge."
+```
+
+**Done when**:
+
+- `P9.1` is in the Highway Skills Constitution under a new Principle IX, with an Observable and a
+  tier, recorded as a MINOR amendment in its Sync Impact Report.
+- `D8.1` is in the Development Constitution under a new Principle VIII, with an Observable and a
+  tier, recorded as a MINOR amendment in its Sync Impact Report.
+- `.highway/library/templates/output/nfr-record.md` and `.highway/library/templates/output/control-record.md`
+  exist as complete skeletons covering frontmatter and body together, and `templates/output/` holds
+  no question-content template.
+- `highway-nfrs` and `highway-controls` cite their templates from Outputs and restate neither a
+  field list nor a body structure; both were confirmed conforming before `P9.1` was enabled.
+- `X1.5` is added for the separate retained-file frontmatter obligation; the near-collision with
+  `X1.1`/`X1.2` is recorded rather than rediscovered later.
+- Neither skill's emitted output — frontmatter or body — changed as a result of this phase.
 
 ---
 

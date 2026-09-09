@@ -128,6 +128,14 @@ properties and shaped around skill-only fields.
 - **Exit 0**: catalog written.
 - **Exit 1**: at least one file under `.highway/library/` is invalid; the catalog is **not**
   written (no partial catalog), and the failing file's path is named in the error output.
+Complete skeletons for retained files emitted by skills live under
+`.highway/library/templates/output/`. Each skeleton covers the emitted file's frontmatter and
+body. The questionnaire at `.highway/library/templates/requirements-inquiry.md` is a
+question-content template and remains separate.
+
+When a shared library artifact changes, identify every `SKILL.md` that cites it, re-run the
+affected skill and library validators, and review the complete emitted structure. A mismatch in
+frontmatter or body is reported under D8.1; transient messages are not retained file artifacts.
 
 ## Adding a New Agent (FR-004, SC-002)
 

@@ -1,4 +1,26 @@
 {
-  "generated_at": "2026-09-07T11:43:26Z",
-  "entries": []
+  "generated_at": "2026-09-09T11:07:50Z",
+  "entries": [
+    {
+      "library_type": "template",
+      "name": "control-record",
+      "description": "Complete output skeleton for a retained Control record.",
+      "version": "1.0.0",
+      "source_path": "library/templates/output/control-record.md"
+    },
+    {
+      "library_type": "template",
+      "name": "nfr-record",
+      "description": "Complete output skeleton for a retained Non-Functional Requirement record.",
+      "version": "1.0.0",
+      "source_path": "library/templates/output/nfr-record.md"
+    },
+    {
+      "library_type": "template",
+      "name": "requirements-inquiry",
+      "description": "The requirements discovery questions Highway skills ask, ordered as they are asked and maintained through the highway-inquiry skill.",
+      "version": "1.0.0",
+      "source_path": "library/templates/requirements-inquiry.md"
+    }
+  ]
 }
