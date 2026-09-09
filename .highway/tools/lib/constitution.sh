@@ -5,6 +5,7 @@
 
 # Default location; callers may override by exporting CONSTITUTION_FILE.
 : "${CONSTITUTION_FILE:=}"
+: "${EXPERIENCE_FILE:=}"
 
 # Resolves the constitution path, preferring an explicit override. Anchored at the framework
 # root, not the repository root, so the document resolves in a tree holding only .highway/.
@@ -18,6 +19,19 @@ con_file() {
 	fi
 }
 
+# Resolves the experience standard path. Anchored at the framework root, like con_file.
+# Callers choose which documents to load; this one governs what a skill emits, so it applies to
+# skills and not to library content, which emits nothing.
+# Usage: con_experience_file <highway_root>
+con_experience_file() {
+	local highway_root="$1"
+	if [[ -n "$EXPERIENCE_FILE" ]]; then
+		printf '%s' "$EXPERIENCE_FILE"
+	else
+		printf '%s' "$highway_root/governance/experience-standard.md"
+	fi
+}
+
 # Emits one TAB-delimited record per rule: id, tier, text, observable.
 # A row that looks like a rule but does not parse is a hard error, so a table format change
 # fails loudly instead of silently shrinking the inventory.
@@ -27,7 +41,7 @@ con_rules() {
 	awk -F'|' '
 		BEGIN { OFS = "\t"; bad = 0 }
 		function trim(s) { gsub(/^[[:space:]]+|[[:space:]]+$/, "", s); return s }
-		/^\|[[:space:]]*P[0-9]+\.[0-9]+[[:space:]]*\|/ {
+		/^\|[[:space:]]*[PX][0-9]+\.[0-9]+[[:space:]]*\|/ {
 			id = trim($2); text = trim($3); obs = trim($4); tier = trim($5)
 			if (NF < 5 || text == "" || obs == "" || tier !~ /^\[(auto|agent-checkable|human-review)\]$/) {
 				printf("ERROR: malformed rule row for %s at line %d\n", id, NR) > "/dev/stderr"

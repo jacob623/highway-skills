@@ -120,6 +120,31 @@ if [[ -n "$unenforced" ]]; then
 	fail=1
 fi
 
+# The same assertion for the Experience Standard. It shares the P-side definition of [auto] --
+# a registered check reporting under the rule id -- because both documents are read by the same
+# validator against the same artifact.
+EXPERIENCE="$HIGHWAY_ROOT/governance/experience-standard.md"
+if [[ -f "$EXPERIENCE" ]]; then
+	experience_rule_count="$(con_rule_ids "$EXPERIENCE" | grep -c .)"
+	if [[ "$experience_rule_count" -eq 0 ]]; then
+		echo "FAIL: no rules were read from the Experience Standard; the reader matched nothing"
+		fail=1
+	fi
+
+	x_unenforced=""
+	while IFS= read -r rule_id; do
+		[[ -n "$rule_id" ]] || continue
+		if ! printf '%s\n' "$registered" | grep -qx "$rule_id"; then
+			x_unenforced="$x_unenforced $rule_id"
+		fi
+	done < <(con_rule_ids_by_tier "$EXPERIENCE" auto)
+
+	if [[ -n "$x_unenforced" ]]; then
+		echo "FAIL: the Highway Experience Standard tags these rules [auto] but no check decides them:$x_unenforced"
+		fail=1
+	fi
+fi
+
 # Assembled rather than written literally: this file is scanned by shipped-tree-independence.test.sh,
 # which searches for exactly this token. A literal here would fail that check on a file whose job
 # is to read the development constitution. Exempting the file instead would remove it from a check

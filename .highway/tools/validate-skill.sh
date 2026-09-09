@@ -34,6 +34,28 @@ skill_file="$skill_dir/SKILL.md"
 id="$(basename "$skill_dir")"
 constitution="$(con_file "$HIGHWAY_ROOT")"
 
+# A skill is subject to both shipping governance documents: the constitution governs its text, the
+# experience standard governs what it emits. validate-library.sh deliberately loads only the
+# former -- library content emits nothing, so experience rules would judge it against obligations
+# it cannot have.
+GOVERNANCE_DOCS=("$constitution")
+experience_standard="$(con_experience_file "$HIGHWAY_ROOT")"
+if [[ -f "$experience_standard" ]]; then
+	GOVERNANCE_DOCS+=("$experience_standard")
+fi
+
+# Prints one field of a rule, searching each governance document in turn.
+gov_rule_field() {
+	local rule_id="$1" field="$2" doc value
+	for doc in "${GOVERNANCE_DOCS[@]}"; do
+		value="$(con_rule_field "$doc" "$rule_id" "$field")"
+		if [[ -n "$value" ]]; then
+			printf '%s' "$value"
+			return 0
+		fi
+	done
+}
+
 if [[ ! -f "$skill_file" ]]; then
 	echo "ERROR: [SCHEMA] no SKILL.md found at '$skill_file'" >&2
 	exit 1
@@ -128,7 +150,7 @@ while IFS= read -r rule_line; do
 		1)
 			checked="$checked $rule_id"
 			failed_rules="$failed_rules $rule_id"
-			observable="$(con_rule_field "$constitution" "$rule_id" observable)"
+				observable="$(gov_rule_field "$rule_id" observable)"
 			while IFS= read -r finding; do
 				[[ -z "$finding" ]] && continue
 				collect "ERROR: [$rule_id] $finding ($observable)"
@@ -138,7 +160,7 @@ while IFS= read -r rule_line; do
 			checked="$checked $rule_id"
 			;;
 	esac
-done <<< "$(con_rules "$constitution")"
+done <<< "$(for doc in "${GOVERNANCE_DOCS[@]}"; do con_rules "$doc"; done)"
 
 # --- Report --------------------------------------------------------------------------------
 

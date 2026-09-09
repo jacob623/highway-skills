@@ -11,6 +11,7 @@ source "$HIGHWAY_ROOT/tools/lib/constitution.sh"
 VALIDATE="$HIGHWAY_ROOT/tools/validate-skill.sh"
 FIXTURES="$SCRIPT_DIR/fixtures"
 CONSTITUTION="$HIGHWAY_ROOT/governance/constitution.md"
+EXPERIENCE="$HIGHWAY_ROOT/governance/experience-standard.md"
 fail=0
 
 output="$("$VALIDATE" "$FIXTURES/valid-skill" 2>/dev/null)"
@@ -40,13 +41,24 @@ reported="$(printf '%s\n' "$output" \
 	| grep -v '^$' \
 	| sort)"
 
-expected="$(con_rule_ids "$CONSTITUTION" | sort)"
+# A skill is judged against both shipping governance documents, so both contribute rule ids.
+expected="$( { con_rule_ids "$CONSTITUTION"; [[ -f "$EXPERIENCE" ]] && con_rule_ids "$EXPERIENCE"; } | sort)"
 
 reported_count="$(printf '%s\n' "$reported" | grep -c . | tr -d ' ')"
 expected_count="$(printf '%s\n' "$expected" | grep -c . | tr -d ' ')"
 
+# A namespace mismatch would leave one document contributing nothing while the count still
+# matched by coincidence, so assert each document was actually read.
+for doc in "$CONSTITUTION" "$EXPERIENCE"; do
+	[[ -f "$doc" ]] || continue
+	if [[ "$(con_rule_ids "$doc" | grep -c .)" -eq 0 ]]; then
+		echo "FAIL: no rules were read from $doc; the reader matched nothing"
+		fail=1
+	fi
+done
+
 if [[ "$reported_count" != "$expected_count" ]]; then
-	echo "FAIL: output reports $reported_count rule ids, constitution defines $expected_count"
+	echo "FAIL: output reports $reported_count rule ids, the governance documents define $expected_count"
 	fail=1
 fi
 

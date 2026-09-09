@@ -4,7 +4,7 @@ description: "Manages the requirements discovery questionnaire that Highway skil
 usage: "Invoke as `/highway-inquiry` and state what to change, for example `/highway-inquiry add a question about data retention`."
 compatibility: all
 metadata:
-  version: 1.0.0
+  version: 1.0.2
 ---
 
 ## Purpose
@@ -35,6 +35,9 @@ update, remove, reorder, move a question before another, move a question after a
 a question at a stated position.
 
 ## Outputs
+
+Satisfies `X1.1`, `X1.2`, `X2.1`, `X4.1`, `X5.1`, `X5.2` and `X6.1` of the Highway Experience
+Standard.
 
 The same file, rewritten, plus a statement of what changed.
 
@@ -94,6 +97,8 @@ Where a question repeats an existing one, name the existing question rather than
 duplicate in the abstract.
 
 ## Verification
+
+This self-check exercises `X1.1`, `X1.2`, `X2.1`, `X4.1`, `X5.1`, `X5.2` and `X6.1`.
 
 - Run `.highway/tools/validate-library.sh .highway/library/templates/requirements-inquiry.md` and
   confirm exit 0.

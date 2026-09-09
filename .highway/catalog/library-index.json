@@ -1,4 +1,12 @@
 {
-  "generated_at": "2026-09-07T11:43:26Z",
-  "entries": []
+  "generated_at": "2026-09-08T21:12:57Z",
+  "entries": [
+    {
+      "library_type": "template",
+      "name": "requirements-inquiry",
+      "description": "The requirements discovery questions Highway skills ask, ordered as they are asked and maintained through the highway-inquiry skill.",
+      "version": "1.0.0",
+      "source_path": "library/templates/requirements-inquiry.md"
+    }
+  ]
 }

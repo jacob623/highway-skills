@@ -15,7 +15,7 @@ Added principles (6, all new):
   - I. Layer Separation and Shippability (D1.1-D1.6)
   - II. Environment and Dependency Discipline (D2.1-D2.4)
   - III. Verification Before and After (D3.1-D3.5)
-  - IV. Generated Artifact Integrity (D4.1-D4.4)
+  - IV. Generated Artifact Integrity (D4.1-D4.7)
   - V. Specification Record Integrity (D5.1-D5.4)
   - VI. Documentation Currency (D6.1-D6.2)
 Rule count: 25. Tier counts: [auto] 10, [agent-checkable] 14, [human-review] 1.
@@ -60,6 +60,63 @@ Templates and dependent artifacts:
 Follow-up TODOs closed by amendment 1.1.0:
   - D_AUTO_TIER_ENFORCEMENT: satisfied. See the 1.1.0 entry below for the evidence.
 
+Follow-up TODOs: none.
+
+--- Amendment 1.1.0 → 1.2.0 (MINOR), 2026-09-08 ---
+Bump rationale: three rules are added and no conforming work is invalidated. MINOR covers a rule
+  added without invalidating conforming work; the tree was verified conformant to all three
+  before they were enabled, so the strengthening clause that would make this MAJOR does not
+  apply. See "Verified before enabling" below, which is load-bearing rather than ceremonial.
+Why this was needed: nothing stated or detected that the catalog and the generated agent adapters
+  could fall out of correspondence with the skills actually present. A skill could be added and
+  left unlisted, changed and left stale, or removed and leave orphans that still ship. D4.1 looks
+  as though it covers the stale case and does not: its rule text is about hand-editing, and its
+  Enforcement Map row names a test asserting hand-edit refusal for adapters that never
+  regenerates the catalog. generate-catalog.test.sh looks as though it covers it and does not: it
+  runs the generator twice against unchanged inputs, which is D4.2's determinism.
+Added rules (3):
+  - D4.5: every skill in the source has its generated artifacts. Catches the added skill.
+  - D4.6: no generated artifact names a skill absent from the source. Catches the orphan left by
+    a removed skill — the most severe case, because those orphans are marked include in the
+    distribution manifest and therefore ship.
+  - D4.7: a change to a generator's input is followed by regeneration. Catches the stale entry
+    left by a changed skill.
+Added sections:
+  - Declared generators and Declared agent trees, both under Principle IV, so D4.5 through D4.7
+    name their scope explicitly rather than leaving a reader to infer it.
+  - Correspondence Gate, in Quality Gates. The Generator Gate triggers on a change to a
+    generate-*.sh script, which is the wrong trigger for these three: they are violated by
+    changing a generator's *input*, not the generator. Without a new gate the rules would be
+    unreachable through the gate mechanism.
+Removed sections: none. Removed rules: none. Rule count: 25 → 28.
+Tier counts: [auto] 6 → 9, [agent-checkable] 18 unchanged, [human-review] 1 unchanged.
+Modified rules: none. No existing rule text, Observable, or tier is changed.
+Non-restatement review, per D1.3, D1.4 and the Self-Application clause:
+  - D4.7 against D4.1: D4.1 prohibits editing a generated artifact; D4.7 requires refreshing one
+    after its source changes. The two share a detection mechanism — a diff — but the rules turn
+    on rule text, and these texts state different obligations. A reader asking "must I regenerate
+    after changing a description?" finds an answer in D4.7 and none in D4.1.
+  - D4.7 against D4.4: D4.4 covers a changed generator, D4.7 a changed input. Siblings; neither
+    subsumes the other.
+  - D4.5 against D4.6: directional halves of one correspondence, stated separately because they
+    fail differently and produce different damage.
+  - None of the three restates any P-namespace rule; they constrain build outputs, not skill text.
+Verified before enabling, 2026-09-08:
+  - D4.7 did NOT pass when this amendment was drafted. .highway/catalog/library-index.json
+    recorded "entries": [] while .highway/library/templates/requirements-inquiry.md existed —
+    feature 015 added the questionnaire and never regenerated the library catalog. The full suite
+    passed at 17/17 with that defect committed, which is precisely the gap D4.7 names.
+  - The violation was repaired by regeneration before D4.7 was enabled. Repairing a defect is not
+    the same as redefining a rule, so the amendment stays MINOR; enabling D4.7 against the stale
+    catalog would have made it MAJOR.
+  - After repair, all four generated catalog files and every declared adapter were confirmed to
+    match a fresh regeneration, ignoring the recorded timestamp.
+  - D4.5 and D4.6: both skills present, highway-help and highway-inquiry, were confirmed to have
+    a catalog entry, three adapters, and included distribution manifest rows, with no orphan in
+    either direction.
+Enforcement: all three are decided by adapter-coverage.test.sh, each with an Enforcement Map row.
+  The currency check regenerates into a temporary tree rather than in place, so the working tree
+  is never written to and the check cannot leave residue on a failure path.
 Follow-up TODOs: none.
 
 --- Amendment 1.0.0 → 1.1.0 (MINOR), 2026-09-08 ---
@@ -174,6 +231,9 @@ table cannot silently go stale.
 | D4.1 | generate-agent-adapters.test.sh | Asserts the generator refuses to overwrite a target that was hand-edited after it was produced |
 | D4.2 | generate-catalog.test.sh | Asserts re-running with unchanged inputs produces no difference aside from the recorded timestamp the Observable excepts |
 | D4.3 | distribution-packaging.test.sh | Asserts refusal to overwrite an untracked directory and a modified file, naming each |
+| D4.5 | adapter-coverage.test.sh | Asserts every skill present has a catalog entry, an adapter in each declared agent tree, an adapter manifest row for each adapter, and an included distribution manifest row for each adapter |
+| D4.6 | adapter-coverage.test.sh | Asserts no catalog entry, adapter file, adapter manifest row, or distribution manifest row names a skill with no source directory |
+| D4.7 | adapter-coverage.test.sh | Regenerates into a temporary tree and asserts no diff against the committed artifacts, excepting the recorded generation timestamp |
 | D5.4 | spec-record.test.sh | Asserts feature directory numbers are contiguous from 001 with no gap and no duplicate |
 
 ## Core Principles
@@ -237,9 +297,31 @@ artifact already in the repository.
 | D4.2 | A generator MUST produce identical output from unchanged inputs. | Two consecutive runs differ in no byte other than a recorded generation timestamp. | [auto] |
 | D4.3 | A generator MUST refuse to overwrite a target it did not produce. | The run exits non-zero and names the file. | [auto] |
 | D4.4 | A change to a generator MUST be followed by regeneration of every artifact it produces. | No diff remains after running the generator. | [agent-checkable] |
+| D4.5 | Every skill in the source MUST have its generated artifacts. | Each directory under `.highway/skills/` has a catalog entry, an adapter in each declared agent tree, an adapter manifest row for each adapter, and a distribution manifest row for each adapter. | [auto] |
+| D4.6 | A generated artifact MUST NOT name a skill absent from the source. | No catalog entry, adapter file, adapter manifest row, or distribution manifest row names a skill with no directory under `.highway/skills/`. | [auto] |
+| D4.7 | A change to a generator's input MUST be followed by regeneration. | Re-running every declared generator leaves no diff against the committed artifacts, aside from a recorded generation timestamp. | [auto] |
 
 Rationale: Generated artifacts are the product surface; drift between source and output ships
 directly to users.
+
+D4.4 and D4.7 are siblings and neither subsumes the other: D4.4 covers a changed generator, D4.7 a
+changed input. D4.7 is also distinct from D4.1, which prohibits editing a generated artifact;
+D4.7 requires refreshing one after its source changes. The two share an Observable mechanism
+because a diff is how both are detected, but D1.3 and D1.4 turn on rule text rather than on
+Observables, and these texts state different obligations.
+
+D4.5 and D4.6 are directional halves of one correspondence and are stated separately because they
+fail differently: a missing artifact makes a skill invisible, while an orphaned artifact ships a
+skill that has no source and cannot be maintained. Neither is expressible as "no diff on re-run",
+because adapters are never pruned and manifest rows are hand-maintained.
+
+**Declared generators** (referenced by D4.7): `generate-catalog.sh`,
+`generate-library-catalog.sh`, `generate-agent-adapters.sh`. `generate-distribution.sh` is
+excluded — it takes a target directory and writes outside the repository, so it produces no
+committed artifact to compare against.
+
+**Declared agent trees** (referenced by D4.5 and D4.6): `github-copilot`, `claude-code`, `cursor`.
+Trees created by test fixtures are not declared agent trees.
 
 ### V. Specification Record Integrity
 
@@ -288,6 +370,7 @@ A gate applies only when its trigger evaluates true. A gate whose trigger is fal
 | **Packaging Gate** | The change touches a shipped path. | D1.1, D1.2, D6.2 |
 | **Toolchain Gate** | The change touches a file under `.highway/tools/`. | D2.1–D2.4 |
 | **Generator Gate** | The change touches a `generate-*.sh` script. | D4.1–D4.4 |
+| **Correspondence Gate** | The change adds, removes, or modifies a directory under `.highway/skills/`, or any other input to a declared generator. | D4.5–D4.7 |
 | **Validation Gate** | The change adds or modifies a validation check. | D3.4, D3.5 |
 | **Spec Record Gate** | The change touches a directory under `specs/`. | D5.1–D5.4 |
 | **Skill Content Gate** | The change creates or modifies a file under `.highway/skills/` or `.highway/library/`. | Delegated to the Highway Skills Constitution per D1.5 |
@@ -320,4 +403,4 @@ Highway Skills Constitution prevails for artifact content and this document prev
 This document is subject to D1.3, D1.4, and D5.3. Every amendment records a review against those
 rule IDs.
 
-**Version**: 1.1.0 | **Ratified**: 2026-09-08 | **Last Amended**: 2026-09-08
+**Version**: 1.2.0 | **Ratified**: 2026-09-08 | **Last Amended**: 2026-09-08

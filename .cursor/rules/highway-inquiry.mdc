@@ -32,6 +32,9 @@ a question at a stated position.
 
 ## Outputs
 
+Satisfies `X1.1`, `X1.2`, `X2.1`, `X4.1`, `X5.1`, `X5.2` and `X6.1` of the Highway Experience
+Standard.
+
 The same file, rewritten, plus a statement of what changed.
 
 The file's shape MUST be preserved on every write:
@@ -90,6 +93,8 @@ Where a question repeats an existing one, name the existing question rather than
 duplicate in the abstract.
 
 ## Verification
+
+This self-check exercises `X1.1`, `X1.2`, `X2.1`, `X4.1`, `X5.1`, `X5.2` and `X6.1`.
 
 - Run `.highway/tools/validate-library.sh .highway/library/templates/requirements-inquiry.md` and
   confirm exit 0.
