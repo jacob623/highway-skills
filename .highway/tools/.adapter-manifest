@@ -14,3 +14,7 @@
 .claude/skills/highway-nfrs/SKILL.md	highway-nfrs	1.0.1	610bcefccc2004da33aadc0df201265304a0f487ac0ef7146058768d59098bc7
 .cursor/rules/highway-nfrs.mdc	highway-nfrs	1.0.1	7cadc2b16099679e00fde175f4b129df80609f19b8195b2626eff2130f53a9f0
 .mock-agent-4/skills/highway-nfrs/SKILL.md	highway-nfrs	1.0.1	610bcefccc2004da33aadc0df201265304a0f487ac0ef7146058768d59098bc7
+.github/skills/highway-profile/SKILL.md	highway-profile	1.0.0	2d3b59ccc18675db9926050f121954e644eed08d4c122132684488d52ceebbba
+.claude/skills/highway-profile/SKILL.md	highway-profile	1.0.0	2d3b59ccc18675db9926050f121954e644eed08d4c122132684488d52ceebbba
+.cursor/rules/highway-profile.mdc	highway-profile	1.0.0	cd97dbf8541873564764abc1a699c292bd74ac8ec6cc9b31c7a3e9c277374267
+.mock-agent-4/skills/highway-profile/SKILL.md	highway-profile	1.0.0	2d3b59ccc18675db9926050f121954e644eed08d4c122132684488d52ceebbba

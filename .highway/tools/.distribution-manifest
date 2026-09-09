@@ -20,16 +20,19 @@ include	.claude/skills/highway-help	-
 include	.claude/skills/highway-controls	-
 include	.claude/skills/highway-inquiry	-
 include	.claude/skills/highway-nfrs	-
+include	.claude/skills/highway-profile	-
 exclude	.cursor	-
 include	.cursor/rules/highway-help.mdc	-
 include	.cursor/rules/highway-controls.mdc	-
 include	.cursor/rules/highway-inquiry.mdc	-
 include	.cursor/rules/highway-nfrs.mdc	-
+include	.cursor/rules/highway-profile.mdc	-
 exclude	.github	-
 include	.github/skills/highway-help	-
 include	.github/skills/highway-controls	-
 include	.github/skills/highway-inquiry	-
 include	.github/skills/highway-nfrs	-
+include	.github/skills/highway-profile	-
 
 # --- The framework directory: excluded by default so each child is a deliberate decision ---
 exclude	.highway	-
@@ -38,6 +41,7 @@ include	.highway/library	-
 include	.highway/catalog	-
 include	.highway/governance	-
 include	.highway/tools	-
+include	.highway/profile.yaml	-
 
 # --- Toolchain carve-outs ---
 # Fixtures are deliberately non-conformant; they exist to make checks fail.

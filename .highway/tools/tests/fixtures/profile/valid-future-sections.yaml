@@ -1,0 +1,25 @@
+---
+metadata:
+  version: 1.0.0
+  description: "Repository-wide organizational context for Highway guidance."
+constraints:
+  compliance:
+    required:
+      - SOC 2
+preferences:
+  cloud:
+    preferred:
+      - gcp
+business_context:
+  mission: "Serve internal teams"
+architecture_principles:
+  reliability: "Prefer graceful degradation"
+approved_technologies:
+  - gcp
+prohibited_technologies:
+  - unencrypted-local-storage
+operating_model:
+  delivery: product-teams
+vendor_strategy:
+  default: strategic-partners
+---

@@ -1,0 +1,100 @@
+---
+description: "Manages the repository-wide organizational profile that supplies contextual guidance without becoming governance."
+alwaysApply: false
+---
+
+## Purpose
+
+Maintain the repository-wide organizational profile as user-owned contextual guidance for downstream Highway work.
+
+## When to use
+
+- Use with no action to read help, supported actions, setup guidance, and current profile status.
+- Use `view`, `show`, or `describe` to inspect the current profile without changing it.
+- Use `setup` or `configure` to collect organizational context and propose an initial profile.
+- Use `add`, `update`, `remove`, or `reset` to propose a confirmed change to a profile node.
+
+## When not to use
+
+- Do not use to create or change an NFR baseline; route that request to `/highway-nfrs`.
+- Do not use to create or change a Control baseline; route that request to `/highway-controls`.
+- Do not treat profile values as governance rules, NFRs, Controls, or a replacement for the Highway constitutions.
+- Do not write a profile while merely answering help, view, show, or describe.
+
+## Inputs
+
+The profile at `.highway/profile.yaml`, when present, and a plain-language request naming the intended action and organizational context. Supported actions are `setup`, `configure`, `view`, `show`, `describe`, `add`, `update`, `remove`, and `reset`. The profile follows the complete retained-file structure in `.highway/library/templates/output/highway-profile.md`.
+
+## Outputs
+
+A read-only response containing the profile status and, when present, its current contents. For an absent profile, the response says it is absent and offers setup without creating a file.
+
+A retained `.highway/profile.yaml` artifact following the complete structure in `.highway/library/templates/output/highway-profile.md`. The artifact begins with YAML frontmatter whose first top-level field is `metadata`; `metadata.version` and `metadata.description` are required. Optional `constraints`, `strategic_directions`, `preferences`, and supported future sections are omitted when empty. The profile contains no timestamp, random identifier, or environment-derived value.
+
+Every mutation response reports:
+
+- `Action`
+- `File`
+- `Summary`
+- `Affected Entries`
+- `Confirmation Status`
+
+Mutation previews additionally show the current state, proposed state, and ramifications where relevant. A declined or aborted mutation reports that no write occurred.
+
+## Workflow
+
+1. Locate the project root by finding `.highway/`; if it cannot be located, abort without guessing a path.
+2. Read `.highway/profile.yaml` when it exists. A missing profile is a read-only absence until setup is confirmed. A malformed profile aborts with the malformed section identified and never overwrites the file.
+3. With no action, display the purpose, supported actions, usage examples, setup guidance, and current status. Treat `view`, `show`, and `describe` as equivalent read-only actions.
+4. For `setup` or `configure`, ask the fourteen context questions covering organization, deployment, cloud, compliance, residency, platform, database, infrastructure-as-code, CI/CD, container, and technology restrictions. Record supplied wording only; do not infer unprovided facts.
+5. Construct a deterministic proposal with `metadata` first, required metadata present, non-empty sections only, and existing wording, capitalization, grouping, and value order preserved. Show the complete proposal before requesting confirmation.
+6. For `add`, resolve the category and nested profile node, prefer append insertion, and show the inferred category and insertion location before confirmation.
+7. For `update`, resolve one existing value and show the action, exact current value, replacement value, affected entry, downstream impact, and confirmation prompt.
+8. For `remove`, resolve the exact value, show the affected entry and ramifications, and wait for confirmation.
+9. For `reset`, resolve one profile node, list every value that would be cleared, explain ramifications, and wait for confirmation.
+10. Write the proposed profile only after explicit confirmation. A decline, ambiguity, malformed input, missing target, or unresolvable category leaves the original bytes unchanged; an absent profile remains absent after a declined setup.
+11. Preserve the ordered top-level structure `metadata`, `constraints`, `strategic_directions`, `preferences`, then supported future sections including `business_context`, `architecture_principles`, `approved_technologies`, `prohibited_technologies`, `operating_model`, and `vendor_strategy`.
+12. If the request targets an NFR or Control baseline, stop profile processing and direct the user to the owning skill without mutating `.highway/profile.yaml`.
+
+## Verification
+
+- Confirm `.highway/profile.yaml` begins with frontmatter, has `metadata` first, includes `metadata.version` and `metadata.description`, and omits empty optional sections.
+- Confirm the distributed default is version `1.0.0` with only the required contextual metadata.
+- Confirm help, view, show, and describe do not change file bytes.
+- Confirm setup/configure and every mutation display a proposal before confirmation and leave bytes unchanged when declined.
+- Confirm identical inputs rewrite identical bytes without timestamps, random identifiers, or environment-derived values.
+- Confirm malformed and ambiguous requests abort safely and identify the actionable problem.
+- Run `.highway/tools/validate-skill.sh .highway/skills/highway-profile` and `.highway/tools/validate-profile.sh .highway/profile.yaml`.
+
+## Error Handling
+
+- If `.highway/` cannot be found, abort and ask for the project root; do not guess a location.
+- If the profile is malformed, abort, identify the malformed section or field, and write nothing.
+- If an action, category, node, or value has multiple interpretations, abort and list every candidate.
+- If no requested target exists, abort and name what was searched for; do not create a replacement implicitly.
+- If confirmation is withheld, abort, report `Confirmation Status: Declined`, and leave the profile byte-for-byte unchanged.
+- If a request concerns an NFR or Control baseline, abort and route it to `/highway-nfrs` or `/highway-controls`.
+- If output would contain timestamps, random identifiers, environment-derived values, or inferred questionnaire answers, abort and emit none of them.
+
+## Example
+
+`/highway-profile add preference cloud gcp`
+
+```text
+Action: Add
+File: .highway/profile.yaml
+Summary: Add the supplied cloud preference under preferences.cloud.
+Affected Entries: preferences.cloud
+Confirmation Status: Pending
+
+Proposed profile:
+metadata:
+  version: 1.0.0
+  description: "Repository-wide organizational context for Highway guidance."
+preferences:
+  cloud:
+    preferred:
+      - gcp
+
+Apply this change? Confirm or decline.
+```

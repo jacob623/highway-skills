@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-09T11:38:56Z",
+  "generated_at": "2026-09-09T13:43:56Z",
   "entries": [
     {
       "id": "highway-controls",
@@ -36,6 +36,15 @@
       "compatibility": "all",
       "version": "1.0.1",
       "source_path": "skills/highway-nfrs/SKILL.md"
+    },
+    {
+      "id": "highway-profile",
+      "name": "highway-profile",
+      "description": "Manages the repository-wide organizational profile that supplies contextual guidance without becoming governance.",
+      "usage": "Invoke as `/highway-profile` to inspect profile context, or state `setup`, `view`, `add`, `update`, `remove`, or `reset` and the intended profile change.",
+      "compatibility": "all",
+      "version": "1.0.0",
+      "source_path": "skills/highway-profile/SKILL.md"
     }
   ],
   "overlap_flags": []
