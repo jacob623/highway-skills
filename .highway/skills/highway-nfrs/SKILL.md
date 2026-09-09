@@ -1,0 +1,129 @@
+---
+name: highway-nfrs
+description: "Manages the repository-wide Non-Functional Requirement baseline; use it to add, update, remove, replace, or inspect NFRs."
+usage: "Invoke as `/highway-nfrs` and state the NFR baseline change in plain language."
+compatibility: all
+metadata:
+  version: 1.0.0
+---
+
+# highway-nfrs
+
+## Purpose
+
+Maintains the repository-wide Non-Functional Requirement baseline as identified files the user owns.
+
+## When to use
+
+Use this skill when a user wants to add, update, remove, replace, or inspect a repository-wide NFR.
+
+Use it when a user wants to state a desired quality attribute, operational characteristic,
+constraint, or business outcome for solutions in the repository.
+
+## When not to use
+
+Do not use this skill to record a specific, testable, auditable, or enforceable implementation
+requirement; offer `/highway-controls` instead.
+
+Do not use it to populate NFR-to-Control relationships; that ownership is deferred and both
+reserved relationship fields remain empty in this phase.
+
+Do not use it to edit an NFR file or generated catalog directly; use the workflow below.
+
+## Inputs
+
+A plain-language request describing the action and NFR content.
+
+The project root, identified by locating `.highway/`. If `.highway/` cannot be located, the project
+root is unknown and no governance path may be guessed.
+
+The user-owned baseline at `library/governance/`, sibling to `.highway/` and never inside it.
+
+The catalog at `library/governance/nfrs.md`, when the baseline has existing NFR files.
+
+The NFR records at `library/governance/nfrs/NFRXXXXXX.md`, when they exist.
+
+The repository's Highway Skills Constitution, Highway Experience Standard, and `/highway-controls`
+routing contract for this skill's own behavior.
+
+## Outputs
+
+A changed baseline report naming the action and resulting semantic version.
+
+An NFR file at `library/governance/nfrs/NFRXXXXXX.md` with YAML frontmatter for `id`, `title`,
+`status`, and `controls: []`, followed by a Markdown statement and rationale.
+
+A generated prose catalog at `library/governance/nfrs.md` containing the global baseline statement,
+global applicability, `/highway-nfrs` ownership, direct-edit warning, baseline version, `next_id`,
+and every NFR index entry. The catalog contains no timestamp.
+
+## Decision tables
+
+Evaluate these tables in order. If no row matches, use the final otherwise row.
+
+### Action selection
+
+| Request evidence | Action |
+|---|---|
+| Explicitly says add or introduces a new NFR | Add |
+| Explicitly says update or changes named fields on an existing ID | Update |
+| Explicitly says remove or delete one existing ID | Remove |
+| Explicitly says set, replace, or provides a complete replacement baseline | Set |
+| Asks only for the baseline or version | Inspect |
+| Otherwise | Abort and ask which action is intended |
+
+### Statement classification
+
+| Statement evidence | Classification and response |
+|---|---|
+| Desired outcome, quality attribute, operational characteristic, business outcome, or constraint | NFR candidate |
+| Specific, testable, auditable, or enforceable implementation requirement | Control; offer `/highway-controls` |
+| Both or neither | NFR candidate; give advice and ask whether to continue |
+
+Classification never writes a relationship. If the user keeps a vague NFR, record it after advice.
+If it resembles an existing NFR, name that NFR by identifier and title.
+
+## Workflow
+
+1. Read the Inputs and identify the project root, baseline path, catalog path, records path, and requested action.
+2. Apply Action selection and Statement classification in their stated order.
+3. For Add, read `next_id` from the catalog when it exists, allocate it once, and prepare one new NFR record with an empty `controls` list.
+4. For Update, Remove, or Set, resolve every referenced NFR by identifier and title before writing.
+5. For Remove or Set, list every NFR that would be lost by identifier and title and request confirmation before changing any file.
+6. After confirmation or for a non-destructive action, apply the requested mutation, preserving identifiers and untouched metadata.
+7. Increment the baseline exactly once: Add is MINOR; an obligation-preserving Update is PATCH; Remove or Set is MAJOR.
+8. Regenerate `nfrs.md` from the records, version, and recorded `next_id`, then report the action, changed identifiers, and resulting version.
+
+The catalog is authoritative for `next_id`; never derive it from the highest file present. An NFR
+identifier is `NFR` followed by six digits, never changes, and is never reissued after removal.
+
+## Verification
+
+- Confirm every NFR record is under root `library/governance/nfrs/`, not under `.highway/`.
+- Confirm each record has `id`, `title`, `status`, `controls: []`, a statement, and a rationale.
+- Confirm the catalog indexes every record and records a `next_id` greater than every allocated ID.
+- Confirm no NFR record contains a version field and the catalog contains no timestamp.
+- Confirm a declined destructive action leaves the records, catalog, version, and `next_id` unchanged.
+- Confirm an unchanged baseline regenerates to an identical catalog.
+- Confirm Control-shaped statements name `/highway-controls` and outcome-shaped Control input names
+  `/highway-nfrs`.
+
+## Error Handling
+
+- The project root cannot be located: abort and ask where `.highway/` is located.
+- The catalog is absent while NFR files exist: abort and ask for catalog repair.
+- A referenced NFR does not exist: abort and name what was searched for.
+- The catalog or a record is malformed or inconsistent: abort and name the file and inconsistency.
+- The intended action or target is ambiguous: abort and ask which interpretation is intended.
+- A destructive action would remove an NFR: abort until the user confirms after seeing every ID and
+  title.
+- Confirmation is withheld: abort and write nothing.
+- A statement is Control-shaped: fall back to `/highway-controls`.
+
+## Example
+
+`/highway-nfrs Add an NFR requiring systems to remain available during a single availability-zone failure.`
+
+The skill classifies the statement as an NFR, proposes a title and rationale for confirmation,
+allocates the catalog's `next_id`, writes `controls: []`, increments the baseline MINOR version,
+and regenerates the catalog.

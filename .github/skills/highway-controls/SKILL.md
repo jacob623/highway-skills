@@ -1,0 +1,144 @@
+---
+name: highway-controls
+description: "Manages the repository-wide Control baseline, adding, updating, removing and replacing the Controls that govern the repository."
+usage: "Invoke as `/highway-controls` and state what to change, for example `/highway-controls add a control requiring administrative access to use MFA`."
+compatibility: all
+metadata:
+  version: 1.0.0
+---
+
+# highway-controls
+
+## Purpose
+
+Maintains the repository-wide Control baseline as a set of identified, versioned files the user owns.
+
+## When to use
+
+Use this skill to add, update, remove, or replace a Control.
+
+Use it when a policy needs an identifier something else can cite — a design document, an audit
+finding, or a later requirement.
+
+Use it to ask what the current baseline contains, or what version it is at.
+
+## When not to use
+
+Do not use it to author non-functional requirements. Those are a separate concern and a later
+phase; a Control here reserves a field for them and nothing more.
+
+If a proposed statement describes an outcome, quality attribute, operational characteristic,
+constraint, or business outcome rather than an enforceable implementation requirement, identify it
+as an NFR and offer `/highway-nfrs`. Do not populate the reserved relationship field while routing.
+
+Do not use it to record an intention or an aspiration. A Control states an obligation something can
+be measured against.
+
+Do not use it to edit a Control file by hand. Hand edits break the identifier record and the
+baseline version together.
+
+## Inputs
+
+A statement of what to change, in the user's own words.
+
+The Control baseline, read from `library/governance/` at the root of the project — a sibling of the
+`.highway` directory, never inside it.
+
+Where the `.highway` directory cannot be located, the project root cannot be determined and the
+Controls directory cannot be placed. Abort and ask.
+
+## Outputs
+
+Satisfies `X1.1`, `X1.2`, `X2.1`, `X4.1`, `X5.1`, `X5.2` and `X6.1` of the Highway Experience
+Standard.
+
+Two artifacts, plus a statement of what changed.
+
+**A Control file** at `library/governance/controls/CTLXXXXXX.md`, carrying frontmatter with `id`,
+`title`, `status`, and an `nfrs` field that stays empty in this phase, and a body holding the
+statement and its rationale. A Control carries no version of its own; the baseline holds the only
+version.
+
+**A catalog** at `library/governance/controls.md`, listing every Control by identifier and title,
+stating the baseline version, recording the next identifier to allocate, and stating that Controls
+are managed through this skill rather than by hand.
+
+The catalog is a function of the Controls and the recorded next identifier. No timestamp is
+written, so an unchanged baseline produces an unchanged file.
+
+Content under `library/governance/` belongs to the user. This skill writes there and judges
+nothing about what a Control says.
+
+### The four actions
+
+1. **Add** — allocate the recorded next identifier, write the Control, update the catalog. MINOR.
+2. **Update** — rewrite one Control, keeping its identifier and anything not being changed. PATCH.
+3. **Remove** — delete one Control and its catalog entry. MAJOR.
+4. **Set** — replace the whole baseline, dropping Controls absent from the new one. MAJOR.
+
+Exactly one version increment happens per action, whatever the action's size.
+
+### Identifiers
+
+An identifier is `CTL` followed by six digits. It is allocated once, and it MUST NOT be reused
+after the Control carrying it is removed. It MUST NOT change once assigned.
+
+The next identifier is read from the catalog, never computed from the files present. Computing it
+would reissue the identifier of the highest-numbered Control after that Control was removed, and
+anything citing it would silently come to mean something else.
+
+### Before anything is lost
+
+Remove and Set both destroy work the user may not be able to reconstruct.
+
+Before either, name every Control that would be lost, by identifier and title, and get
+confirmation. A count MUST NOT be treated as sufficient: a user cannot decide from "this removes 14
+Controls" which fourteen they are.
+
+Where confirmation is withheld, write nothing.
+
+## Verification
+
+This self-check exercises `X1.1`, `X1.2`, `X2.1`, `X4.1`, `X5.1`, `X5.2` and `X6.1`.
+
+- Confirm every Control file sits under `library/governance/`, and none under `.highway`.
+- Confirm the identifiers in the catalog match the files present, with none missing or extra.
+- Confirm the next identifier recorded in the catalog is greater than every identifier in use.
+- Confirm an unchanged baseline rewrites to an identical catalog.
+- Confirm the report names the action taken and the resulting baseline version.
+
+## Error Handling
+
+- The intended action is not decidable: abort, ask which action is meant, and write nothing.
+- The Control meant is not decidable: abort, naming every candidate by identifier and title.
+- The user may mean update or replace: abort, naming both readings.
+- A referenced Control does not exist: abort, naming what was searched for. Do not add one instead.
+- A Control would be removed: abort until the user confirms, naming it by identifier and title.
+- The baseline would be replaced: abort until the user confirms, naming every Control lost.
+- The catalog is absent but Control files exist: abort and ask. The next identifier cannot be
+  recovered from the files, because the highest one present may not be the highest ever issued.
+- The `.highway` directory cannot be found: abort and ask where the project root is.
+- A Control file is malformed: abort, naming the file by path, and leave it untouched. It is the
+  user's file.
+
+## Example
+
+A Control that states an outcome rather than an obligation gets advice, not a refusal.
+
+```text
+/highway-controls add a control that systems must be secure
+
+"Systems must be secure" states an outcome, so nothing can be measured against it.
+Consider instead:
+  - Administrative access must require multi-factor authentication.
+  - All data at rest must be encrypted.
+
+Add one of these, your own wording, or the original as written?
+```
+
+Assessing a Control this way is advice. This skill MUST NOT refuse a Control the user still wants
+after being advised. A skill that overrules its user gets bypassed, and the files are then edited
+by hand — which loses the identifiers, the versioning, and the catalog together.
+
+Where a proposed Control resembles an existing one, name that Control rather than reporting a
+duplicate in the abstract.

@@ -34,6 +34,17 @@ cleanup() {
 }
 trap cleanup EXIT
 
+# Residue from a run killed before its cleanup carries a different PID, so no later run removes it.
+# Its manifest rows then fail the correspondence check as orphans naming a skill with no source.
+rm -rf "$HIGHWAY_ROOT"/skills/test-adapter-fixture-* \
+	"$REPO_ROOT"/.github/skills/test-adapter-fixture-* \
+	"$REPO_ROOT"/.claude/skills/test-adapter-fixture-* \
+	"$REPO_ROOT"/.cursor/rules/test-adapter-fixture-*.mdc
+if [[ -f "$MANIFEST" ]] && grep -q 'test-adapter-fixture-' "$MANIFEST"; then
+	grep -v 'test-adapter-fixture-' "$MANIFEST" >"$MANIFEST.tmp" || true
+	mv "$MANIFEST.tmp" "$MANIFEST"
+fi
+
 mkdir -p "$SKILL_SRC_DIR"
 cp "$FIXTURES/valid-skill/SKILL.md" "$SKILL_SRC_DIR/SKILL.md"
 # The fixture's frontmatter name is authored to match the fixture's own directory id

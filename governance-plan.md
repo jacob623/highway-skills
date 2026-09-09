@@ -4,8 +4,10 @@ Sequenced plan for establishing Highway's governance layers. This document is du
 context: it is written to survive across sessions so the sequence, rationale, and exact command
 invocations do not have to be reconstructed from conversation history.
 
-**Status**: Phases 1, 2, 2b, 3, 4, 4b, 4c, 5 and 6 complete. Next action is Phase 7, the `nfrs` and
-`controls` skills. Phase 8 remains deferred and independent.
+**Status**: Phases 1, 2, 2b, 3, 4, 4b, 4c, 5 and 6 complete. Phase 7 is delivered with recorded
+gaps — both skills ship; five of `highway-nfrs`'s functional requirements are unimplemented.
+Phases 8 and 9 remain deferred and independent. Phase 10 is proposed and owns the rule defects
+that let those gaps pass every gate.
 
 **Last reviewed**: 2026-09-08
 
@@ -88,8 +90,10 @@ Worked examples:
 | — | **Gate**: a second skill exists | — | — | ✅ Cleared (feature 015) |
 | 5 | Author the Experience Standard | Spec | 2 | ✅ Complete (017) |
 | 6 | Enforce the Experience Standard | Spec | 2 | ✅ Complete (018) |
-| 7 | Build the `nfrs` and `controls` skills | Spec | 2 governs; 3 is the subject | Phase 6 complete |
+| 7 | Build the `nfrs` and `controls` skills | Spec | 2 governs; 3 is the subject | 🔶 Delivered with recorded gaps — `highway-controls` (019) and `highway-nfrs` (020) both ship; five FRs unimplemented |
 | 8 | Make a skill's help detail answerable for itself | Spec | 1 | Deferred — independent of all other phases |
+| 9 | Make artifact versions accountable | Spec | 1, and a cross-layer question | Deferred — independent of all other phases |
+| 10 | Make a completion claim accountable | Spec | 0 | Proposed — independent of all other phases |
 
 Phases 3 and 4 are independent of each other and may run in either order.
 
@@ -781,6 +785,46 @@ the `X` rules its own self-check exercises.
 
 **Layer**: 2 governs them; Layer 3 is their subject matter **Type**: Spec
 
+**Status**: 🔶 **Delivered with recorded gaps**, 2026-09-08. `highway-controls` complete
+(`specs/019-repository-controls`): 47 tasks; 18 tests passing. `highway-nfrs` shipped
+(`specs/020-highway-nfrs`): 54 tasks; 20 tests passing; registered, generated and validated. Five
+functional requirements are unimplemented — FR-002, FR-020, FR-024, FR-027 and FR-032 — and
+several tasks were marked complete without the work they describe. Both baselines are usable and
+the containment boundary holds; the shortfall is in advice wording, ambiguity branches and test
+depth. Phase 10 owns the rule defects that let it through; the residual FR work belongs to a new
+numbered spec under D5.2, not to an edit of 020.
+
+**The containment guard is now structural rather than intended.** `validate-library.sh` declines
+any file outside the framework root, so a user's Control is never judged by Highway's authoring
+rules. Before this, the same file was judged when named by an absolute path and declined when named
+by a relative one — containment that depended on how someone typed a path. Measured beforehand:
+thirteen Controls written with an uppercase keyword fail `P7.4`, and a Control over twenty-five
+words fails `P1.3`, reported as though the user's policy were a skill.
+
+**Four findings worth carrying forward**:
+
+1. **The scope had to be the framework root, not its library directory.** Fixtures live under
+   `tools/tests/fixtures/library/`, so the narrower reading would have declined every one and
+   bought containment by breaking the tests that prove it.
+2. **`P7.4` was never close to binding — 4 of 12.** The plan treated a split as likely and made it
+   a measured decision rather than a guess. What kept the count low was putting artifact shape in
+   Outputs as *description*: the budget is for obligations on the agent, not for structure.
+   `highway-help` states zero and is fully specified.
+3. **`P6.4` rejected the word "preference"** in a sentence saying what a Control is *not*. The
+   nondeterministic-token check reads lines, not intent. Reworded rather than exempted.
+4. **Test residue cost time twice before being fixed.** Two tests seed probes into the live tree
+   and clean up only on a normal exit, so a killed run leaves artifacts named with a dead PID that
+   no later run claims. Worse, tests run in name order, so the residue fails whichever test sorts
+   first — an orphaned adapter row failed `adapter-coverage`, and an abandoned link probe failed
+   `distribution-packaging`, each naming a defect that did not exist. Fixed with a sweep in
+   `run-all.sh`, at the suite level, because sweeping in the owning test is too late.
+
+**Decisions recorded during specification**, each resolving a contradiction in the original draft:
+Controls live at the project root rather than under `.highway/`; files carry YAML frontmatter with
+a Markdown body; the catalog is prose; the next identifier is recorded rather than computed, so
+removal cannot free an identifier for reuse; and **a Control carries no version of its own**, since
+two counters over one baseline can disagree with nothing saying which is authoritative.
+
 **Goal**: Ship the governance skills that let a user author NFRs and controls over their own
 architecture.
 
@@ -884,6 +928,161 @@ MINOR. Re-verify before enabling, as Phase 4c showed that assumption can be wron
 - The check has been observed failing and then passing again after restoration.
 - `_authoring-standard.md` cites both rules by id and restates neither.
 - Confirmation is recorded that both existing skills satisfied `P7.9` before it was enabled.
+
+---
+
+### Phase 9 — Make artifact versions accountable
+
+**Layer**: 1 for the library rule; the shared-semantics part does not route cleanly and that is the
+first thing to settle **Type**: Spec
+
+**Status**: Deferred by decision, 2026-09-08. Independent of every other phase.
+
+**Goal**: A version number on any artifact means something, and something requires it to move.
+
+**The verified gap** (2026-09-08). Two findings, and only the first is straightforward:
+
+1. **Nothing governs when a library file's version changes.** `P7.2` validates that
+   `metadata.version` matches `MAJOR.MINOR.PATCH`; no rule requires it to move when the content
+   does. Measured: zero `P` rules mention library versioning at all.
+   `library/templates/requirements-inquiry.md` sits at 1.0.0 and could be rewritten entirely with
+   nothing objecting. This is the same shape as the defect Phase 8 records — a field that exists,
+   looks maintained, and is accountable to nothing.
+2. **Four MAJOR clauses exist across the governance documents**, sharing a shape but not a
+   subject:
+
+| Document | What MAJOR is about |
+|---|---|
+| Skills Constitution, document policy | A principle or governance rule removed or redefined |
+| Skills Constitution, Skill Versioning Policy | A breaking change to the skill contract |
+| Experience Standard | A rule removed or redefined |
+| Development Constitution | A principle removed or redefined |
+
+These are **not** a `D1.4` violation — they constrain different artifacts. But the repetition is
+real, and a fifth is about to appear when `highway-controls` versions a Control baseline.
+
+**Why this is not one universal scheme.** "Breaking" is defined relative to a consumer, and the
+consumers differ: a skill's consumer is an agent invoking it, a library file's is a skill reading
+it, a control baseline's is an auditor or a design citing a `CTL` identifier. A single definition
+covering all three would have to be abstract enough to decide nothing — which is the defect
+Phases 4, 4b and 6 each removed.
+
+**The routing problem, to settle first.** A shared versioning vocabulary constrains every artifact
+and fits none of the four layers cleanly. That question is the whole difficulty of this phase and
+should not be answered under time pressure inside a feature about something else. It is why the
+library rule below is separable and the semantics work is not.
+
+**Note on automation.** The library-currency rule cannot be `[auto]`. Detecting that content
+changed requires comparing against a previous state, and version control is deliberately absent
+from the Declared Toolchain because the packaged tree is not a repository. It lands
+`[agent-checkable]`, like `P7.7`, and that is honest rather than a shortfall.
+
+**Prerequisite**: None. Independent of Phases 5, 6, 7 and 8.
+
+**Command**:
+
+```text
+/speckit.specify "I want a version number on a Highway artifact to mean something and to be required to move. Two findings, verified 2026-09-08. First, nothing governs when a library file's version changes: P7.2 validates that metadata.version matches MAJOR.MINOR.PATCH, but no rule requires it to move when the content does, and zero P rules mention library versioning at all -- library/templates/requirements-inquiry.md sits at 1.0.0 and could be rewritten entirely with nothing objecting. Add a rule to the Highway Skills Constitution requiring that a library file's version change when its content changes, tagged [agent-checkable] because detecting a content change requires comparing against a previous state and version control is deliberately absent from the Declared Toolchain. Do not tag it [auto] and do not write a proxy check that cannot fail. Second, and separately, four MAJOR clauses exist across the governance documents -- the Skills Constitution's own policy, its Skill Versioning Policy, the Experience Standard, and the Development Constitution -- sharing a shape but constraining different artifacts, and a fifth arrives when highway-controls versions a Control baseline. Before factoring anything, settle where a shared versioning vocabulary belongs, because it constrains every artifact and fits none of the four layers cleanly under the routing test. Decide that question first and record the answer; only then decide whether to state the shared semantics once and have each artifact type define what constitutes a breaking change for it, citing rather than restating. Do not produce a single universal definition of breaking: the consumers differ -- a skill's consumer is an agent invoking it, a library file's is a skill reading it, a control baseline's is an auditor citing an identifier -- and one definition covering all three would be abstract enough to decide nothing, which is the defect features 013, 014 and 018 each removed."
+```
+
+**Done when**:
+
+- A rule requires a library file's version to change when its content changes, tagged honestly.
+- Where a shared versioning vocabulary belongs is decided and recorded, or recorded as deliberately
+  not factored, with the reason.
+- No universal definition of "breaking" is introduced that covers artifacts with different
+  consumers.
+- No rule is tagged `[auto]` without a check that decides it.
+
+---
+
+### Phase 10 — Make a completion claim accountable
+
+**Layer**: 0 **Type**: Spec
+
+**Status**: Proposed, 2026-09-08. Independent of every other phase; can run whenever.
+
+**Goal**: A task marked complete, and a report saying a feature is done, are required to be *true*.
+Today both are self-asserted and nothing objects.
+
+**The verified gap** (2026-09-08, from feature 020). Every gate passed: `run-all.sh` reported
+`20 passed, 0 failed`, `adapter-coverage.test.sh` passed, both skill validators returned valid, the
+requirements checklist read 16 of 16, and all 54 tasks were marked `[X]`. The feature was reported
+complete. It was not:
+
+| Claim | Reality | What should have caught it |
+|---|---|---|
+| T052 — quickstart scenarios run against isolated fixtures | Never run; scenarios 2 and 4–6 are interactive and 1 and 3 were not executed | Nothing requires a completed task's described work to exist |
+| T011, T012, T021–T023, T028, T029, T039–T041 — behavioral assertions added to `nfr-management.test.sh` | The file contains no Add, `next_id`, Remove, Set, high-water, Update, PATCH, or ambiguity assertion; it greps skill prose for fifteen fixed strings | Nothing requires a test to be capable of failing for the behavior it claims |
+| T009 — shared fixtures added | Fixtures created under `tools/tests/fixtures/nfr/`; no test references them | Same as above |
+| T017, T018, T036, T039 — skill content added | Generator-exclusion assertions, the prose-rule exemption, the improved-alternative obligation, and the update-versus-replace branch are all absent | Nothing traces a requirement to the artifact satisfying it |
+| FR-002, FR-020, FR-024, FR-027, FR-032 satisfied | Unimplemented | Same as above |
+
+**Why the existing rules do not cover this.** Each of the four nearest rules is satisfied by the
+work as delivered, which is the point:
+
+| Rule | Says | Why it passed anyway |
+|---|---|---|
+| `D3.1`/`D3.2` | Begin and end from a passing suite | The suite passed at both ends. A suite of prose greps passes easily |
+| `D3.3` | A behavioral change MUST add or amend at least one test | Two test files were added. The rule counts edits, not assertions |
+| `D3.5` | A test MUST NOT be weakened | Nothing was weakened. The tests were born weak |
+| `D4.5`/`D4.7` | Generated artifacts correspond to source | They do. Correspondence says nothing about whether the source satisfies its spec |
+
+The shape is the one Phase 8 records at Layer 1: a field that exists, looks maintained, and is
+accountable to nothing. Here the field is a checkbox.
+
+**This is Layer 0, all four rules.** The routing test in §2 places them without argument: they
+constrain a `tasks.md`, a `spec.md`, a test file, and a maintainer's report — artifacts that exist
+only to build Highway and never ship. No part of this phase touches a `SKILL.md`, so no `P` rule
+is involved and no amendment to the shipping constitution is needed.
+
+**Four rules, tiered by what can honestly be decided mechanically**:
+
+| ID | Rule | Observable | Tier |
+|---|---|---|---|
+| D3.6 | A test MUST be observed failing for the behavior it claims to cover before that behavior is marked complete. | The failing run and its message are recorded before the implementation that makes it pass. | [agent-checkable] |
+| D7.1 | A task MUST NOT be marked complete unless the artifact it names contains the change it describes. | Each `[X]` task's named path exists and contains the described change. | [agent-checkable] |
+| D7.2 | A completed feature MUST record a requirement-coverage mapping. | Every requirement id in `spec.md` appears exactly once in the feature's coverage record, against a satisfying artifact or a stated deferral. | [auto] |
+| D7.3 | A completion report MUST state requirement coverage separately from check results. | The report makes the suite result and the requirement coverage two distinct claims. | [agent-checkable] |
+
+D7.1 and D7.3 are `[agent-checkable]` because deciding whether a file *contains the change a
+sentence describes* is semantic, and every mechanical proxy under-detects. Tagging either `[auto]`
+would reintroduce exactly the dishonesty Phases 4 and 4b removed. D7.2 is the mechanical partner
+and is genuinely decidable — comparing two sets of ids needs no judgment — and it is the rule that
+would have caught FR-002, FR-020, FR-024, FR-027 and FR-032 before the feature was reported
+complete.
+
+**D3.6 is the generalisation of an existing precedent, not a new idea.** `D3.4` already requires a
+new validation check to be evaluated before it is enabled, and Phase 8's Done-when already requires
+a check to be *observed failing and then passing again*. D3.6 states for tests what `D3.4` states
+for checks. Placing it in Principle III keeps the verification rules together; D7.x opens a new
+principle because completion integrity is about the record rather than the run.
+
+**What deliberately stays out.** No rule here says a test must be behavioral rather than static.
+A prose-contract test is the correct instrument when the artifact under test is agent instructions
+rather than executable code, which is exactly what a `SKILL.md` is. The defect in feature 020 was
+not that the tests were static; it was that the tasks claimed assertions the tests did not contain.
+D3.6 and D7.1 address the claim, not the technique.
+
+**Prerequisite**: None. Independent of Phases 5, 6, 7, 8 and 9.
+
+**Command**:
+
+```text
+/speckit.specify "I want a completion claim to be accountable, because today a task is marked complete by asserting it and nothing objects. Verified 2026-09-08 in feature 020: the suite reported 20 passed 0 failed, adapter coverage passed, both skill validators returned valid, the requirements checklist read 16 of 16, all 54 tasks were marked complete, and the feature was reported done -- while five functional requirements were unimplemented, one task claimed a quickstart run that never happened, ten tasks claimed behavioral assertions that the test file does not contain, and one task created fixtures that no test references. The four nearest existing rules all passed: D3.1 and D3.2 because the suite was green at both ends, D3.3 because it counts test-file edits rather than assertions, D3.5 because nothing was weakened -- the tests were born weak -- and D4.5 and D4.7 because generated artifacts corresponded to a source that did not satisfy its spec. Add four rules to the Highway Development Constitution at .specify/memory/constitution.md as a MINOR amendment, all Layer 0 because they constrain a tasks.md, a spec.md, a test file and a maintainer's report, none of which ship. D3.6 in Principle III: a test MUST be observed failing for the behavior it claims to cover before that behavior is marked complete, observable as the failing run and its message being recorded before the implementation that makes it pass, tagged [agent-checkable]; this generalises D3.4 from validation checks to tests. Open a new Principle VII for completion integrity. D7.1: a task MUST NOT be marked complete unless the artifact it names contains the change it describes, observable as each completed task's named path existing and containing the described change, tagged [agent-checkable] because deciding whether a file contains what a sentence describes is semantic. D7.2: a completed feature MUST record a requirement-coverage mapping, observable as every requirement id in spec.md appearing exactly once in the coverage record against a satisfying artifact or a stated deferral, tagged [auto] and decided by a registered check, because comparing two sets of ids needs no judgment. D7.3: a completion report MUST state requirement coverage separately from check results, tagged [agent-checkable]. Do not tag D7.1 or D7.3 [auto] and do not write a proxy check that cannot fail, because that is the dishonesty features 013 and 014 removed. Add the D7.2 check to the test suite with an Enforcement Map entry naming it, evaluate it against every existing completed feature before enabling it per D3.4, and prove it can fail by removing a requirement id from a coverage record. Do not add any rule requiring a test to be behavioral rather than static: a prose-contract test is correct when the artifact under test is agent instructions, and the defect was the claim, not the technique."
+```
+
+**Done when**:
+
+- `D3.6` and `D7.1`–`D7.3` are in the Development Constitution with Observables and tiers, recorded
+  as a MINOR amendment in its Sync Impact Report.
+- A new Principle VII exists for completion integrity, and Principle III carries `D3.6`.
+- `D7.2` is decided by a registered check named in the Enforcement Map, evaluated against every
+  completed feature before it was enabled, and observed failing and then passing again.
+- `D7.1` and `D7.3` are tagged `[agent-checkable]`, with no proxy check that cannot fail.
+- Feature 020's coverage record exists and names FR-002, FR-020, FR-024, FR-027 and FR-032 as
+  unsatisfied, so the first artifact the new rule produces is an honest one.
+- No rule is added requiring a test to be behavioral rather than static.
 
 ---
 
