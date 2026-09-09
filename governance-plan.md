@@ -6,8 +6,8 @@ invocations do not have to be reconstructed from conversation history.
 
 **Status**: Phases 1, 2, 2b, 3, 4, 4b, 4c, 5 and 6 complete. Phase 7 is delivered with recorded
 gaps — both skills ship; five of `highway-nfrs`'s functional requirements are unimplemented.
-Phases 8 and 9 remain deferred and independent. Phase 10 is proposed and owns the rule defects
-that let those gaps pass every gate.
+Phases 8 and 9 remain deferred and independent. Phase 10 is complete through Feature 021 and owns
+the rule defects that let those gaps pass every gate. Phase 11 is proposed and independent.
 
 **Last reviewed**: 2026-09-08
 
@@ -93,7 +93,8 @@ Worked examples:
 | 7 | Build the `nfrs` and `controls` skills | Spec | 2 governs; 3 is the subject | 🔶 Delivered with recorded gaps — `highway-controls` (019) and `highway-nfrs` (020) both ship; five FRs unimplemented |
 | 8 | Make a skill's help detail answerable for itself | Spec | 1 | Deferred — independent of all other phases |
 | 9 | Make artifact versions accountable | Spec | 1, and a cross-layer question | Deferred — independent of all other phases |
-| 10 | Make a completion claim accountable | Spec | 0 | Proposed — independent of all other phases |
+| 10 | Make a completion claim accountable | Spec | 0 | ✅ Complete (feature 021) |
+| 11 | Require shared templates for a skill's emitted output | Spec | 1 states the obligation; 0 states the drift guard | Proposed — independent of all other phases |
 
 Phases 3 and 4 are independent of each other and may run in either order.
 
@@ -1000,7 +1001,10 @@ from the Declared Toolchain because the packaged tree is not a repository. It la
 
 **Layer**: 0 **Type**: Spec
 
-**Status**: Proposed, 2026-09-08. Independent of every other phase; can run whenever.
+**Status**: Complete, 2026-09-08, through `specs/021-completion-claim-accountability`. The
+Development Constitution is 1.3.0 with D3.6 and D7.1-D7.3; D7.2 is enforced by
+`completion-coverage.test.sh`. Historical features without coverage are reported as missing rather
+than rewritten, and Feature 020's five residual requirements remain deferred.
 
 **Goal**: A task marked complete, and a report saying a feature is done, are required to be *true*.
 Today both are self-asserted and nothing objects.
@@ -1083,6 +1087,95 @@ D3.6 and D7.1 address the claim, not the technique.
 - Feature 020's coverage record exists and names FR-002, FR-020, FR-024, FR-027 and FR-032 as
   unsatisfied, so the first artifact the new rule produces is an honest one.
 - No rule is added requiring a test to be behavioral rather than static.
+
+---
+
+### Phase 11 — Require shared templates for a skill's emitted output
+
+**Layer**: 1 states the citation obligation; 0 states the drift guard **Type**: Spec
+
+**Status**: Proposed, 2026-09-09. Independent of every other phase.
+
+**Goal**: A skill that emits a file draws that file's full structure — frontmatter *and* body,
+not frontmatter alone — from a shared template under `.highway/library/templates/output/`, cited
+rather than restated, so two skills emitting the same kind of record cannot silently diverge in
+their fields, their section order, or their prose shape.
+
+**The verified state, not yet a defect** (2026-09-09). `highway-nfrs` and `highway-controls`
+currently declare near-identical output on both counts. Frontmatter: `id`, `title`, `status`, plus
+a cross-reference array (`controls: []` on an NFR, `nfrs: []` on a Control). Body: each Outputs
+section describes the same shape — a Markdown statement followed by a rationale. Both alignments
+exist only because both skills were authored in the same phase by the same hand. Nothing requires
+either to hold, and nothing would catch the next skill, or an edit to either one, drifting from
+the other in its fields, its section order, or both. This is the same shape of gap Phase 7 closed
+for containment before it was violated rather than after: fix the missing guard while there are
+only two skills to check, not after a third makes divergence likely.
+
+**A near-collision was checked before drafting rule text, per the precedent Phase 5 set.**
+`X1.1` already requires a skill to declare the shape of what it emits, and `X1.2` already requires
+emitted content to follow that declared shape — and "shape" there already means the whole file,
+not only its frontmatter. A cited template is one way of declaring a shape, so neither rule needs
+amending — the gap is not "nothing governs output shape", it is "nothing requires the declaration
+to route through shared, citable machinery instead of independent prose in each skill". That is a
+citation discipline, the same shape as `P7.3` (no restating another skill's rule) and `D1.3`/`D1.4`
+(no restating rule text) — so this becomes one `P` rule, not a new `X` rule. Keeping this out of
+the `X` namespace is what keeps the amendment small.
+
+**Two rules, in two documents, plus a decision to leave a third rule out**:
+
+| ID | Document | Rule | Observable | Tier |
+|---|---|---|---|---|
+| P9.1 | Highway Skills Constitution (new Principle IX) | A skill that emits a file MUST cite a template rather than restate the file's structure. | The Outputs section names a path under `.highway/library/templates/output/` in place of describing frontmatter fields or body sections directly. | [auto] |
+| D8.1 | Development Constitution (new Principle VIII) | A change to a shared library artifact MUST be followed by re-validation of every skill that cites it. | Each skill naming that artifact is re-checked, and its emitted output still matches, in both frontmatter and body. | [agent-checkable] |
+
+D8.1 is `[agent-checkable]`, not `[auto]`, because deciding whether a skill's *emitted* output —
+frame or body — still matches a changed template is a runtime, semantic question — the same
+reasoning that keeps `D7.1` and `D3.5` off the `[auto]` tier. Tagging it `[auto]` here would be the
+exact dishonesty Phases 4 and 4b removed. Principle VIII is new in the `D` namespace, generalized
+to "a shared library artifact" rather than named for templates specifically, because
+`requirements-inquiry.md` is already such an artifact and Phase 9's still-open library-versioning
+question is the same kinship of problem: multiple things depending on one shared file that nothing
+currently tracks the currency of. This phase does not attempt to resolve Phase 9; it should not
+contradict whatever Phase 9 eventually decides about library-file versioning.
+
+**Naming**: `.highway/library/templates/` already holds `requirements-inquiry.md`, a
+question-content template `highway-inquiry` reads from — a different sense of "template" than an
+output-file skeleton. New output templates live under a `templates/output/` subdirectory, and each
+file there is a full skeleton — frontmatter block and body sections together — not a fragment
+covering only one part, so the two senses of "template" never collide on disk or in a validator's
+search path.
+
+**This is a retroactive strengthening, not a green-field rule.** Verified 2026-09-09: neither
+`highway-nfrs` nor `highway-controls` cites an external template today — both declare their full
+output shape, frontmatter and body alike, inline in prose. Enabling P9.1 against the tree as it
+stands fails both immediately. Per `D3.4`'s evaluate-before-enable discipline and the precedent
+Phase 4c set, the extraction — writing `templates/output/nfr-record.md` and
+`templates/output/control-record.md` as complete skeletons, and pointing each skill's Outputs
+section at its template instead of its inline description — must happen in the same change that
+turns the rule on, or the amendment is MAJOR rather than MINOR.
+
+**Prerequisite**: None. Independent of Phases 5 through 10.
+
+**Command**:
+
+```text
+/speckit.specify "I want every Highway skill that emits a file to cite a shared template covering that file's full structure -- frontmatter and body alike, not frontmatter alone -- rather than restate that structure in its own prose, so two skills emitting the same kind of record cannot silently diverge in either part. Verified 2026-09-09: highway-nfrs and highway-controls currently declare near-identical output on both counts -- frontmatter of id, title, status, plus a cross-reference array, and a body of a statement followed by a rationale -- but only because both were authored together, and nothing requires either alignment to hold. Before writing rule text I checked for a collision with the Experience Standard's X1.1 and X1.2, which already require a skill to declare its output shape, whole-file, and to follow it: a cited template is one way of declaring a shape, so neither needs amending, and this stays a single new P rule about citation discipline rather than a new X rule -- the same shape as P7.3 and D1.3/D1.4, which require citing rather than restating. Add P9.1 to the Highway Skills Constitution at .highway/governance/constitution.md, in a new Principle IX: a skill that emits a file MUST cite a template rather than restate the file's structure, observable as the Outputs section naming a path under .highway/library/templates/output/ in place of describing frontmatter fields or body sections directly, tagged [auto]. Add D8.1 to the Development Constitution at .specify/memory/constitution.md, in a new Principle VIII generalized to shared library artifacts rather than named for templates specifically, because requirements-inquiry.md is already such an artifact: a change to a shared library artifact MUST be followed by re-validation of every skill that cites it, observable as each citing skill being re-checked and its emitted output still matching in both frontmatter and body, tagged [agent-checkable] because deciding whether an emitted output still matches a changed template is semantic, and tagging it [auto] here would be the same dishonesty features 013 and 014 removed. Create .highway/library/templates/output/nfr-record.md and .highway/library/templates/output/control-record.md as complete skeletons -- frontmatter block and body section structure together -- holding exactly what both skills already declare, in a new templates/output/ subdirectory kept separate from requirements-inquiry.md, which is a question-content template rather than an output-file skeleton and must not be confused with one. Update highway-nfrs and highway-controls to cite their template paths from Outputs instead of restating frontmatter or body structure, bump each skill's version as a PATCH since the emitted output does not change, and regenerate the catalog and adapters. Verify before enabling P9.1 that both skills conform once the citation is added, per D3.4, because if either does not this becomes a MAJOR amendment instead of a MINOR one. Record both amendments in each document's Sync Impact Report. Do not write a rule requiring an emitted record's content -- only its declared structure -- since a template governs form and this project's containment principle already settles that a user's own values within that structure are never Highway's to judge."
+```
+
+**Done when**:
+
+- `P9.1` is in the Highway Skills Constitution under a new Principle IX, with an Observable and a
+  tier, recorded as a MINOR amendment in its Sync Impact Report.
+- `D8.1` is in the Development Constitution under a new Principle VIII, with an Observable and a
+  tier, recorded as a MINOR amendment in its Sync Impact Report.
+- `.highway/library/templates/output/nfr-record.md` and `.highway/library/templates/output/control-record.md`
+  exist as complete skeletons covering frontmatter and body together, and `templates/output/` holds
+  no question-content template.
+- `highway-nfrs` and `highway-controls` cite their templates from Outputs and restate neither a
+  field list nor a body structure; both were confirmed conforming before `P9.1` was enabled.
+- No new `X` rule was added; the near-collision with `X1.1`/`X1.2` is recorded rather than
+  rediscovered later.
+- Neither skill's emitted output — frontmatter or body — changed as a result of this phase.
 
 ---
 

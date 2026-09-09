@@ -83,19 +83,29 @@ Evaluate these tables in order. If no row matches, use the final otherwise row.
 Classification never writes a relationship. If the user keeps a vague NFR, record it after advice.
 If it resembles an existing NFR, name that NFR by identifier and title.
 
+For a vague NFR, explain the missing quality, scope, or observable outcome and offer at least one
+concrete alternative. For example, replace `the system should be secure` with `administrative
+access must require multi-factor authentication` or `all data at rest must be encrypted`. The
+author may keep the original wording after hearing the advice.
+
 ## Workflow
 
 1. Read the Inputs and identify the project root, baseline path, catalog path, records path, and requested action.
 2. Apply Action selection and Statement classification in their stated order.
 3. For Add, read `next_id` from the catalog when it exists, allocate it once, and prepare one new NFR record with an empty `controls` list.
-4. For Update, Remove, or Set, resolve every referenced NFR by identifier and title before writing.
-5. For Remove or Set, list every NFR that would be lost by identifier and title and request confirmation before changing any file.
-6. After confirmation or for a non-destructive action, apply the requested mutation, preserving identifiers and untouched metadata.
-7. Increment the baseline exactly once: Add is MINOR; an obligation-preserving Update is PATCH; Remove or Set is MAJOR.
-8. Regenerate `nfrs.md` from the records, version, and recorded `next_id`, then report the action, changed identifiers, and resulting version.
+4. If a request could mean either Update or Set, stop and ask whether one existing NFR or the entire baseline should change.
+5. For Update, Remove, or Set, resolve every referenced NFR by identifier and title before writing.
+6. For Remove or Set, list every NFR that would be lost by identifier and title and request confirmation before changing any file.
+7. After confirmation or for a non-destructive action, apply the requested mutation, preserving identifiers and untouched metadata.
+8. Increment the baseline exactly once: Add is MINOR; an obligation-preserving Update is PATCH; Remove or Set is MAJOR.
+9. Regenerate `nfrs.md` from the records, version, and recorded `next_id`, then report the action, changed identifiers, and resulting version.
 
 The catalog is authoritative for `next_id`; never derive it from the highest file present. An NFR
 identifier is `NFR` followed by six digits, never changes, and is never reissued after removal.
+
+Root-level `library/governance/` is user-owned content. This skill judges a proposal only for NFR
+versus Control classification and skips Highway prose, structure, or quality validation for the
+contents of an accepted NFR record.
 
 ## Verification
 
@@ -115,6 +125,8 @@ identifier is `NFR` followed by six digits, never changes, and is never reissued
 - A referenced NFR does not exist: abort and name what was searched for.
 - The catalog or a record is malformed or inconsistent: abort and name the file and inconsistency.
 - The intended action or target is ambiguous: abort and ask which interpretation is intended.
+- The request could mean updating one NFR or replacing the baseline: abort, name both
+  interpretations, ask which one is intended, and write nothing.
 - A destructive action would remove an NFR: abort until the user confirms after seeing every ID and
   title.
 - Confirmation is withheld: abort and write nothing.

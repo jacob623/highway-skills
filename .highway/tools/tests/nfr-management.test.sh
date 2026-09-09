@@ -37,6 +37,10 @@ for required in \
 	"followed by six digits" \
 	"never reissued after removal" \
 	"every NFR that would be lost by identifier and title" \
+	"concrete alternative" \
+	"one existing NFR or the entire baseline" \
+	"skips Highway prose" \
+	"obligation-preserving Update is PATCH" \
 	"Confirmation is withheld: abort and write nothing"; do
 	require_text "$SKILL" "$required"
 done

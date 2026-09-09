@@ -24,6 +24,9 @@ require_text "$CONTROL_SKILL" "/highway-nfrs"
 # Control-shaped input offered to NFRs must have a named destination.
 require_text "$NFR_SKILL" "Specific, testable, auditable, or enforceable implementation requirement"
 require_text "$NFR_SKILL" "offer \`/highway-controls\` instead"
+require_text "$NFR_SKILL" "concrete alternative"
+require_text "$NFR_SKILL" "author may keep the original wording"
+require_text "$NFR_SKILL" "one existing NFR or the entire baseline"
 
 # Advice is not refusal, and relationship ownership remains deferred.
 require_text "$NFR_SKILL" "If the user keeps a vague NFR, record it after advice."

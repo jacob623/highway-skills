@@ -1,6 +1,7 @@
 <!--
 Sync Impact Report
-Version change: none → 1.0.0 (initial ratification); amended 1.0.0 → 1.1.0 on 2026-09-08
+Version change: none → 1.0.0 (initial ratification); amended 1.0.0 → 1.1.0, 1.1.0 → 1.2.0,
+  and 1.2.0 → 1.3.0 on 2026-09-08
 Bump rationale: this is the first version of a new document. It is not an amendment to any
   existing constitution. The `D` namespace is introduced here and has no prior version.
 
@@ -61,6 +62,22 @@ Follow-up TODOs closed by amendment 1.1.0:
   - D_AUTO_TIER_ENFORCEMENT: satisfied. See the 1.1.0 entry below for the evidence.
 
 Follow-up TODOs: none.
+
+--- Amendment 1.2.0 → 1.3.0 (MINOR), 2026-09-08 ---
+Bump rationale: four completion-integrity rules are added without invalidating conforming work.
+The new rules govern development records only and do not change shipped artifacts.
+Added rules: D3.6 and D7.1-D7.3. D3.6 extends verification discipline to claimed tests; D7.1
+requires semantic task-to-artifact correspondence; D7.2 requires exact requirement coverage; and
+D7.3 separates check results from coverage in completion reports.
+Added principle: VII. Completion Integrity.
+Tier counts: [auto] 6 → 7; [agent-checkable] 18 → 21; [human-review] 1, unchanged.
+Verified before enabling: the coverage check was evaluated against every existing completed feature;
+features without historical coverage were recorded as missing rather than backfilled. A valid
+coverage fixture failed when one requirement id was removed and passed again after restoration.
+No existing completed spec directory was edited. D3.6, D7.1, and D7.3 remain agent-checkable;
+no proxy check was added for their semantic judgements.
+Self-application review: D1.3, D1.4, and D5.3 PASS; the amendment cites rule IDs and names each
+added rule and changed tier count.
 
 --- Amendment 1.1.0 → 1.2.0 (MINOR), 2026-09-08 ---
 Bump rationale: three rules are added and no conforming work is invalidated. MINOR covers a rule
@@ -235,6 +252,7 @@ table cannot silently go stale.
 | D4.6 | adapter-coverage.test.sh | Asserts no catalog entry, adapter file, adapter manifest row, or distribution manifest row names a skill with no source directory |
 | D4.7 | adapter-coverage.test.sh | Regenerates into a temporary tree and asserts no diff against the committed artifacts, excepting the recorded generation timestamp |
 | D5.4 | spec-record.test.sh | Asserts feature directory numbers are contiguous from 001 with no gap and no duplicate |
+| D7.2 | completion-coverage.test.sh | Compares every requirement id in a completed feature spec with exactly one coverage entry |
 
 ## Core Principles
 
@@ -285,9 +303,21 @@ is the worked example.
 | D3.3 | A behavioral change MUST add or amend at least one test. | The change includes an edit to a file under `.highway/tools/tests/`. | [agent-checkable] |
 | D3.4 | A new validation check MUST be evaluated against every existing fixture before it is enabled. | Each fixture's expected verdict under the new check is recorded before the check is wired in. | [agent-checkable] |
 | D3.5 | A test MUST NOT be weakened to accommodate a change. | No assertion is removed or loosened without a recorded reason naming the superseded behavior. | [human-review] |
+| D3.6 | A test MUST be observed failing for the behavior it claims to cover before that behavior is marked complete. | The failing run and its message are recorded before the implementation that makes it pass. | [agent-checkable] |
 
 Rationale: D3.4 exists because an unconditional new check silently changes the verdict of every
 artifact already in the repository.
+
+### VII. Completion Integrity
+
+| ID | Rule | Observable | Tier |
+|---|---|---|---|
+| D7.1 | A task MUST NOT be marked complete unless the artifact it names contains the change it describes. | Each `[X]` task's named path exists and contains the described change. | [agent-checkable] |
+| D7.2 | A completed feature MUST record a requirement-coverage mapping. | Every requirement id in `spec.md` appears exactly once in the feature's coverage record, against a satisfying artifact or a stated deferral. | [auto] |
+| D7.3 | A completion report MUST state requirement coverage separately from check results. | The report makes the suite result and the requirement coverage two distinct claims. | [agent-checkable] |
+
+Rationale: Completion records are claims about work, not substitutes for the work. D7.2 is
+mechanically decidable by comparing requirement-id sets; D7.1 and D7.3 require semantic review.
 
 ### IV. Generated Artifact Integrity
 
@@ -357,6 +387,7 @@ When two rules conflict, the higher-ranked principle prevails. The ordering is t
 | 4 | IV. Generated Artifact Integrity | Affects the product surface but is detectable by regeneration. |
 | 5 | V. Specification Record Integrity | Affects history rather than current correctness. |
 | 6 | VI. Documentation Currency | Affects comprehension rather than behavior. |
+| 7 | VII. Completion Integrity | Prevents unsupported completion claims from becoming project history. |
 
 **Tie-break within one principle**: a MUST NOT rule prevails over a MUST rule; if unresolved, the
 lower rule number prevails.
