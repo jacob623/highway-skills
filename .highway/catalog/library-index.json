@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-09T13:43:57Z",
+  "generated_at": "2026-09-09T15:18:29Z",
   "entries": [
     {
       "library_type": "template",
@@ -7,13 +7,6 @@
       "description": "Complete output skeleton for a retained Control record.",
       "version": "1.0.0",
       "source_path": "library/templates/output/control-record.md"
-    },
-    {
-      "library_type": "template",
-      "name": "highway-profile",
-      "description": "Complete output skeleton for the retained Highway organizational profile.",
-      "version": "1.0.0",
-      "source_path": "library/templates/output/highway-profile.md"
     },
     {
       "library_type": "template",

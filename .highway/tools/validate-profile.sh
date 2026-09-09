@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Validates the structural contract of .highway/profile.yaml without judging user-owned values.
+# Validates the structural contract of the pure-YAML profile without judging user-owned values.
 set -u
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -23,20 +23,8 @@ collect() {
 	errors="${errors}${message}"$'\n'
 }
 
-first_line="$(head -n 1 "$profile_file")"
-if [[ "$first_line" != "---" ]]; then
-	collect "ERROR: [FRONTMATTER] profile must begin with YAML frontmatter"
-fi
-
-delimiters="$(grep -c '^---[[:space:]]*$' "$profile_file" 2>/dev/null | tr -d ' ')"
-if [[ "$delimiters" -lt 2 ]]; then
-	collect "ERROR: [FRONTMATTER] profile must have opening and closing delimiters"
-fi
-
-if [[ "$delimiters" -ge 2 ]]; then
-	if [[ -n "$(profile_body "$profile_file" | sed '/^[[:space:]]*$/d')" ]]; then
-		collect "ERROR: [FRONTMATTER] profile content must remain inside the frontmatter document"
-	fi
+if grep -Eq '^---[[:space:]]*$' "$profile_file"; then
+	collect "ERROR: [FRONTMATTER] pure-YAML profile must not contain document delimiters"
 fi
 
 keys="$(profile_top_level_keys "$profile_file")"
@@ -76,36 +64,12 @@ while IFS= read -r key; do
 	fi
 done <<< "$keys"
 
-empty_sections="$(profile_frontmatter "$profile_file" | awk '
-	function report() {
-		if (section != "" && optional[section] && content == 0) print section
-	}
-	BEGIN {
-		optional["constraints"] = 1
-		optional["strategic_directions"] = 1
-		optional["preferences"] = 1
-		optional["business_context"] = 1
-		optional["architecture_principles"] = 1
-		optional["approved_technologies"] = 1
-		optional["prohibited_technologies"] = 1
-		optional["operating_model"] = 1
-		optional["vendor_strategy"] = 1
-	}
-	{
-		if ($0 ~ /^[^[:space:]#][^:]*:/) {
-			report()
-			section = $0
-			sub(/:.*/, "", section)
-			content = 0
-			next
-		}
-		if (section != "" && $0 !~ /^[[:space:]]*$/ && $0 !~ /^[[:space:]]*#/) content = 1
-	}
-	END { report() }
-')"
-if [[ -n "$empty_sections" ]]; then
-	collect "ERROR: [STRUCTURE] empty optional section(s) must be omitted: $(printf '%s' "$empty_sections" | tr '\n' ' ' | sed 's/[[:space:]]*$//')"
-fi
+required_sections="organization constraints strategic_directions preferences business_context architecture_principles approved_technologies prohibited_technologies operating_model vendor_strategy"
+for section in $required_sections; do
+	if ! grep -Eq "^${section}:[[:space:]]*" "$profile_file"; then
+		collect "ERROR: [STRUCTURE] required section '$section' must be present as a mapping"
+	fi
+done
 
 generated_keys="$(printf '%s\n' "$keys" | grep -E '^(timestamp|generated_at|random_id|random_identifier)$' || true)"
 if [[ -n "$generated_keys" ]]; then

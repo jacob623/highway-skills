@@ -1,0 +1,29 @@
+metadata:
+  version: 1.0.0
+  description: >
+    Repository-wide organizational context,
+    architectural constraints,
+    strategic directions,
+    and technology preferences.
+
+organization:
+  name: ""
+  industry: ""
+
+constraints: {}
+
+strategic_directions: {}
+
+preferences: {}
+
+business_context: {}
+
+architecture_principles: {}
+
+approved_technologies: {}
+
+prohibited_technologies: {}
+
+operating_model: {}
+
+vendor_strategy: {}

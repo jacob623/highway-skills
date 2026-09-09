@@ -14,7 +14,7 @@ CONTROL_SKILL="$HIGHWAY_ROOT/skills/highway-controls/SKILL.md"
 NFR_TEMPLATE="$HIGHWAY_ROOT/library/templates/output/nfr-record.md"
 CONTROL_TEMPLATE="$HIGHWAY_ROOT/library/templates/output/control-record.md"
 PROFILE_SKILL="$HIGHWAY_ROOT/skills/highway-profile/SKILL.md"
-PROFILE_TEMPLATE="$HIGHWAY_ROOT/library/templates/output/highway-profile.md"
+PROFILE_TEMPLATE="$HIGHWAY_ROOT/library/templates/output/profile.yaml"
 VALIDATE_LIBRARY="$HIGHWAY_ROOT/tools/validate-library.sh"
 VALIDATE_SKILL="$HIGHWAY_ROOT/tools/validate-skill.sh"
 
@@ -42,7 +42,7 @@ require_text "$EXPERIENCE" "| X1.5 |"
 require_text "$DEV_CONSTITUTION" "| D8.1 |"
 require_text "$RULE_CHECKS" "P9.1"
 
-# Both retained output types need complete shared skeletons.
+# Markdown records need complete shared skeletons; the profile is a pure-YAML output contract.
 require_file "$NFR_TEMPLATE"
 require_file "$CONTROL_TEMPLATE"
 require_file "$PROFILE_TEMPLATE"
@@ -67,16 +67,17 @@ if [[ -f "$CONTROL_TEMPLATE" ]]; then
 	require_text "$CONTROL_TEMPLATE" "<user-provided rationale>"
 fi
 if [[ -f "$PROFILE_TEMPLATE" ]]; then
-	require_text "$PROFILE_TEMPLATE" "name: highway-profile"
 	require_text "$PROFILE_TEMPLATE" "metadata:"
+	require_text "$PROFILE_TEMPLATE" "organization:"
 	require_text "$PROFILE_TEMPLATE" "constraints:"
 	require_text "$PROFILE_TEMPLATE" "preferences:"
+	require_text "$PROFILE_TEMPLATE" "vendor_strategy:"
 fi
 
 # Each file-emitting skill must cite its complete skeleton.
 require_text "$NFR_SKILL" ".highway/library/templates/output/nfr-record.md"
 require_text "$CONTROL_SKILL" ".highway/library/templates/output/control-record.md"
-require_text "$PROFILE_SKILL" ".highway/library/templates/output/highway-profile.md"
+require_text "$PROFILE_SKILL" ".highway/library/templates/output/profile.yaml"
 require_text "$NFR_SKILL" "version: 1.0.1"
 require_text "$CONTROL_SKILL" "version: 1.0.1"
 

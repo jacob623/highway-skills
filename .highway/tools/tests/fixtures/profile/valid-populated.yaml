@@ -1,7 +1,9 @@
----
 metadata:
   version: 1.0.0
   description: "Repository-wide organizational context for Highway guidance."
+organization:
+  name: "Example Org"
+  industry: "Technology"
 constraints:
   compliance:
     required:
@@ -13,4 +15,9 @@ preferences:
   cloud:
     preferred:
       - gcp
----
+business_context: {}
+architecture_principles: {}
+approved_technologies: {}
+prohibited_technologies: {}
+operating_model: {}
+vendor_strategy: {}
