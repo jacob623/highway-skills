@@ -1,5 +1,18 @@
 <!--
 Sync Impact Report
+Version change: 1.1.0 → 1.2.0 (MINOR), 2026-09-09
+
+--- Amendment 1.1.0 → 1.2.0 (MINOR), 2026-09-09 ---
+Bump rationale: one additive retained-file rule is added without invalidating conforming work.
+Added rule: X1.5 requires frontmatter on every retained file artifact emitted by a skill and
+excludes transient messages and other non-file output.
+Verified before enabling: highway-nfrs and highway-controls both use retained record structures
+with frontmatter; their transient reports remain outside the rule.
+Restatement review: X1.5 is checked against P9.1 and D8.1; it governs the emitted artifact, while
+P9.1 governs the authoring citation and D8.1 governs development review after shared changes.
+Self-application review: the Experience Standard emits no retained file artifact, so X1.5 is N/A.
+
+Previous amendment:
 Version change: none → 1.0.0 (initial ratification); amended 1.0.0 → 1.1.0 on 2026-09-08
 
 --- Amendment 1.0.0 → 1.1.0 (MINOR), 2026-09-08 ---
@@ -31,7 +44,7 @@ Added sections: Scope, Non-goals, Precedence, Tier Definitions, Rules, Candidate
   Versioning Policy, Self-Application.
 Removed sections: none. Modified principles: none; no prior version exists.
 
-Rule count: 9. Tier counts: [auto] 1, [agent-checkable] 8, [human-review] 0.
+Rule count: 10. Tier counts: [auto] 1, [agent-checkable] 9, [human-review] 0.
 
 Why only one rule is tagged [auto]: seven of the nine govern runtime output — prompt wording,
   message content, artifact contents — which no static check reading a SKILL.md can observe. Only
@@ -157,6 +170,7 @@ recorded `N/A` rather than as an exception.
 | X1.2 | Emitted content MUST follow its declared shape. | Every field and ordering present in the output appears in the Outputs declaration. | [agent-checkable] | two |
 | X1.3 | An empty result MUST have a declared form. | The Outputs section states the exact content emitted when there is nothing to report. | [agent-checkable] | one |
 | X1.4 | A specimen MUST agree with the metadata it repeats. | Every value the Example section shares with the skill's frontmatter matches it. | [auto] | two |
+| X1.5 | Every retained file artifact emitted by a skill MUST include frontmatter. | Each retained emitted file begins with frontmatter; transient messages and other non-file output are excluded. | [agent-checkable] | two |
 
 X1.3 exists because an empty result is where output contracts are usually left undefined, and an
 empty table tells a reader nothing about whether the skill worked.

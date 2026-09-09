@@ -4,7 +4,7 @@ description: "Manages the repository-wide Non-Functional Requirement baseline; u
 usage: "Invoke as `/highway-nfrs` and state the NFR baseline change in plain language."
 compatibility: all
 metadata:
-  version: 1.0.0
+  version: 1.0.1
 ---
 
 # highway-nfrs
@@ -50,8 +50,9 @@ routing contract for this skill's own behavior.
 
 A changed baseline report naming the action and resulting semantic version.
 
-An NFR file at `library/governance/nfrs/NFRXXXXXX.md` with YAML frontmatter for `id`, `title`,
-`status`, and `controls: []`, followed by a Markdown statement and rationale.
+An NFR file at `library/governance/nfrs/NFRXXXXXX.md` following the complete structure in
+`.highway/library/templates/output/nfr-record.md`, including frontmatter and body. The template's
+placeholders remain user-owned values.
 
 A generated prose catalog at `library/governance/nfrs.md` containing the global baseline statement,
 global applicability, `/highway-nfrs` ownership, direct-edit warning, baseline version, `next_id`,

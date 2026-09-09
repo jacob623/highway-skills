@@ -1092,7 +1092,7 @@ D3.6 and D7.1 address the claim, not the technique.
 
 ### Phase 11 — Require shared templates for a skill's emitted output
 
-**Layer**: 1 states the citation obligation; 0 states the drift guard **Type**: Spec
+**Layer**: 1 states the citation obligation; 2 states retained-file frontmatter; 0 states the drift guard **Type**: Spec
 
 **Status**: Proposed, 2026-09-09. Independent of every other phase.
 
@@ -1121,12 +1121,13 @@ citation discipline, the same shape as `P7.3` (no restating another skill's rule
 (no restating rule text) — so this becomes one `P` rule, not a new `X` rule. Keeping this out of
 the `X` namespace is what keeps the amendment small.
 
-**Two rules, in two documents, plus a decision to leave a third rule out**:
+**Three rules, in three governance documents**:
 
 | ID | Document | Rule | Observable | Tier |
 |---|---|---|---|---|
 | P9.1 | Highway Skills Constitution (new Principle IX) | A skill that emits a file MUST cite a template rather than restate the file's structure. | The Outputs section names a path under `.highway/library/templates/output/` in place of describing frontmatter fields or body sections directly. | [auto] |
 | D8.1 | Development Constitution (new Principle VIII) | A change to a shared library artifact MUST be followed by re-validation of every skill that cites it. | Each skill naming that artifact is re-checked, and its emitted output still matches, in both frontmatter and body. | [agent-checkable] |
+| X1.5 | Experience Standard (X1 — Output structure) | Every retained file artifact emitted by a skill MUST include frontmatter. | Each retained emitted file begins with frontmatter; transient messages and other non-file output are excluded. | [agent-checkable] |
 
 D8.1 is `[agent-checkable]`, not `[auto]`, because deciding whether a skill's *emitted* output —
 frame or body — still matches a changed template is a runtime, semantic question — the same
@@ -1173,8 +1174,8 @@ turns the rule on, or the amendment is MAJOR rather than MINOR.
   no question-content template.
 - `highway-nfrs` and `highway-controls` cite their templates from Outputs and restate neither a
   field list nor a body structure; both were confirmed conforming before `P9.1` was enabled.
-- No new `X` rule was added; the near-collision with `X1.1`/`X1.2` is recorded rather than
-  rediscovered later.
+- `X1.5` is added for the separate retained-file frontmatter obligation; the near-collision with
+  `X1.1`/`X1.2` is recorded rather than rediscovered later.
 - Neither skill's emitted output — frontmatter or body — changed as a result of this phase.
 
 ---

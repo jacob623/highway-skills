@@ -193,6 +193,12 @@ d="$tmp_root/p64"; write_base_skill "$d"
 sed -i.bak 's|^- Use when seeding a violation of one rule\.$|- Use when the catalog is currently stale.|' "$d/SKILL.md" && rm -f "$d/SKILL.md.bak"
 assert_reports "P6.4 nondeterministic decision criterion" "P6.4" "$d"
 
+# --- P9.1: a file output without a shared complete template ---------------------------------
+
+d="$tmp_root/p91"; write_base_skill "$d"
+sed -i.bak 's/^A confirmation message\.$/A file at library\/governance\/example.md./' "$d/SKILL.md" && rm -f "$d/SKILL.md.bak"
+assert_reports "P9.1 uncited file output" "P9.1" "$d"
+
 # The rule governs decision criteria, not prose. The same token outside the sections that state
 # when a skill applies must not be flagged, or every skill describing its own output fails.
 d="$tmp_root/p64-ok"; write_base_skill "$d"

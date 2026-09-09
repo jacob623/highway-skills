@@ -1,5 +1,15 @@
 <!--
 Sync Impact Report
+Version change: 1.3.0 → 1.4.0 (MINOR), 2026-09-09
+Bump rationale: Principle VIII and rule D8.1 are added without invalidating conforming work.
+Added rule: D8.1 requires re-validation of every skill citing a changed shared library artifact,
+including its complete frontmatter and body output structure.
+Verified before enabling: the two current output-template citations are identified and both skills
+are validated against their complete templates.
+Self-application review: D1.3, D1.4, and D5.3 PASS; D8.1 names the dependent review obligation
+without restating P9.1 or X1.5.
+
+Previous amendment:
 Version change: none → 1.0.0 (initial ratification); amended 1.0.0 → 1.1.0, 1.1.0 → 1.2.0,
   and 1.2.0 → 1.3.0 on 2026-09-08
 Bump rationale: this is the first version of a new document. It is not an amendment to any
@@ -19,7 +29,7 @@ Added principles (6, all new):
   - IV. Generated Artifact Integrity (D4.1-D4.7)
   - V. Specification Record Integrity (D5.1-D5.4)
   - VI. Documentation Currency (D6.1-D6.2)
-Rule count: 25. Tier counts: [auto] 10, [agent-checkable] 14, [human-review] 1.
+Rule count: 29. Tier counts: [auto] 7, [agent-checkable] 22, [human-review] 1.
 
 Added sections: Definitions, Core Principles, Declared Toolchain, Principle Precedence,
   Quality Gates and Binary Trigger Tests, Constitution Check Output Shape, Governance,
@@ -375,6 +385,15 @@ reconstruct why a decision was made.
 Rationale: D6.2 is scoped to the containing tree so that a reference valid in development but
 dangling in the package is a FAIL.
 
+### VIII. Shared Library Dependency Review
+
+| ID | Rule | Observable | Tier |
+|---|---|---|---|
+| D8.1 | A change to a shared library artifact MUST be followed by re-validation of every skill that cites it. | Each citing skill is identified and re-checked; its complete emitted frontmatter and body still match the changed artifact, or a mismatch is reported. | [agent-checkable] |
+
+Rationale: Shared artifacts are dependencies of the skills that cite them; reviewing only the
+changed file leaves dependent output contracts able to drift silently.
+
 ## Principle Precedence
 
 When two rules conflict, the higher-ranked principle prevails. The ordering is total.
@@ -434,4 +453,4 @@ Highway Skills Constitution prevails for artifact content and this document prev
 This document is subject to D1.3, D1.4, and D5.3. Every amendment records a review against those
 rule IDs.
 
-**Version**: 1.2.0 | **Ratified**: 2026-09-08 | **Last Amended**: 2026-09-08
+**Version**: 1.4.0 | **Ratified**: 2026-09-08 | **Last Amended**: 2026-09-09

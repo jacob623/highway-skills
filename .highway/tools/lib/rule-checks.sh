@@ -26,6 +26,7 @@ rc_registry() {
 		P8.1	rc_check_P8_1	N2
 		P8.3	rc_check_P8_3	-
 		P8.7	rc_check_P8_7	-
+		P9.1	rc_check_P9_1	N4
 		X1.4	rc_check_X1_4	N3
 	EOF
 }
@@ -293,6 +294,29 @@ rc_check_P8_7() {
 	')"
 	[[ -n "$out" ]] && { printf '%s\n' "$out"; found=1; }
 	return $found
+}
+
+# --- P9.1: file-emitting skills cite a complete shared output template ---------------------
+# A skill with no declared file path is not subject to this rule. The semantic comparison of a
+# cited template with a produced artifact remains an agent-checkable X/D review.
+rc_check_P9_1() {
+	local file="$1" outputs outputs_without_links
+	outputs="$(awk '
+		/^## Outputs[[:space:]]*$/ { capture = 1; next }
+		capture && /^## / { exit }
+		capture { print }
+	' "$file")"
+	outputs_without_links="$(printf '%s\n' "$outputs" | sed -E 's/\[[^]]*\]\([^)]*\)//g')"
+
+	if [[ -z "$outputs_without_links" || "$outputs_without_links" != *\.md* ]]; then
+		return 2
+	fi
+
+	if ! printf '%s\n' "$outputs_without_links" | grep -Eq '\.highway/library/templates/output/[^[:space:]`]+\.md'; then
+		echo "Outputs section emits a file but cites no complete template under .highway/library/templates/output/"
+		return 1
+	fi
+	return 0
 }
 
 # Resolves the constitution the way validate-skill.sh does, so a token list is read from the same

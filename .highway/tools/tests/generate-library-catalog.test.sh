@@ -50,6 +50,13 @@ if ! grep -q "\"name\": \"Example Governance Policy\"" "$CATALOG_JSON"; then
 	fail=1
 fi
 
+for output_template in nfr-record control-record; do
+	if ! grep -q "library/templates/output/$output_template.md" "$CATALOG_JSON"; then
+		echo "FAIL: nested output template '$output_template' is missing from the library catalog"
+		fail=1
+	fi
+done
+
 for field in library_type name description version source_path; do
 	if ! grep -q "\"$field\":" "$CATALOG_JSON"; then
 		echo "FAIL: catalog/library-index.json entry missing field '$field'"

@@ -4,7 +4,7 @@ description: "Manages the repository-wide Control baseline, adding, updating, re
 usage: "Invoke as `/highway-controls` and state what to change, for example `/highway-controls add a control requiring administrative access to use MFA`."
 compatibility: all
 metadata:
-  version: 1.0.0
+  version: 1.0.1
 ---
 
 # highway-controls
@@ -54,10 +54,10 @@ Standard.
 
 Two artifacts, plus a statement of what changed.
 
-**A Control file** at `library/governance/controls/CTLXXXXXX.md`, carrying frontmatter with `id`,
-`title`, `status`, and an `nfrs` field that stays empty in this phase, and a body holding the
-statement and its rationale. A Control carries no version of its own; the baseline holds the only
-version.
+**A Control file** at `library/governance/controls/CTLXXXXXX.md` following the complete structure
+in `.highway/library/templates/output/control-record.md`, including frontmatter and body. The
+template's placeholders remain user-owned values. A Control carries no version of its own; the
+baseline holds the only version.
 
 **A catalog** at `library/governance/controls.md`, listing every Control by identifier and title,
 stating the baseline version, recording the next identifier to allocate, and stating that Controls
