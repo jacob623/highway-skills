@@ -1,0 +1,9 @@
+---
+preferences:
+  cloud:
+    preferred:
+      - gcp
+metadata:
+  version: 1.0.0
+  description: "Metadata is not first"
+---

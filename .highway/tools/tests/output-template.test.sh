@@ -13,6 +13,8 @@ NFR_SKILL="$HIGHWAY_ROOT/skills/highway-nfrs/SKILL.md"
 CONTROL_SKILL="$HIGHWAY_ROOT/skills/highway-controls/SKILL.md"
 NFR_TEMPLATE="$HIGHWAY_ROOT/library/templates/output/nfr-record.md"
 CONTROL_TEMPLATE="$HIGHWAY_ROOT/library/templates/output/control-record.md"
+PROFILE_SKILL="$HIGHWAY_ROOT/skills/highway-profile/SKILL.md"
+PROFILE_TEMPLATE="$HIGHWAY_ROOT/library/templates/output/highway-profile.md"
 VALIDATE_LIBRARY="$HIGHWAY_ROOT/tools/validate-library.sh"
 VALIDATE_SKILL="$HIGHWAY_ROOT/tools/validate-skill.sh"
 
@@ -43,6 +45,7 @@ require_text "$RULE_CHECKS" "P9.1"
 # Both retained output types need complete shared skeletons.
 require_file "$NFR_TEMPLATE"
 require_file "$CONTROL_TEMPLATE"
+require_file "$PROFILE_TEMPLATE"
 if [[ -f "$NFR_TEMPLATE" ]]; then
 	require_text "$NFR_TEMPLATE" "name: nfr-record"
 	require_text "$NFR_TEMPLATE" "id: NFRXXXXXX"
@@ -63,10 +66,17 @@ if [[ -f "$CONTROL_TEMPLATE" ]]; then
 	require_text "$CONTROL_TEMPLATE" "<user-provided statement>"
 	require_text "$CONTROL_TEMPLATE" "<user-provided rationale>"
 fi
+if [[ -f "$PROFILE_TEMPLATE" ]]; then
+	require_text "$PROFILE_TEMPLATE" "name: highway-profile"
+	require_text "$PROFILE_TEMPLATE" "metadata:"
+	require_text "$PROFILE_TEMPLATE" "constraints:"
+	require_text "$PROFILE_TEMPLATE" "preferences:"
+fi
 
 # Each file-emitting skill must cite its complete skeleton.
 require_text "$NFR_SKILL" ".highway/library/templates/output/nfr-record.md"
 require_text "$CONTROL_SKILL" ".highway/library/templates/output/control-record.md"
+require_text "$PROFILE_SKILL" ".highway/library/templates/output/highway-profile.md"
 require_text "$NFR_SKILL" "version: 1.0.1"
 require_text "$CONTROL_SKILL" "version: 1.0.1"
 
@@ -104,11 +114,11 @@ fi
 
 # The two current skills are the complete set of citing skills for this feature.
 citing_count="$(grep -RIl 'library/templates/output/' "$HIGHWAY_ROOT/skills" --include='SKILL.md' | wc -l | tr -d ' ')"
-if [[ "$citing_count" != "2" ]]; then
-	echo "FAIL: expected 2 output-template citing skills, found $citing_count"
+if [[ "$citing_count" != "3" ]]; then
+	echo "FAIL: expected 3 output-template citing skills, found $citing_count"
 	fail=1
 fi
-for citing_skill in "$NFR_SKILL" "$CONTROL_SKILL"; do
+for citing_skill in "$NFR_SKILL" "$CONTROL_SKILL" "$PROFILE_SKILL"; do
 	if ! grep -Fq "library/templates/output/" "$citing_skill"; then
 		echo "FAIL: dependent review omitted citing skill $citing_skill"
 		fail=1
