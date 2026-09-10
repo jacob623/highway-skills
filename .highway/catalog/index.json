@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-10T00:02:54Z",
+  "generated_at": "2026-09-10T11:31:29Z",
   "entries": [
     {
       "id": "highway-controls",
@@ -63,6 +63,15 @@
       "compatibility": "all",
       "version": "1.0.0",
       "source_path": "skills/highway-relationships/SKILL.md"
+    },
+    {
+      "id": "highway-setup",
+      "name": "highway-setup",
+      "description": "Orchestrates the initial Highway repository setup through the owning governance skills.",
+      "usage": "Invoke as `/highway-setup` to assess readiness and complete missing foundational setup in order.",
+      "compatibility": "all",
+      "version": "1.0.0",
+      "source_path": "skills/highway-setup/SKILL.md"
     }
   ],
   "overlap_flags": []

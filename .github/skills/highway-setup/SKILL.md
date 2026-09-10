@@ -1,0 +1,154 @@
+---
+name: highway-setup
+description: "Orchestrates the initial Highway repository setup through the owning governance skills."
+usage: "Invoke as `/highway-setup` to assess readiness and complete missing foundational setup in order."
+compatibility: all
+metadata:
+  version: 1.0.0
+---
+
+## Purpose
+
+Orchestrates the initial Highway repository setup by evaluating foundational readiness in order and delegating every mutation to its owning skill.
+
+## When to use
+
+- Use `/highway-setup` as the user-facing onboarding entry point for a repository without a complete Profile, Business Objective, Control, and NFR baseline.
+- Use it to reassess setup after an owner workflow has completed or after an author accepts proposed NFRs.
+- Use it to inspect whether setup is complete and display the ownership routes for later administration.
+
+## When not to use
+
+- Do not use this skill to create, update, remove, replace, or directly write a Profile, Objective, Control, or NFR artifact.
+- Do not use it to repair relationships; route that work to `/highway-relationships`.
+- Do not use it to answer skill discovery or questionnaire administration; route those requests to `/highway-help` or `/highway-inquiry`.
+
+## Inputs
+
+- The project root, found by locating `.highway/`; if it cannot be located, stop and ask for the project root.
+- The Profile owner workflow and artifact contract at `/highway-profile`, including its required `organization.name` value.
+- The Business Objective owner workflow and root-level `library/objectives/` record contract at `/highway-objectives`.
+- The Control owner workflow and root-level `library/governance/controls/` baseline contract at `/highway-controls`.
+- The NFR owner workflow and root-level `library/governance/nfrs/` baseline contract at `/highway-nfrs`.
+- The output values and ownership routes defined in this skill are the user-facing contract; no second artifact store is introduced.
+
+## Outputs
+
+- An ordered readiness dashboard with `Profile`, `Business Objectives`, `Controls`, `NFRs`, `Setup`, and, when incomplete, `Current Activity`.
+- The exact complete dashboard when all four owner workflows recognize valid accepted baselines.
+- An in-progress dashboard when a prerequisite is missing, blocked, pending, declined, malformed, or incomplete.
+- Do not directly write Profile, Objective, Control, or NFR artifacts.
+- When no owner mutation is required, preserve existing governance artifact bytes exactly.
+
+## Workflow
+
+1. Locate the project root by finding `.highway/`. If it cannot be located, stop and ask for the project root; otherwise continue to Step 2.
+2. Read the Profile state through the Profile owner contract. If the Profile is absent, malformed, or `organization.name` is empty, classify Profile as `Missing` or `Blocked`, mark Objectives, Controls, and NFRs `Not Evaluated`, and continue to Step 3.
+3. When Profile is incomplete, invoke `/highway-profile setup` using its confirmation-gated workflow. If it succeeds, reassess Profile and continue to Step 4; if it is declined, fails, is malformed, or remains incomplete, report the blocking condition and abort setup.
+4. Read the Business Objective state from root-level `library/objectives/` and its owner contract. If no valid objective record exists, classify Business Objectives as `Missing`, mark Controls and NFRs `Not Evaluated`, and continue to Step 5; otherwise continue to Step 6.
+5. When Business Objectives are incomplete, invoke `/highway-objectives setup` using its guided owner workflow. If it succeeds, reassess Objectives and continue to Step 6; if it is declined, fails, is malformed, or remains incomplete, report the blocking condition and abort setup.
+6. Read the Control state from root-level `library/governance/controls/` and its owner contract. If no valid initial Control baseline exists, classify Controls as `Missing`, mark NFRs `Not Evaluated`, and continue to Step 7; otherwise continue to Step 8.
+7. When Controls are incomplete, invoke `/highway-controls` creation using its owner workflow. If it succeeds, reassess Controls and continue to Step 8; if it is declined, fails, is malformed, or remains incomplete, report the blocking condition and abort setup.
+8. Read the NFR state from root-level `library/governance/nfrs/` and `/highway-nfrs`. If accepted valid NFR artifacts exist, classify NFRs as `Complete` and continue to Step 10; if no proposal has started, classify NFRs as `Missing` and continue to Step 9; if a proposal is awaiting author acceptance, classify NFRs as `In Progress`; if the baseline is malformed, classify NFRs as `Blocked`, report the blocking condition, and abort setup.
+9. Invoke the Control-owned NFR proposal path while preserving `/highway-nfrs` ownership. Before proposal invocation, report NFRs `Missing`; while author acceptance is pending, report NFRs `In Progress`; after acceptance, reassess the NFR owner state and continue to Step 10 only when accepted valid artifacts exist. If the proposal is declined, fails, or is malformed, report that condition and withhold completion.
+10. If Profile, Business Objectives, Controls, and NFRs are all `Complete`, emit the exact completion dashboard. Otherwise emit the in-progress dashboard with downstream states `Not Evaluated` and the current owner activity.
+
+## Ordered Readiness Rules
+
+| Evaluation order | State condition | Result | Next action |
+|---|---|---|---|
+| 1 | Profile missing, malformed, or empty `organization.name` | Profile `Missing` or `Blocked`; downstream `Not Evaluated` | Step 3 |
+| 2 | Profile complete; no valid Objective record | Business Objectives `Missing`; downstream `Not Evaluated` | Step 5 |
+| 3 | Profile and Objectives complete; no valid Control baseline | Controls `Missing`; NFRs `Not Evaluated` | Step 7 |
+| 4 | Profile, Objectives, and Controls complete; NFR baseline missing | NFRs `In Progress` while proposal awaits acceptance | Step 9 |
+| 5 | All four owner baselines complete and valid | Setup `Complete` | Step 10 |
+| 6 | Any unlisted state, malformed owner response, or prerequisite conflict | Blocking area `Blocked` and downstream `Not Evaluated` | Abort |
+
+## Dashboard Contract
+
+When complete, emit exactly this information and ordering:
+
+```text
+Highway Setup Status
+
+Profile: Complete
+Business Objectives: Complete
+Controls: Complete
+NFRs: Complete
+
+Setup: Complete
+
+Governance Management
+
+Profile:
+	/highway-profile
+
+Business Objectives:
+	/highway-objectives
+
+Controls and NFRs:
+	/highway-controls
+
+Help:
+	/highway-help
+
+Advanced Administration
+
+Relationships:
+	/highway-relationships
+
+Questionnaire:
+	/highway-inquiry
+```
+
+When incomplete, emit the same heading and ordered status fields, with `Setup: In Progress` and a `Current Activity` naming the first incomplete or blocked owner workflow. Later areas remain `Not Evaluated`. For example:
+
+The status labels include `Profile: Missing`, `Business Objectives: Missing`, `Controls: Missing`, and `NFRs: Not Evaluated` when those states apply.
+
+```text
+Highway Setup Status
+
+Profile: Complete
+Business Objectives: Missing
+Controls: Not Evaluated
+NFRs: Not Evaluated
+
+Setup: In Progress
+
+Current Activity:
+Business Objective Setup
+```
+
+## Ownership Boundaries
+
+- `/highway-profile` owns Profile setup and the Profile artifact.
+- `/highway-objectives` owns Business Objective records and catalog changes.
+- `/highway-controls` owns Control records and its NFR proposal workflow.
+- `/highway-nfrs` owns accepted NFR records and NFR baseline changes.
+- `highway-setup` owns only ordered status evaluation, workflow routing, continuation, and dashboard output.
+
+## Verification
+
+- Run `.highway/tools/validate-skill.sh .highway/skills/highway-setup` and confirm exit 0.
+- Run `.highway/tools/tests/highway-setup.test.sh` and confirm Profile, Objectives, Controls, and NFRs are evaluated in order.
+- Confirm the focused test covers missing, empty, malformed, pending, declined, failed, incomplete, and complete states.
+- Confirm the focused test proves no downstream workflow runs after a blocking result and no owner artifact is written by this skill.
+- Confirm repeated complete-state runs preserve existing governance artifact bytes exactly.
+- Confirm the complete dashboard matches the exact output contract and the in-progress dashboard names current activity.
+- Run `.highway/tools/tests/run-all.sh` after regenerating catalog and adapter artifacts.
+
+## Error Handling
+
+- `.highway/` cannot be located: abort and ask for the project root.
+- Profile, Objective, Control, or NFR input is malformed: abort the owning step, identify the file or field, and do not write an artifact from this skill.
+- An owner workflow is declined, fails, or remains incomplete: abort setup, report the owner and blocking condition, and do not invoke downstream workflows.
+- An NFR proposal is pending: escalate to the author for a decision, pause setup with `Setup: In Progress`, and do not display completion or treat the proposal as an accepted NFR.
+- An NFR proposal is declined: abort setup and report that no completion dashboard was emitted.
+- A repository state does not match the ordered rules: abort and report the conflicting area rather than guessing.
+- A suspected vulnerability is encountered in a workflow or artifact: escalate to the user, report it, and do not alter it silently.
+
+## Example
+
+```text
+/highway-setup
+```

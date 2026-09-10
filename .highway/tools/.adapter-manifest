@@ -26,3 +26,7 @@
 .claude/skills/highway-relationships/SKILL.md	highway-relationships	1.0.0	7c35c97589673d20b23959efd2fd0844b8dc7fc63b6c265222478580b0ce42d6
 .cursor/rules/highway-relationships.mdc	highway-relationships	1.0.0	88a4eeb5a596d76a859f24b9943bf75eca9072a722b038ec0963912a37b79835
 .mock-agent-4/skills/highway-relationships/SKILL.md	highway-relationships	1.0.0	7c35c97589673d20b23959efd2fd0844b8dc7fc63b6c265222478580b0ce42d6
+.github/skills/highway-setup/SKILL.md	highway-setup	1.0.0	d841bbd638626bea2b93fa5508ef7db68fd2893ff00e68a58a04dc6adccdf30b
+.claude/skills/highway-setup/SKILL.md	highway-setup	1.0.0	d841bbd638626bea2b93fa5508ef7db68fd2893ff00e68a58a04dc6adccdf30b
+.cursor/rules/highway-setup.mdc	highway-setup	1.0.0	cdeecccba49a6ada06a9f136e1dab6969406e48cf8cfff150ee436d925823264
+.mock-agent-4/skills/highway-setup/SKILL.md	highway-setup	1.0.0	d841bbd638626bea2b93fa5508ef7db68fd2893ff00e68a58a04dc6adccdf30b
