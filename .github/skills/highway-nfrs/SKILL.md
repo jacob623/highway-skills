@@ -20,6 +20,9 @@ Use this skill when a user wants to add, update, remove, replace, or inspect a r
 Use it when a user wants to state a desired quality attribute, operational characteristic,
 constraint, or business outcome for solutions in the repository.
 
+Use `readiness` for a read-only assessment of candidate-generation and accepted-NFR state. NFRs
+own this classification and readiness never accepts a proposal or writes a baseline.
+
 ## When not to use
 
 Do not use this skill to record a specific, testable, auditable, or enforceable implementation
@@ -54,6 +57,25 @@ An NFR file at `library/governance/nfrs/NFRXXXXXX.md` following the complete str
 `.highway/library/templates/output/nfr-record.md`, including frontmatter and body. The template's
 placeholders remain user-owned values.
 
+The `readiness` action emits exactly these four lines in this order:
+
+```text
+Status: <Complete, In Progress, Blocked, or Not Applicable>
+Summary: <NFR readiness explanation>
+Next Action: <owner route or None>
+Blocking Reason: <reason or None>
+```
+
+Unavailable or malformed candidate generation is `Blocked`; successful zero candidates with no
+accepted artifacts is `Not Applicable`; candidates with none accepted are always `In Progress`;
+accepted valid artifacts are `Complete`. A zero candidate count with candidate entries is
+contradictory and `Blocked`, as is any other malformed candidate result. A blocked response has a
+non-empty reason; every other response uses `Blocking Reason: None`. Readiness does not write
+records, catalogs, IDs, or relationships.
+
+For `readiness`, read candidate-generation state and accepted NFR artifacts, apply the outcome
+rules above, and return the four-field response without mutation.
+
 A generated prose catalog at `library/governance/nfrs.md` containing the global baseline statement,
 global applicability, `/highway-nfrs` ownership, direct-edit warning, baseline version, `next_id`,
 and every NFR index entry. The catalog contains no timestamp.
@@ -70,6 +92,7 @@ Evaluate these tables in order. If no row matches, use the final otherwise row.
 | Explicitly says update or changes named fields on an existing ID | Update |
 | Explicitly says remove or delete one existing ID | Remove |
 | Explicitly says set, replace, or provides a complete replacement baseline | Set |
+| Explicitly says readiness or asks whether the NFR state is ready | Readiness |
 | Asks only for the baseline or version | Inspect |
 | Otherwise | Abort and ask which action is intended |
 

@@ -14,6 +14,7 @@ Maintain the repository-wide organizational profile as user-owned contextual gui
 ## When to use
 
 - Use with no action to read help, supported actions, setup guidance, and current profile status.
+- Use `readiness` to return the read-only Profile readiness contract without writing or allocating anything.
 - Use `view`, `show`, or `describe` to inspect the current profile without changing it.
 - Use `setup` or `configure` to collect organizational context and propose an initial profile.
 - Use `add`, `update`, `remove`, or `reset` to propose a confirmed change to a profile node.
@@ -27,13 +28,26 @@ Maintain the repository-wide organizational profile as user-owned contextual gui
 
 ## Inputs
 
-The profile at `.highway/library/templates/output/profile.yaml`, when present, and a plain-language request naming the intended action and organizational context. Supported actions are `setup`, `configure`, `view`, `show`, `describe`, `add`, `update`, `remove`, and `reset`. The profile follows the complete pure-YAML structure in `.highway/library/templates/output/profile.yaml`.
+The profile at `.highway/library/templates/output/profile.yaml`, when present, and a plain-language request naming the intended action and organizational context. Supported actions are `setup`, `configure`, `view`, `show`, `describe`, `readiness`, `add`, `update`, `remove`, and `reset`. The profile follows the complete pure-YAML structure in `.highway/library/templates/output/profile.yaml`.
 
 ## Outputs
 
 A read-only response containing the profile status and, when present, its current contents. For an absent profile, the response says it is absent and offers setup without creating a file.
 
 A retained `.highway/library/templates/output/profile.yaml` artifact following the complete pure-YAML structure in `.highway/library/templates/output/profile.yaml`. The artifact has `metadata` first, then `organization`, `constraints`, `strategic_directions`, `preferences`, `business_context`, `architecture_principles`, `approved_technologies`, `prohibited_technologies`, `operating_model`, and `vendor_strategy`; all listed mappings remain present when empty. The profile contains no timestamp, random identifier, or environment-derived value.
+
+Profile readiness is complete only when `organization.name` contains a user-supplied, non-empty value. Profile owns this requirement and reports the missing field when it is absent, empty, or whitespace-only. Profile cannot report `Complete` in those states. Profile does not infer organization identity from repository paths, environment variables, Git metadata, or other fields.
+
+For `readiness`, emit exactly these four lines in this order:
+
+```text
+Status: <Complete, Missing, or Blocked>
+Summary: <profile readiness explanation>
+Next Action: <owner route or None>
+Blocking Reason: <reason or None>
+```
+
+Use `Missing` for an absent, empty, or whitespace-only `organization.name`; use `Blocked` for a malformed profile. A valid populated identity is `Complete`. `Blocking Reason` is non-empty only for `Blocked`; otherwise it is `None`. Readiness performs no write, version increment, or mutation workflow.
 
 Every mutation response reports:
 
@@ -50,16 +64,17 @@ Mutation previews additionally show the current state, proposed state, and ramif
 1. Locate the project root by finding `.highway/`; if it cannot be located, abort without guessing a path.
 2. Read `.highway/library/templates/output/profile.yaml` when it exists. A missing profile is a read-only absence until setup is confirmed. A malformed profile aborts with the malformed section identified and never overwrites the file.
 3. With no action, display the purpose, supported actions, usage examples, setup guidance, and current status. Treat `view`, `show`, and `describe` as equivalent read-only actions.
-4. For `setup` or `configure`, ask the fourteen context questions covering organization, deployment, cloud, compliance, residency, platform, database, infrastructure-as-code, CI/CD, container, and technology restrictions. Record supplied wording only; do not infer unprovided facts.
-5. Construct a deterministic proposal with `metadata` first, every required section present, and existing wording, capitalization, grouping, and value order preserved. Show the complete proposal before requesting confirmation.
-6. For `add`, resolve the category and nested profile node, prefer append insertion, and show the inferred category and insertion location before confirmation.
-7. For `update`, resolve one existing value and show the action, exact current value, replacement value, affected entry, downstream impact, and confirmation prompt.
-8. For `remove`, resolve the exact value, show the affected entry and ramifications, and wait for confirmation.
-9. For `reset`, resolve one profile node, list every value that would be cleared, explain ramifications, and wait for confirmation.
-10. Write the proposed profile only after explicit confirmation. A decline, ambiguity, malformed input, missing target, or unresolvable category leaves the original bytes unchanged; an absent profile remains absent after a declined setup.
-11. Preserve the ordered top-level structure `metadata`, `constraints`, `strategic_directions`, `preferences`, then supported future sections including `business_context`, `architecture_principles`, `approved_technologies`, `prohibited_technologies`, `operating_model`, and `vendor_strategy`.
-12. After a confirmed write succeeds, increment `metadata.version` by PATCH for `add`, `update`, or `remove`, by MINOR for `reset`, and by MAJOR for a schema-breaking release. Declined, malformed, ambiguous, or aborted operations do not change the version.
-13. If the request targets an NFR or Control baseline, stop profile processing and direct the user to the owning skill without mutating `.highway/library/templates/output/profile.yaml`.
+4. For `readiness`, read the profile without mutation and emit the exact four-field response. Do not invoke setup or infer identity from another source.
+5. For `setup` or `configure`, ask the fourteen context questions covering organization, deployment, cloud, compliance, residency, platform, database, infrastructure-as-code, CI/CD, container, and technology restrictions. Ask explicitly: `What is the name of the organization, business unit, team, or project group this repository represents?` Record the supplied answer at `organization.name`; Empty and whitespace-only answers are invalid. Record supplied wording only; do not infer unprovided facts.
+6. Construct a deterministic proposal with `metadata` first, every required section present, and existing wording, capitalization, grouping, and value order preserved. Show the complete proposal before requesting confirmation. Do not propose Profile Complete when `organization.name` is absent, empty, or whitespace-only.
+7. For `add`, resolve the category and nested profile node, prefer append insertion, and show the inferred category and insertion location before confirmation.
+8. For `update`, resolve one existing value and show the action, exact current value, replacement value, affected entry, downstream impact, and confirmation prompt.
+9. For `remove`, resolve the exact value, show the affected entry and ramifications, and wait for confirmation.
+10. For `reset`, resolve one profile node, list every value that would be cleared, explain ramifications, and wait for confirmation.
+11. Write the proposed profile only after explicit confirmation. A decline, ambiguity, malformed input, missing target, or unresolvable category leaves the original bytes unchanged; an absent profile remains absent after a declined setup.
+12. Preserve the ordered top-level structure `metadata`, `constraints`, `strategic_directions`, `preferences`, then supported future sections including `business_context`, `architecture_principles`, `approved_technologies`, `prohibited_technologies`, `operating_model`, and `vendor_strategy`.
+13. After a confirmed write succeeds, increment `metadata.version` by PATCH for `add`, `update`, or `remove`, by MINOR for `reset`, and by MAJOR for a schema-breaking release. Declined, malformed, ambiguous, or aborted operations do not change the version.
+14. If the request targets an NFR or Control baseline, stop profile processing and direct the user to the owning skill without mutating `.highway/library/templates/output/profile.yaml`.
 
 ## Verification
 
@@ -67,6 +82,8 @@ Mutation previews additionally show the current state, proposed state, and ramif
 - Confirm the distributed default is version `1.0.0` with only the required contextual metadata.
 - Confirm help, view, show, and describe do not change file bytes.
 - Confirm setup/configure and every mutation display a proposal before confirmation and leave bytes unchanged when declined.
+- Confirm setup/configure asks for a user-supplied organization identity and cannot report Profile Complete when `organization.name` is absent, empty, or whitespace-only.
+- Confirm `readiness` emits exactly `Status`, `Summary`, `Next Action`, and `Blocking Reason` in order, with no write or version change.
 - Confirm identical inputs rewrite identical bytes without timestamps, random identifiers, or environment-derived values.
 - Confirm malformed and ambiguous requests abort safely and identify the actionable problem.
 - Run `.highway/tools/validate-skill.sh .highway/skills/highway-profile` and `.highway/tools/validate-profile.sh .highway/library/templates/output/profile.yaml`.
@@ -75,9 +92,11 @@ Mutation previews additionally show the current state, proposed state, and ramif
 
 - If `.highway/` cannot be found, abort and ask for the project root; do not guess a location.
 - If the profile is malformed, abort, identify the malformed section or field, and write nothing.
+- If `organization.name` is absent, empty, or whitespace-only, abort setup, report `organization.name` as incomplete, and do not report Profile Complete or write a proposal.
 - If an action, category, node, or value has multiple interpretations, abort and list every candidate.
 - If no requested target exists, abort and name what was searched for; do not create a replacement implicitly.
 - If confirmation is withheld, abort, report `Confirmation Status: Declined`, and leave the profile byte-for-byte unchanged.
+- If a proposed Profile is declined, abort the mutation, report `Proposed Profile declined` with the incomplete state, and Preserve original bytes.
 - If a request concerns an NFR or Control baseline, abort and route it to `/highway-nfrs` or `/highway-controls`.
 - If output would contain timestamps, random identifiers, environment-derived values, or inferred questionnaire answers, abort and emit none of them.
 

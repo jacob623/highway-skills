@@ -33,6 +33,19 @@ expect_invalid "$FIXTURES/wrong-order.yaml"
 expect_invalid "$FIXTURES/empty-section.yaml"
 expect_invalid "$FIXTURES/generated-value.yaml"
 
+SKILL="$HIGHWAY_ROOT/skills/highway-profile/SKILL.md"
+for required_text in \
+	'What is the name of the organization, business unit, team, or project group this repository represents?' \
+	'organization.name' \
+	'whitespace-only' \
+	'does not infer organization identity' \
+	'Profile cannot report `Complete`'; do
+	if ! grep -Fq "$required_text" "$SKILL"; then
+		echo "FAIL: Profile ownership contract missing '$required_text'"
+		fail=1
+	fi
+done
+
 if [[ $fail -ne 0 ]]; then
 	exit 1
 fi

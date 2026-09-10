@@ -22,6 +22,9 @@ decides what to accept.
 
 Use it to ask what the current baseline contains, or what version it is at.
 
+Use `readiness` for a read-only assessment of whether the Control baseline is usable. Controls own
+the validity decision and readiness never starts NFR proposal generation.
+
 ## When not to use
 
 Do not use it to author non-functional requirements directly. Direct NFR authoring belongs to
@@ -55,6 +58,23 @@ Satisfies `X1.1`, `X1.2`, `X2.1`, `X4.1`, `X5.1`, `X5.2` and `X6.1` of the Highw
 Standard.
 
 Two artifacts, plus a statement of what changed.
+
+The `readiness` action emits exactly these four lines in this order:
+
+```text
+Status: <Complete, Missing, or Blocked>
+Summary: <Control baseline explanation>
+Next Action: <owner route or None>
+Blocking Reason: <reason or None>
+```
+
+At least one valid Control with a consistent baseline is `Complete`. No valid Controls is `Missing`;
+a malformed or inconsistent baseline is `Blocked`. A blocked response has a non-empty reason;
+every other response uses `Blocking Reason: None`. Readiness does not write files, versions, IDs, or
+NFR proposals.
+
+For `readiness`, read the root-level Control baseline and records, validate them using the existing
+Control record and catalog rules, and return the four-field response without mutation.
 
 **A Control file** at `library/governance/controls/CTLXXXXXX.md` following the complete structure
 in `.highway/library/templates/output/control-record.md`, including frontmatter and body. The
@@ -161,6 +181,8 @@ This self-check exercises `X1.1`, `X1.2`, `X2.1`, `X4.1`, `X5.1`, `X5.2` and `X6
 - Confirm the next identifier recorded in the catalog is greater than every identifier in use.
 - Confirm an unchanged baseline rewrites to an identical catalog.
 - Confirm the report names the action taken and the resulting baseline version.
+- Confirm `readiness` emits the exact four ordered fields for missing, blocked, and complete baselines
+  without changing Control files, catalogs, versions, or NFR proposal state.
 
 ## Error Handling
 

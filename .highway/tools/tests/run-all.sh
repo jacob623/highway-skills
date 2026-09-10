@@ -33,8 +33,8 @@ pass=0
 fail=0
 failed_names=()
 
-shopt -s nullglob
-for test_file in "$SCRIPT_DIR"/*.test.sh; do
+run_test() {
+	local test_file="$1" name
 	name="$(basename "$test_file")"
 	echo "==> Running $name"
 	if bash "$test_file"; then
@@ -46,6 +46,20 @@ for test_file in "$SCRIPT_DIR"/*.test.sh; do
 		failed_names+=("$name")
 	fi
 	echo
+}
+
+shopt -s nullglob
+for test_file in "$SCRIPT_DIR"/*.test.sh; do
+	case "$(basename "$test_file")" in
+		feature-038-plan.test.sh|readiness-executable.test.sh|highway-setup-executable.test.sh) continue ;;
+	esac
+	run_test "$test_file"
+done
+for test_file in \
+	feature-038-plan.test.sh \
+	readiness-executable.test.sh \
+	highway-setup-executable.test.sh; do
+	run_test "$SCRIPT_DIR/$test_file"
 done
 shopt -u nullglob
 
