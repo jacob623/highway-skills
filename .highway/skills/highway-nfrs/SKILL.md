@@ -96,7 +96,7 @@ author may keep the original wording after hearing the advice.
 3. For Add, read `next_id` from the catalog when it exists, allocate it once, and prepare one new NFR record with an empty `controls` list.
 4. If a request could mean either Update or Set, stop and ask whether one existing NFR or the entire baseline should change.
 5. For Update, Remove, or Set, resolve every referenced NFR by identifier and title before writing.
-6. For Remove or Set, list every NFR that would be lost by identifier and title and request confirmation before changing any file.
+6. For Remove or Set, invoke `/highway-relationships Impact` for the proposed NFR removal or baseline replacement, list every lost relationship and affected artifact by immutable identifier and title, then list every NFR that would be lost by identifier and title and request confirmation before changing any file.
 7. After confirmation or for a non-destructive action, apply the requested mutation, preserving identifiers and untouched metadata.
 8. Increment the baseline exactly once: Add is MINOR; an obligation-preserving Update is PATCH; Remove or Set is MAJOR.
 9. Regenerate `nfrs.md` from the records, version, and recorded `next_id`, then report the action, changed identifiers, and resulting version.
@@ -119,6 +119,12 @@ contents of an accepted NFR record.
 - Confirm Control-shaped statements name `/highway-controls` and outcome-shaped Control input names
   `/highway-nfrs`.
 
+## Control-Derived Relationship Boundary
+
+Direct NFR authoring starts with `controls: []` and does not infer or create a Control relationship.
+An NFR receives a Control ID only when accepted through the Control-derived workflow
+owned by `/highway-controls`; requests to derive or repair that relationship route there.
+
 ## Error Handling
 
 - The project root cannot be located: abort and ask where `.highway/` is located.
@@ -129,7 +135,10 @@ contents of an accepted NFR record.
 - The request could mean updating one NFR or replacing the baseline: abort, name both
   interpretations, ask which one is intended, and write nothing.
 - A destructive action would remove an NFR: abort until the user confirms after seeing every ID and
-  title.
+  title and the complete `/highway-relationships Impact` result.
+- Relationship impact analysis is blocked, incomplete, or unavailable: abort and write nothing;
+  `/highway-relationships` analyzes impact only and this skill retains NFR deletion, versioning,
+  and catalog ownership.
 - Confirmation is withheld: abort and write nothing.
 - A statement is Control-shaped: fall back to `/highway-controls`.
 
