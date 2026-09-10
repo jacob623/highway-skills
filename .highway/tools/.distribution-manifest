@@ -16,28 +16,36 @@
 
 # --- Agent adapter trees: the highway-* entries ship, their speckit-* siblings do not ---
 exclude	.claude	-
+include	.claude/skills/highway-objectives	-
 include	.claude/skills/highway-help	-
 include	.claude/skills/highway-controls	-
 include	.claude/skills/highway-inquiry	-
 include	.claude/skills/highway-nfrs	-
 include	.claude/skills/highway-profile	-
+include	.claude/skills/highway-relationships	-
 exclude	.cursor	-
+include	.cursor/rules/highway-objectives.mdc	-
 include	.cursor/rules/highway-help.mdc	-
 include	.cursor/rules/highway-controls.mdc	-
 include	.cursor/rules/highway-inquiry.mdc	-
 include	.cursor/rules/highway-nfrs.mdc	-
 include	.cursor/rules/highway-profile.mdc	-
+include	.cursor/rules/highway-relationships.mdc	-
 exclude	.github	-
+include	.github/skills/highway-objectives	-
 include	.github/skills/highway-help	-
 include	.github/skills/highway-controls	-
 include	.github/skills/highway-inquiry	-
 include	.github/skills/highway-nfrs	-
 include	.github/skills/highway-profile	-
+include	.github/skills/highway-relationships	-
 
 # --- The framework directory: excluded by default so each child is a deliberate decision ---
 exclude	.highway	-
 include	.highway/skills	-
+include	.highway/skills/highway-objectives	-
 include	.highway/library	-
+include	.highway/library/templates/output/objective-record.md	-
 include	.highway/library/templates/output/profile.yaml	-
 include	.highway/catalog	-
 include	.highway/governance	-
@@ -51,6 +59,8 @@ exclude	.highway/tools/tests	-
 exclude	.highway/tools/generate-distribution.sh	-
 exclude	.highway/tools/lib/distribution.sh	-
 exclude	.highway/tools/.distribution-manifest	-
+exclude	.highway/tools/.objective-rename-allowlist	-
+exclude	.highway/tools/audit-objective-rename.sh	-
 
 # --- The distribution's front page, which cannot occupy the repository root ---
 include	.highway/DISTRIBUTION.md	README.md

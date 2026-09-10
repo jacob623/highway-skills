@@ -1,0 +1,13 @@
+rule_order=availability,security,performance
+inputs=normalized_title_and_statement
+forbidden=timestamp,randomness,environment,catalog_order
+no_match=zero_candidates
+availability.title=Availability and resilience
+availability.statement=Systems must remain available during a single component or zone failure.
+availability.rationale=Availability expectations are made measurable through a stated failure condition.
+security.title=Access protection
+security.statement=Administrative access must require multi-factor authentication.
+security.rationale=Access protection is made measurable through an explicit authentication control.
+performance.title=Performance budget
+performance.statement=The service must respond within the approved latency budget for its critical operations.
+performance.rationale=Performance expectations are made measurable through a defined response budget.

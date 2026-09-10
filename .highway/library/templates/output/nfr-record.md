@@ -26,3 +26,7 @@ controls: []
 
 The placeholders represent user-owned values. The template governs the presence and ordering of
 the record structure, not the meaning or quality of those values.
+
+The `controls` field is an identifier-only relationship list. Direct NFR creation starts empty;
+an NFR accepted through the Control-derived workflow may contain immutable `CTLXXXXXX` identifiers
+without changing this record format.

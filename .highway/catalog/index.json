@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-09T15:18:28Z",
+  "generated_at": "2026-09-10T00:02:54Z",
   "entries": [
     {
       "id": "highway-controls",
@@ -38,6 +38,15 @@
       "source_path": "skills/highway-nfrs/SKILL.md"
     },
     {
+      "id": "highway-objectives",
+      "name": "highway-objectives",
+      "description": "Manages the repository-wide Business Objective baseline and its stable traceability references.",
+      "usage": "Invoke as `/highway-objectives` and state whether to inspect, add, update, remove, or reset Business Objectives.",
+      "compatibility": "all",
+      "version": "1.0.0",
+      "source_path": "skills/highway-objectives/SKILL.md"
+    },
+    {
       "id": "highway-profile",
       "name": "highway-profile",
       "description": "Manages the repository-wide organizational profile that supplies contextual guidance without becoming governance.",
@@ -45,6 +54,15 @@
       "compatibility": "all",
       "version": "1.0.0",
       "source_path": "skills/highway-profile/SKILL.md"
+    },
+    {
+      "id": "highway-relationships",
+      "name": "highway-relationships",
+      "description": "Inspects and repairs repository-wide Control-to-NFR relationship integrity with explicit confirmation.",
+      "usage": "Invoke as `/highway-relationships` and state Inspect, Repair, or Impact followed by the governance relationship scope.",
+      "compatibility": "all",
+      "version": "1.0.0",
+      "source_path": "skills/highway-relationships/SKILL.md"
     }
   ],
   "overlap_flags": []

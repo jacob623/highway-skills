@@ -16,16 +16,22 @@ Use this skill to add, update, remove, or replace a Control.
 Use it when a policy needs an identifier something else can cite — a design document, an audit
 finding, or a later requirement.
 
+After a valid new Control is created, use this skill to propose related NFRs for author review.
+Controls are authoritative for initial derivation; the proposal is not an NFR until the author
+decides what to accept.
+
 Use it to ask what the current baseline contains, or what version it is at.
 
 ## When not to use
 
-Do not use it to author non-functional requirements. Those are a separate concern and a later
-phase; a Control here reserves a field for them and nothing more.
+Do not use it to author non-functional requirements directly. Direct NFR authoring belongs to
+`/highway-nfrs`; this skill owns only the deterministic proposal and review workflow that may
+follow a newly added Control.
 
 If a proposed statement describes an outcome, quality attribute, operational characteristic,
 constraint, or business outcome rather than an enforceable implementation requirement, identify it
-as an NFR and offer `/highway-nfrs`. Do not populate the reserved relationship field while routing.
+as an NFR and offer `/highway-nfrs`. After a Control is accepted, its derived proposal may populate
+the reserved relationship fields only through the review workflow below.
 
 Do not use it to record an intention or an aspiration. A Control states an obligation something can
 be measured against.
@@ -65,6 +71,54 @@ written, so an unchanged baseline produces an unchanged file.
 Content under `library/governance/` belongs to the user. This skill writes there and judges
 nothing about what a Control says.
 
+## Control-Derived NFR Proposals
+
+This section is the Control-derived NFR proposals contract.
+
+The following workflow applies only after a valid new Control has been created. It is one-way:
+the Control can propose an NFR, but an NFR never generates a Control in this phase. Existing NFR
+records are not synchronized and relationship changes do not remove records.
+
+### Deterministic candidate generation
+
+- Normalize the new Control's title and statement for matching. The normalized title and statement
+  are the only inputs; do not use a timestamp, randomness, environment value, existing catalog
+  order, or unrelated baseline content.
+- Evaluate the fixed rules in this order: availability, security, performance. A rule matches when
+  its keyword appears in the normalized title or statement, and each match emits one candidate:
+  `Availability and resilience`, `Access protection`, or `Performance budget` respectively.
+- Render every candidate with the originating Control ID and title, candidate title, candidate statement,
+  candidate rationale, and stable candidate order. A valid Control with no matching rule
+  reports zero candidates and remains valid.
+
+### Review barrier
+
+- Present the complete ordered proposal before allocating an NFR ID or writing an NFR record,
+  catalog entry, or relationship.
+- For each candidate, ask the author to Accept, Modify, Replace, or Reject it. Modify and Replace
+  require the complete author-approved title, statement, and rationale. A Cancel ends the review.
+- Treat incomplete or ambiguous decisions as Cancel and write nothing. Rejected candidates write
+  nothing. Only approved wording may proceed to the accepted-write workflow.
+
+### Accepted derived write
+
+For accepted candidates, validate the NFR baseline and catalog before writing anything. Read the
+authoritative `next_id`, reject missing or malformed state and unsafe reuse, then process accepted
+candidates in stable order:
+
+- Allocate one immutable `NFRXXXXXX` identifier.
+- Create the NFR with the approved title, statement, rationale, and identifier-only
+  `controls: [CTLXXXXXX]` relationship.
+- Append the new NFR ID to the originating Control's `nfrs` list, preserving existing IDs and
+  avoiding duplicates.
+- Regenerate the existing NFR catalog and report both relationship updates.
+
+If a catalog, allocation, or relationship update cannot be completed safely, stop before derived
+governance writes with zero partial writes. Do not create a relationship store or reverse-generate
+Controls from NFRs, repair broken links, reconcile old records, or partially commit one side of a
+relationship. Phase 4 may address those deferred concerns. Direct NFR authoring remains owned by
+`/highway-nfrs` and starts with `controls: []`.
+
 ### The four actions
 
 1. **Add** — allocate the recorded next identifier, write the Control, update the catalog. MINOR.
@@ -87,11 +141,16 @@ anything citing it would silently come to mean something else.
 
 Remove and Set both destroy work the user may not be able to reconstruct.
 
-Before either, name every Control that would be lost, by identifier and title, and get
-confirmation. A count MUST NOT be treated as sufficient: a user cannot decide from "this removes 14
-Controls" which fourteen they are.
+Before either, invoke `/highway-relationships Impact` for the proposed Control removal or baseline
+replacement. Resolve the relationship graph and name every lost relationship and affected artifact
+by immutable identifier and title, including affected NFRs. A count MUST NOT be treated as
+sufficient: a user cannot decide from "this removes 14 Controls" which fourteen they are. Then name
+every Control that would be lost by identifier and title and get confirmation for the destructive
+Control action.
 
-Where confirmation is withheld, write nothing.
+If impact analysis is blocked, incomplete, or unavailable, abort and write nothing. Where destructive
+confirmation is withheld, write nothing. `/highway-relationships` analyzes impact only; this skill
+retains ownership of Control deletion, baseline versioning, and catalog regeneration.
 
 ## Verification
 

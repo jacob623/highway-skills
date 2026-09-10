@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-09T15:18:29Z",
+  "generated_at": "2026-09-10T00:02:55Z",
   "entries": [
     {
       "library_type": "template",
@@ -14,6 +14,13 @@
       "description": "Complete output skeleton for a retained Non-Functional Requirement record.",
       "version": "1.0.0",
       "source_path": "library/templates/output/nfr-record.md"
+    },
+    {
+      "library_type": "template",
+      "name": "objective-record",
+      "description": "Complete output skeleton for a retained Business Objective record.",
+      "version": "1.0.0",
+      "source_path": "library/templates/output/objective-record.md"
     },
     {
       "library_type": "template",
