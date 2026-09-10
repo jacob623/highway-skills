@@ -1,0 +1,5 @@
+complete	Complete	valid Profile with organization.name
+missing	Missing	missing organization.name
+malformed	Blocked	invalid Profile YAML
+empty	Missing	empty Profile input
+whitespace	Blocked	whitespace-only Profile input

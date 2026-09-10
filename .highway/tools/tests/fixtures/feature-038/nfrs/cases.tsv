@@ -1,0 +1,6 @@
+zero	Not Applicable	successful generation with zero candidates
+pending	In Progress	candidates exist and none are accepted
+accepted	Complete	accepted valid NFR artifacts
+unavailable	Blocked	candidate generation unavailable
+malformed	Blocked	malformed candidate generation
+contradictory	Blocked	zero count with candidate entries

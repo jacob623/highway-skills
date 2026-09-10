@@ -34,9 +34,8 @@ require_order() {
 }
 
 require_text '/highway-nfrs'
-require_text 'Control-owned NFR proposal path'
-require_text 'pause setup with `Setup: In Progress`'
-require_text 'accepted valid artifacts exist'
+require_text 'NFR `In Progress` and `Blocked`'
+require_text 'owner-provided `Next Action`'
 require_text 'Not Evaluated'
 require_text 'Current Activity'
 require_text 'Highway Setup Status'
@@ -53,32 +52,39 @@ require_text 'fails'
 require_text 'malformed'
 require_text 'remains incomplete'
 require_text 'suspected vulnerability'
-require_text 'reassess Profile and continue to Step 4'
-require_text 'reassess Objectives and continue to Step 6'
-require_text 'reassess Controls and continue to Step 8'
-require_text 'author accepts proposed NFRs'
+require_text 'Request Profile readiness'
+require_text 'Request Objectives readiness'
+require_text 'Request Controls readiness'
+require_text 'Request NFR readiness'
 require_text 'do not invoke downstream workflows'
 require_text 'Do not directly write'
 require_text 'abort setup'
-require_text 'withhold completion'
 require_text 'preserve'
 require_text 'bytes'
 require_text 'pending'
-require_text 'Profile `Missing` or `Blocked`'
-require_text 'Business Objectives `Missing`'
-require_text 'Controls `Missing`'
-require_text 'NFRs `In Progress`'
+require_text 'Profile is not `Complete`'
+require_text 'Objectives is not `Complete`'
+require_text 'Controls is not `Complete`'
+require_text 'NFR `Complete` and `Not Applicable`'
 require_text 'NFRs: Not Applicable'
+if grep -Eq 'NFR[^[:alnum:]]+`?Missing`?|`Missing`[^[:alnum:]]+NFR' "$SKILL"; then
+	echo "FAIL: Setup exposes an NFR Missing route"
+	fail=1
+fi
 require_text 'zero candidates'
 require_text 'candidate generation succeeds'
-require_text 'Profile owner readiness'
 require_text 'consumes Profile readiness'
+require_text 'Objectives readiness'
+require_text 'Controls readiness'
+require_text 'NFR readiness'
+require_text 'is orchestration only'
 require_text 'Profile: Missing'
 require_text 'Business Objectives: Missing'
 require_text 'Controls: Missing'
 require_text 'NFRs: Not Evaluated'
 require_text 'Setup: In Progress'
-require_order 'Read Profile owner readiness' 'Read the Business Objective state' 'Read the Control state' 'Read the NFR state'
+require_order 'Request Profile readiness' 'Request Objectives readiness' 'Request Controls readiness' 'Request NFR readiness'
+require_order 'Profile readiness' 'Objectives readiness' 'Controls readiness' 'NFR readiness'
 
 if grep -Eq 'library/(objectives|governance/(controls|nfrs))/.*highway-setup|highway-setup.*(write|mkdir|touch|cat >)' "$SKILL"; then
 	echo "FAIL: highway-setup contains a direct owner-artifact write path"
@@ -245,7 +251,7 @@ evaluate_nfr_outcome() {
 		printf '%s\n' 'In Progress' > "$setup_file"
 		return 0
 	fi
-	printf '%s\n' 'Missing' > "$status_file"
+	printf '%s\n' 'In Progress' > "$status_file"
 	printf '%s\n' 'In Progress' > "$setup_file"
 }
 
@@ -307,7 +313,7 @@ for nfr_result in zero available-pending pending accepted unavailable malformed 
 			assert_equal 'zero-candidate deterministic outcome' "$zero_first" "$(cat "$nfr_status_file" "$nfr_setup_file")"
 			;;
 		available-pending)
-			assert_status 'available candidate NFR state' 'Missing' "$(cat "$nfr_status_file")"
+			assert_status 'available candidate NFR state' 'In Progress' "$(cat "$nfr_status_file")"
 			assert_status 'available candidate Setup state' 'In Progress' "$(cat "$nfr_setup_file")"
 			;;
 		pending)

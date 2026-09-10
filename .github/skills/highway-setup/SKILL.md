@@ -43,27 +43,26 @@ Orchestrates the initial Highway repository setup by evaluating foundational rea
 ## Workflow
 
 1. Locate the project root by finding `.highway/`. If it cannot be located, stop and ask for the project root; otherwise continue to Step 2.
-2. Read Profile owner readiness through the Profile owner contract. Consume the Profile readiness result; Setup consumes Profile readiness without defining an independent Profile field-completeness rule. If the owner reports Profile `Missing` or `Blocked`, mark Objectives, Controls, and NFRs `Not Evaluated`, and continue to Step 3.
-3. When Profile is incomplete, invoke `/highway-profile setup` using its confirmation-gated workflow. If it succeeds, reassess Profile and continue to Step 4; if it is declined, fails, is malformed, or remains incomplete, report the blocking condition and abort setup.
-4. Read the Business Objective state from root-level `library/objectives/` and its owner contract. If no valid objective record exists, classify Business Objectives as `Missing`, mark Controls and NFRs `Not Evaluated`, and continue to Step 5; otherwise continue to Step 6.
-5. When Business Objectives are incomplete, invoke `/highway-objectives setup` using its guided owner workflow. If it succeeds, reassess Objectives and continue to Step 6; if it is declined, fails, is malformed, or remains incomplete, report the blocking condition and abort setup.
-6. Read the Control state from root-level `library/governance/controls/` and its owner contract. If no valid initial Control baseline exists, classify Controls as `Missing`, mark NFRs `Not Evaluated`, and continue to Step 7; otherwise continue to Step 8.
-7. When Controls are incomplete, invoke `/highway-controls` creation using its owner workflow. If it succeeds, reassess Controls and continue to Step 8; if it is declined, fails, is malformed, or remains incomplete, report the blocking condition and abort setup.
-8. Read the NFR state from root-level `library/governance/nfrs/` and `/highway-nfrs`. If candidate generation succeeds with zero candidates and no accepted NFR artifacts exist, classify NFRs as `Not Applicable` and continue to Step 10. If accepted valid NFR artifacts exist, classify NFRs as `Complete` and continue to Step 10; if candidates exist and no proposal has started, classify NFRs as `Missing` and continue to Step 9; if a proposal is awaiting author acceptance, classify NFRs as `In Progress`; if candidate generation is unavailable or malformed, classify NFRs as `Blocked`, report the blocking condition, and abort setup.
-9. Invoke the Control-owned NFR proposal path while preserving `/highway-nfrs` ownership. Before proposal invocation, report NFRs `Missing`; while author acceptance is pending, report NFRs `In Progress`; after acceptance, reassess the NFR owner state and continue to Step 10 only when accepted valid artifacts exist. If the proposal is declined, fails, or is malformed, report that condition and withhold completion.
-10. If Profile, Business Objectives, and Controls are `Complete` and NFRs are `Complete` or `Not Applicable`, emit the exact completion dashboard. Otherwise emit the in-progress dashboard with downstream states `Not Evaluated` and the current owner activity.
+2. Request Profile readiness from `/highway-profile readiness` and consume its four fields. If Profile is not `Complete`, report the owner response, mark later owners `Not Evaluated`, and stop without inspecting downstream state.
+3. When Profile readiness is `Missing` or `Blocked`, display its owner-provided `Summary`, `Next Action`, and `Blocking Reason`; do not invoke Profile setup from this read-only orchestration pass.
+4. Request Objectives readiness from `/highway-objectives readiness` and consume its four fields. If Objectives is not `Complete`, report the owner response, mark Controls and NFRs `Not Evaluated`, and stop.
+5. Request Controls readiness from `/highway-controls readiness` and consume its four fields. If Controls is not `Complete`, report the owner response, mark NFRs `Not Evaluated`, and stop without starting NFR proposal generation.
+6. Request NFR readiness from `/highway-nfrs readiness` and consume its four fields. Do not recompute candidate, acceptance, catalog, or artifact completeness in Setup.
+7. If any owner response is malformed or contains an unknown status, emit a deterministic Setup `Blocked` result with the response-shape failure as its blocking reason and do not assume completion.
+8. Route NFR `In Progress` and `Blocked` to distinct current activities using the owner-provided `Next Action`; include `Blocking Reason` for `Blocked`.
+9. Treat NFR `Complete` and `Not Applicable` as terminally successful owner results. Preserve `NFRs: Not Applicable` when candidate generation succeeded with zero candidates and no accepted artifacts.
+10. If Profile, Objectives, Controls, and NFR are complete or not applicable as required, emit the exact completion dashboard; otherwise emit the in-progress dashboard with the first owner activity and later owners `Not Evaluated`.
 
 ## Ordered Readiness Rules
 
 | Evaluation order | State condition | Result | Next action |
 |---|---|---|---|
-| 1 | Profile missing, malformed, or empty `organization.name` | Profile `Missing` or `Blocked`; downstream `Not Evaluated` | Step 3 |
-| 2 | Profile complete; no valid Objective record | Business Objectives `Missing`; downstream `Not Evaluated` | Step 5 |
-| 3 | Profile and Objectives complete; no valid Control baseline | Controls `Missing`; NFRs `Not Evaluated` | Step 7 |
-| 4 | Profile, Objectives, and Controls complete; candidate generation succeeds with zero candidates and no accepted NFRs | NFRs `Not Applicable`; Setup `Complete` | Step 10 |
-| 5 | Profile, Objectives, and Controls complete; NFR candidates exist without an accepted baseline | NFRs `Missing` or `In Progress` while proposal is handled | Step 9 |
-| 6 | All owner baselines complete and valid, including accepted NFR artifacts | Setup `Complete` | Step 10 |
-| 7 | Any unlisted state, unavailable or malformed candidate result, or prerequisite conflict | Blocking area `Blocked` and downstream `Not Evaluated` | Abort |
+| 1 | Profile owner returns `Complete` | Continue to Objectives readiness | `/highway-objectives readiness` |
+| 2 | Objectives owner returns `Complete` | Continue to Controls readiness | `/highway-controls readiness` |
+| 3 | Controls owner returns `Complete` | Continue to NFR readiness | `/highway-nfrs readiness` |
+| 4 | NFR owner returns `Complete` or `Not Applicable` | Setup `Complete` | Step 10 |
+| 5 | Any owner returns `Missing`, `In Progress`, or `Blocked`; NFR returns only `In Progress` or `Blocked` | Report owner response and stop at first non-complete owner | Owner-provided `Next Action` |
+| 6 | Any response is malformed or has an unknown status | Setup `Blocked`; later owners `Not Evaluated` | Repair response contract |
 
 The zero-candidate branch is valid only when the Control-owned candidate generation path explicitly succeeds with a count of zero. It is distinct from unavailable, malformed, pending, and accepted candidate results.
 
@@ -130,20 +129,12 @@ Business Objective Setup
 - `/highway-objectives` owns Business Objective records and catalog changes.
 - `/highway-controls` owns Control records and its NFR proposal workflow.
 - `/highway-nfrs` owns accepted NFR records and NFR baseline changes.
+- `highway-setup` is orchestration only: it does not define owner readiness or mutate owner artifacts.
 - `highway-setup` owns only ordered status evaluation, workflow routing, continuation, and dashboard output.
 
 ## Verification
 
-- Run `.highway/tools/validate-skill.sh .highway/skills/highway-setup` and confirm exit 0.
-- Run `.highway/tools/tests/highway-setup.test.sh` and confirm Profile, Objectives, Controls, and NFRs are evaluated in order.
-- Confirm the focused test covers missing, empty, malformed, pending, declined, failed, incomplete, and complete states.
-- Confirm the focused test proves no downstream workflow runs after a blocking result and no owner artifact is written by this skill.
-- Confirm repeated complete-state runs preserve existing governance artifact bytes exactly.
-- Confirm the complete dashboard matches the exact output contract and the in-progress dashboard names current activity.
-- Confirm Setup consumes Profile owner readiness and does not define an independent `organization.name` validity rule.
-- Confirm successful zero-candidate generation emits `NFRs: Not Applicable`, reaches terminal completion, and creates no NFR artifact.
-- Run `.highway/tools/tests/run-all.sh` after regenerating catalog and adapter artifacts.
-
+- Confirm Setup consumes Profile readiness and the other owner readiness responses without redefining their completeness rules.
 ## Error Handling
 
 - `.highway/` cannot be located: abort and ask for the project root.

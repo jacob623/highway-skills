@@ -1,0 +1,5 @@
+complete	Complete	valid objective catalog and next_id
+missing	Missing	missing objective baseline
+malformed	Blocked	malformed objective catalog
+empty	Missing	empty objective baseline
+contradictory	Blocked	duplicate objective identifier

@@ -4,12 +4,13 @@ Sequenced plan for establishing Highway's governance layers. This document is du
 context: it is written to survive across sessions so the sequence, rationale, and exact command
 invocations do not have to be reconstructed from conversation history.
 
-**Status**: Phases 1, 2, 2b, 3, 4, 4b, 4c, 5 and 6 complete. Phase 7 is delivered with recorded
-gaps — both skills ship; five of `highway-nfrs`'s functional requirements are unimplemented.
-Phases 8 and 9 remain deferred and independent. Phase 10 is complete through Feature 021 and owns
-the rule defects that let those gaps pass every gate. Phase 11 is proposed and independent.
+**Status**: Phases 1, 2, 2b, 3, 4, 4b, 4c, 5, 6 and 11 complete. Phase 7 is delivered with
+recorded gaps — both skills ship; five of `highway-nfrs`'s functional requirements are
+unimplemented. Phases 8 and 9 remain deferred and independent. Phase 10 is complete through
+Feature 021 and owns the rule defects that let those gaps pass every gate. Phase 12 is proposed
+and independent, and owns the defects found reviewing Features 022–038.
 
-**Last reviewed**: 2026-09-08
+**Last reviewed**: 2026-09-10 (Features 022–038 reviewed; Phase 12 opened)
 
 ---
 
@@ -94,7 +95,8 @@ Worked examples:
 | 8 | Make a skill's help detail answerable for itself | Spec | 1 | Deferred — independent of all other phases |
 | 9 | Make artifact versions accountable | Spec | 1, and a cross-layer question | Deferred — independent of all other phases |
 | 10 | Make a completion claim accountable | Spec | 0 | ✅ Complete (feature 021) |
-| 11 | Require shared templates for a skill's emitted output | Spec | 1 states the obligation; 0 states the drift guard | Proposed — independent of all other phases |
+| 11 | Require shared templates for a skill's emitted output | Spec | 1 states the obligation; 0 states the drift guard | ✅ Complete (feature 022) |
+| 12 | Make the completion record enforceable | Spec | 0 | Proposed — independent of all other phases |
 
 Phases 3 and 4 are independent of each other and may run in either order.
 
@@ -1001,10 +1003,15 @@ from the Declared Toolchain because the packaged tree is not a repository. It la
 
 **Layer**: 0 **Type**: Spec
 
-**Status**: Complete, 2026-09-08, through `specs/021-completion-claim-accountability`. The
+**Status**: Complete with one unmet criterion, 2026-09-08; the exception recorded 2026-09-10. The
 Development Constitution is 1.3.0 with D3.6 and D7.1-D7.3; D7.2 is enforced by
 `completion-coverage.test.sh`. Historical features without coverage are reported as missing rather
-than rewritten, and Feature 020's five residual requirements remain deferred.
+than rewritten, and Feature 020's five residual requirements remain deferred. **The Done-when
+below requiring Feature 020's coverage record to exist was never met** — verified 2026-09-10,
+`specs/020-highway-nfrs/` holds no coverage record under any name and the check reports
+`PRE_ENABLE: 020-highway-nfrs MISSING_COVERAGE`. Phase 12 owns the correction; it is listed there
+rather than resolved here, because D5.1 and D5.2 forbid amending a completed phase's record in
+place.
 
 **Goal**: A task marked complete, and a report saying a feature is done, are required to be *true*.
 Today both are self-asserted and nothing objects.
@@ -1094,7 +1101,13 @@ D3.6 and D7.1 address the claim, not the technique.
 
 **Layer**: 1 states the citation obligation; 2 states retained-file frontmatter; 0 states the drift guard **Type**: Spec
 
-**Status**: Proposed, 2026-09-09. Independent of every other phase.
+**Status**: ✅ **Complete**, 2026-09-09, through `specs/022-shared-output-templates`. `P9.1` is in
+the Skills Constitution under Principle IX and is decided by `rc_check_P9_1` under exception `N4`;
+`D8.1` is in the Development Constitution under Principle VIII; `X1.5` is in the Experience
+Standard. `.highway/library/templates/output/` holds complete skeletons, and every file-emitting
+skill authored since — `highway-profile` and `highway-objectives` as well as `highway-nfrs` and
+`highway-controls` — cites one. This is the one phase in this plan whose rule was still holding
+when Features 023–038 were reviewed.
 
 **Goal**: A skill that emits a file draws that file's full structure — frontmatter *and* body,
 not frontmatter alone — from a shared template under `.highway/library/templates/output/`, cited
@@ -1177,6 +1190,146 @@ turns the rule on, or the amendment is MAJOR rather than MINOR.
 - `X1.5` is added for the separate retained-file frontmatter obligation; the near-collision with
   `X1.1`/`X1.2` is recorded rather than rediscovered later.
 - Neither skill's emitted output — frontmatter or body — changed as a result of this phase.
+
+---
+
+### Phase 12 — Make the completion record enforceable
+
+**Layer**: 0 **Type**: Spec
+
+**Status**: Proposed, 2026-09-10, from a review of Features 022–038. Independent of every other
+phase.
+
+**Goal**: The completion record that Phase 10 introduced is required to *exist*, to have *one
+shape*, and to be decided by a check that can actually fail. Today `D7.2` is tagged `[auto]`, is
+named in the Enforcement Map, and has never failed for any feature but the one that created it.
+
+**The verified gap** (2026-09-10, across Features 022–038). Every one of these is reproducible
+from the tree as it stands:
+
+| # | Finding | Verification |
+|---|---|---|
+| 1 | `D7.2`'s registered check cannot fail for a real feature | `completion-coverage.test.sh` hard-asserts coverage for `021` and its fixtures only. Every other feature is *printed* as `PRE_ENABLE: <id> MISSING_COVERAGE` and never reaches `fail`. The script exits 0 with 25 such lines |
+| 2 | Nine features completed *after* `D7.2` was ratified have no coverage record | `025`, `026`, `027`, `028`, `029`, `032`, `035`, `036`, `037`. Feature `032` — the feature written to add coverage records to `030` and `031` — has none of its own |
+| 3 | Three incompatible coverage schemas are in use | `Requirement \| Outcome \| Evidence` (`021`, `030`, `031`); `Requirement \| Satisfying artifact \| Evidence` (`022`, `023`, `024`, `033`, `034`); a third column meaning in `038`. The six records in the latter two shapes put a file path where the parser reads `satisfied`/`deferred`, so `coverage_check` would reject all of them — if it ever ran on them |
+| 4 | The record's filename is not fixed either | `037` uses `requirements-coverage.md`; `032` uses `test-evidence.md`. Both are invisible to a check that opens `coverage.md` |
+| 5 | Eight of the seventeen features reviewed exist only to correct the previous one | `025` and `026` correct `024`; `028` corrects `027`; `029` corrects `028`; `032` corrects `030`/`031`; `034` corrects `033`; `036` corrects `035`; `038` corrects `037`. Each was found by an ad-hoc assessment that no rule requires and no artifact retains, and in every case the corrected feature's own record still reads as fully satisfied |
+| 6 | A feature directory name need not name the feature | `specs/036-feature-036/` is a placeholder whose own `spec.md` declares `**Feature Branch**: 036-strengthen-035-evidence`. `specs/033-highway-setup/` declares `033-highway-setup-orchestration` |
+| 7 | Phase 10's own Done-when was never met | It requires Feature 020's coverage record to exist naming `FR-002`, `FR-020`, `FR-024`, `FR-027` and `FR-032` as unsatisfied. `specs/020-highway-nfrs/` holds no coverage record under any name. The phase that introduced the rule was reported complete against a criterion the rule itself would have caught |
+
+**Why the existing rules do not cover this.** As in Phase 10, each nearest rule is satisfied by the
+tree as it stands, which is the point:
+
+| Rule | Says | Why it passed anyway |
+|---|---|---|
+| `D7.2` | A completed feature MUST record a requirement-coverage mapping | The Observable says "the feature's coverage record" without fixing a path or a column set, so each feature invented one. The registered check reads only `coverage.md` with one schema and reports everything else as a comment |
+| `D3.4` | A new check MUST be evaluated against every existing fixture before it is enabled | It was. The `PRE_ENABLE:` lines *are* that evaluation — correctly honest at the time, and never converted into an assertion afterwards |
+| `D3.1`/`D3.2` | Begin and end from a passing suite | The suite passes. A check that only prints cannot stop it |
+| `D3.3`/`D3.6` | A behavioral change MUST add a test; a test MUST be observed failing | Both were honoured by `033`, `035` and `037`. Their tests failed and passed for what they asserted — which was skill prose. `034`, `036` and `038` then exist to replace those tests with executable ones |
+| `D5.1`/`D5.2` | Do not edit a completed spec; ship a correction as a new spec | Followed exactly. That is *why* eight corrective specs exist. Neither rule requires the corrected feature to learn that it was wrong |
+| `D5.4` | A feature directory number MUST be sequential | Constrains the number. Says nothing about the name after it |
+
+**Finding 5 falsifies one of Phase 10's deliberate omissions, and the correction is narrow.**
+Phase 10 recorded: *"No rule here says a test must be behavioral rather than static. A
+prose-contract test is the correct instrument when the artifact under test is agent instructions
+rather than executable code."* The premise is still right — a `SKILL.md` is agent instructions, and
+prose-contract tests remain the correct instrument for authoring rules. What the evidence
+falsifies is the inference that no rule was therefore needed. Features `034`, `036` and `038` each
+state the same primary finding in their own words — *"demonstrate orchestration behavior rather
+than only checking skill prose"*, *"passing contract text checks cannot mask incorrect
+organization identity"*, *"execute real owner fixtures rather than only static contract checks"* —
+three independent rediscoveries of one gap. So the rule below does not outlaw the static
+instrument. It forbids *counting* it as the evidence for a behavioral requirement, which is the
+only thing that went wrong.
+
+**Five rules, all Layer 0.** The routing test in §2 places every one without argument: they
+constrain a coverage record, a test file, a `spec.md`, and a feature directory — artifacts that
+exist only to build Highway and never ship. No `SKILL.md` is touched, so no `P` amendment and no
+`X` amendment are involved, and the Skills Constitution and Experience Standard are untouched.
+
+| ID | Principle | Rule | Observable | Tier |
+|---|---|---|---|---|
+| D3.7 | III (existing) | A registered `[auto]` check MUST be able to fail for every artifact in its declared scope. | The check declares its scope, and a seeded defect in each in-scope artifact produces a non-zero exit. | [auto] |
+| D3.8 | III (existing) | A static document-contract test MUST NOT be recorded as the evidence satisfying a behavioral requirement. | Each test declares its instrument class; a coverage row for a requirement about runtime behavior names a test of the executed-behavior class. | [agent-checkable] |
+| D7.4 | VII (existing) | A coverage record MUST use one declared path and one declared column schema. | Every completed feature directory holds `coverage.md` with columns `Requirement`, `Outcome`, `Evidence`, and every `Outcome` is exactly `satisfied` or `deferred`. | [auto] |
+| D7.5 | VII (existing) | A feature that corrects a defect in a completed feature MUST record that defect against the feature that shipped it. | The corrected feature's coverage record carries a superseding entry naming the correcting feature and the requirement it revises. | [agent-checkable] |
+| D5.5 | V (existing) | A feature directory name MUST name the feature. | The segment after the number equals the `Feature Branch` value in that directory's `spec.md`, and is not a placeholder restating the number. | [auto] |
+
+Four of the five land in principles that already exist, so no new principle is opened and the
+amendment stays MINOR.
+
+**D3.7 is a generalisation of an existing precedent, not a new idea.** `D1.1`'s Enforcement Map
+entry already reads *"seeds a probe to prove it can fail"* — one check in this repository already
+proves its own failure path. D3.7 states for every `[auto]` check what `D1.1`'s check already does
+for itself, and it is genuinely `[auto]`: seeding a defect and requiring a non-zero exit needs no
+judgment. It is the rule that would have caught Finding 1 the day `D7.2` was enabled, and it is the
+same correction Phases 4 and 4b made one level up — those phases stopped a rule from *claiming* an
+enforcement it did not have; this one stops a check from *being registered* for an enforcement it
+does not perform.
+
+**D3.8 is `[agent-checkable]` and D7.5 is too, for the reason Phase 10 established.** Deciding
+whether a requirement is about runtime behavior or about document content is semantic, and so is
+deciding whether one feature's change corrects another's defect. Every mechanical proxy
+under-detects, and tagging either `[auto]` would reintroduce exactly the dishonesty Phases 4, 4b
+and this phase's own D3.7 exist to remove.
+
+**A collision with `D5.1` was checked before drafting rule text, per the precedent Phase 5 set,
+and it is real.** `D5.1` forbids a diff under a completed spec directory. Both the back-fill
+required to enable `D7.4` and every `D7.5` superseding entry are, literally, such a diff. Two
+resolutions were considered. Exempting corrections wholesale would gut `D5.1` and undo Phase 10's
+"reported as missing rather than rewritten" discipline. The narrow resolution is taken instead:
+amend `D5.1`'s Observable to except the coverage record specifically — the completion record is an
+accounting artifact about a feature, not part of the specification of it, and the exception permits
+no edit to any other file in the directory. That is a MINOR loosening of one Observable, recorded
+as such, and it leaves `D5.2`'s "ship the correction as a new spec" untouched.
+
+**This is a retroactive strengthening, not a green-field rule.** Verified 2026-09-10: enabling
+`D7.4` against the tree as it stands fails fifteen of the seventeen features reviewed, and enabling
+`D5.5` fails two directories. Per `D3.4`'s evaluate-before-enable discipline and the precedent
+Phases 4c and 11 set, the back-fill — writing the nine missing records, normalising the six
+divergent ones onto the declared schema, and renaming `specs/036-feature-036/` — must happen in the
+same change that turns the rules on, or the amendment is MAJOR rather than MINOR. The back-filled
+records must be honest: where a requirement was in fact corrected by a later feature, its outcome
+is `deferred` with the superseding feature named, not `satisfied`.
+
+**Prerequisite**: None. Independent of Phases 5 through 11.
+
+**Phase 12 should run before Phases 8 and 9, and this reverses no stated dependency.** Both remain
+independent of it — neither reads nor writes anything Phase 12 touches — but both introduce new
+rules with registered checks: Phase 8 adds `P7.9` `[auto]`, and Phase 9 adds a library-currency
+rule whose tier it must argue. Ratifying `D3.7` first means those checks are born proving their
+own failure path, and Phase 8's per-phase Done-when promise — *"observed failing and then passing
+again"* — becomes the general rule rather than a promise each phase has to remember to make.
+Running either first only adds one more check to Phase 12's back-fill.
+
+**Command**:
+
+```text
+/speckit.specify "I want the completion record that Feature 021 introduced to be enforceable, because today D7.2 is tagged [auto], is named in the Enforcement Map, and has never failed for any feature but the one that created it. Verified 2026-09-10 across Features 022 through 038. First: completion-coverage.test.sh hard-asserts coverage only for feature 021 and its checked-in fixtures; for every other feature it prints a PRE_ENABLE MISSING_COVERAGE line that never reaches the fail variable, and the script exits 0 with twenty-five such lines. Second: nine features completed after D7.2 was ratified have no coverage record at all -- 025, 026, 027, 028, 029, 032, 035, 036 and 037 -- and feature 032, which exists to add coverage records to 030 and 031, has none of its own. Third: three incompatible column schemas are in use, Requirement/Outcome/Evidence in 021, 030 and 031, Requirement/Satisfying-artifact/Evidence in 022, 023, 024, 033 and 034, and a third meaning in 038, so six records put a file path where the parser reads satisfied or deferred and would be rejected if the check ever ran on them. Fourth: the filename is not fixed either, 037 uses requirements-coverage.md and 032 uses test-evidence.md. Fifth: eight of the seventeen features reviewed exist only to correct the previous one, 025 and 026 correcting 024, 028 correcting 027, 029 correcting 028, 032 correcting 030 and 031, 034 correcting 033, 036 correcting 035 and 038 correcting 037, and in every case the corrected feature's own record still reads as fully satisfied. Sixth: specs/036-feature-036 is a placeholder directory whose own spec.md declares the branch 036-strengthen-035-evidence, and specs/033-highway-setup declares 033-highway-setup-orchestration. Add five rules to the Highway Development Constitution at .specify/memory/constitution.md as a MINOR amendment, all Layer 0 because they constrain a coverage record, a test file, a spec.md and a feature directory, none of which ship, and open no new principle. D3.7 in the existing Principle III: a registered [auto] check MUST be able to fail for every artifact in its declared scope, observable as the check declaring its scope and a seeded defect in each in-scope artifact producing a non-zero exit, tagged [auto]; this generalises the probe that D1.1's enforcement entry already seeds to prove it can fail. D3.8 in Principle III: a static document-contract test MUST NOT be recorded as the evidence satisfying a behavioral requirement, observable as each test declaring its instrument class and a coverage row for a runtime-behavior requirement naming a test of the executed-behavior class, tagged [agent-checkable]; this does not outlaw static prose-contract tests, which remain the correct instrument for authoring rules against a SKILL.md, it only forbids counting one as evidence for behavior -- the gap that Features 034, 036 and 038 each rediscovered independently. D7.4 in the existing Principle VII: a coverage record MUST use one declared path and one declared column schema, observable as every completed feature directory holding coverage.md with columns Requirement, Outcome and Evidence and every Outcome being exactly satisfied or deferred, tagged [auto]. D7.5 in Principle VII: a feature that corrects a defect in a completed feature MUST record that defect against the feature that shipped it, observable as the corrected feature's coverage record carrying a superseding entry naming the correcting feature and the requirement it revises, tagged [agent-checkable] because deciding whether one change corrects another's defect is semantic. D5.5 in the existing Principle V: a feature directory name MUST name the feature, observable as the segment after the number equalling the Feature Branch value in that directory's spec.md and not being a placeholder restating the number, tagged [auto]. Amend D5.1's Observable to except the coverage record from its no-diff-under-a-completed-spec-directory rule, because both the back-fill and every D7.5 superseding entry are literally such a diff; the exception covers the coverage record only and permits no edit to any other file in the directory, and D5.2 is untouched. Because enabling D7.4 fails fifteen of the seventeen reviewed features and D5.5 fails two directories, do the retroactive conformance work in the same change that enables the rules, per D3.4: write the nine missing coverage records, normalise the six divergent ones onto the declared schema, rename specs/036-feature-036 to match its declared branch, and reconcile specs/033-highway-setup. Back-filled records must be honest -- where a requirement was in fact corrected by a later feature, its outcome is deferred with the superseding feature named, not satisfied. Convert completion-coverage.test.sh's PRE_ENABLE reporting into assertions and prove D3.7 against it by seeding a defect into each in-scope feature. Do not add any rule requiring every test to be executable, do not add any rule mandating an assessment ritual before a feature, and do not amend the Highway Skills Constitution or the Experience Standard -- no rule in this phase constrains a SKILL.md."
+```
+
+**Done when**:
+
+- `D3.7`, `D3.8`, `D5.5`, `D7.4` and `D7.5` are in the Development Constitution with Observables and
+  tiers, in the existing Principles III, V and VII, recorded as a MINOR amendment in its Sync
+  Impact Report. No new principle is opened.
+- `D5.1`'s Observable carries the coverage-record exception, and the loosening is recorded in the
+  same Sync Impact Report. `D5.2` is unchanged.
+- `completion-coverage.test.sh` no longer emits a `PRE_ENABLE:` line that cannot fail the run: every
+  in-scope feature is asserted, and the check declares its scope.
+- `D3.7` is proved by seeding a defect into each in-scope artifact of every registered `[auto]`
+  check and observing a non-zero exit — the same failing-then-passing observation `D3.6` requires.
+- Every feature directory from `021` onward holds `coverage.md` in the declared schema; no
+  `requirements-coverage.md` or `test-evidence.md` stands in for it.
+- Back-filled records for `025`–`029`, `032`, and `035`–`037` name the correcting feature against
+  each requirement a later feature revised, rather than reporting it `satisfied`.
+- Feature 020's coverage record exists and names `FR-002`, `FR-020`, `FR-024`, `FR-027` and
+  `FR-032` as deferred, discharging the Phase 10 Done-when that was reported met and was not.
+- `specs/036-feature-036/` no longer exists under a placeholder name, and every feature directory's
+  name matches the `Feature Branch` value in its own `spec.md`.
+- No rule is added requiring a test to be executable rather than static, and no `P` or `X` rule is
+  added or amended.
+- `.highway/tools/tests/run-all.sh` exits 0.
 
 ---
 

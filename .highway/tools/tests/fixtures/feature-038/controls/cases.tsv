@@ -1,0 +1,5 @@
+complete	Complete	valid Control baseline
+missing	Missing	missing Control baseline
+malformed	Blocked	malformed Control catalog
+empty	Missing	empty Control baseline
+contradictory	Blocked	duplicate Control identifier

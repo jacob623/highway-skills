@@ -19,6 +19,9 @@ Objectives. The supported actions are exactly `setup`, `configure`, `view`, `sho
 Use it when a user wants a durable objective with measurable success measures, a user-approved
 rationale, or a stable `OBJ` reference for future Capability relationships.
 
+Use `readiness` for a read-only assessment of whether the Objective baseline is usable. This
+action owns Objective completeness and does not start setup or mutation.
+
 ## When not to use
 
 Do not use this skill to author Controls, Non-Functional Requirements, Capabilities, or other
@@ -48,6 +51,20 @@ The template defines the required frontmatter and body ordering; its values rema
 A read-only status response, or a mutation report containing exactly these fields. Confirmed
 objective records follow the complete structure in `.highway/library/templates/output/objective-record.md`.
 
+The `readiness` action emits exactly these four lines in this order:
+
+```text
+Status: <Complete, Missing, or Blocked>
+Summary: <objective baseline explanation>
+Next Action: <owner route or None>
+Blocking Reason: <reason or None>
+```
+
+At least one valid Objective with a consistent catalog and `next_id` is `Complete`. No valid
+records is `Missing`; a malformed record, catalog, or allocation state is `Blocked`. A blocked
+response has a non-empty reason; every other response uses `Blocking Reason: None`. Readiness
+does not write records, catalogs, or identifiers.
+
 ```text
 Action
 File
@@ -67,7 +84,7 @@ directly. No timestamp, random identifier, or environment-derived value is emitt
 
 ## Action selection
 
-Accept exactly these actions: `setup`, `configure`, `view`, `show`, `describe`, `add`, `new`,
+Accept exactly these actions: `setup`, `configure`, `view`, `show`, `describe`, `readiness`, `add`, `new`,
 `update`, `remove`, and `reset`. `view`, `show`, and `describe` are equivalent read-only actions.
 `setup`, `configure`, `add`, and `new` are the guided creation workflow.
 
@@ -77,7 +94,8 @@ action, report its absence without creating an artifact.
 
 ## Read-only workflow
 
-For `view`, `show`, or `describe`, read and validate the complete baseline, then report the
+For `readiness`, read and validate the complete baseline, classify it using the Objective rules,
+and emit the exact four-field response without mutation. For `view`, `show`, or `describe`, read and validate the complete baseline, then report the
 current version, objective count, and every objective identifier, title, and status in stable
 identifier order. Do not modify objective files, the catalog, or any other file. The same bytes
 must remain before and after the response.
@@ -152,6 +170,8 @@ confirmation state.
   asks for clarification without a write.
 - Confirm read-only actions report version, count, identifiers, titles, and statuses without byte
   changes, including when the baseline is absent.
+- Confirm `readiness` emits the exact four ordered fields, classifies missing and malformed baselines,
+  and leaves records, catalogs, and `next_id` unchanged.
 - Confirm every record identifier is unique, permanent, six digits, and never reused; confirm
   catalog `next_id` is greater than every allocated identifier.
 - Confirm every catalog entry resolves to one record and malformed baselines are rejected without
