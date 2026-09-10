@@ -35,6 +35,8 @@ A read-only response containing the profile status and, when present, its curren
 
 A retained `.highway/library/templates/output/profile.yaml` artifact following the complete pure-YAML structure in `.highway/library/templates/output/profile.yaml`. The artifact has `metadata` first, then `organization`, `constraints`, `strategic_directions`, `preferences`, `business_context`, `architecture_principles`, `approved_technologies`, `prohibited_technologies`, `operating_model`, and `vendor_strategy`; all listed mappings remain present when empty. The profile contains no timestamp, random identifier, or environment-derived value.
 
+Profile readiness is complete only when `organization.name` contains a user-supplied, non-empty value. Profile owns this requirement and reports the missing field when it is absent, empty, or whitespace-only. Profile cannot report `Complete` in those states. Profile does not infer organization identity from repository paths, environment variables, Git metadata, or other fields.
+
 Every mutation response reports:
 
 - `Action`
@@ -50,8 +52,8 @@ Mutation previews additionally show the current state, proposed state, and ramif
 1. Locate the project root by finding `.highway/`; if it cannot be located, abort without guessing a path.
 2. Read `.highway/library/templates/output/profile.yaml` when it exists. A missing profile is a read-only absence until setup is confirmed. A malformed profile aborts with the malformed section identified and never overwrites the file.
 3. With no action, display the purpose, supported actions, usage examples, setup guidance, and current status. Treat `view`, `show`, and `describe` as equivalent read-only actions.
-4. For `setup` or `configure`, ask the fourteen context questions covering organization, deployment, cloud, compliance, residency, platform, database, infrastructure-as-code, CI/CD, container, and technology restrictions. Record supplied wording only; do not infer unprovided facts.
-5. Construct a deterministic proposal with `metadata` first, every required section present, and existing wording, capitalization, grouping, and value order preserved. Show the complete proposal before requesting confirmation.
+4. For `setup` or `configure`, ask the fourteen context questions covering organization, deployment, cloud, compliance, residency, platform, database, infrastructure-as-code, CI/CD, container, and technology restrictions. Ask explicitly: `What is the name of the organization, business unit, team, or project group this repository represents?` Record the supplied answer at `organization.name`; Empty and whitespace-only answers are invalid. Record supplied wording only; do not infer unprovided facts.
+5. Construct a deterministic proposal with `metadata` first, every required section present, and existing wording, capitalization, grouping, and value order preserved. Show the complete proposal before requesting confirmation. Do not propose Profile Complete when `organization.name` is absent, empty, or whitespace-only.
 6. For `add`, resolve the category and nested profile node, prefer append insertion, and show the inferred category and insertion location before confirmation.
 7. For `update`, resolve one existing value and show the action, exact current value, replacement value, affected entry, downstream impact, and confirmation prompt.
 8. For `remove`, resolve the exact value, show the affected entry and ramifications, and wait for confirmation.
@@ -67,6 +69,7 @@ Mutation previews additionally show the current state, proposed state, and ramif
 - Confirm the distributed default is version `1.0.0` with only the required contextual metadata.
 - Confirm help, view, show, and describe do not change file bytes.
 - Confirm setup/configure and every mutation display a proposal before confirmation and leave bytes unchanged when declined.
+- Confirm setup/configure asks for a user-supplied organization identity and cannot report Profile Complete when `organization.name` is absent, empty, or whitespace-only.
 - Confirm identical inputs rewrite identical bytes without timestamps, random identifiers, or environment-derived values.
 - Confirm malformed and ambiguous requests abort safely and identify the actionable problem.
 - Run `.highway/tools/validate-skill.sh .highway/skills/highway-profile` and `.highway/tools/validate-profile.sh .highway/library/templates/output/profile.yaml`.
@@ -75,9 +78,11 @@ Mutation previews additionally show the current state, proposed state, and ramif
 
 - If `.highway/` cannot be found, abort and ask for the project root; do not guess a location.
 - If the profile is malformed, abort, identify the malformed section or field, and write nothing.
+- If `organization.name` is absent, empty, or whitespace-only, abort setup, report `organization.name` as incomplete, and do not report Profile Complete or write a proposal.
 - If an action, category, node, or value has multiple interpretations, abort and list every candidate.
 - If no requested target exists, abort and name what was searched for; do not create a replacement implicitly.
 - If confirmation is withheld, abort, report `Confirmation Status: Declined`, and leave the profile byte-for-byte unchanged.
+- If a proposed Profile is declined, abort the mutation, report `Proposed Profile declined` with the incomplete state, and Preserve original bytes.
 - If a request concerns an NFR or Control baseline, abort and route it to `/highway-nfrs` or `/highway-controls`.
 - If output would contain timestamps, random identifiers, environment-derived values, or inferred questionnaire answers, abort and emit none of them.
 

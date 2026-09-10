@@ -6,6 +6,8 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 SKILL="$HIGHWAY_ROOT/skills/highway-setup/SKILL.md"
 fail=0
+# shellcheck source=tools/tests/test-helpers.sh
+source "$SCRIPT_DIR/test-helpers.sh"
 
 require_text() {
 	local text="$1"
@@ -31,16 +33,6 @@ require_order() {
 	fi
 }
 
-require_text 'name: highway-setup'
-require_text 'version: 1.0.0'
-require_text 'Invoke as `/highway-setup`'
-require_text 'organization.name'
-require_text 'library/objectives/'
-require_text 'library/governance/controls/'
-require_text 'library/governance/nfrs/'
-require_text '/highway-profile setup'
-require_text '/highway-objectives setup'
-require_text '/highway-controls'
 require_text '/highway-nfrs'
 require_text 'Control-owned NFR proposal path'
 require_text 'pause setup with `Setup: In Progress`'
@@ -76,12 +68,17 @@ require_text 'Profile `Missing` or `Blocked`'
 require_text 'Business Objectives `Missing`'
 require_text 'Controls `Missing`'
 require_text 'NFRs `In Progress`'
+require_text 'NFRs: Not Applicable'
+require_text 'zero candidates'
+require_text 'candidate generation succeeds'
+require_text 'Profile owner readiness'
+require_text 'consumes Profile readiness'
 require_text 'Profile: Missing'
 require_text 'Business Objectives: Missing'
 require_text 'Controls: Missing'
 require_text 'NFRs: Not Evaluated'
 require_text 'Setup: In Progress'
-require_order 'Read the Profile state' 'Read the Business Objective state' 'Read the Control state' 'Read the NFR state'
+require_order 'Read Profile owner readiness' 'Read the Business Objective state' 'Read the Control state' 'Read the NFR state'
 
 if grep -Eq 'library/(objectives|governance/(controls|nfrs))/.*highway-setup|highway-setup.*(write|mkdir|touch|cat >)' "$SKILL"; then
 	echo "FAIL: highway-setup contains a direct owner-artifact write path"
@@ -103,6 +100,55 @@ if [[ "$before" != "$after" ]]; then
 	echo "FAIL: focused fixture changed its repository state"
 	fail=1
 fi
+
+validate_workflow() {
+	local workflow="$1" steps_file="$fixture_root/workflow-steps" references_file="$fixture_root/workflow-references"
+	local expected_step=1 step_number reference reference_number
+	grep -E '^[0-9]+\. ' "$workflow" | sed -E 's/^([0-9]+)\. .*/\1/' > "$steps_file"
+	while IFS= read -r step_number; do
+		if [[ "$step_number" -ne "$expected_step" ]]; then
+			echo "FAIL: Setup workflow '$workflow' expected step $expected_step, got $step_number"
+			return 1
+		fi
+		expected_step=$((expected_step + 1))
+	done < "$steps_file"
+	if [[ "$expected_step" -ne 11 ]]; then
+		echo "FAIL: Setup workflow '$workflow' must declare exactly steps 1 through 10"
+		return 1
+	fi
+	grep -oE 'Step [0-9]+' "$workflow" | sort -u > "$references_file"
+	while IFS= read -r reference; do
+		reference_number="${reference#Step }"
+		if ! grep -qx "$reference_number" "$steps_file"; then
+			echo "FAIL: dangling Setup workflow reference '$reference' in '$workflow'"
+			return 1
+		fi
+	done < "$references_file"
+	return 0
+}
+
+canonical_hash_before="$(shasum -a 256 "$SKILL" | awk '{print $1}')"
+if ! validate_workflow "$SKILL"; then
+	echo "FAIL: canonical Setup workflow did not validate"
+	fail=1
+fi
+
+missing_variant="$fixture_root/workflow-missing.md"
+duplicate_variant="$fixture_root/workflow-duplicate.md"
+nonsequential_variant="$fixture_root/workflow-nonsequential.md"
+dangling_variant="$fixture_root/workflow-dangling.md"
+grep -v '^5\. ' "$SKILL" > "$missing_variant"
+sed 's/^6\. /5. /' "$SKILL" > "$duplicate_variant"
+sed 's/^5\. /6. /' "$SKILL" > "$nonsequential_variant"
+sed 's/Step 10/Step 99/g' "$SKILL" > "$dangling_variant"
+for variant in "$missing_variant" "$duplicate_variant" "$nonsequential_variant" "$dangling_variant"; do
+	if validate_workflow "$variant"; then
+		echo "FAIL: malformed workflow variant was accepted: $variant"
+		fail=1
+	fi
+done
+canonical_hash_after="$(shasum -a 256 "$SKILL" | awk '{print $1}')"
+assert_file_unchanged 'canonical Setup workflow' "$canonical_hash_before" "$canonical_hash_after" || fail=1
 
 assert_equal() {
 	local label="$1" expected="$2" actual="$3"
@@ -170,6 +216,39 @@ run_conformance_fixture() {
 	esac
 }
 
+evaluate_nfr_outcome() {
+	local generation="$1" count="$2" entries="$3" proposal="$4" accepted="$5"
+	local status_file="$6" setup_file="$7" artifact_path="$8"
+	if [[ "$generation" == unavailable || "$generation" == malformed || "$generation" != success ]]; then
+		printf '%s\n' 'Blocked' > "$status_file"
+		printf '%s\n' 'In Progress' > "$setup_file"
+		return 0
+	fi
+	if [[ "$count" == 0 && "$entries" != 0 ]]; then
+		printf '%s\n' 'Blocked' > "$status_file"
+		printf '%s\n' 'In Progress' > "$setup_file"
+		return 0
+	fi
+	if [[ "$count" == 0 ]]; then
+		printf '%s\n' 'Not Applicable' > "$status_file"
+		printf '%s\n' 'Complete' > "$setup_file"
+		return 0
+	fi
+	if [[ "$accepted" == yes ]]; then
+		printf '%s\n' 'Complete' > "$status_file"
+		printf '%s\n' 'Complete' > "$setup_file"
+		printf '%s\n' 'accepted NFR' > "$artifact_path"
+		return 0
+	fi
+	if [[ "$proposal" == pending ]]; then
+		printf '%s\n' 'In Progress' > "$status_file"
+		printf '%s\n' 'In Progress' > "$setup_file"
+		return 0
+	fi
+	printf '%s\n' 'Missing' > "$status_file"
+	printf '%s\n' 'In Progress' > "$setup_file"
+}
+
 expected_states='empty profile objectives controls complete'
 for state in $expected_states; do
 	run_conformance_fixture "$state" success
@@ -202,6 +281,54 @@ complete_hash_before="$(shasum -a 256 "$fixture_root/state" | awk '{print $1}')"
 complete_hash_after="$(shasum -a 256 "$fixture_root/state" | awk '{print $1}')"
 assert_equal 'complete-state owner calls' '' "$(cat "$fixture_root/owners")"
 assert_equal 'complete-state artifact hash' "$complete_hash_before" "$complete_hash_after"
+
+nfr_status_file="$fixture_root/nfr-status"
+nfr_setup_file="$fixture_root/nfr-setup"
+nfr_artifact="$fixture_root/generated-nfr.yaml"
+for nfr_result in zero available-pending pending accepted unavailable malformed contradictory; do
+	rm -f "$nfr_artifact"
+	case "$nfr_result" in
+		zero) fixture_args='success 0 0 none no' ;;
+		available-pending) fixture_args='success 2 2 not-started no' ;;
+		pending) fixture_args='success 2 2 pending no' ;;
+		accepted) fixture_args='success 2 2 pending yes' ;;
+		unavailable) fixture_args='unavailable 0 0 none no' ;;
+		malformed) fixture_args='malformed 0 0 none no' ;;
+		contradictory) fixture_args='success 0 1 none no' ;;
+	esac
+	evaluate_nfr_outcome $fixture_args "$nfr_status_file" "$nfr_setup_file" "$nfr_artifact"
+	case "$nfr_result" in
+		zero)
+			assert_status 'zero-candidate NFR state' 'Not Applicable' "$(cat "$nfr_status_file")"
+			assert_status 'zero-candidate Setup state' 'Complete' "$(cat "$nfr_setup_file")"
+			assert_no_artifact 'zero-candidate NFR artifact' "$nfr_artifact"
+			zero_first="$(cat "$nfr_status_file" "$nfr_setup_file")"
+			evaluate_nfr_outcome success 0 0 none no "$nfr_status_file" "$nfr_setup_file" "$nfr_artifact"
+			assert_equal 'zero-candidate deterministic outcome' "$zero_first" "$(cat "$nfr_status_file" "$nfr_setup_file")"
+			;;
+		available-pending)
+			assert_status 'available candidate NFR state' 'Missing' "$(cat "$nfr_status_file")"
+			assert_status 'available candidate Setup state' 'In Progress' "$(cat "$nfr_setup_file")"
+			;;
+		pending)
+			assert_status 'pending NFR state' 'In Progress' "$(cat "$nfr_status_file")"
+			assert_status 'pending Setup state' 'In Progress' "$(cat "$nfr_setup_file")"
+			;;
+		accepted)
+			assert_status 'accepted NFR state' 'Complete' "$(cat "$nfr_status_file")"
+			assert_status 'accepted Setup state' 'Complete' "$(cat "$nfr_setup_file")"
+			if [[ ! -f "$nfr_artifact" ]]; then
+				echo 'FAIL: accepted NFR fixture did not create its accepted artifact'
+				fail=1
+			fi
+			;;
+		unavailable|malformed|contradictory)
+			assert_status "$nfr_result NFR state" 'Blocked' "$(cat "$nfr_status_file")"
+			assert_status "$nfr_result Setup state" 'In Progress' "$(cat "$nfr_setup_file")"
+			assert_no_artifact "$nfr_result NFR artifact" "$nfr_artifact"
+			;;
+	esac
+done
 
 matrix_pass=0
 matrix_total=0
