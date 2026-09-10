@@ -23,6 +23,7 @@ include	.claude/skills/highway-inquiry	-
 include	.claude/skills/highway-nfrs	-
 include	.claude/skills/highway-profile	-
 include	.claude/skills/highway-relationships	-
+include	.claude/skills/highway-setup	-
 exclude	.cursor	-
 include	.cursor/rules/highway-objectives.mdc	-
 include	.cursor/rules/highway-help.mdc	-
@@ -31,6 +32,7 @@ include	.cursor/rules/highway-inquiry.mdc	-
 include	.cursor/rules/highway-nfrs.mdc	-
 include	.cursor/rules/highway-profile.mdc	-
 include	.cursor/rules/highway-relationships.mdc	-
+include	.cursor/rules/highway-setup.mdc	-
 exclude	.github	-
 include	.github/skills/highway-objectives	-
 include	.github/skills/highway-help	-
@@ -39,6 +41,7 @@ include	.github/skills/highway-inquiry	-
 include	.github/skills/highway-nfrs	-
 include	.github/skills/highway-profile	-
 include	.github/skills/highway-relationships	-
+include	.github/skills/highway-setup	-
 
 # --- The framework directory: excluded by default so each child is a deliberate decision ---
 exclude	.highway	-
