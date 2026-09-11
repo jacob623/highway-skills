@@ -10,10 +10,10 @@
 # that discarded unrelated uncommitted work in the same file.
 set -u
 # Instrument class: mixed (static-document-contract and executed-behavior)
-# Artifact classes: source-document, disposable-fixture
+# Artifact classes: source-document, disposable-fixture, generated-artifact
 # Seeded failure probe: --probe <class> seeds a defect and observes detection; --probe <class>
-# --neutralise runs the identical path unseeded and requires a clean pass. See the Feature 041
-# probe-mode contract.
+# --neutralise runs the identical path unseeded and requires a clean pass. See the Feature 042
+# probe-mode contract, which supersedes Feature 041's.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
@@ -30,11 +30,31 @@ while [[ $# -gt 0 ]]; do
 		*) echo "FAIL: unrecognized argument: $1" >&2; exit 2 ;;
 	esac
 done
-DECLARED_CLASSES=" source-document disposable-fixture "
+DECLARED_CLASSES=" source-document disposable-fixture generated-artifact "
 if [[ -n "$probe_class" ]] && [[ "$DECLARED_CLASSES" != *" $probe_class "* ]]; then
 	echo "FAIL: undeclared artifact class: $probe_class" >&2
 	exit 2
 fi
+
+# Requires the generator to refuse the given target and to name the offending path when it does.
+# Emits the reason on failure. Probe mode and normal mode both decide D4.3 through this function,
+# so a guard that satisfies one cannot drift from the other.
+assert_refusal_names() {
+	local target="$1" needle="$2" log="$3"
+	if "$GEN" "$target" >"$log" 2>&1; then
+		echo "packaging did not refuse to overwrite: $target"
+		return 1
+	fi
+	if ! grep -q 'refusing to overwrite' "$log"; then
+		echo "packaging stopped for a reason other than the overwrite refusal: $target"
+		return 1
+	fi
+	if ! grep -Fq "$needle" "$log"; then
+		echo "the overwrite refusal did not name its target: $needle"
+		return 1
+	fi
+	return 0
+}
 
 # --- Probe mode: a dedicated CLI path for the D3.7 harness, one build per invocation ---
 if [[ -n "$probe_class" ]]; then
@@ -77,6 +97,30 @@ if [[ -n "$probe_class" ]]; then
 			else
 				exit 0
 			fi
+			;;
+		generated-artifact)
+			# Both halves of D4.3's Enforcement Map note under one class, because the
+			# modified-file refusal can only be seeded against a target the generator did
+			# produce, and one build then serves both.
+			built="$probe_work/built-$$"
+			if ! "$GEN" "$built" >"$probe_work/build.log" 2>&1; then
+				exit 0
+			fi
+			if [[ "$neutralise" -eq 1 ]]; then
+				"$GEN" "$built" >"$probe_work/clean.log" 2>&1
+				exit $?
+			fi
+			untracked_probe="$probe_work/untracked-$$"
+			mkdir -p "$untracked_probe"
+			printf 'hand-authored\n' >"$untracked_probe/notes.md"
+			assert_refusal_names "$untracked_probe" "$untracked_probe" \
+				"$probe_work/untracked.log" >/dev/null || exit 0
+			victim="$built/README.md"
+			printf 'drift\n' >>"$victim"
+			assert_refusal_names "$built" "$victim" "$probe_work/modified.log" \
+				>/dev/null || exit 0
+			# Both refusals detected. Removing either one makes this leg exit 0.
+			exit 1
 			;;
 	esac
 fi
@@ -189,18 +233,32 @@ if [[ -d "$dist" ]]; then
 	fi
 fi
 
-# --- The step refuses to overwrite a directory it did not produce (FR-013) ---
+# --- The step refuses to overwrite a directory it did not produce (FR-013, D4.3) ---
 
 guard="$WORK/guard"
 mkdir -p "$guard"
 printf 'hand-authored\n' >"$guard/notes.md"
-if "$GEN" "$guard" >/dev/null 2>&1; then
-	echo "FAIL: packaging overwrote a directory it did not produce"
+if ! why="$(assert_refusal_names "$guard" "$guard" "$WORK/guard.log")"; then
+	echo "FAIL: $why"
 	fail=1
 fi
 if [[ "$(cat "$guard/notes.md" 2>/dev/null)" != "hand-authored" ]]; then
 	echo "FAIL: packaging destroyed a file in a directory it did not produce"
 	fail=1
+fi
+
+# --- The step refuses to overwrite a file modified inside a target it did produce (D4.3) ---
+# The Enforcement Map note promises this half as well; until feature 042 nothing asserted it in
+# any mode. The distribution built at the top is reused rather than built again, because nothing
+# below this point reads it.
+
+if [[ -d "$dist" ]]; then
+	modified_victim="$dist/README.md"
+	printf 'drift\n' >>"$modified_victim"
+	if ! why="$(assert_refusal_names "$dist" "$modified_victim" "$WORK/modified.log")"; then
+		echo "FAIL: $why"
+		fail=1
+	fi
 fi
 
 exit $fail

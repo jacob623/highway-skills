@@ -1,14 +1,15 @@
 # Completion Register
 
 This file is the single, maintainer-declared statement of which `specs/` feature directories are
-complete. `D7.2` and `D7.4` read it to decide which directories are in scope for the completion and
-coverage rules, and `D7.5` reads its `Corrects` column to decide the corrective set. No script
-generates this file and none may infer a row from `tasks.md`, a directory's own claims, or any other
-derived signal — a feature does not get to decide its own completion status by editing the file the
-completion check reads, which is the defect this register exists to remove.
+complete. No check reads it — Feature 044 removed the constitution rules (`D7.2`, `D7.4`, `D7.5`)
+that used to read it, along with the rest of the specification-record governance the `specs/` tree
+no longer carries. It survives as a maintainer-kept index for readers, not as an enforcement input.
+No script generates this file and none may infer a row from `tasks.md`, a directory's own claims, or
+any other derived signal — a feature does not get to decide its own completion status by editing
+the file this index keeps.
 
-`Status` is one of exactly `complete`, `incomplete`, `in-progress`. `Corrects` is `-` or the name of
-a strictly lower-numbered feature directory this feature's record supersedes.
+`Status` is one of exactly `complete`, `incomplete`, `in-progress`, `withdrawn`. `Corrects` is `-`
+or the name of a strictly lower-numbered feature directory this feature's record supersedes.
 
 | Feature | Status | Corrects |
 |---|---|---|
@@ -53,3 +54,6 @@ a strictly lower-numbered feature directory this feature's record supersedes.
 | 039-completion-record-enforcement | complete | - |
 | 040-historical-coverage-reconstruction | complete | - |
 | 041-auto-check-integrity | complete | - |
+| 042-probe-reachability-correction | complete | 041-auto-check-integrity |
+| 043-corrective-provenance-honesty | withdrawn | - |
+| 044-spec-governance-removal | complete | - |

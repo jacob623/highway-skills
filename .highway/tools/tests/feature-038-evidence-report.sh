@@ -26,7 +26,7 @@ run_category() {
 
 run_category 'executable owner behavior' 'Profile, Objectives, Controls, and NFR fixture evaluation' bash "$SCRIPT_DIR/readiness-executable.test.sh"
 run_category 'Setup routing' 'ordered captured-response routing and short-circuiting' bash "$SCRIPT_DIR/highway-setup-executable.test.sh"
-run_category 'static contract' 'readiness and Feature 038 planning contracts' bash -c "bash '$SCRIPT_DIR/readiness-contract.test.sh' && bash '$SCRIPT_DIR/feature-038-plan.test.sh'"
+run_category 'static contract' 'readiness contracts' bash -c "bash '$SCRIPT_DIR/readiness-contract.test.sh'"
 run_category 'generated artifacts' 'catalog and adapter correspondence' bash "$SCRIPT_DIR/adapter-coverage.test.sh"
 coverage_file="$REPO_ROOT/$(printf 'spec%s' 's')/038-readiness-verification-corrections/coverage.md"
 if [[ -f "$coverage_file" ]]; then
