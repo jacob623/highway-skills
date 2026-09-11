@@ -3,6 +3,49 @@
 # then cleans up its own temporary fixture only; `.highway/skills/highway-help/` is a real,
 # permanent skill (feature 006; renamed by feature 009) and is left untouched.
 set -u
+# Instrument class: mixed (static-document-contract and executed-behavior)
+# Artifact classes: generated-artifact
+# Seeded failure probe: --probe <class> seeds a defect and observes detection; --probe <class>
+# --neutralise runs the identical path unseeded and requires a clean pass. See the Feature 041
+# probe-mode contract.
+
+probe_class=""
+neutralise=0
+while [[ $# -gt 0 ]]; do
+	case "$1" in
+		--probe) probe_class="${2:-}"; shift 2 ;;
+		--neutralise) neutralise=1; shift ;;
+		*) echo "FAIL: unrecognized argument: $1" >&2; exit 2 ;;
+	esac
+done
+DECLARED_CLASSES=" generated-artifact "
+if [[ -n "$probe_class" ]] && [[ "$DECLARED_CLASSES" != *" $probe_class "* ]]; then
+	echo "FAIL: undeclared artifact class: $probe_class" >&2
+	exit 2
+fi
+
+# A hand-edited generated adapter must retain its hand-edited content (D4.1). Shared by normal
+# mode, which exercises it end-to-end through the real generator, and probe mode, which exercises
+# it directly against a seeded artifact.
+hand_edit_preserved() {
+	grep -q '^hand-edited line$' "$1" 2>/dev/null
+}
+
+# --- Probe mode: a dedicated CLI path for the D3.7 harness, separate from the end-to-end run below ---
+if [[ -n "$probe_class" ]]; then
+	probe_file="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/fixtures/agent-adapter-probe-$$.md"
+	trap 'rm -f "$probe_file"' EXIT
+	if [[ "$neutralise" -eq 0 ]]; then
+		printf 'generated content\n' >"$probe_file"
+	else
+		printf 'generated content\nhand-edited line\n' >"$probe_file"
+	fi
+	if hand_edit_preserved "$probe_file"; then
+		exit 0
+	else
+		exit 1
+	fi
+fi
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # HIGHWAY_ROOT (.highway/) holds the generator + skill sources; REPO_ROOT (one level up) is
@@ -108,7 +151,7 @@ if [[ -f "$GH_TARGET" ]]; then
 		echo "FAIL: the generator overwrote a hand-edited adapter instead of refusing"
 		fail=1
 	fi
-	if ! grep -q '^hand-edited line$' "$GH_TARGET"; then
+	if ! hand_edit_preserved "$GH_TARGET"; then
 		echo "FAIL: a hand-edited adapter was overwritten; the edit was lost"
 		fail=1
 	fi

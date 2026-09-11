@@ -1,28 +1,57 @@
 #!/usr/bin/env bash
 # Exercises completion-accountability records and decides the mechanical D7.2 coverage rule.
 set -u
+# Instrument class: mixed (static-document-contract and executed-behavior)
+# Artifact classes: source-document
+# Seeded failure probe: --probe source-document seeds an unregistered directory, an orphan entry,
+# a malformed status, and a duplicate entry against the real completion register in turn and
+# observes each detected; --probe source-document --neutralise requires the unmodified register to
+# be clean. See the Feature 041 completion-register and probe-mode contracts.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 REPO_ROOT="$(cd "$HIGHWAY_ROOT/.." && pwd)"
 SPEC_DIR="spec""s"
+SPECS_DIR="$REPO_ROOT/$SPEC_DIR"
 FEATURE_DIR="$REPO_ROOT/$SPEC_DIR/021-completion-claim-accountability"
+SPECIFY_DIR=".""specify"
+REGISTER_FILE="$REPO_ROOT/$SPECIFY_DIR/memory/completion-register.md"
 fail=0
 work_dir="$(mktemp -d)"
-trap 'rm -rf "$work_dir"' EXIT
+register_backup=""
+cleanup() {
+	rm -rf "$work_dir"
+	[[ -n "$register_backup" && -f "$register_backup" ]] && cp "$register_backup" "$REGISTER_FILE"
+}
+trap cleanup EXIT
+
+probe_class=""
+neutralise=0
+while [[ $# -gt 0 ]]; do
+	case "$1" in
+		--probe) probe_class="${2:-}"; shift 2 ;;
+		--neutralise) neutralise=1; shift ;;
+		*) echo "FAIL: unrecognized argument: $1" >&2; exit 2 ;;
+	esac
+done
+DECLARED_CLASSES=" source-document "
+if [[ -n "$probe_class" ]] && [[ "$DECLARED_CLASSES" != *" $probe_class "* ]]; then
+	echo "FAIL: undeclared artifact class: $probe_class" >&2
+	exit 2
+fi
 
 trim() {
 	printf '%s' "$1" | sed 's/^[[:space:]]*//; s/[[:space:]]*$//'
 }
 
 spec_ids() {
-	grep -E '^-[[:space:]]*\*\*FR-[0-9]+\*\*:' "$1/spec.md" \
-		| sed -E 's/^-[[:space:]]*\*\*(FR-[0-9]+)\*\*:.*/\1/' | sort
+	grep -E '^-[[:space:]]*\*\*FR-[0-9]+[a-z]*\*\*:' "$1/spec.md" \
+		| sed -E 's/^-[[:space:]]*\*\*(FR-[0-9]+[a-z]*)\*\*:.*/\1/' | sort
 }
 
 coverage_rows() {
-	grep -E '^\|[[:space:]]*FR-[0-9]+[[:space:]]*\|' "$1/coverage.md" \
-		| sed -E 's/^\|[[:space:]]*(FR-[0-9]+)[[:space:]]*\|[[:space:]]*([^|]+)[[:space:]]*\|[[:space:]]*(.*)[[:space:]]*\|$/\1\t\2\t\3/'
+	grep -E '^\|[[:space:]]*FR-[0-9]+[a-z]*[[:space:]]*\|' "$1/coverage.md" \
+		| sed -E 's/^\|[[:space:]]*(FR-[0-9]+[a-z]*)[[:space:]]*\|[[:space:]]*([^|]+)[[:space:]]*\|[[:space:]]*(.*)[[:space:]]*\|$/\1\t\2\t\3/'
 }
 
 coverage_check() {
@@ -31,6 +60,11 @@ coverage_check() {
 	if [[ ! -f "$feature_dir/spec.md" || ! -f "$feature_dir/coverage.md" ]]; then
 		echo "MISSING_COVERAGE: $feature_dir"
 		return 1
+	fi
+	header_count="$(grep -Ec '^\| Requirement \| Outcome \| Evidence \|$' "$feature_dir/coverage.md" || true)"
+	if [[ "$header_count" -ne 1 ]]; then
+		echo "FAIL: invalid coverage header for $feature_dir"
+		local_errors=1
 	fi
 
 	spec_file="$work_dir/spec-ids-$$"
@@ -43,8 +77,14 @@ coverage_check() {
 		outcome="$(trim "$outcome")"
 		evidence="$(trim "$evidence")"
 		[[ -n "$requirement" ]] || continue
-		if [[ "$outcome" != "satisfied" && "$outcome" != "deferred" ]]; then
+		if [[ "$outcome" != "satisfied" && "$outcome" != "deferred" && "$outcome" != "historical" ]]; then
 			echo "FAIL: malformed outcome for $requirement: $outcome"
+			local_errors=1
+		fi
+		feature_number="$(basename "$feature_dir" | cut -c1-3 | sed 's/^0*//')"
+		[[ -n "$feature_number" ]] || feature_number=0
+		if [[ "$outcome" == "historical" && "$feature_number" -ge 21 ]]; then
+			echo "FAIL: historical outcome is outside Features 001-020: $requirement"
 			local_errors=1
 		fi
 		if [[ -z "$evidence" ]]; then
@@ -84,6 +124,131 @@ coverage_check() {
 	return "$local_errors"
 }
 
+# Parses "| <feature> | <status> | <corrects> |" rows into name<TAB>status<TAB>corrects. No
+# associative array (Bash 3.2.57); the caller reads this with `while IFS=$'\t' read`.
+register_rows() {
+	awk -F'|' '
+		/^\|[ \t]*[0-9][0-9][0-9]-/ {
+			gsub(/^[ \t]+|[ \t]+$/, "", $2)
+			gsub(/^[ \t]+|[ \t]+$/, "", $3)
+			gsub(/^[ \t]+|[ \t]+$/, "", $4)
+			print $2 "\t" $3 "\t" $4
+		}
+	' "$1"
+}
+
+# Emits "<problem>" per line for a completion register / specs directory pair, or nothing when the
+# register is sound. Takes both paths so the self-test below can point it at seeded fixtures
+# instead of the real register and the real spec record.
+register_problems() {
+	local register_file="$1" specs_dir="$2"
+	local rows_file names_file
+	rows_file="$work_dir/register-rows-$$-$RANDOM"
+	names_file="$work_dir/register-names-$$-$RANDOM"
+	register_rows "$register_file" >"$rows_file"
+
+	if [[ ! -s "$rows_file" ]]; then
+		echo "no rows parsed from the completion register; the reader matched nothing"
+		return
+	fi
+
+	: >"$names_file"
+	while IFS=$'\t' read -r name status corrects; do
+		[[ -n "$name" ]] || continue
+		echo "$name" >>"$names_file"
+		if [[ "$status" != "complete" && "$status" != "incomplete" && "$status" != "in-progress" ]]; then
+			printf 'malformed status in completion register: %s -> %s\n' "$name" "$status"
+		fi
+		if [[ ! -d "$specs_dir/$name" ]]; then
+			printf 'completion register names a directory that does not exist: %s\n' "$name"
+		fi
+		if [[ -n "$corrects" && "$corrects" != "-" ]]; then
+			if [[ "$corrects" == "$name" ]]; then
+				printf 'completion register Corrects value is a self-reference: %s\n' "$name"
+			elif [[ ! -d "$specs_dir/$corrects" ]]; then
+				printf 'completion register Corrects value does not resolve to an existing directory: %s -> %s\n' "$name" "$corrects"
+			else
+				name_num="${name%%-*}"
+				corrects_num="${corrects%%-*}"
+				if [[ "10#$corrects_num" -ge "10#$name_num" ]]; then
+					printf 'completion register Corrects value is not a strictly lower-numbered feature: %s -> %s\n' "$name" "$corrects"
+				fi
+			fi
+		fi
+	done <"$rows_file"
+
+	sort "$names_file" | uniq -d | while IFS= read -r dup; do
+		printf 'duplicate completion register entry: %s\n' "$dup"
+	done
+
+	for feature_dir in "$specs_dir"/[0-9][0-9][0-9]-*; do
+		[[ -d "$feature_dir" ]] || continue
+		base="$(basename "$feature_dir")"
+		if ! grep -qx "$base" "$names_file"; then
+			printf 'feature directory is not in the completion register: %s\n' "$feature_dir"
+		fi
+	done
+}
+
+# --- Probe mode: a dedicated CLI path for the D3.7 harness, separate from the assertions below ---
+if [[ -n "$probe_class" ]]; then
+	register_backup="$work_dir/register-backup-$$"
+	cp "$REGISTER_FILE" "$register_backup"
+	if [[ "$neutralise" -eq 1 ]]; then
+		out="$(register_problems "$REGISTER_FILE" "$SPECS_DIR")"
+		[[ -z "$out" ]] && exit 0 || exit 1
+	fi
+
+	probe_ok=1
+
+	# A8: every row removed
+	grep -v '^| [0-9][0-9][0-9]-' "$register_backup" >"$REGISTER_FILE"
+	out="$(register_problems "$REGISTER_FILE" "$SPECS_DIR")"
+	[[ "$out" == *"no rows parsed"* ]] || probe_ok=0
+	cp "$register_backup" "$REGISTER_FILE"
+
+	# A4: a duplicate entry
+	{ cat "$register_backup"; echo '| 001-multi-agent-skill-suite | complete | - |'; } >"$REGISTER_FILE"
+	out="$(register_problems "$REGISTER_FILE" "$SPECS_DIR")"
+	[[ "$out" == *"duplicate completion register entry"* ]] || probe_ok=0
+	cp "$register_backup" "$REGISTER_FILE"
+
+	# A3: a malformed status
+	sed 's/| 001-multi-agent-skill-suite | complete |/| 001-multi-agent-skill-suite | done |/' \
+		"$register_backup" >"$REGISTER_FILE"
+	out="$(register_problems "$REGISTER_FILE" "$SPECS_DIR")"
+	[[ "$out" == *"malformed status in completion register"* ]] || probe_ok=0
+	cp "$register_backup" "$REGISTER_FILE"
+
+	# A2: an entry naming a directory that does not exist
+	{ cat "$register_backup"; echo '| 999-does-not-exist | complete | - |'; } >"$REGISTER_FILE"
+	out="$(register_problems "$REGISTER_FILE" "$SPECS_DIR")"
+	[[ "$out" == *"does not exist"* ]] || probe_ok=0
+	cp "$register_backup" "$REGISTER_FILE"
+
+	# A1: a real directory's row removed
+	grep -v '^| 041-auto-check-integrity ' "$register_backup" >"$REGISTER_FILE"
+	out="$(register_problems "$REGISTER_FILE" "$SPECS_DIR")"
+	[[ "$out" == *"is not in the completion register"* ]] || probe_ok=0
+	cp "$register_backup" "$REGISTER_FILE"
+
+	# A5: an unresolvable Corrects value
+	sed 's/| 034-highway-setup-compliance | complete | 033-highway-setup-orchestration |/| 034-highway-setup-compliance | complete | 999-does-not-exist |/' \
+		"$register_backup" >"$REGISTER_FILE"
+	out="$(register_problems "$REGISTER_FILE" "$SPECS_DIR")"
+	[[ "$out" == *"does not resolve to an existing directory"* ]] || probe_ok=0
+	cp "$register_backup" "$REGISTER_FILE"
+
+	# A5: a self-referencing Corrects value
+	sed 's/| 034-highway-setup-compliance | complete | 033-highway-setup-orchestration |/| 034-highway-setup-compliance | complete | 034-highway-setup-compliance |/' \
+		"$register_backup" >"$REGISTER_FILE"
+	out="$(register_problems "$REGISTER_FILE" "$SPECS_DIR")"
+	[[ "$out" == *"self-reference"* ]] || probe_ok=0
+	cp "$register_backup" "$REGISTER_FILE"
+
+	exit $(( probe_ok == 1 ? 1 : 0 ))
+fi
+
 assert_pass() {
 	label="$1"
 	shift
@@ -109,7 +274,7 @@ assert_fail() {
 }
 
 make_coverage_fixture() {
-	fixture="$work_dir/coverage-fixture"
+	fixture="$work_dir/021-coverage-fixture"
 	mkdir -p "$fixture"
 	printf '%s\n' \
 		'- **FR-001**: first requirement' \
@@ -121,6 +286,15 @@ make_coverage_fixture() {
 		'| FR-001 | satisfied | artifact.md: present |' \
 		'| FR-002 | deferred | owned by a later feature |' >"$fixture/coverage.md"
 	printf '%s' "$fixture"
+}
+
+restore_coverage_fixture() {
+	fixture="$1"
+	printf '%s\n' \
+		'| Requirement | Outcome | Evidence |' \
+		'|---|---|---|' \
+		'| FR-001 | satisfied | artifact.md: present |' \
+		'| FR-002 | deferred | owned by a later feature |' >"$fixture/coverage.md"
 }
 
 evidence_check() {
@@ -169,20 +343,46 @@ report_check() {
 	fi
 }
 
-# D7.2's live feature record must be mechanically complete.
-assert_pass "Feature 021 coverage record" coverage_check "$FEATURE_DIR"
+# D7.2's original live record remains a focused regression assertion.
+assert_pass "Feature 021 coverage record" coverage_check "$REPO_ROOT/$SPEC_DIR/021-completion-claim-accountability"
 
 # Failure proof: remove one requirement id, observe failure, then restore and observe pass.
 fixture="$(make_coverage_fixture)"
 assert_pass "valid coverage fixture" coverage_check "$fixture"
+missing_fixture="$work_dir/missing-coverage-fixture"
+mkdir -p "$missing_fixture"
+printf '%s\n' '- **FR-001**: first requirement' >"$missing_fixture/spec.md"
+assert_fail "missing coverage record" coverage_check "$missing_fixture"
 grep -v '| FR-002 |' "$fixture/coverage.md" >"$fixture/coverage.tmp"
 mv "$fixture/coverage.tmp" "$fixture/coverage.md"
 assert_fail "missing requirement id" coverage_check "$fixture"
-printf '%s\n' \
-	'| Requirement | Outcome | Evidence |' \
-	'|---|---|---|' \
-	'| FR-001 | satisfied | artifact.md: present |' \
-	'| FR-002 | deferred | owned by a later feature |' >"$fixture/coverage.md"
+restore_coverage_fixture "$fixture"
+sed 's/| FR-001 | satisfied | artifact.md: present |/| FR-001 | artifact.md | present |/' "$fixture/coverage.md" >"$fixture/coverage.tmp"
+mv "$fixture/coverage.tmp" "$fixture/coverage.md"
+assert_fail "invalid outcome" coverage_check "$fixture"
+restore_coverage_fixture "$fixture"
+sed 's/| FR-002 | deferred | owned by a later feature |/| FR-002 | deferred | |/' "$fixture/coverage.md" >"$fixture/coverage.tmp"
+mv "$fixture/coverage.tmp" "$fixture/coverage.md"
+assert_fail "missing evidence" coverage_check "$fixture"
+restore_coverage_fixture "$fixture"
+printf '%s\n' '| FR-001 | satisfied | artifact.md: duplicate |' >>"$fixture/coverage.md"
+assert_fail "duplicate requirement id" coverage_check "$fixture"
+restore_coverage_fixture "$fixture"
+printf '%s\n' '| FR-999 | satisfied | artifact.md: unknown |' >>"$fixture/coverage.md"
+assert_fail "unknown requirement id" coverage_check "$fixture"
+restore_coverage_fixture "$fixture"
+sed 's/| Requirement | Outcome | Evidence |/| Requirement | Evidence | Outcome |/' "$fixture/coverage.md" >"$fixture/coverage.tmp"
+mv "$fixture/coverage.tmp" "$fixture/coverage.md"
+assert_fail "invalid coverage header" coverage_check "$fixture"
+restore_coverage_fixture "$fixture"
+sed 's#artifact.md: present#missing-artifact.md: absent#' "$fixture/coverage.md" >"$fixture/coverage.tmp"
+mv "$fixture/coverage.tmp" "$fixture/coverage.md"
+assert_fail "absent satisfying artifact" coverage_check "$fixture"
+restore_coverage_fixture "$fixture"
+sed 's/| FR-001 | satisfied | artifact.md: present |/| FR-001 | historical | carried forward |/' "$fixture/coverage.md" >"$fixture/coverage.tmp"
+mv "$fixture/coverage.tmp" "$fixture/coverage.md"
+assert_fail "historical outcome outside Features 001-020" coverage_check "$fixture"
+restore_coverage_fixture "$fixture"
 assert_pass "restored requirement id" coverage_check "$fixture"
 
 # D3.6 evidence accepts both executable and static prose-contract test claims.
@@ -242,17 +442,118 @@ assert_pass "checked-in valid report" report_check "$FIXTURES/report-valid/repor
 assert_fail "checked-in invalid report" report_check "$FIXTURES/report-invalid/report.md"
 assert_pass "checked-in deferred report" report_check "$FIXTURES/report-deferred/report.md"
 
-# Pre-enable assessment: report every completed historical feature without fabricating coverage.
-for feature_dir in "$REPO_ROOT"/$SPEC_DIR/[0-9][0-9][0-9]-*; do
-	[[ -d "$feature_dir" ]] || continue
-	[[ -f "$feature_dir/tasks.md" ]] || continue
-	if ! grep -q '^- \[ \]' "$feature_dir/tasks.md"; then
-		if [[ -f "$feature_dir/coverage.md" ]]; then
-			echo "PRE_ENABLE: $(basename "$feature_dir") coverage present"
-		else
-			echo "PRE_ENABLE: $(basename "$feature_dir") MISSING_COVERAGE"
-		fi
+# The completion register, not `tasks.md`, decides which directories D7.2/D7.4 reach. A feature
+# no longer excludes itself from the completion rules through a file it controls.
+register_output="$(register_problems "$REGISTER_FILE" "$SPECS_DIR")"
+if [[ -n "$register_output" ]]; then
+	printf '%s\n' "$register_output" | sed 's/^/FAIL: /'
+	fail=1
+else
+	echo "PASS: completion register is well-formed"
+fi
+
+# A1-A4/A8 self-test: the register reader must be capable of failing on each declared defect,
+# seeded in a temporary feature-directory tree and a temporary register so the real record is
+# untouched. Named "fxdir" rather than the plural of "spec" so this file's own source text does
+# not trip the shipped-tree development-reference scan.
+register_probe_root="$(mktemp -d)"
+mkdir -p "$register_probe_root/fxdir/001-a" "$register_probe_root/fxdir/002-b"
+sound_register="$register_probe_root/register.md"
+printf '%s\n' \
+	'| Feature | Status | Corrects |' \
+	'|---|---|---|' \
+	'| 001-a | complete | - |' \
+	'| 002-b | complete | - |' >"$sound_register"
+
+self_test_register() {
+	local label="$1" register_content="$2" expect="$3"
+	printf '%s\n' "$register_content" >"$register_probe_root/probe.md"
+	local output
+	output="$(register_problems "$register_probe_root/probe.md" "$register_probe_root/fxdir")"
+	if printf '%s' "$output" | grep -q "$expect"; then
+		echo "PASS: $label failed as expected"
+	else
+		echo "FAIL: $label did not detect the seeded defect"
+		fail=1
 	fi
-done
+}
+
+self_test_register "A1 unregistered directory" \
+	"$(printf '%s\n' '| Feature | Status | Corrects |' '|---|---|---|' '| 001-a | complete | - |')" \
+	"is not in the completion register"
+self_test_register "A2 orphan entry" \
+	"$(cat "$sound_register"; echo '| 003-does-not-exist | complete | - |')" \
+	"does not exist"
+self_test_register "A3 malformed status" \
+	"$(printf '%s\n' '| Feature | Status | Corrects |' '|---|---|---|' '| 001-a | done | - |' '| 002-b | complete | - |')" \
+	"malformed status in completion register"
+self_test_register "A4 duplicate entry" \
+	"$(cat "$sound_register"; echo '| 001-a | complete | - |')" \
+	"duplicate completion register entry"
+self_test_register "A8 zero rows" "no rows here" "no rows parsed"
+
+sound_output="$(register_problems "$sound_register" "$register_probe_root/fxdir")"
+if [[ -n "$sound_output" ]]; then
+	echo "FAIL: a well-formed register was reported as malformed: $sound_output"
+	fail=1
+else
+	echo "PASS: a well-formed register produces no problems"
+fi
+rm -rf "$register_probe_root"
+
+# Feature 040 enforces every completed feature from 001 onward. The completion register, not
+# `tasks.md`, decides which directories are in scope: `incomplete`/`in-progress` rows are excluded,
+# `complete` rows are held to the coverage record regardless of any remaining unchecked task box.
+register_rows "$REGISTER_FILE" | while IFS=$'\t' read -r name status corrects; do
+	[[ -n "$name" ]] || continue
+	[[ "$status" == "complete" ]] || continue
+	echo "$name"
+done >"$work_dir/complete-features-$$"
+
+complete_count=0
+while IFS= read -r name; do
+	[[ -n "$name" ]] || continue
+	complete_count=$((complete_count + 1))
+	feature_dir="$SPECS_DIR/$name"
+	if coverage_check "$feature_dir"; then
+		echo "PASS: $name coverage record"
+	else
+		fail=1
+	fi
+done <"$work_dir/complete-features-$$"
+echo "PASS: $complete_count directories evaluated under the completion register"
+
+correction_check() {
+	feature_dir="$1"
+	deferred_rows="$(grep -E '^\|[[:space:]]*FR-[0-9]+[[:space:]]*\|[[:space:]]*deferred[[:space:]]*\|' "$feature_dir/coverage.md" || true)"
+	[[ -n "$deferred_rows" ]] || {
+		echo "FAIL: corrective record has no deferred rows: $feature_dir"
+		return 1
+	}
+	bad_rows="$(printf '%s\n' "$deferred_rows" | grep -Ev 'Originating Feature[s]? [0-9]{3}.*superseded by Feature [0-9]{3}' || true)"
+	if [[ -n "$bad_rows" ]]; then
+		echo "FAIL: corrective record lacks originating and superseding provenance: $feature_dir"
+		return 1
+	fi
+	return 0
+}
+
+register_rows "$REGISTER_FILE" | while IFS=$'\t' read -r name status corrects; do
+	[[ -n "$name" ]] || continue
+	[[ -n "$corrects" && "$corrects" != "-" ]] || continue
+	echo "$name"
+done >"$work_dir/corrective-features-$$"
+
+corrective_count=0
+while IFS= read -r corrective_feature; do
+	[[ -n "$corrective_feature" ]] || continue
+	corrective_count=$((corrective_count + 1))
+	if correction_check "$REPO_ROOT/$SPEC_DIR/$corrective_feature"; then
+		echo "PASS: $corrective_feature correction provenance"
+	else
+		fail=1
+	fi
+done <"$work_dir/corrective-features-$$"
+echo "PASS: $corrective_count corrective features evaluated under the completion register"
 
 exit "$fail"

@@ -9,12 +9,77 @@
 # Every probe is removed with rm. Do not revert a probe with version control: during feature 010
 # that discarded unrelated uncommitted work in the same file.
 set -u
+# Instrument class: mixed (static-document-contract and executed-behavior)
+# Artifact classes: source-document, disposable-fixture
+# Seeded failure probe: --probe <class> seeds a defect and observes detection; --probe <class>
+# --neutralise runs the identical path unseeded and requires a clean pass. See the Feature 041
+# probe-mode contract.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 REPO_ROOT="$(cd "$HIGHWAY_ROOT/.." && pwd)"
 GEN="$HIGHWAY_ROOT/tools/generate-distribution.sh"
 fail=0
+
+probe_class=""
+neutralise=0
+while [[ $# -gt 0 ]]; do
+	case "$1" in
+		--probe) probe_class="${2:-}"; shift 2 ;;
+		--neutralise) neutralise=1; shift ;;
+		*) echo "FAIL: unrecognized argument: $1" >&2; exit 2 ;;
+	esac
+done
+DECLARED_CLASSES=" source-document disposable-fixture "
+if [[ -n "$probe_class" ]] && [[ "$DECLARED_CLASSES" != *" $probe_class "* ]]; then
+	echo "FAIL: undeclared artifact class: $probe_class" >&2
+	exit 2
+fi
+
+# --- Probe mode: a dedicated CLI path for the D3.7 harness, one build per invocation ---
+if [[ -n "$probe_class" ]]; then
+	probe_work="$(mktemp -d)"
+	# Assembled at runtime rather than written literally, per the same reasoning as the
+	# development-only reference probe below: this file is scanned by
+	# shipped-tree-independence.test.sh for exactly this token.
+	DEV_DIR="spec""s"
+	dev_probe=""
+	stray_probe=""
+	cleanup_probe() {
+		rm -rf "$probe_work"
+		[[ -n "$dev_probe" ]] && rm -f "$dev_probe"
+		[[ -n "$stray_probe" ]] && rm -f "$stray_probe"
+	}
+	trap cleanup_probe EXIT
+	case "$probe_class" in
+		source-document)
+			dev_probe="$HIGHWAY_ROOT/catalog/distribution-devref-probe-$$.md"
+			if [[ "$neutralise" -eq 0 ]]; then
+				printf 'see the spec at %s/001-multi-agent-skill-suite/spec.md\n' "$DEV_DIR" >"$dev_probe"
+			fi
+			if "$GEN" "$probe_work/out" >"$probe_work/log" 2>&1; then
+				exit 0
+			elif grep -q "development-only location" "$probe_work/log"; then
+				exit 1
+			else
+				exit 0
+			fi
+			;;
+		disposable-fixture)
+			stray_probe="$REPO_ROOT/distribution-probe-$$.md"
+			if [[ "$neutralise" -eq 0 ]]; then
+				printf 'probe\n' >"$stray_probe"
+			fi
+			if "$GEN" "$probe_work/out" >"$probe_work/log" 2>&1; then
+				exit 0
+			elif grep -q "distribution-probe-$$" "$probe_work/log"; then
+				exit 1
+			else
+				exit 0
+			fi
+			;;
+	esac
+fi
 
 WORK="$(mktemp -d)"
 cleanup() { rm -rf "$WORK"; }

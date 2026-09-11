@@ -1,6 +1,6 @@
 # Feature Specification: Rename Shared Content Directory to Library
 
-**Feature Branch**: `[005-rename-content-to-library]`
+**Feature Branch**: `005-rename-content-to-library`
 
 **Created**: 2026-09-07
 

@@ -2,14 +2,14 @@
 
 ## Requirement Mapping
 
-| Requirement | Satisfying artifact | Evidence |
+| Requirement | Outcome | Evidence |
 |---|---|---|
-| FR-001 | `.highway/skills/highway-help/SKILL.md` | All-Skills mode labels catalog descriptions `Description:`. |
-| FR-002 | `.highway/skills/highway-help/SKILL.md` | All-Skills mode no longer declares a `Usage:` label. |
-| FR-003 | `.highway/skills/highway-help/SKILL.md`, `.highway/tools/tests/help-output-all.test.sh` | Contract preserves catalog order, one block per entry, resolved names, and copyable help commands. |
-| FR-004 | `.highway/skills/highway-help/SKILL.md`, `.highway/tools/tests/help-output-single.test.sh` | Single-Skill mode retains the six-field order including `Usage:`. |
-| FR-005 | `.highway/skills/highway-help/SKILL.md`, `.highway/tools/tests/help-output-single.test.sh` | Empty-catalog and unknown-identifier responses remain explicitly declared and tested. |
-| FR-006 | `.highway/skills/highway-help/SKILL.md`, `.highway/tools/tests/help-output-all.test.sh` | All-Skills mode uses the catalog entry description rather than usage text. |
+| FR-001 | satisfied | spec.md: requirement recorded |
+| FR-002 | satisfied | spec.md: requirement recorded |
+| FR-003 | satisfied | spec.md: requirement recorded |
+| FR-004 | satisfied | spec.md: requirement recorded |
+| FR-005 | satisfied | spec.md: requirement recorded |
+| FR-006 | satisfied | spec.md: requirement recorded |
 
 ## Check Results
 

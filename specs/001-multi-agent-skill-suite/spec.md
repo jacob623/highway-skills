@@ -1,6 +1,6 @@
 # Feature Specification: Multi-Agent Skill Suite
 
-**Feature Branch**: `[001-multi-agent-skill-suite]`
+**Feature Branch**: `001-multi-agent-skill-suite`
 
 **Created**: 2026-09-06
 

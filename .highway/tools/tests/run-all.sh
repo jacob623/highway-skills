@@ -22,7 +22,9 @@ rm -rf "$REPO_ROOT"/distribution-probe-*.md \
 	"$HIGHWAY_ROOT"/skills/test-adapter-fixture-* \
 	"$REPO_ROOT"/.github/skills/test-adapter-fixture-* \
 	"$REPO_ROOT"/.claude/skills/test-adapter-fixture-* \
-	"$REPO_ROOT"/.cursor/rules/test-adapter-fixture-*.mdc
+	"$REPO_ROOT"/.cursor/rules/test-adapter-fixture-*.mdc \
+	"$HIGHWAY_ROOT"/tools/shipped-tree-cliprobe-*.tmp \
+	"$HIGHWAY_ROOT"/tools/tests/fixtures/shipped-tree-cliprobe-*.tmp
 adapter_manifest="$HIGHWAY_ROOT/tools/.adapter-manifest"
 if [[ -f "$adapter_manifest" ]] && grep -q 'test-adapter-fixture-' "$adapter_manifest"; then
 	grep -v 'test-adapter-fixture-' "$adapter_manifest" >"$adapter_manifest.tmp" || true

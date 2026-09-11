@@ -7,10 +7,10 @@ invocations do not have to be reconstructed from conversation history.
 **Status**: Phases 1, 2, 2b, 3, 4, 4b, 4c, 5, 6 and 11 complete. Phase 7 is delivered with
 recorded gaps — both skills ship; five of `highway-nfrs`'s functional requirements are
 unimplemented. Phases 8 and 9 remain deferred and independent. Phase 10 is complete through
-Feature 021 and owns the rule defects that let those gaps pass every gate. Phase 12 is proposed
-and independent, and owns the defects found reviewing Features 022–038.
+Feature 021 and owns the rule defects that let those gaps pass every gate. Phases 12 and 13 are
+proposed; together they own the defects found reviewing Features 022–038, with 13 gated on 12.
 
-**Last reviewed**: 2026-09-10 (Features 022–038 reviewed; Phase 12 opened)
+**Last reviewed**: 2026-09-10 (Features 022–038 reviewed; Phases 12 and 13 opened)
 
 ---
 
@@ -97,6 +97,7 @@ Worked examples:
 | 10 | Make a completion claim accountable | Spec | 0 | ✅ Complete (feature 021) |
 | 11 | Require shared templates for a skill's emitted output | Spec | 1 states the obligation; 0 states the drift guard | ✅ Complete (feature 022) |
 | 12 | Make the completion record enforceable | Spec | 0 | Proposed — independent of all other phases |
+| 13 | Reconstruct the pre-`021` completion record | Spec | 0 | Proposed — gated on Phase 12 |
 
 Phases 3 and 4 are independent of each other and may run in either order.
 
@@ -1214,7 +1215,7 @@ from the tree as it stands:
 | 3 | Three incompatible coverage schemas are in use | `Requirement \| Outcome \| Evidence` (`021`, `030`, `031`); `Requirement \| Satisfying artifact \| Evidence` (`022`, `023`, `024`, `033`, `034`); a third column meaning in `038`. The six records in the latter two shapes put a file path where the parser reads `satisfied`/`deferred`, so `coverage_check` would reject all of them — if it ever ran on them |
 | 4 | The record's filename is not fixed either | `037` uses `requirements-coverage.md`; `032` uses `test-evidence.md`. Both are invisible to a check that opens `coverage.md` |
 | 5 | Eight of the seventeen features reviewed exist only to correct the previous one | `025` and `026` correct `024`; `028` corrects `027`; `029` corrects `028`; `032` corrects `030`/`031`; `034` corrects `033`; `036` corrects `035`; `038` corrects `037`. Each was found by an ad-hoc assessment that no rule requires and no artifact retains, and in every case the corrected feature's own record still reads as fully satisfied |
-| 6 | A feature directory name need not name the feature | `specs/036-feature-036/` is a placeholder whose own `spec.md` declares `**Feature Branch**: 036-strengthen-035-evidence`. `specs/033-highway-setup/` declares `033-highway-setup-orchestration` |
+| 6 | A feature directory name need not name the feature | `specs/036-feature-036/` is a placeholder whose own `spec.md` declares `**Feature Branch**: 036-strengthen-035-evidence`. `specs/033-highway-setup/` declares `033-highway-setup-orchestration`. Two more were found on re-verification: `001` and `005` declare their branch with literal brackets, `` `[001-multi-agent-skill-suite]` `` and `` `[005-rename-content-to-library]` ``, so four directories fail `D5.5`, not two |
 | 7 | Phase 10's own Done-when was never met | It requires Feature 020's coverage record to exist naming `FR-002`, `FR-020`, `FR-024`, `FR-027` and `FR-032` as unsatisfied. `specs/020-highway-nfrs/` holds no coverage record under any name. The phase that introduced the rule was reported complete against a criterion the rule itself would have caught |
 
 **Why the existing rules do not cover this.** As in Phase 10, each nearest rule is satisfied by the
@@ -1249,9 +1250,9 @@ exist only to build Highway and never ship. No `SKILL.md` is touched, so no `P` 
 
 | ID | Principle | Rule | Observable | Tier |
 |---|---|---|---|---|
-| D3.7 | III (existing) | A registered `[auto]` check MUST be able to fail for every artifact in its declared scope. | The check declares its scope, and a seeded defect in each in-scope artifact produces a non-zero exit. | [auto] |
+| D3.7 | III (existing) | A registered `[auto]` check MUST be able to fail for every class of artifact in its declared scope. | The check declares its scope as a set of artifact classes, and a seeded defect in one artifact of each class produces a non-zero exit. | [auto] |
 | D3.8 | III (existing) | A static document-contract test MUST NOT be recorded as the evidence satisfying a behavioral requirement. | Each test declares its instrument class; a coverage row for a requirement about runtime behavior names a test of the executed-behavior class. | [agent-checkable] |
-| D7.4 | VII (existing) | A coverage record MUST use one declared path and one declared column schema. | Every completed feature directory holds `coverage.md` with columns `Requirement`, `Outcome`, `Evidence`, and every `Outcome` is exactly `satisfied` or `deferred`. | [auto] |
+| D7.4 | VII (existing) | A coverage record MUST use one declared path and one declared column schema. | Every completed feature directory holds `coverage.md` with columns `Requirement`, `Outcome`, `Evidence`, and every `Outcome` is exactly `satisfied`, `deferred`, or `historical`. | [auto] |
 | D7.5 | VII (existing) | A feature that corrects a defect in a completed feature MUST record that defect against the feature that shipped it. | The corrected feature's coverage record carries a superseding entry naming the correcting feature and the requirement it revises. | [agent-checkable] |
 | D5.5 | V (existing) | A feature directory name MUST name the feature. | The segment after the number equals the `Feature Branch` value in that directory's `spec.md`, and is not a placeholder restating the number. | [auto] |
 
@@ -1283,14 +1284,61 @@ accounting artifact about a feature, not part of the specification of it, and th
 no edit to any other file in the directory. That is a MINOR loosening of one Observable, recorded
 as such, and it leaves `D5.2`'s "ship the correction as a new spec" untouched.
 
+**A second `D5.1` collision, found on review 2026-09-10, needs its own answer.** Renaming
+`specs/036-feature-036/` changes the path of every file beneath it, which the coverage-record
+exception above does not cover and cannot be stretched to cover. The resolution is to state in
+`D5.1`'s Observable that relocating a completed spec directory is not an edit to it: no file's
+*content* changes, and `D5.5` is what compels the move. Without this the amendment asks for a
+rename that its own rule forbids.
+
+**`D3.7` says "class", and the word is load-bearing.** An earlier draft read "every artifact in its
+declared scope". Read literally that is infeasible: `D1.1`'s scope is roughly 180 files under
+`.highway/`, and `D4.5`/`D4.6` span every skill times three agent trees plus a catalog and two
+manifests. Hundreds of seed-and-restore cycles per suite run is not a check, it is a build. What
+the rule is actually after is that no *failure mode* goes unproven, so the check declares its
+scope as a set of artifact classes and proves one probe per class.
+
+**`D7.4` admits a third outcome, and the reason is a false dilemma found on review.** With only
+`satisfied` and `deferred`, a pre-`021` requirement has no honest home. Take Feature 004's `FR-007`:
+completed long ago, never corrected, and not re-verifiable from the record as it stands. Marking it
+`satisfied` invents evidence — the manufactured-green defect. Marking it `deferred` asserts work is
+owed that is not, and `D7.4`'s companion obligation would demand an owner who does not exist. So
+the vocabulary gains `historical`: the requirement was recorded complete at the time, the claim is
+carried forward rather than re-litigated, and no owner is implied. To stop it becoming an escape
+hatch, `historical` is valid only for Features `001`–`020` — a mechanically decidable bound, so
+new work cannot reach for it.
+
 **This is a retroactive strengthening, not a green-field rule.** Verified 2026-09-10: enabling
-`D7.4` against the tree as it stands fails fifteen of the seventeen features reviewed, and enabling
-`D5.5` fails two directories. Per `D3.4`'s evaluate-before-enable discipline and the precedent
-Phases 4c and 11 set, the back-fill — writing the nine missing records, normalising the six
-divergent ones onto the declared schema, and renaming `specs/036-feature-036/` — must happen in the
-same change that turns the rules on, or the amendment is MAJOR rather than MINOR. The back-filled
-records must be honest: where a requirement was in fact corrected by a later feature, its outcome
-is `deferred` with the superseding feature named, not `satisfied`.
+`D7.4` against the tree as it stands fails every completed feature except `021`, `030` and `031`,
+and enabling `D5.5` fails four directories — `001`, `005`, `033` and `036`. Per `D3.4`'s
+evaluate-before-enable discipline and the precedent Phases 4c and 11 set, the back-fill — writing
+the missing records, normalising the divergent ones onto the declared schema, and renaming
+`specs/036-feature-036/` — must happen in the same change that turns the rules on, or the amendment
+is MAJOR rather than MINOR. The back-filled records must be honest: where a requirement was in fact
+corrected by a later feature, its outcome is `deferred` with the superseding feature named, not
+`satisfied`.
+
+**The `001`–`020` back-fill is Phase 13's, and splitting it is a scope decision with a reason.**
+This phase enforces `D7.4` from Feature `021` onward — the features whose records are evidenced,
+where the honesty problem is small and the work is bounded. Features `001`–`020` are 309 further
+requirement rows whose disposition mostly cannot be re-derived; folding them in would make this a
+single change touching roughly forty spec directories, twelve test files and the constitution, and
+the realistic failure mode of a change that size is partial completion with the checkboxes marked
+— precisely the defect this phase exists to eliminate, committed in the act of eliminating it.
+The split is not a retreat from full coverage: Phase 13 completes it, both amendments stay MINOR,
+and `D5.2`'s "ship the correction as a new spec" is the grain being followed rather than fought.
+Feature `020` is the one named exception handled here, because Phase 10 already established exactly
+which five of its requirements are unsatisfied, so its record is evidenced and the debt Phase 10
+left open is discharged now rather than deferred a second time.
+
+**`D3.7` and `D3.8` were not assessed against the tree when this phase was drafted, and must be
+before they are enabled.** The paragraph above measures only `D7.4` and `D5.5`. `D3.7` reaches
+every registered `[auto]` check — twelve of them once `D5.5` and `D7.4` are added — and today only
+`D1.1`'s check seeds a probe to prove it can fail. `D3.8` reaches every coverage row for a
+behavioral requirement, and `030`'s and `031`'s records are 100% `deferred` precisely because those
+skills are natural-language workflows with no executable harness, so its true failure surface is
+unmeasured. `D3.4` requires both to be measured before the rules turn on; whichever cannot be
+brought to conformance in the same change must be enabled later rather than tagged optimistically.
 
 **Prerequisite**: None. Independent of Phases 5 through 11.
 
@@ -1308,27 +1356,149 @@ Running either first only adds one more check to Phase 12's back-fill.
 /speckit.specify "I want the completion record that Feature 021 introduced to be enforceable, because today D7.2 is tagged [auto], is named in the Enforcement Map, and has never failed for any feature but the one that created it. Verified 2026-09-10 across Features 022 through 038. First: completion-coverage.test.sh hard-asserts coverage only for feature 021 and its checked-in fixtures; for every other feature it prints a PRE_ENABLE MISSING_COVERAGE line that never reaches the fail variable, and the script exits 0 with twenty-five such lines. Second: nine features completed after D7.2 was ratified have no coverage record at all -- 025, 026, 027, 028, 029, 032, 035, 036 and 037 -- and feature 032, which exists to add coverage records to 030 and 031, has none of its own. Third: three incompatible column schemas are in use, Requirement/Outcome/Evidence in 021, 030 and 031, Requirement/Satisfying-artifact/Evidence in 022, 023, 024, 033 and 034, and a third meaning in 038, so six records put a file path where the parser reads satisfied or deferred and would be rejected if the check ever ran on them. Fourth: the filename is not fixed either, 037 uses requirements-coverage.md and 032 uses test-evidence.md. Fifth: eight of the seventeen features reviewed exist only to correct the previous one, 025 and 026 correcting 024, 028 correcting 027, 029 correcting 028, 032 correcting 030 and 031, 034 correcting 033, 036 correcting 035 and 038 correcting 037, and in every case the corrected feature's own record still reads as fully satisfied. Sixth: specs/036-feature-036 is a placeholder directory whose own spec.md declares the branch 036-strengthen-035-evidence, and specs/033-highway-setup declares 033-highway-setup-orchestration. Add five rules to the Highway Development Constitution at .specify/memory/constitution.md as a MINOR amendment, all Layer 0 because they constrain a coverage record, a test file, a spec.md and a feature directory, none of which ship, and open no new principle. D3.7 in the existing Principle III: a registered [auto] check MUST be able to fail for every artifact in its declared scope, observable as the check declaring its scope and a seeded defect in each in-scope artifact producing a non-zero exit, tagged [auto]; this generalises the probe that D1.1's enforcement entry already seeds to prove it can fail. D3.8 in Principle III: a static document-contract test MUST NOT be recorded as the evidence satisfying a behavioral requirement, observable as each test declaring its instrument class and a coverage row for a runtime-behavior requirement naming a test of the executed-behavior class, tagged [agent-checkable]; this does not outlaw static prose-contract tests, which remain the correct instrument for authoring rules against a SKILL.md, it only forbids counting one as evidence for behavior -- the gap that Features 034, 036 and 038 each rediscovered independently. D7.4 in the existing Principle VII: a coverage record MUST use one declared path and one declared column schema, observable as every completed feature directory holding coverage.md with columns Requirement, Outcome and Evidence and every Outcome being exactly satisfied or deferred, tagged [auto]. D7.5 in Principle VII: a feature that corrects a defect in a completed feature MUST record that defect against the feature that shipped it, observable as the corrected feature's coverage record carrying a superseding entry naming the correcting feature and the requirement it revises, tagged [agent-checkable] because deciding whether one change corrects another's defect is semantic. D5.5 in the existing Principle V: a feature directory name MUST name the feature, observable as the segment after the number equalling the Feature Branch value in that directory's spec.md and not being a placeholder restating the number, tagged [auto]. Amend D5.1's Observable to except the coverage record from its no-diff-under-a-completed-spec-directory rule, because both the back-fill and every D7.5 superseding entry are literally such a diff; the exception covers the coverage record only and permits no edit to any other file in the directory, and D5.2 is untouched. Because enabling D7.4 fails fifteen of the seventeen reviewed features and D5.5 fails two directories, do the retroactive conformance work in the same change that enables the rules, per D3.4: write the nine missing coverage records, normalise the six divergent ones onto the declared schema, rename specs/036-feature-036 to match its declared branch, and reconcile specs/033-highway-setup. Back-filled records must be honest -- where a requirement was in fact corrected by a later feature, its outcome is deferred with the superseding feature named, not satisfied. Convert completion-coverage.test.sh's PRE_ENABLE reporting into assertions and prove D3.7 against it by seeding a defect into each in-scope feature. Do not add any rule requiring every test to be executable, do not add any rule mandating an assessment ritual before a feature, and do not amend the Highway Skills Constitution or the Experience Standard -- no rule in this phase constrains a SKILL.md."
 ```
 
+**Amended after the command was issued** (2026-09-10, from the `/speckit.clarify` and two review
+passes on `specs/039-completion-record-enforcement`). The command text above is left as issued, per
+this repository's append-only spec-record discipline. Six things changed:
+
+- **`D7.4` is enforced from Feature `021` onward here; Features `001`–`020` move to Phase 13.**
+  The clarification first widened the scope to `001` onward. A feasibility review then found the
+  309 historical rows carry a false dilemma that no wording fixes, and that folding them in makes
+  this change large enough that partial completion becomes the likely outcome. Full coverage is
+  still reached — across two features rather than one. Feature `020` is handled here as a named
+  exception, because Phase 10 already identified exactly which of its requirements are unsatisfied.
+- **The outcome vocabulary gains `historical`**, valid only for Features `001`–`020`.
+- **`D3.7` proves one probe per declared artifact *class*,** not per artifact; the literal reading
+  was combinatorially infeasible.
+- **`D3.7`'s proof obligation covers every registered `[auto]` check**, not only the completion
+  check.
+- **`D3.8` and `D3.7` require a pre-enable assessment** against the tree, per `D3.4`. `D3.8`'s
+  coverage-row obligation applies from Feature `021` onward, for the same reason as `D7.4`.
+- **`D5.5` fails four directories, not two**; `001` and `005` carry bracketed branch values.
+
 **Done when**:
 
 - `D3.7`, `D3.8`, `D5.5`, `D7.4` and `D7.5` are in the Development Constitution with Observables and
   tiers, in the existing Principles III, V and VII, recorded as a MINOR amendment in its Sync
   Impact Report. No new principle is opened.
-- `D5.1`'s Observable carries the coverage-record exception, and the loosening is recorded in the
-  same Sync Impact Report. `D5.2` is unchanged.
+- `D7.4`'s Observable admits `satisfied`, `deferred` and `historical`, and bounds `historical` to
+  Features `001`–`020` so new work cannot reach for it.
+- `D3.7`'s Observable requires one seeded probe per declared artifact class, and every registered
+  `[auto]` check — all twelve once `D5.5` and `D7.4` are added — declares its classes and is proved
+  to fail for each, the same failing-then-passing observation `D3.6` requires.
+- `D5.5` and `D7.4` each appear in the Enforcement Map naming the test that decides them, so
+  `constitution-inventory.test.sh` passes.
+- `D5.1`'s Observable carries both the coverage-record exception and the statement that relocating
+  a completed spec directory is not an edit to it, and both loosenings are recorded in the same
+  Sync Impact Report. `D5.2` is unchanged.
 - `completion-coverage.test.sh` no longer emits a `PRE_ENABLE:` line that cannot fail the run: every
-  in-scope feature is asserted, and the check declares its scope.
-- `D3.7` is proved by seeding a defect into each in-scope artifact of every registered `[auto]`
-  check and observing a non-zero exit — the same failing-then-passing observation `D3.6` requires.
-- Every feature directory from `021` onward holds `coverage.md` in the declared schema; no
-  `requirements-coverage.md` or `test-evidence.md` stands in for it.
-- Back-filled records for `025`–`029`, `032`, and `035`–`037` name the correcting feature against
-  each requirement a later feature revised, rather than reporting it `satisfied`.
+  in-scope feature is asserted, and the check declares its scope as Features `021` onward plus
+  Feature `020`, naming Phase 13 as the owner of `001`–`019`.
+- `D3.7` and `D3.8` were each measured against the tree before being enabled, and any rule that
+  could not be brought to conformance in this change is recorded as enabled later rather than
+  tagged optimistically.
+- Every test in the suite declares its instrument class, satisfying the first clause of `D3.8`'s
+  Observable as well as the second.
+- Every completed feature directory from `021` onward, plus `020`, holds `coverage.md` in the
+  declared schema; no `requirements-coverage.md` or `test-evidence.md` stands in for it.
+- Back-filled records name the correcting feature against each requirement a later feature revised,
+  rather than reporting it `satisfied`.
 - Feature 020's coverage record exists and names `FR-002`, `FR-020`, `FR-024`, `FR-027` and
   `FR-032` as deferred, discharging the Phase 10 Done-when that was reported met and was not.
-- `specs/036-feature-036/` no longer exists under a placeholder name, and every feature directory's
-  name matches the `Feature Branch` value in its own `spec.md`.
+- `specs/036-feature-036/` no longer exists under a placeholder name, `001` and `005` no longer
+  carry bracketed branch values, and every feature directory's name matches the `Feature Branch`
+  value in its own `spec.md`.
 - No rule is added requiring a test to be executable rather than static, and no `P` or `X` rule is
   added or amended.
+- `.highway/tools/tests/run-all.sh` exits 0.
+
+**Note added by Feature 041, 2026-09-10 (append-only; the Done-when above is unchanged).** This
+Done-when's "every completed feature directory from `021` onward, plus `020`, holds `coverage.md`
+in the declared schema" clause was not met at the time Phase 12 was reported complete:
+`specs/038-readiness-verification-corrections/coverage.md` used a non-conforming header and carried
+8 rows with no matching requirement id, and `specs/040-historical-coverage-reconstruction/coverage.md`
+did not exist. Feature 041 found both gaps by running the registered check against the tree rather
+than trusting the record, and corrected both records as part of its own User Story 5. See
+`specs/041-auto-check-integrity/research.md` and that feature's `coverage.md` for the evidence.
+
+---
+
+### Phase 13 — Reconstruct the pre-`021` completion record
+
+**Layer**: 0 **Type**: Spec (`specs/040-historical-coverage-reconstruction`)
+
+**Status**: Proposed, 2026-09-10. Gated on Phase 12.
+
+**Goal**: Every completed feature below `021` carries a coverage record too, so `D7.4`'s scope is
+the whole project history rather than the part that happened to be built after the rule existed.
+Phase 12 supplies the schema, the vocabulary and the check; this phase supplies the 309 rows.
+
+**Why this is a separate phase and not the tail of Phase 12.** Two reasons, and the second is the
+one that matters.
+
+The first is size. Features `001`–`019` hold 309 functional requirements — measured, not estimated.
+Folding them into Phase 12 makes one change that touches roughly forty spec directories, twelve
+test files and the constitution. Phase 10 exists because a 54-task feature was reported complete
+while five requirements were unimplemented; asking for a larger one *in the feature that fixes
+that* invites the same outcome.
+
+The second is that the two jobs are different work. Phase 12 writes records for features whose
+artifacts are still present and whose requirements can be checked against them. This phase writes
+records for features whose disposition mostly cannot be re-derived at all. That is not more of the
+same task; it is a different task with a different honest answer, and it needs its own vocabulary
+and its own review.
+
+**The verified state** (2026-09-10):
+
+| | |
+|---|---|
+| Completed features below `021` | 19 (`003` is incomplete and out of scope) |
+| Functional requirements across them | 309 |
+| Coverage records among them | 0 |
+| Whose disposition is independently re-derivable today | Feature `020` only, and Phase 12 handles it |
+
+**The false dilemma this phase exists to resolve.** With only `satisfied` and `deferred`, a
+pre-`021` requirement has no honest home — the argument is recorded in full under Phase 12's
+`D7.4` discussion and is not restated here. Phase 12 adds `historical` to the vocabulary and bounds
+it to Features `001`–`020`. This phase is the only consumer of that outcome, and after it there
+should never be another: the bound is a closed interval, not a policy.
+
+**No new rule, and that is the point.** Phase 12 ratifies `D3.7`, `D3.8`, `D5.5`, `D7.4`, `D7.5`
+and the two `D5.1` exceptions. This phase adds none. It writes records under a schema that already
+exists, widens one check's declared scope from "`021` onward plus `020`" to "`001` onward", and
+stops. A phase that needed a new rule to finish the previous phase's job would be evidence the
+previous phase's rule was wrong.
+
+**The failure mode to design against is a green back-fill.** The temptation is to mark 309 rows
+`satisfied` because the features shipped and the suite is green. That would be the manufactured
+evidence Phase 10 and Phase 12 both exist to eliminate, committed at the largest scale yet in the
+act of completing their work. The rule this phase must hold itself to: a row is `satisfied` only
+when a named artifact can be pointed at *now*; otherwise it is `historical`, and `historical`
+carries no implication that the work was done well — only that the claim is being carried forward
+rather than re-litigated. A predominantly `satisfied` result is a red flag, not a success.
+
+**Prerequisite**: Phase 12 complete. This phase cannot start earlier: the schema, the `historical`
+outcome, and the check whose scope it widens are all Phase 12's.
+
+**Command**:
+
+```text
+/speckit.specify "I want every completed feature below 021 to carry a coverage record, so that D7.4's scope becomes the whole project history rather than only the features built after the rule existed. Feature 039 enforced D7.4 from Feature 021 onward plus Feature 020, added the coverage.md schema with the Requirement, Outcome and Evidence columns, and added a third outcome, historical, valid only for Features 001 through 020. This feature is the only consumer of that outcome and after it there should never be another. Verified 2026-09-10: nineteen completed features sit below 021, Feature 003 is incomplete and out of scope, they hold 309 functional requirements between them, and not one has a coverage record. Write a coverage.md for each of Features 001, 002, 004 through 019 under its existing spec directory, using the schema Feature 039 established, with one row for every functional requirement id declared in that feature's spec.md, no duplicates and no unknown ids. Mark a requirement satisfied only when a named artifact that satisfies it can be pointed at in the tree as it stands today; mark it deferred only when a later feature demonstrably corrected it, naming that feature; and mark it historical in every other case, with evidence naming the completion record the claim is carried forward from. A predominantly satisfied result is a defect in this feature, not a success: manufacturing green rows is the exact failure that Features 021 and 039 exist to prevent, and doing it at this scale while completing their work would be the worst version of it. Do not mark any row satisfied on the strength of the suite being green or the feature having shipped. Then widen completion-coverage.test.sh's declared scope from Features 021 onward plus 020 to Features 001 onward, keep every assertion Feature 039 added, and add an assertion that the historical outcome appears only in Features 001 through 020 so it cannot become an escape hatch for new work. Add no new constitution rule, open no new principle, amend neither the Highway Skills Constitution nor the Experience Standard, and do not edit any completed spec file other than the coverage record that Feature 039's D5.1 exception already permits. Begin and end from a passing .highway/tools/tests/run-all.sh."
+```
+
+**Done when**:
+
+- Every completed feature below `021` holds `coverage.md` in the schema Phase 12 established, with
+  one row per declared requirement id, no duplicate and no unknown id.
+- Every `satisfied` row names an artifact that exists in the tree today; every `deferred` row names
+  the later feature that corrected it; every remaining row is `historical` and names the completion
+  record its claim carries forward from.
+- The proportion of `historical` rows is reported rather than minimised, and no row is `satisfied`
+  on the strength of a green suite or a shipped feature.
+- `completion-coverage.test.sh` declares its scope as Features `001` onward, retains every
+  assertion Phase 12 added, and asserts that `historical` appears only in Features `001`–`020`.
+- No constitution rule is added or amended, no new principle is opened, and neither Layer 1 nor
+  Layer 2 is touched.
+- No completed spec file other than the permitted coverage record is edited.
 - `.highway/tools/tests/run-all.sh` exits 0.
 
 ---

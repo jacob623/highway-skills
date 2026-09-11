@@ -2,6 +2,57 @@
 # Tests .highway/tools/generate-catalog.sh: schema shape, exactly one entry per valid fixture skill,
 # non-zero exit (no partial catalog) on an invalid skill, and determinism on re-run.
 set -u
+# Instrument class: mixed (static-document-contract and executed-behavior)
+# Artifact classes: generated-artifact
+# Seeded failure probe: --probe <class> seeds a defect and observes detection; --probe <class>
+# --neutralise runs the identical path unseeded and requires a clean pass. See the Feature 041
+# probe-mode contract.
+
+probe_class=""
+neutralise=0
+while [[ $# -gt 0 ]]; do
+	case "$1" in
+		--probe) probe_class="${2:-}"; shift 2 ;;
+		--neutralise) neutralise=1; shift ;;
+		*) echo "FAIL: unrecognized argument: $1" >&2; exit 2 ;;
+	esac
+done
+DECLARED_CLASSES=" generated-artifact "
+if [[ -n "$probe_class" ]] && [[ "$DECLARED_CLASSES" != *" $probe_class "* ]]; then
+	echo "FAIL: undeclared artifact class: $probe_class" >&2
+	exit 2
+fi
+
+# Two catalog snapshots agree once the `generated_at` field is excluded (D4.2 determinism).
+# Shared by normal mode, which compares two real generator runs, and probe mode, which compares
+# two seeded snapshots directly.
+catalog_snapshots_match() {
+	[[ "$1" == "$2" ]]
+}
+
+# --- Probe mode: a dedicated CLI path for the D3.7 harness, separate from the end-to-end run below ---
+# Named per declared class (probe_<class, underscored>) so a harness -- or a reviewer -- can point
+# at exactly the function a probe invocation runs.
+probe_generated_artifact() {
+	local before='{"entries":[{"id":"x","version":"1.0.0"}]}'
+	local after
+	if [[ "$neutralise" -eq 0 ]]; then
+		after='{"entries":[{"id":"x","version":"1.0.1"}]}'
+	else
+		after='{"entries":[{"id":"x","version":"1.0.0"}]}'
+	fi
+	if catalog_snapshots_match "$before" "$after"; then
+		return 0
+	else
+		return 1
+	fi
+}
+
+if [[ -n "$probe_class" ]]; then
+	case "$probe_class" in
+		generated-artifact) probe_generated_artifact; exit $? ;;
+	esac
+fi
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
@@ -71,7 +122,7 @@ fi
 before_entries="$(grep -v '"generated_at"' "$CATALOG_JSON")"
 "$GENERATE" >/dev/null 2>&1
 after_entries="$(grep -v '"generated_at"' "$CATALOG_JSON")"
-if [[ "$before_entries" != "$after_entries" ]]; then
+if ! catalog_snapshots_match "$before_entries" "$after_entries"; then
 	echo "FAIL: re-running with unchanged skills/ content produced a different catalog (aside from generated_at)"
 	fail=1
 fi

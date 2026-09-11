@@ -1,5 +1,22 @@
 <!--
 Sync Impact Report
+Version change: 1.5.0 → 1.6.0 (MINOR), 2026-09-10
+Bump rationale: replaces the checkbox-derived "Completed spec" definition with a declared
+completion register, replaces the comment-grep D3.7 harness with an executed probe-mode contract,
+and gives real seeded probes to the checks that previously proved nothing. No shipped artifact
+changes and no new principle is opened.
+Amended term: "Completed spec" now points to `.specify/memory/completion-register.md` instead of
+a directory's own `tasks.md` state, so the checked feature no longer controls its own completion
+scope.
+Amended rule notes: D7.2 and D7.4 now read from the completion register rather than iterating
+`tasks.md` checkboxes; D3.7's note now describes executing each mapped test's declared probe per
+class rather than grepping for a declaration comment.
+Verified before enabling: see specs/041-auto-check-integrity/research.md "Measured baseline" for
+the per-check before/after seeded-probe status this amendment is conditioned on.
+Self-application review: D1.3, D1.4, and D5.3 PASS; this amendment adds no Highway Skills
+Constitution or Experience Standard rule.
+
+Sync Impact Report
 Version change: 1.3.0 → 1.4.0 (MINOR), 2026-09-09
 Bump rationale: Principle VIII and rule D8.1 are added without invalidating conforming work.
 Added rule: D8.1 requires re-validation of every skill citing a changed shared library artifact,
@@ -8,6 +25,24 @@ Verified before enabling: the two current output-template citations are identifi
 are validated against their complete templates.
 Self-application review: D1.3, D1.4, and D5.3 PASS; D8.1 names the dependent review obligation
 without restating P9.1 or X1.5.
+
+Sync Impact Report
+Version change: 1.4.0 → 1.5.0 (MINOR), 2026-09-10
+Bump rationale: D3.7, D3.8, D5.5, D7.4, and D7.5 add completion and verification obligations
+without changing shipped artifacts or opening a new principle.
+Added rules: D3.7 requires every registered automatic check to declare artifact classes and prove
+a seeded failure; D3.8 separates static document-contract evidence from executed behavior; D5.5
+requires feature directory identity; D7.4 fixes the coverage path/schema/outcome vocabulary; D7.5
+requires corrective provenance.
+Amended D5.1's Observable with two narrow exceptions: `coverage.md` may be updated for retroactive
+accounting, and relocating a completed spec directory is not an edit when file contents remain
+unchanged. No other completed-spec file is exempt, and D5.2 is unchanged.
+Verified before enabling: the completion and identity checks pass the reconciled tree; every test
+declares instrument and artifact classes; seeded mismatch, placeholder, and coverage failures are
+observed before the final rules are enabled. Features 001-019 remain Feature 040's historical
+coverage scope; `historical` is bounded to Features 001-020.
+Self-application review: D1.3, D1.4, and D5.3 PASS; this amendment adds no Highway Skills
+Constitution or Experience Standard rule.
 
 Previous amendment:
 Version change: none → 1.0.0 (initial ratification); amended 1.0.0 → 1.1.0, 1.1.0 → 1.2.0,
@@ -218,7 +253,7 @@ Highway Skills Constitution.
 | **Development artifact** | Any file excluded from the packaged distribution: `.specify/`, `specs/`, and the `speckit-*` agent skills. |
 | **Generated artifact** | A file produced by a script under `.highway/tools/` and recorded in a manifest. |
 | **Live documentation** | A document that describes current behavior: tool READMEs, the authoring standard, the root README. |
-| **Completed spec** | A spec directory whose feature has been implemented and whose tasks are all marked complete. |
+| **Completed spec** | A spec directory whose `Feature` entry in `.specify/memory/completion-register.md` is recorded `complete`. That record is the only place completion status is stated; no other file, including the directory's own `tasks.md`, determines it. |
 | **Behavioral change** | A change that alters the output, exit code, or accepted input of any script or skill. |
 | **Verdict** | One of exactly three tokens: PASS, FAIL, N/A. |
 
@@ -262,7 +297,10 @@ table cannot silently go stale.
 | D4.6 | adapter-coverage.test.sh | Asserts no catalog entry, adapter file, adapter manifest row, or distribution manifest row names a skill with no source directory |
 | D4.7 | adapter-coverage.test.sh | Regenerates into a temporary tree and asserts no diff against the committed artifacts, excepting the recorded generation timestamp |
 | D5.4 | spec-record.test.sh | Asserts feature directory numbers are contiguous from 001 with no gap and no duplicate |
-| D7.2 | completion-coverage.test.sh | Compares every requirement id in a completed feature spec with exactly one coverage entry |
+| D5.5 | spec-record.test.sh | Compares each directory basename with its `Feature Branch` declaration and rejects placeholders |
+| D7.2 | completion-coverage.test.sh | Compares every requirement id in a completed feature spec with exactly one coverage entry, for every feature the completion register records `complete` |
+| D7.4 | completion-coverage.test.sh | Enforces `coverage.md`, the canonical headers, and the bounded outcome vocabulary for every feature the completion register records `complete` |
+| D3.7 | constitution-inventory.test.sh | Executes each mapped test's declared probe per artifact class and requires a non-zero exit; requires a zero exit when the same probe is invoked neutralised |
 
 ## Core Principles
 
@@ -314,6 +352,8 @@ is the worked example.
 | D3.4 | A new validation check MUST be evaluated against every existing fixture before it is enabled. | Each fixture's expected verdict under the new check is recorded before the check is wired in. | [agent-checkable] |
 | D3.5 | A test MUST NOT be weakened to accommodate a change. | No assertion is removed or loosened without a recorded reason naming the superseded behavior. | [human-review] |
 | D3.6 | A test MUST be observed failing for the behavior it claims to cover before that behavior is marked complete. | The failing run and its message are recorded before the implementation that makes it pass. | [agent-checkable] |
+| D3.7 | A registered `[auto]` check MUST be able to fail for every class of artifact in its declared scope. | The check declares its scope as artifact classes, and a seeded defect in one artifact of each class produces a non-zero exit. | [auto] |
+| D3.8 | A static document-contract test MUST NOT be recorded as the evidence satisfying a behavioral requirement. | Each test declares its instrument class; runtime-behavior coverage names executed-behavior evidence separately. | [agent-checkable] |
 
 Rationale: D3.4 exists because an unconditional new check silently changes the verdict of every
 artifact already in the repository.
@@ -325,6 +365,8 @@ artifact already in the repository.
 | D7.1 | A task MUST NOT be marked complete unless the artifact it names contains the change it describes. | Each `[X]` task's named path exists and contains the described change. | [agent-checkable] |
 | D7.2 | A completed feature MUST record a requirement-coverage mapping. | Every requirement id in `spec.md` appears exactly once in the feature's coverage record, against a satisfying artifact or a stated deferral. | [auto] |
 | D7.3 | A completion report MUST state requirement coverage separately from check results. | The report makes the suite result and the requirement coverage two distinct claims. | [agent-checkable] |
+| D7.4 | A coverage record MUST use one declared path and one declared column schema. | Every in-scope completed feature holds `coverage.md` with `Requirement`, `Outcome`, and `Evidence`, and each outcome is `satisfied`, `deferred`, or bounded `historical`. | [auto] |
+| D7.5 | A feature that corrects a defect in a completed feature MUST record that defect against the feature that shipped it. | Corrective coverage names the originating feature, revised requirement, and superseding feature. | [agent-checkable] |
 
 Rationale: Completion records are claims about work, not substitutes for the work. D7.2 is
 mechanically decidable by comparing requirement-id sets; D7.1 and D7.3 require semantic review.
@@ -367,10 +409,11 @@ Trees created by test fixtures are not declared agent trees.
 
 | ID | Rule | Observable | Tier |
 |---|---|---|---|
-| D5.1 | A completed spec directory MUST NOT be edited. | No diff appears under a completed spec directory. | [agent-checkable] |
+| D5.1 | A completed spec directory MUST NOT be edited. | No diff appears under a completed spec directory, except that `coverage.md` may be updated for retroactive accounting and relocating the directory is not an edit when file contents remain unchanged. | [agent-checkable] |
 | D5.2 | A correction to a completed spec MUST ship as a new spec. | The new spec exists under its own numbered directory. | [agent-checkable] |
 | D5.3 | A superseding document MUST name every element it changes. | Each changed field is listed; unlisted elements carry forward unchanged. | [agent-checkable] |
 | D5.4 | A feature directory number MUST be sequential. | The number is one greater than the highest existing directory number. | [auto] |
+| D5.5 | A feature directory name MUST name the feature. | The segment after the number equals the `Feature Branch` value in that directory's `spec.md`, and is not a placeholder. | [auto] |
 
 Rationale: The spec record is an append-only history; editing it destroys the ability to
 reconstruct why a decision was made.
@@ -453,4 +496,4 @@ Highway Skills Constitution prevails for artifact content and this document prev
 This document is subject to D1.3, D1.4, and D5.3. Every amendment records a review against those
 rule IDs.
 
-**Version**: 1.4.0 | **Ratified**: 2026-09-08 | **Last Amended**: 2026-09-09
+**Version**: 1.6.0 | **Ratified**: 2026-09-08 | **Last Amended**: 2026-09-10
