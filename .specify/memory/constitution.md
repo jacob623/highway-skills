@@ -1,5 +1,32 @@
 <!--
 Sync Impact Report
+Version change: 1.6.0 → 2.0.0 (MAJOR), 2026-09-11
+Bump rationale: Principle V (Specification Record Integrity) and Principle VII (Completion
+Integrity) are removed. Per this document's own Versioning Policy, removing a principle is a
+MAJOR change.
+Removed rules: D5.1, D5.2, D5.4, D5.5, D7.1, D7.2, D7.4, D7.5 (8 rules: 4 [auto], 4
+[agent-checkable]).
+Relocated rules (ids unchanged, moved into Principle III "Verification Before and After"; Rule
+and Observable text byte-identical): D5.3, D7.3.
+Removed sections: "V. Specification Record Integrity" and "VII. Completion Integrity", including
+their rationale paragraphs.
+Removed Enforcement Map rows: D5.4, D5.5, D7.2, D7.4 (13 rows → 9 rows).
+Also removed, found while implementing (not itemized in the removal-inventory contract): the
+"Completed spec" Definitions row (its only referent, the completion register, is no longer read
+by any rule); Principle Precedence ranks 5 (V) and 7 (VII), with rank 6 (VI) renumbered to 5; the
+"Spec Record Gate" Quality Gate row (its rules D5.1, D5.2, D5.4 are gone and D5.3 relocated).
+New rule count: 30 (was 38). Tier counts after removal: [auto] and [agent-checkable] each −4;
+[human-review] unchanged (D3.5 is the only [human-review] rule and is untouched).
+Reason: the `specs/` tree and the completion register it governed left the scope this document
+governs; the removed rules are not judged weak, slow, or inconvenient. See
+specs/044-spec-governance-removal/research.md §2.4 for the recorded human sign-off.
+Verified before enabling: specs/044-spec-governance-removal/contracts/removal-inventory.md names
+every changed element; `grep` for the eight removed ids across `.highway/` found no shipped
+artifact citing them.
+Self-application review: D1.3, D1.4, and D5.3 PASS; D5.3 itself survives relocation and this
+amendment names every element it changes, per the removal-inventory contract.
+
+Sync Impact Report
 Version change: 1.5.0 → 1.6.0 (MINOR), 2026-09-10
 Bump rationale: replaces the checkbox-derived "Completed spec" definition with a declared
 completion register, replaces the comment-grep D3.7 harness with an executed probe-mode contract,
@@ -253,7 +280,6 @@ Highway Skills Constitution.
 | **Development artifact** | Any file excluded from the packaged distribution: `.specify/`, `specs/`, and the `speckit-*` agent skills. |
 | **Generated artifact** | A file produced by a script under `.highway/tools/` and recorded in a manifest. |
 | **Live documentation** | A document that describes current behavior: tool READMEs, the authoring standard, the root README. |
-| **Completed spec** | A spec directory whose `Feature` entry in `.specify/memory/completion-register.md` is recorded `complete`. That record is the only place completion status is stated; no other file, including the directory's own `tasks.md`, determines it. |
 | **Behavioral change** | A change that alters the output, exit code, or accepted input of any script or skill. |
 | **Verdict** | One of exactly three tokens: PASS, FAIL, N/A. |
 
@@ -296,10 +322,6 @@ table cannot silently go stale.
 | D4.5 | adapter-coverage.test.sh | Asserts every skill present has a catalog entry, an adapter in each declared agent tree, an adapter manifest row for each adapter, and an included distribution manifest row for each adapter |
 | D4.6 | adapter-coverage.test.sh | Asserts no catalog entry, adapter file, adapter manifest row, or distribution manifest row names a skill with no source directory |
 | D4.7 | adapter-coverage.test.sh | Regenerates into a temporary tree and asserts no diff against the committed artifacts, excepting the recorded generation timestamp |
-| D5.4 | spec-record.test.sh | Asserts feature directory numbers are contiguous from 001 with no gap and no duplicate |
-| D5.5 | spec-record.test.sh | Compares each directory basename with its `Feature Branch` declaration and rejects placeholders |
-| D7.2 | completion-coverage.test.sh | Compares every requirement id in a completed feature spec with exactly one coverage entry, for every feature the completion register records `complete` |
-| D7.4 | completion-coverage.test.sh | Enforces `coverage.md`, the canonical headers, and the bounded outcome vocabulary for every feature the completion register records `complete` |
 | D3.7 | constitution-inventory.test.sh | Executes each mapped test's declared probe per artifact class and requires a non-zero exit; requires a zero exit when the same probe is invoked neutralised |
 
 ## Core Principles
@@ -354,22 +376,11 @@ is the worked example.
 | D3.6 | A test MUST be observed failing for the behavior it claims to cover before that behavior is marked complete. | The failing run and its message are recorded before the implementation that makes it pass. | [agent-checkable] |
 | D3.7 | A registered `[auto]` check MUST be able to fail for every class of artifact in its declared scope. | The check declares its scope as artifact classes, and a seeded defect in one artifact of each class produces a non-zero exit. | [auto] |
 | D3.8 | A static document-contract test MUST NOT be recorded as the evidence satisfying a behavioral requirement. | Each test declares its instrument class; runtime-behavior coverage names executed-behavior evidence separately. | [agent-checkable] |
+| D5.3 | A superseding document MUST name every element it changes. | Each changed field is listed; unlisted elements carry forward unchanged. | [agent-checkable] |
+| D7.3 | A completion report MUST state requirement coverage separately from check results. | The report makes the suite result and the requirement coverage two distinct claims. | [agent-checkable] |
 
 Rationale: D3.4 exists because an unconditional new check silently changes the verdict of every
 artifact already in the repository.
-
-### VII. Completion Integrity
-
-| ID | Rule | Observable | Tier |
-|---|---|---|---|
-| D7.1 | A task MUST NOT be marked complete unless the artifact it names contains the change it describes. | Each `[X]` task's named path exists and contains the described change. | [agent-checkable] |
-| D7.2 | A completed feature MUST record a requirement-coverage mapping. | Every requirement id in `spec.md` appears exactly once in the feature's coverage record, against a satisfying artifact or a stated deferral. | [auto] |
-| D7.3 | A completion report MUST state requirement coverage separately from check results. | The report makes the suite result and the requirement coverage two distinct claims. | [agent-checkable] |
-| D7.4 | A coverage record MUST use one declared path and one declared column schema. | Every in-scope completed feature holds `coverage.md` with `Requirement`, `Outcome`, and `Evidence`, and each outcome is `satisfied`, `deferred`, or bounded `historical`. | [auto] |
-| D7.5 | A feature that corrects a defect in a completed feature MUST record that defect against the feature that shipped it. | Corrective coverage names the originating feature, revised requirement, and superseding feature. | [agent-checkable] |
-
-Rationale: Completion records are claims about work, not substitutes for the work. D7.2 is
-mechanically decidable by comparing requirement-id sets; D7.1 and D7.3 require semantic review.
 
 ### IV. Generated Artifact Integrity
 
@@ -405,19 +416,6 @@ committed artifact to compare against.
 **Declared agent trees** (referenced by D4.5 and D4.6): `github-copilot`, `claude-code`, `cursor`.
 Trees created by test fixtures are not declared agent trees.
 
-### V. Specification Record Integrity
-
-| ID | Rule | Observable | Tier |
-|---|---|---|---|
-| D5.1 | A completed spec directory MUST NOT be edited. | No diff appears under a completed spec directory, except that `coverage.md` may be updated for retroactive accounting and relocating the directory is not an edit when file contents remain unchanged. | [agent-checkable] |
-| D5.2 | A correction to a completed spec MUST ship as a new spec. | The new spec exists under its own numbered directory. | [agent-checkable] |
-| D5.3 | A superseding document MUST name every element it changes. | Each changed field is listed; unlisted elements carry forward unchanged. | [agent-checkable] |
-| D5.4 | A feature directory number MUST be sequential. | The number is one greater than the highest existing directory number. | [auto] |
-| D5.5 | A feature directory name MUST name the feature. | The segment after the number equals the `Feature Branch` value in that directory's `spec.md`, and is not a placeholder. | [auto] |
-
-Rationale: The spec record is an append-only history; editing it destroys the ability to
-reconstruct why a decision was made.
-
 ### VI. Documentation Currency
 
 | ID | Rule | Observable | Tier |
@@ -447,9 +445,7 @@ When two rules conflict, the higher-ranked principle prevails. The ordering is t
 | 2 | II. Environment and Dependency Discipline | A violation prevents execution on the target platform. |
 | 3 | III. Verification Before and After | Detects violations of every other principle. |
 | 4 | IV. Generated Artifact Integrity | Affects the product surface but is detectable by regeneration. |
-| 5 | V. Specification Record Integrity | Affects history rather than current correctness. |
-| 6 | VI. Documentation Currency | Affects comprehension rather than behavior. |
-| 7 | VII. Completion Integrity | Prevents unsupported completion claims from becoming project history. |
+| 5 | VI. Documentation Currency | Affects comprehension rather than behavior. |
 
 **Tie-break within one principle**: a MUST NOT rule prevails over a MUST rule; if unresolved, the
 lower rule number prevails.
@@ -465,7 +461,6 @@ A gate applies only when its trigger evaluates true. A gate whose trigger is fal
 | **Generator Gate** | The change touches a `generate-*.sh` script. | D4.1–D4.4 |
 | **Correspondence Gate** | The change adds, removes, or modifies a directory under `.highway/skills/`, or any other input to a declared generator. | D4.5–D4.7 |
 | **Validation Gate** | The change adds or modifies a validation check. | D3.4, D3.5 |
-| **Spec Record Gate** | The change touches a directory under `specs/`. | D5.1–D5.4 |
 | **Skill Content Gate** | The change creates or modifies a file under `.highway/skills/` or `.highway/library/`. | Delegated to the Highway Skills Constitution per D1.5 |
 
 ## Constitution Check Output Shape
@@ -496,4 +491,4 @@ Highway Skills Constitution prevails for artifact content and this document prev
 This document is subject to D1.3, D1.4, and D5.3. Every amendment records a review against those
 rule IDs.
 
-**Version**: 1.6.0 | **Ratified**: 2026-09-08 | **Last Amended**: 2026-09-10
+**Version**: 2.0.0 | **Ratified**: 2026-09-08 | **Last Amended**: 2026-09-11

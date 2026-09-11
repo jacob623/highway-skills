@@ -19,8 +19,10 @@ set -u
 # Instrument class: mixed (static-document-contract and executed-behavior)
 # Artifact classes: source-document, generated-artifact
 # Seeded failure probe: --probe <class> seeds a defect and observes detection; --probe <class>
-# --neutralise runs the identical path unseeded and requires a clean pass. See the Feature 041
-# probe-mode contract.
+# --neutralise runs the identical path unseeded and requires a clean pass. The generated-artifact
+# leg seeds each D4.5 and D4.6 defect on its own and requires each to be reported, so removing any
+# one check makes the leg exit 0. See the Feature 042 probe-mode contract, which supersedes
+# Feature 041's.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
@@ -108,6 +110,64 @@ check_skill_correspondence() {
 	return $ok
 }
 
+# D4.6 in the opposite direction: no generated artifact names a skill that is gone. Echoes FAIL
+# lines and returns non-zero if any orphan is found. A function rather than inline normal-mode
+# code so that probe mode can reach it: while these four loops lived only in the normal-mode body,
+# no declared class exercised them and all four could be deleted with the suite still green.
+#
+# Adapter directories are not scanned wholesale: the agent trees also hold skills this repository
+# does not generate, and flagging those as orphans would be wrong. The manifests record what the
+# generator produced, so they are the authority on which adapters are ours.
+orphan_problems() {
+	local ok=0 id row_id path rel
+
+	while IFS= read -r id; do
+		[[ -n "$id" ]] || continue
+		if ! skill_exists "$id"; then
+			echo "FAIL: catalog entry '$id' names a skill with no directory under skills/"
+			ok=1
+		fi
+	done < <(catalog_ids)
+
+	while IFS= read -r row_id; do
+		[[ -n "$row_id" ]] || continue
+		if ! skill_exists "$row_id"; then
+			echo "FAIL: adapter manifest row names skill '$row_id', which has no directory under skills/"
+			ok=1
+		fi
+	done < <(awk 'NF {print $2}' "$ADAPTER_MANIFEST" | sort -u)
+
+	while IFS= read -r path; do
+		[[ -n "$path" ]] || continue
+		case "$path" in
+			.github/skills/*) row_id="${path#.github/skills/}" ;;
+			.claude/skills/*) row_id="${path#.claude/skills/}" ;;
+			.cursor/rules/*.mdc) row_id="${path#.cursor/rules/}"; row_id="${row_id%.mdc}" ;;
+			*) continue ;;
+		esac
+		row_id="${row_id%%/*}"
+		if ! skill_exists "$row_id"; then
+			echo "FAIL: distribution manifest row $path names a skill with no directory under skills/"
+			ok=1
+		fi
+	done < <(awk 'NF && $1 == "include" {print $2}' "$DIST_MANIFEST")
+
+	# Every adapter file the manifest claims must still be on disk, or a skill is half-removed.
+	while IFS= read -r rel; do
+		[[ -n "$rel" ]] || continue
+		case "$rel" in
+			.github/*|.claude/*|.cursor/*) ;;
+			*) continue ;;  # fixture agent trees are not declared agent trees
+		esac
+		if [[ ! -f "$REPO_ROOT/$rel" ]]; then
+			echo "FAIL: adapter manifest names $rel, which is not on disk"
+			ok=1
+		fi
+	done < <(awk 'NF {print $1}' "$ADAPTER_MANIFEST")
+
+	return $ok
+}
+
 # A recorded generation timestamp differs on every run; D4.2's Observable excepts it, and D4.7
 # inherits that exception.
 strip_timestamp() {
@@ -140,25 +200,83 @@ if [[ -n "$probe_class" ]]; then
 			cp "$DIST_MANIFEST" "$backup_dir/dist-manifest"
 			GH_FILE="$REPO_ROOT/.github/skills/$SKILL_ID/SKILL.md"
 			cp "$GH_FILE" "$backup_dir/gh-skill.md"
-			restore_probe() {
+			# Returns all four artifacts to their recorded state, so each defect below is the
+			# only one present when its check runs.
+			reset_seeds() {
 				cp "$backup_dir/catalog.json" "$CATALOG"
 				cp "$backup_dir/adapter-manifest" "$ADAPTER_MANIFEST"
 				cp "$backup_dir/dist-manifest" "$DIST_MANIFEST"
+				mkdir -p "$(dirname "$GH_FILE")"
 				cp "$backup_dir/gh-skill.md" "$GH_FILE"
+			}
+			restore_probe() {
+				reset_seeds
+				rm -f "$CATALOG.probe-$$" "$ADAPTER_MANIFEST.probe-$$" "$DIST_MANIFEST.probe-$$"
 				rm -rf "$backup_dir"
 			}
 			trap restore_probe EXIT
-			if [[ "$neutralise" -eq 0 ]]; then
-				grep -v "\"id\": \"$SKILL_ID\"" "$CATALOG" >"$CATALOG.probe-$$" && mv "$CATALOG.probe-$$" "$CATALOG"
-				rm -f "$GH_FILE"
-				grep -vF ".github/skills/$SKILL_ID/SKILL.md" "$ADAPTER_MANIFEST" >"$ADAPTER_MANIFEST.probe-$$" && mv "$ADAPTER_MANIFEST.probe-$$" "$ADAPTER_MANIFEST"
-				grep -vF ".github/skills/$SKILL_ID" "$DIST_MANIFEST" >"$DIST_MANIFEST.probe-$$" && mv "$DIST_MANIFEST.probe-$$" "$DIST_MANIFEST"
-			fi
-			if check_skill_correspondence "$SKILL_ID" >/dev/null 2>&1; then
-				exit 0
-			else
+			if [[ "$neutralise" -eq 1 ]]; then
+				if check_skill_correspondence "$SKILL_ID" >/dev/null 2>&1 \
+					&& orphan_problems >/dev/null 2>&1; then
+					exit 0
+				fi
 				exit 1
 			fi
+			# Eight defects, seeded and decided one at a time. Seeding them together -- which is
+			# what this leg did before Feature 042 -- let any single check be deleted with the
+			# leg still failing on the other seven, which is how D4.5 and D4.6 came to be mapped
+			# without being reached. undetected=1 means some check stopped reporting, and the leg
+			# then exits 0 so the harness announces it.
+			undetected=0
+			GHOST="probe-ghost-$$"
+
+			# D4.5: the catalog has no entry for a skill that is present.
+			reset_seeds
+			grep -v "\"id\": \"$SKILL_ID\"" "$CATALOG" >"$CATALOG.probe-$$" && mv "$CATALOG.probe-$$" "$CATALOG"
+			check_skill_correspondence "$SKILL_ID" >/dev/null 2>&1 && undetected=1
+
+			# D4.5: an adapter file is missing.
+			reset_seeds
+			rm -f "$GH_FILE"
+			check_skill_correspondence "$SKILL_ID" >/dev/null 2>&1 && undetected=1
+
+			# D4.5: the distribution manifest would not ship an adapter, so the skill reaches
+			# nobody.
+			reset_seeds
+			grep -vF ".github/skills/$SKILL_ID" "$DIST_MANIFEST" >"$DIST_MANIFEST.probe-$$" && mv "$DIST_MANIFEST.probe-$$" "$DIST_MANIFEST"
+			check_skill_correspondence "$SKILL_ID" >/dev/null 2>&1 && undetected=1
+
+			# D4.5: an adapter has no manifest row, so the generator has no hash to refuse on.
+			reset_seeds
+			grep -vF ".github/skills/$SKILL_ID/SKILL.md" "$ADAPTER_MANIFEST" >"$ADAPTER_MANIFEST.probe-$$" && mv "$ADAPTER_MANIFEST.probe-$$" "$ADAPTER_MANIFEST"
+			check_skill_correspondence "$SKILL_ID" >/dev/null 2>&1 && undetected=1
+
+			# D4.6: a catalog entry names a skill with no directory.
+			reset_seeds
+			sed "s/\"id\": \"$SKILL_ID\"/\"id\": \"$GHOST\"/" "$backup_dir/catalog.json" >"$CATALOG"
+			orphan_problems >/dev/null 2>&1 && undetected=1
+
+			# D4.6: an adapter manifest row names a skill with no directory. The path named is on
+			# disk, so only the orphan-skill check can report this one.
+			reset_seeds
+			printf '%s %s\n' ".github/skills/$SKILL_ID/SKILL.md" "$GHOST" >>"$ADAPTER_MANIFEST"
+			orphan_problems >/dev/null 2>&1 && undetected=1
+
+			# D4.6: a distribution manifest row names a skill with no directory.
+			reset_seeds
+			printf 'include %s\n' ".github/skills/$GHOST/SKILL.md" >>"$DIST_MANIFEST"
+			orphan_problems >/dev/null 2>&1 && undetected=1
+
+			# D4.6: an adapter the manifest claims is not on disk.
+			reset_seeds
+			rm -f "$GH_FILE"
+			orphan_problems >/dev/null 2>&1 && undetected=1
+
+			reset_seeds
+			if [[ "$undetected" -eq 0 ]]; then
+				exit 1
+			fi
+			exit 0
 			;;
 		source-document)
 			SRC_FILE="$HIGHWAY_ROOT/skills/$SKILL_ID/SKILL.md"
@@ -212,55 +330,10 @@ if [[ "$skill_count" -eq 0 ]]; then
 fi
 
 # ---------------------------------------------------------------------------
-# D4.6 -- no generated artifact names a skill that is gone.
-#
-# Adapter directories are not scanned wholesale: the agent trees also hold skills this repository
-# does not generate, and flagging those as orphans would be wrong. The manifests record what the
-# generator produced, so they are the authority on which adapters are ours.
+# D4.6 -- no generated artifact names a skill that is gone. The checks themselves live in
+# orphan_problems above, so probe mode decides them through the same code this line does.
 # ---------------------------------------------------------------------------
-while IFS= read -r id; do
-	[[ -n "$id" ]] || continue
-	if ! skill_exists "$id"; then
-		echo "FAIL: catalog entry '$id' names a skill with no directory under skills/"
-		fail=1
-	fi
-done < <(catalog_ids)
-
-while IFS= read -r row_id; do
-	[[ -n "$row_id" ]] || continue
-	if ! skill_exists "$row_id"; then
-		echo "FAIL: adapter manifest row names skill '$row_id', which has no directory under skills/"
-		fail=1
-	fi
-done < <(awk 'NF {print $2}' "$ADAPTER_MANIFEST" | sort -u)
-
-while IFS= read -r path; do
-	[[ -n "$path" ]] || continue
-	case "$path" in
-		.github/skills/*) row_id="${path#.github/skills/}" ;;
-		.claude/skills/*) row_id="${path#.claude/skills/}" ;;
-		.cursor/rules/*.mdc) row_id="${path#.cursor/rules/}"; row_id="${row_id%.mdc}" ;;
-		*) continue ;;
-	esac
-	row_id="${row_id%%/*}"
-	if ! skill_exists "$row_id"; then
-		echo "FAIL: distribution manifest row $path names a skill with no directory under skills/"
-		fail=1
-	fi
-done < <(awk 'NF && $1 == "include" {print $2}' "$DIST_MANIFEST")
-
-# Every adapter file the manifest claims must still be on disk, or a skill is half-removed.
-while IFS= read -r rel; do
-	[[ -n "$rel" ]] || continue
-	case "$rel" in
-		.github/*|.claude/*|.cursor/*) ;;
-		*) continue ;;  # fixture agent trees are not declared agent trees
-	esac
-	if [[ ! -f "$REPO_ROOT/$rel" ]]; then
-		echo "FAIL: adapter manifest names $rel, which is not on disk"
-		fail=1
-	fi
-done < <(awk 'NF {print $1}' "$ADAPTER_MANIFEST")
+orphan_problems || fail=1
 
 # ---------------------------------------------------------------------------
 # D4.7 -- the generated artifacts match what the current sources would produce.

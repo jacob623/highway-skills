@@ -97,10 +97,16 @@ harness_run() {
 # the harness loop's own row for D3.7 would invoke this file with --probe and recurse without
 # bound; the recursive invocation instead takes this branch and exits immediately. ---
 #
-# Seeds by breaking a real mapped test's declared probe so it always fails -- the same defect
-# Scenario 6 seeds by hand -- and requires harness_probe_pair (the same function the harness loop
-# below uses) to catch it. This is a source-document probe: the artifact perturbed is another
-# test's own source file, not a copy.
+# Seeds by breaking a real mapped test's declared probe and requires harness_probe_pair (the same
+# function the harness loop below uses) to catch it. This is a source-document probe: the artifact
+# perturbed is another test's own source file, not a copy.
+#
+# harness_probe_pair has three ways of reporting, and a leg that seeds only one defect proves only
+# the branch that defect happens to reach. Until Feature 042 this leg seeded a probe that always
+# fails, which reaches the neutral_exit branch; the seeded_exit branch -- the one that catches a
+# probe unable to detect its own seeded defect, which is the whole point of D3.7 -- could be
+# deleted with this suite still reporting green. Each branch is now seeded separately and all
+# three must report, so removing any one of them makes this leg exit 0.
 if [[ -n "$probe_class" ]]; then
 	case "$probe_class" in
 		source-document)
@@ -108,15 +114,26 @@ if [[ -n "$probe_class" ]]; then
 			BACKUP="$(mktemp)"
 			cp "$TARGET" "$BACKUP"
 			trap 'cp "$BACKUP" "$TARGET"; rm -f "$BACKUP"' EXIT
-			if [[ "$neutralise" -eq 0 ]]; then
-				sed -i.bak 's/^probe_generated_artifact() {/probe_generated_artifact() { return 1;/' "$TARGET"
-				rm -f "$TARGET.bak"
-			fi
-			if harness_probe_pair "D4.2" "generate-catalog.test.sh" "generated-artifact" >/dev/null 2>&1; then
-				exit 0
-			else
+			if [[ "$neutralise" -eq 1 ]]; then
+				if harness_probe_pair "D4.2" "generate-catalog.test.sh" "generated-artifact" >/dev/null 2>&1; then
+					exit 0
+				fi
 				exit 1
 			fi
+			undetected=0
+			# A probe that cannot fail on its own seeded defect. Only the seeded_exit branch reports this.
+			sed 's/^probe_generated_artifact() {/probe_generated_artifact() { return 0;/' "$BACKUP" >"$TARGET"
+			harness_probe_pair "D4.2" "generate-catalog.test.sh" "generated-artifact" >/dev/null 2>&1 && undetected=1
+			# A probe that fails with nothing seeded. Only the neutral_exit branch reports this.
+			sed 's/^probe_generated_artifact() {/probe_generated_artifact() { return 1;/' "$BACKUP" >"$TARGET"
+			harness_probe_pair "D4.2" "generate-catalog.test.sh" "generated-artifact" >/dev/null 2>&1 && undetected=1
+			# A class the test does not declare. Only the exit-2 branch reports this.
+			cp "$BACKUP" "$TARGET"
+			harness_probe_pair "D4.2" "generate-catalog.test.sh" "undeclared-probe-class-$$" >/dev/null 2>&1 && undetected=1
+			if [[ "$undetected" -eq 0 ]]; then
+				exit 1
+			fi
+			exit 0
 			;;
 	esac
 fi
@@ -313,6 +330,48 @@ if [[ -f "$DEV_CONSTITUTION" ]]; then
 			fail=1
 		fi
 	done < <(printf '%s\n' "$dev_map")
+
+	# harness_probe_pair is what D3.7 reduces to, and it cannot prove all of itself through the
+	# probe channel. A probe leg reports a defect by exiting 0, and it is harness_probe_pair's own
+	# seeded_exit branch that turns that exit 0 into a failure -- so removing that branch silences
+	# the very report that would have announced its absence. Measured in Feature 042: with the
+	# seeded_exit branch deleted the whole suite still exited 0. Each of the three reports is
+	# therefore asserted here, in normal mode, on the same function the harness loop below calls.
+	pair_target="$SCRIPT_DIR/generate-catalog.test.sh"
+	pair_backup="$(mktemp)"
+	cp "$pair_target" "$pair_backup"
+	trap 'cp "$pair_backup" "$pair_target" 2>/dev/null; rm -f "$pair_backup"' EXIT
+	# Perturbs a real mapped test's probe in place, requires harness_probe_pair to object *and to
+	# say which of the three things went wrong*, and restores before returning. The message is
+	# asserted, not just the return code: with the exit-2 branch deleted an undeclared class still
+	# reaches the neutral_exit branch, so return code alone leaves that branch unproved -- measured
+	# in Feature 042.
+	pair_case() {
+		local label="$1" injection="$2" class="$3" needle="$4" out=""
+		if [[ -n "$injection" ]]; then
+			sed "s/^probe_generated_artifact() {/probe_generated_artifact() { $injection/" \
+				"$pair_backup" >"$pair_target"
+		fi
+		out="$(harness_probe_pair "D4.2" "generate-catalog.test.sh" "$class" 2>&1)" && out=""
+		cp "$pair_backup" "$pair_target"
+		if [[ "$out" != *"$needle"* ]]; then
+			echo "FAIL: harness_probe_pair did not report $label"
+			fail=1
+		fi
+	}
+	pair_case "a probe that cannot fail on its own seeded defect" "return 0;" "generated-artifact" \
+		"did not fail on a seeded defect"
+	pair_case "a probe that fails with nothing seeded" "return 1;" "generated-artifact" \
+		"fails without a seeded defect"
+	pair_case "a class the test does not declare" "" "undeclared-probe-class-$$" \
+		"probes a class it does not declare"
+	if ! harness_probe_pair "D4.2" "generate-catalog.test.sh" "generated-artifact" >/dev/null 2>&1; then
+		echo "FAIL: harness_probe_pair objected to an unperturbed probe"
+		fail=1
+	fi
+	cp "$pair_backup" "$pair_target"
+	rm -f "$pair_backup"
+	trap - EXIT
 
 	# Executes each mapped test's declared probe, per artifact class, and requires the seeded and
 	# neutralised exits the probe-mode contract demands. This is D3.7 itself: a registered [auto]
