@@ -9,6 +9,9 @@
 # Scope is also deliberately whole-tree. The previous check enumerated four documents and so
 # never looked at the test fixtures, which carried stale paths for two features.
 set -u
+# Instrument class: mixed (static-document-contract and executed-behavior)
+# Artifact classes: source-document, generated-artifact, disposable-fixture
+# Seeded failure probe: this test must detect a defect in each declared class and clean its probe.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"

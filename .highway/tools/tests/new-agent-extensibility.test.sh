@@ -2,6 +2,9 @@
 # Tests that adding a 4th agent requires only a new row in generate-agent-adapters.sh's
 # declarative config table, with zero edits to skills/ (FR-004, SC-002).
 set -u
+# Instrument class: mixed (static-document-contract and executed-behavior)
+# Artifact classes: source-document, generated-artifact, disposable-fixture
+# Seeded failure probe: this test must detect a defect in each declared class and clean its probe.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # HIGHWAY_ROOT (.highway/) holds the generator + skill sources; REPO_ROOT (one level up) is

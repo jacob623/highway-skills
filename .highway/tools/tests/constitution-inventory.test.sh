@@ -1,10 +1,126 @@
 #!/usr/bin/env bash
 # Tests that the rule inventory is parsed from the constitution and that a malformed rule table
-# fails loudly rather than silently shrinking the inventory.
+# fails loudly rather than silently shrinking the inventory. Also decides D3.7: it is the harness
+# that runs every other [auto] check's declared probe and requires the seeded/neutralised pair to
+# behave per contracts/probe-mode.md.
 set -u
+# Instrument class: mixed (static-document-contract and executed-behavior)
+# Artifact classes: source-document
+# Seeded failure probe: --probe <class> seeds a defect and observes detection; --probe <class>
+# --neutralise runs the identical path unseeded and requires a clean pass. See the Feature 041
+# probe-mode contract.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+
+probe_class=""
+neutralise=0
+while [[ $# -gt 0 ]]; do
+	case "$1" in
+		--probe) probe_class="${2:-}"; shift 2 ;;
+		--neutralise) neutralise=1; shift ;;
+		*) echo "FAIL: unrecognized argument: $1" >&2; exit 2 ;;
+	esac
+done
+DECLARED_CLASSES=" source-document "
+if [[ -n "$probe_class" ]] && [[ "$DECLARED_CLASSES" != *" $probe_class "* ]]; then
+	echo "FAIL: undeclared artifact class: $probe_class" >&2
+	exit 2
+fi
+
+# Runs the seeded/neutralised pair for one (rule, test, class) and reports per the contract's
+# failure-message table. Shared by the harness loop below and by this file's own probe (T038), so
+# the same function decides D3.7 in both normal mode and under a self-probe.
+harness_probe_pair() {
+	local rule_id="$1" test_name="$2" class="$3"
+	local test_path="$SCRIPT_DIR/$test_name"
+	local seeded_exit neutral_exit problem=0
+
+	bash "$test_path" --probe "$class" >/dev/null 2>&1
+	seeded_exit=$?
+	bash "$test_path" --probe "$class" --neutralise >/dev/null 2>&1
+	neutral_exit=$?
+
+	if [[ "$seeded_exit" -eq 2 ]] || [[ "$neutral_exit" -eq 2 ]]; then
+		echo "FAIL: $rule_id test probes a class it does not declare: $test_name -> $class"
+		problem=1
+	elif [[ "$seeded_exit" -eq 0 ]]; then
+		echo "FAIL: $rule_id probe for $class did not fail on a seeded defect: $test_name"
+		problem=1
+	elif [[ "$neutral_exit" -ne 0 ]]; then
+		echo "FAIL: $rule_id probe for $class fails without a seeded defect: $test_name"
+		problem=1
+	fi
+	return $problem
+}
+
+# For each "<rule id><TAB><test filename>" row in $1: reads the test's declared artifact classes
+# and exercises each with harness_probe_pair. Fails if any pair misbehaves, or if zero pairs were
+# exercised at all (a map with no rows, or rows whose tests declare no classes, must not pass
+# silently).
+#
+# A test file mapped by more than one rule (e.g. distribution-packaging.test.sh names both D1.2
+# and D4.3) is probed once, not once per row: the probe proves the same property -- that the test
+# can fail for each declared class -- regardless of which rule id sent it. Re-running it per row
+# is pure duplicate work against the 180s runtime budget (research: Phase 5 (US2) resolution).
+# Each unique test file's classes are still counted toward the zero-pairs assertion exactly once.
+harness_run() {
+	local map_text="$1"
+	local rule_id test_name test_path classes class pairs=0 problems=0
+	local seen=""
+	while IFS=$'\t' read -r rule_id test_name; do
+		[[ -n "$rule_id" ]] || continue
+		[[ "$seen" == *" $test_name "* ]] && continue
+		seen="$seen $test_name "
+		test_path="$SCRIPT_DIR/$test_name"
+		[[ -f "$test_path" ]] || continue
+		classes="$(grep '^# Artifact classes:' "$test_path" | head -1 \
+			| sed -e 's/^# Artifact classes:[[:space:]]*//' -e 's/,/ /g')"
+		if [[ -z "$classes" ]]; then
+			echo "FAIL: $rule_id test does not implement probe mode: $test_name"
+			problems=1
+			continue
+		fi
+		for class in $classes; do
+			harness_probe_pair "$rule_id" "$test_name" "$class" || problems=1
+			pairs=$((pairs + 1))
+		done
+	done <<<"$map_text"
+	if [[ "$pairs" -eq 0 ]]; then
+		echo "FAIL: no rule/class pairs were exercised; the harness matched nothing"
+		problems=1
+	fi
+	return $problems
+}
+
+# --- Probe mode: returns here, before the harness loop further down (T037). Without this guard,
+# the harness loop's own row for D3.7 would invoke this file with --probe and recurse without
+# bound; the recursive invocation instead takes this branch and exits immediately. ---
+#
+# Seeds by breaking a real mapped test's declared probe so it always fails -- the same defect
+# Scenario 6 seeds by hand -- and requires harness_probe_pair (the same function the harness loop
+# below uses) to catch it. This is a source-document probe: the artifact perturbed is another
+# test's own source file, not a copy.
+if [[ -n "$probe_class" ]]; then
+	case "$probe_class" in
+		source-document)
+			TARGET="$SCRIPT_DIR/generate-catalog.test.sh"
+			BACKUP="$(mktemp)"
+			cp "$TARGET" "$BACKUP"
+			trap 'cp "$BACKUP" "$TARGET"; rm -f "$BACKUP"' EXIT
+			if [[ "$neutralise" -eq 0 ]]; then
+				sed -i.bak 's/^probe_generated_artifact() {/probe_generated_artifact() { return 1;/' "$TARGET"
+				rm -f "$TARGET.bak"
+			fi
+			if harness_probe_pair "D4.2" "generate-catalog.test.sh" "generated-artifact" >/dev/null 2>&1; then
+				exit 0
+			else
+				exit 1
+			fi
+			;;
+	esac
+fi
+
 # shellcheck source=tools/lib/constitution.sh
 source "$HIGHWAY_ROOT/tools/lib/constitution.sh"
 
@@ -198,6 +314,13 @@ if [[ -f "$DEV_CONSTITUTION" ]]; then
 		fi
 	done < <(printf '%s\n' "$dev_map")
 
+	# Executes each mapped test's declared probe, per artifact class, and requires the seeded and
+	# neutralised exits the probe-mode contract demands. This is D3.7 itself: a registered [auto]
+	# check must be able to fail for every class of artifact in its declared scope.
+	if ! harness_run "$dev_map"; then
+		fail=1
+	fi
+
 	# The reader above must actually see rules. A parser that silently matches nothing would make
 	# every assertion in this block pass regardless of the document's contents.
 	if [[ "$(dev_auto_ids | grep -c .)" -eq 0 ]]; then
@@ -205,5 +328,18 @@ if [[ -f "$DEV_CONSTITUTION" ]]; then
 		fail=1
 	fi
 fi
+
+# D3.8 and D3.7 require test instruments and declared artifact classes to be explicit. Keep this
+# structural check here so a newly added test cannot silently escape the repository-wide inventory.
+for test_file in "$SCRIPT_DIR"/*.test.sh; do
+	if ! grep -q '^# Instrument class:' "$test_file"; then
+		echo "FAIL: test does not declare an instrument class: $(basename "$test_file")"
+		fail=1
+	fi
+	if ! grep -q '^# Artifact classes:' "$test_file"; then
+		echo "FAIL: test does not declare artifact classes: $(basename "$test_file")"
+		fail=1
+	fi
+done
 
 exit $fail

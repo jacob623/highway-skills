@@ -5,6 +5,9 @@
 # tools/tests/fixtures/ files -- mirroring generate-catalog.test.sh's temp-real-artifact
 # pattern. Per feature 004 (shared content library).
 set -u
+# Instrument class: mixed (static-document-contract and executed-behavior)
+# Artifact classes: source-document, generated-artifact, disposable-fixture
+# Seeded failure probe: this test must detect a defect in each declared class and clean its probe.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"

@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 # Tests .highway/tools/validate-skill.sh against the fixtures in .highway/tools/tests/fixtures/.
 set -u
+# Instrument class: mixed (static-document-contract and executed-behavior)
+# Artifact classes: source-document, generated-artifact, disposable-fixture
+# Seeded failure probe: this test must detect a defect in each declared class and clean its probe.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"

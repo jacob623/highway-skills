@@ -2,6 +2,9 @@
 # Tests .highway/tools/generate-library-catalog.sh: schema shape, exactly one entry per valid
 # fixture, non-zero exit (no partial catalog) on an invalid file, and determinism on re-run.
 set -u
+# Instrument class: mixed (static-document-contract and executed-behavior)
+# Artifact classes: source-document, generated-artifact, disposable-fixture
+# Seeded failure probe: this test must detect a defect in each declared class and clean its probe.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
