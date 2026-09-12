@@ -148,3 +148,48 @@ fm_get_dependencies() {
 		[[ -n "$p" ]] && printf '%s|%s\n' "$p" "$v"
 	done
 }
+
+# Prints each top-level frontmatter key name, one per line, in file order, WITHOUT
+# deduplication -- a key repeated in the source file is printed once per occurrence so
+# callers can detect duplicate keys (e.g. via `sort | uniq -d`).
+# Usage: fm_list_keys <file>
+fm_list_keys() {
+	local file="$1"
+	fm_block "$file" | awk '
+		$0 ~ /^[A-Za-z_][A-Za-z0-9_]*:/ {
+			key = $0
+			sub(/:.*/, "", key)
+			print key
+		}
+	'
+}
+
+# Prints each key nested directly one level under the top-level metadata: block, one per
+# line, in file order, WITHOUT deduplication. Only direct children are printed -- deeper
+# nesting (e.g. list items under metadata.agent_exceptions/metadata.dependencies) is
+# ignored, mirroring fm_get_nested's one-level lookup.
+# Usage: fm_list_metadata_keys <file>
+fm_list_metadata_keys() {
+	local file="$1"
+	fm_block "$file" | awk '
+		BEGIN { in_parent = 0; child_indent = -1 }
+		{
+			if ($0 ~ /^[^[:space:]]/) {
+				if ($0 ~ /^metadata:/) { in_parent = 1; child_indent = -1; next }
+				else { in_parent = 0 }
+			}
+			if (in_parent) {
+				trimmed = $0
+				sub(/^[[:space:]]*/, "", trimmed)
+				if (trimmed == "") next
+				indent_len = length($0) - length(trimmed)
+				if (child_indent == -1) child_indent = indent_len
+				if (indent_len == child_indent && trimmed ~ /^[A-Za-z_][A-Za-z0-9_]*:/) {
+					key = trimmed
+					sub(/:.*/, "", key)
+					print key
+				}
+			}
+		}
+	'
+}

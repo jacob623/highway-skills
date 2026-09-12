@@ -67,4 +67,16 @@ for section in "${SV_REQUIRED_SECTIONS[@]}"; do
 	fi
 done
 
+# --- metadata.dependencies is documented and the manifest is cited (feature 045) ------------
+
+if ! grep -qF '`metadata.dependencies`' "$STANDARD"; then
+	echo "FAIL: the authoring standard does not document metadata.dependencies"
+	fail=1
+fi
+
+if ! grep -qF '.frontmatter-contract' "$STANDARD"; then
+	echo "FAIL: the authoring standard does not cite .highway/tools/.frontmatter-contract"
+	fail=1
+fi
+
 exit $fail

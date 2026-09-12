@@ -51,6 +51,8 @@ assert_exit_nonzero_naming "$FIXTURES/invalid-skill-missing-example" "'## Exampl
 assert_exit_nonzero_naming "$FIXTURES/invalid-skill-name-mismatch" "does not match directory-derived id"
 assert_exit_nonzero_naming "$FIXTURES/invalid-skill-relative-link" "is a relative path"
 assert_exit_nonzero_naming "$FIXTURES/invalid-skill-nondeterministic-criterion" "decision criterion references"
+assert_exit_nonzero_naming "$FIXTURES/invalid-skill-undeclared-key" "undeclared top-level key 'licence'"
+assert_exit_nonzero_naming "$FIXTURES/invalid-skill-duplicate-key" "duplicate top-level key 'description'"
 
 # Every skill-shaped artifact in the repository that is meant to be valid must pass, so that an
 # author copying one inherits a conforming skill (SC-001).
@@ -86,5 +88,32 @@ assert_single_failure "$FIXTURES/invalid-skill-missing-example" "SCHEMA"
 assert_single_failure "$FIXTURES/invalid-skill-name-mismatch" "SCHEMA"
 assert_single_failure "$FIXTURES/invalid-skill-relative-link" "P8.7"
 assert_single_failure "$FIXTURES/invalid-skill-nondeterministic-criterion" "P6.4"
+assert_single_failure "$FIXTURES/invalid-skill-undeclared-key" "SCHEMA"
+assert_single_failure "$FIXTURES/invalid-skill-duplicate-key" "SCHEMA"
+assert_single_failure "$FIXTURES/invalid-skill-short-description" "SCHEMA"
+
+# A no-op re-run must reproduce the identical failure (the fixture is unaffected by having been
+# checked before).
+assert_exit_nonzero_naming "$FIXTURES/invalid-skill-undeclared-key" "undeclared top-level key 'licence'"
+assert_exit_nonzero_naming "$FIXTURES/invalid-skill-duplicate-key" "duplicate top-level key 'description'"
+
+# A malformed frontmatter contract manifest (a duplicate scope/key row) is reported as an error
+# and blocks every per-skill check (FR-003). Uses FRONTMATTER_CONTRACT_FILE to point at a
+# temporary, mutated copy so the real manifest is never touched.
+malformed_manifest_tmp="$(mktemp)"
+cp "$HIGHWAY_ROOT/tools/.frontmatter-contract" "$malformed_manifest_tmp"
+printf 'top\tname\tyes\tkebab-case\n' >> "$malformed_manifest_tmp"
+malformed_manifest_out="$(FRONTMATTER_CONTRACT_FILE="$malformed_manifest_tmp" "$VALIDATE" "$FIXTURES/valid-skill" 2>&1)"
+malformed_manifest_rc=$?
+rm -f "$malformed_manifest_tmp"
+if [[ $malformed_manifest_rc -eq 0 ]]; then
+	echo "FAIL: expected non-zero exit for a malformed frontmatter contract manifest, got 0. Output:"
+	echo "$malformed_manifest_out"
+	fail=1
+elif [[ "$malformed_manifest_out" != *"duplicate entry"* ]]; then
+	echo "FAIL: expected the malformed-manifest error to mention 'duplicate entry'. Got:"
+	echo "$malformed_manifest_out"
+	fail=1
+fi
 
 exit $fail

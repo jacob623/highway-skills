@@ -1,0 +1,14 @@
+# Frontmatter contract manifest for schema-validate.sh / validate-skill.sh.
+# Format: scope<TAB>key<TAB>required<TAB>constraint
+#   scope:      "top" (top-level frontmatter key) or "metadata" (nested under metadata:)
+#   key:        the frontmatter key name
+#   required:   "yes" or "no"
+#   constraint: "-" (no constraint), "kebab-case", "length:MIN-MAX", "enum:v1,v2,...", or "semver"
+# Lines starting with # and blank lines are ignored.
+top	name	yes	kebab-case
+top	description	yes	length:10-500
+top	usage	yes	length:10-500
+top	compatibility	no	enum:all,github-copilot,claude-code,cursor
+metadata	version	yes	semver
+metadata	agent_exceptions	no	-
+metadata	dependencies	no	-

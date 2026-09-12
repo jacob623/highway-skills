@@ -9,14 +9,14 @@ invocations do not have to be reconstructed from conversation history.
 has been proved able to fail. Every other phase is deferred, which means postponed with its
 reasoning intact, not abandoned.
 
-**Status**: Phases 1–6, 10 and 11 are complete and their detail has been removed from this
+**Status**: Phases 1–6, 10, 11 and 17 are complete and their detail has been removed from this
 document. Phases 12, 13, 15 and 16 were removed on 2026-09-11: their subject is the `specs/` tree,
-which Feature 044 takes out of governance entirely. Active: Phases 8, 14 and 17. Deferred: Phases 7
+which Feature 044 takes out of governance entirely. Active: Phases 8 and 14. Deferred: Phases 7
 and 9.
 
-**Last reviewed**: 2026-09-11 (re-centred on `.highway` coverage; completed phase detail and the
-two appendices that fed completed phases removed; Phase 17 opened; the four specification-record
-phases removed in favour of Feature 044)
+**Last reviewed**: 2026-09-11 (Phase 17 complete via feature 045; re-centred on `.highway`
+coverage; completed phase detail and the two appendices that fed completed phases removed; the
+four specification-record phases removed in favour of Feature 044)
 
 ---
 
@@ -80,9 +80,9 @@ Worked examples:
 
 ## 3. Phase overview
 
-Phases 1, 2, 2b, 3, 4, 4b, 4c, 5, 6, 10 and 11 are complete and the second-skill Gate is cleared.
-Their detail has been removed from this document; each one's record lives in its own spec
-directory — features 010–018, 021 and 022.
+Phases 1, 2, 2b, 3, 4, 4b, 4c, 5, 6, 10, 11 and 17 are complete and the second-skill Gate is
+cleared. Their detail has been removed from this document; each one's record lives in its own
+spec directory — features 010–018, 021, 022 and 045.
 
 | Phase | Name | Type | Layer | State |
 |---|---|---|---|---|
@@ -90,7 +90,6 @@ directory — features 010–018, 021 and 022.
 | 8 | Make a skill's help detail answerable for itself | Spec | 1 | ▶ Active — `P7.9` adds a registered `[auto]` check over every shipped `SKILL.md` |
 | 9 | Make artifact versions accountable | Spec | 1, and a cross-layer question | ⏸ Deferred — its own analysis concludes the rule cannot honestly be `[auto]`, so it adds no mechanical coverage |
 | 14 | Recover the probe runtime the integrity work spent | Spec | 0 | ▶ Active — two files hold 135.5s of a ~200s run; runtime pressure is what erodes probe coverage |
-| 17 | Harden the skill frontmatter contract | Spec | 1 | ▶ Active — closes the key set, rejects duplicate keys, spell-checks free-form values, and makes the contract a declaration the validator reads |
 
 Phases 12, 13, 15 and 16 were removed on 2026-09-11. All four governed the `specs/` tree, and all
 four had already been deferred on that ground. Feature `044` removes that tree from governance
@@ -490,124 +489,6 @@ runtime fix and must not be recorded as one.
   surviving as a second target.
 - No constitution rule is added or amended, and neither Layer 1 nor Layer 2 is touched.
 - `.highway/tools/tests/run-all.sh` exits 0.
-
----
-
-### Phase 17 — Harden the skill frontmatter contract
-
-**Coverage verdict, 2026-09-11**: ▶ **Active, and the first phase opened for the coverage goal
-rather than inherited from the governance sequence.** Frontmatter is the densest shipped markdown
-in the product: four consumers read it, and a defect there is copied verbatim into three agent
-adapter trees, into the catalog, and into what `highway-help` answers to a user. Every check added
-here decides a file under `.highway/`.
-
-**Layer**: 1 **Type**: Spec (number to be assigned)
-
-**Status**: Proposed, 2026-09-11, from a mutation audit of `validate-skill.sh`. Independent of
-every other phase.
-
-**Goal**: The frontmatter contract is declared in one shipped artifact that the validator reads,
-the permitted key set is closed, and free-form values are spell-checked against a maintained
-lexicon.
-
-**The verified gap** (2026-09-11), measured by mutating a copy of `highway-help/SKILL.md` and
-running `validate-skill.sh` against it:
-
-| Seeded defect | Result |
-|---|---|
-| Added `licence: MIT` and `author: nobody` as top-level keys | `OK: skill 'highway-help' is valid`, exit 0 |
-| Added a second `description:` line | `OK: skill 'highway-help' is valid`, exit 0 |
-| `description: "x"` | `OK: skill 'highway-help' is valid`, exit 0 |
-| Renamed `description:` to `desription:` | Caught, as `missing required field 'description'` |
-| `compatibility: All` | Caught |
-| `version: 3.0.4 # pinned` | Caught by `P7.2`, and again by `X1.4` |
-
-Three of six pass. Their common cause is that nothing enumerates the permitted key set, and
-`fm_get` resolves a repeated key with `head -n1` while YAML semantics are last-wins — so the
-validator and a conforming parser can read different values from the same file.
-
-**The damaging case is not a stray key.** It is a misspelled *optional* one. Writing
-`agent_exeptions:` produces no exceptions, no error and no clue; the skill ships with the deviation
-it believes it declared silently absent. `dependencies` behaves the same way — misspell the key and
-its entire validation is skipped.
-
-**Two further defects are structural rather than behavioural**:
-
-1. **`metadata.dependencies` is enforced but undeclared.** `dc_validate_dependencies` validates the
-   path and pinned version of every entry. The Required frontmatter table in
-   `.highway/skills/_authoring-standard.md` has no row for it. The declaration is behind the
-   enforcement — the usual drift running backwards.
-2. **The declaration is prose nothing parses.** That field table is a second copy of constants
-   hardcoded in `lib/schema-validate.sh`. Adding a row changes no behaviour; changing a constant
-   leaves the table wrong. The machine-readable schema the validator's own header comment cites,
-   `skill-frontmatter.schema.json`, exists only under `specs/001-multi-agent-skill-suite/contracts/`,
-   does not ship, and is read by nothing.
-
-**No constitution amendment.** Every existing frontmatter check — `name`, `description`, `usage`,
-`compatibility`, `agent_exceptions`, `dependencies` — is reported under the `[SCHEMA]` tag with no
-governing `P` rule, and the authoring standard's field table records `SCHEMA` in its Governing rule
-column for exactly that reason. The additions here join that existing stratum. This is the one
-phase since Phase 4 that changes no rule text, no tier tag and no tier count, which is why it is
-cheap.
-
-**On the spell check, one measurement settled the design.** The free-form values across all 8
-skills hold **126 unique words**. `/usr/share/dict/words` on macOS is a symlink to `web2`, a 1934
-list, and it is missing **38 of those 126** — including `adding`, `changing`, `questions`, `skills`,
-`manages` and `prints`. A base list that rejects ordinary inflections is unusable, and `aspell` and
-`hunspell` are absent from the Declared Toolchain, so `D2.4` forbids them regardless. The check
-therefore uses a **shipped lexicon** the repository maintains: deterministic on every platform,
-no dependency, and it doubles as controlled vocabulary — it would catch `organisation` drifting
-against `organization`, which a dictionary would accept.
-
-**Identifier tokens are accepted by resolution, not by lexicon entry.** A token naming a skill id
-must name a skill that exists under `.highway/skills/`; a token naming a rule id must name a rule
-that exists in a governing document. That converts part of the spell check into referential
-integrity: `highway-nfrz` fails because nothing answers to it, which is a stronger check than
-spelling.
-
-**The assertion that makes this phase worth doing.** Adding a required key to the declared contract
-must make a previously-conforming skill fail, **with no change to any script**. Without that, the
-declaration is a decoration and the phase has produced a more elaborate copy of the constants it
-set out to replace.
-
-**Prerequisite**: None. Independent of every other phase, and of Feature `043`.
-
-**Done when**:
-
-- One shipped artifact under `.highway/` declares every permitted key, whether it is required, and
-  the constraint on its value, including `metadata.dependencies`.
-- `lib/schema-validate.sh` derives its behaviour from that artifact at run time rather than from
-  hardcoded constants, and the artifact's own shape is validated so a malformed declaration is
-  reported rather than silently narrowing what is checked.
-- `_authoring-standard.md` cites the declaring artifact and restates none of it, per `P7.3`.
-- An undeclared top-level or `metadata` key is reported by name; a key appearing twice is reported
-  by name; `description` and `usage` carry a lower length bound as well as the existing 500-character
-  upper bound.
-- Every word in `description`, `usage` and each `agent_exceptions[].deviation` is in the lexicon or
-  resolves as an identifier, and each unrecognised word is reported individually with the field it
-  came from. A count alone is insufficient.
-- The lexicon is one word per line, sorted, without duplicates, and a check enforces that shape.
-  Adding a word to it is the only way to admit new vocabulary — no per-skill exemption, inline
-  suppression, or ignore list.
-- Every new check has been observed failing against a seeded defect and passing again after
-  byte-exact restoration.
-- Adding a required key to the declared contract has been observed making a conforming skill fail,
-  with no script change.
-- Every check was evaluated against all 8 skills and every fixture before being enabled, per `D3.4`,
-  with the verdicts recorded.
-- No skill's frontmatter was edited to make a check pass. Any real defect found is reported and
-  fixed as a defect.
-- `UNCHECKED` stays empty for every skill, `run-all.sh` exits 0, and the suite's runtime is reported
-  against the 240 second interim ceiling Feature 042 set.
-
-**Three questions to settle before planning**:
-
-- What lower bound applies to `description` and `usage`? A bound is wanted; an arbitrary value is
-  worse than none.
-- Where does the lexicon live — `.highway/library/knowledge/` alongside other shipped reference
-  content, or `.highway/governance/` alongside the documents that constrain authoring?
-- How is a hyphenated compound tokenised? `control-to-nfr` and `non-functional` are in use today,
-  and splitting on the hyphen changes what the lexicon must contain.
 
 ---
 
