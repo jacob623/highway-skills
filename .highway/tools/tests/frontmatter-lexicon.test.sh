@@ -74,4 +74,50 @@ if fl_resolve_rule_id "$HIGHWAY_ROOT" "D1.1"; then
 	fail=1
 fi
 
+# --- Pattern operands are matched literally, not expanded ---------------------------------------
+# Membership is a substring test against an in-memory blob. If the operand were left unquoted, a
+# value of '*' would be treated as a pattern and match anything, so every unrecognized word would
+# be silently accepted and this checker would report nothing, ever. That failure is invisible in
+# ordinary use, so it is asserted directly.
+
+for fl_probe in '*' '?' '[a-z]'; do
+	if fl_word_in_lexicon "$HIGHWAY_ROOT" "$fl_probe"; then
+		echo "FAIL: the pattern '$fl_probe' was accepted as a lexicon word; the match operand is being expanded"
+		fail=1
+	fi
+	if fl_resolve_rule_id "$HIGHWAY_ROOT" "$fl_probe"; then
+		echo "FAIL: the pattern '$fl_probe' resolved as a rule id; the match operand is being expanded"
+		fail=1
+	fi
+done
+
+# --- The per-word path does not spawn a process per word ----------------------------------------
+# Asserted by cost rather than by reading the source, because the source can be rewritten while
+# still passing a text search. A field of 400 unrecognized words costs well under a second when
+# membership is answered from memory; an implementation that runs a matcher per word takes several
+# seconds. The threshold is loose on purpose -- this is a guard against reintroducing per-word
+# process creation, not a benchmark, and it must not fail merely because a machine is busy.
+
+fl_many=""
+for ((fl_i = 0; fl_i < 400; fl_i++)); do
+	fl_many="$fl_many zzqqx$fl_i"
+done
+
+fl_started=$SECONDS
+fl_check_field "$HIGHWAY_ROOT" "test" "$fl_many" >/dev/null
+fl_elapsed=$((SECONDS - fl_started))
+
+if [[ $fl_elapsed -gt 3 ]]; then
+	echo "FAIL: checking 400 words took ${fl_elapsed}s; the per-word path appears to spawn a process per word"
+	fail=1
+fi
+
+# The cost assertion above would also pass if the checker silently accepted everything, so confirm
+# it still reports each unrecognized word.
+fl_reported="$(fl_check_field "$HIGHWAY_ROOT" "test" "zzqqx1 zzqqx2" 2>&1)"
+if [[ "$fl_reported" != *"unrecognized word 'zzqqx1'"* || "$fl_reported" != *"unrecognized word 'zzqqx2'"* ]]; then
+	echo "FAIL: expected both unrecognized words to be reported individually. Got: $fl_reported"
+	fail=1
+fi
+
 exit $fail

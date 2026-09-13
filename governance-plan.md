@@ -473,6 +473,20 @@ around whatever remains rather than around the 97.2s figure above.
 The three tests Feature 044 deletes total **11.8 seconds**, or 5.9% of the run. Feature 044 is not a
 runtime fix and must not be recorded as one.
 
+**Appended 2026-09-12, after Feature 046 measured the frontmatter lexicon.** Feature 045 added a
+closed-word-list check over free-form frontmatter prose and implemented it by running a matcher
+once per word. Measured on the target shell (Bash 3.2.57), that cost **0.3126 seconds per
+`validate-skill.sh` invocation** (median of three, 160 invocations per run). Feature 046 answers
+membership from an in-memory blob instead, bringing the same check to **0.0109 seconds** — a 96.5%
+reduction — with validator output and exit status byte-identical across all 21 validated targets.
+
+Suite runtime moved from **272 seconds** to a **median of 203 seconds** (199s / 203s / 204s), which
+is inside the 240-second interim ceiling but still outside the 180-second target. That remaining gap
+is this phase's, and Feature 046 must not be recorded as having closed it: the two expensive files
+identified above are untouched. What Feature 046 does settle is that the lexicon is no longer a
+contributor worth measuring — any further work belongs to `constitution-inventory` and
+`rule-checks`.
+
 **Done when**:
 
 - The per-class cost of every probed artifact class is measured and recorded, before any change is
