@@ -13,6 +13,10 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 # shellcheck source=tools/lib/frontmatter.sh
 source "$SCRIPT_DIR/lib/frontmatter.sh"
+# shellcheck source=tools/lib/frontmatter-contract.sh
+source "$SCRIPT_DIR/lib/frontmatter-contract.sh"
+# shellcheck source=tools/lib/frontmatter-lexicon.sh
+source "$SCRIPT_DIR/lib/frontmatter-lexicon.sh"
 # shellcheck source=tools/lib/schema-validate.sh
 source "$SCRIPT_DIR/lib/schema-validate.sh"
 # shellcheck source=tools/lib/constitution.sh
@@ -66,6 +70,14 @@ if [[ ! -f "$constitution" ]]; then
 	exit 1
 fi
 
+# A malformed frontmatter contract manifest is a hard failure before any per-skill check runs
+# (FR-003): a manifest that cannot be trusted must not silently pass every skill.
+manifest_errors="$(fc_validate_manifest "$HIGHWAY_ROOT")"
+if [[ $? -ne 0 ]]; then
+	printf '%s\n' "$manifest_errors" >&2
+	exit 1
+fi
+
 errors=""
 failed_rules=""
 
@@ -79,13 +91,36 @@ collect() {
 
 collect "$(sv_validate_id "$id")"
 collect "$(sv_validate_name "$(fm_get "$skill_file" name || true)" "$id")"
-collect "$(sv_validate_description "$(fm_get "$skill_file" description || true)")"
-collect "$(sv_validate_usage "$(fm_get "$skill_file" usage || true)")"
-collect "$(sv_validate_compatibility "$(fm_get "$skill_file" compatibility || true)")"
+
+description_value="$(fm_get "$skill_file" description || true)"
+description_errors="$(sv_validate_description "$description_value" "$HIGHWAY_ROOT")"
+collect "$description_errors"
+# The lexicon check is skipped once the length/presence check for a field has already failed, so
+# a single nonsense field (e.g. an over-length placeholder) is reported once, not once per
+# concern (mirrors the existing presence_failed skip-pattern for body-section rule checks below).
+if [[ -z "$description_errors" ]]; then
+	collect "$(fl_check_field "$HIGHWAY_ROOT" "description" "$description_value")"
+fi
+
+usage_value="$(fm_get "$skill_file" usage || true)"
+usage_errors="$(sv_validate_usage "$usage_value" "$HIGHWAY_ROOT")"
+collect "$usage_errors"
+if [[ -z "$usage_errors" ]]; then
+	collect "$(fl_check_field "$HIGHWAY_ROOT" "usage" "$usage_value")"
+fi
+
+collect "$(sv_validate_compatibility "$(fm_get "$skill_file" compatibility || true)" "$HIGHWAY_ROOT")"
+collect "$(sv_validate_required_keys "$skill_file" "$HIGHWAY_ROOT")"
+collect "$(sv_validate_closed_key_set "$skill_file" "$HIGHWAY_ROOT")"
+collect "$(sv_validate_duplicate_keys "$skill_file")"
 
 agent_exceptions="$(fm_get_agent_exceptions "$skill_file")"
 if [[ -n "$agent_exceptions" ]]; then
-	collect "$(printf '%s\n' "$agent_exceptions" | sv_validate_agent_exceptions)"
+	collect "$(printf '%s\n' "$agent_exceptions" | sv_validate_agent_exceptions "$HIGHWAY_ROOT")"
+	while IFS='|' read -r _agent deviation; do
+		[[ -z "$_agent" && -z "$deviation" ]] && continue
+		collect "$(fl_check_field "$HIGHWAY_ROOT" "metadata.agent_exceptions[].deviation" "$deviation")"
+	done <<< "$agent_exceptions"
 fi
 
 # --- Dependency checks (metadata.dependencies -> .highway/library/) -----------------------

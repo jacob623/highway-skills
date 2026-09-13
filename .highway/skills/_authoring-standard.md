@@ -48,6 +48,11 @@ metadata:
 | `compatibility` | No | — | One of `all`, `github-copilot`, `claude-code`, `cursor`. Defaults to `all`. |
 | `metadata.version` | Yes | P7.2 | Semantic version. See the Skill Versioning Policy in the constitution's Governance section. |
 | `metadata.agent_exceptions` | No | P2.2 | List of `{agent, deviation}`, each naming one supported agent. |
+| `metadata.dependencies` | No | DEPENDENCY | List of `{path, version}` pins into the shared content library; each path must exist and its target's `metadata.version` must match the pinned `version`, enforced by `dc_validate_dependencies`. |
+
+The permitted key set, required/optional status, and value constraints above are declared once in
+`.highway/tools/.frontmatter-contract` (see `contracts/frontmatter-contract-shape.md`); this table
+restates that manifest for authoring convenience and MUST NOT drift from it (`P7.3`).
 
 ## Required body sections
 
