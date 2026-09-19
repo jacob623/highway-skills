@@ -20,6 +20,9 @@ PROFILE_SKILL="$HIGHWAY_ROOT/skills/highway-profile/SKILL.md"
 PROFILE_TEMPLATE="$HIGHWAY_ROOT/library/templates/output/profile.yaml"
 OBJECTIVE_SKILL="$HIGHWAY_ROOT/skills/highway-objectives/SKILL.md"
 OBJECTIVE_TEMPLATE="$HIGHWAY_ROOT/library/templates/output/objective-record.md"
+NEW_SKILL="$HIGHWAY_ROOT/skills/highway-new/SKILL.md"
+REQUEST_TEMPLATE="$HIGHWAY_ROOT/library/templates/output/request-record.md"
+CATALOG_TEMPLATE="$HIGHWAY_ROOT/library/templates/output/request-catalog.md"
 VALIDATE_LIBRARY="$HIGHWAY_ROOT/tools/validate-library.sh"
 VALIDATE_SKILL="$HIGHWAY_ROOT/tools/validate-skill.sh"
 
@@ -52,6 +55,8 @@ require_file "$NFR_TEMPLATE"
 require_file "$CONTROL_TEMPLATE"
 require_file "$PROFILE_TEMPLATE"
 require_file "$OBJECTIVE_TEMPLATE"
+require_file "$REQUEST_TEMPLATE"
+require_file "$CATALOG_TEMPLATE"
 if [[ -f "$NFR_TEMPLATE" ]]; then
 	require_text "$NFR_TEMPLATE" "name: nfr-record"
 	require_text "$NFR_TEMPLATE" "id: NFRXXXXXX"
@@ -90,12 +95,25 @@ if [[ -f "$OBJECTIVE_TEMPLATE" ]]; then
 	require_text "$OBJECTIVE_TEMPLATE" "## Success Measures"
 	require_text "$OBJECTIVE_TEMPLATE" "## Rationale"
 fi
+if [[ -f "$REQUEST_TEMPLATE" ]]; then
+	require_text "$REQUEST_TEMPLATE" "name: request-record"
+	require_text "$REQUEST_TEMPLATE" "id: REQXXXXXX"
+	require_text "$REQUEST_TEMPLATE" "## Problem"
+	require_text "$REQUEST_TEMPLATE" "## Completeness"
+fi
+if [[ -f "$CATALOG_TEMPLATE" ]]; then
+	require_text "$CATALOG_TEMPLATE" "name: request-catalog"
+	require_text "$CATALOG_TEMPLATE" "Version: 1.0.0"
+	require_text "$CATALOG_TEMPLATE" "Next ID: REQXXXXXX"
+fi
 
 # Each file-emitting skill must cite its complete skeleton.
 require_text "$NFR_SKILL" ".highway/library/templates/output/nfr-record.md"
 require_text "$CONTROL_SKILL" ".highway/library/templates/output/control-record.md"
 require_text "$PROFILE_SKILL" ".highway/library/templates/output/profile.yaml"
 require_text "$OBJECTIVE_SKILL" ".highway/library/templates/output/objective-record.md"
+require_text "$NEW_SKILL" ".highway/library/templates/output/request-record.md"
+require_text "$NEW_SKILL" ".highway/library/templates/output/request-catalog.md"
 require_text "$NFR_SKILL" "version: 1.0.1"
 require_text "$CONTROL_SKILL" "version: 1.0.1"
 
@@ -128,6 +146,18 @@ if [[ -f "$OBJECTIVE_TEMPLATE" ]]; then
 		fail=1
 	fi
 fi
+if [[ -f "$REQUEST_TEMPLATE" ]]; then
+	if ! "$VALIDATE_LIBRARY" "$REQUEST_TEMPLATE" >/dev/null 2>&1; then
+		echo "FAIL: request output template does not pass validate-library.sh"
+		fail=1
+	fi
+fi
+if [[ -f "$CATALOG_TEMPLATE" ]]; then
+	if ! "$VALIDATE_LIBRARY" "$CATALOG_TEMPLATE" >/dev/null 2>&1; then
+		echo "FAIL: request catalog template does not pass validate-library.sh"
+		fail=1
+	fi
+fi
 if ! "$VALIDATE_SKILL" "$HIGHWAY_ROOT/skills/highway-nfrs" >/dev/null 2>&1; then
 	echo "FAIL: highway-nfrs does not pass validate-skill.sh"
 	fail=1
@@ -139,11 +169,11 @@ fi
 
 # The current file-emitting skills are the complete set of citing skills for this feature.
 citing_count="$(grep -RIl 'library/templates/output/' "$HIGHWAY_ROOT/skills" --include='SKILL.md' | wc -l | tr -d ' ')"
-if [[ "$citing_count" != "4" ]]; then
-	echo "FAIL: expected 4 output-template citing skills, found $citing_count"
+if [[ "$citing_count" != "5" ]]; then
+	echo "FAIL: expected 5 output-template citing skills, found $citing_count"
 	fail=1
 fi
-for citing_skill in "$NFR_SKILL" "$CONTROL_SKILL" "$PROFILE_SKILL" "$OBJECTIVE_SKILL"; do
+for citing_skill in "$NFR_SKILL" "$CONTROL_SKILL" "$PROFILE_SKILL" "$OBJECTIVE_SKILL" "$NEW_SKILL"; do
 	if ! grep -Fq "library/templates/output/" "$citing_skill"; then
 		echo "FAIL: dependent review omitted citing skill $citing_skill"
 		fail=1

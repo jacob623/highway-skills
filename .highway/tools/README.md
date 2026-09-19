@@ -130,8 +130,12 @@ properties and shaped around skill-only fields.
   written (no partial catalog), and the failing file's path is named in the error output.
 Complete skeletons for retained files emitted by skills live under
 `.highway/library/templates/output/`. Each skeleton covers the emitted file's frontmatter and
-body. The questionnaire at `.highway/library/templates/requirements-inquiry.md` is a
-question-content template and remains separate.
+body. Request-producing skills use the shared request skeletons at
+`.highway/library/templates/output/request-record.md` and
+`.highway/library/templates/output/request-catalog.md`; the `highway-new` skill cites both and
+must be revalidated when either changes. The questionnaire at
+`.highway/library/templates/requirements-inquiry.md` is a question-content template and remains
+separate.
 
 When a shared library artifact changes, identify every `SKILL.md` that cites it, re-run the
 affected skill and library validators, and review the complete emitted structure. A mismatch in

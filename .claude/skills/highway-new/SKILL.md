@@ -1,0 +1,87 @@
+---
+name: highway-new
+description: "Manages a repository-wide request baseline and updating its state."
+usage: "Invoke as `/highway-new` with a business request in plain language."
+compatibility: all
+metadata:
+  version: 1.0.0
+---
+
+## Purpose
+
+Create and maintain a business request artifact by collecting sufficient business evidence from a requester.
+
+## When to use
+
+- A requester has a business problem, idea, request, or desired change that needs an intake record.
+- A requester needs to add business evidence to an incomplete request before durable creation.
+- A repository owner needs a new request record with a catalog-owned identifier.
+
+## When not to use
+
+- Do not use for architecture, technology recommendations, implementation plans, Controls, or NFRs.
+- Do not use for Request-to-Objective, Request-to-Control, or Request-to-NFR relationship discovery.
+- Do not use to change an existing request lifecycle status after creation.
+
+## Inputs
+
+- The requester's plain-language business problem, idea, request, or desired change.
+- The requester's answers collected during this invocation.
+- The current Profile, Objectives, Controls, and NFRs when present, read through their owning workflows only as contextual example sources.
+- `.highway/library/templates/output/request-record.md` for the complete request record structure.
+- `.highway/library/templates/output/request-catalog.md` for the complete request catalog structure.
+- The user-owned `requests/` directory and `requests/requests.md` catalog when present.
+- The repository's `.highway/` root and existing request files when resolving the user-owned output location.
+
+## Outputs
+
+- A user-owned request record at `requests/REQXXXXXX.md`, following `.highway/library/templates/output/request-record.md`.
+- A user-owned request catalog at `requests/requests.md`, following `.highway/library/templates/output/request-catalog.md`.
+- A conversational response containing one question and one to three contextual examples while evidence remains incomplete.
+- No request artifact when intake is empty, allocation fails, validation fails, or a transaction cannot complete.
+
+## Workflow
+
+1. Read the requester's initial description and the six evidence domains in this order: Problem, Actors, Current Process, Desired Change, Success Measure, Business Constraints. [AS-6: .highway/governance/constitution.md]
+2. Mark each domain satisfied only when its evidence rule is met. [AS-6: .highway/governance/constitution.md]
+3. Select the first incomplete domain after every requester response. [AS-6: .highway/governance/constitution.md]
+4. Ask exactly one natural-language question for the selected domain. [AS-6: .highway/governance/constitution.md]
+5. Generate one to three examples using this precedence order: existing request evidence, Profile, Objectives, Controls, NFRs. [AS-6: .highway/governance/constitution.md]
+6. Keep examples and repository context separate from requester evidence and requirements. [AS-6: .highway/governance/constitution.md]
+7. Repeat steps 2 through 6 until all six domains are complete or the requester stops answering. [AS-6: .highway/governance/constitution.md]
+8. Derive the title from an explicit requester title, otherwise from Problem evidence using the same input text each time. [AS-6: .highway/governance/constitution.md]
+9. Read `requests/requests.md`, bootstrapping it with `Version: 1.0.0` and `Next ID: REQ000001` when absent. [AS-6: .highway/governance/constitution.md]
+10. Allocate the catalog's `Next ID` only when it matches `REQ` followed by exactly six digits. [AS-6: .highway/governance/constitution.md]
+11. Build the request record and catalog update in memory before writing either file. [AS-6: .highway/governance/constitution.md]
+12. Validate identifier, status, completeness, privacy, record structure, catalog structure, and request index before writing. [AS-6: .highway/governance/constitution.md]
+13. Write the request record and catalog update only after both validations pass. [AS-6: .highway/governance/constitution.md]
+14. When the catalog changed during allocation, retry the exclusive allocation operation at most 3 times. [AS-6: .highway/governance/constitution.md]
+15. When every domain is complete, write `Completeness: Complete`; otherwise write `Completeness: Incomplete` and do not claim completion; accept `None`, `No business constraints`, and `No known constraints`. [AS-6: .highway/governance/constitution.md]
+16. When input contains a secret or regulated personal data, exclude it and request business-relevant replacement evidence. [AS-6: .highway/governance/constitution.md]
+17. When Version 1 creates a request, write status `proposed` and no relationship sections. [AS-6: .highway/governance/constitution.md]
+
+## Verification
+
+- Run `.highway/tools/validate-skill.sh .highway/skills/highway-new` and confirm exit 0.
+- Confirm the generated record path matches `requests/REQ` followed by six digits.
+- Confirm the record contains the six evidence headings and `## Completeness`.
+- Confirm the catalog contains `Version:`, `Next ID:`, and one index row for the request.
+- Confirm no secret or regulated personal data appears in the written request record.
+- Confirm a failed allocation, validation, or write leaves existing request and catalog bytes unchanged.
+- Confirm repeated identical input produces identical question, examples, title, and artifact content.
+
+## Error Handling
+
+- Empty initial input: abort and report that a feature description is required.
+- Missing `.highway/` root: abort and report that the project root cannot be located.
+- Missing or invalid output template: abort and report the template path.
+- Missing or invalid catalog next ID: abort and report that allocation cannot proceed.
+- Catalog changed during allocation: retry the exclusive operation at most 3 times.
+- Secret or regulated personal data detected: retry intake 3 times maximum after requesting replacement evidence.
+- Request or catalog validation failure: abort, write nothing, and preserve the original bytes of every existing artifact.
+- Request or catalog write failure: abort, write nothing, and preserve the original bytes of every existing artifact.
+- Architecture, implementation, Control, NFR, or relationship request: fall back to the owning workflow without writing a request artifact.
+
+## Example
+
+`/highway-new We need a consistent way for finance reviewers to reduce manual invoice comparison time.`
