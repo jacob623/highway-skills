@@ -86,7 +86,7 @@ Mutation previews additionally show the current state, proposed state, and ramif
 - Confirm `readiness` emits exactly `Status`, `Summary`, `Next Action`, and `Blocking Reason` in order, with no write or version change.
 - Confirm identical inputs rewrite identical bytes without timestamps, random identifiers, or environment-derived values.
 - Confirm malformed and ambiguous requests abort safely and identify the actionable problem.
-- Run `.highway/tools/validate-skill.sh .highway/skills/highway-profile` and `.highway/tools/validate-profile.sh .highway/library/templates/output/profile.yaml`.
+- Confirm the profile template is valid before using it for profile setup or mutation.
 
 ## Error Handling
 

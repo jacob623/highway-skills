@@ -57,16 +57,7 @@ Completeness Rules, following `.highway/library/templates/output/request-record.
 12. Validate identifier, status, completeness, privacy, record structure, catalog structure, and request index before writing.
 13. Write the request record and catalog update only after both validations pass.
 14. When the catalog changed during allocation, retry the exclusive allocation operation at most 3 times.
-15. When every domain is complete:
-- Build the request artifact.
-- Build the catalog update.
-- Validate both.
-- Write both.
-
-Otherwise:
-- Do not create a request artifact.
-- Do not update the catalog.
-- Continue evidence collection.
+15. When every domain is complete, build and validate the request artifact and catalog update, then write both; otherwise, create neither artifact and continue evidence collection.
 16. When input contains a secret or regulated personal data, exclude it and request business-relevant replacement evidence.
 17. When Version 1 creates a request, write status `proposed` and no relationship sections.
 18. The request record and catalog update are created only after all six evidence domains satisfy the Evidence Completeness Rules.
@@ -96,7 +87,7 @@ status: proposed.
 - Request or catalog validation failure: abort, write nothing, and preserve the original bytes of every existing artifact.
 - Request or catalog write failure: abort, write nothing, and preserve the original bytes of every existing artifact.
 - Architecture, implementation, Control, NFR, or relationship request: fall back to the owning workflow without writing a request artifact.
-- One or more evidence domains remain incomplete: write nothing and continue evidence collection.
+- One or more evidence domains remain incomplete: abort the write, write nothing, and continue evidence collection.
 
 ## Example
 
