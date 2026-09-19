@@ -1,0 +1,103 @@
+---
+name: highway-new
+description: "Manages a repository-wide request baseline and updating its state."
+usage: "Invoke as `/highway-new` with a business request in plain language."
+compatibility: all
+metadata:
+  version: 1.0.0
+---
+
+## Purpose
+
+Create a business request artifact by collecting the business evidence required by the Evidence Completeness Rules.
+
+## When to use
+
+- A requester has a business problem, idea, request, or desired change that needs an intake record.
+- A requester needs to add business evidence to an incomplete request before durable creation.
+- A repository owner needs a new request record with a catalog-owned identifier.
+
+## When not to use
+
+- Do not use for architecture, technology recommendations, implementation plans, Controls, or NFRs.
+- Do not use for Request-to-Objective, Request-to-Control, or Request-to-NFR relationship discovery.
+- Do not use to change an existing request lifecycle status after creation.
+
+## Inputs
+
+- The requester's plain-language business problem, idea, request, or desired change.
+- The requester's answers collected during this invocation.
+- The current Profile, Objectives, Controls, and NFRs when present, read through their owning workflows only as contextual example sources.
+- `.highway/library/templates/output/request-record.md` for the complete request record structure.
+- `.highway/library/templates/output/request-catalog.md` for the complete request catalog structure.
+- The user-owned `requests/` directory and `requests/requests.md` catalog when present.
+- The repository's `.highway/` root and existing request files when resolving the user-owned output location.
+
+## Outputs
+
+- A user-owned request record at `requests/REQXXXXXX.md`, only when all evidence domains satisfy the Evidence
+Completeness Rules, following `.highway/library/templates/output/request-record.md`.
+- A user-owned request catalog at `requests/requests.md`, only when a complete request is successfully created, following `.highway/library/templates/output/request-catalog.md`.
+- A conversational response containing one question and one to three contextual examples while evidence remains incomplete.
+- No request artifact when intake is empty, allocation fails, validation fails, or a transaction cannot complete.
+
+## Workflow
+
+1. Read the requester's initial description and the six evidence domains in this order: Problem, Actors, Current Process, Desired Change, Success Measure, Business Constraints.
+2. Mark each domain satisfied only when its evidence rule is met.
+3. Select the first incomplete domain after every requester response.
+4. Ask exactly one natural-language question for the selected domain.
+5. Generate one to three examples using this precedence order: existing request evidence, Profile, Objectives, Controls, NFRs.
+6. Keep examples and repository context separate from requester evidence and requirements. 
+7. Repeat steps 2 through 6 until all six domains are complete or the requester stops answering. 
+8. Derive the title from an explicit requester title, otherwise from Problem evidence using the same input text each time. 
+9. Read `requests/requests.md`, bootstrapping it with `Version: 1.0.0` and `Next ID: REQ000001` when absent.
+10. Allocate the catalog's `Next ID` only when it matches `REQ` followed by exactly six digits.
+11. Build the request record and catalog update in memory before writing either file.
+12. Validate identifier, status, completeness, privacy, record structure, catalog structure, and request index before writing.
+13. Write the request record and catalog update only after both validations pass.
+14. When the catalog changed during allocation, retry the exclusive allocation operation at most 3 times.
+15. When every domain is complete:
+- Build the request artifact.
+- Build the catalog update.
+- Validate both.
+- Write both.
+
+Otherwise:
+- Do not create a request artifact.
+- Do not update the catalog.
+- Continue evidence collection.
+16. When input contains a secret or regulated personal data, exclude it and request business-relevant replacement evidence.
+17. When Version 1 creates a request, write status `proposed` and no relationship sections.
+18. The request record and catalog update are created only after all six evidence domains satisfy the Evidence Completeness Rules.
+
+## Verification
+
+- Confirm the generated record path matches `requests/REQ` followed by six digits.
+- Confirm the record contains the six evidence headings and `## Completeness`.
+- Confirm the catalog contains `Version:`, `Next ID:`, and one index row for the request.
+- Confirm Next ID advances exactly once after successful request creation.
+- Confirm no secret or regulated personal data appears in the written request record.
+- Confirm a failed allocation, validation, or write leaves existing request and catalog bytes unchanged.
+- Confirm repeated identical input produces identical question, examples, title, and artifact content.
+- Confirm new requests are created with
+status: proposed.
+- Confirm no request record is written while any evidence domain remains incomplete.
+- Confirm no catalog update occurs while any evidence domain remains incomplete.
+
+## Error Handling
+
+- Empty initial input: abort and report that a feature description is required.
+- Missing `.highway/` root: abort and report that the project root cannot be located.
+- Missing or invalid output template: abort and report the template path.
+- Missing or invalid catalog next ID: abort and report that allocation cannot proceed.
+- Catalog changed during allocation: retry the exclusive operation at most 3 times.
+- Secret or regulated personal data detected: retry intake 3 times maximum after requesting replacement evidence.
+- Request or catalog validation failure: abort, write nothing, and preserve the original bytes of every existing artifact.
+- Request or catalog write failure: abort, write nothing, and preserve the original bytes of every existing artifact.
+- Architecture, implementation, Control, NFR, or relationship request: fall back to the owning workflow without writing a request artifact.
+- One or more evidence domains remain incomplete: write nothing and continue evidence collection.
+
+## Example
+
+`/highway-new We need a consistent way for finance reviewers to reduce manual invoice comparison time.`
