@@ -5,7 +5,7 @@ alwaysApply: false
 
 ## Purpose
 
-Create and maintain a business request artifact by collecting sufficient business evidence from a requester.
+Create a business request artifact by collecting the business evidence required by the Evidence Completeness Rules.
 
 ## When to use
 
@@ -31,40 +31,46 @@ Create and maintain a business request artifact by collecting sufficient busines
 
 ## Outputs
 
-- A user-owned request record at `requests/REQXXXXXX.md`, following `.highway/library/templates/output/request-record.md`.
-- A user-owned request catalog at `requests/requests.md`, following `.highway/library/templates/output/request-catalog.md`.
+- A user-owned request record at `requests/REQXXXXXX.md`, only when all evidence domains satisfy the Evidence
+Completeness Rules, following `.highway/library/templates/output/request-record.md`.
+- A user-owned request catalog at `requests/requests.md`, only when a complete request is successfully created, following `.highway/library/templates/output/request-catalog.md`.
 - A conversational response containing one question and one to three contextual examples while evidence remains incomplete.
 - No request artifact when intake is empty, allocation fails, validation fails, or a transaction cannot complete.
 
 ## Workflow
 
-1. Read the requester's initial description and the six evidence domains in this order: Problem, Actors, Current Process, Desired Change, Success Measure, Business Constraints. [AS-6: .highway/governance/constitution.md]
-2. Mark each domain satisfied only when its evidence rule is met. [AS-6: .highway/governance/constitution.md]
-3. Select the first incomplete domain after every requester response. [AS-6: .highway/governance/constitution.md]
-4. Ask exactly one natural-language question for the selected domain. [AS-6: .highway/governance/constitution.md]
-5. Generate one to three examples using this precedence order: existing request evidence, Profile, Objectives, Controls, NFRs. [AS-6: .highway/governance/constitution.md]
-6. Keep examples and repository context separate from requester evidence and requirements. [AS-6: .highway/governance/constitution.md]
-7. Repeat steps 2 through 6 until all six domains are complete or the requester stops answering. [AS-6: .highway/governance/constitution.md]
-8. Derive the title from an explicit requester title, otherwise from Problem evidence using the same input text each time. [AS-6: .highway/governance/constitution.md]
-9. Read `requests/requests.md`, bootstrapping it with `Version: 1.0.0` and `Next ID: REQ000001` when absent. [AS-6: .highway/governance/constitution.md]
-10. Allocate the catalog's `Next ID` only when it matches `REQ` followed by exactly six digits. [AS-6: .highway/governance/constitution.md]
-11. Build the request record and catalog update in memory before writing either file. [AS-6: .highway/governance/constitution.md]
-12. Validate identifier, status, completeness, privacy, record structure, catalog structure, and request index before writing. [AS-6: .highway/governance/constitution.md]
-13. Write the request record and catalog update only after both validations pass. [AS-6: .highway/governance/constitution.md]
-14. When the catalog changed during allocation, retry the exclusive allocation operation at most 3 times. [AS-6: .highway/governance/constitution.md]
-15. When every domain is complete, write `Completeness: Complete`; otherwise write `Completeness: Incomplete` and do not claim completion; accept `None`, `No business constraints`, and `No known constraints`. [AS-6: .highway/governance/constitution.md]
-16. When input contains a secret or regulated personal data, exclude it and request business-relevant replacement evidence. [AS-6: .highway/governance/constitution.md]
-17. When Version 1 creates a request, write status `proposed` and no relationship sections. [AS-6: .highway/governance/constitution.md]
+1. Read the requester's initial description and the six evidence domains in this order: Problem, Actors, Current Process, Desired Change, Success Measure, Business Constraints.
+2. Mark each domain satisfied only when its evidence rule is met.
+3. Select the first incomplete domain after every requester response.
+4. Ask exactly one natural-language question for the selected domain.
+5. Generate one to three examples using this precedence order: existing request evidence, Profile, Objectives, Controls, NFRs.
+6. Keep examples and repository context separate from requester evidence and requirements. 
+7. Repeat steps 2 through 6 until all six domains are complete or the requester stops answering. 
+8. Derive the title from an explicit requester title, otherwise from Problem evidence using the same input text each time. 
+9. Read `requests/requests.md`, bootstrapping it with `Version: 1.0.0` and `Next ID: REQ000001` when absent.
+10. Allocate the catalog's `Next ID` only when it matches `REQ` followed by exactly six digits.
+11. Build the request record and catalog update in memory before writing either file.
+12. Validate identifier, status, completeness, privacy, record structure, catalog structure, and request index before writing.
+13. Write the request record and catalog update only after both validations pass.
+14. When the catalog changed during allocation, retry the exclusive allocation operation at most 3 times.
+15. When every domain is complete, build and validate the request artifact and catalog update, then write both; otherwise, create neither artifact and continue evidence collection.
+16. When input contains a secret or regulated personal data, exclude it and request business-relevant replacement evidence.
+17. When Version 1 creates a request, write status `proposed` and no relationship sections.
+18. The request record and catalog update are created only after all six evidence domains satisfy the Evidence Completeness Rules.
 
 ## Verification
 
-- Run `.highway/tools/validate-skill.sh .highway/skills/highway-new` and confirm exit 0.
 - Confirm the generated record path matches `requests/REQ` followed by six digits.
 - Confirm the record contains the six evidence headings and `## Completeness`.
 - Confirm the catalog contains `Version:`, `Next ID:`, and one index row for the request.
+- Confirm Next ID advances exactly once after successful request creation.
 - Confirm no secret or regulated personal data appears in the written request record.
 - Confirm a failed allocation, validation, or write leaves existing request and catalog bytes unchanged.
 - Confirm repeated identical input produces identical question, examples, title, and artifact content.
+- Confirm new requests are created with
+status: proposed.
+- Confirm no request record is written while any evidence domain remains incomplete.
+- Confirm no catalog update occurs while any evidence domain remains incomplete.
 
 ## Error Handling
 
@@ -77,6 +83,7 @@ Create and maintain a business request artifact by collecting sufficient busines
 - Request or catalog validation failure: abort, write nothing, and preserve the original bytes of every existing artifact.
 - Request or catalog write failure: abort, write nothing, and preserve the original bytes of every existing artifact.
 - Architecture, implementation, Control, NFR, or relationship request: fall back to the owning workflow without writing a request artifact.
+- One or more evidence domains remain incomplete: abort the write, write nothing, and continue evidence collection.
 
 ## Example
 

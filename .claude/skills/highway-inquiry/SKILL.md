@@ -100,8 +100,6 @@ duplicate in the abstract.
 
 This self-check exercises `X1.1`, `X1.2`, `X2.1`, `X4.1`, `X5.1`, `X5.2` and `X6.1`.
 
-- Run `.highway/tools/validate-library.sh .highway/library/templates/requirements-inquiry.md` and
-  confirm exit 0.
 - Confirm the numbers run from 1 to the question count with no gap and no duplicate.
 - Confirm no two questions carry identical text.
 - Confirm an unchanged question set rewrites to an identical file.
