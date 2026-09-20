@@ -58,6 +58,9 @@ Completeness Rules, following `.highway/library/templates/output/request-record.
 17. When Version 1 creates a request, write status `proposed` and no relationship sections.
 18. The request record and catalog update are created only after all six evidence domains satisfy the Evidence Completeness Rules.
 
+For Business Constraints, explicitly record `No business constraints` when the requester confirms
+there are none, and record `No known constraints` when the requester has no constraints to report.
+
 ## Verification
 
 - Confirm the generated record path matches `requests/REQ` followed by six digits.

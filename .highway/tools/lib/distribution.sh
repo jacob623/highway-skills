@@ -37,8 +37,8 @@ dist_records() {
 
 # include | exclude | unclassified, by longest matching prefix.
 dist_classify() {
-	local path="$1"
-	dist_records | awk -F'\t' -v p="$path" '
+	local target_path="$1"
+	dist_records | awk -F'\t' -v p="$target_path" '
 		{
 			src = $2
 			# A record matches the path itself or anything beneath it.
