@@ -136,9 +136,9 @@ require_text "$OBJECTIVE_SKILL" ".highway/library/templates/output/objective-rec
 require_text "$NEW_SKILL" ".highway/library/templates/output/request-record.md"
 require_text "$NEW_SKILL" ".highway/library/templates/output/request-catalog.md"
 require_text "$NEW_SKILL" "Problem, Actors, Current Process, Desired Change, Success Measure, Business Constraints, Solution Constraints"
-require_text "$NEW_SKILL" "None known"
+require_text "$NEW_SKILL" "No business constraints"
 require_text "$NEW_SKILL" "one or more non-empty values"
-if grep -Fq "No business constraints" "$NEW_SKILL" || grep -Fq "No known constraints" "$NEW_SKILL"; then
+if grep -Fq "None known" "$NEW_SKILL" || grep -Fq "No known constraints" "$NEW_SKILL"; then
 	echo "FAIL: legacy Business Constraints absence wording remains"
 	fail=1
 fi

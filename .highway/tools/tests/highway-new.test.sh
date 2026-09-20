@@ -60,6 +60,21 @@ require_text() {
 		fail=1
 	fi
 }
+require_absent() {
+	local file="$1" text="$2"
+	if grep -Fq "$text" "$file"; then
+		echo "FAIL: legacy text '$text' remains in $file"
+		fail=1
+	fi
+}
+require_count() {
+	local file="$1" text="$2" expected="$3" actual
+	actual="$(grep -F "$text" "$file" | wc -l | tr -d ' ')"
+	if [[ "$actual" != "$expected" ]]; then
+		echo "FAIL: expected '$text' exactly $expected time(s) in $file, found $actual"
+		fail=1
+	fi
+}
 
 require_fixture_text() {
 	local fixture="$1" text="$2"
@@ -92,10 +107,9 @@ if [[ -f "$SKILL" ]]; then
 		'one question at a time' \
 		'Solution Constraints' \
 		'allowed_solution_classes' \
-		'one or more non-empty values' \
-		'allowed_solution_classes must contain one or more values or unknown' \
+		'one or more non-empty values or `unknown`' \
 		'Solution Constraints field error' \
-		'None known' \
+		'No business constraints' \
 		'existing_platforms_required' \
 		'existing_platforms_preferred' \
 		'known_systems' \
@@ -107,7 +121,7 @@ if [[ -f "$SKILL" ]]; then
 		'without ranking' \
 		'empty array' \
 		'unknown' \
-		'absent constraint is neutral' \
+		'An absent' \
 		'privacy' \
 		'Discovery' \
 		'ADR' \
@@ -119,10 +133,16 @@ if [[ -f "$SKILL" ]]; then
 		'.highway/library/templates/output/request-catalog.md'; do
 		require_text "$SKILL" "$token"
 	done
-	if grep -Fq 'No business constraints' "$SKILL" || grep -Fq 'No known constraints' "$SKILL"; then
-		echo "FAIL: legacy Business Constraints absence wording remains"
-		fail=1
-	fi
+	require_count "$SKILL" 'allowed_solution_classes` as a user-owned extensible list containing one or more' 1
+	require_count "$SKILL" 'For all other list-shaped fields, record a populated list, an explicit empty array, or `unknown`.' 1
+	require_count "$SKILL" 'For a Solution Constraints field error, identify the exact field, state its accepted value shape, and' 1
+	require_count "$SKILL" 'request a replacement or `unknown`.' 1
+	require_absent "$SKILL" 'allowed_solution_classes must contain one or more values or unknown.'
+	require_absent "$SKILL" 'The `Solution Constraints field error` message must identify the exact field and accepted shape,'
+	require_absent "$SKILL" 'None known'
+	require_count "$SKILL" 'An absent' 1
+	require_count "$SKILL" 'constraint is neutral and is never a preference, recommendation, ranking,' 1
+	require_absent "$SKILL" 'No known constraints'
 	if grep -Eiq 'solution_class[_a-z]*:[[:space:]]*(true|false)|allow[_-]?custom[_-]?development:[[:space:]]*(true|false)' "$SKILL"; then
 		echo "FAIL: source skill contains legacy solution-class boolean terminology"
 		fail=1

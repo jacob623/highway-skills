@@ -62,14 +62,13 @@ Completeness Rules, following `.highway/library/templates/output/request-record.
 17. When Version 1 creates a request, write status `proposed` and no relationship sections.
 18. The request record and catalog update are created only after all seven evidence domains satisfy the Evidence Completeness Rules.
 
-For Business Constraints, use `None known` when the requester confirms that no constraints apply.
+For Business Constraints, use `No business constraints` when the requester confirms that no constraints apply.
 This is canonical intake wording for the existing explicit empty state; preserve `unknown` for
 uncertainty and do not persist the phrase as a new record value.
 
 For Solution Constraints, ask one question at a time and collect these eight fields in this order:
 
-- `allowed_solution_classes` as a user-owned extensible list containing one or more non-empty values,
-  or `unknown`. allowed_solution_classes must contain one or more values or unknown.
+- `allowed_solution_classes` as a user-owned extensible list containing one or more non-empty values or `unknown`.
   Preserve multiple entries without ranking them. An empty list, blank answer,
   malformed scalar, whitespace-only entry, or empty entry is invalid.
 - `existing_platforms_required` as existing enterprise platforms that must be used.
@@ -80,15 +79,14 @@ For Solution Constraints, ask one question at a time and collect these eight fie
 - `procurement_constraints` as acquisition constraints, including restrictions on new purchases.
 - `regulatory_restrictions` as regulatory or data-handling conditions.
 
-Record each field as user-provided evidence, an explicit empty array when the requester knows no
-values apply, or `unknown` when the requester cannot determine the value. Missing fields are not
-valid evidence. An absent constraint is neutral and is never a preference, recommendation, ranking,
+For all other list-shaped fields, record a populated list, an explicit empty array, or `unknown`.
+Record each field as user-provided evidence. Missing fields are not valid evidence. An absent
+constraint is neutral and is never a preference, recommendation, ranking,
 or selection criterion. A malformed value must be replaced by valid evidence or `unknown` before
 creation.
 
-For a Solution Constraints field error, identify the exact field, state its accepted value shape,
-The `Solution Constraints field error` message must identify the exact field and accepted shape,
-and request a replacement or `unknown`. For `allowed_solution_classes`, the error must state that
+For a Solution Constraints field error, identify the exact field, state its accepted value shape, and
+request a replacement or `unknown`. For `allowed_solution_classes`, the error must state that
 the field must contain one or more values or `unknown`. For other list-shaped fields, distinguish
 a populated list, an explicit empty list, and `unknown`. For a scalar restriction, request a
 non-empty value or `unknown`; never coerce an invalid blank into an empty list. A valid replacement
