@@ -57,19 +57,43 @@ sections `Objective Relationships`, `Control Relationships`, and `NFR Relationsh
 ## ADR Handoff
 
 The handoff is a read-only projection for the later `highway-adr` workflow.
-- Include every Candidate Solution Option and the Recommendation rationale.
-- Include exactly one future ADR, the selected option, and rejected option identifiers.
-- Include recommendation acceptance, rejection rationale, consequences, and decision authority.
-- Record no decision and grant no implementation authorization.
+- Include data required for one future ADR: the Discovery and Request identifiers, every Candidate
+  Solution Option and `OPT` identifier, the Comparison Matrix, Recommendation, Recommendation
+  rationale, and every Reference Architecture Match.
+- Do NOT include:
+  - selected option
+  - rejected option identifiers
+  - recommendation acceptance
+  - recommendation rejection rationale
+  - decision authority
+  - consequences
+- These values are owned exclusively by ADR. Discovery records no decision and grants no
+  implementation authorization.
 
 Persist the handoff as `discoveries/DISCXXXXXX.md` and maintain the catalog at `discoveries/discoveries.md`.
 
-The handoff is a read-only projection of the Discovery identifier, Request identifier, every
-Candidate Solution Option and `OPT` identifier, the complete Comparison Matrix, Recommendation,
-Recommendation rationale, and every Reference Architecture Match. It is eligible for exactly one
-future ADR analysis input and does not repeat analysis. ADR may select any option and owns the
-selected option, rejected option identifiers, recommendation acceptance, rejection rationale,
-consequences, and decision authority.
+The handoff is eligible for exactly one future ADR analysis input and does not repeat analysis. ADR
+may select any option and owns all decision persistence.
+
+## Reference Implementation Evaluation
+
+Reference Implementations are advisory artifacts identified by their authoritative catalog and
+associated Reference Architecture. A valid Reference Implementation contributes a deterministic,
+non-negative count to its matched Reference Architecture.
+
+Reference Implementations MUST NOT:
+
+- create recommendations
+- change recommendations
+- change scores
+- change confidence
+
+Reference Implementations MAY be used only for deterministic tie-breaking after score calculation
+when tied options have equal total scores and all tied options have at least one Reference
+Architecture match. For each tied option, use the highest Reference Implementation count among its
+matched Reference Architectures. An absent or unreadable catalog makes every count zero; equal
+counts fall back to the lower `OPT` identifier. Counts are never added to weighted scores or used
+to alter option ordering, confidence, or informational categories.
 ## Workflow
 
 1. Receive exactly one `REQ` followed by six digits. Reject missing, malformed, ambiguous, nonexistent, non-unique, or incomplete sources before allocation or writes; abort and preserve existing bytes.

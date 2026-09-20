@@ -88,9 +88,10 @@ for token in 'explicit identifier' 'exact normalized title' 'capability identifi
 	'Informational Complexity' 'Governance Impact' 'Operational Overhead'; do
 	require_text "$SKILL" "$token"
 done
-for token in '## ADR Handoff' 'read-only projection' 'every Candidate Solution Option' 'Recommendation rationale' \
-	'exactly one future ADR' 'selected option' 'rejected option identifiers' 'recommendation acceptance' \
-	'rejection rationale' 'consequences' 'decision authority' 'no decision' 'implementation authorization'; do
+for token in '## ADR Handoff' 'read-only projection' 'Candidate Solution Option' 'Comparison Matrix' \
+	'Recommendation' 'rationale' 'exactly one future ADR' 'selected option' 'rejected option identifiers' \
+	'recommendation acceptance' 'recommendation rejection rationale' 'consequences' 'decision authority' \
+	'owned exclusively by ADR' 'no decision' 'implementation authorization'; do
 	require_text "$SKILL" "$token"
 done
 for token in 'name: discovery-record' 'id: DISCXXXXXX' 'request: REQXXXXXX' '## Request' '## Research Findings' '## Assumptions' '## Risks' '## Unknowns' '## Candidate Solution Options' '## Candidate Solution Comparison Matrix' '## Recommendation' '## Objective Relationships' '## Control Relationships' '## NFR Relationships' '## Reference Architecture Matches' 'OPTXXXXXX' 'Recommendation Status' 'Complexity' 'Governance Impact' 'Operational Overhead'; do
