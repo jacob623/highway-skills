@@ -49,10 +49,27 @@ sections `Objective Relationships`, `Control Relationships`, and `NFR Relationsh
 
 ## Outputs
 
-  and `.highway/library/templates/output/discovery-catalog.md`.
-  Recommendation, Objective Relationships, Control Relationships, NFR Relationships, and
-  Reference Architecture Matches in the shared template order.
-  path, and advisory relationship observations.
+- One user-owned Discovery record at `discoveries/DISCXXXXXX.md`.
+- One user-owned Discovery catalog at `discoveries/discoveries.md`.
+- The record follows `.highway/library/templates/output/discovery-record.md` and contains, in
+  shared template order:
+  - Request Reference
+  - Research Findings
+  - Assumptions
+  - Risks
+  - Unknowns
+  - Candidate Solution Options
+  - Candidate Solution Comparison Matrix
+  - Recommendation
+  - Objective Relationships
+  - Control Relationships
+  - NFR Relationships
+  - Reference Architecture Matches
+- The catalog follows `.highway/library/templates/output/discovery-catalog.md`.
+- The completion response names the Discovery identifier, Request identifier, Record path, and
+  Catalog path.
+- Source resolution, validation, privacy review, scoring, allocation, or writing failure produces
+  no output and preserves existing bytes.
 
 ## ADR Handoff
 
@@ -77,35 +94,93 @@ may select any option and owns all decision persistence.
 
 ## Reference Implementation Evaluation
 
-Reference Implementations are advisory artifacts identified by their authoritative catalog and
-associated Reference Architecture. A valid Reference Implementation contributes a deterministic,
-non-negative count to its matched Reference Architecture.
+Reference Implementations are advisory artifacts identified by the authoritative catalog and
+associated Reference Architecture. Evaluation is read-only and produces traceability evidence,
+matching identifiers, counts, and blocking reasons only.
 
-Reference Implementations MUST NOT:
+## Reference Implementation Matching
 
-- create recommendations
-- change recommendations
-- change scores
-- change confidence
+A Reference Implementation matches a Candidate Solution Option only when either condition is true:
 
-Reference Implementations MAY be used only for deterministic tie-breaking after score calculation
-when tied options have equal total scores and all tied options have at least one Reference
-Architecture match. For each tied option, use the highest Reference Implementation count among its
-matched Reference Architectures. An absent or unreadable catalog makes every count zero; equal
-counts fall back to the lower `OPT` identifier. Counts are never added to weighted scores or used
-to alter option ordering, confidence, or informational categories.
+1. The Reference Implementation explicitly references a matching Reference Architecture.
+2. The Reference Implementation explicitly references the identifier of a Reference Architecture
+  matched by that option.
+
+No match exists otherwise. Semantic similarity, inference, approximation, or similarity scoring
+MUST NOT create a match.
+
+## Reference Implementation Counting
+
+Reference Implementation Count equals the number of unique matching Reference Implementations for
+an option. Count each stable Reference Implementation identifier once, even when duplicate
+references or multiple paths identify the same implementation. In other words, duplicate references count once.
+
+Missing or unreadable Reference Implementations contribute zero. Malformed Reference Implementations,
+including unparseable artifacts, missing stable identity, or missing required
+fields, are excluded from counting and tie-breaking; record the blocking reason and continue.
+An unresolved Reference Architecture reference in an otherwise valid implementation is a valid
+non-match.
+
+An absent or unreadable catalog produces zero counts. An internally inconsistent catalog, including
+duplicate stable identifiers, excludes affected implementations, records the reason, and continues
+with zero affected counts. When an option matches multiple Reference Architectures, use the highest
+Reference Implementation Count among those matches.
+
+## Recommendation Tie-Break Evaluation
+
+Reference Implementation data is evaluated only according to the Reference Implementation
+Evaluation rules and is used exclusively for deterministic tie-breaking.
+
+Apply tie-breaking only after score calculation and Reference Architecture evaluation, when
+multiple options have identical Recommendation scores. Evaluate tied options in this exact order:
+
+1. Reference Architecture Match
+2. Reference Implementation Count
+3. Lowest Discovery-scoped `OPT` identifier
+
+Reference Architecture Match evaluates whether an option has one or more matched Reference
+Architectures. Options with one or more matches outrank options with no matches. For each option,
+use the highest implementation count across its matched architectures. Stop immediately when one
+criterion selects a single option; later criteria MUST NOT be evaluated.
+
+Reference Implementation evidence MUST NOT change Recommendation scores, confidence, Recommendation rationale, or ranking except through this defined deterministic tie-break.
+
+## Reference Implementation Determinism
+
+For identical Requests, Discovery inputs, Profile, Objective, Control, NFR, Reference Architecture,
+and Reference Implementation baselines, matches, counts, tie-break outcomes, and Recommendation
+selection remain identical. Evaluation MUST NOT use timestamps, creation dates, modification dates,
+recency, environment state, randomness, semantic similarity, inference, or similarity scoring.
+
+## Reference Implementation Scope Clarification
+
+Included are advisory matching, deterministic counting, deterministic tie-breaking, implementation
+reuse visibility, architecture adoption visibility, and traceability. Excluded are recommendation
+creation, scoring, confidence, rationale, ranking except tie-breaking, implementation approval or
+authorization, architecture approval, governance approval, and ADR ownership.
+
+## Reference Implementation Traceability
+
+A Reference Implementation match indicates only that a related implementation artifact exists. A
+match does not indicate recommendation, endorsement, approval, architectural correctness,
+implementation suitability, or implementation authorization. ADR remains responsible for selecting
+a Candidate Solution Option and recording all architecture decisions.
+
+Reference Implementation evaluation MUST NOT mutate Reference Implementations, Reference
+Architectures, source baselines, Discovery inputs, ADR records, or governance baselines.
+
 ## Workflow
 
 1. Receive exactly one `REQ` followed by six digits. Reject missing, malformed, ambiguous, nonexistent, non-unique, or incomplete sources before allocation or writes; abort and preserve existing bytes.
 2. Resolve exactly one Request and verify its completion marker is `Complete`. Treat its evidence as authoritative and read-only. Do not scan for an implicit newest or batch source.
-3. Load closed inputs in order: Request, Profile when present, Objective when present, Control when present, NFR when present, and Reference Architecture when present. Reference Implementation data is tie-break evidence only. Missing optional Reference Architecture data produces an empty match set; missing or unreadable Reference Implementation data produces zero counts.
+3. Load closed inputs in order: Request, Profile when present, Objective when present, Control when present, NFR when present, and Reference Architecture when present. Reference Implementation data is evaluated only according to the Reference Implementation Evaluation rules and is used exclusively for deterministic tie-breaking. Reference Implementation matching and counting occur only after score calculation and Reference Architecture evaluation. Missing optional Reference Architecture data produces an empty match set; missing or unreadable Reference Implementation data produces zero counts.
 4. Normalize LF line endings and comparison text, then redact secrets and regulated personal data before copying, matching, scoring, or serialization. Replace excluded material with a stable category marker.
 5. Copy Request evidence in fixed order. Preserve Research Findings, Assumptions, Risks, Unknowns, and Objective, Control, and NFR relationship extraction and advisory behavior.
 6. Generate distinct Candidate Solution Options from explicit Desired Change strategies first, then strategies implied by Objectives, Controls, NFRs, Research Findings, and available Reference Architectures. Normalize and deduplicate before identifier allocation, aggregate supporting evidence, reject incomplete options, and record any more-than-five truncation boundary.
 7. Sort viable options by Desired Change alignment, Objective alignment, constraint alignment, and alphabetical title, in that order. Retain the deterministic first two through five options and assign identifiers such as `OPT000001` only after sorting. Fewer than two viable options aborts without writes.
 8. Evaluate every Reference Architecture candidate independently using exact matching precedence: explicit identifier, exact normalized title, capability identifier, Objective identifier, Control identifier, then NFR identifier. Report every matching candidate with its identifier, confidence, highest-precedence match reason, matched option identifiers, and Reference Implementation count. Semantic, similarity, and inference matching are excluded.
 9. Calculate Objective, NFR, Control, Profile, and Risk Reduction scores with weights Objective 30, NFR 30, Control 20, Profile 10, and Risk Reduction 10. Use floor rounding, zero for zero denominators, and totals from 0 through 100. Derive High confidence for 90-100, Medium for 70-89, and Low for 0-69. Informational Complexity, Governance Impact, and Operational Overhead classifications never affect scoring, confidence, ranking, selection, or option ordering.
-10. Render the complete Candidate Solution Comparison Matrix before the Recommendation. Include every option in option order, every score component, total, Reference Architecture matches, exactly one `Recommended` status, and all mandatory informational categories. For equal totals, prefer a matched architecture; among all-matched ties use the highest Reference Implementation count across each option's matches, then lower `OPT`.
+10. Render the complete Candidate Solution Comparison Matrix before the Recommendation. Include every option in option order, every score component, total, Reference Architecture matches, exactly one `Recommended` status, and all mandatory informational categories. For equal totals, apply the Recommendation Tie-Break Evaluation section.
 11. Build and validate record and catalog in memory before writing. Validate identifiers, option bounds, score identity, advisory-only fields, source-byte preservation, and complete template order. Allocate only from catalog `Next ID`, advance it exactly once, retry an exclusive allocation conflict at most 3 times, then write the record and catalog as one ordered transaction.
 12. On success, report `REQ -> DISC -> ADR` traceability and expose the complete Discovery-to-ADR handoff. ADR creation is the later owning workflow and remains responsible for selected or rejected options, acceptance, rationale, consequences, and decisions.
 
@@ -130,9 +205,25 @@ to alter option ordering, confidence, or informational categories.
 - Confirm Objective, Control, and NFR baselines and the Request remain byte-for-byte unchanged.
 - Confirm allocation advances exactly once, write nothing on failure, and leave no partial record or catalog.
 - Confirm the successful handoff is exactly one future Discovery input for `highway-adr`.
+- Confirm Reference Implementation matching uses only the two explicit matching conditions.
+- Confirm duplicate matches are counted once per stable identifier.
+- Confirm malformed Reference Implementations are excluded and their blocking reasons are recorded.
+- Confirm missing, unreadable, absent, or inconsistent implementation data produces zero affected counts.
+- Confirm Recommendation scores, confidence, and rationale are unchanged by Reference Implementation evidence.
+- Confirm tie-break order is Reference Architecture Match, Reference Implementation Count, then lowest `OPT` identifier.
+- Confirm evaluation stops immediately after a criterion selects one winner.
+- Confirm repeated executions with identical inputs are deterministic.
+- Confirm ADR ownership is unchanged and no implementation is authorized.
 
 ## Error Handling
 
+- A malformed Reference Implementation is excluded from evaluation, its blocking reason is recorded, and Discovery continues.
+- An unreadable Reference Implementation contributes zero.
+- Multiple matching paths for one Reference Implementation count once.
+- An absent or unreadable Reference Implementation catalog produces zero counts.
+- An internally inconsistent catalog excludes affected implementations, records the reason, and continues.
+- A Reference Implementation matching failure continues with zero matching implementations.
+- Any source, validation, privacy, scoring, allocation, or writing failure produces no output, preserves existing bytes, and does not create an ADR, record a decision, authorize implementation, or mutate governance.
 - Missing, malformed, ambiguous, nonexistent, non-unique, or incomplete Request: abort and preserve existing bytes.
 - Missing or malformed catalog, fewer than two viable options, failed score calculation, failed privacy redaction, failed validation, or write failure: abort and preserve existing bytes.
 - More than five viable options: fall back by retaining the deterministic first five and record the truncation boundary.

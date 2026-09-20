@@ -65,6 +65,35 @@ require_file "$SKILL"
 require_file "$RECORD_TEMPLATE"
 require_file "$CATALOG_TEMPLATE"
 
+if [[ "$(grep -c '^## Verification$' "$SKILL")" -ne 1 ]]; then
+	echo "FAIL: expected exactly one ## Verification section" >&2
+	fail=1
+fi
+if [[ "$(grep -c '^## Error Handling$' "$SKILL")" -ne 1 ]]; then
+	echo "FAIL: expected exactly one ## Error Handling section" >&2
+	fail=1
+fi
+if grep -Fq '## Verification Expectations' "$SKILL"; then
+	echo "FAIL: ## Verification Expectations must be consolidated" >&2
+	fail=1
+fi
+if grep -Fq '## Error Handling Expectations' "$SKILL"; then
+	echo "FAIL: ## Error Handling Expectations must be consolidated" >&2
+	fail=1
+fi
+if ! grep -Fq 'Recommendation Tie-Break Evaluation' "$SKILL"; then
+	echo "FAIL: Workflow must reference Recommendation Tie-Break Evaluation" >&2
+	fail=1
+fi
+if grep -Fq 'prefer a matched architecture' "$SKILL"; then
+	echo "FAIL: Workflow must not embed prefer a matched architecture" >&2
+	fail=1
+fi
+if ! grep -Fq 'Comparison Matrix before the Recommendation' "$SKILL"; then
+	echo "FAIL: Workflow must preserve matrix-before-Recommendation ordering" >&2
+	fail=1
+fi
+
 for token in \
 	'## Purpose' '## When to use' '## When not to use' '## Inputs' '## Outputs' \
 	'## Workflow' '## Verification' '## Error Handling' '## Example' \
@@ -73,6 +102,36 @@ for token in \
 	'conversation contract' 'analysis contract' 'write nothing' 'preserve existing bytes' \
 	'ADR' 'Version' 'Next ID' 'byte-identical' 'redact' 'High' 'Medium' 'Low' \
 	'exact normalized title' 'at least two' 'advisory' 'at most 3 times' 'exactly once'; do
+	require_text "$SKILL" "$token"
+done
+for token in \
+	'discoveries/DISCXXXXXX.md' 'discoveries/discoveries.md' \
+	'Request Reference' 'Research Findings' 'Assumptions' 'Risks' 'Unknowns' \
+	'Candidate Solution Options' 'Candidate Solution Comparison Matrix' 'Recommendation' \
+	'Objective Relationships' 'Control Relationships' 'NFR Relationships' \
+	'Reference Architecture Matches' 'Discovery identifier' 'Request identifier' \
+	'Record path' 'Catalog path' 'no output' 'preserve existing bytes'; do
+	require_text "$SKILL" "$token"
+done
+for token in \
+	'## Reference Implementation Matching' '## Reference Implementation Counting' \
+	'## Recommendation Tie-Break Evaluation' '## Reference Implementation Determinism' \
+	'## Reference Implementation Scope Clarification' '## Reference Implementation Traceability' \
+	'explicitly references a matching Reference Architecture' \
+	'explicitly references the identifier' 'unique matching Reference Implementations' \
+	'duplicate references count once' 'Malformed Reference Implementations' \
+	'absent or unreadable catalog' 'internally inconsistent' \
+	'Reference Architecture Match' 'Reference Implementation Count' \
+	'Lowest Discovery-scoped `OPT` identifier' 'Stop immediately' \
+	'score and confidence' 'ADR ownership' \
+	'Reference Implementation data is evaluated only according to the Reference Implementation Evaluation rules and is used exclusively for deterministic tie-breaking.'; do
+	require_text "$SKILL" "$token"
+done
+for token in \
+	'semantic similarity' 'inference' 'approximation' 'similarity scoring' \
+	'timestamps' 'creation dates' 'modification dates' 'recency' 'environment state' 'randomness' \
+	'endorsement' 'approval' 'architectural correctness' 'implementation suitability' \
+	'implementation authorization' 'record a decision'; do
 	require_text "$SKILL" "$token"
 done
 for token in 'Desired Change alignment' 'Objective alignment' 'constraint alignment' 'alphabetical title' \
