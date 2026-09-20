@@ -4,28 +4,31 @@ description: "Manages a repository-wide Discovery baseline."
 usage: "Invoke as `/highway-discovery` and state the Request."
 compatibility: all
 metadata:
-  version: 1.0.0
+  version: 2.0.0
 ---
 
 # highway-discovery
 
 ## Purpose
 
-Creates one deterministic Discovery analysis between a completed Request and later ADR work.
+Creates one deterministic architectural Discovery analysis between a completed Request and later
+ADR work, producing bounded Candidate Solution Options, exact Reference Architecture matches, a
+complete Comparison Matrix, and one advisory Recommendation.
 
 ## When to use
 
 - A requester has supplied exactly one completed Request identifier in `REQ` plus six digits.
-- The repository needs deterministic findings, assumptions, risks, unknowns, approaches, and
-  advisory Objective, Control, and NFR candidates before ADR work.
+- The repository needs deterministic findings, assumptions, risks, unknowns, Candidate Solution
+  Options, a Comparison Matrix, a Recommendation, and advisory governance context before ADR work.
 - A later `highway-adr` workflow needs one stable Discovery input.
 
 ## When not to use
 
 - Do not select Requests by recency, filename order, or batch listing.
 - Do not analyze an incomplete Request or invent missing business evidence.
+- A successful analysis requires at least two and no more than five viable Candidate Solution Options.
 - Do not approve, create, update, or remove Objectives, Controls, NFRs, Requests, ADRs, or
-  architecture artifacts.
+  Reference Architectures, Reference Implementations, architecture artifacts, or decisions.
 
 ## Inputs
 
@@ -33,6 +36,8 @@ Creates one deterministic Discovery analysis between a completed Request and lat
 - The uniquely resolved Request at the user-owned `requests/` path, which must expose completion
   state `Complete`.
 - Optional closed baselines, loaded only in this order: Profile, Objective, Control, NFR.
+- Optional Reference Architecture baseline loaded after NFR; Reference Implementation data is
+  consulted only for the advisory tie-break.
 - The complete output structure in `.highway/library/templates/output/discovery-record.md`.
 - The complete catalog structure in `.highway/library/templates/output/discovery-catalog.md`.
 - The Discovery Conversation Contract and Discovery Analysis Contract: invocation, closed-input,
@@ -44,34 +49,57 @@ sections `Objective Relationships`, `Control Relationships`, and `NFR Relationsh
 
 ## Outputs
 
-- One user-owned record at `discoveries/DISCXXXXXX.md` with `status: proposed`.
-- One user-owned catalog at `discoveries/discoveries.md`, bootstrapped when absent.
-- Both outputs follow the complete structures in `.highway/library/templates/output/discovery-record.md`
   and `.highway/library/templates/output/discovery-catalog.md`.
-- A completion response naming the Discovery identifier, Request identifier, record path, catalog
+  Recommendation, Objective Relationships, Control Relationships, NFR Relationships, and
+  Reference Architecture Matches in the shared template order.
   path, and advisory relationship observations.
-- No output when source resolution, privacy, validation, allocation, or writing fails.
 
+## ADR Handoff
+
+The handoff is a read-only projection for the later `highway-adr` workflow.
+- Include every Candidate Solution Option and the Recommendation rationale.
+- Include exactly one future ADR, the selected option, and rejected option identifiers.
+- Include recommendation acceptance, rejection rationale, consequences, and decision authority.
+- Record no decision and grant no implementation authorization.
+
+Persist the handoff as `discoveries/DISCXXXXXX.md` and maintain the catalog at `discoveries/discoveries.md`.
+
+The handoff is a read-only projection of the Discovery identifier, Request identifier, every
+Candidate Solution Option and `OPT` identifier, the complete Comparison Matrix, Recommendation,
+Recommendation rationale, and every Reference Architecture Match. It is eligible for exactly one
+future ADR analysis input and does not repeat analysis. ADR may select any option and owns the
+selected option, rejected option identifiers, recommendation acceptance, rejection rationale,
+consequences, and decision authority.
 ## Workflow
 
-1. Receive exactly one `REQ` followed by six digits. Reject missing, malformed, ambiguous, nonexistent, non-unique, or incomplete sources before allocation or writes.
+1. Receive exactly one `REQ` followed by six digits. Reject missing, malformed, ambiguous, nonexistent, non-unique, or incomplete sources before allocation or writes; abort and preserve existing bytes.
 2. Resolve exactly one Request and verify its completion marker is `Complete`. Treat its evidence as authoritative and read-only. Do not scan for an implicit newest or batch source.
-3. Load only the closed inputs in order: Request, Profile when present, Objective when present, Control when present, and NFR when present. Missing optional baselines produce empty relationship sections. Normalize LF line endings and trailing whitespace while preserving display spelling.
-4. Redact secrets and regulated personal data before copying or matching. Replace excluded material with a stable category marker and request business-relevant replacement evidence.
-5. Copy Request evidence in fixed order. Generate Research Findings from Problem, Actors, Current Process, Desired Change, Success Measure, and Business Constraints in source order.
-6. Generate Assumptions for absent, explicitly unknown, or dependency-bearing evidence. Generate Risks for constraints, dependencies, unresolved assumptions, privacy exclusions, and failure-sensitive transaction conditions. Generate Unknowns for absent evidence, unresolved terms, and explicit unknown markers. Deduplicate each collection by normalized text and sort by its stable normalized key.
-7. Generate Candidate Approaches only from distinct strategies explicitly present in Desired Change. When none exist, emit `No candidate approaches identified from the supplied evidence.` Do not invent an approach.
-8. Match each Objective, Control, and NFR independently. Explicit identifier references are High confidence; exact normalized title or statement matches are Medium; at least two normalized non-stopword tokens from Problem and Desired Change are Low. A single token is insufficient. Deduplicate by identifier and sort High, Medium, Low, then identifier. Every candidate is marked advisory and includes its first matching rule, source evidence domain, rationale, and confidence.
-9. Derive the title from the explicit Request title, otherwise the normalized Problem title fallback, and serialize the complete record using the shared record template's exact heading order. Serialize the catalog with `Version`, authoritative `Next ID`, `## Discovery Index`, and one entry.
-10. Build and validate record and catalog in memory before writing. Allocate only from catalog `Next ID`, advance it exactly once, retry an exclusive allocation conflict at most 3 times, then write the record and catalog as one ordered transaction.
-11. On success, report `REQ -> DISC -> ADR` traceability and keep all relationships advisory. ADR creation is the later owning workflow and is not performed here.
+3. Load closed inputs in order: Request, Profile when present, Objective when present, Control when present, NFR when present, and Reference Architecture when present. Reference Implementation data is tie-break evidence only. Missing optional Reference Architecture data produces an empty match set; missing or unreadable Reference Implementation data produces zero counts.
+4. Normalize LF line endings and comparison text, then redact secrets and regulated personal data before copying, matching, scoring, or serialization. Replace excluded material with a stable category marker.
+5. Copy Request evidence in fixed order. Preserve Research Findings, Assumptions, Risks, Unknowns, and Objective, Control, and NFR relationship extraction and advisory behavior.
+6. Generate distinct Candidate Solution Options from explicit Desired Change strategies first, then strategies implied by Objectives, Controls, NFRs, Research Findings, and available Reference Architectures. Normalize and deduplicate before identifier allocation, aggregate supporting evidence, reject incomplete options, and record any more-than-five truncation boundary.
+7. Sort viable options by Desired Change alignment, Objective alignment, constraint alignment, and alphabetical title, in that order. Retain the deterministic first two through five options and assign identifiers such as `OPT000001` only after sorting. Fewer than two viable options aborts without writes.
+8. Evaluate every Reference Architecture candidate independently using exact matching precedence: explicit identifier, exact normalized title, capability identifier, Objective identifier, Control identifier, then NFR identifier. Report every matching candidate with its identifier, confidence, highest-precedence match reason, matched option identifiers, and Reference Implementation count. Semantic, similarity, and inference matching are excluded.
+9. Calculate Objective, NFR, Control, Profile, and Risk Reduction scores with weights Objective 30, NFR 30, Control 20, Profile 10, and Risk Reduction 10. Use floor rounding, zero for zero denominators, and totals from 0 through 100. Derive High confidence for 90-100, Medium for 70-89, and Low for 0-69. Informational Complexity, Governance Impact, and Operational Overhead classifications never affect scoring, confidence, ranking, selection, or option ordering.
+10. Render the complete Candidate Solution Comparison Matrix before the Recommendation. Include every option in option order, every score component, total, Reference Architecture matches, exactly one `Recommended` status, and all mandatory informational categories. For equal totals, prefer a matched architecture; among all-matched ties use the highest Reference Implementation count across each option's matches, then lower `OPT`.
+11. Build and validate record and catalog in memory before writing. Validate identifiers, option bounds, score identity, advisory-only fields, source-byte preservation, and complete template order. Allocate only from catalog `Next ID`, advance it exactly once, retry an exclusive allocation conflict at most 3 times, then write the record and catalog as one ordered transaction.
+12. On success, report `REQ -> DISC -> ADR` traceability and expose the complete Discovery-to-ADR handoff. ADR creation is the later owning workflow and remains responsible for selected or rejected options, acceptance, rationale, consequences, and decisions.
 
 ## Verification
 
 - Confirm the input is exactly one explicit `REQ` plus six digits and resolves to one completed
   Request.
-- Confirm the record has the nine required sections in shared-template order and exactly one
-  Request reference.
+- Confirm the record has the required sections in shared-template order: Request, Research
+  Findings, Assumptions, Risks, Unknowns, Candidate Solution Options, Candidate Solution
+  Comparison Matrix, Recommendation, Objective Relationships, Control Relationships, NFR
+  Relationships, and Reference Architecture Matches.
+- Confirm the record contains two through five unique `OPT` identifiers, complete option fields,
+  a complete matrix in option order, exactly one `Recommended` status, and one Recommendation
+  whose score values equal the matrix values.
+- Confirm every Reference Architecture match is exact, independently evaluated, reported with its
+  highest-precedence reason, and advisory.
+- Confirm the Recommendation is advisory and contains no selected option, rejected option,
+  approval, architecture decision, implementation authorization, or governance mutation.
 - Confirm the catalog has only `Version`, `Next ID`, and `## Discovery Index`, with one unique row.
 - Confirm identical closed inputs and catalog state produce byte-identical output.
 - Confirm secrets and regulated personal data are absent and stable exclusion evidence is present.
@@ -82,11 +110,28 @@ sections `Objective Relationships`, `Control Relationships`, and `NFR Relationsh
 ## Error Handling
 
 - Missing, malformed, ambiguous, nonexistent, non-unique, or incomplete Request: abort and preserve existing bytes.
-- Missing or malformed catalog, failed privacy redaction, failed validation, or write failure: abort and preserve existing bytes.
+- Missing or malformed catalog, fewer than two viable options, failed score calculation, failed privacy redaction, failed validation, or write failure: abort and preserve existing bytes.
+- More than five viable options: fall back by retaining the deterministic first five and record the truncation boundary.
+- Missing or unreadable optional Reference Architecture data: fall back to an empty match set without failing.
+- A malformed or internally inconsistent Reference Architecture: fall back by excluding it, record its blocking reason in findings, and do not mutate the baseline.
+- A Reference Architecture match operation failure: fall back to an empty match set.
 - Catalog allocation conflict: retry the exclusive operation no more than 3 times, then report allocation failure without a write.
-- A missing optional Profile, Objective, Control, or NFR baseline yields an empty relationship section; a malformed present baseline aborts safely.
-- Abort; never mutate governance baselines, create an ADR, or silently replace user-owned bytes.
+- A missing optional Profile, Objective, Control, or NFR baseline: fall back to an empty relationship section.
+- A malformed present Profile, Objective, Control, or NFR baseline: abort safely.
+- Abort; never mutate governance baselines, create an ADR, record a decision, or silently replace user-owned bytes.
 
 ## Example
 
 `/highway-discovery REQ000001`
+
+## MVP Option Probes
+
+For each candidate solution option, capture these concise probes before comparison:
+
+- **Summary:** What the option is and how it addresses the objective.
+- **Benefits:** Expected value and strengths.
+- **Risks:** Material drawbacks, failure modes, or trade-offs.
+- **Assumptions:** Conditions that must hold for the option to work.
+- **Dependencies:** People, systems, decisions, or external constraints required.
+
+Use stable option identifiers (`OPTXXXXXX`) and carry these probes into the Candidate Solution Comparison Matrix and Recommendation.

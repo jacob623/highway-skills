@@ -68,14 +68,32 @@ require_file "$CATALOG_TEMPLATE"
 for token in \
 	'## Purpose' '## When to use' '## When not to use' '## Inputs' '## Outputs' \
 	'## Workflow' '## Verification' '## Error Handling' '## Example' \
-	'REQ' 'DISC' 'Complete' 'Research Findings' 'Candidate Approaches' \
+	'REQ' 'DISC' 'Complete' 'Research Findings' 'Candidate Solution Options' \
 	'Objective Relationships' 'Control Relationships' 'NFR Relationships' \
 	'conversation contract' 'analysis contract' 'write nothing' 'preserve existing bytes' \
 	'ADR' 'Version' 'Next ID' 'byte-identical' 'redact' 'High' 'Medium' 'Low' \
-	'single token is insufficient' 'advisory' 'at most 3 times' 'exactly once'; do
+	'exact normalized title' 'at least two' 'advisory' 'at most 3 times' 'exactly once'; do
 	require_text "$SKILL" "$token"
 done
-for token in 'name: discovery-record' 'id: DISCXXXXXX' 'request: REQXXXXXX' '## Request' '## Research Findings' '## Assumptions' '## Risks' '## Unknowns' '## Candidate Approaches' '## Objective Relationships' '## Control Relationships' '## NFR Relationships'; do
+for token in 'Desired Change alignment' 'Objective alignment' 'constraint alignment' 'alphabetical title' \
+	'OPT000001' 'two through five' 'deduplicate' 'supporting evidence' 'truncation boundary' \
+	'Candidate Solution Option' 'Summary:' 'Benefits:' 'Risks:' 'Assumptions:' 'Dependencies:'; do
+	require_text "$SKILL" "$token"
+done
+for token in 'explicit identifier' 'exact normalized title' 'capability identifier' 'Objective identifier' \
+	'Control identifier' 'NFR identifier' 'every Reference Architecture' 'highest-precedence' \
+	'Objective 30' 'NFR 30' 'Control 20' 'Profile 10' 'Risk Reduction 10' 'floor' \
+	'zero for zero denominators' '90-100' '70-89' '0-69' 'matched architecture' \
+	'Reference Implementation count' 'Comparison Matrix before the Recommendation' \
+	'Informational Complexity' 'Governance Impact' 'Operational Overhead'; do
+	require_text "$SKILL" "$token"
+done
+for token in '## ADR Handoff' 'read-only projection' 'every Candidate Solution Option' 'Recommendation rationale' \
+	'exactly one future ADR' 'selected option' 'rejected option identifiers' 'recommendation acceptance' \
+	'rejection rationale' 'consequences' 'decision authority' 'no decision' 'implementation authorization'; do
+	require_text "$SKILL" "$token"
+done
+for token in 'name: discovery-record' 'id: DISCXXXXXX' 'request: REQXXXXXX' '## Request' '## Research Findings' '## Assumptions' '## Risks' '## Unknowns' '## Candidate Solution Options' '## Candidate Solution Comparison Matrix' '## Recommendation' '## Objective Relationships' '## Control Relationships' '## NFR Relationships' '## Reference Architecture Matches' 'OPTXXXXXX' 'Recommendation Status' 'Complexity' 'Governance Impact' 'Operational Overhead'; do
 	require_text "$RECORD_TEMPLATE" "$token"
 done
 for token in 'name: discovery-catalog' 'Version: 1.0.0' 'Next ID: DISCXXXXXX' '## Discovery Index' '| Discovery ID | Request ID | Discovery Title |'; do

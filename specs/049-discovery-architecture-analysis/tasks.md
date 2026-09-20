@@ -10,20 +10,20 @@
 
 **Purpose**: Establish the canonical implementation and validation surfaces.
 
-- [ ] T001 Confirm the Feature 049 design artifacts and active feature pointer; inspect specs/049-discovery-architecture-analysis/spec.md and .specify/feature.json.
-- [ ] T002 [P] Snapshot the current canonical Discovery skill, shared output templates, generated adapters, and focused test paths listed in `specs/049-discovery-architecture-analysis/plan.md` before editing.
-- [ ] T003 [P] Record the existing focused and full-suite validation commands and their baseline results in `specs/049-discovery-architecture-analysis/quickstart.md` without adding live user-owned fixtures.
+- [X] T001 Confirm the Feature 049 design artifacts and active feature pointer; inspect specs/049-discovery-architecture-analysis/spec.md and .specify/feature.json.
+- [X] T002 [P] Snapshot the current canonical Discovery skill, shared output templates, generated adapters, and focused test paths listed in `specs/049-discovery-architecture-analysis/plan.md` before editing.
+- [X] T003 [P] Record the existing focused and full-suite validation commands and their baseline results in `specs/049-discovery-architecture-analysis/quickstart.md` without adding live user-owned fixtures.
 
 ## Phase 2: Foundational (Blocking Prerequisites)
 
 **Purpose**: Update shared contracts and output structure before story-specific behavior is implemented.
 
-- [ ] T004 Extend `.highway/library/templates/output/discovery-record.md` with Candidate Solution Options, Candidate Solution Comparison Matrix, Recommendation, and Reference Architecture Matches in the required order.
-- [ ] T005 [P] Update `specs/049-discovery-architecture-analysis/contracts/discovery-analysis-contract.md` with the closed-input order, option-generation precedence, exact Reference Architecture matching, and failure fallbacks.
-- [ ] T006 [P] Update `specs/049-discovery-architecture-analysis/contracts/discovery-artifact-contract.md` with the expanded record structure, matrix invariants, advisory boundary, and tie-break fields.
-- [ ] T007 [P] Update `specs/049-discovery-architecture-analysis/contracts/discovery-conversation-contract.md` with completion, abort, no-partial-write, and ADR handoff response requirements.
-- [ ] T008 Add shared validation helpers and fixture setup for redaction, deterministic serialization, source-byte preservation, catalog allocation, and generated-template assertions in `.highway/tools/tests/highway-discovery.test.sh`.
-- [ ] T009 Update `.highway/skills/highway-discovery/SKILL.md` with the new input, output, workflow, verification, and error-handling contract while preserving existing Request resolution and transaction behavior.
+- [X] T004 Extend `.highway/library/templates/output/discovery-record.md` with Candidate Solution Options, Candidate Solution Comparison Matrix, Recommendation, and Reference Architecture Matches in the required order.
+- [X] T005 [P] Update `specs/049-discovery-architecture-analysis/contracts/discovery-analysis-contract.md` with the closed-input order, option-generation precedence, exact Reference Architecture matching, and failure fallbacks.
+- [X] T006 [P] Update `specs/049-discovery-architecture-analysis/contracts/discovery-artifact-contract.md` with the expanded record structure, matrix invariants, advisory boundary, and tie-break fields.
+- [X] T007 [P] Update `specs/049-discovery-architecture-analysis/contracts/discovery-conversation-contract.md` with completion, abort, no-partial-write, and ADR handoff response requirements.
+- [X] T008 Add shared validation helpers and fixture setup for redaction, deterministic serialization, source-byte preservation, catalog allocation, and generated-template assertions in `.highway/tools/tests/highway-discovery.test.sh`.
+- [X] T009 Update `.highway/skills/highway-discovery/SKILL.md` with the new input, output, workflow, verification, and error-handling contract while preserving existing Request resolution and transaction behavior.
 
 **Checkpoint**: Shared template, contracts, canonical skill, and focused-test scaffolding agree on the Feature 049 artifact boundary.
 
@@ -35,17 +35,17 @@
 
 ### Tests for User Story 1
 
-- [ ] T010 [P] [US1] Add a three-strategy option-generation contract probe with expected option fields, ordering, `OPT` format, and exact count in `.highway/tools/tests/highway-discovery.test.sh`.
-- [ ] T011 [P] [US1] Add a repeatability probe comparing serialized Discovery record and catalog bytes for identical closed inputs in `.highway/tools/tests/highway-discovery.test.sh`.
-- [ ] T012 [P] [US1] Add lower-bound, deduplication, and upper-bound probes for fewer than two options, normalized duplicate strategies, and more than five viable options in `.highway/tools/tests/highway-discovery.test.sh`.
+- [X] T010 [P] [US1] Add a three-strategy option-generation contract probe with expected option fields, ordering, `OPT` format, and exact count in `.highway/tools/tests/highway-discovery.test.sh`.
+- [X] T011 [P] [US1] Add a repeatability probe comparing serialized Discovery record and catalog bytes for identical closed inputs in `.highway/tools/tests/highway-discovery.test.sh`.
+- [X] T012 [P] [US1] Add lower-bound, deduplication, and upper-bound probes for fewer than two options, normalized duplicate strategies, and more than five viable options in `.highway/tools/tests/highway-discovery.test.sh`.
 
 ### Implementation Tasks for User Story 1
 
-- [ ] T013 Implement deterministic option derivation from Desired Change strategies followed by Objective, Control, NFR, Research Finding, and Reference Architecture evidence in `.highway/skills/highway-discovery/SKILL.md`.
-- [ ] T014 Implement option viability validation, normalized deduplication, supporting-evidence aggregation, truncation-boundary recording, and required option fields in `.highway/skills/highway-discovery/SKILL.md`.
-- [ ] T015 Implement deterministic option sorting and post-sort `OPT000001`-style identifier assignment in `.highway/skills/highway-discovery/SKILL.md`.
-- [ ] T016 Add Candidate Solution Option fields and ordering rules to `.highway/library/templates/output/discovery-record.md`.
-- [ ] T017 Add option-generation and identifier assertions to `.highway/tools/tests/highway-discovery.test.sh` and verify existing findings, assumptions, risks, unknowns, and governance relationship behavior remains covered.
+- [X] T013 Implement deterministic option derivation from Desired Change strategies followed by Objective, Control, NFR, Research Finding, and Reference Architecture evidence in `.highway/skills/highway-discovery/SKILL.md`.
+- [X] T014 Implement option viability validation, normalized deduplication, supporting-evidence aggregation, truncation-boundary recording, and required option fields in `.highway/skills/highway-discovery/SKILL.md`.
+- [X] T015 Implement deterministic option sorting and post-sort `OPT000001`-style identifier assignment in `.highway/skills/highway-discovery/SKILL.md`.
+- [X] T016 Add Candidate Solution Option fields and ordering rules to `.highway/library/templates/output/discovery-record.md`.
+- [X] T017 Add option-generation and identifier assertions to `.highway/tools/tests/highway-discovery.test.sh` and verify existing findings, assumptions, risks, unknowns, and governance relationship behavior remains covered.
 
 **Checkpoint**: User Story 1 passes independently with deterministic options and no-write failure behavior.
 
@@ -57,21 +57,21 @@
 
 ### Tests for User Story 2
 
-- [ ] T018 [P] [US2] Add independent exact-match probes for explicit identifier, normalized title, capability, Objective, Control, and NFR rules plus highest-precedence reason reporting in `.highway/tools/tests/highway-discovery.test.sh`.
-- [ ] T019 [P] [US2] Add Reference Architecture absence, unreadable, malformed, duplicate, and match-operation failure probes with unchanged source bytes in `.highway/tools/tests/highway-discovery.test.sh`.
-- [ ] T020 [P] [US2] Add score formula, zero-denominator, 0-100 range, confidence-table, and total-identity probes in `.highway/tools/tests/highway-discovery.test.sh`.
-- [ ] T021 [P] [US2] Add matrix completeness, option-order, exactly-one-Recommended-status, and matrix-to-Recommendation score-identity probes in `.highway/tools/tests/highway-discovery.test.sh`.
-- [ ] T022 [P] [US2] Add tie-break probes for unmatched versus matched options, no-match lower `OPT`, highest Reference Implementation count across multiple matches, equal counts, and unavailable Reference Implementation catalog fallback in `.highway/tools/tests/highway-discovery.test.sh`.
-- [ ] T023 [P] [US2] Add informational-category threshold and non-influence probes for Complexity, Governance Impact, and Operational Overhead in `.highway/tools/tests/highway-discovery.test.sh`.
+- [X] T018 [P] [US2] Add independent exact-match probes for explicit identifier, normalized title, capability, Objective, Control, and NFR rules plus highest-precedence reason reporting in `.highway/tools/tests/highway-discovery.test.sh`.
+- [X] T019 [P] [US2] Add Reference Architecture absence, unreadable, malformed, duplicate, and match-operation failure probes with unchanged source bytes in `.highway/tools/tests/highway-discovery.test.sh`.
+- [X] T020 [P] [US2] Add score formula, zero-denominator, 0-100 range, confidence-table, and total-identity probes in `.highway/tools/tests/highway-discovery.test.sh`.
+- [X] T021 [P] [US2] Add matrix completeness, option-order, exactly-one-Recommended-status, and matrix-to-Recommendation score-identity probes in `.highway/tools/tests/highway-discovery.test.sh`.
+- [X] T022 [P] [US2] Add tie-break probes for unmatched versus matched options, no-match lower `OPT`, highest Reference Implementation count across multiple matches, equal counts, and unavailable Reference Implementation catalog fallback in `.highway/tools/tests/highway-discovery.test.sh`.
+- [X] T023 [P] [US2] Add informational-category threshold and non-influence probes for Complexity, Governance Impact, and Operational Overhead in `.highway/tools/tests/highway-discovery.test.sh`.
 
 ### Implementation Tasks for User Story 2
 
-- [ ] T024 Implement independent exact Reference Architecture matching with six-rule precedence, all-match reporting, malformed-baseline handling, and advisory match metadata in `.highway/skills/highway-discovery/SKILL.md`.
-- [ ] T025 Implement Objective, NFR, Control, Profile, and Risk score calculations, zero-denominator defaults, floor rounding, total validation, and confidence classification in `.highway/skills/highway-discovery/SKILL.md`.
-- [ ] T026 Implement Reference Implementation-count tie-breaking, including highest count across an option's matches, zero counts for unavailable catalogs, and lower `OPT` fallback in `.highway/skills/highway-discovery/SKILL.md`.
-- [ ] T027 Implement Comparison Matrix generation before Recommendation with all options, weighted scores, totals, Reference Architecture matches, recommendation status, and mandatory informational categories in `.highway/skills/highway-discovery/SKILL.md`.
-- [ ] T028 Add matrix, Recommendation, Reference Architecture Match, and informational-category structures to `.highway/library/templates/output/discovery-record.md`.
-- [ ] T029 Update `.highway/tools/tests/highway-discovery.test.sh` to assert that informational categories never affect score, confidence, ranking, selection, or option ordering.
+- [X] T024 Implement independent exact Reference Architecture matching with six-rule precedence, all-match reporting, malformed-baseline handling, and advisory match metadata in `.highway/skills/highway-discovery/SKILL.md`.
+- [X] T025 Implement Objective, NFR, Control, Profile, and Risk score calculations, zero-denominator defaults, floor rounding, total validation, and confidence classification in `.highway/skills/highway-discovery/SKILL.md`.
+- [X] T026 Implement Reference Implementation-count tie-breaking, including highest count across an option's matches, zero counts for unavailable catalogs, and lower `OPT` fallback in `.highway/skills/highway-discovery/SKILL.md`.
+- [X] T027 Implement Comparison Matrix generation before Recommendation with all options, weighted scores, totals, Reference Architecture matches, recommendation status, and mandatory informational categories in `.highway/skills/highway-discovery/SKILL.md`.
+- [X] T028 Add matrix, Recommendation, Reference Architecture Match, and informational-category structures to `.highway/library/templates/output/discovery-record.md`.
+- [X] T029 Update `.highway/tools/tests/highway-discovery.test.sh` to assert that informational categories never affect score, confidence, ranking, selection, or option ordering.
 
 **Checkpoint**: User Story 2 independently produces complete deterministic matching, scoring, matrix, and advisory recommendation output.
 
@@ -83,16 +83,16 @@
 
 ### Tests for User Story 3
 
-- [ ] T030 [P] [US3] Add ADR handoff completeness assertions for Discovery identifier, Request identifier, options, matrix, Recommendation, rationale, and Reference Architecture Matches in `.highway/tools/tests/highway-discovery.test.sh`.
-- [ ] T031 [P] [US3] Add advisory-boundary assertions forbidding selected option, rejected option, approval, architecture decision, implementation authorization, and governance mutation fields in `.highway/tools/tests/highway-discovery.test.sh`.
-- [ ] T032 [P] [US3] Add a non-recommended ADR selection fixture and byte-preservation assertion for the Discovery artifact in `.highway/tools/tests/highway-discovery.test.sh`.
+- [X] T030 [P] [US3] Add ADR handoff completeness assertions for Discovery identifier, Request identifier, options, matrix, Recommendation, rationale, and Reference Architecture Matches in `.highway/tools/tests/highway-discovery.test.sh`.
+- [X] T031 [P] [US3] Add advisory-boundary assertions forbidding selected option, rejected option, approval, architecture decision, implementation authorization, and governance mutation fields in `.highway/tools/tests/highway-discovery.test.sh`.
+- [X] T032 [P] [US3] Add a non-recommended ADR selection fixture and byte-preservation assertion for the Discovery artifact in `.highway/tools/tests/highway-discovery.test.sh`.
 
 ### Implementation Tasks for User Story 3
 
-- [ ] T033 Implement the complete Discovery-to-ADR handoff projection and exactly-one-future-ADR eligibility rule in `.github/skills/highway-discovery/SKILL.md`.
-- [ ] T034 Propagate the canonical Discovery skill changes to `.claude/skills/highway-discovery/SKILL.md` and `.cursor/rules/highway-discovery.mdc` using the repository generator rather than hand editing.
-- [ ] T035 Extend `.highway/library/templates/output/discovery-catalog.md` only where needed to preserve catalog-authoritative Discovery allocation and one-record indexing for the expanded artifact in `.highway/library/templates/output/discovery-catalog.md`.
-- [ ] T036 Update `.highway/tools/tests/highway-discovery.test.sh` to prove ADR handoff consumes the complete Discovery without repeating analysis or mutating any source baseline.
+- [X] T033 Implement the complete Discovery-to-ADR handoff projection and exactly-one-future-ADR eligibility rule in `.github/skills/highway-discovery/SKILL.md`.
+- [X] T034 Propagate the canonical Discovery skill changes to `.claude/skills/highway-discovery/SKILL.md` and `.cursor/rules/highway-discovery.mdc` using the repository generator rather than hand editing.
+- [X] T035 Extend `.highway/library/templates/output/discovery-catalog.md` only where needed to preserve catalog-authoritative Discovery allocation and one-record indexing for the expanded artifact in `.highway/library/templates/output/discovery-catalog.md`.
+- [X] T036 Update `.highway/tools/tests/highway-discovery.test.sh` to prove ADR handoff consumes the complete Discovery without repeating analysis or mutating any source baseline.
 
 **Checkpoint**: User Story 3 independently proves the advisory ADR handoff and Discovery decision boundary.
 
@@ -122,14 +122,14 @@ SC-013, SC-014, SC-015, SC-016, SC-017, SC-018, SC-019, SC-020, SC-021, SC-022.
 
 **Purpose**: Regenerate retained artifacts, run all validators, and confirm complete traceability and reproducibility.
 
-- [ ] T037 [P] Regenerate agent adapters and catalog outputs from canonical sources using `.highway/tools/generate-agent-adapters.sh` and `.highway/tools/generate-catalog.sh`.
-- [ ] T038 [P] Update `.highway/tools/tests/highway-discovery.test.sh` probe declarations and expected contract tokens for all Feature 049 artifact classes.
-- [ ] T039 [P] Update `specs/049-discovery-architecture-analysis/quickstart.md` with final commands, fixture expectations, and observed validation outcomes.
-- [ ] T040 Run `.highway/tools/validate-skill.sh .highway/skills/highway-discovery/SKILL.md` and repair any Feature 049 skill-contract failures in `.highway/skills/highway-discovery/SKILL.md`.
-- [ ] T041 Run `.highway/tools/validate-library.sh .highway/library/templates/output/discovery-record.md` and repair any shared-template failures in `.highway/library/templates/output/discovery-record.md`.
-- [ ] T042 Run `.highway/tools/tests/highway-discovery.test.sh` with its declared probe classes and confirm seeded failures fail before neutralization and pass after neutralization.
-- [ ] T043 Run `.highway/tools/tests/run-all.sh` and resolve only Feature 049 regressions in the touched skill, templates, generators, adapters, or focused test.
-- [ ] T044 Compare generated artifacts and source baselines with `git diff --check`, generator correspondence checks, and byte snapshots from `.highway/tools/tests/highway-discovery.test.sh`; record residual unrelated failures without altering unrelated work.
+- [X] T037 [P] Regenerate agent adapters and catalog outputs from canonical sources using `.highway/tools/generate-agent-adapters.sh` and `.highway/tools/generate-catalog.sh`.
+- [X] T038 [P] Update `.highway/tools/tests/highway-discovery.test.sh` probe declarations and expected contract tokens for all Feature 049 artifact classes.
+- [X] T039 [P] Update `specs/049-discovery-architecture-analysis/quickstart.md` with final commands, fixture expectations, and observed validation outcomes.
+- [X] T040 Run `.highway/tools/validate-skill.sh .highway/skills/highway-discovery` and repair any Feature 049 skill-contract failures in `.highway/skills/highway-discovery/SKILL.md`.
+- [X] T041 Run `.highway/tools/validate-library.sh .highway/library/templates/output/discovery-record.md` and repair any shared-template failures in `.highway/library/templates/output/discovery-record.md`.
+- [X] T042 Run `.highway/tools/tests/highway-discovery.test.sh` with its declared probe classes and confirm seeded failures fail before neutralization and pass after neutralization.
+- [X] T043 Run `.highway/tools/tests/run-all.sh` and resolve only Feature 049 regressions in the touched skill, templates, generators, adapters, or focused test.
+- [X] T044 Compare generated artifacts and source baselines with `git diff --check`, generator correspondence checks, and byte snapshots from `.highway/tools/tests/highway-discovery.test.sh`; record residual unrelated failures without altering unrelated work.
 
 ## Dependencies & Execution Order
 

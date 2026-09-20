@@ -20,3 +20,11 @@ unreadable Reference Implementation data produces zero tie-break counts.
 The completion response identifies the Discovery artifact as the sole input for later ADR work and
 exposes the complete option set, Recommendation, rationale, Comparison Matrix, and Reference
 Architecture Matches. ADR owns selection, rejection, acceptance, rationale, and consequences.
+
+## Feature 049 Completion Boundary
+
+Completion is reported only after the record and catalog validate in memory and the ordered write
+transaction succeeds. An abort, failed analysis, or failed write reports the reason and performs
+no partial write. A successful response identifies the Discovery and Request, exposes every option,
+the matrix, Recommendation rationale, and Reference Architecture Matches, and identifies the
+Discovery artifact as the sole future ADR analysis input.

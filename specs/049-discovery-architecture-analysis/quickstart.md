@@ -11,6 +11,13 @@ network service or a new runtime. Run commands from the repository root.
   are created outside the live `requests/` and `discoveries/` paths.
 - The canonical skill and shared templates are updated before generated adapters are regenerated.
 
+## Baseline Before Implementation
+
+- `./.highway/tools/tests/highway-discovery.test.sh`: PASS.
+- `./.highway/tools/tests/run-all.sh`: timed out at 45 seconds; observed pre-existing failures
+   included stale catalog indexes, stale Discovery adapters, `adapter-coverage.test.sh`, and
+   `distribution-packaging.test.sh` probes. These baseline failures are not Feature 049 behavior.
+
 ## Focused Contract Validation
 
 Run the existing Discovery contract test:
@@ -46,7 +53,7 @@ record and catalog bytes with `shasum` or `cmp`:
 After implementation and regeneration, run:
 
 ```sh
-./.highway/tools/validate-skill.sh .highway/skills/highway-discovery/SKILL.md
+./.highway/tools/validate-skill.sh .highway/skills/highway-discovery
 ./.highway/tools/validate-library.sh .highway/library/templates/output/discovery-record.md
 ./.highway/tools/tests/highway-discovery.test.sh
 ./.highway/tools/tests/run-all.sh

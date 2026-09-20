@@ -49,3 +49,12 @@ For equal scores, a matched Reference Architecture outranks no match. When all t
 matches, each option uses the highest Reference Implementation count among its matched Reference
 Architectures. An absent or unreadable Reference Implementation catalog makes every count zero;
 equal counts select the lower `OPT` identifier.
+
+## Feature 049 Serialization Invariants
+
+The record serializes Candidate Solution Options before the Candidate Solution Comparison Matrix,
+then Recommendation, existing governance relationship sections, and Reference Architecture
+Matches. The matrix repeats every option in option order, every score component, total, match list,
+exactly one `Recommended` status, and Complexity, Governance Impact, and Operational Overhead.
+Recommendation score fields are identical to the selected matrix row. The handoff remains a
+read-only advisory projection and contains no decision or governance-mutation fields.

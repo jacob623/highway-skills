@@ -24,6 +24,20 @@ redacted before copying or matching.
    recommendation according to the Recommendation Contract.
 9. Validate the complete record and catalog before allocation or writing.
 
+## Feature 049 Invariants
+
+- Candidate generation is closed and ordered: explicit Desired Change strategies, then Objective,
+   Control, NFR, Research Finding, and Reference Architecture evidence. Normalize and deduplicate
+   before retaining two through five complete options.
+- Option ordering uses Desired Change alignment, Objective alignment, constraint alignment, and
+   alphabetical title; assign `OPT` plus six digits only after sorting.
+- Reference Architecture candidates are evaluated independently with exact precedence: explicit
+   identifier, exact normalized title, capability identifier, Objective identifier, Control
+   identifier, then NFR identifier. Report every match and its highest-precedence reason.
+- Scores use Objective 30, NFR 30, Control 20, Profile 10, and Risk Reduction 10; floor whole
+   numbers, zero-denominator zero, and totals from 0 through 100. Informational categories never
+   influence scoring or selection.
+
 ## Failure Behavior
 
 Fewer than two viable options, failed required score calculation, invalid source data, failed
