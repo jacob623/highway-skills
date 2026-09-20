@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-19T20:27:01Z",
+  "generated_at": "2026-09-20T00:35:53Z",
   "entries": [
     {
       "id": "highway-controls",
@@ -9,6 +9,15 @@
       "compatibility": "all",
       "version": "1.0.1",
       "source_path": "skills/highway-controls/SKILL.md"
+    },
+    {
+      "id": "highway-discovery",
+      "name": "highway-discovery",
+      "description": "Manages a repository-wide Discovery baseline.",
+      "usage": "Invoke as `/highway-discovery` and state the Request.",
+      "compatibility": "all",
+      "version": "2.0.0",
+      "source_path": "skills/highway-discovery/SKILL.md"
     },
     {
       "id": "highway-help",

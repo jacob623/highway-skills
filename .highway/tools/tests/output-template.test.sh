@@ -23,6 +23,9 @@ OBJECTIVE_TEMPLATE="$HIGHWAY_ROOT/library/templates/output/objective-record.md"
 NEW_SKILL="$HIGHWAY_ROOT/skills/highway-new/SKILL.md"
 REQUEST_TEMPLATE="$HIGHWAY_ROOT/library/templates/output/request-record.md"
 CATALOG_TEMPLATE="$HIGHWAY_ROOT/library/templates/output/request-catalog.md"
+DISCOVERY_SKILL="$HIGHWAY_ROOT/skills/highway-discovery/SKILL.md"
+DISCOVERY_RECORD_TEMPLATE="$HIGHWAY_ROOT/library/templates/output/discovery-record.md"
+DISCOVERY_CATALOG_TEMPLATE="$HIGHWAY_ROOT/library/templates/output/discovery-catalog.md"
 VALIDATE_LIBRARY="$HIGHWAY_ROOT/tools/validate-library.sh"
 VALIDATE_SKILL="$HIGHWAY_ROOT/tools/validate-skill.sh"
 
@@ -57,6 +60,9 @@ require_file "$PROFILE_TEMPLATE"
 require_file "$OBJECTIVE_TEMPLATE"
 require_file "$REQUEST_TEMPLATE"
 require_file "$CATALOG_TEMPLATE"
+require_file "$DISCOVERY_SKILL"
+require_file "$DISCOVERY_RECORD_TEMPLATE"
+require_file "$DISCOVERY_CATALOG_TEMPLATE"
 if [[ -f "$NFR_TEMPLATE" ]]; then
 	require_text "$NFR_TEMPLATE" "name: nfr-record"
 	require_text "$NFR_TEMPLATE" "id: NFRXXXXXX"
@@ -169,11 +175,11 @@ fi
 
 # The current file-emitting skills are the complete set of citing skills for this feature.
 citing_count="$(grep -RIl 'library/templates/output/' "$HIGHWAY_ROOT/skills" --include='SKILL.md' | wc -l | tr -d ' ')"
-if [[ "$citing_count" != "5" ]]; then
-	echo "FAIL: expected 5 output-template citing skills, found $citing_count"
+if [[ "$citing_count" != "6" ]]; then
+	echo "FAIL: expected 6 output-template citing skills, found $citing_count"
 	fail=1
 fi
-for citing_skill in "$NFR_SKILL" "$CONTROL_SKILL" "$PROFILE_SKILL" "$OBJECTIVE_SKILL" "$NEW_SKILL"; do
+for citing_skill in "$NFR_SKILL" "$CONTROL_SKILL" "$PROFILE_SKILL" "$OBJECTIVE_SKILL" "$NEW_SKILL" "$DISCOVERY_SKILL"; do
 	if ! grep -Fq "library/templates/output/" "$citing_skill"; then
 		echo "FAIL: dependent review omitted citing skill $citing_skill"
 		fail=1
