@@ -22,7 +22,8 @@ validation occurs before the value is accepted as evidence.
 - Accept the literal state `unknown`.
 - Reject an empty list, blank answer, malformed scalar, whitespace-only entry, or invalid empty
   entry.
-- On rejection, identify `allowed_solution_classes` and request one or more values or `unknown`.
+- On rejection, emit a `Solution Constraints field error`, identify
+  `allowed_solution_classes`, and request one or more values or `unknown`.
 - Preserve multiple values without ranking, recommendation, or selection.
 
 ### Other List-Shaped Fields
@@ -40,9 +41,9 @@ For `existing_platforms_required`, `existing_platforms_preferred`, `known_system
 ## Recovery
 
 A validation error names the affected field, explains the accepted shape, and asks for a replacement
-or `unknown`. The existing bounded retry behavior applies. A valid replacement updates only the
-failed field and continues at the next unanswered evidence question. An exhausted retry sequence
-aborts the write and preserves existing Request and catalog bytes.
+or `unknown`. Retry invalid Solution Constraints input at most 3 times. A valid replacement updates
+only the failed field and continues at the next unanswered evidence question. An exhausted retry
+sequence aborts the write and preserves existing Request and catalog bytes.
 
 Privacy screening applies before a replacement is accepted. Sensitive or regulated personal data
 receives the existing privacy recovery behavior and is not written.

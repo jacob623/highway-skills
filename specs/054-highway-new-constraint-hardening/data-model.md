@@ -31,7 +31,8 @@ recovery semantics only.
 
 ## Error Recovery Entity
 
-A Solution Constraints field error is transient intake guidance, not stored Request evidence.
+A `Solution Constraints field error` is transient intake guidance, not stored Request evidence. It
+names the affected field, explains the accepted shape, and requests a replacement or `unknown`.
 
 | Attribute | Meaning |
 |---|---|
@@ -39,7 +40,7 @@ A Solution Constraints field error is transient intake guidance, not stored Requ
 | Failure reason | Shape or state violation, without rewriting the supplied value |
 | Accepted shape | The valid state set for that field |
 | Recovery instruction | Request for a replacement value or `unknown` |
-| Retry state | Existing bounded retry count and next-question position |
+| Retry state | At most 3 retries for invalid Solution Constraints input and the next-question position |
 
 ## Invariants
 

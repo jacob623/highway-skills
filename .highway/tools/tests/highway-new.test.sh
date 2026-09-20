@@ -92,6 +92,10 @@ if [[ -f "$SKILL" ]]; then
 		'one question at a time' \
 		'Solution Constraints' \
 		'allowed_solution_classes' \
+		'one or more non-empty values' \
+		'allowed_solution_classes must contain one or more values or unknown' \
+		'Solution Constraints field error' \
+		'None known' \
 		'existing_platforms_required' \
 		'existing_platforms_preferred' \
 		'known_systems' \
@@ -108,8 +112,6 @@ if [[ -f "$SKILL" ]]; then
 		'Discovery' \
 		'ADR' \
 		'REQ' \
-		'No business constraints' \
-		'No known constraints' \
 		'proposed' \
 		'write nothing' \
 		'preserve the original bytes' \
@@ -117,6 +119,10 @@ if [[ -f "$SKILL" ]]; then
 		'.highway/library/templates/output/request-catalog.md'; do
 		require_text "$SKILL" "$token"
 	done
+	if grep -Fq 'No business constraints' "$SKILL" || grep -Fq 'No known constraints' "$SKILL"; then
+		echo "FAIL: legacy Business Constraints absence wording remains"
+		fail=1
+	fi
 	if grep -Eiq 'solution_class[_a-z]*:[[:space:]]*(true|false)|allow[_-]?custom[_-]?development:[[:space:]]*(true|false)' "$SKILL"; then
 		echo "FAIL: source skill contains legacy solution-class boolean terminology"
 		fail=1
