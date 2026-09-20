@@ -43,6 +43,18 @@ status: proposed
 
 <user-authored constraint evidence or explicit no-constraint statement>
 
+## Solution Constraints
+
+allowed_solution_classes:
+  - <user-owned solution class>
+existing_platforms_required: []
+existing_platforms_preferred: []
+known_systems: []
+hosting_restrictions: []
+vendor_restrictions: []
+procurement_constraints: []
+regulatory_restrictions: []
+
 ## Completeness
 
 Complete | Incomplete

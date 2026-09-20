@@ -23,5 +23,22 @@ Average review time decreases.
 ## Business Constraints
 No business constraints
 
+## Solution Constraints
+
+allowed_solution_classes:
+	- SaaS
+	- Custom Development
+existing_platforms_required:
+	- SAP
+existing_platforms_preferred:
+	- Salesforce
+known_systems:
+	- Workday
+hosting_restrictions: []
+vendor_restrictions: unknown
+procurement_constraints:
+	- No Net New Purchases
+regulatory_restrictions: []
+
 ## Completeness
 Complete

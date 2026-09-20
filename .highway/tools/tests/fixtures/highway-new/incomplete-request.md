@@ -18,5 +18,16 @@ The problem is known.
 
 ## Business Constraints
 
+## Solution Constraints
+
+allowed_solution_classes: unknown
+existing_platforms_required: []
+existing_platforms_preferred: []
+known_systems: []
+hosting_restrictions: []
+vendor_restrictions: []
+procurement_constraints: []
+regulatory_restrictions: []
+
 ## Completeness
 Incomplete

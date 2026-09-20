@@ -230,8 +230,9 @@ rc_check_P7_5() {
 	local file="$1" found=0 out sections
 	sections="$(bs_normative_lines "$file" | cut -f2 | sort -u | grep -v '^$')"
 	[[ -z "$sections" ]] && return 2
+	sections="$(printf '%s\n' "$sections" | tr '\n' '\034')"
 	out="$(bs_scan "$file" | awk -F'\t' -v want="$sections" '
-		BEGIN { n = split(want, arr, "\n"); for (i = 1; i <= n; i++) keep[arr[i]] = 1 }
+		BEGIN { n = split(want, arr, "\034"); for (i = 1; i <= n; i++) keep[arr[i]] = 1 }
 		$2 != "" && ($2 in keep) && $7 !~ /^## / {
 			c = split($7, w, /[[:space:]]+/)
 			for (i = 1; i <= c; i++) if (w[i] != "") words[$2]++
