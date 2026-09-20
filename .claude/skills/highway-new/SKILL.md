@@ -43,14 +43,14 @@ Completeness Rules, following `.highway/library/templates/output/request-record.
 
 ## Workflow
 
-1. Read the requester's initial description and the six evidence domains in this order: Problem, Actors, Current Process, Desired Change, Success Measure, Business Constraints.
+1. Read the requester's initial description and the seven evidence domains in this order: Problem, Actors, Current Process, Desired Change, Success Measure, Business Constraints, Solution Constraints.
 2. Mark each domain satisfied only when its evidence rule is met.
 3. Select the first incomplete domain after every requester response.
 4. Ask exactly one natural-language question for the selected domain.
 5. Generate one to three examples using this precedence order: existing request evidence, Profile, Objectives, Controls, NFRs.
-6. Keep examples and repository context separate from requester evidence and requirements. 
-7. Repeat steps 2 through 6 until all six domains are complete or the requester stops answering. 
-8. Derive the title from an explicit requester title, otherwise from Problem evidence using the same input text each time. 
+6. Keep examples and repository context separate from requester evidence and requirements.
+7. Repeat steps 2 through 6 until all seven domains are complete or the requester stops answering.
+8. Derive the title from an explicit requester title, otherwise from Problem evidence using the same input text each time.
 9. Read `requests/requests.md`, bootstrapping it with `Version: 1.0.0` and `Next ID: REQ000001` when absent.
 10. Allocate the catalog's `Next ID` only when it matches `REQ` followed by exactly six digits.
 11. Build the request record and catalog update in memory before writing either file.
@@ -60,15 +60,40 @@ Completeness Rules, following `.highway/library/templates/output/request-record.
 15. When every domain is complete, build and validate the request artifact and catalog update, then write both; otherwise, create neither artifact and continue evidence collection.
 16. When input contains a secret or regulated personal data, exclude it and request business-relevant replacement evidence.
 17. When Version 1 creates a request, write status `proposed` and no relationship sections.
-18. The request record and catalog update are created only after all six evidence domains satisfy the Evidence Completeness Rules.
+18. The request record and catalog update are created only after all seven evidence domains satisfy the Evidence Completeness Rules.
 
 For Business Constraints, explicitly record `No business constraints` when the requester confirms
 there are none, and record `No known constraints` when the requester has no constraints to report.
 
+For Solution Constraints, ask one question at a time and collect these eight fields in this order:
+
+- `allowed_solution_classes` as a user-owned extensible list. Preserve multiple entries without ranking them.
+- `existing_platforms_required` as existing enterprise platforms that must be used.
+- `existing_platforms_preferred` as existing enterprise platforms the requester names as preferred, kept distinct from required platforms.
+- `known_systems` as descriptive business systems involved in, affected by, referenced by, or participating in the process.
+- `hosting_restrictions` as conditions that exclude unsuitable hosting options.
+- `vendor_restrictions` as conditions that exclude unsuitable vendors.
+- `procurement_constraints` as acquisition constraints, including restrictions on new purchases.
+- `regulatory_restrictions` as regulatory or data-handling conditions.
+
+Record each field as user-provided evidence, an explicit empty array when the requester knows no
+values apply, or `unknown` when the requester cannot determine the value. Missing fields are not
+valid evidence. An absent constraint is neutral and is never a preference, recommendation, ranking,
+or selection criterion. A malformed value must be replaced by valid evidence or `unknown` before
+creation.
+
+Solution Constraints limit the future Discovery candidate space; they do not choose an architecture,
+implementation pattern, technology, solution category, or candidate. Known systems and named
+platform context remain descriptive business evidence and do not imply integration or architecture.
+Discovery owns candidate generation, classification, comparison, scoring, recommendation, and
+architecture analysis. ADR owns solution and architecture decisions, including selection, rationale,
+consequences, and authorization. This workflow creates no Discovery or ADR artifact.
+
 ## Verification
 
 - Confirm the generated record path matches `requests/REQ` followed by six digits.
-- Confirm the record contains the six evidence headings and `## Completeness`.
+- Confirm the record contains the seven evidence headings and `## Completeness`.
+- Confirm `## Solution Constraints` contains `allowed_solution_classes`, `existing_platforms_required`, `existing_platforms_preferred`, `known_systems`, `hosting_restrictions`, `vendor_restrictions`, `procurement_constraints`, and `regulatory_restrictions` in that order.
 - Confirm the catalog contains `Version:`, `Next ID:`, and one index row for the request.
 - Confirm Next ID advances exactly once after successful request creation.
 - Confirm no secret or regulated personal data appears in the written request record.
@@ -76,6 +101,7 @@ there are none, and record `No known constraints` when the requester has no cons
 - Confirm repeated identical input produces identical question, examples, title, and artifact content.
 - Confirm new requests are created with
 status: proposed.
+- Confirm empty arrays and `unknown` are distinct, valid, non-blocking Solution Constraints states.
 - Confirm no request record is written while any evidence domain remains incomplete.
 - Confirm no catalog update occurs while any evidence domain remains incomplete.
 

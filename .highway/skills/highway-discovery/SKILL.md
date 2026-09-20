@@ -209,7 +209,7 @@ Architectures, source baselines, Discovery inputs, ADR records, or governance ba
 - Confirm duplicate matches are counted once per stable identifier.
 - Confirm malformed Reference Implementations are excluded and their blocking reasons are recorded.
 - Confirm missing, unreadable, absent, or inconsistent implementation data produces zero affected counts.
-- Confirm Recommendation scores, confidence, and rationale are unchanged by Reference Implementation evidence.
+- Confirm Recommendation score and confidence, plus rationale, are unchanged by Reference Implementation evidence.
 - Confirm tie-break order is Reference Architecture Match, Reference Implementation Count, then lowest `OPT` identifier.
 - Confirm evaluation stops immediately after a criterion selects one winner.
 - Confirm repeated executions with identical inputs are deterministic.
@@ -217,13 +217,13 @@ Architectures, source baselines, Discovery inputs, ADR records, or governance ba
 
 ## Error Handling
 
-- A malformed Reference Implementation is excluded from evaluation, its blocking reason is recorded, and Discovery continues.
-- An unreadable Reference Implementation contributes zero.
-- Multiple matching paths for one Reference Implementation count once.
-- An absent or unreadable Reference Implementation catalog produces zero counts.
-- An internally inconsistent catalog excludes affected implementations, records the reason, and continues.
-- A Reference Implementation matching failure continues with zero matching implementations.
-- Any source, validation, privacy, scoring, allocation, or writing failure produces no output, preserves existing bytes, and does not create an ADR, record a decision, authorize implementation, or mutate governance.
+- A malformed Reference Implementation is excluded from evaluation, its blocking reason is recorded, and Discovery must fall back to the remaining evidence.
+- An unreadable Reference Implementation contributes zero through a fallback to the remaining evidence.
+- Multiple matching paths for one Reference Implementation fall back to counting the stable identifier once.
+- An absent or unreadable Reference Implementation catalog must fall back to zero counts.
+- An internally inconsistent catalog excludes affected implementations, records the reason, and must fall back to zero affected counts.
+- A Reference Implementation matching failure must fall back to zero matching implementations.
+- Any source, validation, privacy, scoring, allocation, or writing failure aborts with no output, preserves existing bytes, and does not create an ADR, record a decision, authorize implementation, or mutate governance.
 - Missing, malformed, ambiguous, nonexistent, non-unique, or incomplete Request: abort and preserve existing bytes.
 - Missing or malformed catalog, fewer than two viable options, failed score calculation, failed privacy redaction, failed validation, or write failure: abort and preserve existing bytes.
 - More than five viable options: fall back by retaining the deterministic first five and record the truncation boundary.

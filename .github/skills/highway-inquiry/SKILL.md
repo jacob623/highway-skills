@@ -39,6 +39,8 @@ a question at a stated position.
 Satisfies `X1.1`, `X1.2`, `X2.1`, `X4.1`, `X5.1`, `X5.2` and `X6.1` of the Highway Experience
 Standard.
 
+## Questionnaire Contract
+
 The same file, rewritten, plus a statement of what changed.
 
 The file's shape MUST be preserved on every write:
@@ -58,6 +60,8 @@ text, and duplicate text makes that record ambiguous.
 
 Content MUST be a function of the questions, their sections, and their order. No timestamp is
 written, so an unchanged question set produces an unchanged file.
+
+## Change Procedure
 
 ### Steps for any change
 

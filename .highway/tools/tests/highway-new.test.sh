@@ -61,6 +61,14 @@ require_text() {
 	fi
 }
 
+require_fixture_text() {
+	local fixture="$1" text="$2"
+	if ! grep -Fq "$text" "$FIXTURES/$fixture"; then
+		echo "FAIL: '$text' missing from fixture $fixture"
+		fail=1
+	fi
+}
+
 require_file "$SKILL"
 require_file "$RECORD_TEMPLATE"
 require_file "$CATALOG_TEMPLATE"
@@ -81,6 +89,24 @@ if [[ -f "$SKILL" ]]; then
 		'Problem, Actors, Current Process, Desired Change, Success Measure, Business Constraints' \
 		'one natural-language question' \
 		'one to three examples' \
+		'one question at a time' \
+		'Solution Constraints' \
+		'allowed_solution_classes' \
+		'existing_platforms_required' \
+		'existing_platforms_preferred' \
+		'known_systems' \
+		'hosting_restrictions' \
+		'vendor_restrictions' \
+		'procurement_constraints' \
+		'regulatory_restrictions' \
+		'extensible list' \
+		'without ranking' \
+		'empty array' \
+		'unknown' \
+		'absent constraint is neutral' \
+		'privacy' \
+		'Discovery' \
+		'ADR' \
 		'REQ' \
 		'No business constraints' \
 		'No known constraints' \
@@ -91,6 +117,10 @@ if [[ -f "$SKILL" ]]; then
 		'.highway/library/templates/output/request-catalog.md'; do
 		require_text "$SKILL" "$token"
 	done
+	if grep -Eiq 'solution_class[_a-z]*:[[:space:]]*(true|false)|allow[_-]?custom[_-]?development:[[:space:]]*(true|false)' "$SKILL"; then
+		echo "FAIL: source skill contains legacy solution-class boolean terminology"
+		fail=1
+	fi
 	dev_specs='specs''/'
 	dev_specify='.specify''/'
 	if grep -Eq "(^|[[:space:]])${dev_specs}|(^|[[:space:]])${dev_specify}" "$SKILL"; then
@@ -111,14 +141,49 @@ if [[ -f "$MANIFEST" ]]; then
 fi
 
 if [[ -f "$RECORD_TEMPLATE" ]]; then
-	for token in 'name: request-record' 'id: REQXXXXXX' '## Problem' '## Actors' '## Current Process' '## Desired Change' '## Success Measure' '## Business Constraints' '## Completeness'; do
+	for token in 'name: request-record' 'id: REQXXXXXX' '## Problem' '## Actors' '## Current Process' '## Desired Change' '## Success Measure' '## Business Constraints' '## Solution Constraints' 'allowed_solution_classes:' 'existing_platforms_required:' 'existing_platforms_preferred:' 'known_systems:' 'hosting_restrictions:' 'vendor_restrictions:' 'procurement_constraints:' 'regulatory_restrictions:' '## Completeness'; do
 		require_text "$RECORD_TEMPLATE" "$token"
 	done
+	if grep -nE '^## (Business Constraints|Solution Constraints|Completeness)$' "$RECORD_TEMPLATE" | awk 'NR == 1 { previous = $1; next } { if ($1 <= previous) exit 1; previous = $1 }'; then
+		:
+	else
+		echo "FAIL: request record sections are not ordered"
+		fail=1
+	fi
 fi
 if [[ -f "$CATALOG_TEMPLATE" ]]; then
 	for token in 'name: request-catalog' 'Version: 1.0.0' 'Next ID: REQXXXXXX' '| ID | Title | Status |'; do
 		require_text "$CATALOG_TEMPLATE" "$token"
 	done
+fi
+
+if [[ -f "$FIXTURES/valid-request.md" ]]; then
+	for token in \
+		'allowed_solution_classes:' \
+		'SaaS' \
+		'Custom Development' \
+		'existing_platforms_required:' \
+		'SAP' \
+		'existing_platforms_preferred:' \
+		'Salesforce' \
+		'known_systems:' \
+		'Workday' \
+		'hosting_restrictions: []' \
+		'vendor_restrictions: unknown' \
+		'procurement_constraints:' \
+		'No Net New Purchases' \
+		'regulatory_restrictions: []'; do
+		require_fixture_text valid-request.md "$token"
+	done
+fi
+
+if [[ -f "$FIXTURES/incomplete-request.md" ]]; then
+	require_fixture_text incomplete-request.md '## Solution Constraints'
+	require_fixture_text incomplete-request.md 'Completeness'
+	if grep -qx 'Complete' "$FIXTURES/incomplete-request.md"; then
+		echo "FAIL: incomplete fixture is marked complete"
+		fail=1
+	fi
 fi
 
 # User-owned request output must not be introduced into the framework tree by this test.
