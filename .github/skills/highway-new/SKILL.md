@@ -36,8 +36,8 @@ Create a business request artifact by collecting the business evidence required 
 ## Outputs
 
 - A user-owned request record at `requests/REQXXXXXX.md`, only when all evidence domains satisfy the Evidence
-Completeness Rules, following `.highway/library/templates/output/request-record.md`.
-- A user-owned request catalog at `requests/requests.md`, only when a complete request is successfully created, following `.highway/library/templates/output/request-catalog.md`.
+Completeness Rules, using the complete authoritative structure defined by `.highway/library/templates/output/request-record.md`.
+- A user-owned request catalog at `requests/requests.md`, only when a complete request is successfully created, using the complete authoritative structure defined by `.highway/library/templates/output/request-catalog.md`.
 - A conversational response containing one question and one to three contextual examples while evidence remains incomplete.
 - No request artifact when intake is empty, allocation fails, validation fails, or a transaction cannot complete.
 
@@ -118,9 +118,8 @@ consequences, and authorization. This workflow creates no Discovery or ADR artif
 ## Verification
 
 - Confirm the generated record path matches `requests/REQ` followed by six digits.
-- Confirm the record contains the seven evidence headings and `## Completeness`.
-- Confirm `## Solution Constraints` contains `allowed_solution_classes`, `existing_platforms_required`, `existing_platforms_preferred`, `known_systems`, `hosting_restrictions`, `vendor_restrictions`, `procurement_constraints`, and `regulatory_restrictions` in that order.
-- Confirm the catalog contains `Version:`, `Next ID:`, and one index row for the request.
+- Confirm the generated Request record conforms to the complete structure defined by `.highway/library/templates/output/request-record.md`.
+- Confirm the generated Request catalog conforms to the complete structure defined by `.highway/library/templates/output/request-catalog.md`.
 - Confirm Next ID advances exactly once after successful request creation.
 - Confirm no secret or regulated personal data appears in the written request record.
 - Confirm a failed allocation, validation, or write leaves existing request and catalog bytes unchanged.

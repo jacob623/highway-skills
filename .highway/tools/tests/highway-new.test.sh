@@ -61,6 +61,19 @@ require_text() {
 	fi
 }
 
+output_contract_valid() {
+	local file="$1"
+	grep -Fq 'complete authoritative structure defined by `.highway/library/templates/output/request-record.md`' "$file" || return 1
+	grep -Fq 'complete authoritative structure defined by `.highway/library/templates/output/request-catalog.md`' "$file" || return 1
+	grep -Fq 'generated Request record conforms to the complete structure defined by `.highway/library/templates/output/request-record.md`' "$file" || return 1
+	grep -Fq 'generated Request catalog conforms to the complete structure defined by `.highway/library/templates/output/request-catalog.md`' "$file" || return 1
+	if grep -Fq 'Confirm the record contains the seven evidence headings' "$file" || \
+		grep -Fq 'Confirm `## Solution Constraints` contains' "$file" || \
+		grep -Fq 'Confirm the catalog contains `Version:`' "$file"; then
+		return 1
+	fi
+}
+
 require_fixture_text() {
 	local fixture="$1" text="$2"
 	if ! grep -Fq "$text" "$FIXTURES/$fixture"; then
@@ -134,6 +147,10 @@ if [[ -f "$SKILL" ]]; then
 		'.highway/library/templates/output/request-catalog.md'; do
 		require_text "$SKILL" "$token"
 	done
+	if ! output_contract_valid "$SKILL"; then
+		echo "FAIL: highway-new still duplicates output structure verification"
+		fail=1
+	fi
 	if ! grep -Fq 'No business constraints' "$SKILL"; then
 		echo "FAIL: canonical Business Constraints absence wording is missing"
 		fail=1
@@ -214,5 +231,41 @@ if find "$REPO_ROOT" -path "$request_glob" -not -path "$design_glob" -print -qui
 	echo "FAIL: repository-owned request fixture found outside the feature design tree"
 	fail=1
 fi
+
+# Disposable fixtures independently reject missing citations and duplicated structure.
+fixture_root="$(mktemp -d "${TMPDIR:-/tmp}/highway-new-contract.XXXXXX")"
+before_skill="$(cksum "$SKILL")"
+missing_record_fixture="$fixture_root/missing-record-citation.md"
+sed '/request-record\.md/d' "$SKILL" > "$missing_record_fixture"
+if output_contract_valid "$missing_record_fixture"; then
+	echo "FAIL: missing Request record citation fixture was accepted"
+	fail=1
+fi
+
+missing_catalog_fixture="$fixture_root/missing-catalog-citation.md"
+sed '/request-catalog\.md/d' "$SKILL" > "$missing_catalog_fixture"
+if output_contract_valid "$missing_catalog_fixture"; then
+	echo "FAIL: missing Request catalog citation fixture was accepted"
+	fail=1
+fi
+
+duplicate_fixture="$fixture_root/duplicate-structure.md"
+cp "$SKILL" "$duplicate_fixture"
+printf '%s\n' \
+	'- Confirm the record contains the seven evidence headings and `## Completeness`.' \
+	'- Confirm `## Solution Constraints` contains the fields in that order.' \
+	'- Confirm the catalog contains `Version:`, `Next ID:`, and one index row for the request.' \
+	>> "$duplicate_fixture"
+if output_contract_valid "$duplicate_fixture"; then
+	echo "FAIL: duplicated structure fixture was accepted"
+	fail=1
+fi
+
+after_skill="$(cksum "$SKILL")"
+if [[ "$before_skill" != "$after_skill" ]]; then
+	echo "FAIL: disposable fixtures changed the canonical highway-new skill"
+	fail=1
+fi
+rm -rf "$fixture_root"
 
 exit "$fail"
