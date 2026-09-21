@@ -35,18 +35,63 @@ dist_records() {
 	' "$manifest"
 }
 
+# Classifies many paths in one process. Reads paths on stdin, one per line, and emits
+# "classification<TAB>path" in input order.
+#
+# This exists because the single-path form loads and re-parses the manifest for every path it is
+# asked about. Over a repository of several hundred files that is two awk processes per file, and
+# the cost grows with the repository rather than with the manifest. Here the manifest is read once
+# as awk's first input file and every path is matched against the in-memory record set.
+dist_classify_many() {
+	local manifest
+	manifest="$(dist_manifest_file)"
+	[[ -f "$manifest" ]] || return 1
+	awk -F'\t' -v mf="$manifest" '
+		FILENAME == mf {
+			if ($0 ~ /^[[:space:]]*#/) next
+			if ($0 ~ /^[[:space:]]*$/) next
+			if (NF >= 2) { n++; cls[n] = $1; src[n] = $2; len[n] = length($2) }
+			next
+		}
+		{
+			best = ""; best_len = 0
+			for (i = 1; i <= n; i++) {
+				# A record matches the path itself or anything beneath it.
+				if ($0 == src[i] || index($0, src[i] "/") == 1) {
+					if (len[i] > best_len) { best_len = len[i]; best = cls[i] }
+				}
+			}
+			print (best == "" ? "unclassified" : best) "\t" $0
+		}
+	' "$manifest" -
+}
+
 # include | exclude | unclassified, by longest matching prefix.
 dist_classify() {
 	local target_path="$1"
-	dist_records | awk -F'\t' -v p="$target_path" '
-		{
-			src = $2
-			# A record matches the path itself or anything beneath it.
-			if (p == src || index(p, src "/") == 1) {
-				if (length(src) > best_len) { best_len = length(src); best = $1 }
+	printf '%s\n' "$target_path" | dist_classify_many | cut -f1
+}
+
+# Exclude records with no other record beneath them, so nothing inside them can be included.
+#
+# A walk may skip these entirely: descending into them can only ever yield more excluded paths.
+# Derived from the manifest on every call rather than listed here, because a hardcoded list would
+# silently stop matching the first time a record moved, and the walk would quietly start missing
+# files it was supposed to classify.
+dist_prune_roots() {
+	dist_records | awk -F'\t' '
+		{ cls[NR] = $1; src[NR] = $2; n = NR }
+		END {
+			for (i = 1; i <= n; i++) {
+				if (cls[i] != "exclude") continue
+				covered = 0
+				for (j = 1; j <= n; j++) {
+					if (j == i) continue
+					if (index(src[j], src[i] "/") == 1) { covered = 1; break }
+				}
+				if (!covered) print src[i]
 			}
 		}
-		END { print (best == "" ? "unclassified" : best) }
 	'
 }
 

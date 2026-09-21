@@ -442,6 +442,14 @@ Feature 042's scope also grew: its first exhaustive removal pass found three fur
 above is unchanged by that work — the corrections rewrote existing legs rather than declaring new
 classes — so eleven classes across eight mapped files becomes thirteen once Feature 042 lands.
 
+> **Corrected 2026-09-20 by Feature 056.** "Thirteen classes across eight mapped files" is wrong,
+> and so is the eleven-across-eight figure it was derived from. Feature 056 counted by *executing*
+> every probe leg rather than by reading declarations: the true figure is **ten declared artifact
+> classes across six mapped test files, reached by twenty probe legs**, against nine Enforcement
+> Map rows. The overcount came from reading class declarations in files that the Enforcement Map
+> does not map, and from carrying forward a row count as a class count. The original sentence is
+> left above rather than edited, so the correction is visible as a correction.
+
 The distance to target is now **30s**, not the ~0s the straddle above suggested. That makes this
 phase more necessary, not less, and the largest single candidate remains unchanged: two full
 distribution builds in `distribution-packaging`'s `generated-artifact` legs, one of which exists
@@ -502,6 +510,209 @@ contributor worth measuring — any further work belongs to `constitution-invent
 - The 240-second interim ceiling Feature 042 set is removed once 180 is met again, rather than
   surviving as a second target.
 - No constitution rule is added or amended, and neither Layer 1 nor Layer 2 is touched.
+- `.highway/tools/tests/run-all.sh` exits 0.
+
+---
+
+### Phase 15 — Flatten the per-skill cost of skill validation
+
+**Coverage verdict, 2026-09-20**: ▶ **Active.** It adds no coverage. Like Phase 14 it protects
+coverage, but against a different pressure: Phase 14 removes a fixed overhang once, while this
+phase removes a *slope*. A suite whose cost rises with every skill shipped makes "ship fewer
+skills" and "declare fewer classes" the standing cheap answers, and the repository exists to ship
+skills. The same refusal Phase 14 records applies here — if meeting the budget is ever achieved by
+validating each skill less thoroughly, this phase becomes a coverage loss and should be stopped.
+
+**Layer**: 0 **Type**: Spec (number to be assigned)
+
+**Status**: Proposed, 2026-09-20, from evidence produced inside Feature `056` and deliberately
+kept out of it.
+
+**Goal**: Adding a skill costs the test suite substantially less than it does today, achieved by
+reducing process spawning inside the validation libraries, with validator output and exit status
+proven byte-identical on every validated target.
+
+**Why this phase exists.** Phase 14 asks whether the suite fits in 180 seconds. It does not ask
+what happens to that number as the repository grows. Measured on 2026-09-20, after Feature `056`'s
+classification work landed:
+
+| Skills | Suite wall clock |
+|---|---:|
+| 10 | 173s |
+| 11 | 179s |
+
+**Roughly +6 seconds per added skill**, and that figure is a **floor rather than an estimate**:
+each row is a single sample, and `adapter-coverage.test.sh` failed early in the eleven-skill run
+because the synthetic skill was absent from the distribution manifest, so it did less work than a
+real eleventh skill would. At that slope the headroom Phase 14 recovers is consumed by a handful of
+new skills, and the 180-second target returns as a recurring obstacle rather than a solved one.
+
+The mechanism is not mysterious. One run makes **306 `validate-skill.sh` invocations** across
+**17 distribution builds**; 170 of those are the `17 builds × 10 skills` self-validation loop, so
+each new skill adds about twenty invocations at roughly 0.32s each.
+
+**What was already tried, and why it failed.** Feature `056` implemented the obvious remedy:
+`validate-skill.sh` was extended to accept several skill directories at once so the self-validation
+loop could batch ten skills into one invocation, resolving the governance rule list and the
+manifest verdict once per invocation instead of once per skill. The change was proven correct —
+single-argument output stayed byte-identical on both streams for all ten skills, and batched output
+equalled the concatenation of the ten single runs — and it saved nothing:
+
+| Form | 3 reps × 10 skills |
+|---|---:|
+| Ten separate invocations | 9.71s |
+| One batched invocation | 9.63s |
+
+It was reverted. **The premise was wrong, not the implementation.** Per-skill cost is not process
+startup, library sourcing or constitution parsing, and those are the only costs batching removes.
+Tracing a single skill validation shows **11,531 execution lines and 108 `awk` spawns**,
+concentrated in `lib/frontmatter-lexicon.sh` and `lib/rule-checks.sh` and repeated per skill
+however the process is entered; `fl_resolve_skill_id` alone runs **34 times for one skill**. This
+phase therefore starts from a closed question rather than an open one: invocation batching is
+excluded, and the work is inside the libraries.
+
+**Why this is a separate phase and not part of Feature 056.** `validate-skill.sh` and the libraries
+beneath it are the most customer-facing code in the repository, used by seven test files and by
+every shipped consumer. Feature `056` reverted a change that was *provably* output-identical
+because it returned no measurable benefit, on the principle that "it is tidier" does not justify
+touching shipped code. A change that does return benefit still needs its own equivalence evidence,
+its own failure analysis and its own record, and bolting it onto a runtime-recovery effort would
+have produced exactly the kind of unaccounted scope growth Phase 14 spends several paragraphs
+correcting.
+
+**The trade this phase refuses.** The cheap ways to flatten the slope are to validate fewer skills,
+to validate each skill less thoroughly, or to cache a verdict across builds so that a regression in
+one build is answered with a previous build's answer. All three make the number look right by
+shrinking what the number is about. This phase may make a check cheaper. It may not make a check
+decide less, and it may not let a check answer from a state it did not observe.
+
+**Prerequisite**: Phase 14 complete, or at least its measurement work. The slope must be measured
+against a settled baseline, and Feature `056` changes the distribution build cost that dominates
+the 170-invocation loop.
+
+**Command**:
+
+```text
+/speckit.specify "Adding a skill to this repository currently costs the test suite about six seconds, measured 2026-09-20 at ten skills versus eleven (173s versus 179s). Treat that as a floor, not an estimate: each figure is a single sample and adapter-coverage.test.sh bailed early in the eleven-skill run because the synthetic skill was absent from the distribution manifest, so it did less work than a real skill would. Re-measure the slope properly first, with more than one sample per point and without a failing test truncating the run, and record it as a range. The mechanism is known: one run makes 306 validate-skill.sh invocations across 17 distribution builds, 170 of them from the 17-builds-times-10-skills self-validation loop, at roughly 0.32 seconds each. Do not attempt to batch several skills into one validator invocation. That was implemented and proven output-identical inside feature 056 and measured at 9.63s batched versus 9.71s separate, which is nothing, and it was reverted; process startup, library sourcing and constitution parsing are not where the cost is. The cost is inside lib/frontmatter-lexicon.sh and lib/rule-checks.sh, which together spawn 108 awk processes and execute 11,531 lines per single skill validation, with fl_resolve_skill_id alone running 34 times for one skill. Reduce that process spawning. Prove equivalence the way feature 046 did: validator stdout, stderr and exit status byte-identical across every validated target before and after, with the comparison itself recorded. Do not reduce what any check decides, do not remove or loosen an assertion, and do not introduce a cache that lets one build answer from a previous build's observation -- a regression in the current tree must still fail in the current tree. Do not change the validator's command-line contract, and do not touch Layer 1 or Layer 2."
+```
+
+**Done when**:
+
+- The per-skill slope is re-measured across more than one sample per point, with no test bailing
+  early, and recorded as a range rather than as a single difference.
+- The slope after the change is measured the same way and reported against that baseline.
+- `validate-skill.sh` produces byte-identical stdout, stderr and exit status on every validated
+  target before and after, with the comparison recorded rather than asserted.
+- No check decides less than it did, and no assertion is removed or loosened.
+- No verdict is cached across builds or tree states; every check still observes the tree it reports
+  on.
+- The validator's command-line contract is unchanged.
+- No constitution rule is added or amended, and neither Layer 1 nor Layer 2 is touched.
+- `.highway/tools/tests/run-all.sh` exits 0.
+
+---
+
+### Phase 16 — Run the probe legs concurrently, if it is still worth doing
+
+**Coverage verdict, 2026-09-20**: ▶ **Active but conditional, and deliberately sequenced last.**
+It adds no coverage and, unlike Phases 14 and 15, it does not remove work either — it only
+redistributes work across cores. That makes it the weakest of the three on its own merits and the
+first that should be dropped if its measured benefit does not survive Phase 15.
+
+**Layer**: 0 **Type**: Spec (number to be assigned)
+
+**Status**: Proposed 2026-09-20. **Designed in full inside Feature `056` and then descoped from it
+before implementation**, on the sequencing argument below. The design is recorded rather than
+discarded; `specs/056-test-suite-runtime-recovery/` retains the contracts, the worker-count
+decision and the requirements it did not meet, marked as deferred here rather than deleted.
+
+**Goal**: `constitution-inventory.test.sh` executes its probe legs under a bounded worker pool
+instead of one after another, with output buffered and replayed in Enforcement Map order so the
+suite reads identically whether it ran concurrently or serially.
+
+**Why this phase exists.** `constitution-inventory.test.sh` executes every mapped test's probe,
+twenty legs, strictly one at a time. After Feature `056` it is **55s of a 173s suite** — the single
+largest remaining item. The legs are independent processes and the reference machine has six cores,
+of which one is used.
+
+**What it is worth, measured 2026-09-20 after Feature 056's Block B.** Per-leg costs:
+
+| Leg | Seeded / neutralised |
+|---|---|
+| `adapter-coverage` `source-document` | 10s / 11s |
+| `distribution-packaging` `generated-artifact` | 6s / 11s |
+| `distribution-packaging` `source-document` | 5s / 5s |
+| `distribution-packaging` `disposable-fixture` | 0s / 5s |
+| `shipped-tree-independence`, both classes | ~1s / 0s |
+| the remaining eight legs | ~0s |
+
+The sum is ~55s and the longest single leg is 11s, which is a floor no worker count can beat.
+Estimated outcome **55s → ~21–25s, suite ~140s**, a saving of roughly **32s**.
+
+**The serialization analysis from Feature 056 was wrong and is corrected here.** That feature's
+research recorded a single serialized pair — `constitution-inventory`'s own `source-document` leg
+against `generate-catalog.test.sh`'s `generated-artifact` leg, which read and mutate the same file.
+Checking which legs write shared live-tree state found more:
+
+| Shared file | Written by |
+|---|---|
+| `.highway/catalog/index.*` | `adapter-coverage`, `generate-catalog` |
+| `.highway/tools/.adapter-manifest` | `adapter-coverage`, `generate-agent-adapters`, `new-agent-extensibility`, `path-integrity` |
+| `generate-catalog.test.sh`'s own source, perturbed in place | `constitution-inventory`'s `source-document` leg |
+
+That collapses four legs into one serialized group of roughly 21s, which is where the ~21–25s
+estimate above comes from and why the saving is ~32s rather than the −85s Feature `056` projected
+before its Block B work shrank the legs. **This phase must re-derive the serialization set from the
+tree rather than inheriting either figure.** The hazard is not hypothetical: `run-all.sh` opens with
+a comment describing two live-tree residue defects that occurred while the suite was still serial.
+
+**Why this is sequenced after Phase 15, and why that order is not reversible.** Phase 15 removes
+validator work; this phase divides work across cores. They act on the *same* work, so the savings
+do not add. Roughly 60% of `constitution-inventory`'s 55s is validation, so once Phase 15 lands
+this phase is worth an estimated **15–22s rather than 32s**, on a suite already at 90–125s against
+a 180s target. Run in the other order, the concurrency machinery gets built and maintained at full
+cost and Phase 15 then erodes most of its value. **Measure after Phase 15 and decide then**; if the
+remaining gap does not justify concurrent mutation of a live tree, closing this phase unimplemented
+is the correct outcome and not a failure.
+
+**The design, carried forward from Feature 056 so it is not re-derived.** Worker count comes from
+`HIGHWAY_TEST_WORKERS` when set, otherwise `getconf _NPROCESSORS_ONLN`, otherwise 1; a value that is
+not a positive integer is an error naming the variable and the value, never a silent fallback that
+would make the recorded worker count a fiction. Dispatch is `xargs -P`, which is in the Declared
+Toolchain and avoids `wait -n` (absent from Bash 3.2). Each leg writes to its own scratch file and
+output is replayed in Enforcement Map order. `HIGHWAY_TEST_WORKERS=1` is serial mode — a pool size,
+not a second implementation.
+
+**This phase must re-make a constitution amendment that Feature 056 reverted.** `getconf` was added
+to the Development Constitution's Declared Toolchain (2.0.0 → 2.1.0) solely to permit the
+core-derived default above. When this phase was descoped the amendment was reverted, because a
+toolchain entry whose only justification is deferred work permits nothing and is the same defect as
+a rule that decides nothing. If this phase proceeds, the amendment is re-made with the same
+reasoning; if it is closed unimplemented, `getconf` stays off the list.
+
+**Prerequisite**: Phase 15 complete **and re-measured**. This phase may not be scoped against the
+173s figure or against any estimate in this section.
+
+**Command**:
+
+```text
+/speckit.specify "constitution-inventory.test.sh executes twenty probe legs strictly one at a time and is the largest single item left in the suite. Before anything else, re-measure: take the current per-leg costs and the current whole-suite range on an idle machine, because every figure in this request predates phase 15 and phase 15 removes roughly 60 percent of these legs' cost. If the remaining gap to 180 seconds does not justify concurrent mutation of a live tree, close this feature unimplemented and record why -- that is a correct outcome, not a failure. If it does proceed: run the legs under a bounded worker pool, with each leg writing to its own scratch file and output buffered and replayed in Enforcement Map order so the suite reads identically whether it ran concurrently or serially. Resolve the worker count from HIGHWAY_TEST_WORKERS when set, else getconf _NPROCESSORS_ONLN, else 1; a value that is not a positive integer must be an error naming the variable and the value, never a silent fallback, because a silent fallback makes the recorded worker count a fiction. Dispatch with xargs -P, not wait -n, which Bash 3.2 does not have. HIGHWAY_TEST_WORKERS=1 must run every leg sequentially through the same code path so serial mode is a pool size rather than a second implementation. Derive the set of legs that must be serialized by inspecting which legs write shared live-tree state, and do not inherit the single pair recorded in feature 056's research -- that was verified wrong on 2026-09-20. At least four legs contend: adapter-coverage and generate-catalog both write the catalog index; adapter-coverage, generate-agent-adapters, new-agent-extensibility and path-integrity all write the adapter manifest; and constitution-inventory's own source-document leg perturbs generate-catalog.test.sh in place. Treat that list as a starting point to verify, not as the answer. Prove a concurrent run and a HIGHWAY_TEST_WORKERS=1 run produce identical exit codes and identical masked output. Prove no probe residue survives a run, including a run that fails. Verify xargs -P ordered replay and getconf _NPROCESSORS_ONLN on Linux as well as macOS rather than assuming them. Re-make the Development Constitution amendment adding getconf to the Declared Toolchain, 2.0.0 to 2.1.0, which feature 056 reverted when this work was descoped. Do not reduce what any probe proves and do not remove or loosen an assertion."
+```
+
+**Done when**:
+
+- The per-leg costs and the whole-suite range are re-measured before any change, and this phase is
+  re-scoped or closed against those numbers rather than against any estimate recorded above.
+- If closed unimplemented, the reason is recorded against the measurement that decided it.
+- If implemented: the serialization set is derived from inspection of what each leg writes, and
+  recorded with the evidence, not inherited from Feature `056`.
+- A default concurrent run and a `HIGHWAY_TEST_WORKERS=1` run produce identical exit codes and
+  identical masked output.
+- An invalid `HIGHWAY_TEST_WORKERS` value fails with a message naming the variable and the value.
+- No probe residue survives any run, including a failing one.
+- `xargs -P` ordered replay and `getconf _NPROCESSORS_ONLN` are verified on Linux and macOS.
+- The `getconf` amendment is re-made with its Sync Impact Report, or `getconf` stays off the list.
+- Every artifact class still declared, no assertion removed or loosened.
 - `.highway/tools/tests/run-all.sh` exits 0.
 
 ---

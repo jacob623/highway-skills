@@ -48,12 +48,23 @@ fi
 # fixtures are non-conformant on purpose and must not reach a user, but feature 010 chose to scan
 # fixtures here with no exemption, and narrowing that would weaken the check (D3.5). The scanned
 # set is the distribution plus the tests, not the distribution alone.
+#
+# The walk prunes the manifest's exclude roots that have nothing included beneath them, and
+# classifies what survives in one pass. Both are equivalence-preserving: a pruned subtree can only
+# contain paths that classify as 'exclude', which this function discards anyway. The scanned set
+# is unchanged; only the work done to reach it is smaller, and it no longer grows each time a
+# feature directory is added.
 scan_targets() {
-	local rel
-	while IFS= read -r rel; do
-		[[ "$(dist_classify "$rel")" == "include" ]] && echo "$REPO_ROOT/$rel"
-	done < <(find "$REPO_ROOT" -type f -not -path "$REPO_ROOT/.git/*" 2>/dev/null \
-		| sed "s|^$REPO_ROOT/||")
+	local prune_args root
+	prune_args=(-path "$REPO_ROOT/.git")
+	while IFS= read -r root; do
+		[[ -n "$root" ]] || continue
+		prune_args=("${prune_args[@]}" -o -path "$REPO_ROOT/$root")
+	done < <(dist_prune_roots)
+	find "$REPO_ROOT" \( "${prune_args[@]}" \) -prune -o -type f -print 2>/dev/null \
+		| sed "s|^$REPO_ROOT/||" \
+		| dist_classify_many \
+		| awk -F'\t' -v r="$REPO_ROOT" '$1 == "include" { print r "/" $2 }'
 	find "$HIGHWAY_ROOT/tools/tests" -type f 2>/dev/null
 }
 

@@ -39,9 +39,21 @@ sha256_of() {
 	fi
 }
 
-# Every repository file, .git excluded, as repository-relative paths.
-repo_files() {
-	find "$REPO_ROOT" -type f -not -path "$REPO_ROOT/.git/*" 2>/dev/null \
+# Every repository file that could possibly be included, as repository-relative paths.
+#
+# Subtrees the manifest excludes with nothing included beneath them are pruned rather than walked:
+# descending into them can only produce paths that classify as 'exclude' and are then discarded.
+# The prune list is derived from the manifest at runtime by dist_prune_roots, so it cannot drift
+# out of step with it. This keeps the walk proportional to what ships rather than to the
+# repository, which otherwise grows with every feature directory that is added and never shipped.
+candidate_files() {
+	local prune_args root
+	prune_args=(-path "$REPO_ROOT/.git")
+	while IFS= read -r root; do
+		[[ -n "$root" ]] || continue
+		prune_args=("${prune_args[@]}" -o -path "$REPO_ROOT/$root")
+	done < <(dist_prune_roots)
+	find "$REPO_ROOT" \( "${prune_args[@]}" \) -prune -o -type f -print 2>/dev/null \
 		| sed "s|^$REPO_ROOT/||" | sort
 }
 
@@ -187,23 +199,27 @@ echo "producing distribution at $TARGET"
 mkdir -p "$TARGET"
 
 included=0
-while IFS= read -r rel; do
-	[[ "$(dist_classify "$rel")" == "include" ]] || continue
+while IFS=$'\t' read -r class rel; do
+	[[ "$class" == "include" ]] || continue
 	dest="$(dist_destination "$rel")"
 	mkdir -p "$TARGET/$(dirname "$dest")"
 	cp "$REPO_ROOT/$rel" "$TARGET/$dest"
 	included=$((included + 1))
-done < <(repo_files)
+done < <(candidate_files | dist_classify_many)
 echo "  included $included paths from .highway/tools/.distribution-manifest"
 
 # Written last so it records the finished tree. Excluded from its own listing.
+# Hashed in one pass: the per-file form spawned two processes per file.
 record="$TARGET/$RECORD_REL"
 mkdir -p "$(dirname "$record")"
 : >"$record"
-while IFS= read -r rel; do
-	[[ "$rel" == "$RECORD_REL" ]] && continue
-	printf '%s\t%s\n' "$rel" "$(sha256_of "$TARGET/$rel")" >>"$record"
-done < <(dist_files)
+dist_files | grep -vxF "$RECORD_REL" | sed "s|^|$TARGET/|" | tr '\n' '\0' |
+	if command -v sha256sum >/dev/null 2>&1; then
+		xargs -0 sha256sum
+	else
+		xargs -0 shasum -a 256
+	fi |
+	awk -v n="${#TARGET}" '{ h = $1; p = substr($0, length(h) + 3); print substr(p, n + 2) "\t" h }' >"$record"
 
 # --- Verify, and reject rather than warn (FR-011) ---
 
