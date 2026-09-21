@@ -1,6 +1,13 @@
 {
-  "generated_at": "2026-09-19T22:44:27Z",
+  "generated_at": "2026-09-21T11:53:32Z",
   "entries": [
+    {
+      "library_type": "template",
+      "name": "clarification-record",
+      "description": "Complete output skeleton for a retained clarification artifact.",
+      "version": "1.0.0",
+      "source_path": "library/templates/output/clarification-record.md"
+    },
     {
       "library_type": "template",
       "name": "control-record",

@@ -1,6 +1,15 @@
 {
-  "generated_at": "2026-09-21T03:06:29Z",
+  "generated_at": "2026-09-21T12:32:43Z",
   "entries": [
+    {
+      "id": "highway-clarify",
+      "name": "highway-clarify",
+      "description": "Manages Highway data.",
+      "usage": "Invoke as `/highway-clarify <ID>`.",
+      "compatibility": "all",
+      "version": "1.0.0",
+      "source_path": "skills/highway-clarify/SKILL.md"
+    },
     {
       "id": "highway-controls",
       "name": "highway-controls",
