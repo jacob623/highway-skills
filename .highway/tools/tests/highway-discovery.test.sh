@@ -68,6 +68,15 @@ require_absent() {
 	fi
 }
 
+discovery_structure_valid() {
+	local file="$1"
+	grep -Fq '.highway/library/templates/output/discovery-record.md' "$file" || return 1
+	grep -Fq '.highway/library/templates/output/discovery-catalog.md' "$file" || return 1
+	grep -Fq 'The record always includes the exact sections' "$file" && return 1
+	grep -Fq 'Confirm the record has the required sections in shared-template order:' "$file" && return 1
+	grep -Fq 'Confirm the catalog has only `Version`, `Next ID`, and `## Discovery Index`' "$file" && return 1
+}
+
 assert_alignment_fixture() {
 	local file="$1" expected="$2" value
 	value="$(sed -n 's/^Alignment: //p' "$file" | head -n1)"
@@ -111,6 +120,54 @@ require_file "$SKILL"
 require_file "$RECORD_TEMPLATE"
 require_file "$CATALOG_TEMPLATE"
 
+# Disposable source mutations must independently detect missing shared citations and restored
+# record/catalog structure without touching the canonical skill or templates.
+missing_record_citation="$WORK/missing-record-citation.md"
+sed '/discovery-record\.md/d' "$SKILL" >"$missing_record_citation"
+if discovery_structure_valid "$missing_record_citation"; then
+	echo "FAIL: missing Discovery record citation fixture was accepted" >&2
+	fail=1
+fi
+missing_catalog_citation="$WORK/missing-catalog-citation.md"
+sed '/discovery-catalog\.md/d' "$SKILL" >"$missing_catalog_citation"
+if discovery_structure_valid "$missing_catalog_citation"; then
+	echo "FAIL: missing Discovery catalog citation fixture was accepted" >&2
+	fail=1
+fi
+duplicate_layout="$WORK/duplicate-layout.md"
+cp "$SKILL" "$duplicate_layout"
+printf '%s\n' 'The record always includes the exact sections `Objective Relationships`, `Control Relationships`, and `NFR Relationships`.' >>"$duplicate_layout"
+if discovery_structure_valid "$duplicate_layout"; then
+	echo "FAIL: duplicated Discovery relationship layout fixture was accepted" >&2
+	fail=1
+fi
+verification_layout="$WORK/verification-layout.md"
+cp "$SKILL" "$verification_layout"
+printf '%s\n' 'Confirm the record has the required sections in shared-template order:' >>"$verification_layout"
+if discovery_structure_valid "$verification_layout"; then
+	echo "FAIL: duplicated Discovery record verification fixture was accepted" >&2
+	fail=1
+fi
+catalog_layout="$WORK/catalog-layout.md"
+cp "$SKILL" "$catalog_layout"
+printf '%s\n' 'Confirm the catalog has only `Version`, `Next ID`, and `## Discovery Index`' >>"$catalog_layout"
+if discovery_structure_valid "$catalog_layout"; then
+	echo "FAIL: duplicated Discovery catalog verification fixture was accepted" >&2
+	fail=1
+fi
+
+discovery_adapter="$REPO_ROOT/.github/skills/highway-discovery/SKILL.md"
+if [[ -f "$discovery_adapter" ]] && ! cmp -s "$SKILL" "$discovery_adapter"; then
+	grep -Fq '.highway/library/templates/output/discovery-record.md' "$discovery_adapter" || {
+		echo "FAIL: Discovery adapter is stale relative to the canonical citation" >&2
+		fail=1
+	}
+	grep -Fq '.highway/library/templates/output/discovery-catalog.md' "$discovery_adapter" || {
+		echo "FAIL: Discovery adapter is missing the canonical catalog citation" >&2
+		fail=1
+	}
+fi
+
 if [[ "$(grep -c '^## Verification$' "$SKILL")" -ne 1 ]]; then
 	echo "FAIL: expected exactly one ## Verification section" >&2
 	fail=1
@@ -144,9 +201,8 @@ for token in \
 	'## Purpose' '## When to use' '## When not to use' '## Inputs' '## Outputs' \
 	'## Workflow' '## Verification' '## Error Handling' '## Example' \
 	'REQ' 'DISC' 'Complete' 'Research Findings' 'Candidate Solution Options' \
-	'Objective Relationships' 'Control Relationships' 'NFR Relationships' \
 	'conversation contract' 'analysis contract' 'write nothing' 'preserve existing bytes' \
-	'ADR' 'Version' 'Next ID' 'byte-identical' 'redact' 'High' 'Medium' 'Low' \
+	'ADR' 'byte-identical' 'redact' 'High' 'Medium' 'Low' \
 	'exact normalized title' 'at least two' 'advisory' 'at most 3 times' 'exactly once'; do
 	require_text "$SKILL" "$token"
 done
@@ -163,11 +219,8 @@ for token in \
 done
 for token in \
 	'discoveries/DISCXXXXXX.md' 'discoveries/discoveries.md' \
-	'Request Reference' 'Research Findings' 'Assumptions' 'Risks' 'Unknowns' \
-	'Candidate Solution Options' 'Candidate Solution Comparison Matrix' 'Recommendation' \
-	'Objective Relationships' 'Control Relationships' 'NFR Relationships' \
-	'Reference Architecture Matches' 'Discovery identifier' 'Request identifier' \
-	'Record path' 'Catalog path' 'no output' 'preserve existing bytes'; do
+	'Discovery identifier' 'Request identifier' 'Record path' 'Catalog path' \
+	'no output' 'preserve existing bytes'; do
 	require_text "$SKILL" "$token"
 done
 for token in \
@@ -217,9 +270,10 @@ require_absent "$RECORD_TEMPLATE" '^## Request$'
 for token in '## Request Solution Constraints' 'allowed_solution_classes' 'existing_platforms_required' 'existing_platforms_preferred' 'known_systems' 'hosting_restrictions' 'vendor_restrictions' 'procurement_constraints' 'regulatory_restrictions' '## Candidate Elimination Log' 'Constraint Alignment' 'Satisfied Constraints' 'Unsatisfied Constraints' 'Required Platform Match' 'Preferred Platform Match' 'Known-System Alignment' 'Constraint Compliance' 'Allowed Solution Class' 'Constraint Alignment Score'; do
 	require_text "$RECORD_TEMPLATE" "$token"
 done
-require_text "$SKILL" 'Request Reference'
 require_text "$SKILL" 'Request Solution Constraints'
 require_text "$SKILL" 'Candidate Elimination Log'
+require_text "$SKILL" '.highway/library/templates/output/discovery-record.md'
+require_text "$SKILL" '.highway/library/templates/output/discovery-catalog.md'
 require_text "$SKILL" 'Fully Compliant'
 require_absent "$SKILL" 'Constraint Compliance` (`Fully Compliant` or `Satisfied`)'
 require_text "$SKILL" 'Required Platform Match is 100 for traceability only'
@@ -231,6 +285,15 @@ require_text "$RECORD_TEMPLATE" 'Objective: <0-100>'
 require_text "$RECORD_TEMPLATE" 'Constraints: <0-100>'
 require_text "$RECORD_TEMPLATE" 'Required Platform Match: 100 (traceability only)'
 require_text "$RECORD_TEMPLATE" 'Entries are ordered by Candidate Identifier, then Constraint Category, then Constraint Identifier or Value.'
+if grep -Fq 'The record always includes the exact sections' "$SKILL"; then
+	echo "FAIL: highway-discovery still independently declares relationship-section structure" >&2
+	fail=1
+fi
+if grep -Fq 'Confirm the record has the required sections in shared-template order:' "$SKILL" ||
+	grep -Fq 'Confirm the catalog has only `Version`, `Next ID`, and `## Discovery Index`' "$SKILL"; then
+	echo "FAIL: highway-discovery still duplicates record or catalog layout verification" >&2
+	fail=1
+fi
 
 # Each deterministic value rule is exercised by an independent disposable fixture.
 valid_alignment="$WORK/alignment-valid.md"
@@ -269,6 +332,13 @@ catalog_before="$(shasum "$WORK/discoveries/discoveries.md")"
 require_text "$SKILL" 'discoveries/DISCXXXXXX.md'
 require_text "$SKILL" 'discoveries/discoveries.md'
 require_text "$CATALOG_TEMPLATE" 'Discovery Index'
+
+for protected_file in "$SKILL" "$RECORD_TEMPLATE" "$CATALOG_TEMPLATE" "$discovery_adapter"; do
+	if [[ -f "$protected_file" ]]; then
+		before_hash="$(shasum "$protected_file")"
+		[[ "$(shasum "$protected_file")" == "$before_hash" ]] || fail=1
+	fi
+done
 
 # Invalid source, privacy, validation, allocation, and write failures are no-write paths.
 for failure_phrase in missing malformed ambiguous nonexistent non-unique incomplete privacy validation; do

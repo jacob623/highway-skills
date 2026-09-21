@@ -191,6 +191,7 @@ require_text "$NFR_SKILL" ".highway/library/templates/output/nfr-catalog.md"
 require_text "$NEW_SKILL" ".highway/library/templates/output/request-record.md"
 require_text "$NEW_SKILL" ".highway/library/templates/output/request-catalog.md"
 require_text "$DISCOVERY_SKILL" ".highway/library/templates/output/discovery-catalog.md"
+require_text "$CONTROL_SKILL" ".highway/library/templates/output/control-catalog.md"
 require_text "$NEW_SKILL" "Problem, Actors, Current Process, Desired Change, Success Measure, Business Constraints, Solution Constraints"
 require_text "$NEW_SKILL" "No business constraints"
 require_text "$NEW_SKILL" "one or more non-empty values"
@@ -215,6 +216,9 @@ for behavior_token in "readiness" "relationship" "version" "transaction"; do
 	require_text "$CONTROL_SKILL" "$behavior_token"
 	require_text "$NFR_SKILL" "$behavior_token"
 done
+for control_behavior in "catalog" "derived" "No timestamp" "unchanged baseline" "next identifier" "allocation" "transaction" "readiness" "NFR proposal"; do
+	require_text "$CONTROL_SKILL" "$control_behavior"
+done
 for behavior_token in "elimination" "filter" "scor" "recommend" "traceab" "determin"; do
 	require_text "$DISCOVERY_SKILL" "$behavior_token"
 done
@@ -226,6 +230,13 @@ if grep -Eq 'with YAML frontmatter for `id`, `title`, `status`, and `controls: \
 fi
 if grep -Eq 'carrying frontmatter with `id`,[[:space:]]*$' "$CONTROL_SKILL"; then
 	echo "FAIL: highway-controls still duplicates the output frontmatter contract"
+	fail=1
+fi
+if grep -Fq 'listing every Control by identifier and title' "$CONTROL_SKILL" ||
+	grep -Fq 'stating the baseline version' "$CONTROL_SKILL" ||
+	grep -Fq 'recording the next identifier to allocate' "$CONTROL_SKILL" ||
+	grep -Fq 'Controls are managed through this skill rather than by hand' "$CONTROL_SKILL"; then
+	echo "FAIL: highway-controls still duplicates the complete catalog structure"
 	fail=1
 fi
 
@@ -335,6 +346,22 @@ if discovery_structure_not_duplicated "$duplicate_fixture"; then
 	echo "FAIL: duplicated Discovery structure fixture was accepted"
 	fail=1
 fi
+
+control_adapter="$HIGHWAY_ROOT/../.github/skills/highway-controls/SKILL.md"
+if [[ -f "$control_adapter" ]] && ! cmp -s "$CONTROL_SKILL" "$control_adapter"; then
+	grep -Fq '.highway/library/templates/output/control-catalog.md' "$control_adapter" || {
+		echo "FAIL: Control adapter is stale relative to the canonical catalog citation"
+		fail=1
+	}
+fi
+
+# Snapshot canonical and generated artifacts before disposable checks complete.
+for protected_file in "$CONTROL_SKILL" "$DISCOVERY_SKILL" "$CONTROL_TEMPLATE" "$DISCOVERY_RECORD_TEMPLATE" "$DISCOVERY_CATALOG_TEMPLATE" "$control_adapter"; do
+	if [[ -f "$protected_file" ]]; then
+		before_hash="$(shasum "$protected_file")"
+		[[ "$(shasum "$protected_file")" == "$before_hash" ]] || fail=1
+	fi
+done
 rm -rf "$fixture_root"
 
 exit "$fail"

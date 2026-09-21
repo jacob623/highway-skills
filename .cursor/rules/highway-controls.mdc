@@ -83,9 +83,9 @@ baseline holds the only version.
 
 The complete catalog structure follows `.highway/library/templates/output/control-catalog.md`.
 
-**A catalog** at `library/governance/controls.md`, listing every Control by identifier and title,
-stating the baseline version, recording the next identifier to allocate, and stating that Controls
-are managed through this skill rather than by hand.
+**A catalog** at `library/governance/controls.md` following the complete structure in
+`.highway/library/templates/output/control-catalog.md`. Controls are managed through this skill
+rather than by hand.
 
 The catalog is a function of the Controls and the recorded next identifier. No timestamp is
 written, so an unchanged baseline produces an unchanged file.
