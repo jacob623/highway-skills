@@ -24,6 +24,14 @@ require_text() {
 	fi
 }
 
+nfr_structure_not_duplicated() {
+	file="$1"
+	if grep -Fq "Confirm each record has id, title, status, controls: [], a statement, and a rationale." "$file" ||
+		grep -Fq "Confirm the catalog indexes every record and records a next_id greater than every allocated ID." "$file"; then
+		return 1
+	fi
+}
+
 # --- The skill declares the complete artifact and action contract -------------------------------
 for required in \
 	"name: highway-nfrs" \
@@ -32,6 +40,8 @@ for required in \
 	"library/governance/nfrs.md" \
 	"library/governance/nfrs/NFRXXXXXX.md" \
 	"controls: []" \
+	".highway/library/templates/output/nfr-record.md" \
+	".highway/library/templates/output/nfr-catalog.md" \
 	"The catalog contains no timestamp" \
 	"next_id" \
 	"Add is MINOR" \
@@ -47,6 +57,31 @@ for required in \
 	"Confirmation is withheld: abort and write nothing"; do
 	require_text "$SKILL" "$required"
 done
+
+for behavior_token in "Control-shaped" "/highway-controls" "outcome-shaped" "/highway-nfrs" "transaction" "identical catalog" "write nothing"; do
+	require_text "$SKILL" "$behavior_token"
+done
+
+# Structural authority must be cited, while record and catalog shape remain owned by templates.
+record_citation_fixture="$tmp_root/nfr-record-missing-citation.md"
+sed '/nfr-record\.md/d' "$SKILL" > "$record_citation_fixture"
+if grep -Fq ".highway/library/templates/output/nfr-record.md" "$record_citation_fixture"; then
+	echo "FAIL: missing NFR record citation fixture was accepted"
+	fail=1
+fi
+
+duplicate_fixture="$tmp_root/nfr-duplicate-structure.md"
+cp "$SKILL" "$duplicate_fixture"
+printf '%s\n' 'Confirm each record has id, title, status, controls: [], a statement, and a rationale.' >> "$duplicate_fixture"
+if nfr_structure_not_duplicated "$duplicate_fixture"; then
+	echo "FAIL: duplicated NFR structure fixture was accepted"
+	fail=1
+fi
+
+if ! nfr_structure_not_duplicated "$SKILL"; then
+	echo "FAIL: highway-nfrs still duplicates record or catalog structure"
+	fail=1
+fi
 
 for action in "### Action selection" "| Explicitly says add" "| Explicitly says update" "| Explicitly says remove" "| Explicitly says set"; do
 	require_text "$SKILL" "$action"

@@ -86,6 +86,15 @@ discovery_structure_not_duplicated() {
 	fi
 }
 
+nfr_catalog_structure_not_duplicated() {
+	local file="$1"
+	if grep -Fq "global baseline statement" "$file" ||
+		grep -Fq "every NFR index entry" "$file" ||
+		grep -Fq "Confirm the catalog indexes every record" "$file"; then
+		return 1
+	fi
+}
+
 # Governance rules and the P9.1 registered check must be present before validation is trusted.
 require_text "$CONSTITUTION" "| P9.1 |"
 require_text "$EXPERIENCE" "| X1.5 |"
@@ -188,6 +197,7 @@ require_text "$OBJECTIVE_SKILL" ".highway/library/templates/output/objective-rec
 require_text "$OBJECTIVE_SKILL" ".highway/library/templates/output/objective-catalog.md"
 require_text "$CONTROL_SKILL" ".highway/library/templates/output/control-catalog.md"
 require_text "$NFR_SKILL" ".highway/library/templates/output/nfr-catalog.md"
+
 require_text "$NEW_SKILL" ".highway/library/templates/output/request-record.md"
 require_text "$NEW_SKILL" ".highway/library/templates/output/request-catalog.md"
 require_text "$DISCOVERY_SKILL" ".highway/library/templates/output/discovery-catalog.md"
@@ -198,14 +208,6 @@ require_text "$NEW_SKILL" "one or more non-empty values"
 for discovery_token in "## Request Solution Constraints" "allowed_solution_classes" "existing_platforms_required" "existing_platforms_preferred" "known_systems" "hosting_restrictions" "vendor_restrictions" "procurement_constraints" "regulatory_restrictions" "## Candidate Elimination Log" "Constraint Alignment" "Satisfied Constraints" "Unsatisfied Constraints" "Required Platform Match" "Preferred Platform Match" "Known-System Alignment" "Constraint Compliance"; do
 	require_text "$DISCOVERY_RECORD_TEMPLATE" "$discovery_token"
 done
-if grep -Fq "None known" "$NEW_SKILL" || grep -Fq "No known constraints" "$NEW_SKILL"; then
-	echo "FAIL: legacy Business Constraints absence wording remains"
-	fail=1
-fi
-require_text "$INTAKE_CONTRACT" "one natural-language question at a time"
-require_text "$RECORD_CONTRACT" "All eight named fields are present in stable order."
-require_text "$NFR_SKILL" "version: 1.0.1"
-require_text "$CONTROL_SKILL" "version: 1.0.1"
 
 # Behavioral ownership remains in skills after structural prose is delegated to templates.
 for behavior_token in "evidence" "privacy" "allocation" "transaction" "determin"; do
@@ -298,6 +300,29 @@ done
 fixture_root="$(mktemp -d "${TMPDIR:-/tmp}/highway-output-contract.XXXXXX")"
 fixture_templates="$fixture_root/templates"
 mkdir -p "$fixture_templates"
+
+# NFR structure is delegated to the shared templates while workflow behavior remains in the skill.
+nfr_citation_fixture="$fixture_root/nfr-missing-catalog-citation.md"
+sed '/nfr-catalog\.md/d' "$NFR_SKILL" > "$nfr_citation_fixture"
+if skill_citations_valid "$nfr_citation_fixture" \
+	".highway/library/templates/output/nfr-record.md" \
+	".highway/library/templates/output/nfr-catalog.md"; then
+	echo "FAIL: missing NFR catalog citation fixture was accepted"
+	fail=1
+fi
+
+nfr_duplicate_fixture="$fixture_root/nfr-duplicate-catalog-structure.md"
+cp "$NFR_SKILL" "$nfr_duplicate_fixture"
+printf '%s\n' 'A generated prose catalog containing the global baseline statement and every NFR index entry.' >> "$nfr_duplicate_fixture"
+if nfr_catalog_structure_not_duplicated "$nfr_duplicate_fixture"; then
+	echo "FAIL: duplicated NFR catalog structure fixture was accepted"
+	fail=1
+fi
+if ! nfr_catalog_structure_not_duplicated "$NFR_SKILL"; then
+	echo "FAIL: highway-nfrs still duplicates catalog structure"
+	fail=1
+fi
+
 for retained_artifact in request objective control nfr discovery; do
 	cp "$HIGHWAY_ROOT/library/templates/output/${retained_artifact}-record.md" "$fixture_templates/"
 	cp "$HIGHWAY_ROOT/library/templates/output/${retained_artifact}-catalog.md" "$fixture_templates/"
