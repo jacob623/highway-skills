@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-21T16:38:42Z",
+  "generated_at": "2026-09-21T17:57:15Z",
   "entries": [
     {
       "library_type": "template",
@@ -7,6 +7,13 @@
       "description": "Authoritative output structure for a deterministic retained clarification artifact.",
       "version": "1.1.0",
       "source_path": "library/templates/output/clarification-record.md"
+    },
+    {
+      "library_type": "template",
+      "name": "control-catalog",
+      "description": "Complete output skeleton for the repository Control baseline catalog.",
+      "version": "1.0.0",
+      "source_path": "library/templates/output/control-catalog.md"
     },
     {
       "library_type": "template",
@@ -31,10 +38,24 @@
     },
     {
       "library_type": "template",
+      "name": "nfr-catalog",
+      "description": "Complete output skeleton for the repository Non-Functional Requirement catalog.",
+      "version": "1.0.0",
+      "source_path": "library/templates/output/nfr-catalog.md"
+    },
+    {
+      "library_type": "template",
       "name": "nfr-record",
       "description": "Complete output skeleton for a retained Non-Functional Requirement record.",
       "version": "1.0.0",
       "source_path": "library/templates/output/nfr-record.md"
+    },
+    {
+      "library_type": "template",
+      "name": "objective-catalog",
+      "description": "Complete output skeleton for the Business Objective baseline catalog.",
+      "version": "1.0.0",
+      "source_path": "library/templates/output/objective-catalog.md"
     },
     {
       "library_type": "template",

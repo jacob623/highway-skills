@@ -30,6 +30,9 @@ RECORD_CONTRACT="$FEATURE_CONTRACT_DIR/request-solution-constraints-record-contr
 DISCOVERY_SKILL="$HIGHWAY_ROOT/skills/highway-discovery/SKILL.md"
 DISCOVERY_RECORD_TEMPLATE="$HIGHWAY_ROOT/library/templates/output/discovery-record.md"
 DISCOVERY_CATALOG_TEMPLATE="$HIGHWAY_ROOT/library/templates/output/discovery-catalog.md"
+OBJECTIVE_CATALOG_TEMPLATE="$HIGHWAY_ROOT/library/templates/output/objective-catalog.md"
+CONTROL_CATALOG_TEMPLATE="$HIGHWAY_ROOT/library/templates/output/control-catalog.md"
+NFR_CATALOG_TEMPLATE="$HIGHWAY_ROOT/library/templates/output/nfr-catalog.md"
 CLARIFY_SKILL="$HIGHWAY_ROOT/skills/highway-clarify/SKILL.md"
 VALIDATE_LIBRARY="$HIGHWAY_ROOT/tools/validate-library.sh"
 VALIDATE_SKILL="$HIGHWAY_ROOT/tools/validate-skill.sh"
@@ -52,6 +55,37 @@ require_file() {
 	fi
 }
 
+template_pair_inventory_valid() {
+	local root="$1"
+	local artifact
+	for artifact in request objective control nfr discovery; do
+		[[ -f "$root/${artifact}-record.md" ]] || return 1
+		[[ -f "$root/${artifact}-catalog.md" ]] || return 1
+	done
+}
+
+catalog_shape_valid() {
+	local file="$1" name="$2" next_id="$3" index_heading="$4"
+	grep -Fq "name: $name" "$file" || return 1
+	grep -Fq "Version: 1.0.0" "$file" || return 1
+	grep -Fq "Next ID: $next_id" "$file" || return 1
+	grep -Fq "## $index_heading" "$file" || return 1
+	grep -Fq '| ' "$file" || return 1
+}
+
+skill_citations_valid() {
+	local file="$1" record_path="$2" catalog_path="$3"
+	grep -Fq "$record_path" "$file" || return 1
+	grep -Fq "$catalog_path" "$file" || return 1
+}
+
+discovery_structure_not_duplicated() {
+	local file="$1"
+	if grep -Fq "contains, in" "$file" && grep -Fq -- "- Request Reference" "$file"; then
+		return 1
+	fi
+}
+
 # Governance rules and the P9.1 registered check must be present before validation is trusted.
 require_text "$CONSTITUTION" "| P9.1 |"
 require_text "$EXPERIENCE" "| X1.5 |"
@@ -68,6 +102,9 @@ require_file "$CATALOG_TEMPLATE"
 require_file "$DISCOVERY_SKILL"
 require_file "$DISCOVERY_RECORD_TEMPLATE"
 require_file "$DISCOVERY_CATALOG_TEMPLATE"
+require_file "$OBJECTIVE_CATALOG_TEMPLATE"
+require_file "$CONTROL_CATALOG_TEMPLATE"
+require_file "$NFR_CATALOG_TEMPLATE"
 require_file "$INTAKE_CONTRACT"
 require_file "$RECORD_CONTRACT"
 if [[ -f "$NFR_TEMPLATE" ]]; then
@@ -128,14 +165,32 @@ if [[ -f "$CATALOG_TEMPLATE" ]]; then
 	require_text "$CATALOG_TEMPLATE" "Version: 1.0.0"
 	require_text "$CATALOG_TEMPLATE" "Next ID: REQXXXXXX"
 fi
+for catalog_pair in \
+	"$OBJECTIVE_CATALOG_TEMPLATE|objective-catalog|OBJXXXXXX|Objective Index" \
+	"$CONTROL_CATALOG_TEMPLATE|control-catalog|CTLXXXXXX|Control Index" \
+	"$NFR_CATALOG_TEMPLATE|nfr-catalog|NFRXXXXXX|NFR Index"; do
+	IFS='|' read -r catalog_file catalog_name next_id index_heading <<EOF
+$catalog_pair
+EOF
+	if [[ -f "$catalog_file" ]]; then
+		require_text "$catalog_file" "name: $catalog_name"
+		require_text "$catalog_file" "Version: 1.0.0"
+		require_text "$catalog_file" "Next ID: $next_id"
+	require_text "$catalog_file" "## $index_heading"
+	fi
+done
 
 # Each file-emitting skill must cite its complete skeleton.
 require_text "$NFR_SKILL" ".highway/library/templates/output/nfr-record.md"
 require_text "$CONTROL_SKILL" ".highway/library/templates/output/control-record.md"
 require_text "$PROFILE_SKILL" ".highway/library/templates/output/profile.yaml"
 require_text "$OBJECTIVE_SKILL" ".highway/library/templates/output/objective-record.md"
+require_text "$OBJECTIVE_SKILL" ".highway/library/templates/output/objective-catalog.md"
+require_text "$CONTROL_SKILL" ".highway/library/templates/output/control-catalog.md"
+require_text "$NFR_SKILL" ".highway/library/templates/output/nfr-catalog.md"
 require_text "$NEW_SKILL" ".highway/library/templates/output/request-record.md"
 require_text "$NEW_SKILL" ".highway/library/templates/output/request-catalog.md"
+require_text "$DISCOVERY_SKILL" ".highway/library/templates/output/discovery-catalog.md"
 require_text "$NEW_SKILL" "Problem, Actors, Current Process, Desired Change, Success Measure, Business Constraints, Solution Constraints"
 require_text "$NEW_SKILL" "No business constraints"
 require_text "$NEW_SKILL" "one or more non-empty values"
@@ -150,6 +205,19 @@ require_text "$INTAKE_CONTRACT" "one natural-language question at a time"
 require_text "$RECORD_CONTRACT" "All eight named fields are present in stable order."
 require_text "$NFR_SKILL" "version: 1.0.1"
 require_text "$CONTROL_SKILL" "version: 1.0.1"
+
+# Behavioral ownership remains in skills after structural prose is delegated to templates.
+for behavior_token in "evidence" "privacy" "allocation" "transaction" "determin"; do
+	require_text "$NEW_SKILL" "$behavior_token"
+done
+for behavior_token in "readiness" "relationship" "version" "transaction"; do
+	require_text "$OBJECTIVE_SKILL" "$behavior_token"
+	require_text "$CONTROL_SKILL" "$behavior_token"
+	require_text "$NFR_SKILL" "$behavior_token"
+done
+for behavior_token in "elimination" "filter" "scor" "recommend" "traceab" "determin"; do
+	require_text "$DISCOVERY_SKILL" "$behavior_token"
+done
 
 # The citation is the structure authority; these duplicated field/body declarations must be gone.
 if grep -Eq 'with YAML frontmatter for `id`, `title`, `status`, and `controls: \[\]`' "$NFR_SKILL"; then
@@ -213,5 +281,60 @@ for citing_skill in "$NFR_SKILL" "$CONTROL_SKILL" "$PROFILE_SKILL" "$OBJECTIVE_S
 		fail=1
 	fi
 done
+
+# Disposable probes independently reject missing templates, incomplete catalog metadata, missing
+# citations, and duplicated structural declarations without changing canonical files.
+fixture_root="$(mktemp -d "${TMPDIR:-/tmp}/highway-output-contract.XXXXXX")"
+fixture_templates="$fixture_root/templates"
+mkdir -p "$fixture_templates"
+for retained_artifact in request objective control nfr discovery; do
+	cp "$HIGHWAY_ROOT/library/templates/output/${retained_artifact}-record.md" "$fixture_templates/"
+	cp "$HIGHWAY_ROOT/library/templates/output/${retained_artifact}-catalog.md" "$fixture_templates/"
+done
+rm -f "$fixture_templates/objective-catalog.md"
+if template_pair_inventory_valid "$fixture_templates"; then
+	echo "FAIL: missing catalog fixture was accepted"
+	fail=1
+fi
+
+for catalog_fixture in objective control nfr; do
+	source_catalog="$HIGHWAY_ROOT/library/templates/output/${catalog_fixture}-catalog.md"
+	case "$catalog_fixture" in
+		objective) catalog_name="objective-catalog"; next_id="OBJXXXXXX"; index_heading="Objective Index" ;;
+		control) catalog_name="control-catalog"; next_id="CTLXXXXXX"; index_heading="Control Index" ;;
+		nfr) catalog_name="nfr-catalog"; next_id="NFRXXXXXX"; index_heading="NFR Index" ;;
+	esac
+	for catalog_rule in identity version next-id index; do
+		fixture_catalog="$fixture_root/${catalog_fixture}-${catalog_rule}.md"
+		case "$catalog_rule" in
+			identity) sed '/^name:/d' "$source_catalog" > "$fixture_catalog" ;;
+			version) sed '/^Version:/d' "$source_catalog" > "$fixture_catalog" ;;
+			next-id) sed '/^Next ID:/d' "$source_catalog" > "$fixture_catalog" ;;
+			index) sed '/^## .*Index$/d' "$source_catalog" > "$fixture_catalog" ;;
+		esac
+		if catalog_shape_valid "$fixture_catalog" "$catalog_name" "$next_id" "$index_heading"; then
+			echo "FAIL: incomplete $catalog_fixture catalog fixture ($catalog_rule) was accepted"
+			fail=1
+		fi
+	done
+done
+
+citation_fixture="$fixture_root/objectives-missing-citation.md"
+sed '/objective-catalog\.md/d' "$OBJECTIVE_SKILL" > "$citation_fixture"
+if skill_citations_valid "$citation_fixture" \
+	".highway/library/templates/output/objective-record.md" \
+	".highway/library/templates/output/objective-catalog.md"; then
+	echo "FAIL: missing skill citation fixture was accepted"
+	fail=1
+fi
+
+duplicate_fixture="$fixture_root/discovery-duplicate-structure.md"
+cp "$DISCOVERY_SKILL" "$duplicate_fixture"
+printf '%s\n' '- The record contains, in shared template order:' '- Request Reference' >> "$duplicate_fixture"
+if discovery_structure_not_duplicated "$duplicate_fixture"; then
+	echo "FAIL: duplicated Discovery structure fixture was accepted"
+	fail=1
+fi
+rm -rf "$fixture_root"
 
 exit "$fail"

@@ -85,6 +85,8 @@ in `.highway/library/templates/output/control-record.md`, including frontmatter 
 template's placeholders remain user-owned values. A Control carries no version of its own; the
 baseline holds the only version.
 
+The complete catalog structure follows `.highway/library/templates/output/control-catalog.md`.
+
 **A catalog** at `library/governance/controls.md`, listing every Control by identifier and title,
 stating the baseline version, recording the next identifier to allocate, and stating that Controls
 are managed through this skill rather than by hand.
@@ -186,6 +188,8 @@ This self-check exercises `X1.1`, `X1.2`, `X2.1`, `X4.1`, `X5.1`, `X5.2` and `X6
 - Confirm the identifiers in the catalog match the files present, with none missing or extra.
 - Confirm the next identifier recorded in the catalog is greater than every identifier in use.
 - Confirm an unchanged baseline rewrites to an identical catalog.
+- Confirm the Control record, catalog, and relationship update are one validated transaction and
+  a failure leaves every affected byte unchanged.
 - Confirm the report names the action taken and the resulting baseline version.
 - Confirm `readiness` emits the exact four ordered fields for missing, blocked, and complete baselines
   without changing Control files, catalogs, versions, or NFR proposal state.

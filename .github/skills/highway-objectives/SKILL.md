@@ -50,6 +50,8 @@ is authoritative for `next_id` and the semantic baseline version.
 The complete retained-record structure in `.highway/library/templates/output/objective-record.md`.
 The template defines the required frontmatter and body ordering; its values remain user-owned.
 
+The complete catalog structure in `.highway/library/templates/output/objective-catalog.md`.
+
 ## Outputs
 
 A read-only status response, or a mutation report containing exactly these fields. Confirmed

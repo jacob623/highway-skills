@@ -53,6 +53,8 @@ An NFR file at `library/governance/nfrs/NFRXXXXXX.md` following the complete str
 `.highway/library/templates/output/nfr-record.md`, including frontmatter and body. The template's
 placeholders remain user-owned values.
 
+The complete catalog structure follows `.highway/library/templates/output/nfr-catalog.md`.
+
 The `readiness` action emits exactly these four lines in this order:
 
 ```text
@@ -135,6 +137,8 @@ contents of an accepted NFR record.
 - Confirm no NFR record contains a version field and the catalog contains no timestamp.
 - Confirm a declined destructive action leaves the records, catalog, version, and `next_id` unchanged.
 - Confirm an unchanged baseline regenerates to an identical catalog.
+- Confirm each accepted NFR record, catalog, and relationship update is one validated transaction
+  and a failure leaves every affected byte unchanged.
 - Confirm Control-shaped statements name `/highway-controls` and outcome-shaped Control input names
   `/highway-nfrs`.
 
