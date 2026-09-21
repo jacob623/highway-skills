@@ -79,23 +79,36 @@ For Solution Constraints, ask one question at a time and collect these eight fie
 - `procurement_constraints` as acquisition constraints, including restrictions on new purchases.
 - `regulatory_restrictions` as regulatory or data-handling conditions.
 
+The list-shaped fields are `allowed_solution_classes`, `existing_platforms_required`,
+`existing_platforms_preferred`, and `known_systems`. The scalar restriction fields are
+`hosting_restrictions`, `vendor_restrictions`, `procurement_constraints`, and
+`regulatory_restrictions`.
+
 For all other list-shaped fields, record a populated list, an explicit empty array, or `unknown`.
-Record each field as user-provided evidence. Missing fields are not valid evidence. An absent
-constraint is neutral and is never a preference, recommendation, ranking,
+Record each field as user-provided evidence. Missing fields are not valid evidence. The absent constraint is neutral
+and is never a preference, recommendation, ranking,
 or selection criterion. A malformed value must be replaced by valid evidence or `unknown` before
 creation.
 
-For a Solution Constraints field error, identify the exact field, state its accepted value shape, and
-request a replacement or `unknown`. For `allowed_solution_classes`, the error must state that
+allowed_solution_classes must contain one or more values or unknown; allowed_solution_classes cannot be empty because
+it defines the future Discovery candidate space, and an empty value would make the permitted
+solution domain indeterminate. Reject an empty candidate space rather than treating it as an
+unconstrained request. Scalar restrictions require a non-empty value or `unknown`; they
+never use an empty array.
+
+For a Solution Constraints field error, identify the exact field, state its accepted value shape,
+provide a valid example, and request a replacement value or unknown. For `allowed_solution_classes`, the error must state that
 the field must contain one or more values or `unknown`. For other list-shaped fields, distinguish
 a populated list, an explicit empty list, and `unknown`. For a scalar restriction, request a
 non-empty value or `unknown`; never coerce an invalid blank into an empty list. A valid replacement
-updates only the failed field and continues with the next unanswered question. The bounded
+updates only the failed field and continues with the next unanswered question without restarting the domain. The bounded
 recovery rule below applies before the write and preserves the original Request and catalog bytes.
 Apply existing
 privacy screening to replacement answers and write nothing when a replacement is blocked.
+The blocked replacement is not written.
 
-Solution Constraints limit the future Discovery candidate space; they do not choose an architecture,
+The future Discovery handoff must contain one or more allowed solution classes or unknown, never an
+empty list; preserve those values without ranking them. Solution Constraints limit the future Discovery candidate space; they do not choose an architecture,
 implementation pattern, technology, solution category, or candidate. Known systems and named
 platform context remain descriptive business evidence and do not imply integration or architecture.
 Discovery owns candidate generation, classification, comparison, scoring, recommendation, and
