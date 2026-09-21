@@ -1,0 +1,125 @@
+---
+name: highway-clarify
+description: "Generates, updates, validates, and serves deterministic clarification records for Highway artifacts."
+usage: "Invoke as `/highway-clarify <ARTIFACT-ID>`, `/highway-clarify update <ARTIFACT-ID>`, `/highway-clarify inspect <ARTIFACT-ID>`, `/highway-clarify read <ARTIFACT-ID>`, or `/highway-clarify status <ARTIFACT-ID>`."
+compatibility: all
+metadata:
+  version: 1.1.0
+---
+
+# highway-clarify
+
+## Purpose
+
+Manage deterministic advisory clarification records for authoritative Highway baselines without changing source content.
+
+## When to use
+
+- Identify contradictions, missing required information, explicitly unknown values, ambiguities, or unresolved assumptions in one supported artifact.
+- Record a response, inspect clarification state, read the complete record, or retrieve lightweight status.
+- Provide advisory clarification state without changing the source artifact.
+
+## When not to use
+
+- Do not use for unsupported, lowercase, or mixed-case identifiers, or implicit newest-file selection. Identifiers are case-sensitive.
+- Do not use to modify, override, rewrite, replace, or update source artifact content.
+- Do not infer contradictions from general knowledge, semantic similarity, architectural taste, or model reasoning.
+- Do not block downstream source consumption based on open findings.
+
+## Inputs
+
+- One exact uppercase identifier from `REQ######`, `DISC######`, `ADR######`, or `RA######`.
+- The source artifact resolved through identifier lookup, catalog lookup, or a declared artifact path.
+- The colocated clarification artifact for Update, Inspect, Read, or Status.
+- The complete `.highway/library/templates/output/clarification-record.md` contract.
+- Explicit artifact templates, contracts, required fields, and required sections used for analysis.
+- The Clarification Profile and repository contradiction catalog when declared for the source artifact.
+- The default ambiguity vocabulary and explicitly declared unknown markers.
+
+## Outputs
+
+- Every supported source artifact maps to the stable identifier `CLAR-<ARTIFACT-ID>`.
+- Every response exposes eight stable fields: `artifact_id`, `exists`, `status`, `open_findings`, `resolved_findings`, `total_findings`, `path`, and `blocking_reason`.
+- Generate creates one colocated `<ARTIFACT-ID>-clarification.md` artifact.
+- Update records accepted responses, appends resolution history, updates status, increments revision after commit, and returns its response contract.
+- Inspect returns status and finding counts without writing.
+- Read returns the complete validated clarification artifact without writing.
+- Status returns the lightweight consumer contract without writing.
+- Open findings remain advisory and never block downstream source consumption.
+- Source-resolution, validation, conflict, or write failure produces no partial output and preserves source bytes.
+- The complete output structure is `.highway/library/templates/output/clarification-record.md`.
+- Privacy filtering replaces retained secrets with `<secret-redacted>` and regulated personal data with `<pii-redacted>`.
+
+Generate and Update conflict responses include `expected_revision` and `actual_revision`. The workflow uses no automatic merging, and any repository user may invoke the commands.
+
+## Command Contract
+
+- `/highway-clarify <ARTIFACT-ID>` invokes Generate.
+- `/highway-clarify update <ARTIFACT-ID>` invokes Update.
+- `/highway-clarify inspect <ARTIFACT-ID>` invokes Inspect.
+- `/highway-clarify read <ARTIFACT-ID>` invokes Read.
+- `/highway-clarify status <ARTIFACT-ID>` invokes Status.
+
+Any repository user may invoke each command under existing repository access controls.
+
+## Workflow
+
+1. Validate the supplied identifier as exact uppercase `REQ`, `DISC`, `ADR`, or `RA` followed by six digits; on failure, abort and report the invalid identifier.
+2. Resolve the source through identifier lookup, catalog lookup, or a declared path; on missing, duplicate, or ambiguous resolution, abort.
+3. Derive `CLAR-<ARTIFACT-ID>` and the colocated `<ARTIFACT-ID>-clarification.md` path; do not scan by filesystem ordering, timestamp, recency, or newest-file selection.
+4. Resolve profiles in artifact-local, artifact-type, then global order. If none exists, fall back to defaults; if the selected profile is unreadable, abort.
+5. Load the selected profile, contradiction rules, required structures, unknown markers, and ambiguity vocabulary; read-only commands validate without writing.
+6. Analyze evidence in this order: `contradiction`, `missing_input`, `unknown_value`, `ambiguity`, `unresolved_assumption`.
+7. Use explicit rules for contradictions, declared structures for missing inputs, and explicit markers for unknown values.
+8. Apply the default ambiguity vocabulary; profiles may extend but MUST NOT remove default entries.
+9. Redact secrets and regulated personal data before generation, updates, or writes, including findings, responses, history, metadata, and copied evidence.
+10. Validate the record against the shared template, stable finding identities, status rules, and source-byte preservation; on failure, abort and write nothing.
+11. Generate MUST recalculate current findings while preserving finding identities and responses for unchanged evidence and retaining history.
+12. Order findings by category priority, source artifact order, source field name, and finding identifier. Identical inputs produce identical counts, identifiers, ordering, severity, and bytes with no volatile metadata.
+13. Update rereads the revision immediately before writing and returns a conflict response when expected and actual revisions differ.
+14. A successful Update appends history and increments revision exactly once; competing updates are never merged automatically.
+15. A caller may retry a conflict at most 3 times; after the third conflict, abort.
+16. Generate and Update write only the colocated clarification artifact after validation; Inspect, Read, and Status write nothing.
+17. Derive status as `not-started` when absent, `in-progress` when `open_findings` is greater than zero, `complete` when it is zero, and `blocked` for malformed or structurally invalid records.
+
+## Verification
+
+- Confirm all five command forms and exact uppercase identifier families.
+- Confirm `CLAR-<ARTIFACT-ID>` identity, colocated paths, and source immutability.
+- Confirm artifact-local, artifact-type, then global profile precedence and default fallback.
+- Confirm every response contains the eight stable consumer fields.
+- Confirm the shared template contains frontmatter, findings, resolution history, source, status, counts, and revision.
+- Confirm regeneration preserves unchanged-evidence responses and history.
+- Confirm category, source order, source field name, and finding identifier ordering.
+- Confirm identical inputs produce identical generated bytes without volatile metadata.
+- Confirm explicit contradiction and missing-input rules, and unknown-marker handling.
+- Confirm privacy filtering uses `<secret-redacted>` and `<pii-redacted>` before retention.
+- Confirm conflicts perform no write, append no history, and never merge automatically.
+- Confirm successful Updates increment revision exactly once and retries stop after 3 conflicts.
+- Confirm malformed records return `blocked` with a reason and read-only commands write nothing.
+- Confirm open findings remain advisory and do not block downstream source consumption.
+- Run `.highway/tools/validate-skill.sh .highway/skills/highway-clarify` and `.highway/tools/validate-library.sh .highway/library/templates/output/clarification-record.md`.
+
+## Error Handling
+
+- Invalid, lowercase, mixed-case, unsupported, missing, duplicate, or ambiguous identifier: abort.
+- Missing, unreadable, or malformed source: abort.
+- Missing required structure with no declaration: fall back.
+- Declared missing required structure: fall back to the declared field or section.
+- Explicit contradiction rule mismatch: fall back to the next analysis category.
+- Invalid response or unknown finding: abort the Update.
+- Privacy-blocked response: abort the Update and write nothing.
+- Malformed clarification artifact: abort with `blocked` and a non-empty blocking reason.
+- Revision mismatch: retry at most 3 times.
+- Three revision conflicts: abort.
+- Missing optional Clarification Profile: fall back to defaults.
+- Unreadable selected Clarification Profile: abort.
+- Sensitive value in retained content: abort before writing.
+- Validation or write failure: abort.
+- Suspected vulnerability or unauthorized access-control failure: report the condition and abort.
+
+## Example
+
+`/highway-clarify REQ000001`
+
+`/highway-clarify update REQ000001`

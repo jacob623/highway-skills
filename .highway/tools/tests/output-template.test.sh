@@ -30,6 +30,7 @@ RECORD_CONTRACT="$FEATURE_CONTRACT_DIR/request-solution-constraints-record-contr
 DISCOVERY_SKILL="$HIGHWAY_ROOT/skills/highway-discovery/SKILL.md"
 DISCOVERY_RECORD_TEMPLATE="$HIGHWAY_ROOT/library/templates/output/discovery-record.md"
 DISCOVERY_CATALOG_TEMPLATE="$HIGHWAY_ROOT/library/templates/output/discovery-catalog.md"
+CLARIFY_SKILL="$HIGHWAY_ROOT/skills/highway-clarify/SKILL.md"
 VALIDATE_LIBRARY="$HIGHWAY_ROOT/tools/validate-library.sh"
 VALIDATE_SKILL="$HIGHWAY_ROOT/tools/validate-skill.sh"
 
@@ -199,11 +200,11 @@ fi
 
 # The current file-emitting skills are the complete set of citing skills for this feature.
 citing_count="$(grep -RIl 'library/templates/output/' "$HIGHWAY_ROOT/skills" --include='SKILL.md' | wc -l | tr -d ' ')"
-if [[ "$citing_count" != "6" ]]; then
-	echo "FAIL: expected 6 output-template citing skills, found $citing_count"
+if [[ "$citing_count" != "7" ]]; then
+	echo "FAIL: expected 7 output-template citing skills, found $citing_count"
 	fail=1
 fi
-for citing_skill in "$NFR_SKILL" "$CONTROL_SKILL" "$PROFILE_SKILL" "$OBJECTIVE_SKILL" "$NEW_SKILL" "$DISCOVERY_SKILL"; do
+for citing_skill in "$NFR_SKILL" "$CONTROL_SKILL" "$PROFILE_SKILL" "$OBJECTIVE_SKILL" "$NEW_SKILL" "$DISCOVERY_SKILL" "$CLARIFY_SKILL"; do
 	if ! grep -Fq "library/templates/output/" "$citing_skill"; then
 		echo "FAIL: dependent review omitted citing skill $citing_skill"
 		fail=1
