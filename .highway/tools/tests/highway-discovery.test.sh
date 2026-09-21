@@ -105,6 +105,17 @@ for token in \
 	require_text "$SKILL" "$token"
 done
 for token in \
+	'allowed_solution_classes' 'known' 'unknown' 'unconstrained generation' 'empty invalid' \
+	'existing_platforms_required' 'hosting_restrictions' 'vendor_restrictions' \
+	'procurement_constraints' 'regulatory_restrictions' 'before scoring, comparison, or recommendation' \
+	'Candidate Elimination Log' 'status `Excluded`' 'candidate identifier, constraint category' \
+	'existing_platforms_preferred' 'known systems never eliminate' 'Required Platform Match is 100' \
+	'Preferred Platform Match is 100' 'Known-System Alignment is 100' '75 when one or more' \
+	'50 when none' 'Constraint Compliance' 'Fully Compliant' 'Satisfied' \
+	'ADR creation is the later owning workflow'; do
+	require_text "$SKILL" "$token"
+done
+for token in \
 	'discoveries/DISCXXXXXX.md' 'discoveries/discoveries.md' \
 	'Request Reference' 'Research Findings' 'Assumptions' 'Risks' 'Unknowns' \
 	'Candidate Solution Options' 'Candidate Solution Comparison Matrix' 'Recommendation' \
@@ -141,7 +152,7 @@ for token in 'Desired Change alignment' 'Objective alignment' 'constraint alignm
 done
 for token in 'explicit identifier' 'exact normalized title' 'capability identifier' 'Objective identifier' \
 	'Control identifier' 'NFR identifier' 'every Reference Architecture' 'highest-precedence' \
-	'Objective 30' 'NFR 30' 'Control 20' 'Profile 10' 'Risk Reduction 10' 'floor' \
+	'Objective 25' 'NFR 25' 'Control 20' 'Constraint Alignment 20' 'Risk Reduction 10' 'floor' \
 	'zero for zero denominators' '90-100' '70-89' '0-69' 'matched architecture' \
 	'Reference Implementation count' 'Comparison Matrix before the Recommendation' \
 	'Informational Complexity' 'Governance Impact' 'Operational Overhead'; do
@@ -154,6 +165,9 @@ for token in '## ADR Handoff' 'read-only projection' 'Candidate Solution Option'
 	require_text "$SKILL" "$token"
 done
 for token in 'name: discovery-record' 'id: DISCXXXXXX' 'request: REQXXXXXX' '## Request' '## Research Findings' '## Assumptions' '## Risks' '## Unknowns' '## Candidate Solution Options' '## Candidate Solution Comparison Matrix' '## Recommendation' '## Objective Relationships' '## Control Relationships' '## NFR Relationships' '## Reference Architecture Matches' 'OPTXXXXXX' 'Recommendation Status' 'Complexity' 'Governance Impact' 'Operational Overhead'; do
+	require_text "$RECORD_TEMPLATE" "$token"
+done
+for token in '## Request Solution Constraints' 'allowed_solution_classes' 'existing_platforms_required' 'existing_platforms_preferred' 'known_systems' 'hosting_restrictions' 'vendor_restrictions' 'procurement_constraints' 'regulatory_restrictions' '## Candidate Elimination Log' 'Constraint Alignment' 'Satisfied Constraints' 'Unsatisfied Constraints' 'Required Platform Match' 'Preferred Platform Match' 'Known-System Alignment' 'Constraint Compliance' 'Allowed Solution Class' 'Constraint Alignment Score'; do
 	require_text "$RECORD_TEMPLATE" "$token"
 done
 for token in 'name: discovery-catalog' 'Version: 1.0.0' 'Next ID: DISCXXXXXX' '## Discovery Index' '| Discovery ID | Request ID | Discovery Title |'; do

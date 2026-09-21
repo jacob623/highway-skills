@@ -139,6 +139,9 @@ require_text "$NEW_SKILL" ".highway/library/templates/output/request-catalog.md"
 require_text "$NEW_SKILL" "Problem, Actors, Current Process, Desired Change, Success Measure, Business Constraints, Solution Constraints"
 require_text "$NEW_SKILL" "No business constraints"
 require_text "$NEW_SKILL" "one or more non-empty values"
+for discovery_token in "## Request Solution Constraints" "allowed_solution_classes" "existing_platforms_required" "existing_platforms_preferred" "known_systems" "hosting_restrictions" "vendor_restrictions" "procurement_constraints" "regulatory_restrictions" "## Candidate Elimination Log" "Constraint Alignment" "Satisfied Constraints" "Unsatisfied Constraints" "Required Platform Match" "Preferred Platform Match" "Known-System Alignment" "Constraint Compliance"; do
+	require_text "$DISCOVERY_RECORD_TEMPLATE" "$discovery_token"
+done
 if grep -Fq "None known" "$NEW_SKILL" || grep -Fq "No known constraints" "$NEW_SKILL"; then
 	echo "FAIL: legacy Business Constraints absence wording remains"
 	fail=1
