@@ -717,6 +717,555 @@ reasoning; if it is closed unimplemented, `getconf` stays off the list.
 
 ---
 
+### Phase 17 - Output Contract
+
+# Feature: Shared Output Contract Validation
+
+## Objective
+
+Extend `.highway/tools/validate-skill.sh` to automatically enforce Constitution Rule P9.1.
+
+Current rule:
+
+> P9.1: A skill that emits a file MUST cite a shared template for that file's complete structure. The Outputs section names a path under `.highway/library/templates/output/` and does not restate the template's frontmatter or body structure as a separate contract. 
+
+The repository already uses shared output templates such as:
+
+```text
+.highway/library/templates/output/clarification-record.md
+.highway/library/templates/output/discovery-record.md
+.highway/library/templates/output/control-record.md
+.highway/library/templates/output/nfr-record.md
+.highway/library/templates/output/objective-record.md
+
+.highway/library/templates/output/discovery-catalog.md
+.highway/library/templates/output/control-catalog.md
+.highway/library/templates/output/nfr-catalog.md
+.highway/library/templates/output/objective-catalog.md
+```
+
+
+
+The validator must ensure that skills reference those templates rather than duplicate their structural contracts.
+
+---
+
+# Problem
+
+The repository has standardized on:
+
+- Templates own structure.
+- Skills own behavior.
+
+Typical failure mode:
+
+```text
+Skill references a shared template.
+```
+
+and then later:
+
+```text
+Skill repeats the template's fields,
+sections,
+frontmatter,
+or body structure.
+```
+
+This creates duplicated contracts that can drift over time.
+
+---
+
+# New Validation Stage
+
+Add a new validator:
+
+```text
+validate_output_contracts()
+```
+
+Integrate into:
+
+```text
+.highway/tools/validate-skill.sh
+```
+
+Execution order:
+
+```text
+1. Frontmatter validation
+2. Required section validation
+3. Shared output contract validation
+4. Existing rule checks
+5. Final PASS/FAIL summary
+```
+
+---
+
+# Validation Algorithm
+
+## Phase 1: Discover Referenced Output Templates
+
+Scan the skill for references matching:
+
+```regex
+\.highway/library/templates/output/[A-Za-z0-9._/-]+
+```
+
+Examples:
+
+```text
+.highway/library/templates/output/clarification-record.md
+.highway/library/templates/output/discovery-record.md
+.highway/library/templates/output/objective-record.md
+```
+
+If no output template is referenced:
+
+```text
+PASS
+```
+
+for this validator.
+
+P9.1 is handled elsewhere.
+
+---
+
+## Phase 2: Extract Template Structure
+
+For each referenced template:
+
+### Markdown templates
+
+Extract all headings:
+
+```text
+# Heading
+## Heading
+### Heading
+```
+
+Examples:
+
+```text
+Findings
+Resolution History
+Source
+Status
+```
+
+from:
+
+```text
+clarification-record.md
+```
+
+
+
+Examples:
+
+```text
+Request Reference
+Research Findings
+Assumptions
+Risks
+Unknowns
+Recommendation
+```
+
+from:
+
+```text
+discovery-record.md
+```
+
+
+
+---
+
+### Catalog templates
+
+Extract:
+
+```text
+Discovery Index
+Control Index
+Objective Index
+NFR Index
+```
+
+and other structural headings.
+
+
+
+---
+
+## Phase 3: Extract Outputs Section
+
+Extract only the skill's Outputs section.
+
+Start:
+
+```text
+### Outputs
+```
+
+End at the next major section:
+
+```text
+### Workflow
+### Verification
+### Error Handling
+### Example
+```
+
+Ignore all other sections.
+
+Only the declared output contract is evaluated.
+
+---
+
+## Phase 4: Detect Structural Restatement
+
+Structural restatement exists when template-owned headings or structure are repeated inside Outputs.
+
+Example:
+
+Template contains:
+
+```text
+Findings
+Resolution History
+Source
+Status
+```
+
+Skill says:
+
+```text
+The artifact contains:
+
+- Findings
+- Resolution History
+- Source
+- Status
+```
+
+Result:
+
+```text
+FAIL
+```
+
+---
+
+## Phase 5: Detect Structural Enumeration Keywords
+
+If a template reference exists, flag Outputs text containing:
+
+```text
+contains
+contains:
+includes
+includes:
+consists of
+has the following fields
+has the following sections
+fields:
+sections:
+frontmatter:
+body structure:
+```
+
+This alone is not automatically a FAIL.
+
+Use it to identify likely restatement candidates.
+
+---
+
+## Phase 6: Match Template Headings
+
+For every heading extracted from the template:
+
+Normalize:
+
+```text
+lowercase
+remove punctuation
+collapse whitespace
+```
+
+Search for matches within Outputs.
+
+Count matches:
+
+```text
+MATCH_COUNT
+```
+
+---
+
+# Decision Logic
+
+## PASS
+
+```text
+MATCH_COUNT = 0
+```
+
+or
+
+Outputs only say:
+
+```text
+The complete output structure is:
+
+.highway/library/templates/output/<template>.md
+```
+
+---
+
+## WARN
+
+```text
+MATCH_COUNT = 1
+```
+
+Reason:
+
+Possible incidental mention.
+
+Do not fail.
+
+---
+
+## FAIL
+
+```text
+MATCH_COUNT >= 2
+```
+
+Reason:
+
+Skill is likely restating template-owned structure.
+
+---
+
+# Examples
+
+## PASS
+
+Outputs:
+
+```text
+The complete output structure is:
+
+.highway/library/templates/output/clarification-record.md
+```
+
+Result:
+
+```text
+PASS
+```
+
+---
+
+## PASS
+
+Outputs:
+
+```text
+Generated artifact follows:
+
+.highway/library/templates/output/discovery-record.md
+```
+
+Result:
+
+```text
+PASS
+```
+
+---
+
+## WARN
+
+Template:
+
+```text
+Findings
+Resolution History
+Source
+Status
+```
+
+Outputs:
+
+```text
+Status information is returned.
+```
+
+Result:
+
+```text
+WARN
+```
+
+---
+
+## FAIL
+
+Template:
+
+```text
+Findings
+Resolution History
+Source
+Status
+```
+
+Outputs:
+
+```text
+Artifact contains:
+
+Findings
+Resolution History
+Source
+Status
+```
+
+Result:
+
+```text
+FAIL
+```
+
+---
+
+## FAIL
+
+Template:
+
+```text
+Control Index
+```
+
+Outputs:
+
+```text
+Catalog contains:
+
+Version
+Next ID
+Control Index
+```
+
+Result:
+
+```text
+FAIL
+```
+
+---
+
+# Validator Output Format
+
+## PASS
+
+```text
+P9.1 PASS
+Template:
+.highway/library/templates/output/clarification-record.md
+
+No structural restatement detected.
+```
+
+---
+
+## WARN
+
+```text
+P9.1 WARN
+Template:
+.highway/library/templates/output/discovery-record.md
+
+One template heading referenced:
+Recommendation
+```
+
+---
+
+## FAIL
+
+```text
+P9.1 FAIL
+Template:
+.highway/library/templates/output/clarification-record.md
+
+Repeated template-owned sections:
+
+- Findings
+- Resolution History
+- Source
+- Status
+```
+
+---
+
+# Additional Detection
+
+## Fail on duplicated complete contracts
+
+If Outputs simultaneously contains:
+
+```text
+The complete output structure is:
+```
+
+and
+
+```text
+contains
+includes
+fields
+sections
+```
+
+plus matched template headings:
+
+```text
+FAIL
+```
+
+Reason:
+
+The skill explicitly says the template owns the structure and then duplicates it.
+
+---
+
+# Success Criteria
+
+The validator passes when:
+
+```text
+Templates own structure.
+Skills own behavior.
+```
+
+The validator fails whenever a skill:
+
+```text
+1. References a shared output template.
+2. Re-declares template structure in Outputs.
+```
+
+This turns Constitution P9.1 into a mechanically enforceable repository rule and prevents future contract drift. 
+
+---
+
 ## 5. Explicitly not in this plan
 
 

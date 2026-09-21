@@ -53,6 +53,10 @@ An NFR file at `library/governance/nfrs/NFRXXXXXX.md` following the complete str
 `.highway/library/templates/output/nfr-record.md`, including frontmatter and body. The template's
 placeholders remain user-owned values.
 
+The catalog at `library/governance/nfrs.md` follows the complete structure in
+`.highway/library/templates/output/nfr-catalog.md`; that shared template is the structural
+authority and its placeholders remain user-owned values.
+
 The `readiness` action emits exactly these four lines in this order:
 
 ```text
@@ -72,9 +76,7 @@ records, catalogs, IDs, or relationships.
 For `readiness`, read candidate-generation state and accepted NFR artifacts, apply the outcome
 rules above, and return the four-field response without mutation.
 
-A generated prose catalog at `library/governance/nfrs.md` containing the global baseline statement,
-global applicability, `/highway-nfrs` ownership, direct-edit warning, baseline version, `next_id`,
-and every NFR index entry. The catalog contains no timestamp.
+A generated prose catalog at `library/governance/nfrs.md`. The catalog contains no timestamp.
 
 ## Decision tables
 
@@ -130,11 +132,13 @@ contents of an accepted NFR record.
 ## Verification
 
 - Confirm every NFR record is under root `library/governance/nfrs/`, not under `.highway/`.
-- Confirm each record has `id`, `title`, `status`, `controls: []`, a statement, and a rationale.
-- Confirm the catalog indexes every record and records a `next_id` greater than every allocated ID.
+- Confirm each NFR record conforms to `.highway/library/templates/output/nfr-record.md`.
+- Confirm the catalog conforms to `.highway/library/templates/output/nfr-catalog.md`.
 - Confirm no NFR record contains a version field and the catalog contains no timestamp.
 - Confirm a declined destructive action leaves the records, catalog, version, and `next_id` unchanged.
 - Confirm an unchanged baseline regenerates to an identical catalog.
+- Confirm each accepted NFR record, catalog, and relationship update is one validated transaction
+  and a failure leaves every affected byte unchanged.
 - Confirm Control-shaped statements name `/highway-controls` and outcome-shaped Control input names
   `/highway-nfrs`.
 

@@ -44,29 +44,15 @@ complete Comparison Matrix, and one advisory Recommendation.
   deterministic-rule, failure, and ADR handoff boundaries defined by those contracts.
 
 The conversation contract governs invocation and completion responses; the analysis contract
-governs the closed inputs and deterministic rule order. The record always includes the exact
-sections `Objective Relationships`, `Control Relationships`, and `NFR Relationships`.
+governs the closed inputs and deterministic rule order. The complete retained record structure,
+including relationship sections, is defined by
+`.highway/library/templates/output/discovery-record.md`.
 
 ## Outputs
 
 - One user-owned Discovery record at `discoveries/DISCXXXXXX.md`.
 - One user-owned Discovery catalog at `discoveries/discoveries.md`.
-- The record follows `.highway/library/templates/output/discovery-record.md` and contains, in
-  shared template order:
-  - Request Reference
-  - Research Findings
-  - Assumptions
-  - Risks
-  - Unknowns
-  - Request Solution Constraints
-  - Candidate Elimination Log
-  - Candidate Solution Options
-  - Candidate Solution Comparison Matrix
-  - Recommendation
-  - Objective Relationships
-  - Control Relationships
-  - NFR Relationships
-  - Reference Architecture Matches
+- The record follows the complete structure in `.highway/library/templates/output/discovery-record.md`.
 - The catalog follows `.highway/library/templates/output/discovery-catalog.md`.
 - The completion response names the Discovery identifier, Request identifier, Record path, and
   Catalog path.
@@ -192,10 +178,8 @@ Architectures, source baselines, Discovery inputs, ADR records, or governance ba
 
 - Confirm the input is exactly one explicit `REQ` plus six digits and resolves to one completed
   Request.
-- Confirm the record has the required sections in shared-template order: Request Reference, Research
-  Findings, Assumptions, Risks, Unknowns, Request Solution Constraints, Candidate Elimination Log,
-  Candidate Solution Options, Candidate Solution Comparison Matrix, Recommendation, Objective
-  Relationships, Control Relationships, NFR Relationships, and Reference Architecture Matches.
+- Confirm the record conforms to the complete structure and ordering in
+  `.highway/library/templates/output/discovery-record.md`.
 - Confirm the record contains two through five unique `OPT` identifiers, complete option fields,
   a complete matrix in option order, exactly one `Recommended` status, and one Recommendation
   whose score values equal the matrix values.
@@ -207,7 +191,10 @@ Architectures, source baselines, Discovery inputs, ADR records, or governance ba
   are eliminated before scoring, preferred platforms and known systems are scoring-only, retained
   Required Platform Match is 100 for traceability only, known-system alignment is 100/75/50, and
   matrix compliance is `Fully Compliant`.
-- Confirm the catalog has only `Version`, `Next ID`, and `## Discovery Index`, with one unique row.
+- Confirm the catalog conforms to the complete structure in
+  `.highway/library/templates/output/discovery-catalog.md`.
+- Confirm every candidate elimination is recorded before scoring and the elimination log is ordered
+  deterministically by candidate and constraint identity.
 - Confirm identical closed inputs and catalog state produce byte-identical output.
 - Confirm secrets and regulated personal data are absent and stable exclusion evidence is present.
 - Confirm Objective, Control, and NFR baselines and the Request remain byte-for-byte unchanged.
