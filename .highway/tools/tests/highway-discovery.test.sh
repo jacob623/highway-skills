@@ -60,6 +60,52 @@ require_text() {
 		fail=1
 	fi
 }
+require_absent() {
+	local file="$1" text="$2"
+	if grep -Fq "$text" "$file"; then
+		echo "FAIL: '$text' must be absent from $file" >&2
+		fail=1
+	fi
+}
+
+assert_alignment_fixture() {
+	local file="$1" expected="$2" value
+	value="$(sed -n 's/^Alignment: //p' "$file" | head -n1)"
+	case "$value" in
+		''|*[!0-9]*)
+			if [[ "$expected" == valid ]]; then
+				echo "FAIL: expected integer alignment fixture to pass: $file" >&2
+				fail=1
+			fi
+			return
+			;;
+		*)
+			if [[ "$value" -lt 0 || "$value" -gt 100 ]]; then
+				if [[ "$expected" == valid ]]; then
+					echo "FAIL: expected bounded alignment fixture to pass: $file" >&2
+					fail=1
+				fi
+				return
+			fi
+			;;
+	esac
+	if [[ "$expected" == invalid ]]; then
+		echo "FAIL: expected alignment fixture to fail: $file" >&2
+		fail=1
+	fi
+}
+
+assert_compliance_fixture() {
+	local file="$1" expected="$2" value
+	value="$(sed -n 's/^Constraint Compliance: //p' "$file" | head -n1)"
+	if [[ "$expected" == valid && "$value" != 'Fully Compliant' ]]; then
+		echo "FAIL: expected Fully Compliant fixture to pass: $file" >&2
+		fail=1
+	elif [[ "$expected" == invalid && "$value" == 'Fully Compliant' ]]; then
+		echo "FAIL: expected non-Fully-Compliant fixture to fail: $file" >&2
+		fail=1
+	fi
+}
 
 require_file "$SKILL"
 require_file "$RECORD_TEMPLATE"
@@ -164,12 +210,47 @@ for token in '## ADR Handoff' 'read-only projection' 'Candidate Solution Option'
 	'owned exclusively by ADR' 'no decision' 'implementation authorization'; do
 	require_text "$SKILL" "$token"
 done
-for token in 'name: discovery-record' 'id: DISCXXXXXX' 'request: REQXXXXXX' '## Request' '## Research Findings' '## Assumptions' '## Risks' '## Unknowns' '## Candidate Solution Options' '## Candidate Solution Comparison Matrix' '## Recommendation' '## Objective Relationships' '## Control Relationships' '## NFR Relationships' '## Reference Architecture Matches' 'OPTXXXXXX' 'Recommendation Status' 'Complexity' 'Governance Impact' 'Operational Overhead'; do
+for token in 'name: discovery-record' 'id: DISCXXXXXX' 'request: REQXXXXXX' '## Request Reference' '## Research Findings' '## Assumptions' '## Risks' '## Unknowns' '## Candidate Solution Options' '## Candidate Solution Comparison Matrix' '## Recommendation' '## Objective Relationships' '## Control Relationships' '## NFR Relationships' '## Reference Architecture Matches' 'OPTXXXXXX' 'Recommendation Status' 'Complexity' 'Governance Impact' 'Operational Overhead'; do
 	require_text "$RECORD_TEMPLATE" "$token"
 done
+require_absent "$RECORD_TEMPLATE" '^## Request$'
 for token in '## Request Solution Constraints' 'allowed_solution_classes' 'existing_platforms_required' 'existing_platforms_preferred' 'known_systems' 'hosting_restrictions' 'vendor_restrictions' 'procurement_constraints' 'regulatory_restrictions' '## Candidate Elimination Log' 'Constraint Alignment' 'Satisfied Constraints' 'Unsatisfied Constraints' 'Required Platform Match' 'Preferred Platform Match' 'Known-System Alignment' 'Constraint Compliance' 'Allowed Solution Class' 'Constraint Alignment Score'; do
 	require_text "$RECORD_TEMPLATE" "$token"
 done
+require_text "$SKILL" 'Request Reference'
+require_text "$SKILL" 'Request Solution Constraints'
+require_text "$SKILL" 'Candidate Elimination Log'
+require_text "$SKILL" 'Fully Compliant'
+require_absent "$SKILL" 'Constraint Compliance` (`Fully Compliant` or `Satisfied`)'
+require_text "$SKILL" 'Required Platform Match is 100 for traceability only'
+require_text "$SKILL" 'Order entries by candidate identifier, constraint category, then constraint identifier or value'
+require_absent "$RECORD_TEMPLATE" 'Constraint Compliance: <Fully Compliant or Satisfied>'
+require_text "$RECORD_TEMPLATE" 'Constraint Compliance: Fully Compliant'
+require_text "$RECORD_TEMPLATE" 'Desired Change: <0-100>'
+require_text "$RECORD_TEMPLATE" 'Objective: <0-100>'
+require_text "$RECORD_TEMPLATE" 'Constraints: <0-100>'
+require_text "$RECORD_TEMPLATE" 'Required Platform Match: 100 (traceability only)'
+require_text "$RECORD_TEMPLATE" 'Entries are ordered by Candidate Identifier, then Constraint Category, then Constraint Identifier or Value.'
+
+# Each deterministic value rule is exercised by an independent disposable fixture.
+valid_alignment="$WORK/alignment-valid.md"
+decimal_alignment="$WORK/alignment-decimal.md"
+negative_alignment="$WORK/alignment-negative.md"
+high_alignment="$WORK/alignment-high.md"
+valid_compliance="$WORK/compliance-valid.md"
+invalid_compliance="$WORK/compliance-invalid.md"
+printf '%s\n' 'Alignment: 0' >"$valid_alignment"
+printf '%s\n' 'Alignment: 12.5' >"$decimal_alignment"
+printf '%s\n' 'Alignment: -1' >"$negative_alignment"
+printf '%s\n' 'Alignment: 101' >"$high_alignment"
+printf '%s\n' 'Constraint Compliance: Fully Compliant' >"$valid_compliance"
+printf '%s\n' 'Constraint Compliance: Satisfied' >"$invalid_compliance"
+assert_alignment_fixture "$valid_alignment" valid
+assert_alignment_fixture "$decimal_alignment" invalid
+assert_alignment_fixture "$negative_alignment" invalid
+assert_alignment_fixture "$high_alignment" invalid
+assert_compliance_fixture "$valid_compliance" valid
+assert_compliance_fixture "$invalid_compliance" invalid
 for token in 'name: discovery-catalog' 'Version: 1.0.0' 'Next ID: DISCXXXXXX' '## Discovery Index' '| Discovery ID | Request ID | Discovery Title |'; do
 	require_text "$CATALOG_TEMPLATE" "$token"
 done

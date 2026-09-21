@@ -182,7 +182,7 @@ Architectures, source baselines, Discovery inputs, ADR records, or governance ba
 7. Exclude candidates that violate `existing_platforms_required`, `hosting_restrictions`, `vendor_restrictions`, `procurement_constraints`, or `regulatory_restrictions` before scoring, comparison, or recommendation. Record every excluded candidate in the Candidate Elimination Log with candidate identifier and title, status `Excluded`, reason category, constraint identifier or value, and deterministic reason. Order entries by candidate identifier, constraint category, then constraint identifier or value. Preferred platforms and known systems never eliminate candidates. If filtering leaves no viable candidates, abort without writes.
 8. Sort retained options by Desired Change alignment, Objective alignment, constraint alignment, and alphabetical title, in that order. Retain the deterministic first two through five options and assign identifiers such as `OPT000001` only after sorting. Fewer than two retained options aborts without writes.
 9. Evaluate every Reference Architecture candidate independently using exact matching precedence: explicit identifier, exact normalized title, capability identifier, Objective identifier, Control identifier, then NFR identifier. Report every matching candidate with its identifier, confidence, highest-precedence match reason, matched option identifiers, and Reference Implementation count. Semantic, similarity, and inference matching are excluded.
-10. Calculate retained-candidate alignment only after filtering: Required Platform Match is 100; Preferred Platform Match is 100 when a preferred platform is used and 50 otherwise; Known-System Alignment is 100 when all declared known systems are reused, 75 when one or more but not all are reused, and 50 when none are reused. Include Constraint Alignment, Satisfied Constraints, Unsatisfied Constraints, and `Constraint Compliance` (`Fully Compliant` or `Satisfied`) for every retained candidate.
+10. Calculate retained-candidate alignment only after filtering: Required Platform Match is 100 for traceability only; Preferred Platform Match is 100 when a preferred platform is used and 50 otherwise; Known-System Alignment is 100 when all declared known systems are reused, 75 when one or more but not all are reused, and 50 when none are reused. Include Constraint Alignment, Satisfied Constraints, Unsatisfied Constraints, and `Constraint Compliance` (`Fully Compliant`) for every retained candidate.
 11. Calculate Objective, NFR, Control, Constraint Alignment, and Risk Reduction scores with weights Objective 25, NFR 25, Control 20, Constraint Alignment 20, and Risk Reduction 10. Use floor rounding, zero for zero denominators, and totals from 0 through 100. Derive High confidence for 90-100, Medium for 70-89, and Low for 0-69. Informational Complexity, Governance Impact, and Operational Overhead classifications never affect scoring, confidence, ranking, selection, or option ordering.
 12. Render the complete Candidate Solution Comparison Matrix before the Recommendation. Include every retained option in option order, Allowed Solution Class, Constraint Alignment Score, Required Platform Match, Preferred Platform Match, Constraint Compliance, every score component, total, Reference Architecture matches, exactly one `Recommended` status, and all mandatory informational categories. For equal totals, apply the Recommendation Tie-Break Evaluation section.
 13. Build and validate record and catalog in memory before writing. Validate identifiers, option bounds, score identity, advisory-only fields, source-byte preservation, and complete template order. Allocate only from catalog `Next ID`, advance it exactly once, retry an exclusive allocation conflict at most 3 times, then write the record and catalog as one ordered transaction.
@@ -192,10 +192,10 @@ Architectures, source baselines, Discovery inputs, ADR records, or governance ba
 
 - Confirm the input is exactly one explicit `REQ` plus six digits and resolves to one completed
   Request.
-- Confirm the record has the required sections in shared-template order: Request, Research
-  Findings, Assumptions, Risks, Unknowns, Candidate Solution Options, Candidate Solution
-  Comparison Matrix, Recommendation, Objective Relationships, Control Relationships, NFR
-  Relationships, and Reference Architecture Matches.
+- Confirm the record has the required sections in shared-template order: Request Reference, Research
+  Findings, Assumptions, Risks, Unknowns, Request Solution Constraints, Candidate Elimination Log,
+  Candidate Solution Options, Candidate Solution Comparison Matrix, Recommendation, Objective
+  Relationships, Control Relationships, NFR Relationships, and Reference Architecture Matches.
 - Confirm the record contains two through five unique `OPT` identifiers, complete option fields,
   a complete matrix in option order, exactly one `Recommended` status, and one Recommendation
   whose score values equal the matrix values.
@@ -205,8 +205,8 @@ Architectures, source baselines, Discovery inputs, ADR records, or governance ba
   approval, architecture decision, implementation authorization, or governance mutation.
 - Confirm all eight Request Solution Constraints render in canonical order, mandatory violations
   are eliminated before scoring, preferred platforms and known systems are scoring-only, retained
-  Required Platform Match is 100, known-system alignment is 100/75/50, and matrix compliance is
-  `Fully Compliant` or `Satisfied`.
+  Required Platform Match is 100 for traceability only, known-system alignment is 100/75/50, and
+  matrix compliance is `Fully Compliant`.
 - Confirm the catalog has only `Version`, `Next ID`, and `## Discovery Index`, with one unique row.
 - Confirm identical closed inputs and catalog state produce byte-identical output.
 - Confirm secrets and regulated personal data are absent and stable exclusion evidence is present.

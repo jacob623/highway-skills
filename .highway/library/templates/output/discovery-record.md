@@ -20,7 +20,7 @@ status: proposed
 ```markdown
 # <deterministic discovery title>
 
-## Request
+## Request Reference
 
 Request: REQXXXXXX
 
@@ -61,6 +61,8 @@ regulatory_restrictions: <retained, privacy-filtered value>
 |--------------|-----------------|--------|---------------------|-------------------------------|--------|
 | OPTXXXXXX | <candidate title> | Excluded | <category> | <identifier or value> | <deterministic reason> |
 
+Entries are ordered by Candidate Identifier, then Constraint Category, then Constraint Identifier or Value.
+
 ## Candidate Solution Options
 
 <two through five deterministic, viable Candidate Solution Options in assigned OPT order>
@@ -87,9 +89,9 @@ Supporting Evidence:
 Allowed Solution Class: <candidate class>
 
 Alignment:
-- Desired Change: <alignment value>
-- Objective: <alignment value>
-- Constraints: <alignment value>
+- Desired Change: <0-100>
+- Objective: <0-100>
+- Constraints: <0-100>
 
 Constraint Alignment: <0-100>
 
@@ -99,13 +101,13 @@ Satisfied Constraints:
 Unsatisfied Constraints:
 - <constraint identifier or `None`>
 
-Required Platform Match: 100
+Required Platform Match: 100 (traceability only)
 
 Preferred Platform Match: <100 when used, otherwise 50>
 
 Known-System Alignment: <100, 75, or 50>
 
-Constraint Compliance: <Fully Compliant or Satisfied>
+Constraint Compliance: Fully Compliant
 
 Reference Architecture Matches:
 - <RA identifier and highest-precedence match reason, or `None`>
@@ -114,7 +116,7 @@ Reference Architecture Matches:
 
 | Option ID | Allowed Solution Class | Desired Change | Objective | NFR | Control | Constraint Alignment Score | Required Platform Match | Preferred Platform Match | Constraint Compliance | Risk Reduction | Total | Reference Architecture Matches | Recommendation Status | Complexity | Governance Impact | Operational Overhead |
 |-----------|-------------------------|----------------|-----------|-----|---------|----------------------------|-------------------------|--------------------------|------------------------|----------------|-------|-------------------------------|-----------------------|------------|-------------------|----------------------|
-| OPTXXXXXX | <class> | 0 | 0 | 0 | 0 | 0 | 100 | 50 | Satisfied | 0 | 0 | None | Candidate | Low | Low | Low |
+| OPTXXXXXX | <class> | 0 | 0 | 0 | 0 | 0 | 100 | 50 | Fully Compliant | 0 | 0 | None | Candidate | Low | Low | Low |
 
 ## Recommendation
 
