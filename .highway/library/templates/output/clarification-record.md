@@ -1,13 +1,17 @@
 ---
 name: clarification-record
-description: "Complete output skeleton for a retained clarification artifact."
+description: "Authoritative output structure for a deterministic retained clarification artifact."
 metadata:
-  version: 1.0.0
+  version: 1.1.0
   revision: 1
+id: CLAR-REQ000001
 artifact_id: REQ000001
 artifact_type: REQ
 source_path: requests/REQ000001.md
 status: in-progress
+open_findings: 1
+resolved_findings: 0
+total_findings: 1
 blocking_reason: None
 ---
 
@@ -21,6 +25,9 @@ artifact_type: REQ
 source_path: requests/REQ000001.md
 status: in-progress
 revision: 1
+open_findings: 1
+resolved_findings: 0
+total_findings: 1
 blocking_reason: None
 ---
 ```
@@ -36,8 +43,10 @@ blocking_reason: None
 
 Category: missing_input
 Severity: high
+finding_id: CLAR-REQ000001-001
 State: open
-Evidence: <source location or evidence identity>
+evidence_ref: <source location or evidence identity after privacy filtering>
+Evidence: <source location or evidence identity after privacy filtering>
 Summary: <finding summary>
 Response: None
 
@@ -62,6 +71,10 @@ Resolved Findings: 0
 Total Findings: 1
 Blocking Reason: None
 ```
+
+Sensitive values in findings, responses, resolution history, metadata, and copied evidence
+must be replaced before retention with `<secret-redacted>` or `<pii-redacted>`. Findings are
+ordered by category priority, source artifact order, source field name, and finding identifier.
 
 The placeholders represent user-owned or generated values. The template governs required
 frontmatter and body structure; it does not authorize source-artifact mutation.

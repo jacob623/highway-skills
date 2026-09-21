@@ -44,6 +44,7 @@ require_text() { grep -Fq "$2" "$1" || { echo "FAIL: '$2' missing from $1"; fail
 require_file "$SKILL"
 require_file "$TEMPLATE"
 for token in \
+	'Generates, updates, validates, and serves deterministic clarification records for Highway artifacts.' \
 	'## Purpose' '## When to use' '## When not to use' '## Inputs' '## Outputs' \
 	'## Workflow' '## Verification' '## Error Handling' '## Example' \
 	'/highway-clarify <ARTIFACT-ID>' '/highway-clarify update <ARTIFACT-ID>' \
@@ -53,10 +54,20 @@ for token in \
 	'contradiction' 'missing_input' 'unknown_value' 'ambiguity' 'unresolved_assumption' \
 	'case-sensitive' 'filesystem ordering' 'colocated' 'source artifact' \
 	'revision' 'expected_revision' 'actual_revision' 'no automatic merging' \
-	'at most 3 times' 'advisory' 'any repository user' 'write nothing'; do
+	'at most 3 times' 'advisory' 'any repository user' 'write nothing' \
+	'CLAR-<ARTIFACT-ID>' 'artifact-local' 'artifact-type' 'global' \
+	'open_findings' 'resolved_findings' 'total_findings' 'blocking_reason' \
+	'unchanged evidence' 'resolution history' 'source field name' \
+	'<secret-redacted>' '<pii-redacted>' 'not-started' 'complete' 'blocked' \
+	'recalculate current findings' 'preserving finding identities' 'retaining history' \
+	'category priority' 'source artifact order' 'finding identifier' 'identical inputs' \
+	'default ambiguity vocabulary' 'may extend' 'MUST NOT remove' 'no volatile metadata'; do
 	require_text "$SKILL" "$token"
 done
-for token in 'name: clarification-record' 'revision: 1' 'artifact_id:' 'artifact_type:' 'source_path:' 'blocking_reason:' '## Findings' '## Resolution History' '## Source' '## Status'; do
+for token in 'name: clarification-record' 'revision: 1' 'artifact_id:' 'artifact_type:' 'source_path:' \
+	'status:' 'open_findings:' 'resolved_findings:' 'total_findings:' 'blocking_reason:' \
+	'id: CLAR-REQ000001' '## Findings' '## Resolution History' '## Source' '## Status' \
+	'<secret-redacted>' '<pii-redacted>' 'finding_id:' 'evidence_ref:' 'State:'; do
 	require_text "$TEMPLATE" "$token"
 done
 

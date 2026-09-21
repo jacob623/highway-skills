@@ -7,6 +7,8 @@ administrative
 all
 and
 are
+artifact
+artifacts
 as
 ask
 assess
@@ -21,6 +23,8 @@ case
 change
 changing
 checks
+clarification
+command
 complete
 confirmation
 conformant
@@ -35,6 +39,7 @@ decision
 deliberately
 depend
 details
+deterministic
 directly
 directory
 discovery
@@ -50,12 +55,14 @@ field
 fixture
 followed
 for
+forms
 foundational
 framework
 from
 frontmatter
 fully
 functional
+generates
 govern
 governance
 guidance
@@ -114,6 +121,7 @@ questionnaire
 questions
 read
 readiness
+records
 references
 registered
 registration
@@ -137,12 +145,14 @@ rule
 scope
 section
 seed
+serves
 setup
 sh
 skill
 skills
 stable
 state
+status
 suite
 supplies
 target
@@ -155,11 +165,13 @@ through
 to
 traceability
 update
+updates
 updating
 usage
 use
 used
 validate
+validates
 version
 view
 violation
