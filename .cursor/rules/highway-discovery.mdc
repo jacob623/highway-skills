@@ -31,6 +31,10 @@ complete Comparison Matrix, and one advisory Recommendation.
 - Exactly one explicit `REQ` identifier followed by six digits.
 - The uniquely resolved Request at the user-owned `requests/` path, which must expose completion
   state `Complete`.
+- Request Solution Constraints from the completed Request, loaded in this exact order:
+  `allowed_solution_classes`, `existing_platforms_required`, `existing_platforms_preferred`,
+  `known_systems`, `hosting_restrictions`, `vendor_restrictions`, `procurement_constraints`,
+  `regulatory_restrictions`.
 - Optional closed baselines, loaded only in this order: Profile, Objective, Control, NFR.
 - Optional Reference Architecture baseline loaded after NFR; Reference Implementation data is
   consulted only for the advisory tie-break.
@@ -54,6 +58,8 @@ sections `Objective Relationships`, `Control Relationships`, and `NFR Relationsh
   - Assumptions
   - Risks
   - Unknowns
+  - Request Solution Constraints
+  - Candidate Elimination Log
   - Candidate Solution Options
   - Candidate Solution Comparison Matrix
   - Recommendation
@@ -169,25 +175,27 @@ Architectures, source baselines, Discovery inputs, ADR records, or governance ba
 
 1. Receive exactly one `REQ` followed by six digits. Reject missing, malformed, ambiguous, nonexistent, non-unique, or incomplete sources before allocation or writes; abort and preserve existing bytes.
 2. Resolve exactly one Request and verify its completion marker is `Complete`. Treat its evidence as authoritative and read-only. Do not scan for an implicit newest or batch source.
-3. Load closed inputs in order: Request, Profile when present, Objective when present, Control when present, NFR when present, and Reference Architecture when present. Reference Implementation data is evaluated only according to the Reference Implementation Evaluation rules and is used exclusively for deterministic tie-breaking. Reference Implementation matching and counting occur only after score calculation and Reference Architecture evaluation. Missing optional Reference Architecture data produces an empty match set; missing or unreadable Reference Implementation data produces zero counts.
+3. Load closed inputs in order: Request, Request Solution Constraints, Profile when present, Objective when present, Control when present, NFR when present, and Reference Architecture when present. Read the eight Request Solution Constraints fields in their declared order, preserve `unknown` separately from empty arrays, and treat them as read-only evidence. Reference Implementation data is evaluated only according to the Reference Implementation Evaluation rules and is used exclusively for deterministic tie-breaking. Reference Implementation matching and counting occur only after score calculation and Reference Architecture evaluation. Missing optional Reference Architecture data produces an empty match set; missing or unreadable Reference Implementation data produces zero counts.
 4. Normalize LF line endings and comparison text, then redact secrets and regulated personal data before copying, matching, scoring, or serialization. Replace excluded material with a stable category marker.
 5. Copy Request evidence in fixed order. Preserve Research Findings, Assumptions, Risks, Unknowns, and Objective, Control, and NFR relationship extraction and advisory behavior.
-6. Generate distinct Candidate Solution Options from explicit Desired Change strategies first, then strategies implied by Objectives, Controls, NFRs, Research Findings, and available Reference Architectures. Normalize and deduplicate before identifier allocation, aggregate supporting evidence, reject incomplete options, and record any more-than-five truncation boundary.
-7. Sort viable options by Desired Change alignment, Objective alignment, constraint alignment, and alphabetical title, in that order. Retain the deterministic first two through five options and assign identifiers such as `OPT000001` only after sorting. Fewer than two viable options aborts without writes.
-8. Evaluate every Reference Architecture candidate independently using exact matching precedence: explicit identifier, exact normalized title, capability identifier, Objective identifier, Control identifier, then NFR identifier. Report every matching candidate with its identifier, confidence, highest-precedence match reason, matched option identifiers, and Reference Implementation count. Semantic, similarity, and inference matching are excluded.
-9. Calculate Objective, NFR, Control, Profile, and Risk Reduction scores with weights Objective 30, NFR 30, Control 20, Profile 10, and Risk Reduction 10. Use floor rounding, zero for zero denominators, and totals from 0 through 100. Derive High confidence for 90-100, Medium for 70-89, and Low for 0-69. Informational Complexity, Governance Impact, and Operational Overhead classifications never affect scoring, confidence, ranking, selection, or option ordering.
-10. Render the complete Candidate Solution Comparison Matrix before the Recommendation. Include every option in option order, every score component, total, Reference Architecture matches, exactly one `Recommended` status, and all mandatory informational categories. For equal totals, apply the Recommendation Tie-Break Evaluation section.
-11. Build and validate record and catalog in memory before writing. Validate identifiers, option bounds, score identity, advisory-only fields, source-byte preservation, and complete template order. Allocate only from catalog `Next ID`, advance it exactly once, retry an exclusive allocation conflict at most 3 times, then write the record and catalog as one ordered transaction.
-12. On success, report `REQ -> DISC -> ADR` traceability and expose the complete Discovery-to-ADR handoff. ADR creation is the later owning workflow and remains responsible for selected or rejected options, acceptance, rationale, consequences, and decisions.
+6. Generate distinct Candidate Solution Options from explicit Desired Change strategies first, then strategies implied by Objectives, Controls, NFRs, Research Findings, and available Reference Architectures. When `allowed_solution_classes` is known, generate only candidates in those classes; when it is `unknown`, preserve unconstrained generation. Normalize each candidate, evaluate Solution Constraints, filter invalid candidates, and only then score survivors. Normalize and deduplicate before identifier allocation, aggregate supporting evidence, reject incomplete options, and record any more-than-five truncation boundary.
+7. Exclude candidates that violate `existing_platforms_required`, `hosting_restrictions`, `vendor_restrictions`, `procurement_constraints`, or `regulatory_restrictions` before scoring, comparison, or recommendation. Record every excluded candidate in the Candidate Elimination Log with candidate identifier and title, status `Excluded`, reason category, constraint identifier or value, and deterministic reason. Order entries by candidate identifier, constraint category, then constraint identifier or value. Preferred platforms and known systems never eliminate candidates. If filtering leaves no viable candidates, abort without writes.
+8. Sort retained options by Desired Change alignment, Objective alignment, constraint alignment, and alphabetical title, in that order. Retain the deterministic first two through five options and assign identifiers such as `OPT000001` only after sorting. Fewer than two retained options aborts without writes.
+9. Evaluate every Reference Architecture candidate independently using exact matching precedence: explicit identifier, exact normalized title, capability identifier, Objective identifier, Control identifier, then NFR identifier. Report every matching candidate with its identifier, confidence, highest-precedence match reason, matched option identifiers, and Reference Implementation count. Semantic, similarity, and inference matching are excluded.
+10. Calculate retained-candidate alignment only after filtering: Required Platform Match is 100 for traceability only; Preferred Platform Match is 100 when a preferred platform is used and 50 otherwise; Known-System Alignment is 100 when all declared known systems are reused, 75 when one or more but not all are reused, and 50 when none are reused. Include Constraint Alignment, Satisfied Constraints, Unsatisfied Constraints, and `Constraint Compliance` (`Fully Compliant`) for every retained candidate.
+11. Calculate Objective, NFR, Control, Constraint Alignment, and Risk Reduction scores with weights Objective 25, NFR 25, Control 20, Constraint Alignment 20, and Risk Reduction 10. Use floor rounding, zero for zero denominators, and totals from 0 through 100. Derive High confidence for 90-100, Medium for 70-89, and Low for 0-69. Informational Complexity, Governance Impact, and Operational Overhead classifications never affect scoring, confidence, ranking, selection, or option ordering.
+12. Render the complete Candidate Solution Comparison Matrix before the Recommendation. Include every retained option in option order, Allowed Solution Class, Constraint Alignment Score, Required Platform Match, Preferred Platform Match, Constraint Compliance, every score component, total, Reference Architecture matches, exactly one `Recommended` status, and all mandatory informational categories. For equal totals, apply the Recommendation Tie-Break Evaluation section.
+13. Build and validate record and catalog in memory before writing. Validate identifiers, option bounds, score identity, advisory-only fields, source-byte preservation, and complete template order. Allocate only from catalog `Next ID`, advance it exactly once, retry an exclusive allocation conflict at most 3 times, then write the record and catalog as one ordered transaction.
+14. On success, report `REQ -> DISC -> ADR` traceability and expose the complete Discovery-to-ADR handoff. ADR creation is the later owning workflow and remains responsible for selected or rejected options, acceptance, rationale, consequences, and decisions.
 
 ## Verification
 
 - Confirm the input is exactly one explicit `REQ` plus six digits and resolves to one completed
   Request.
-- Confirm the record has the required sections in shared-template order: Request, Research
-  Findings, Assumptions, Risks, Unknowns, Candidate Solution Options, Candidate Solution
-  Comparison Matrix, Recommendation, Objective Relationships, Control Relationships, NFR
-  Relationships, and Reference Architecture Matches.
+- Confirm the record has the required sections in shared-template order: Request Reference, Research
+  Findings, Assumptions, Risks, Unknowns, Request Solution Constraints, Candidate Elimination Log,
+  Candidate Solution Options, Candidate Solution Comparison Matrix, Recommendation, Objective
+  Relationships, Control Relationships, NFR Relationships, and Reference Architecture Matches.
 - Confirm the record contains two through five unique `OPT` identifiers, complete option fields,
   a complete matrix in option order, exactly one `Recommended` status, and one Recommendation
   whose score values equal the matrix values.
@@ -195,6 +203,10 @@ Architectures, source baselines, Discovery inputs, ADR records, or governance ba
   highest-precedence reason, and advisory.
 - Confirm the Recommendation is advisory and contains no selected option, rejected option,
   approval, architecture decision, implementation authorization, or governance mutation.
+- Confirm all eight Request Solution Constraints render in canonical order, mandatory violations
+  are eliminated before scoring, preferred platforms and known systems are scoring-only, retained
+  Required Platform Match is 100 for traceability only, known-system alignment is 100/75/50, and
+  matrix compliance is `Fully Compliant`.
 - Confirm the catalog has only `Version`, `Next ID`, and `## Discovery Index`, with one unique row.
 - Confirm identical closed inputs and catalog state produce byte-identical output.
 - Confirm secrets and regulated personal data are absent and stable exclusion evidence is present.
@@ -229,6 +241,7 @@ Architectures, source baselines, Discovery inputs, ADR records, or governance ba
 - Catalog allocation conflict: retry the exclusive operation no more than 3 times, then report allocation failure without a write.
 - A missing optional Profile, Objective, Control, or NFR baseline: fall back to an empty relationship section.
 - A malformed present Profile, Objective, Control, or NFR baseline: abort safely.
+- Malformed or contradictory Solution Constraints, an empty invalid `allowed_solution_classes` value, or zero viable candidates: abort safely and preserve existing bytes without a record, catalog update, partial output, or source mutation.
 - Abort; never mutate governance baselines, create an ADR, record a decision, or silently replace user-owned bytes.
 
 ## Example
