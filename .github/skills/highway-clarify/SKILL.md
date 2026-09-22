@@ -4,7 +4,7 @@ description: "Generates, updates, validates, and serves deterministic clarificat
 usage: "Invoke as `/highway-clarify <ARTIFACT-ID>`, `/highway-clarify update <ARTIFACT-ID>`, `/highway-clarify inspect <ARTIFACT-ID>`, `/highway-clarify read <ARTIFACT-ID>`, or `/highway-clarify status <ARTIFACT-ID>`."
 compatibility: all
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 # highway-clarify
@@ -32,6 +32,8 @@ Manage deterministic advisory clarification records for authoritative Highway ba
 - The source artifact resolved through identifier lookup, catalog lookup, or a declared artifact path.
 - The colocated clarification artifact for Update, Inspect, Read, or Status.
 - The complete `.highway/library/templates/output/clarification-record.md` contract.
+- The complete `.highway/library/templates/output/clarification-catalog.md` contract.
+- The repository catalog at `clarifications/clarifications.md` when present.
 - Explicit artifact templates, contracts, required fields, and required sections used for analysis.
 - The Clarification Profile and repository contradiction catalog when declared for the source artifact.
 - The default ambiguity vocabulary and explicitly declared unknown markers.
@@ -41,6 +43,9 @@ Manage deterministic advisory clarification records for authoritative Highway ba
 - Every supported source artifact maps to the stable identifier `CLAR-<ARTIFACT-ID>`.
 - Every response exposes eight stable fields: `artifact_id`, `exists`, `status`, `open_findings`, `resolved_findings`, `total_findings`, `path`, and `blocking_reason`.
 - Generate creates one colocated `<ARTIFACT-ID>-clarification.md` artifact.
+- Generate and Update create or update `clarifications/clarifications.md`.
+- The catalog contains exactly one row per clarification with Clarification ID, Artifact ID, Artifact Type, and Status.
+- Catalog rows are ordered by Artifact Type, then Artifact ID.
 - Update records accepted responses, appends resolution history, updates status, increments revision after commit, and returns its response contract.
 - Inspect returns status and finding counts without writing.
 - Read returns the complete validated clarification artifact without writing.
@@ -48,6 +53,7 @@ Manage deterministic advisory clarification records for authoritative Highway ba
 - Open findings remain advisory and never block downstream source consumption.
 - Source-resolution, validation, conflict, or write failure produces no partial output and preserves source bytes.
 - The complete output structure is `.highway/library/templates/output/clarification-record.md`.
+- The complete catalog structure is `.highway/library/templates/output/clarification-catalog.md`.
 - Privacy filtering replaces retained secrets with `<secret-redacted>` and regulated personal data with `<pii-redacted>`.
 
 Generate and Update conflict responses include `expected_revision` and `actual_revision`. The workflow uses no automatic merging, and any repository user may invoke the commands.
@@ -76,11 +82,13 @@ Any repository user may invoke each command under existing repository access con
 10. Validate the record against the shared template, stable finding identities, status rules, and source-byte preservation; on failure, abort and write nothing.
 11. Generate MUST recalculate current findings while preserving finding identities and responses for unchanged evidence and retaining history.
 12. Order findings by category priority, source artifact order, source field name, and finding identifier. Identical inputs produce identical counts, identifiers, ordering, severity, and bytes with no volatile metadata.
-13. Update rereads the revision immediately before writing and returns a conflict response when expected and actual revisions differ.
-14. A successful Update appends history and increments revision exactly once; competing updates are never merged automatically.
-15. A caller may retry a conflict at most 3 times; after the third conflict, abort.
-16. Generate and Update write only the colocated clarification artifact after validation; Inspect, Read, and Status write nothing.
-17. Derive status as `not-started` when absent, `in-progress` when `open_findings` is greater than zero, `complete` when it is zero, and `blocked` for malformed or structurally invalid records.
+13. Validate the catalog against its shared template, unique mappings, existing clarification artifacts, supported types and statuses, and status agreement before catalog mutation.
+14. Insert or replace the matching catalog row, then order catalog rows by Artifact Type and Artifact ID.
+15. Update rereads the revision immediately before writing and returns a conflict response when expected and actual revisions differ.
+16. A successful Update appends history and increments revision exactly once; competing updates are never merged automatically.
+17. A caller may retry a conflict at most 3 times; after the third conflict, abort.
+18. Generate and Update write the clarification artifact and catalog only after validation succeeds; Inspect, Read, and Status write nothing.
+19. Derive status as `not-started` when absent, `in-progress` when `open_findings` is greater than zero, `complete` when it is zero, and `blocked` for malformed or structurally invalid records.
 
 ## Verification
 
@@ -89,6 +97,9 @@ Any repository user may invoke each command under existing repository access con
 - Confirm artifact-local, artifact-type, then global profile precedence and default fallback.
 - Confirm every response contains the eight stable consumer fields.
 - Confirm the shared template contains frontmatter, findings, resolution history, source, status, counts, and revision.
+- Confirm the catalog follows `.highway/library/templates/output/clarification-catalog.md` and contains one row per clarification.
+- Confirm catalog rows use supported types and statuses, reference existing clarification artifacts, have no duplicate IDs or mappings, and match clarification status.
+- Confirm catalog rows are ordered by Artifact Type then Artifact ID and repeated identical inputs produce identical catalog bytes.
 - Confirm regeneration preserves unchanged-evidence responses and history.
 - Confirm category, source order, source field name, and finding identifier ordering.
 - Confirm identical inputs produce identical generated bytes without volatile metadata.
@@ -115,6 +126,9 @@ Any repository user may invoke each command under existing repository access con
 - Missing optional Clarification Profile: fall back to defaults.
 - Unreadable selected Clarification Profile: abort.
 - Sensitive value in retained content: abort before writing.
+- Missing catalog: fall back to catalog creation after clarification validation succeeds.
+- Malformed catalog, duplicate mapping, missing clarification reference, unsupported type or status, or status mismatch: abort and preserve catalog bytes.
+- Catalog write failure: abort and preserve clarification and catalog bytes.
 - Validation or write failure: abort.
 - Suspected vulnerability or unauthorized access-control failure: report the condition and abort.
 

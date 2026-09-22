@@ -9,6 +9,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 SKILL="$HIGHWAY_ROOT/skills/highway-clarify/SKILL.md"
 TEMPLATE="$HIGHWAY_ROOT/library/templates/output/clarification-record.md"
+CATALOG_TEMPLATE="$HIGHWAY_ROOT/library/templates/output/clarification-catalog.md"
 WORK="$(mktemp -d)"
 fail=0
 cleanup() { rm -rf "$WORK"; }
@@ -43,6 +44,7 @@ require_file() { [[ -f "$1" ]] || { echo "FAIL: missing $1"; fail=1; }; }
 require_text() { grep -Fq "$2" "$1" || { echo "FAIL: '$2' missing from $1"; fail=1; }; }
 require_file "$SKILL"
 require_file "$TEMPLATE"
+require_file "$CATALOG_TEMPLATE"
 for token in \
 	'Generates, updates, validates, and serves deterministic clarification records for Highway artifacts.' \
 	'## Purpose' '## When to use' '## When not to use' '## Inputs' '## Outputs' \
@@ -56,6 +58,10 @@ for token in \
 	'revision' 'expected_revision' 'actual_revision' 'no automatic merging' \
 	'at most 3 times' 'advisory' 'any repository user' 'write nothing' \
 	'CLAR-<ARTIFACT-ID>' 'artifact-local' 'artifact-type' 'global' \
+	'clarification-catalog.md' 'clarifications/clarifications.md' \
+	'Artifact Type, then Artifact ID' 'one row per clarification' \
+	'catalog rows use supported types and statuses' 'duplicate mapping' \
+	'preserve catalog bytes' 'Catalog write failure' \
 	'open_findings' 'resolved_findings' 'total_findings' 'blocking_reason' \
 	'unchanged evidence' 'resolution history' 'source field name' \
 	'<secret-redacted>' '<pii-redacted>' 'not-started' 'complete' 'blocked' \
@@ -63,6 +69,11 @@ for token in \
 	'category priority' 'source artifact order' 'finding identifier' 'identical inputs' \
 	'default ambiguity vocabulary' 'may extend' 'MUST NOT remove' 'no volatile metadata'; do
 	require_text "$SKILL" "$token"
+done
+for token in 'name: clarification-catalog' 'Version: 1.0.0' '## Clarification Index' \
+	'Clarification ID' 'Artifact ID' 'Artifact Type' 'Status' 'REQ' 'DISC' 'ADR' 'RA' \
+	'not-started' 'in-progress' 'complete' 'blocked'; do
+	require_text "$CATALOG_TEMPLATE" "$token"
 done
 for token in 'name: clarification-record' 'revision: 1' 'artifact_id:' 'artifact_type:' 'source_path:' \
 	'status:' 'open_findings:' 'resolved_findings:' 'total_findings:' 'blocking_reason:' \

@@ -34,6 +34,7 @@ OBJECTIVE_CATALOG_TEMPLATE="$HIGHWAY_ROOT/library/templates/output/objective-cat
 CONTROL_CATALOG_TEMPLATE="$HIGHWAY_ROOT/library/templates/output/control-catalog.md"
 NFR_CATALOG_TEMPLATE="$HIGHWAY_ROOT/library/templates/output/nfr-catalog.md"
 CLARIFY_SKILL="$HIGHWAY_ROOT/skills/highway-clarify/SKILL.md"
+CLARIFICATION_CATALOG_TEMPLATE="$HIGHWAY_ROOT/library/templates/output/clarification-catalog.md"
 VALIDATE_LIBRARY="$HIGHWAY_ROOT/tools/validate-library.sh"
 VALIDATE_SKILL="$HIGHWAY_ROOT/tools/validate-skill.sh"
 
@@ -114,6 +115,7 @@ require_file "$DISCOVERY_CATALOG_TEMPLATE"
 require_file "$OBJECTIVE_CATALOG_TEMPLATE"
 require_file "$CONTROL_CATALOG_TEMPLATE"
 require_file "$NFR_CATALOG_TEMPLATE"
+require_file "$CLARIFICATION_CATALOG_TEMPLATE"
 require_file "$INTAKE_CONTRACT"
 require_file "$RECORD_CONTRACT"
 if [[ -f "$NFR_TEMPLATE" ]]; then
@@ -197,6 +199,7 @@ require_text "$OBJECTIVE_SKILL" ".highway/library/templates/output/objective-rec
 require_text "$OBJECTIVE_SKILL" ".highway/library/templates/output/objective-catalog.md"
 require_text "$CONTROL_SKILL" ".highway/library/templates/output/control-catalog.md"
 require_text "$NFR_SKILL" ".highway/library/templates/output/nfr-catalog.md"
+require_text "$CLARIFY_SKILL" ".highway/library/templates/output/clarification-catalog.md"
 
 require_text "$NEW_SKILL" ".highway/library/templates/output/request-record.md"
 require_text "$NEW_SKILL" ".highway/library/templates/output/request-catalog.md"
@@ -272,6 +275,15 @@ if [[ -f "$CATALOG_TEMPLATE" ]]; then
 		echo "FAIL: request catalog template does not pass validate-library.sh"
 		fail=1
 	fi
+fi
+if [[ -f "$CLARIFICATION_CATALOG_TEMPLATE" ]]; then
+	require_text "$CLARIFICATION_CATALOG_TEMPLATE" "name: clarification-catalog"
+	require_text "$CLARIFICATION_CATALOG_TEMPLATE" "Version: 1.0.0"
+	require_text "$CLARIFICATION_CATALOG_TEMPLATE" "## Clarification Index"
+	require_text "$CLARIFICATION_CATALOG_TEMPLATE" "Clarification ID"
+	require_text "$CLARIFICATION_CATALOG_TEMPLATE" "Artifact ID"
+	require_text "$CLARIFICATION_CATALOG_TEMPLATE" "Artifact Type"
+	require_text "$CLARIFICATION_CATALOG_TEMPLATE" "Status"
 fi
 if ! "$VALIDATE_SKILL" "$HIGHWAY_ROOT/skills/highway-nfrs" >/dev/null 2>&1; then
 	echo "FAIL: highway-nfrs does not pass validate-skill.sh"
