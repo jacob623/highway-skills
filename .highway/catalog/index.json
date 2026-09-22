@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-22T18:57:05Z",
+  "generated_at": "2026-09-22T20:12:16Z",
   "entries": [
     {
       "id": "highway-clarify",
@@ -25,7 +25,7 @@
       "description": "Manages a repository-wide Discovery baseline.",
       "usage": "Invoke as `/highway-discovery` and state the Request.",
       "compatibility": "all",
-      "version": "2.0.0",
+      "version": "2.1.0",
       "source_path": "skills/highway-discovery/SKILL.md"
     },
     {
