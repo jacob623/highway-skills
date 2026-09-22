@@ -49,6 +49,16 @@ State: open
 evidence_ref: <source location or evidence identity after privacy filtering>
 Evidence: <source location or evidence identity after privacy filtering>
 Summary: <finding summary>
+Question: <one deterministic resolution question>
+Why It Matters: <one deterministic consequence explanation>
+Recommended Option: <advisory recommended option or Unknown>
+Recommended Rationale: <deterministic rationale with source traceability>
+Alternative Option B: <advisory alternative option>
+Alternative Rationale B: <deterministic rationale>
+Alternative Option C: <advisory alternative option>
+Alternative Rationale C: <deterministic rationale>
+Custom Option: <user-supplied answer path>
+Selected Option: None
 Response: None
 
 ### CLAR-REQ000001-002
@@ -61,6 +71,16 @@ State: resolved
 evidence_ref: <source location or evidence identity after privacy filtering>
 Evidence: <source location or evidence identity after privacy filtering>
 Summary: <finding summary>
+Question: <retained deterministic resolution question>
+Why It Matters: <retained deterministic consequence explanation>
+Recommended Option: <retained advisory recommended option>
+Recommended Rationale: <retained deterministic rationale>
+Alternative Option B: <retained advisory alternative option>
+Alternative Rationale B: <retained deterministic rationale>
+Alternative Option C: <retained advisory alternative option>
+Alternative Rationale C: <retained deterministic rationale>
+Custom Option: <retained user-supplied answer path>
+Selected Option: None
 Response: <accepted response>
 
 ## Resolution History
@@ -92,6 +112,11 @@ Blocking Reason: None
 Sensitive values in findings, responses, resolution history, metadata, and copied evidence
 must be replaced before retention with `<secret-redacted>` or `<pii-redacted>`. Findings are
 ordered by category priority, source artifact order, source field name, and finding identifier.
+Every finding has exactly one Question and one Why It Matters explanation. Open findings have
+exactly three generated options in A Recommended, B Alternative, C Alternative, D Custom order;
+each generated option has deterministic rationale and source traceability. Selected Option is
+informational and accepts only A, B, C, D, or None. Selecting an option does not resolve a
+finding; only an explicitly accepted response may perform `open -> resolved`.
 Finding fingerprints preserve identifiers across reordering; retired identifiers are recorded and
 never reused. Finding states are exactly `open` and `resolved`; new findings begin open, and only
 an accepted response may transition an open finding to resolved. Resolved findings retain

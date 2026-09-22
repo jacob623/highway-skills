@@ -4,14 +4,14 @@ description: "Generates, updates, validates, and serves deterministic clarificat
 usage: "Invoke as `/highway-clarify <ARTIFACT-ID>`, `/highway-clarify update <ARTIFACT-ID>`, `/highway-clarify inspect <ARTIFACT-ID>`, `/highway-clarify read <ARTIFACT-ID>`, or `/highway-clarify status <ARTIFACT-ID>`."
 compatibility: all
 metadata:
-  version: 1.4.0
+  version: 2.0.0
 ---
 
 # highway-clarify
 
 ## Purpose
 
-Manage deterministic advisory clarification records for authoritative Highway baselines without changing source content.
+Manage deterministic clarification records and advisory guided resolution for Highway baselines without changing source content.
 
 ## When to use
 
@@ -54,6 +54,43 @@ Contradiction Condition, and Finding Summary Template. A finding is produced onl
 evaluates true. General knowledge, architectural recommendations, semantic inference, probability,
 similarity scoring, and model judgment do not produce contradiction findings.
 
+## Guided resolution contract
+
+For every finding, Clarification generates deterministic advisory guidance without changing how
+the finding was detected or who owns its lifecycle. The guidance contains exactly one Question
+and one Why It Matters explanation. Open findings also contain exactly three generated options in
+this order: A Recommended, B Alternative, C Alternative, and D Custom. Every generated option has
+a deterministic rationale and traceable evidence sources. Resolved findings retain guidance,
+selection, response, identity, fingerprint, history, and evidence references.
+
+### Recommendation Precedence
+
+Guidance generation uses only the declared artifact-specific sources and the following precedence:
+Source artifact, Clarification responses, Profile, Objectives, Controls, NFRs, Discovery,
+Reference Architectures, then Reference Implementations. Identical inputs produce identical
+guidance, option ordering, rationale, and source traceability with no volatile metadata.
+Generation never uses filesystem ordering. Catalog bootstrap is in-memory; recalculate current findings in category priority and source artifact order before source field and identifier order.
+
+When no authoritative evidence is available, the Recommended option is `Unknown` with an
+evidence-gap rationale. When multiple highest-precedence evidence items provide contradictory
+values for the same finding, Clarification does not select either value as Recommended. It
+generates `Unknown / Escalate for Decision`, records the conflicting evidence sources, presents
+the conflicting values as alternatives B and C, explains why the conflict exists, and requires
+explicit user selection among A, B, C, or D Custom.
+
+The artifact-specific guidance sources are:
+
+- `REQ`: Request evidence, Profile, Objectives, Controls, and NFRs.
+- `DISC`: Discovery Findings, Assumptions, Risks, Unknowns, Objectives, Controls, and NFRs.
+- `ADR`: Discovery handoff, ADR context, and selected candidate option.
+- `RA`: Architecture contents, Controls, NFRs, and Objectives.
+
+The `selected_option` field accepts only A, B, C, D, or None and is informational. Selecting an
+option or providing a Custom candidate does not resolve a finding; only an explicitly accepted
+response may perform `open -> resolved`. Resolved findings never transition to open. Source artifacts
+remain byte-for-byte unchanged. Guidance never approves a governance decision,
+architecture, recommendation, or ADR decision.
+
 ## Outputs
 
 - Every supported source artifact maps to the stable identifier `CLAR-<ARTIFACT-ID>`.
@@ -72,6 +109,9 @@ similarity scoring, and model judgment do not produce contradiction findings.
 - The complete output structure is `.highway/library/templates/output/clarification-record.md`.
 - The complete catalog structure is `.highway/library/templates/output/clarification-catalog.md`.
 - Privacy filtering replaces retained secrets with `<secret-redacted>` and regulated personal data with `<pii-redacted>`.
+- Each finding includes Question, Why It Matters, Recommended Option, Recommended Rationale,
+  Alternative Option B and rationale, Alternative Option C and rationale, Custom Option, Selected
+  Option, and evidence-source traceability.
 
 Generate and Update conflict responses include `expected_revision` and `actual_revision`. The workflow uses no automatic merging, and any repository user may invoke the commands.
 
@@ -87,27 +127,27 @@ Any repository user may invoke each command under existing repository access con
 
 ## Workflow
 
-1. Validate the supplied identifier as exact uppercase `REQ`, `DISC`, `ADR`, or `RA` followed by six digits; on failure, abort and report it.
-2. Resolve the source through identifier lookup, catalog lookup, or a declared path; on missing, duplicate, or ambiguous resolution, abort.
-3. Derive `CLAR-<ARTIFACT-ID>` and the colocated clarification path; do not scan by filesystem ordering, timestamp, recency, or newest-file selection.
-4. Resolve profiles in artifact-local, artifact-type, then global order. If none exists, fall back to defaults; if unreadable, abort.
-5. Load the profile, rules, structures, markers, and vocabulary; read-only commands do not write.
-6. Analyze evidence in this order: `contradiction`, `missing_input`, `unknown_value`, `ambiguity`, then `unresolved_assumption`.
-7. Use explicit rules for contradictions, declared structures for missing inputs, and markers for unknowns.
-8. Apply the default ambiguity vocabulary; profiles may extend but MUST NOT remove default entries, using exact normalized phrase comparison.
-9. Redact secrets and regulated personal data before generation, updates, or writes, including retained evidence.
-10. Validate the record against the shared template, stable identities, status rules, and source-byte preservation; on failure, abort and write nothing.
-11. Validate finding states and counts before status derivation; unsupported states or a count mismatch make the record malformed and `blocked`.
-12. Generate MUST recalculate current findings while preserving finding identities and responses for unchanged evidence and retaining history.
-13. Order findings by category priority, source artifact order, source field name, and identifier. Identical inputs produce identical bytes with no volatile metadata.
-14. Validate the catalog against its template, mappings, artifacts, supported values, direct Clarification Paths, and status agreement before mutation.
-15. Catalog bootstrap: if the catalog is absent, construct it in memory from `.highway/library/templates/output/clarification-catalog.md`, add the proposed row, and run the same validation as an existing catalog.
-16. Insert or replace the matching row, then order catalog rows by Artifact Type and Artifact ID.
+1. Validate the identifier as exact uppercase `REQ`, `DISC`, `ADR`, or `RA` plus six digits; abort invalid input.
+2. Resolve the source through identifier, catalog, or declared-path lookup; abort missing, duplicate, or ambiguous resolution.
+3. Derive `CLAR-<ARTIFACT-ID>` and its colocated path; never scan by filesystem order, timestamp, recency, or newest file.
+4. Resolve profiles in artifact-local, artifact-type, then global order; use defaults when absent and abort when unreadable.
+5. Load profiles, rules, structures, markers, and vocabulary; read-only commands do not write.
+6. Analyze evidence in order: `contradiction`, `missing_input`, `unknown_value`, `ambiguity`, then `unresolved_assumption`.
+7. Use explicit contradiction rules, declared missing-input structures, and unknown markers.
+8. Apply the default vocabulary; profiles may extend but MUST NOT remove entries, using exact normalized phrase comparison.
+9. Redact secrets and regulated personal data before generation, updates, or writes.
+10. Validate the record against the shared template, identities, status rules, and source preservation; abort without writing on failure.
+11. Validate finding states and counts before status derivation; invalid values produce malformed `blocked` records.
+12. Generate MUST recalculate findings while preserving unchanged evidence and identities, retaining history and responses, then order by category, source order, field, and identifier.
+13. Generate deterministic guidance for every open finding and retain it for resolved findings. Apply declared sources and precedence; highest-precedence conflicts produce `Unknown / Escalate for Decision`, alternatives B and C, recorded sources, an explanation, and required selection. Identical inputs produce identical bytes with no volatile metadata.
+14. Validate the catalog against its template, mappings, artifacts, supported values, direct paths, and status before mutation.
+15. If absent, build the catalog in memory from `.highway/library/templates/output/clarification-catalog.md`, add the row, and validate it.
+16. Insert or replace the row, then order catalog rows by Artifact Type and Artifact ID.
 17. Update rereads revision before writing; a mismatch returns conflict.
 18. Successful Update appends history and increments revision once; competing updates are never merged.
 19. Retry conflicts at most 3 times; then abort.
-20. Generate and Update write both artifacts only after all validations succeed; Inspect, Read, and Status write nothing.
-21. Derive status by precedence: `blocked` for malformed records, `complete` for valid zero-open records, `in-progress` for valid open records, and `not-started` only when absent.
+20. Generate and Update write only after validation; Inspect, Read, and Status write nothing.
+21. Derive status by precedence: `blocked`, `complete`, `in-progress`, then `not-started`.
 
 ## Finding Identity Contract
 
@@ -170,6 +210,12 @@ identifiers, and resolved findings never transition to open.
 - Confirm successful Updates increment revision exactly once and retries stop after 3 conflicts.
 - Confirm malformed records return `blocked` with a reason and read-only commands write nothing.
 - Confirm open findings remain advisory and do not block downstream source consumption.
+- Confirm guided resolution generates exactly one Question and one Why It Matters explanation,
+  A Recommended, B Alternative, C Alternative, and D Custom with rationale and source traceability.
+- Confirm identical inputs produce identical guidance with no volatile metadata, resolved findings
+  retain guidance, and highest-precedence conflicts escalate without selecting either value.
+- Confirm Selected Option accepts only A, B, C, D, or None and cannot resolve a finding without an
+  explicitly accepted response.
 - Run `.highway/tools/validate-skill.sh .highway/skills/highway-clarify` and `.highway/tools/validate-library.sh .highway/library/templates/output/clarification-record.md`.
 
 ## Error Handling
