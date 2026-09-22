@@ -63,6 +63,7 @@ similarity scoring, and model judgment do not produce contradiction findings.
 - Read returns the complete validated clarification artifact without writing.
 - Status returns the lightweight consumer contract without writing.
 - Open findings remain advisory and never block downstream source consumption.
+- Finding states are restricted to `open` and `resolved`; counts satisfy `total_findings = open_findings + resolved_findings`.
 - Source-resolution, validation, conflict, or write failure produces no partial output and preserves source bytes.
 - The complete output structure is `.highway/library/templates/output/clarification-record.md`.
 - The complete catalog structure is `.highway/library/templates/output/clarification-catalog.md`.
@@ -92,16 +93,17 @@ Any repository user may invoke each command under existing repository access con
 8. Apply the default ambiguity vocabulary; profiles may extend but MUST NOT remove default entries, using exact normalized phrase comparison.
 9. Redact secrets and regulated personal data before generation, updates, or writes, including retained evidence.
 10. Validate the record against the shared template, stable identities, status rules, and source-byte preservation; on failure, abort and write nothing.
-11. Generate MUST recalculate current findings while preserving finding identities and responses for unchanged evidence and retaining history.
-12. Order findings by category priority, source artifact order, source field name, and identifier. Identical inputs produce identical bytes with no volatile metadata.
-13. Validate the catalog against its template, mappings, artifacts, supported values, direct Clarification Paths, and status agreement before mutation.
-14. Catalog bootstrap: if the catalog is absent, construct it in memory from `.highway/library/templates/output/clarification-catalog.md`, add the proposed row, and run the same validation as an existing catalog.
-15. Insert or replace the matching row, then order catalog rows by Artifact Type and Artifact ID.
-16. Update rereads revision before writing; a mismatch returns conflict.
-17. Successful Update appends history and increments revision once; competing updates are never merged.
-18. Retry conflicts at most 3 times; then abort.
-19. Generate and Update write both artifacts only after all validations succeed; Inspect, Read, and Status write nothing.
-20. Derive status by precedence: `blocked` for malformed records, `complete` for valid zero-open records, `in-progress` for valid open records, and `not-started` only when absent.
+11. Validate finding states and counts before status derivation; unsupported states or a count mismatch make the record malformed and `blocked`.
+12. Generate MUST recalculate current findings while preserving finding identities and responses for unchanged evidence and retaining history.
+13. Order findings by category priority, source artifact order, source field name, and identifier. Identical inputs produce identical bytes with no volatile metadata.
+14. Validate the catalog against its template, mappings, artifacts, supported values, direct Clarification Paths, and status agreement before mutation.
+15. Catalog bootstrap: if the catalog is absent, construct it in memory from `.highway/library/templates/output/clarification-catalog.md`, add the proposed row, and run the same validation as an existing catalog.
+16. Insert or replace the matching row, then order catalog rows by Artifact Type and Artifact ID.
+17. Update rereads revision before writing; a mismatch returns conflict.
+18. Successful Update appends history and increments revision once; competing updates are never merged.
+19. Retry conflicts at most 3 times; then abort.
+20. Generate and Update write both artifacts only after all validations succeed; Inspect, Read, and Status write nothing.
+21. Derive status by precedence: `blocked` for malformed records, `complete` for valid zero-open records, `in-progress` for valid open records, and `not-started` only when absent.
 
 ## Finding Identity Contract
 
@@ -110,6 +112,30 @@ Category, Source Field or Section, and Evidence Reference. Match current fingerp
 prior clarification record, reuse an unchanged identifier, preserve identifiers when display
 order changes, and allocate the next unused sequence only for a new fingerprint. Never renumber
 existing findings. Record retired identifiers and never reuse them.
+
+### Fingerprint Normalization Contract
+
+Normalize every category, source field or section, and evidence reference before composing a
+Fingerprint. Apply these steps in order:
+
+1. Normalize line endings to LF.
+2. Trim leading and trailing whitespace.
+3. Convert values to lowercase.
+4. Collapse consecutive whitespace to one space.
+5. Replace source-field aliases with the canonical declared source-field name.
+
+Fingerprints are generated only after normalization. Identical normalized inputs produce identical
+fingerprints; inputs that remain different after normalization remain distinct.
+
+The required terms are: trim leading and trailing whitespace, lowercase values, collapse consecutive whitespace, use the canonical declared source-field name, and generate fingerprints only after normalization.
+
+### Finding State Contract
+
+The supported finding states are exactly `open` and `resolved`. New findings start `open`. An
+accepted response may transition an `open` finding to `resolved` (`open -> resolved`); a resolved
+finding retains its identifier, fingerprint, history, and evidence references. Resolved findings
+never transition to open, and no unsupported state may be persisted. Resolved findings retain
+identifiers, and resolved findings never transition to open.
 
 ## Verification
 
@@ -128,6 +154,11 @@ existing findings. Record retired identifiers and never reuse them.
 - Confirm the Ambiguity Vocabulary Contract matches all ten defaults only after trimming and case-folding, rejects partial words, regular expressions, and semantic similarity, and appends profile terms without removing defaults.
 - Confirm contradiction findings require declared rules, both source fields, and a true condition; general knowledge, architectural recommendations, semantic inference, probability, similarity, and model judgment produce none.
 - Confirm Finding Identity Contract fingerprints preserve IDs through reordering and removal, allocate only the next unused sequence, and never reuse retired identifiers.
+- Confirm the Fingerprint Normalization Contract normalizes line endings to LF, trims, lowercases, collapses consecutive whitespace, and uses the canonical declared source-field name before fingerprint generation.
+- Confirm case differences, surrounding whitespace, repeated whitespace, and source-field aliases do not create distinct fingerprints, while inputs different after normalization remain distinct.
+- Confirm the Finding State Contract permits only `open` and `resolved`, new findings begin `open`, accepted responses use `open -> resolved`, resolved findings retain identifiers and history, and resolved findings never transition to `open`.
+- Confirm total findings equals open findings plus resolved findings, malformed count relationships produce `blocked`, and this validation precedes complete/in-progress status derivation.
+- Confirm every catalog entry resolves to an existing clarification artifact, every clarification artifact has exactly one catalog entry, catalog status equals clarification status, and Clarification Path resolves to the referenced clarification artifact.
 - Confirm Generate recalculates current findings while preserving finding identities, and identical inputs produce identical bytes with no volatile metadata.
 - Confirm status precedence selects exactly one state in the order `blocked`, `complete`, `in-progress`, `not-started`.
 - Confirm privacy filtering uses `<secret-redacted>` and `<pii-redacted>` before retention.
@@ -147,6 +178,7 @@ existing findings. Record retired identifiers and never reuse them.
 - Invalid response or unknown finding: abort the Update.
 - Privacy-blocked response: abort the Update and write nothing.
 - Malformed clarification artifact: abort with `blocked` and a non-empty blocking reason.
+- Unsupported finding state, resolved-to-open transition, negative/non-integer count, or count mismatch: abort with malformed `blocked` status and preserve all pre-operation bytes.
 - Revision mismatch: retry at most 3 times.
 - Three revision conflicts: abort.
 - Missing optional Clarification Profile: fall back to defaults.

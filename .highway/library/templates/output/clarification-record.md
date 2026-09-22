@@ -2,7 +2,7 @@
 name: clarification-record
 description: "Authoritative output structure for a deterministic retained clarification artifact."
 metadata:
-  version: 1.1.0
+  version: 1.2.0
   revision: 1
 id: CLAR-REQ000001
 artifact_id: REQ000001
@@ -10,8 +10,8 @@ artifact_type: REQ
 source_path: requests/REQ000001.md
 status: in-progress
 open_findings: 1
-resolved_findings: 0
-total_findings: 1
+resolved_findings: 1
+total_findings: 2
 blocking_reason: None
 ---
 
@@ -26,8 +26,8 @@ source_path: requests/REQ000001.md
 status: in-progress
 revision: 1
 open_findings: 1
-resolved_findings: 0
-total_findings: 1
+resolved_findings: 1
+total_findings: 2
 blocking_reason: None
 ---
 ```
@@ -51,10 +51,26 @@ Evidence: <source location or evidence identity after privacy filtering>
 Summary: <finding summary>
 Response: None
 
+### CLAR-REQ000001-002
+
+Category: ambiguity
+Severity: medium
+finding_id: CLAR-REQ000001-002
+fingerprint: ambiguity|requirements|REQ000001:resolved-field
+State: resolved
+evidence_ref: <source location or evidence identity after privacy filtering>
+Evidence: <source location or evidence identity after privacy filtering>
+Summary: <finding summary>
+Response: <accepted response>
+
 ## Resolution History
 
 - Finding: CLAR-REQ000001-001
   Response: None
+  Revision: 1
+  Actor: None
+- Finding: CLAR-REQ000001-002
+  Response: <accepted response>
   Revision: 1
   Actor: None
 
@@ -68,8 +84,8 @@ Source Path: requests/REQ000001.md
 
 Status: in-progress
 Open Findings: 1
-Resolved Findings: 0
-Total Findings: 1
+Resolved Findings: 1
+Total Findings: 2
 Blocking Reason: None
 ```
 
@@ -77,7 +93,12 @@ Sensitive values in findings, responses, resolution history, metadata, and copie
 must be replaced before retention with `<secret-redacted>` or `<pii-redacted>`. Findings are
 ordered by category priority, source artifact order, source field name, and finding identifier.
 Finding fingerprints preserve identifiers across reordering; retired identifiers are recorded and
-never reused. The status precedence is `blocked`, `complete`, `in-progress`, then `not-started`.
+never reused. Finding states are exactly `open` and `resolved`; new findings begin open, and only
+an accepted response may transition an open finding to resolved. Resolved findings retain
+identifiers, fingerprints, history, and evidence references and never transition back to open. The
+count invariant is `total_findings = open_findings + resolved_findings`; violations are malformed
+and derive `blocked` before other status evaluation. The status precedence is `blocked`, `complete`,
+`in-progress`, then `not-started`.
 
 The placeholders represent user-owned or generated values. The template governs required
 frontmatter and body structure; it does not authorize source-artifact mutation.

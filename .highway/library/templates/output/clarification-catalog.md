@@ -2,7 +2,7 @@
 name: clarification-catalog
 description: "Complete output skeleton for the Clarification catalog."
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Catalog Structure
@@ -10,7 +10,7 @@ metadata:
 ```markdown
 # Clarifications Catalog
 
-Version: 1.0.0
+Version: 1.1.0
 
 ## Clarification Index
 

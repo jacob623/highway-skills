@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-22T18:10:10Z",
+  "generated_at": "2026-09-22T18:57:05Z",
   "entries": [
     {
       "id": "highway-clarify",
@@ -7,7 +7,7 @@
       "description": "Generates, updates, validates, and serves deterministic clarification records for Highway artifacts.",
       "usage": "Invoke as `/highway-clarify <ARTIFACT-ID>`, `/highway-clarify update <ARTIFACT-ID>`, `/highway-clarify inspect <ARTIFACT-ID>`, `/highway-clarify read <ARTIFACT-ID>`, or `/highway-clarify status <ARTIFACT-ID>`.",
       "compatibility": "all",
-      "version": "1.3.0",
+      "version": "1.4.0",
       "source_path": "skills/highway-clarify/SKILL.md"
     },
     {

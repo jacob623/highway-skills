@@ -278,7 +278,7 @@ if [[ -f "$CATALOG_TEMPLATE" ]]; then
 fi
 if [[ -f "$CLARIFICATION_CATALOG_TEMPLATE" ]]; then
 	require_text "$CLARIFICATION_CATALOG_TEMPLATE" "name: clarification-catalog"
-	require_text "$CLARIFICATION_CATALOG_TEMPLATE" "Version: 1.0.0"
+	require_text "$CLARIFICATION_CATALOG_TEMPLATE" "Version: 1.1.0"
 	require_text "$CLARIFICATION_CATALOG_TEMPLATE" "## Clarification Index"
 	require_text "$CLARIFICATION_CATALOG_TEMPLATE" "Clarification ID"
 	require_text "$CLARIFICATION_CATALOG_TEMPLATE" "Artifact ID"
@@ -287,6 +287,9 @@ if [[ -f "$CLARIFICATION_CATALOG_TEMPLATE" ]]; then
 	require_text "$CLARIFICATION_CATALOG_TEMPLATE" "Clarification Path"
 	require_text "$CLARIFICATION_CATALOG_TEMPLATE" "resolves directly to the authoritative clarification artifact"
 fi
+require_text "$HIGHWAY_ROOT/library/templates/output/clarification-record.md" "version: 1.2.0"
+require_text "$HIGHWAY_ROOT/library/templates/output/clarification-record.md" "total_findings = open_findings + resolved_findings"
+require_text "$HIGHWAY_ROOT/library/templates/output/clarification-record.md" "State: resolved"
 if ! "$VALIDATE_SKILL" "$HIGHWAY_ROOT/skills/highway-nfrs" >/dev/null 2>&1; then
 	echo "FAIL: highway-nfrs does not pass validate-skill.sh"
 	fail=1
