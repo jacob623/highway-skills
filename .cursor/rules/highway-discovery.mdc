@@ -56,31 +56,57 @@ including relationship sections, is defined by
 
 ## Clarification Consumption Contract
 
-Clarification remains the owner of finding detection, response capture, lifecycle, status, and
-Clarification ownership. Discovery may read Clarification artifacts, Clarification responses, and
-Clarification findings as advisory evidence only. Discovery MUST NOT create, update, repair,
-resolve, or change the status of Clarification artifacts.
+Clarification owns finding detection, response capture, lifecycle, status, state, and Clarification ownership. Discovery
+may read catalog-backed status, findings, summaries, responses, and blocking reason as advisory
+evidence only. The producer contract remains authoritative. Discovery MUST NOT create, update,
+repair, resolve, or change Clarification.
 
-For a valid catalog-backed artifact, Discovery may read status, open findings, resolved findings,
-finding summaries, responses, and blocking reason. The producer-owned Clarification contract
-remains authoritative for field meaning, finding identity, state transitions, privacy filtering,
-and status precedence.
+### Clarification Status Consumption Rules
 
-Clarification responses follow Request evidence in the evidence precedence order and precede
-Profile, Objectives, Controls, NFRs, Reference Architectures, and Reference Implementations.
-Responses may contribute to Research Findings when they provide additional business evidence.
-Open findings may contribute to Assumptions and Unknowns; findings may contribute to Risks,
-confidence rationale, and advisory risk reporting. This projection uses existing Research Findings,
-Assumptions, Risks, and Unknowns sections and adds no dedicated Clarification section.
+Clarification status influences advisory analysis only. `not-started`: no clarification evidence is
+available; proceed normally. `in-progress`: open findings may contribute to Assumptions, Unknowns,
+Risks, and confidence rationale; responses may contribute to Research Findings. `complete`: responses
+may contribute to Research Findings; no open-finding uncertainty is introduced. `blocked`: record
+advisory risk evidence when appropriate; continue normally; do not prevent analysis, recommendation
+generation, or ADR handoff.
 
-Clarification evidence MUST NOT change candidate generation, candidate scores, ranking, candidate
-ordering, recommendation totals, recommendation selection, Discovery record schema, or ADR
-ownership. Open findings remain advisory and open findings remain advisory uncertainty; they do not
-require clarification completion. Discovery must not mutate Clarification state.
+Clarification status MUST NOT affect candidate generation, candidate filtering, candidate scores,
+candidate ordering, recommendation selection, or ADR ownership.
 
-For identical closed inputs, clarification resolution, advisory evidence, confidence rationale,
-and Discovery output remain byte-identical. Clarification resolution and consumption preserve all
-source and clarification bytes.
+### Clarification Evidence Precedence
+
+
+
+Request evidence remains authoritative. Clarification responses may supplement Request evidence,
+explain, or clarify it but MUST NOT overwrite Request evidence, replace, or modify it. Disagreement preserves Request
+authority, contributes advisory risk evidence, and does not modify the Request.
+
+### Finding Consumption Rules
+
+Open findings may contribute to Assumptions, Unknowns, Risks, and confidence rationale. Resolved
+findings may contribute accepted responses to Research Findings, not uncertainty, Unknowns, or
+unresolved-risk evidence. Responses owned by resolved findings may be additional business evidence.
+Finding state does not affect candidate generation, scoring, ranking, recommendation totals, or
+recommendation selection.
+
+Responses precede Profile, Objectives, Controls, NFRs, Reference Architectures, and Reference
+Implementations. Projection uses existing Research Findings, Assumptions, Risks, and Unknowns
+sections and adds no dedicated Clarification section. open findings remain advisory. Clarification evidence MUST NOT change
+candidate generation, candidate scores, ranking, candidate ordering, recommendation totals,
+recommendation selection, Discovery record schema, or ADR ownership. Open findings remain advisory
+and do not require clarification completion. Discovery must not mutate Clarification state.
+
+For identical inputs, clarification resolution, advisory evidence, confidence rationale,
+and Discovery output remain byte-identical. Resolution and consumption preserve source bytes.
+
+### Clarification Determinism
+
+For identical Request, Clarification, Profile, Objective, Control, NFR, Reference Architecture,
+and Reference Implementation inputs, Clarification resolution, Research Findings, Assumptions,
+Risks, Unknowns, and confidence rationale are identical.
+
+Clarification evidence never changes candidate generation, candidate scoring, candidate ranking,
+recommendation totals, recommendation selection, or ADR ownership.
 
 ## Outputs
 
@@ -195,7 +221,7 @@ Architectures, source baselines, Discovery inputs, ADR records, or governance ba
 
 1. Receive exactly one `REQ` followed by six digits. Reject missing, malformed, ambiguous, nonexistent, non-unique, or incomplete sources before allocation or writes; abort and preserve existing bytes.
 2. Resolve exactly one Request and verify its completion marker is `Complete`. Treat its evidence as authoritative and read-only. Do not scan for an implicit newest or batch source.
-3. Resolve Clarification immediately after Request resolution: derive `CLAR-<REQ-ID>`, read `clarifications/clarifications.md` when present, locate one matching catalog row, and follow its direct Clarification Path. If the catalog is absent or no unique matching row exists, continue normally without clarification evidence. If a referenced artifact is unreadable, malformed, or path-mismatched, the artifact is malformed or unavailable to Discovery; ignore it, preserve existing bytes, and continue; record an advisory risk only when appropriate. Never repair or mutate Clarification.
+3. Resolve Clarification immediately after Request resolution: derive `CLAR-<REQ-ID>`, read `clarifications/clarifications.md` when present, locate one matching catalog row, and follow its direct Clarification Path. If the catalog is absent or no unique matching row exists, continue normally without clarification evidence. If a referenced artifact is unreadable, malformed, path-mismatched, state-invalid, or count-invalid, the artifact is malformed or unavailable to Discovery; treat the clarification artifact as unavailable. Preserve all bytes, continue normally, and optionally record advisory risk evidence without mutating Clarification.
 4. Load closed inputs in order: Request, Request Solution Constraints, Profile when present, Objective when present, Control when present, NFR when present, and Reference Architecture when present. Read the eight Request Solution Constraints fields in their declared order, preserve `unknown` separately from empty arrays, and treat them as read-only evidence. Reference Implementation data is evaluated only according to the Reference Implementation Evaluation rules and is used exclusively for deterministic tie-breaking. Reference Implementation matching and counting occur only after score calculation and Reference Architecture evaluation. Missing optional Reference Architecture data produces an empty match set; missing and unreadable Reference Implementation data produces zero counts.
 5. Normalize LF line endings and comparison text, then redact secrets and regulated personal data before copying, matching, scoring, or serialization. Replace excluded material with a stable category marker.
 6. Copy Request evidence in fixed order, then place valid Clarification responses after Request evidence and before other advisory baselines. Preserve Research Findings, Assumptions, Risks, Unknowns, and Objective, Control, and NFR relationship extraction and advisory behavior.
@@ -244,6 +270,16 @@ Architectures, source baselines, Discovery inputs, ADR records, or governance ba
 - Confirm evaluation stops immediately after a criterion selects one winner.
 - Confirm repeated executions with identical inputs are deterministic.
 - Confirm ADR ownership is unchanged and no implementation is authorized.
+- Confirm Clarification status affects advisory analysis only.
+- Confirm Clarification status never affects candidate generation.
+- Confirm Clarification status never affects candidate scores.
+- Confirm Clarification status never affects recommendation selection.
+- Confirm Request evidence remains authoritative when Clarification responses disagree.
+- Confirm Clarification responses supplement but do not replace Request evidence.
+- Confirm open findings contribute advisory uncertainty only.
+- Confirm resolved findings contribute accepted-response evidence only.
+- Confirm blocked Clarification status does not block Discovery execution.
+- Confirm Discovery performs no Clarification mutation.
 
 ## Error Handling
 

@@ -217,6 +217,17 @@ for token in \
 	require_text "$SKILL" "$token"
 done
 for token in \
+	'Clarification Status Consumption Rules' 'not-started' 'in-progress' 'complete' 'blocked' \
+	'Clarification Evidence Precedence' 'supplement Request evidence' 'overwrite Request evidence' \
+	'Finding Consumption Rules' 'resolved-risk evidence' 'Clarification Determinism' \
+	'state-invalid' 'count-invalid' 'status affects advisory analysis only' \
+	'never affects candidate generation' 'never affects candidate scores' \
+	'never affects recommendation selection' 'Request evidence remains authoritative' \
+	'blocked Clarification status does not block Discovery execution' \
+	'Discovery performs no Clarification mutation' 'version: 2.1.0'; do
+	require_text "$SKILL" "$token"
+done
+for token in \
 	'allowed_solution_classes' 'known' 'unknown' 'unconstrained generation' 'empty invalid' \
 	'existing_platforms_required' 'hosting_restrictions' 'vendor_restrictions' \
 	'procurement_constraints' 'regulatory_restrictions' 'before scoring, comparison, or recommendation' \
@@ -350,6 +361,8 @@ mkdir -p "$clarification_dir"
 clarification_artifact="$clarification_dir/REQ000001-clarification.md"
 clarification_catalog="$clarification_dir/clarifications.md"
 clarification_malformed="$clarification_dir/malformed.md"
+clarification_state_invalid="$clarification_dir/state-invalid.md"
+clarification_count_invalid="$clarification_dir/count-invalid.md"
 printf '%s\n' \
 	'---' \
 	'id: CLAR-REQ000001' \
@@ -372,6 +385,8 @@ printf '%s\n' \
 	'| Clarification ID | Artifact ID | Artifact Type | Status | Clarification Path |' \
 	'| CLAR-REQ000001 | REQ000001 | REQ | in-progress | clarifications/REQ000001-clarification.md |' >"$clarification_catalog"
 printf '%s\n' 'malformed clarification' >"$clarification_malformed"
+printf '%s\n' 'status: unsupported' >"$clarification_state_invalid"
+printf '%s\n' 'status: complete' 'open_findings: 2' 'resolved_findings: 0' 'total_findings: 0' >"$clarification_count_invalid"
 [[ "$(grep -c '| CLAR-REQ000001 |' "$clarification_catalog")" -eq 1 ]] || fail=1
 grep -Fq 'clarifications/REQ000001-clarification.md' "$clarification_catalog" || fail=1
 grep -Fq 'status: in-progress' "$clarification_artifact" || fail=1
@@ -395,6 +410,8 @@ grep -Fq '| REQ000002 |' "$clarification_mismatch" || fail=1
 grep -Fq 'State: open' "$clarification_artifact" || fail=1
 grep -Fq 'State: resolved' "$clarification_artifact" || fail=1
 grep -Fq 'Summary:' "$clarification_artifact" || fail=1
+grep -Fq 'status: unsupported' "$clarification_state_invalid" || fail=1
+grep -Fq 'total_findings: 0' "$clarification_count_invalid" || fail=1
 require_text "$SKILL" 'malformed'
 require_text "$SKILL" 'unreadable'
 
