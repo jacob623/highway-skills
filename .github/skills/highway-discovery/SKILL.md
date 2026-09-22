@@ -40,6 +40,12 @@ complete Comparison Matrix, and one advisory Recommendation.
   `known_systems`, `hosting_restrictions`, `vendor_restrictions`, `procurement_constraints`,
   `regulatory_restrictions`.
 - Optional closed baselines, loaded only in this order: Profile, Objective, Control, NFR.
+- Optional Clarification Catalog at `clarifications/clarifications.md`, resolved after the
+  completed Request by derived identifier `CLAR-<REQ-ID>`.
+- When the Clarification Catalog contains a unique matching row, its direct Clarification Path
+  identifies the optional read-only clarification artifact. The Clarification Catalog is the
+  authoritative lookup source; Discovery does not select files by timestamp, newest-file status,
+  directory traversal, or filesystem order.
 - Optional Reference Architecture baseline loaded after NFR; Reference Implementation data is
   consulted only for the advisory tie-break.
 - The complete output structure in `.highway/library/templates/output/discovery-record.md`.
@@ -51,6 +57,34 @@ The conversation contract governs invocation and completion responses; the analy
 governs the closed inputs and deterministic rule order. The complete retained record structure,
 including relationship sections, is defined by
 `.highway/library/templates/output/discovery-record.md`.
+
+## Clarification Consumption Contract
+
+Clarification remains the owner of finding detection, response capture, lifecycle, status, and
+Clarification ownership. Discovery may read Clarification artifacts, Clarification responses, and
+Clarification findings as advisory evidence only. Discovery MUST NOT create, update, repair,
+resolve, or change the status of Clarification artifacts.
+
+For a valid catalog-backed artifact, Discovery may read status, open findings, resolved findings,
+finding summaries, responses, and blocking reason. The producer-owned Clarification contract
+remains authoritative for field meaning, finding identity, state transitions, privacy filtering,
+and status precedence.
+
+Clarification responses follow Request evidence in the evidence precedence order and precede
+Profile, Objectives, Controls, NFRs, Reference Architectures, and Reference Implementations.
+Responses may contribute to Research Findings when they provide additional business evidence.
+Open findings may contribute to Assumptions and Unknowns; findings may contribute to Risks,
+confidence rationale, and advisory risk reporting. This projection uses existing Research Findings,
+Assumptions, Risks, and Unknowns sections and adds no dedicated Clarification section.
+
+Clarification evidence MUST NOT change candidate generation, candidate scores, ranking, candidate
+ordering, recommendation totals, recommendation selection, Discovery record schema, or ADR
+ownership. Open findings remain advisory and open findings remain advisory uncertainty; they do not
+require clarification completion. Discovery must not mutate Clarification state.
+
+For identical closed inputs, clarification resolution, advisory evidence, confidence rationale,
+and Discovery output remain byte-identical. Clarification resolution and consumption preserve all
+source and clarification bytes.
 
 ## Outputs
 
@@ -165,18 +199,19 @@ Architectures, source baselines, Discovery inputs, ADR records, or governance ba
 
 1. Receive exactly one `REQ` followed by six digits. Reject missing, malformed, ambiguous, nonexistent, non-unique, or incomplete sources before allocation or writes; abort and preserve existing bytes.
 2. Resolve exactly one Request and verify its completion marker is `Complete`. Treat its evidence as authoritative and read-only. Do not scan for an implicit newest or batch source.
-3. Load closed inputs in order: Request, Request Solution Constraints, Profile when present, Objective when present, Control when present, NFR when present, and Reference Architecture when present. Read the eight Request Solution Constraints fields in their declared order, preserve `unknown` separately from empty arrays, and treat them as read-only evidence. Reference Implementation data is evaluated only according to the Reference Implementation Evaluation rules and is used exclusively for deterministic tie-breaking. Reference Implementation matching and counting occur only after score calculation and Reference Architecture evaluation. Missing optional Reference Architecture data produces an empty match set; missing or unreadable Reference Implementation data produces zero counts.
-4. Normalize LF line endings and comparison text, then redact secrets and regulated personal data before copying, matching, scoring, or serialization. Replace excluded material with a stable category marker.
-5. Copy Request evidence in fixed order. Preserve Research Findings, Assumptions, Risks, Unknowns, and Objective, Control, and NFR relationship extraction and advisory behavior.
-6. Generate distinct Candidate Solution Options from explicit Desired Change strategies first, then strategies implied by Objectives, Controls, NFRs, Research Findings, and available Reference Architectures. When `allowed_solution_classes` is known, generate only candidates in those classes; when it is `unknown`, preserve unconstrained generation. Normalize each candidate, evaluate Solution Constraints, filter invalid candidates, and only then score survivors. Normalize and deduplicate before identifier allocation, aggregate supporting evidence, reject incomplete options, and record any more-than-five truncation boundary.
-7. Exclude candidates that violate `existing_platforms_required`, `hosting_restrictions`, `vendor_restrictions`, `procurement_constraints`, or `regulatory_restrictions` before scoring, comparison, or recommendation. Record every excluded candidate in the Candidate Elimination Log with candidate identifier and title, status `Excluded`, reason category, constraint identifier or value, and deterministic reason. Order entries by candidate identifier, constraint category, then constraint identifier or value. Preferred platforms and known systems never eliminate candidates. If filtering leaves no viable candidates, abort without writes.
-8. Sort retained options by Desired Change alignment, Objective alignment, constraint alignment, and alphabetical title, in that order. Retain the deterministic first two through five options and assign identifiers such as `OPT000001` only after sorting. Fewer than two retained options aborts without writes.
-9. Evaluate every Reference Architecture candidate independently using exact matching precedence: explicit identifier, exact normalized title, capability identifier, Objective identifier, Control identifier, then NFR identifier. Report every matching candidate with its identifier, confidence, highest-precedence match reason, matched option identifiers, and Reference Implementation count. Semantic, similarity, and inference matching are excluded.
-10. Calculate retained-candidate alignment only after filtering: Required Platform Match is 100 for traceability only; Preferred Platform Match is 100 when a preferred platform is used and 50 otherwise; Known-System Alignment is 100 when all declared known systems are reused, 75 when one or more but not all are reused, and 50 when none are reused. Include Constraint Alignment, Satisfied Constraints, Unsatisfied Constraints, and `Constraint Compliance` (`Fully Compliant`) for every retained candidate.
-11. Calculate Objective, NFR, Control, Constraint Alignment, and Risk Reduction scores with weights Objective 25, NFR 25, Control 20, Constraint Alignment 20, and Risk Reduction 10. Use floor rounding, zero for zero denominators, and totals from 0 through 100. Derive High confidence for 90-100, Medium for 70-89, and Low for 0-69. Informational Complexity, Governance Impact, and Operational Overhead classifications never affect scoring, confidence, ranking, selection, or option ordering.
-12. Render the complete Candidate Solution Comparison Matrix before the Recommendation. Include every retained option in option order, Allowed Solution Class, Constraint Alignment Score, Required Platform Match, Preferred Platform Match, Constraint Compliance, every score component, total, Reference Architecture matches, exactly one `Recommended` status, and all mandatory informational categories. For equal totals, apply the Recommendation Tie-Break Evaluation section.
-13. Build and validate record and catalog in memory before writing. Validate identifiers, option bounds, score identity, advisory-only fields, source-byte preservation, and complete template order. Allocate only from catalog `Next ID`, advance it exactly once, retry an exclusive allocation conflict at most 3 times, then write the record and catalog as one ordered transaction.
-14. On success, report `REQ -> DISC -> ADR` traceability and expose the complete Discovery-to-ADR handoff. ADR creation is the later owning workflow and remains responsible for selected or rejected options, acceptance, rationale, consequences, and decisions.
+3. Resolve Clarification immediately after Request resolution: derive `CLAR-<REQ-ID>`, read `clarifications/clarifications.md` when present, locate one matching catalog row, and follow its direct Clarification Path. If the catalog is absent or no unique matching row exists, continue normally without clarification evidence. If a referenced artifact is unreadable, malformed, or path-mismatched, the artifact is malformed or unavailable to Discovery; ignore it, preserve existing bytes, and continue; record an advisory risk only when appropriate. Never repair or mutate Clarification.
+4. Load closed inputs in order: Request, Request Solution Constraints, Profile when present, Objective when present, Control when present, NFR when present, and Reference Architecture when present. Read the eight Request Solution Constraints fields in their declared order, preserve `unknown` separately from empty arrays, and treat them as read-only evidence. Reference Implementation data is evaluated only according to the Reference Implementation Evaluation rules and is used exclusively for deterministic tie-breaking. Reference Implementation matching and counting occur only after score calculation and Reference Architecture evaluation. Missing optional Reference Architecture data produces an empty match set; missing and unreadable Reference Implementation data produces zero counts.
+5. Normalize LF line endings and comparison text, then redact secrets and regulated personal data before copying, matching, scoring, or serialization. Replace excluded material with a stable category marker.
+6. Copy Request evidence in fixed order, then place valid Clarification responses after Request evidence and before other advisory baselines. Preserve Research Findings, Assumptions, Risks, Unknowns, and Objective, Control, and NFR relationship extraction and advisory behavior.
+7. Generate distinct Candidate Solution Options from explicit Desired Change strategies first, then strategies implied by Objectives, Controls, NFRs, Research Findings, and available Reference Architectures. When `allowed_solution_classes` is known, generate only candidates in those classes; when it is `unknown`, preserve unconstrained generation. Normalize each candidate, evaluate Solution Constraints, filter invalid candidates, and only then score survivors. Normalize and deduplicate before identifier allocation, aggregate supporting evidence, reject incomplete options, and record any more-than-five truncation boundary. Clarification evidence does not change candidate generation.
+8. Exclude candidates that violate `existing_platforms_required`, `hosting_restrictions`, `vendor_restrictions`, `procurement_constraints`, or `regulatory_restrictions` before scoring, comparison, or recommendation. Record every excluded candidate in the Candidate Elimination Log with candidate identifier and title, status `Excluded`, reason category, constraint identifier or value, and deterministic reason. Order entries by candidate identifier, constraint category, then constraint identifier or value. Preferred platforms and known systems never eliminate candidates. If filtering leaves no viable candidates, abort without writes.
+9. Sort retained options by Desired Change alignment, Objective alignment, constraint alignment, and alphabetical title, in that order. Retain the deterministic first two through five options and assign identifiers such as `OPT000001` only after sorting. Fewer than two retained options aborts without writes.
+10. Evaluate every Reference Architecture candidate independently using exact matching precedence: explicit identifier, exact normalized title, capability identifier, Objective identifier, Control identifier, then NFR identifier. Report every matching candidate with its identifier, confidence, highest-precedence match reason, matched option identifiers, and Reference Implementation count. Semantic, similarity, and inference matching are excluded.
+11. Calculate retained-candidate alignment only after filtering: Required Platform Match is 100 for traceability only; Preferred Platform Match is 100 when a preferred platform is used and 50 otherwise; Known-System Alignment is 100 when all declared known systems are reused, 75 when one or more but not all are reused, and 50 when none are reused. Include Constraint Alignment, Satisfied Constraints, Unsatisfied Constraints, and `Constraint Compliance` (`Fully Compliant`) for every retained candidate.
+12. Calculate Objective, NFR, Control, Constraint Alignment, and Risk Reduction scores with weights Objective 25, NFR 25, Control 20, Constraint Alignment 20, and Risk Reduction 10. Use floor rounding, zero for zero denominators, and totals from 0 through 100. Derive High confidence for 90-100, Medium for 70-89, and Low for 0-69. Informational Complexity, Governance Impact, and Operational Overhead classifications never affect scoring, confidence, ranking, selection, or option ordering. Clarification findings do not affect scores, ranking, candidate ordering, recommendation totals, or recommendation selection.
+13. Render the complete Candidate Solution Comparison Matrix before the Recommendation. Include every retained option in option order, Allowed Solution Class, Constraint Alignment Score, Required Platform Match, Preferred Platform Match, Constraint Compliance, every score component, total, Reference Architecture matches, exactly one `Recommended` status, and all mandatory informational categories. For equal totals, apply the Recommendation Tie-Break Evaluation section.
+14. Build and validate record and catalog in memory before writing. Validate identifiers, option bounds, score identity, advisory-only fields, source-byte preservation, and complete template order. Allocate only from catalog `Next ID`, advance it exactly once, retry an exclusive allocation conflict at most 3 times, then write the record and catalog as one ordered transaction.
+15. On success, report `REQ -> DISC -> ADR` traceability and expose the complete Discovery-to-ADR handoff. ADR creation is the later owning workflow and remains responsible for selected or rejected options, acceptance, rationale, consequences, and decisions.
 
 ## Verification
 

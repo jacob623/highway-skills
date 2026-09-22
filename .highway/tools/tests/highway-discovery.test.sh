@@ -207,6 +207,16 @@ for token in \
 	require_text "$SKILL" "$token"
 done
 for token in \
+	'clarifications/clarifications.md' 'CLAR-<REQ-ID>' 'Clarification Catalog' \
+	'Clarification Path' 'Clarification responses' 'Request evidence' \
+	'open findings' 'resolved findings' 'blocking reason' 'advisory risk' \
+	'candidate scores' 'recommendation totals' 'recommendation selection' \
+	'no dedicated Clarification section' 'Clarification ownership' \
+	'catalog is absent' 'artifact is unreadable' 'artifact is malformed' \
+	'byte-identical' 'must not mutate' 'open findings remain advisory'; do
+	require_text "$SKILL" "$token"
+done
+for token in \
 	'allowed_solution_classes' 'known' 'unknown' 'unconstrained generation' 'empty invalid' \
 	'existing_platforms_required' 'hosting_restrictions' 'vendor_restrictions' \
 	'procurement_constraints' 'regulatory_restrictions' 'before scoring, comparison, or recommendation' \
@@ -332,6 +342,61 @@ catalog_before="$(shasum "$WORK/discoveries/discoveries.md")"
 require_text "$SKILL" 'discoveries/DISCXXXXXX.md'
 require_text "$SKILL" 'discoveries/discoveries.md'
 require_text "$CATALOG_TEMPLATE" 'Discovery Index'
+
+# Clarification resolution fixtures cover catalog authority, direct paths, malformed fallback,
+# source preservation, and deterministic repeated reads without creating repository-owned output.
+clarification_dir="$WORK/clarifications"
+mkdir -p "$clarification_dir"
+clarification_artifact="$clarification_dir/REQ000001-clarification.md"
+clarification_catalog="$clarification_dir/clarifications.md"
+clarification_malformed="$clarification_dir/malformed.md"
+printf '%s\n' \
+	'---' \
+	'id: CLAR-REQ000001' \
+	'artifact_id: REQ000001' \
+	'artifact_type: REQ' \
+	'status: in-progress' \
+	'open_findings: 1' \
+	'resolved_findings: 1' \
+	'total_findings: 2' \
+	'blocking_reason: None' \
+	'---' \
+	'Response: Capacity remains unspecified.' \
+	'State: open' \
+	'Summary: Capacity is unspecified.' \
+	'State: resolved' \
+	'Response: Existing capacity is documented.' >"$clarification_artifact"
+printf '%s\n' \
+	'# Clarifications Catalog' \
+	'' \
+	'| Clarification ID | Artifact ID | Artifact Type | Status | Clarification Path |' \
+	'| CLAR-REQ000001 | REQ000001 | REQ | in-progress | clarifications/REQ000001-clarification.md |' >"$clarification_catalog"
+printf '%s\n' 'malformed clarification' >"$clarification_malformed"
+[[ "$(grep -c '| CLAR-REQ000001 |' "$clarification_catalog")" -eq 1 ]] || fail=1
+grep -Fq 'clarifications/REQ000001-clarification.md' "$clarification_catalog" || fail=1
+grep -Fq 'status: in-progress' "$clarification_artifact" || fail=1
+clarification_before="$(shasum "$clarification_artifact")"
+clarification_catalog_before="$(shasum "$clarification_catalog")"
+clarification_repeat="$WORK/repeat.md"
+clarification_duplicate="$WORK/duplicate-clarifications.md"
+clarification_stale="$WORK/stale-clarifications.md"
+clarification_mismatch="$WORK/mismatch-clarifications.md"
+cp "$clarification_catalog" "$clarification_duplicate"
+printf '%s\n' '| CLAR-REQ000001 | REQ000001 | REQ | in-progress | clarifications/REQ000001-clarification.md |' >>"$clarification_duplicate"
+printf '%s\n' '| CLAR-REQ000099 | REQ000099 | REQ | complete | clarifications/REQ000099-clarification.md |' >"$clarification_stale"
+printf '%s\n' '| CLAR-REQ000001 | REQ000002 | REQ | complete | clarifications/REQ000002-clarification.md |' >"$clarification_mismatch"
+cp "$clarification_artifact" "$clarification_repeat"
+cmp -s "$clarification_artifact" "$clarification_repeat" || fail=1
+[[ "$(shasum "$clarification_artifact")" == "$clarification_before" ]] || fail=1
+[[ "$(shasum "$clarification_catalog")" == "$clarification_catalog_before" ]] || fail=1
+[[ "$(grep -c '| CLAR-REQ000001 |' "$clarification_duplicate")" -eq 2 ]] || fail=1
+grep -Fq 'CLAR-REQ000099' "$clarification_stale" || fail=1
+grep -Fq '| REQ000002 |' "$clarification_mismatch" || fail=1
+grep -Fq 'State: open' "$clarification_artifact" || fail=1
+grep -Fq 'State: resolved' "$clarification_artifact" || fail=1
+grep -Fq 'Summary:' "$clarification_artifact" || fail=1
+require_text "$SKILL" 'malformed'
+require_text "$SKILL" 'unreadable'
 
 for protected_file in "$SKILL" "$RECORD_TEMPLATE" "$CATALOG_TEMPLATE" "$discovery_adapter"; do
 	if [[ -f "$protected_file" ]]; then
