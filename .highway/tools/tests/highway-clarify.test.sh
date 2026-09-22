@@ -42,6 +42,17 @@ fi
 
 require_file() { [[ -f "$1" ]] || { echo "FAIL: missing $1"; fail=1; }; }
 require_text() { grep -Fq "$2" "$1" || { echo "FAIL: '$2' missing from $1"; fail=1; }; }
+assert_same_bytes() {
+	local expected="$1" actual="$2" label="$3"
+	[[ "$expected" == "$actual" ]] || { echo "FAIL: $label changed"; fail=1; }
+}
+assert_contains_all() {
+	local file="$1" label="$2" token
+	shift 2
+	for token in "$@"; do
+		require_text "$file" "$token"
+	done
+}
 require_file "$SKILL"
 require_file "$TEMPLATE"
 require_file "$CATALOG_TEMPLATE"
@@ -138,3 +149,65 @@ catalog_after="$(printf '%s' 'catalog-before' | shasum)"
 
 if [[ "$fail" -ne 0 ]]; then exit 1; fi
 echo "PASS: highway-clarify contract and disposable workspace checks"
+
+assert_contains_all "$SKILL" "guided resolution contract" \
+	'version: 2.0.0' 'Question' 'Why It Matters' \
+	'A Recommended' 'B Alternative' 'C Alternative' 'D Custom' \
+	'Resolved findings retain guidance' 'identical inputs produce identical guidance' \
+	'no volatile metadata'
+
+assert_contains_all "$SKILL" "guided option precedence" \
+	'artifact-specific guidance sources' 'Recommendation Precedence' \
+	'Unknown / Escalate for Decision' 'conflicting evidence sources' \
+	'Alternative Option B' 'Alternative Option C' 'Custom Option' \
+	'explicit user selection'
+
+assert_contains_all "$SKILL" "informational selection lifecycle" \
+	'selected_option' 'Selected Option' 'only A, B, C, D, or None' \
+	'only an explicitly accepted response' 'open -> resolved' \
+	'resolved findings never transition to open' 'source artifacts' \
+	'no partial output' 'governance decision' 'architecture' 'ADR decision'
+
+assert_contains_all "$TEMPLATE" "version and finding identity" \
+	'metadata:' 'version: 2.0.0' \
+	'Category: missing_input' 'fingerprint: missing_input|requirements|REQ000001:field'
+
+assert_contains_all "$SKILL" "two-stage recommendation selection" \
+	'Guidance generation occurs in two stages' \
+	'Select the artifact-specific source set' \
+	'Apply Recommendation Precedence only to sources that are members' \
+	'Sources not in the artifact-specific source set are ignored'
+
+assert_contains_all "$SKILL" "recommendation state distinction" \
+	'Unknown' 'no authoritative evidence exists' \
+	'Unknown / Escalate for Decision' \
+	'authoritative evidence exists but conflicts'
+
+assert_contains_all "$TEMPLATE" "evidence traceability structure" \
+	'Evidence Sources:' 'Source Type' 'Source Identifier' 'Reason Used'
+
+assert_contains_all "$SKILL" "escalation ownership and consumer boundaries" \
+	'REQ findings escalate to the Request owner' \
+	'DISC findings escalate to the Discovery consumer or responsible architect' \
+	'ADR findings escalate to the ADR decision authority' \
+	'RA findings escalate to the Reference Architecture owner' \
+	'Escalation ownership is advisory' \
+	'Consumers may use Question, Why It Matters, Response, Selected Option, and Status' \
+	'MUST NOT treat Recommended Option or Alternative Options as authoritative decisions' \
+	'never approves a governance decision' \
+	'never selects an architecture' \
+	'never changes Discovery recommendations' \
+	'never changes ADR decisions' \
+	'never mutates source artifacts'
+
+assert_contains_all "$TEMPLATE" "selection and response lifecycle" \
+	'Selected Option: None' 'Response: None' \
+	'Selecting an option does not create a response' \
+	'Only an explicitly accepted Response may transition' \
+	'Escalation Owner:' 'Request owner' 'Discovery consumer or responsible architect' \
+	'ADR decision authority' 'Reference Architecture owner' \
+	'Unknown / Escalate for Decision' 'conflicting values'
+
+if [[ "$fail" -ne 0 ]]; then
+	exit 1
+fi
