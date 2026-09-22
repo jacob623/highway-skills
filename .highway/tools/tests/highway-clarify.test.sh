@@ -62,6 +62,15 @@ for token in \
 	'Artifact Type, then Artifact ID' 'one row per clarification' \
 	'catalog rows use supported types and statuses' 'duplicate mapping' \
 	'preserve catalog bytes' 'Catalog write failure' \
+	'Ambiguity Vocabulary Contract' 'TBD' 'TBA' 'unknown' 'undecided' \
+	'unspecified' 'not defined' 'not determined' 'pending' 'future decision' \
+	'future work' 'exact normalized phrase comparison' 'Partial-word matching' \
+	'regular expressions' 'semantic similarity' 'Contradiction Rule Contract' \
+	'Rule Identifier' 'Artifact Type Scope' 'Source Field A' 'Source Field B' \
+	'Contradiction Condition' 'Finding Summary Template' 'general knowledge' \
+	'architectural recommendations' 'Finding Identity Contract' \
+	'CLAR-<ARTIFACT-ID>-NNN' 'Fingerprint' 'retired' 'blocked' 'in-progress' \
+	'not-started' 'Clarification Path' 'bootstrap' 'in-memory' 'pre-operation bytes' \
 	'open_findings' 'resolved_findings' 'total_findings' 'blocking_reason' \
 	'unchanged evidence' 'resolution history' 'source field name' \
 	'<secret-redacted>' '<pii-redacted>' 'not-started' 'complete' 'blocked' \
@@ -78,6 +87,7 @@ done
 for token in 'name: clarification-record' 'revision: 1' 'artifact_id:' 'artifact_type:' 'source_path:' \
 	'status:' 'open_findings:' 'resolved_findings:' 'total_findings:' 'blocking_reason:' \
 	'id: CLAR-REQ000001' '## Findings' '## Resolution History' '## Source' '## Status' \
+	'finding_id: CLAR-REQ000001-001' 'evidence_ref:' 'retired identifiers' 'fingerprint:' \
 	'<secret-redacted>' '<pii-redacted>' 'finding_id:' 'evidence_ref:' 'State:'; do
 	require_text "$TEMPLATE" "$token"
 done

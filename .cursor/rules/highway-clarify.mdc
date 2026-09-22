@@ -34,13 +34,29 @@ Manage deterministic advisory clarification records for authoritative Highway ba
 - The Clarification Profile and repository contradiction catalog when declared for the source artifact.
 - The default ambiguity vocabulary and explicitly declared unknown markers.
 
+## Ambiguity Vocabulary Contract
+
+The authoritative default vocabulary is `TBD`, `TBA`, `unknown`, `undecided`, `unspecified`,
+`not defined`, `not determined`, `pending`, `future decision`, and `future work`. Normalize a
+candidate by trimming leading and trailing whitespace and comparing case-insensitively against
+the complete phrase. Partial-word matching, regular expressions, and semantic similarity are
+prohibited. Clarification Profile terms append to the defaults and cannot remove or redefine
+them. Each matched term produces exactly one ambiguity finding.
+
+## Contradiction Rule Contract
+
+Contradiction findings use only explicitly declared rules. Each rule MUST define a Rule Identifier, Artifact Type Scope, Source Field A, Source Field B,
+Contradiction Condition, and Finding Summary Template. A finding is produced only when both referenced fields exist and the declared condition
+evaluates true. General knowledge, architectural recommendations, semantic inference, probability,
+similarity scoring, and model judgment do not produce contradiction findings.
+
 ## Outputs
 
 - Every supported source artifact maps to the stable identifier `CLAR-<ARTIFACT-ID>`.
 - Every response exposes eight stable fields: `artifact_id`, `exists`, `status`, `open_findings`, `resolved_findings`, `total_findings`, `path`, and `blocking_reason`.
 - Generate creates one colocated `<ARTIFACT-ID>-clarification.md` artifact.
 - Generate and Update create or update `clarifications/clarifications.md`.
-- The catalog contains exactly one row per clarification with Clarification ID, Artifact ID, Artifact Type, and Status.
+- The catalog contains exactly one row per clarification with Clarification ID, Artifact ID, Artifact Type, Status, and informational Clarification Path.
 - Catalog rows are ordered by Artifact Type, then Artifact ID.
 - Update records accepted responses, appends resolution history, updates status, increments revision after commit, and returns its response contract.
 - Inspect returns status and finding counts without writing.
@@ -66,25 +82,34 @@ Any repository user may invoke each command under existing repository access con
 
 ## Workflow
 
-1. Validate the supplied identifier as exact uppercase `REQ`, `DISC`, `ADR`, or `RA` followed by six digits; on failure, abort and report the invalid identifier.
+1. Validate the supplied identifier as exact uppercase `REQ`, `DISC`, `ADR`, or `RA` followed by six digits; on failure, abort and report it.
 2. Resolve the source through identifier lookup, catalog lookup, or a declared path; on missing, duplicate, or ambiguous resolution, abort.
-3. Derive `CLAR-<ARTIFACT-ID>` and the colocated `<ARTIFACT-ID>-clarification.md` path; do not scan by filesystem ordering, timestamp, recency, or newest-file selection.
-4. Resolve profiles in artifact-local, artifact-type, then global order. If none exists, fall back to defaults; if the selected profile is unreadable, abort.
-5. Load the selected profile, contradiction rules, required structures, unknown markers, and ambiguity vocabulary; read-only commands validate without writing.
-6. Analyze evidence in this order: `contradiction`, `missing_input`, `unknown_value`, `ambiguity`, `unresolved_assumption`.
-7. Use explicit rules for contradictions, declared structures for missing inputs, and explicit markers for unknown values.
-8. Apply the default ambiguity vocabulary; profiles may extend but MUST NOT remove default entries.
-9. Redact secrets and regulated personal data before generation, updates, or writes, including findings, responses, history, metadata, and copied evidence.
-10. Validate the record against the shared template, stable finding identities, status rules, and source-byte preservation; on failure, abort and write nothing.
+3. Derive `CLAR-<ARTIFACT-ID>` and the colocated clarification path; do not scan by filesystem ordering, timestamp, recency, or newest-file selection.
+4. Resolve profiles in artifact-local, artifact-type, then global order. If none exists, fall back to defaults; if unreadable, abort.
+5. Load the profile, rules, structures, markers, and vocabulary; read-only commands do not write.
+6. Analyze evidence in this order: `contradiction`, `missing_input`, `unknown_value`, `ambiguity`, then `unresolved_assumption`.
+7. Use explicit rules for contradictions, declared structures for missing inputs, and markers for unknowns.
+8. Apply the default ambiguity vocabulary; profiles may extend but MUST NOT remove default entries, using exact normalized phrase comparison.
+9. Redact secrets and regulated personal data before generation, updates, or writes, including retained evidence.
+10. Validate the record against the shared template, stable identities, status rules, and source-byte preservation; on failure, abort and write nothing.
 11. Generate MUST recalculate current findings while preserving finding identities and responses for unchanged evidence and retaining history.
-12. Order findings by category priority, source artifact order, source field name, and finding identifier. Identical inputs produce identical counts, identifiers, ordering, severity, and bytes with no volatile metadata.
-13. Validate the catalog against its shared template, unique mappings, existing clarification artifacts, supported types and statuses, and status agreement before catalog mutation.
-14. Insert or replace the matching catalog row, then order catalog rows by Artifact Type and Artifact ID.
-15. Update rereads the revision immediately before writing and returns a conflict response when expected and actual revisions differ.
-16. A successful Update appends history and increments revision exactly once; competing updates are never merged automatically.
-17. A caller may retry a conflict at most 3 times; after the third conflict, abort.
-18. Generate and Update write the clarification artifact and catalog only after validation succeeds; Inspect, Read, and Status write nothing.
-19. Derive status as `not-started` when absent, `in-progress` when `open_findings` is greater than zero, `complete` when it is zero, and `blocked` for malformed or structurally invalid records.
+12. Order findings by category priority, source artifact order, source field name, and identifier. Identical inputs produce identical bytes with no volatile metadata.
+13. Validate the catalog against its template, mappings, artifacts, supported values, direct Clarification Paths, and status agreement before mutation.
+14. Catalog bootstrap: if the catalog is absent, construct it in memory from `.highway/library/templates/output/clarification-catalog.md`, add the proposed row, and run the same validation as an existing catalog.
+15. Insert or replace the matching row, then order catalog rows by Artifact Type and Artifact ID.
+16. Update rereads revision before writing; a mismatch returns conflict.
+17. Successful Update appends history and increments revision once; competing updates are never merged.
+18. Retry conflicts at most 3 times; then abort.
+19. Generate and Update write both artifacts only after all validations succeed; Inspect, Read, and Status write nothing.
+20. Derive status by precedence: `blocked` for malformed records, `complete` for valid zero-open records, `in-progress` for valid open records, and `not-started` only when absent.
+
+## Finding Identity Contract
+
+Finding identifiers use `CLAR-<ARTIFACT-ID>-NNN`. Build each deterministic Fingerprint from
+Category, Source Field or Section, and Evidence Reference. Match current fingerprints against the
+prior clarification record, reuse an unchanged identifier, preserve identifiers when display
+order changes, and allocate the next unused sequence only for a new fingerprint. Never renumber
+existing findings. Record retired identifiers and never reuse them.
 
 ## Verification
 
@@ -100,6 +125,11 @@ Any repository user may invoke each command under existing repository access con
 - Confirm category, source order, source field name, and finding identifier ordering.
 - Confirm identical inputs produce identical generated bytes without volatile metadata.
 - Confirm explicit contradiction and missing-input rules, and unknown-marker handling.
+- Confirm the Ambiguity Vocabulary Contract matches all ten defaults only after trimming and case-folding, rejects partial words, regular expressions, and semantic similarity, and appends profile terms without removing defaults.
+- Confirm contradiction findings require declared rules, both source fields, and a true condition; general knowledge, architectural recommendations, semantic inference, probability, similarity, and model judgment produce none.
+- Confirm Finding Identity Contract fingerprints preserve IDs through reordering and removal, allocate only the next unused sequence, and never reuse retired identifiers.
+- Confirm Generate recalculates current findings while preserving finding identities, and identical inputs produce identical bytes with no volatile metadata.
+- Confirm status precedence selects exactly one state in the order `blocked`, `complete`, `in-progress`, `not-started`.
 - Confirm privacy filtering uses `<secret-redacted>` and `<pii-redacted>` before retention.
 - Confirm conflicts perform no write, append no history, and never merge automatically.
 - Confirm successful Updates increment revision exactly once and retries stop after 3 conflicts.
@@ -110,7 +140,7 @@ Any repository user may invoke each command under existing repository access con
 ## Error Handling
 
 - Invalid, lowercase, mixed-case, unsupported, missing, duplicate, or ambiguous identifier: abort.
-- Missing, unreadable, or malformed source: abort.
+- Missing, unreadable, or malformed source: abort without writing.
 - Missing required structure with no declaration: fall back.
 - Declared missing required structure: fall back to the declared field or section.
 - Explicit contradiction rule mismatch: fall back to the next analysis category.
@@ -122,10 +152,11 @@ Any repository user may invoke each command under existing repository access con
 - Missing optional Clarification Profile: fall back to defaults.
 - Unreadable selected Clarification Profile: abort.
 - Sensitive value in retained content: abort before writing.
-- Missing catalog: fall back to catalog creation after clarification validation succeeds.
+- Missing catalog: construct an in-memory catalog from the authoritative template, validate it as existing, and abort without writing if validation fails.
 - Malformed catalog, duplicate mapping, missing clarification reference, unsupported type or status, or status mismatch: abort and preserve catalog bytes.
 - Catalog write failure: abort and preserve clarification and catalog bytes.
-- Validation or write failure: abort.
+- Clarification Path that does not resolve directly to the authoritative artifact: abort and preserve all pre-operation bytes.
+- Validation or clarification write failure: abort and preserve all pre-operation bytes.
 - Suspected vulnerability or unauthorized access-control failure: report the condition and abort.
 
 ## Example

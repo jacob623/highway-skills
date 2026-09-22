@@ -44,6 +44,7 @@ blocking_reason: None
 Category: missing_input
 Severity: high
 finding_id: CLAR-REQ000001-001
+fingerprint: ambiguity|requirements|REQ000001:field
 State: open
 evidence_ref: <source location or evidence identity after privacy filtering>
 Evidence: <source location or evidence identity after privacy filtering>
@@ -75,6 +76,8 @@ Blocking Reason: None
 Sensitive values in findings, responses, resolution history, metadata, and copied evidence
 must be replaced before retention with `<secret-redacted>` or `<pii-redacted>`. Findings are
 ordered by category priority, source artifact order, source field name, and finding identifier.
+Finding fingerprints preserve identifiers across reordering; retired identifiers are recorded and
+never reused. The status precedence is `blocked`, `complete`, `in-progress`, then `not-started`.
 
 The placeholders represent user-owned or generated values. The template governs required
 frontmatter and body structure; it does not authorize source-artifact mutation.

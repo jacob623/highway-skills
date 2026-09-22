@@ -284,6 +284,8 @@ if [[ -f "$CLARIFICATION_CATALOG_TEMPLATE" ]]; then
 	require_text "$CLARIFICATION_CATALOG_TEMPLATE" "Artifact ID"
 	require_text "$CLARIFICATION_CATALOG_TEMPLATE" "Artifact Type"
 	require_text "$CLARIFICATION_CATALOG_TEMPLATE" "Status"
+	require_text "$CLARIFICATION_CATALOG_TEMPLATE" "Clarification Path"
+	require_text "$CLARIFICATION_CATALOG_TEMPLATE" "resolves directly to the authoritative clarification artifact"
 fi
 if ! "$VALIDATE_SKILL" "$HIGHWAY_ROOT/skills/highway-nfrs" >/dev/null 2>&1; then
 	echo "FAIL: highway-nfrs does not pass validate-skill.sh"
