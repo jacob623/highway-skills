@@ -52,27 +52,29 @@ similarity scoring, and model judgment do not produce contradiction findings.
 
 ## Guided resolution contract
 
-For every finding, Clarification generates deterministic advisory guidance without changing how
-the finding was detected or who owns its lifecycle. The guidance contains exactly one Question
-and one Why It Matters explanation. Open findings also contain exactly three generated options in
-this order: A Recommended, B Alternative, C Alternative, and D Custom. Every generated option has
-a deterministic rationale and traceable evidence sources. Resolved findings retain guidance,
-selection, response, identity, fingerprint, history, and evidence references.
+Clarification generates advisory guidance without changing detection or ownership. It contains
+one Question, one Why It Matters, and options A Recommended,
+B Alternative, C Alternative, and D Custom with deterministic rationale and traceable evidence.
+Resolved findings retain guidance, selection, response, and identity.
 
+Canonical contracts declare version `2.0.0`. Every category MUST match its fingerprint
+category segment; mismatch produces no partial write. Selecting an option does not create a
+response; only an explicitly accepted response may transition `open -> resolved`. Generated
+guidance leaves source artifacts unchanged.
 ### Recommendation Precedence
 
-Guidance generation uses only the declared artifact-specific sources and the following precedence:
-Source artifact, Clarification responses, Profile, Objectives, Controls, NFRs, Discovery,
-Reference Architectures, then Reference Implementations. Identical inputs produce identical
-guidance, option ordering, rationale, and source traceability with no volatile metadata.
-Generation never uses filesystem ordering. Catalog bootstrap is in-memory; recalculate current findings in category priority and source artifact order before source field and identifier order.
+Guidance generation occurs in two stages. Select the artifact-specific source set. Apply Recommendation Precedence only to sources that are members
+of the selected artifact-specific source set. Sources not in the artifact-specific source set are ignored for guidance generation.
 
-When no authoritative evidence is available, the Recommended option is `Unknown` with an
-evidence-gap rationale. When multiple highest-precedence evidence items provide contradictory
-values for the same finding, Clarification does not select either value as Recommended. It
-generates `Unknown / Escalate for Decision`, records the conflicting evidence sources, presents
-the conflicting values as alternatives B and C, explains why the conflict exists, and requires
-explicit user selection among A, B, C, or D Custom.
+Precedence: Source artifact, Clarification responses, Profile, Objectives,
+Controls, NFRs, Discovery, Reference Architectures, then Reference Implementations. Identical
+inputs produce identical guidance, rationale, and source traceability with no volatile metadata.
+Generation never uses filesystem ordering; catalog bootstrap is in-memory; recalculate current findings in category priority and source artifact order.
+
+When no authoritative evidence exists, recommendation is `Unknown` with an evidence-gap rationale.
+When authoritative evidence exists but conflicts at the highest precedence, recommendation is
+`Unknown / Escalate for Decision`; records conflicting evidence sources,
+presents values as alternatives B and C, and requires explicit user selection among A, B, C, or D Custom.
 
 The artifact-specific guidance sources are:
 
@@ -82,10 +84,22 @@ The artifact-specific guidance sources are:
 - `RA`: Architecture contents, Controls, NFRs, and Objectives.
 
 The `selected_option` field accepts only A, B, C, D, or None and is informational. Selecting an
-option or providing a Custom candidate does not resolve a finding; only an explicitly accepted
-response may perform `open -> resolved`. Resolved findings never transition to open. Source artifacts
-remain byte-for-byte unchanged. Guidance never approves a governance decision,
-architecture, recommendation, or ADR decision.
+option does not create a response or resolve a finding; only an explicitly accepted response may
+perform `open -> resolved`. Resolved findings never transition to open; source artifacts remain
+unchanged.
+
+REQ findings escalate to the Request owner.
+DISC findings escalate to the Discovery consumer or responsible architect.
+ADR findings escalate to the ADR decision authority.
+RA findings escalate to the Reference Architecture owner.
+Escalation ownership is advisory.
+Consumers may use Question, Why It Matters, Response, Selected Option, and Status.
+Consumers MUST NOT treat Recommended Option or Alternative Options as authoritative decisions.
+Guidance never approves a governance decision.
+Guidance never selects an architecture.
+Guidance never changes Discovery recommendations.
+Guidance never changes ADR decisions.
+Guidance never mutates source artifacts.
 
 ## Outputs
 

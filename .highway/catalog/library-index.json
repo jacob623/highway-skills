@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-22T21:34:17Z",
+  "generated_at": "2026-09-22T22:16:46Z",
   "entries": [
     {
       "library_type": "template",
@@ -12,7 +12,7 @@
       "library_type": "template",
       "name": "clarification-record",
       "description": "Authoritative output structure for a deterministic retained clarification artifact.",
-      "version": "1.2.0",
+      "version": "2.0.0",
       "source_path": "library/templates/output/clarification-record.md"
     },
     {
