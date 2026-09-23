@@ -169,6 +169,32 @@ run_resume_case() {
 
 run_resume_case || fail=1
 
+run_multi_message_order_case() {
+	local response="$fixture_root/multi-message.response" output="$fixture_root/multi-message.output"
+	printf 'Informational output from owner\nQuestion: What is the next answer?\n' > "$response"
+	cat "$response" > "$output"
+	if [[ "$(sed -n '1p' "$output")" != 'Informational output from owner' || "$(sed -n '2p' "$output")" != 'Question: What is the next answer?' ]]; then
+		echo 'FAIL: Setup reordered multi-message owner output'
+		return 1
+	fi
+	if ! cmp -s "$response" "$output"; then
+		echo 'FAIL: Setup rewrote multi-message owner output'
+		return 1
+	fi
+}
+
+run_completion_step_case() {
+	local output="$fixture_root/completion.output"
+	printf 'Current Stage: Complete\nHighway Setup Complete\n' > "$output"
+	if grep -Fq 'Step:' "$output"; then
+		echo 'FAIL: completion output included a numeric Step'
+		return 1
+	fi
+}
+
+run_multi_message_order_case || fail=1
+run_completion_step_case || fail=1
+
 if [[ $fail -ne 0 ]]; then
 	exit 1
 fi
