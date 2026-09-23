@@ -1,5 +1,28 @@
 <!--
 Sync Impact Report
+Version change: 1.4.0 → 1.4.1 (PATCH), 2026-09-23
+
+--- Amendment 1.4.0 → 1.4.1 (PATCH), 2026-09-23 ---
+Bump rationale: clarifies the Interactive Workflow UX Contract as interpretive and organizational
+guidance, adds contract-local non-normative examples, and makes applicability and uniqueness
+validation explicit without changing X2.2-X2.6 or introducing another authority.
+Changed elements: contract authority wording, rule-attributed guidance, progress applicability,
+illustrative examples, and duplicate-contract validation expectations.
+Unchanged elements: X2.2-X2.6 normative text, identifiers, tiers, Observables, samples, and N5.
+Self-application review: the contract remains subordinate to X2.2-X2.6; P10.1-P10.2 and
+D1.5/D8.1 remain the applicable compliance and dependent-review obligations.
+
+Version change: 1.3.1 → 1.4.0 (MINOR), 2026-09-23
+
+--- Amendment 1.3.1 → 1.4.0 (MINOR), 2026-09-23 ---
+Bump rationale: adds one reusable Interactive Workflow UX Contract without changing X2.2-X2.6,
+adding an X rule identifier, or invalidating the existing interaction rules.
+Added guidance: one authoritative contract covering next action, implementation-detail boundaries,
+single-question collection, applicable progress, outcomes, ownership, and resume behavior.
+The contract is scoped by workflow applicability and does not create a second governance authority.
+Self-application review: X2.2-X2.6 normative text is unchanged; P10.1-P10.2 and D1.5/D8.1
+remain the applicable compliance and dependent-review obligations.
+
 Version change: 1.3.0 → 1.3.1 (PATCH), 2026-09-23
 
 --- Amendment 1.3.0 → 1.3.1 (PATCH), 2026-09-23 ---
@@ -253,6 +276,76 @@ These examples are illustrative and do not add rule IDs.
 | Scenario | Example |
 |---|---|
 | No long-running activity (N/A) | A read-only status workflow emits no intermediate activity; record X2.5=N5 and X2.6=N5 in review output. |
+
+### Interactive Workflow UX Contract
+
+This contract is the single reusable interpretive and organizational guidance section for
+Interactive Workflows. It organizes, scopes, and applies X2.2-X2.6, N5 applicability, and the
+defined concepts Interactive Workflow, Guided information-collection workflow, Long-running
+activity, and Implementation details. It does not create additional X-rule obligations, modify
+X2.2-X2.6 normative text, or introduce new X rule identifiers. The X2.2-X2.6 rules remain the
+sole normative interaction authority.
+
+The bullets below interpret and organize those existing rules; they are not a second rule
+namespace. Each skill remains responsible for its domain workflow contract, artifact ownership,
+progress fields, terminality rules, and domain-specific behavior.
+
+#### Applicability and next action
+
+- As an application of X2.2, the first user-facing content prioritizes the next required question,
+  decision, confirmation, approval, rejection, or actionable error.
+- As applications of X2.3 and X2.6, normal user-facing output describes user-relevant activity
+  and omits routing, validation, evaluation-order, allocation, processing, and orchestration
+  details unless requested.
+- A delegated action routes the person to the owning workflow without claiming ownership or
+  presenting internal delegation as user work; this is an ownership convention, not a new X rule.
+- An interactive workflow that is not guided information collection adopts only the applicable
+  activity-focused guidance; it does not acquire artificial wizard stages.
+
+#### Guided collection and progress
+
+- As an application of X2.4, a guided collection workflow exposes exactly one unresolved
+  response-demanding question or decision at a time. Supporting context and examples may
+  accompany it.
+- When meaningful ordered work or long-running activity exists, progress identifies current
+  activity and the applicable completed/remaining counts or position/remaining counts.
+- When no meaningful ordered work or long-running activity exists, progress stages are not
+  manufactured; X2.5 and X2.6 are recorded as N5 where applicable.
+- Domain-specific fields remain owned by the skill: question, category, proposal, candidate,
+  domain, finding, step, position, and current activity are not interchangeable requirements.
+
+#### Exits, outcomes, and resume
+
+- A **User Exit** is `pause`, `cancel`, or `stop responding`; it describes user-directed
+  suspension or termination of the current interaction.
+- An **Owner Outcome** is `declined`, `aborted`, or `blocked`; it describes a result returned by
+  the owner workflow and must not be presented as user intent.
+- Each workflow declares one resume applicability state: `Persisted owner evidence`, `Transient interaction state`, `New interaction`, or `Not Applicable`.
+- A workflow must not imply restoration of unsupported unanswered questions, drafts, cancellation
+  markers, or hidden checkpoints. Where owner evidence governs resume, the workflow selects the
+  first incomplete applicable domain, question, category, proposal, candidate, or finding.
+
+#### Ownership display
+
+- The owning workflow retains authority for its identifiers, artifacts, catalogs, proposals,
+  candidates, relationships, and completion claims.
+- An aligned skill does not allocate another workflow's identifiers, write its artifacts, modify
+  its catalogs, claim its completion, or replace its decisions with a substitute record.
+
+#### Illustrative Examples (Non-Normative)
+
+These examples illustrate the contract's vocabulary and applicability. They do not add X rules,
+status namespaces, or authoritative copies of this contract.
+
+| Concept | Illustrative values |
+|---|---|
+| User Exit | `pause`, `cancel`, `stop responding` |
+| Owner Outcome | `declined`, `aborted`, `blocked` |
+| Resume Applicability | `Persisted owner evidence`, `Transient interaction state`, `New interaction`, `Not Applicable` |
+
+Validation verifies that exactly one authoritative Interactive Workflow UX Contract section exists,
+that no second authoritative copy exists, that skill references are references only, and that
+references do not reproduce the complete contract.
 
 ### X4 — Artifact placement
 

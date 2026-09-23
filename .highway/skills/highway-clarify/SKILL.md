@@ -13,6 +13,19 @@ metadata:
 
 Manage deterministic clarification records and advisory guided resolution for Highway baselines without changing source content.
 
+## Interactive Workflow UX Contract
+
+Guided clarification resolution follows the Interactive Workflow UX Contract in the Highway
+Experience Standard. Present one open finding question at a time, put the `Next Action` first,
+and omit implementation details unless requested. When findings are being resolved, report
+`Finding Position`, `Remaining Findings`, and `Current Activity`; resume at the first incomplete
+finding.
+
+`User Exits` are `pause`, `cancel`, or `stop responding`; `Owner Outcomes` are `declined`,
+`aborted`, or `blocked`. `Resume Applicability`: `Persisted owner evidence`. Clarify preserves
+source-artifact ownership, identifiers, catalogs, and completion claims and does not write a
+substitute source artifact.
+
 ## When to use
 
 - Identify contradictions, missing required information, explicitly unknown values, ambiguities, or unresolved assumptions in one supported artifact.

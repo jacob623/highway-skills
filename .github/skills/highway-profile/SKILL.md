@@ -11,6 +11,18 @@ metadata:
 
 Maintain the repository-wide organizational profile as user-owned contextual guidance for downstream Highway work.
 
+## Interactive Workflow UX Contract
+
+Guided setup follows the Interactive Workflow UX Contract in the Highway Experience Standard. Ask
+one unresolved question at a time, put the `Next Action` first, and omit implementation details
+unless requested. When collection is active, report Profile Setup Progress with `Current Question`,
+`Completed Questions Count`, `Remaining Questions Count`, and `Current Activity`.
+
+Profile resumes at the first incomplete setup/configure evidence. `User Exits` are `pause`,
+`cancel`, or `stop responding`; `Owner Outcomes` are `declined`, `aborted`, or `blocked`.
+`Resume Applicability`: `Persisted owner evidence`. Profile preserves ownership and does not
+allocate another workflow's identifiers, write its artifacts, or claim its completion.
+
 ## When to use
 
 - Use with no action to read help, supported actions, setup guidance, and current profile status.

@@ -7,6 +7,18 @@ alwaysApply: false
 
 Create a business request artifact by collecting the business evidence required by the Evidence Completeness Rules.
 
+## Interactive Workflow UX Contract
+
+Request intake follows the Interactive Workflow UX Contract in the Highway Experience Standard.
+Ask one unresolved evidence question at a time, put the `Next Action` first, and omit
+implementation details unless requested. During collection report `Current Domain`,
+`Completed Domains`, `Remaining Domains`, and `Current Activity`; resume begins at the first incomplete evidence domain.
+
+`User Exits` are `pause`, `cancel`, or `stop responding`; `Owner Outcomes` are `declined`,
+`aborted`, or `blocked`. `Resume Applicability`: `Persisted owner evidence`. Request ownership
+retains authority for identifiers, artifacts, catalogs, and completion claims; this skill never
+creates a substitute record for another owner.
+
 ## When to use
 
 - A requester has a business problem, idea, request, or desired change that needs an intake record.
