@@ -144,7 +144,7 @@ for token in \
 	"## Purpose" "## Inputs" "## Outputs" "## Workflow" "## Verification" "## Error Handling" "## Example" \
 	"DISC######" "CLAR-REQ######" "CLAR-DISC######" "CLAR-ADR######" \
 	"accepted" "Decision Confidence" "Recommendation Override" "Open Clarification Findings" \
-	"Supersedes: None" "Superseded By: None" "at most three times" "byte-identical"; do
+	"authoritative ADR catalog" "exact catalog \`Next ID\`" "at most three times" "byte-identical"; do
 	require_text "$SKILL" "$token"
 done
 for token in \
@@ -152,7 +152,7 @@ for token in \
 	"## Discovery Reference" "## Clarification Inputs" "## Decision" "## Decision Confidence" \
 	"## Alternatives Considered" "## Consequences" "Positive:" "Negative:" "Operational:" "Governance:" \
 	"## Objective Relationships" "## Control Relationships" "## NFR Relationships" \
-	"## Reference Architecture Handoff" "Supersedes: None" "Superseded By: None"; do
+	"## Reference Architecture Handoff" "Outcome: <Selected, Rejected, or Evaluated>"; do
 	require_text "$RECORD_TEMPLATE" "$token"
 done
 for token in "name: adr-catalog" "Next ID: ADRXXXXXX" "## ADR Index" "ADR Path"; do
@@ -165,6 +165,14 @@ if [[ "$(grep -c '^## Decision$' "$RECORD_TEMPLATE")" -ne 1 ]]; then
 fi
 if [[ "$(grep -c '^## Reference Architecture Handoff$' "$RECORD_TEMPLATE")" -ne 1 ]]; then
 	echo "FAIL: ADR record must have one Reference Architecture Handoff section"
+	fail=1
+fi
+if ! grep -A2 '^## Clarification Inputs$' "$RECORD_TEMPLATE" | grep -Fxq 'None'; then
+	echo "FAIL: Clarification Inputs must use scalar None"
+	fail=1
+fi
+if grep -A8 '^## Reference Architecture Handoff$' "$RECORD_TEMPLATE" | grep -Eq '^Supersedes:|^Superseded By:'; then
+	echo "FAIL: handoff must not repeat supersession metadata"
 	fail=1
 fi
 
@@ -213,6 +221,12 @@ for decision_rule in \
 	"Discovery recommendation" "higher Discovery score" \
 	"recorded Reference Architecture matches" "lower numeric \`OPT\` identifier"; do
 	require_text "$SKILL" "$decision_rule"
+done
+for contract_rule in \
+	"Evaluated means viable but not selected" "Rejected means invalid" \
+	"verbatim" "Recommendation Override is absent" \
+	"scalar \`None\`" "Discovery uniqueness" "catalog \`Next ID\`"; do
+	require_text "$SKILL" "$contract_rule"
 done
 assert_source_preserved "$SKILL"
 assert_source_preserved "$RECORD_TEMPLATE"

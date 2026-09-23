@@ -126,8 +126,24 @@ if [[ -n "$probe_class" ]]; then
 fi
 
 WORK="$(mktemp -d)"
-cleanup() { rm -rf "$WORK"; }
+cleanup_probes() {
+	rm -f "$REPO_ROOT"/distribution-probe-*.md \
+		"$HIGHWAY_ROOT"/catalog/distribution-devref-probe-*.md \
+		"$HIGHWAY_ROOT"/catalog/distribution-link-probe-*.md \
+		"$HIGHWAY_ROOT"/catalog/distribution-reject-probe-*.md
+}
+cleanup() { cleanup_probes; rm -rf "$WORK"; }
 trap cleanup EXIT
+
+# A killed packaging run can leave a link probe in the included catalog. Remove it before the
+# first build so the next run reports its own behavior rather than stale state from an earlier run.
+stale_link_probe="$HIGHWAY_ROOT/catalog/distribution-link-probe-stale.md"
+printf 'see [the missing file](stale-probe-target.md)\n' >"$stale_link_probe"
+cleanup_probes
+if [[ -e "$stale_link_probe" ]]; then
+	echo "FAIL: stale packaging probes were not removed before the first build"
+	fail=1
+fi
 
 # --- The distribution can be produced and passes its own verification ---
 
@@ -140,26 +156,41 @@ fi
 
 # --- Two runs from the same repository state are byte-identical (FR-012) ---
 # The production record is excluded: its content is a function of the files already compared.
+# Catalog timestamps are intentional metadata, so normalize them in disposable outputs first.
+
+normalize_catalog_timestamps() {
+	local catalog_dir="$1" file temp
+	for file in \
+		"$catalog_dir/.highway/catalog/index.json" \
+		"$catalog_dir/.highway/catalog/index.md" \
+		"$catalog_dir/.highway/catalog/library-index.json" \
+		"$catalog_dir/.highway/catalog/library-index.md"; do
+		[[ -f "$file" ]] || continue
+		temp="$file.tmp"
+		sed -e 's/^  "generated_at": ".*",$/  "generated_at": "<normalized>",/' \
+			-e 's/^_Generated at: .*_$/_Generated at: <normalized>_/' "$file" >"$temp"
+		mv "$temp" "$file"
+	done
+}
 
 second="$WORK/second"
-if "$GEN" "$second" >/dev/null 2>&1; then
-	if ! diff -r -x '.distribution-record' "$dist" "$second" >"$WORK/diff.log" 2>&1; then
+if ! "$GEN" "$second" >"$WORK/second.log" 2>&1; then
+	echo "FAIL: the second packaging run failed"
+	sed 's/^/    /' "$WORK/second.log"
+	fail=1
+else
+	compare_dist="$WORK/compare-dist"
+	compare_second="$WORK/compare-second"
+	cp -R "$dist" "$compare_dist"
+	cp -R "$second" "$compare_second"
+	normalize_catalog_timestamps "$compare_dist"
+	normalize_catalog_timestamps "$compare_second"
+	if ! diff -r -x '.distribution-record' "$compare_dist" "$compare_second" >"$WORK/diff.log" 2>&1; then
 		echo "FAIL: two packaging runs from the same repository state differ"
 		sed 's/^/    /' "$WORK/diff.log"
 		fail=1
 	fi
 fi
-
-# --- Sweep residue from an interrupted earlier run ------------------------------------------------
-#
-# Every probe below is named with this run's PID, so a probe left behind by a run that was killed
-# before its cleanup carries a different PID and is never removed by any later run. It then fails
-# whichever test next builds a distribution -- reporting a dangling cross-reference rather than the
-# abandoned probe -- which sends the reader looking in the wrong place. Observed twice.
-rm -f "$REPO_ROOT"/distribution-probe-*.md \
-	"$HIGHWAY_ROOT"/catalog/distribution-devref-probe-*.md \
-	"$HIGHWAY_ROOT"/catalog/distribution-link-probe-*.md \
-	"$HIGHWAY_ROOT"/catalog/distribution-reject-probe-*.md
 
 # --- Probe: an undeclared repository path is reported, not silently classified ---
 

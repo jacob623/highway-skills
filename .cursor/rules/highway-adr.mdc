@@ -68,13 +68,16 @@ render each finding identifier once in Open Clarification Findings.
 ## Decision contract
 
 Use Discovery options only. Select exactly one existing `OPT` option and record every non-selected
-option as Rejected or Evaluated. When several options remain acceptable, apply tie-breaks in this
+option as Rejected or Evaluated. Evaluated means viable but not selected; Rejected means invalid
+or unsuitable. These meanings are part of the contract. When several options remain acceptable, apply tie-breaks in this
 order and stop when one criterion decides: Discovery recommendation, higher Discovery score, more
 recorded Reference Architecture matches, then lower numeric `OPT` identifier.
 
 If selected option differs from the Discovery recommendation, render Recommendation Override
 immediately after Decision with the recommended option, selected option, and override rationale.
-The ADR consumes Discovery confidence and confidence considerations without rescoring options.
+The ADR consumes Discovery confidence and confidence considerations without rescoring options. The
+Discovery Comparison Matrix is projected verbatim without recalculation, reordering, or semantic
+transformation.
 
 Objective, Control, and NFR relationships are ordered by identifier type, numeric identifier suffix,
 then title. Relationship ordering is presentation-only and never mutates Discovery.
@@ -95,13 +98,13 @@ then title. Relationship ordering is presentation-only and never mutates Discove
 
 1. Validate exactly one uppercase `DISC######` before resolution.
 2. Resolve exactly one valid Discovery record and reject duplicates or malformed records.
-3. Check the ADR catalog for an existing ADR with the same Discovery identifier; abort without changing anything when one exists.
+3. Check the authoritative ADR catalog for an existing ADR with the same Discovery identifier; abort without changing anything when one exists.
 4. Snapshot Clarification and governance evidence in the declared precedence order.
 5. Validate options, comparison evidence, recommendation, recorded matches, and source-byte hashes.
 6. Select one Discovery option using the deterministic tie-break order.
 7. Build the complete ADR and catalog in memory using the shared templates.
 8. Validate all required sections, one selection, alternatives, consequences, relationships, status, handoff, source preservation, and volatile-metadata exclusions.
-9. Allocate from `adrs/adrs.md` and retry an exclusive catalog conflict at most three times.
+9. Read and reserve the exact catalog `Next ID`; allocate only that value and retry an exclusive catalog conflict at most three times.
 10. Commit one ADR and one catalog entry only after all validation succeeds.
 11. Verify unchanged source bytes, exactly one decision, one selected option, rationale, consequences, and complete handoff before reporting success.
 
@@ -117,15 +120,21 @@ after three retries. No partial ADR or catalog is reported as success.
 
 ## Verification
 
-- Confirm complete template order and required sections.
+- Confirm complete template order and required sections, including mandatory Decision Confidence with
+  both fields and explicit `None` values when unavailable.
 - Confirm one Discovery identifier, one ADR, one selected option, and every alternative.
+- Confirm ADR-to-Discovery uniqueness against the authoritative catalog before allocation.
+- Confirm allocation used the catalog `Next ID` that existed immediately before the write and that
+  the catalog advanced exactly once with one direct index entry.
 - Confirm Discovery recommendation and scores, Clarification, Request, and governance bytes remain
   unchanged.
-- Confirm Recommendation Override and Open Clarification Findings appear only under their triggers.
+- Confirm scalar `None` follows `## Clarification Inputs` when no contributing evidence exists.
+- Confirm Recommendation Override is absent when selection equals the recommendation and is complete
+  and immediately after Decision when selection diverges.
 - Confirm Discovery Reference Architecture matches, confidence, and reasons are projected without
   recomputation.
-- Confirm accepted-only initial status, supersession placeholders, stable ordering, and no volatile
-  metadata.
+- Confirm accepted-only initial status, frontmatter-only supersession metadata, stable ordering, and
+  no volatile metadata.
 - Confirm Reference Architecture authorization excludes implementation authorization.
 
 ## Error Handling

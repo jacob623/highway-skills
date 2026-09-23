@@ -41,7 +41,7 @@ Reference Architecture Matches:
 
 ## Clarification Inputs
 
-- <CLAR-REQ###### or CLAR-DISC###### status and contribution, or `None`>
+None
 
 ## Context
 
@@ -70,7 +70,7 @@ Confidence Considerations: <ADR-owned considerations without rescoring>
 
 ### OPTXXXXXX
 
-Outcome: <accepted or rejected/evaluated>
+Outcome: <Selected, Rejected, or Evaluated>
 Selection Status: Selected or Rejected or Evaluated
 Reason: <ADR-owned reason>
 
@@ -116,12 +116,11 @@ Reference Architecture Matches: <Discovery matches with confidence and reasons, 
 Architecture Direction: <direction, or `None`>
 Required Architecture Work: <work list, or `None`>
 Authorization to Proceed: Proceed to Reference Architecture; do not implement.
-
-Supersedes: None
-Superseded By: None
 ```
 
 The body is rendered in this order. Recommendation Override is present only when the selected
 option differs from the Discovery recommendation. Open Clarification Findings is present only when
 an open finding contributes. Every Reference Architecture Handoff field remains present and uses a
-valid value or explicit `None`.
+valid value or explicit `None`. Alternative outcomes are exactly `Selected`, `Rejected`, or
+`Evaluated`; `Evaluated` means viable but not selected, while `Rejected` means invalid or
+unsuitable. Supersession metadata is authoritative only in frontmatter.

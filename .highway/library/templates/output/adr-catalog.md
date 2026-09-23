@@ -22,4 +22,6 @@ Next ID: ADRXXXXXX
 ```
 
 The catalog owns the next ADR identifier and one direct index entry per successful ADR. Entries are
-unique and ordered by ADR identifier. Discovery identifier uniqueness is checked before allocation.
+unique and ordered by ADR identifier. Discovery identifier uniqueness is checked against every
+existing entry before allocation. A successful publication consumes the exact pre-write `Next ID`,
+adds one direct index entry, and advances `Next ID` exactly once.
