@@ -126,6 +126,17 @@ Guidance never mutates source artifacts.
 - Each finding includes Question, Why It Matters, Recommended Option, Recommended Rationale,
   Alternative Option B and rationale, Alternative Option C and rationale, Custom Option, Selected
   Option, and evidence-source traceability.
+- Resolution History entries are separate list items with Finding, Response, Revision, and Actor;
+  each Finding references exactly one unique finding identifier in the same record.
+- Evidence Sources are separate list items with Source Type, Source Identifier, and Reason Used;
+  when no evidence exists, Evidence Sources contains `None`.
+- Recommendation State is stored in Recommended Option and pairs with Recommendation Basis:
+  `authoritative` for an evidence-backed recommendation, `evidence-gap` for `Unknown`, and
+  `conflict` for `Escalate for Decision`.
+- The Option Selection Lifecycle is: user selects A, B, C, or D; Selected Option is recorded;
+  user provides or accepts a Response; an accepted Response performs `open -> resolved`.
+- Explanatory contract text remains outside Findings, Resolution History, Source, and Status
+  sections; malformed history, evidence, basis, state, or lifecycle input produces no partial write.
 
 Generate and Update conflict responses include `expected_revision` and `actual_revision`. The workflow uses no automatic merging, and any repository user may invoke the commands.
 
