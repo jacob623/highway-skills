@@ -124,6 +124,15 @@ if ! grep -qF 'no long-running activity exists' "$EXPERIENCE" || \
 	echo "FAIL: X2.5/X2.6 N/A conditions are not explicit"
 	fail=1
 fi
+if ! grep -qF '| Scenario | Example |' "$EXPERIENCE" || \
+	! grep -qE '^\| No long-running activity \(N/A\) \| A read-only status workflow emits no intermediate activity; record X2\.5=N5 and X2\.6=N5 in review output\. \|$' "$EXPERIENCE"; then
+	echo "FAIL: N/A example is not a separate Scenario/Example record with both N5 outcomes"
+	fail=1
+fi
+if grep -qE '^\| No long-running activity \(N/A\) \| N/A:.*\| N/A:.*\|$' "$EXPERIENCE"; then
+	echo "FAIL: N/A example is still classified under compliant/non-compliant columns"
+	fail=1
+fi
 if grep -qE '^((WARN|INFO|PARTIAL|NOT TESTED):|.*\| (WARN|INFO|PARTIAL|NOT TESTED) \|)' "$CONSTITUTION" "$EXPERIENCE"; then
 	echo "FAIL: governance introduced a verdict or group outside PASS/FAIL/N/A"
 	fail=1

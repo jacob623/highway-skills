@@ -295,4 +295,57 @@ if ! grep -qF 'rationale' "$EXPERIENCE" || ! grep -qF 'Non-Normative' "$EXPERIEN
 	fail=1
 fi
 
+# Feature 080: every X2 rule must be one row in one table, and the applicability terms and N/A
+# example must be explicit document contracts rather than implied by surrounding prose.
+x2_table_rows="$tmp_root/x2-table-rows"
+awk '/^### X2 — Interaction/{inside=1; next} inside && /^### X4 —/{exit} inside && /^\| ID \| Rule \| Observable \| Tier \| Sample \|$/{table=1; next} inside && table && /^\| X2\.[1-6] \|/{print; next} inside && table && !/^\|/{table=0}' "$EXPERIENCE" >"$x2_table_rows"
+if [[ "$(grep -c '^| X2\.[1-6] |' "$x2_table_rows")" -ne 6 ]]; then
+	echo "FAIL: X2.1-X2.6 must appear exactly once as rows in the X2 table"
+	fail=1
+fi
+for rule in X2.1 X2.2 X2.3 X2.4 X2.5 X2.6; do
+	if [[ "$(grep -c "^| $rule |" "$x2_table_rows")" -ne 1 ]]; then
+		echo "FAIL: $rule must have exactly one row in the X2 table"
+		fail=1
+	fi
+done
+for rule in X2.2 X2.3 X2.4 X2.5 X2.6; do
+	if ! grep -qE "^\| $rule \|[^|]+\|[^|]+\| \[agent-checkable\] \|[^|]+\|$" "$x2_table_rows"; then
+		echo "FAIL: $rule row does not contain one Rule, Observable, tier, and Sample field"
+		fail=1
+	fi
+done
+if ! grep -qF '**Guided information-collection workflow**: An Interactive Workflow whose primary purpose is' "$EXPERIENCE" || \
+	! grep -qF 'collecting user-provided evidence, answers, decisions, approvals, confirmations, or other' "$EXPERIENCE" || \
+	! grep -qF 'required inputs.' "$EXPERIENCE"; then
+	echo "FAIL: Guided information-collection workflow definition is missing"
+	fail=1
+fi
+if ! grep -qF '**Implementation details**: Information describing workflow ownership, routing, validation logic,' "$EXPERIENCE" || \
+	! grep -qF 'evaluation order, allocation logic, internal processing, orchestration, or similar internal' "$EXPERIENCE" || \
+	! grep -qF 'mechanics.' "$EXPERIENCE"; then
+	echo "FAIL: Implementation details definition is missing"
+	fail=1
+fi
+if ! grep -qF '**Interactive Workflow**: A workflow that emits user-visible messages and expects a user response,' "$EXPERIENCE" || \
+	! grep -qF 'During a Guided information-collection workflow, the prompt contains at most one unresolved collection question' "$EXPERIENCE" || \
+	! grep -qF 'The opening response excludes Implementation details unless requested.' "$EXPERIENCE"; then
+	echo "FAIL: X2.3/X2.4 applicability terminology is inconsistent"
+	fail=1
+fi
+if ! grep -qF 'Implementation details belong' "$EXPERIENCE" || \
+	! grep -qF 'requested for that purpose' "$EXPERIENCE"; then
+	echo "FAIL: explicitly requested implementation explanations are not permitted"
+	fail=1
+fi
+if ! grep -qF '| Scenario | Example |' "$EXPERIENCE" || \
+	! grep -qF 'X2.5=N5' "$EXPERIENCE" || ! grep -qF 'X2.6=N5' "$EXPERIENCE"; then
+	echo "FAIL: N/A Scenario/Example structure or required N5 outcomes are missing"
+	fail=1
+fi
+if grep -qE '^\| No long-running activity \(N/A\) \| N/A:.*\| N/A:.*\|$' "$EXPERIENCE"; then
+	echo "FAIL: N/A example remains in the compliant/non-compliant table"
+	fail=1
+fi
+
 exit $fail
