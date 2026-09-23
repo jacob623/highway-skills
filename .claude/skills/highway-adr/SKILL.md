@@ -13,6 +13,18 @@ metadata:
 
 Create one authoritative, accepted architecture decision from exactly one completed Discovery handoff while preserving Discovery as an advisory, immutable source.
 
+## Interactive Workflow UX Contract
+
+ADR decision work is governed by the Interactive Workflow UX Contract in the Highway Experience
+Standard for applicable activity output and decisions. Put the `Next Action` first, describe
+user-relevant ADR activity rather than implementation details or orchestration, and preserve the
+interactive decision workflow without artificial collection stages.
+
+`User Exits` are `pause`, `cancel`, or `stop responding`; `Owner Outcomes` are `declined`,
+`aborted`, or `blocked`. `Resume Applicability`: `New interaction`. ADR preserves Discovery and
+decision ownership and does not allocate another workflow's identifiers, write its artifacts or
+catalogs, or claim its completion.
+
 ## When to use
 
 - One exact uppercase `DISC######` identifier is available.

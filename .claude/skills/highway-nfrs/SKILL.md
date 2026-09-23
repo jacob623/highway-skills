@@ -13,6 +13,18 @@ metadata:
 
 Maintains the repository-wide Non-Functional Requirement baseline as identified files the user owns.
 
+## Interactive Workflow UX Contract
+
+NFR candidate review follows the Interactive Workflow UX Contract in the Highway Experience
+Standard. Present one candidate decision at a time, put the `Next Action` first, and omit
+implementation details unless requested. When candidates are being reviewed, report `Candidate Position`,
+`Remaining Candidates`, and `Current Activity`.
+
+`User Exits` are `pause`, `cancel`, or `stop responding`; `Owner Outcomes` are `declined`,
+`aborted`, or `blocked`. `Resume Applicability`: `Persisted owner evidence`. NFR ownership
+remains authoritative for candidate decisions, artifacts, identifiers, catalogs, and completion
+claims.
+
 ## When to use
 
 Use this skill when a user wants to add, update, remove, replace, or inspect a repository-wide NFR.

@@ -9,6 +9,20 @@ alwaysApply: false
 
 Maintains the repository-wide Control baseline as a set of identified, versioned files the user owns.
 
+## Interactive Workflow UX Contract
+
+Controls follows the Interactive Workflow UX Contract in the Highway Experience Standard. Put the
+`Next Action` first and omit implementation details unless requested. Guided Control Collection
+reports `Step`, `Category`, `Completed Categories`, `Current Category`, and `Current Activity`.
+Review Workflow reports `Current Proposal`, `Proposal Position`, `Remaining Proposals`, and
+`Current Activity`; NFR Proposal Review reports `Current Candidate`, `Candidate Position`,
+`Remaining Candidates`, and `Current Activity`. Each prompt contains one unresolved question or
+decision.
+
+`User Exits` are `pause`, `cancel`, or `stop responding`; `Owner Outcomes` are `declined`,
+`aborted`, or `blocked`. `Resume Applicability`: `Persisted owner evidence`. Controls preserves
+ownership of control artifacts, proposals, catalogs, identifiers, and completion claims.
+
 ## When to use
 
 Use this skill to add, update, remove, or replace a Control.

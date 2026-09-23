@@ -1,0 +1,105 @@
+#!/usr/bin/env bash
+# Verifies the shared Interactive Workflow UX Contract and in-scope skill alignment.
+set -u
+# Instrument class: mixed (static-document-contract and executed-behavior)
+# Artifact classes: governance-document, skill-document, disposable-fixture
+# Seeded failure probe: duplicate and missing-reference fixtures must be rejected.
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+EXPERIENCE_STANDARD="$HIGHWAY_ROOT/governance/experience-standard.md"
+SKILLS_ROOT="$HIGHWAY_ROOT/skills"
+fail=0
+# shellcheck source=tools/tests/test-helpers.sh
+source "$SCRIPT_DIR/test-helpers.sh"
+
+require_text() {
+	local file="$1" text="$2"
+	if ! grep -Fq "$text" "$file"; then
+		echo "FAIL: '$text' missing from $file"
+		fail=1
+	fi
+}
+
+require_absent() {
+	local file="$1" text="$2"
+	if grep -Fq "$text" "$file"; then
+		echo "FAIL: '$text' unexpectedly present in $file"
+		fail=1
+	fi
+}
+
+require_text "$EXPERIENCE_STANDARD" '### Interactive Workflow UX Contract'
+contract_count="$(grep -c '^### Interactive Workflow UX Contract$' "$EXPERIENCE_STANDARD")"
+if [[ "$contract_count" -ne 1 ]]; then
+	echo "FAIL: expected exactly one Interactive Workflow UX Contract"
+	fail=1
+fi
+require_text "$EXPERIENCE_STANDARD" 'X2.2-X2.6'
+require_text "$EXPERIENCE_STANDARD" 'User Exit'
+require_text "$EXPERIENCE_STANDARD" 'Owner Outcome'
+require_text "$EXPERIENCE_STANDARD" 'Persisted owner evidence'
+require_text "$EXPERIENCE_STANDARD" 'Transient interaction state'
+require_text "$EXPERIENCE_STANDARD" 'New interaction'
+require_text "$EXPERIENCE_STANDARD" 'Not Applicable'
+require_text "$EXPERIENCE_STANDARD" 'first incomplete applicable domain'
+require_absent "$EXPERIENCE_STANDARD" '| X2.7 |'
+
+skills='highway-profile highway-objectives highway-controls highway-nfrs highway-new highway-discovery highway-adr highway-clarify'
+for skill in $skills; do
+	file="$SKILLS_ROOT/$skill/SKILL.md"
+	require_text "$file" 'Interactive Workflow UX Contract'
+	require_text "$file" 'Next Action'
+	require_text "$file" 'implementation details'
+	require_text "$file" 'User Exits'
+	require_text "$file" 'Owner Outcomes'
+	require_text "$file" 'Resume Applicability'
+	require_text "$file" 'ownership'
+done
+
+require_text "$SKILLS_ROOT/highway-profile/SKILL.md" 'Current Question'
+require_text "$SKILLS_ROOT/highway-profile/SKILL.md" 'Completed Questions Count'
+require_text "$SKILLS_ROOT/highway-profile/SKILL.md" 'Remaining Questions Count'
+require_text "$SKILLS_ROOT/highway-profile/SKILL.md" 'Current Activity'
+require_text "$SKILLS_ROOT/highway-objectives/SKILL.md" 'objective statement'
+require_text "$SKILLS_ROOT/highway-objectives/SKILL.md" 'success measures'
+require_text "$SKILLS_ROOT/highway-objectives/SKILL.md" 'rationale approval'
+require_text "$SKILLS_ROOT/highway-objectives/SKILL.md" 'Step 1 of 3'
+require_text "$SKILLS_ROOT/highway-controls/SKILL.md" 'Completed Categories'
+require_text "$SKILLS_ROOT/highway-controls/SKILL.md" 'Current Category'
+require_text "$SKILLS_ROOT/highway-controls/SKILL.md" 'Current Proposal'
+require_text "$SKILLS_ROOT/highway-controls/SKILL.md" 'Remaining Proposals'
+require_text "$SKILLS_ROOT/highway-controls/SKILL.md" 'Current Candidate'
+require_text "$SKILLS_ROOT/highway-controls/SKILL.md" 'Remaining Candidates'
+require_text "$SKILLS_ROOT/highway-nfrs/SKILL.md" 'one candidate decision at a time'
+require_text "$SKILLS_ROOT/highway-nfrs/SKILL.md" 'Candidate Position'
+require_text "$SKILLS_ROOT/highway-new/SKILL.md" 'Current Domain'
+require_text "$SKILLS_ROOT/highway-new/SKILL.md" 'Completed Domains'
+require_text "$SKILLS_ROOT/highway-new/SKILL.md" 'Remaining Domains'
+require_text "$SKILLS_ROOT/highway-new/SKILL.md" 'first incomplete evidence domain'
+require_text "$SKILLS_ROOT/highway-discovery/SKILL.md" 'user-relevant analysis activity'
+require_text "$SKILLS_ROOT/highway-adr/SKILL.md" 'user-relevant ADR activity'
+require_text "$SKILLS_ROOT/highway-clarify/SKILL.md" 'one open finding question at a time'
+require_text "$SKILLS_ROOT/highway-clarify/SKILL.md" 'Finding Position'
+require_text "$SKILLS_ROOT/highway-clarify/SKILL.md" 'Remaining Findings'
+
+fixture_root="$(mktemp -d "${TMPDIR:-/tmp}/highway-ux.XXXXXX")"
+trap 'rm -rf "$fixture_root"' EXIT
+cp "$EXPERIENCE_STANDARD" "$fixture_root/standard.md"
+printf '%s\n' '### Interactive Workflow UX Contract' >> "$fixture_root/standard.md"
+if [[ "$(grep -c '^### Interactive Workflow UX Contract$' "$fixture_root/standard.md")" -eq 1 ]]; then
+	echo "FAIL: duplicate contract probe was accepted"
+	fail=1
+fi
+
+cp "$SKILLS_ROOT/highway-profile/SKILL.md" "$fixture_root/profile.md"
+sed '/Interactive Workflow UX Contract/d' "$fixture_root/profile.md" > "$fixture_root/profile-missing.md"
+if grep -Fq 'Interactive Workflow UX Contract' "$fixture_root/profile-missing.md"; then
+	echo "FAIL: missing reference probe was accepted"
+	fail=1
+fi
+
+if [[ "$fail" -ne 0 ]]; then
+	exit 1
+fi
+echo 'PASS: highway UX alignment contract and skill checks'

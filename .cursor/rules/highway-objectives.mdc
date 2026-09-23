@@ -10,6 +10,18 @@ alwaysApply: false
 Maintains the repository-wide Business Objective baseline as user-owned, identified Markdown records
 that explain the business direction later Highway artifacts may reference.
 
+## Interactive Workflow UX Contract
+
+Objective creation follows the Interactive Workflow UX Contract in the Highway Experience Standard.
+The ordered flow is objective statement, success measures, and rationale approval; only one
+unresolved prompt is active at a time. Put the `Next Action` first, omit implementation details
+unless requested, and report `Step 1 of 3` with `Current Activity` when collection is active.
+
+`User Exits` are `pause`, `cancel`, or `stop responding`; `Owner Outcomes` are `declined`,
+`aborted`, or `blocked`. `Resume Applicability`: `New interaction`; unanswered prompts, drafts,
+and checkpoints are not restored. Objective ownership remains authoritative for identifiers,
+records, catalogs, and completion claims.
+
 ## When to use
 
 Use this skill to set up, configure, inspect, add, create, update, remove, or reset Business
