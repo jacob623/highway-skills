@@ -57,11 +57,11 @@ similarity scoring, and model judgment do not produce contradiction findings.
 ## Guided resolution contract
 
 Clarification generates advisory guidance without changing detection or ownership. It contains
-one Question, one Why It Matters, and options A Recommended,
-B Alternative, C Alternative, and D Custom with deterministic rationale and traceable evidence.
+one Question, one Why It Matters, and options A Recommended, B Alternative, C Alternative, and D
+Custom with deterministic rationale and traceable evidence.
 Resolved findings retain guidance, selection, response, and identity.
 
-Canonical contracts declare version `2.0.0`. Every category MUST match its fingerprint
+Every category MUST match its fingerprint
 category segment; mismatch produces no partial write. Selecting an option does not create a
 response; only an explicitly accepted response may transition `open -> resolved`. Generated
 guidance leaves source artifacts unchanged.
@@ -77,7 +77,7 @@ Generation never uses filesystem ordering; catalog bootstrap is in-memory; recal
 
 When no authoritative evidence exists, recommendation is `Unknown` with an evidence-gap rationale.
 When authoritative evidence exists but conflicts at the highest precedence, recommendation is
-`Unknown / Escalate for Decision`; records conflicting evidence sources,
+`Escalate for Decision` with `Recommendation Basis: conflict`; records conflicting evidence sources,
 presents values as alternatives B and C, and requires explicit user selection among A, B, C, or D Custom.
 
 The artifact-specific guidance sources are:
@@ -108,10 +108,10 @@ Guidance never mutates source artifacts.
 ## Outputs
 
 - Every supported source artifact maps to the stable identifier `CLAR-<ARTIFACT-ID>`.
-- Every response exposes eight stable fields: `artifact_id`, `exists`, `status`, `open_findings`, `resolved_findings`, `total_findings`, `path`, and `blocking_reason`.
+- Every response exposes eight fields: `artifact_id`, `exists`, `status`, `open_findings`, `resolved_findings`, `total_findings`, `path`, and `blocking_reason`.
 - Generate creates one colocated `<ARTIFACT-ID>-clarification.md` artifact.
 - Generate and Update create or update `clarifications/clarifications.md`.
-- The catalog contains exactly one row per clarification with Clarification ID, Artifact ID, Artifact Type, Status, and informational Clarification Path.
+- The catalog has one row per clarification with Clarification ID, Artifact ID, Artifact Type, Status, and Clarification Path.
 - Catalog rows are ordered by Artifact Type, then Artifact ID.
 - Update records accepted responses, appends resolution history, updates status, increments revision after commit, and returns its response contract.
 - Inspect returns status and finding counts without writing.
@@ -119,7 +119,7 @@ Guidance never mutates source artifacts.
 - Status returns the lightweight consumer contract without writing.
 - Open findings remain advisory and never block downstream source consumption.
 - Finding states are restricted to `open` and `resolved`; counts satisfy `total_findings = open_findings + resolved_findings`.
-- Source-resolution, validation, conflict, or write failure produces no partial output and preserves source bytes.
+- Source, validation, conflict, or write failure produces no partial output and preserves bytes.
 - The complete output structure is `.highway/library/templates/output/clarification-record.md`.
 - The complete catalog structure is `.highway/library/templates/output/clarification-catalog.md`.
 - Privacy filtering replaces retained secrets with `<secret-redacted>` and regulated personal data with `<pii-redacted>`.
@@ -133,6 +133,10 @@ Guidance never mutates source artifacts.
 - Recommendation State is stored in Recommended Option and pairs with Recommendation Basis:
   `authoritative` for an evidence-backed recommendation, `evidence-gap` for `Unknown`, and
   `conflict` for `Escalate for Decision`.
+- Recommendation Basis and Recommendation State must use a valid pairing:
+  `authoritative` -> evidence-backed recommendation, `evidence-gap` -> `Unknown`, and
+  `conflict` -> `Escalate for Decision`.
+- Generated records use the template Evidence Sources structure.
 - The Option Selection Lifecycle is: user selects A, B, C, or D; Selected Option is recorded;
   user provides or accepts a Response; an accepted Response performs `open -> resolved`.
 - Explanatory contract text remains outside Findings, Resolution History, Source, and Status
@@ -164,7 +168,7 @@ Any repository user may invoke each command under existing repository access con
 10. Validate the record against the shared template, identities, status rules, and source preservation; abort without writing on failure.
 11. Validate finding states and counts before status derivation; invalid values produce malformed `blocked` records.
 12. Generate MUST recalculate findings while preserving unchanged evidence and identities, retaining history and responses, then order by category, source order, field, and identifier.
-13. Generate deterministic guidance for every open finding and retain it for resolved findings. Apply declared sources and precedence; highest-precedence conflicts produce `Unknown / Escalate for Decision`, alternatives B and C, recorded sources, an explanation, and required selection. Identical inputs produce identical bytes with no volatile metadata.
+13. Generate deterministic guidance for every open finding and retain it for resolved findings. Apply declared sources and precedence; highest-precedence conflicts produce `Escalate for Decision` with `Recommendation Basis: conflict`, alternatives B and C, recorded sources, an explanation, and required selection. Identical inputs produce identical bytes with no volatile metadata.
 14. Validate the catalog against its template, mappings, artifacts, supported values, direct paths, and status before mutation.
 15. If absent, build the catalog in memory from `.highway/library/templates/output/clarification-catalog.md`, add the row, and validate it.
 16. Insert or replace the row, then order catalog rows by Artifact Type and Artifact ID.
@@ -238,7 +242,12 @@ identifiers, and resolved findings never transition to open.
 - Confirm guided resolution generates exactly one Question and one Why It Matters explanation,
   A Recommended, B Alternative, C Alternative, and D Custom with rationale and source traceability.
 - Confirm identical inputs produce identical guidance with no volatile metadata, resolved findings
-  retain guidance, and highest-precedence conflicts escalate without selecting either value.
+  retain guidance, and highest-precedence conflicts escalate without selecting either conflicting value.
+- Confirm Recommendation Basis and Recommended Option use a valid pairing.
+- Confirm conflict never renders `Unknown`.
+- Confirm evidence-gap never renders `Escalate for Decision`.
+- Confirm `Unknown` and `Escalate for Decision` never appear as a combined state.
+- Confirm Resolution History contains no duplicate Finding identifiers.
 - Confirm Selected Option accepts only A, B, C, D, or None and cannot resolve a finding without an
   explicitly accepted response.
 - Run `.highway/tools/validate-skill.sh .highway/skills/highway-clarify` and `.highway/tools/validate-library.sh .highway/library/templates/output/clarification-record.md`.
@@ -259,6 +268,7 @@ identifiers, and resolved findings never transition to open.
 - Missing optional Clarification Profile: fall back to defaults.
 - Unreadable selected Clarification Profile: abort.
 - Sensitive value in retained content: abort before writing.
+- Duplicate Resolution History Finding identifier: abort validation and preserve all pre-operation bytes.
 - Missing catalog: construct an in-memory catalog from the authoritative template, validate it as existing, and abort without writing if validation fails.
 - Malformed catalog, duplicate mapping, missing clarification reference, unsupported type or status, or status mismatch: abort and preserve catalog bytes.
 - Catalog write failure: abort and preserve clarification and catalog bytes.

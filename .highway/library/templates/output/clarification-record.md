@@ -45,14 +45,12 @@ Recommended Option: <advisory recommended option or Unknown>
 Recommendation Basis: authoritative
 Recommended Rationale: <deterministic rationale with source traceability>
 Evidence Sources:
-- Source:
-  - Source Type: <source type>
-  - Source Identifier: <source identifier>
-  - Reason Used: <reason this source was used>
-- Source:
-  - Source Type: <source type>
-  - Source Identifier: <source identifier>
-  - Reason Used: <reason this source was used>
+- Source Type: <source type>
+  Source Identifier: <source identifier>
+  Reason Used: <reason this source was used>
+- Source Type: <source type>
+  Source Identifier: <source identifier>
+  Reason Used: <reason this source was used>
 Alternative Option B: <advisory alternative option>
 Alternative Rationale B: <deterministic rationale>
 Alternative Option C: <advisory alternative option>
@@ -78,10 +76,9 @@ Recommended Option: <retained advisory recommended option>
 Recommendation Basis: authoritative
 Recommended Rationale: <retained deterministic rationale>
 Evidence Sources:
-- Source:
-  - Source Type: <source type>
-  - Source Identifier: <source identifier>
-  - Reason Used: <reason this source was used>
+- Source Type: <source type>
+  Source Identifier: <source identifier>
+  Reason Used: <reason this source was used>
 Alternative Option B: <retained advisory alternative option>
 Alternative Rationale B: <retained deterministic rationale>
 Alternative Option C: <retained advisory alternative option>
@@ -140,6 +137,10 @@ references exactly one finding identifier in this record and no identifier may r
 
 Evidence Sources are separate list items with Source Type, Source Identifier, and Reason Used. When no evidence sources exist, Evidence Sources: None.
 
+Example:
+
+Evidence Sources: None
+
 Recommendation State is stored in Recommended Option. Recommendation Basis maps as follows:
 
 - `authoritative`: an evidence-backed recommendation.
@@ -152,7 +153,7 @@ Examples of the distinct non-authoritative states are `Recommended Option: Unkno
 
 For escalation, REQ findings route to the Request owner, DISC findings to the Discovery consumer or responsible architect, ADR findings to the ADR decision authority, and RA findings to the Reference Architecture owner. Escalation remains advisory.
 
-Conflict guidance uses `Unknown / Escalate for Decision`, retains conflicting values and evidence sources, and requires explicit selection.
+Conflict guidance uses `Escalate for Decision` with `Recommendation Basis: conflict`, retains conflicting values and evidence sources, and requires explicit selection.
 
 ## Option Selection Lifecycle
 
@@ -161,9 +162,8 @@ Conflict guidance uses `Unknown / Escalate for Decision`, retains conflicting va
 3. The user provides or accepts a Response.
 4. Only an explicitly accepted Response may transition `open -> resolved`.
 
-Selected Option is informational and Response remains authoritative. Explanatory contract text appears outside the Findings, Resolution History, Source, and Status sections. The template does not authorize
+Selected Option is informational and Response remains authoritative. Explanatory contract text appears outside Findings, Resolution History, Source, and Status. The template does not authorize
 source-artifact mutation, governance approval, architecture selection, or automatic resolution.
-Explanatory contract text appears outside Findings, Resolution History, Source, and Status.
 
 The placeholders represent user-owned or generated values. The template governs required
 frontmatter and body structure; it does not authorize source-artifact mutation.

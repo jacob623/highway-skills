@@ -299,6 +299,21 @@ require_text "$HIGHWAY_ROOT/library/templates/output/clarification-record.md" "R
 require_text "$HIGHWAY_ROOT/library/templates/output/clarification-record.md" "Recommended Option: Unknown"
 require_text "$HIGHWAY_ROOT/library/templates/output/clarification-record.md" "Recommended Option: Escalate for Decision"
 require_text "$HIGHWAY_ROOT/library/templates/output/clarification-record.md" "Evidence Sources: None"
+require_text "$HIGHWAY_ROOT/library/templates/output/clarification-record.md" "- Source Type: <source type>"
+require_text "$HIGHWAY_ROOT/library/templates/output/clarification-record.md" "Source Identifier: <source identifier>"
+require_text "$HIGHWAY_ROOT/library/templates/output/clarification-record.md" "Reason Used: <reason this source was used>"
+if grep -Fq -- "Unknown / Escalate for Decision" "$HIGHWAY_ROOT/library/templates/output/clarification-record.md"; then
+	echo "FAIL: retired combined recommendation state remains in clarification-record.md"
+	fail=1
+fi
+if grep -Fq -- "- Source:" "$HIGHWAY_ROOT/library/templates/output/clarification-record.md"; then
+	echo "FAIL: nested Evidence Sources wrapper remains in clarification-record.md"
+	fail=1
+fi
+if [[ "$(grep -Fc -- 'Explanatory contract text appears outside Findings, Resolution History, Source, and Status' "$HIGHWAY_ROOT/library/templates/output/clarification-record.md")" != "1" ]]; then
+	echo "FAIL: explanatory contract text count is not exactly one"
+	fail=1
+fi
 require_text "$HIGHWAY_ROOT/library/templates/output/clarification-record.md" "## Clarification Contract"
 if ! "$VALIDATE_SKILL" "$HIGHWAY_ROOT/skills/highway-nfrs" >/dev/null 2>&1; then
 	echo "FAIL: highway-nfrs does not pass validate-skill.sh"
