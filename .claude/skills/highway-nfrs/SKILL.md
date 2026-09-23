@@ -80,6 +80,24 @@ records, catalogs, IDs, or relationships.
 For `readiness`, read candidate-generation state and accepted NFR artifacts, apply the outcome
 rules above, and return the four-field response without mutation.
 
+## Control-Derived Candidate Onboarding
+
+`review` and `onboarding` are aliases for the Control-derived NFR candidate review workflow.
+Display each candidate's title, statement, rationale, originating Control identifier, and
+originating Control title. Candidates are ordered by persisted originating Control identifier and
+then by availability, security, performance derivation order.
+
+Per-candidate decisions are Accept, Modify, Replace, Reject, or Cancel. `Review Complete` is the
+only successful NFR write boundary: every candidate must have exactly one final decision before it
+succeeds. If any candidate remains undecided, Review Complete fails and creates no NFR artifact.
+Accepted candidates are persisted in one all-or-nothing transaction with approved title, statement,
+rationale, and originating Control relationship.
+
+`Cancel Review` terminates NFR Review without requiring candidate decisions and preserves all
+candidate, NFR, catalog, and relationship bytes. Existing NFR duplication is detected before NFR
+creation and before identifier allocation; duplicate acceptance fails safely with no partial writes.
+Direct NFR authoring remains independent and starts with `controls: []`.
+
 A generated prose catalog at `library/governance/nfrs.md`. The catalog contains no timestamp.
 
 ## Decision tables

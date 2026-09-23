@@ -1,0 +1,4 @@
+proposals=duplicate
+expected=advisory
+reviewability=independent
+completion=allowed

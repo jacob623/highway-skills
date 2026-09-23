@@ -1,0 +1,4 @@
+review=complete
+failure=injected-write
+expected=rollback
+partial-writes=none

@@ -80,6 +80,24 @@ NFR proposals.
 For `readiness`, read the root-level Control baseline and records, validate them using the existing
 Control record and catalog rules, and return the four-field response without mutation.
 
+## Guided Control Onboarding
+
+`setup` and `configure` are aliases for guided Control collection when Profile and Objective
+prerequisites are complete and no valid Control baseline exists. Process these categories in order:
+Security; Availability and Resilience; Operational; Compliance and Governance. Collect one
+statement at a time and treat a case-insensitive `none` as the first response for an empty category.
+After each statement, ask whether another Control should be added in the active category.
+
+Each submitted statement receives a deterministic advisory Proposed Title. Title generation is not
+a persistence contract: the title may be edited or replaced during review, while the submitted
+statement remains authoritative during collection. Collection writes no Control, catalog,
+relationship, candidate, or identifier state. Cancellation discards all in-memory proposals and
+preserves existing bytes.
+
+If an existing Control baseline is valid, setup reports that baseline, displays no collection
+prompts, creates no onboarding proposal state, and routes to existing `add`, `update`, `remove`,
+or view actions.
+
 **A Control file** at `library/governance/controls/CTLXXXXXX.md` following the complete structure
 in `.highway/library/templates/output/control-record.md`, including frontmatter and body. The
 template's placeholders remain user-owned values. A Control carries no version of its own; the
@@ -126,6 +144,17 @@ records are not synchronized and relationship changes do not remove records.
 - Treat incomplete or ambiguous decisions as Cancel and write nothing. Rejected candidates write
   nothing. Only approved wording may proceed to the accepted-write workflow.
 
+For Control Review, display category, Proposed Title, and statement for every proposal and offer
+Accept, Modify, Replace, and Remove. Duplicate proposals are advisory review information and remain
+individually reviewable; duplicate detection does not prevent completion.
+
+`Review Complete` is the only successful Control write boundary. Every proposed Control must have
+exactly one final decision before it succeeds; otherwise it fails, allocates no identifiers, and
+writes nothing. After completion, persist the entire approved Control set in one all-or-nothing
+transaction, using only review-approved titles and statements. `Cancel Review` terminates without
+requiring proposal decisions and preserves all proposal, Control, catalog, relationship, and
+candidate bytes.
+
 ### Accepted derived write
 
 For accepted candidates, validate the NFR baseline and catalog before writing anything. Read the
@@ -144,6 +173,13 @@ governance writes with zero partial writes. Do not create a relationship store o
 Controls from NFRs, repair broken links, reconcile old records, or partially commit one side of a
 relationship. Phase 4 may address those deferred concerns. Direct NFR authoring remains owned by
 `/highway-nfrs` and starts with `controls: []`.
+
+Candidate generation begins only after Control Review completes successfully. It evaluates the
+final approved Control set; no candidate generation occurs during collection or active review, and
+it orders candidates by
+the originating Control identifiers allocated during successful Review Complete, followed by the
+fixed derivation order: availability, security, performance. A valid Control with no matching rule
+remains valid and produces zero candidates.
 
 ## Control Actions and Safety
 
