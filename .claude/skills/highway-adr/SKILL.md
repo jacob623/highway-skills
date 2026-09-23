@@ -1,0 +1,143 @@
+---
+name: highway-adr
+description: "Manages the repository-wide decision baseline."
+usage: "Invoke as `/highway-adr` with one Discovery ID."
+compatibility: all
+metadata:
+  version: 1.0.0
+---
+
+# highway-adr
+
+## Purpose
+
+Create one authoritative, accepted architecture decision from exactly one completed Discovery handoff while preserving Discovery as an advisory, immutable source.
+
+## When to use
+
+- One exact uppercase `DISC######` identifier is available.
+- The Discovery record contains its Request reference, Candidate Solution Options, Comparison Matrix,
+  Recommendation, and Reference Architecture Matches.
+- An architecture decision authority is ready to select one option.
+
+## When not to use
+
+- Do not use for missing, lowercase, ambiguous, duplicated, or implicit newest-file identifiers.
+- Do not generate candidates, modify Discovery, recalculate scores, recompute matches, or mutate
+  Request, Clarification, Profile, Objective, Control, or NFR artifacts.
+- Do not consume `CLAR-ADR######`; ADR clarification occurs after generation.
+- Do not authorize implementation; authorization ends at Reference Architecture.
+
+## Inputs
+
+- Exactly one explicit `DISC######` identifier and the authoritative Discovery catalog at
+  `discoveries/discoveries.md`.
+- The uniquely resolved Discovery record at `discoveries/DISCXXXXXX.md`.
+- The complete output structures in `.highway/library/templates/output/adr-record.md` and
+  `.highway/library/templates/output/adr-catalog.md`.
+- Optional `CLAR-REQ######` and `CLAR-DISC######` records resolved through
+  `clarifications/clarifications.md`.
+- Optional read-only Profile, Objective, Control, and NFR baselines.
+- The ADR catalog at `adrs/adrs.md`, which owns `Next ID` and direct index entries.
+
+## Ownership and evidence precedence
+
+Discovery owns recommendation, rationale, options, comparison scores, Reference Architecture
+matches, confidence, and source relationships. Clarification owns findings, responses, status, and
+resolution history. Governance workflows own their baselines. ADR owns selection and decision
+content.
+
+Resolve evidence in this exact first-match order: Discovery, `CLAR-DISC######`, Request,
+`CLAR-REQ######`, Profile, Objectives, Controls, then NFRs. Never use filesystem order, newest
+file, timestamps, environment state, or session state.
+
+## Clarification Consumption Contract
+
+Clarification is a start-of-run, read-only snapshot. Consume only `CLAR-REQ######` and
+`CLAR-DISC######`; preserve every Clarification byte and never create, update, resolve, or change
+status, findings, responses, or history.
+
+- Missing or `not-started`: continue without Clarification evidence.
+- `in-progress`: consume resolved findings; open findings may inform assumptions, risks, unknowns,
+  and required follow-up work.
+- `complete`: consume resolved findings; do not introduce open-finding uncertainty.
+- `blocked`: record the condition as a risk and continue.
+- Malformed: fall back to Discovery evidence and preserve Clarification bytes.
+
+Resolved findings must identify their contribution to context, rationale, constraints,
+alternatives, or consequences. Open findings never select or reject an option. Conflict guidance appears in Risks
+and Decision Rationale but is not authoritative selection input. When open findings contribute,
+render each finding identifier once in Open Clarification Findings.
+
+## Decision contract
+
+Use Discovery options only. Select exactly one existing `OPT` option and record every non-selected
+option as Rejected or Evaluated. When several options remain acceptable, apply tie-breaks in this
+order and stop when one criterion decides: Discovery recommendation, higher Discovery score, more
+recorded Reference Architecture matches, then lower numeric `OPT` identifier.
+
+If selected option differs from the Discovery recommendation, render Recommendation Override
+immediately after Decision with the recommended option, selected option, and override rationale.
+The ADR consumes Discovery confidence and confidence considerations without rescoring options.
+
+Objective, Control, and NFR relationships are ordered by identifier type, numeric identifier suffix,
+then title. Relationship ordering is presentation-only and never mutates Discovery.
+
+## Outputs
+
+- One `adrs/ADRXXXXXX.md` with status `accepted` and all required sections from the ADR record
+  template `.highway/library/templates/output/adr-record.md`, including Decision Confidence and
+  Reference Architecture Handoff.
+- One direct corresponding entry in `adrs/adrs.md`; catalog `Next ID` advances exactly once.
+- The ADR catalog follows `.highway/library/templates/output/adr-catalog.md`.
+- Initial `Supersedes: None` and `Superseded By: None` placeholders.
+- Reference Architecture Handoff fields for selected option, recorded matches with confidence and
+  reasons, architecture direction, required architecture work, and authorization to proceed. Each
+  field must contain a valid value or explicit `None`.
+
+## Workflow
+
+1. Validate exactly one uppercase `DISC######` before resolution.
+2. Resolve exactly one valid Discovery record and reject duplicates or malformed records.
+3. Check the ADR catalog for an existing ADR with the same Discovery identifier; abort without changing anything when one exists.
+4. Snapshot Clarification and governance evidence in the declared precedence order.
+5. Validate options, comparison evidence, recommendation, recorded matches, and source-byte hashes.
+6. Select one Discovery option using the deterministic tie-break order.
+7. Build the complete ADR and catalog in memory using the shared templates.
+8. Validate all required sections, one selection, alternatives, consequences, relationships, status, handoff, source preservation, and volatile-metadata exclusions.
+9. Allocate from `adrs/adrs.md` and retry an exclusive catalog conflict at most three times.
+10. Commit one ADR and one catalog entry only after all validation succeeds.
+11. Verify unchanged source bytes, exactly one decision, one selected option, rationale, consequences, and complete handoff before reporting success.
+
+## Determinism and failure handling
+
+Identical inputs and catalog state produce byte-identical ADR content, option ordering, relationship
+ordering, handoff data, and catalog result. Generated content excludes timestamps, creation dates,
+modification dates, environment identifiers, random values, and user-session identifiers.
+
+Any resolution, validation, malformed Discovery, malformed governance baseline, duplicate, catalog
+write, or other failure writes nothing and preserves every pre-operation byte. Catalog conflicts stop
+after three retries. No partial ADR or catalog is reported as success.
+
+## Verification
+
+- Confirm complete template order and required sections.
+- Confirm one Discovery identifier, one ADR, one selected option, and every alternative.
+- Confirm Discovery recommendation and scores, Clarification, Request, and governance bytes remain
+  unchanged.
+- Confirm Recommendation Override and Open Clarification Findings appear only under their triggers.
+- Confirm Discovery Reference Architecture matches, confidence, and reasons are projected without
+  recomputation.
+- Confirm accepted-only initial status, supersession placeholders, stable ordering, and no volatile
+  metadata.
+- Confirm Reference Architecture authorization excludes implementation authorization.
+
+## Error Handling
+
+Invalid identifiers, missing or ambiguous Discovery, malformed records, invalid options, incomplete
+handoff, duplicate Discovery ADRs, catalog conflicts after three retries, and write failures abort
+without partial output and preserve existing bytes.
+
+## Example
+
+`/highway-adr DISC000001`

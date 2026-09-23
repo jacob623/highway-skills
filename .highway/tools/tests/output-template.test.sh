@@ -35,6 +35,9 @@ CONTROL_CATALOG_TEMPLATE="$HIGHWAY_ROOT/library/templates/output/control-catalog
 NFR_CATALOG_TEMPLATE="$HIGHWAY_ROOT/library/templates/output/nfr-catalog.md"
 CLARIFY_SKILL="$HIGHWAY_ROOT/skills/highway-clarify/SKILL.md"
 CLARIFICATION_CATALOG_TEMPLATE="$HIGHWAY_ROOT/library/templates/output/clarification-catalog.md"
+ADR_SKILL="$HIGHWAY_ROOT/skills/highway-adr/SKILL.md"
+ADR_RECORD_TEMPLATE="$HIGHWAY_ROOT/library/templates/output/adr-record.md"
+ADR_CATALOG_TEMPLATE="$HIGHWAY_ROOT/library/templates/output/adr-catalog.md"
 VALIDATE_LIBRARY="$HIGHWAY_ROOT/tools/validate-library.sh"
 VALIDATE_SKILL="$HIGHWAY_ROOT/tools/validate-skill.sh"
 
@@ -112,6 +115,9 @@ require_file "$CATALOG_TEMPLATE"
 require_file "$DISCOVERY_SKILL"
 require_file "$DISCOVERY_RECORD_TEMPLATE"
 require_file "$DISCOVERY_CATALOG_TEMPLATE"
+require_file "$ADR_SKILL"
+require_file "$ADR_RECORD_TEMPLATE"
+require_file "$ADR_CATALOG_TEMPLATE"
 require_file "$OBJECTIVE_CATALOG_TEMPLATE"
 require_file "$CONTROL_CATALOG_TEMPLATE"
 require_file "$NFR_CATALOG_TEMPLATE"
@@ -204,6 +210,8 @@ require_text "$CLARIFY_SKILL" ".highway/library/templates/output/clarification-c
 require_text "$NEW_SKILL" ".highway/library/templates/output/request-record.md"
 require_text "$NEW_SKILL" ".highway/library/templates/output/request-catalog.md"
 require_text "$DISCOVERY_SKILL" ".highway/library/templates/output/discovery-catalog.md"
+require_text "$ADR_SKILL" ".highway/library/templates/output/adr-record.md"
+require_text "$ADR_SKILL" ".highway/library/templates/output/adr-catalog.md"
 require_text "$CONTROL_SKILL" ".highway/library/templates/output/control-catalog.md"
 require_text "$NEW_SKILL" "Problem, Actors, Current Process, Desired Change, Success Measure, Business Constraints, Solution Constraints"
 require_text "$NEW_SKILL" "No business constraints"
@@ -326,11 +334,11 @@ fi
 
 # The current file-emitting skills are the complete set of citing skills for this feature.
 citing_count="$(grep -RIl 'library/templates/output/' "$HIGHWAY_ROOT/skills" --include='SKILL.md' | wc -l | tr -d ' ')"
-if [[ "$citing_count" != "7" ]]; then
-	echo "FAIL: expected 7 output-template citing skills, found $citing_count"
+if [[ "$citing_count" != "8" ]]; then
+	echo "FAIL: expected 8 output-template citing skills, found $citing_count"
 	fail=1
 fi
-for citing_skill in "$NFR_SKILL" "$CONTROL_SKILL" "$PROFILE_SKILL" "$OBJECTIVE_SKILL" "$NEW_SKILL" "$DISCOVERY_SKILL" "$CLARIFY_SKILL"; do
+for citing_skill in "$NFR_SKILL" "$CONTROL_SKILL" "$PROFILE_SKILL" "$OBJECTIVE_SKILL" "$NEW_SKILL" "$DISCOVERY_SKILL" "$CLARIFY_SKILL" "$ADR_SKILL"; do
 	if ! grep -Fq "library/templates/output/" "$citing_skill"; then
 		echo "FAIL: dependent review omitted citing skill $citing_skill"
 		fail=1

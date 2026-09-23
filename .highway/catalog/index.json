@@ -1,6 +1,15 @@
 {
-  "generated_at": "2026-09-23T00:45:01Z",
+  "generated_at": "2026-09-23T01:41:15Z",
   "entries": [
+    {
+      "id": "highway-adr",
+      "name": "highway-adr",
+      "description": "Manages the repository-wide decision baseline.",
+      "usage": "Invoke as `/highway-adr` with one Discovery ID.",
+      "compatibility": "all",
+      "version": "1.0.0",
+      "source_path": "skills/highway-adr/SKILL.md"
+    },
     {
       "id": "highway-clarify",
       "name": "highway-clarify",

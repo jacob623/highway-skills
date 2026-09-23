@@ -8,6 +8,7 @@ Copilot, Claude Code, Cursor) via generated adapters, so skill content never nee
 duplicated or hand-adapted per agent.
 
 - **Author a skill**: create `.highway/skills/<id>/SKILL.md` per [.highway/skills/_authoring-standard.md](.highway/skills/_authoring-standard.md).
+- **Create an architecture decision**: invoke `highway-adr` with one completed `DISC######` artifact; the workflow publishes an accepted ADR using the shared `adr-record.md` and `adr-catalog.md` output templates.
 - **Validate a skill**: `.highway/tools/validate-skill.sh .highway/skills/<id>`
 - **Build the catalog**: `.highway/tools/generate-catalog.sh` writes `.highway/catalog/index.json`
   and `.highway/catalog/index.md`.
