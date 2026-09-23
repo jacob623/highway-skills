@@ -1,0 +1,10 @@
+proposals=duplicate
+expected=advisory
+reviewability=independent
+completion=allowed
+control-review-fields=Category,Proposed-Title,Statement,Available-Decisions
+control-review-decisions=Accept,Modify,Replace,Remove
+nfr-review-fields=Candidate-Title,Candidate-Statement,Candidate-Rationale,Originating-Control-Identifier,Originating-Control-Title,Available-Decisions
+nfr-review-decisions=Accept,Modify,Replace,Reject
+ordering=stable
+unstable-inputs=forbidden

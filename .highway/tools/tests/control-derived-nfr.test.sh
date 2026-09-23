@@ -10,6 +10,7 @@ HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 COMMON="$SCRIPT_DIR/feature-completeness-common.sh"
 CONTROL_SKILL="$HIGHWAY_ROOT/skills/highway-controls/SKILL.md"
 NFR_SKILL="$HIGHWAY_ROOT/skills/highway-nfrs/SKILL.md"
+NFR_SKILL="$HIGHWAY_ROOT/skills/highway-nfrs/SKILL.md"
 CONTROL_TEMPLATE="$HIGHWAY_ROOT/library/templates/output/control-record.md"
 NFR_TEMPLATE="$HIGHWAY_ROOT/library/templates/output/nfr-record.md"
 FIXTURE_DIR="$SCRIPT_DIR/fixtures/control-derived-nfr"
@@ -83,6 +84,39 @@ for required in \
 	"before allocating an NFR ID" \
 	"stable candidate order"; do
 	require_text "$CONTROL_SKILL" "$required"
+done
+
+for required in \
+	"NFR Review emits one entry per candidate" \
+	"Candidate Title" \
+	"Candidate Statement" \
+	"Candidate Rationale" \
+	"Originating Control Identifier" \
+	"Originating Control Title" \
+	"Available Decisions: Accept, Modify, Replace, Reject" \
+	"Status: Empty" \
+	"Entry Count: 0"; do
+	require_text "$NFR_SKILL" "$required"
+done
+
+for required in \
+	"timestamp" \
+	"randomness" \
+	"environment" \
+	"filesystem" \
+	"session state"; do
+	require_text "$CONTROL_SKILL" "$required"
+	require_text "$NFR_SKILL" "$required"
+done
+
+for marker in \
+	"ordering=stable" \
+	"unstable-inputs=forbidden" \
+	"duplicate-detection=before-allocation"; do
+	if ! grep -R -Fq "$marker" "$HIGHWAY_ROOT/tools/tests/fixtures/controls-nfr-onboarding"; then
+		echo "FAIL: Feature 078 candidate marker '$marker' missing"
+		fail=1
+	fi
 done
 
 # --- Accepted relationship and direct-authoring contract --------------------------------------

@@ -30,6 +30,22 @@ assert_no_artifact() {
 	fi
 }
 
+assert_review_empty() {
+	local label="$1" status="$2" entry_count="$3"
+	if [[ "$status" != "Status: Empty" || "$entry_count" != "Entry Count: 0" ]]; then
+		echo "FAIL: $label must emit Status: Empty and Entry Count: 0"
+		return 1
+	fi
+}
+
+assert_review_decisions() {
+	local label="$1" actual="$2" expected="$3"
+	if [[ "$actual" != "$expected" ]]; then
+		echo "FAIL: $label decision set (expected '$expected', got '$actual')"
+		return 1
+	fi
+}
+
 assert_readiness_response() {
 	local label="$1" response="$2"
 	local status_value summary_value next_action_value blocking_reason_value

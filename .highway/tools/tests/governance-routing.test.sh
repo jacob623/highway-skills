@@ -36,6 +36,26 @@ require_text "$NFR_SKILL" "If the user keeps a vague NFR, record it after advice
 require_text "$NFR_SKILL" "reserved relationship fields remain empty in this phase"
 require_text "$CONTROL_SKILL" "This skill MUST NOT refuse a Control the user still wants"
 
+# Feature 077 onboarding aliases and review boundaries stay owned by their canonical skills.
+require_text "$CONTROL_SKILL" '`setup` and `configure` are aliases'
+require_text "$CONTROL_SKILL" "Review Complete"
+require_text "$CONTROL_SKILL" "Cancel Review"
+require_text "$NFR_SKILL" '`review` and `onboarding` are aliases'
+require_text "$NFR_SKILL" "Review Complete"
+require_text "$NFR_SKILL" "Cancel Review"
+
+# Feature 078 keeps review output contracts in their canonical owner sections.
+require_text "$CONTROL_SKILL" "### Control Review Output Contract"
+require_text "$NFR_SKILL" "### NFR Review Output Contract"
+if [[ "$(grep -Fc '### Control Review Output Contract' "$CONTROL_SKILL")" != "1" ]]; then
+	echo "FAIL: Control review output contract is not declared exactly once"
+	fail=1
+fi
+if [[ "$(grep -Fc '### NFR Review Output Contract' "$NFR_SKILL")" != "1" ]]; then
+	echo "FAIL: NFR review output contract is not declared exactly once"
+	fail=1
+fi
+
 # Both skills expose the required workflow and verification sections.
 require_text "$NFR_SKILL" "## Verification"
 require_text "$NFR_SKILL" "## Error Handling"
