@@ -263,4 +263,36 @@ for rule in $(rc_registered_ids); do
 	fi
 done
 
+# Feature 079: X2 interaction rules are agent-checkable document contracts. Their applicability
+# and N/A boundaries must be explicit even though no live conversation runner exists.
+EXPERIENCE="$HIGHWAY_ROOT/governance/experience-standard.md"
+for rule in X2.2 X2.3 X2.4 X2.5 X2.6; do
+	if ! grep -qE "^\| $rule \|.*\|.*\| \[agent-checkable\] \|" "$EXPERIENCE"; then
+		echo "FAIL: $rule is missing, malformed, or not agent-checkable"
+		fail=1
+	fi
+done
+if ! grep -qF "An Interactive Workflow MUST prioritize the user's next required action." "$EXPERIENCE"; then
+	echo "FAIL: X2.2 does not state next-action priority"
+	fail=1
+fi
+if ! grep -qF 'first emitted content is a greeting, required question, required decision, or required error response' "$EXPERIENCE"; then
+	echo "FAIL: X2.2 Observable does not define the opening content"
+	fail=1
+fi
+if ! grep -qF 'unless the user requested those details' "$EXPERIENCE" || \
+	! grep -qF 'at most one unresolved collection question' "$EXPERIENCE"; then
+	echo "FAIL: X2.3/X2.4 interaction boundaries are missing"
+	fail=1
+fi
+if ! grep -qF 'N/A when no long-running activity exists' "$EXPERIENCE" || \
+	! grep -qF 'N/A when X2.5 is N/A' "$EXPERIENCE"; then
+	echo "FAIL: X2.5/X2.6 N/A behavior is missing"
+	fail=1
+fi
+if ! grep -qF 'rationale' "$EXPERIENCE" || ! grep -qF 'Non-Normative' "$EXPERIENCE"; then
+	echo "FAIL: X2 rationale or non-normative examples are missing"
+	fail=1
+fi
+
 exit $fail

@@ -1,5 +1,18 @@
 <!--
 Sync Impact Report
+Version change: 2.3.0 → 2.4.0 (MINOR)
+Bump rationale: Principle X and rules P10.1-P10.2 are added without invalidating a conforming
+skill; Experience Compliance governs newly created and amended skills while unchanged skills remain
+grandfathered.
+Added principle: X. Experience Compliance (P10.1-P10.2).
+Added obligations: applicable Experience Standard review, X-rule exception identification, and
+combined constitutional/experience review reporting with explicit N/A conditions.
+Verified before enabling: the existing parser reads P and X namespaces, the five-group coverage
+contract remains unchanged, and focused review-output tests cover PASS, FAIL, and N/A reporting.
+Self-application review: P10.1 and P10.2 reference Experience Standard compliance and exception
+accountability without restating X2.2-X2.6 rule text.
+
+Previous amendment:
 Version change: 2.2.0 → 2.3.0 (MINOR)
 Bump rationale: Principle IX and rule P9.1 are added without invalidating a conforming skill;
   the two existing file-emitting skills are migrated and verified before the rule is enabled.
@@ -84,6 +97,7 @@ document and in every skill governed by it.
 | **Breaking change** | A change that removes, narrows, or redefines any element of a skill contract or behavioral guarantee. |
 | **Observable** | The specific condition, countable property, or command result that decides PASS or FAIL for one rule. |
 | **Tier** | How a rule is decided: `[auto]`, `[agent-checkable]`, or `[human-review]`, defined in the Compliance Review Protocol. |
+| **Experience Standard** | The Highway Experience Standard governing user-visible output and interaction behavior, with rule IDs in the `X` namespace. |
 | **Security-affecting** | Guidance that touches any item in the Security Gate trigger list. |
 | **Declared input** | A value, file, or precondition named in a skill's Inputs section. |
 | **Verdict** | One of exactly three tokens: PASS, FAIL, N/A. No other token is a verdict. |
@@ -262,6 +276,16 @@ time.
 Rationale: A shared complete skeleton prevents two skills producing the same kind of record from
 silently diverging in metadata or body structure.
 
+### X. Experience Compliance
+
+| ID | Rule | Observable | Tier |
+|---|---|---|---|
+| P10.1 | Every new or amended skill MUST comply with all applicable Experience Standard rules. | Each applicable X rule is reviewed and recorded in the Compliance Review Protocol output. | [agent-checkable] |
+| P10.2 | A skill that cannot satisfy an applicable Experience Standard rule MUST identify the X-rule and exception condition. | Each exception names one X rule and the condition that displaces it in the skill file. | [agent-checkable] |
+
+Rationale: Experience Compliance makes user-visible behavior reviewable alongside correctness and
+portability while leaving the Experience Standard as the source of interaction rule text.
+
 ## Principle Precedence
 
 When two rules conflict, the rule belonging to the higher-ranked principle prevails. This
@@ -277,6 +301,7 @@ ordering is total: every pair of principles has a defined winner.
 | 6 | VII. Long-Term Maintainability | Governs cost over time rather than correctness now. |
 | 7 | II. Technology-Agnostic Portability | Governs reach across environments. |
 | 8 | III. Grounding in Approved Authority Sources | Governs provenance of a rule already stated. |
+| 9 | X. Experience Compliance | Governs user-visible behavior after correctness requirements are satisfied. |
 
 **Security override**: a rule tagged security-affecting outranks every rule in every principle,
 including rank 1 rules that are not security-affecting.
@@ -355,6 +380,11 @@ complexity expression or a measured number with a unit.
 A reviewing agent MUST NOT emit a verdict for a rule tagged `[human-review]`. Those rule IDs
 are listed in a separate DEFERRED block for a human. DEFERRED is a block name, not a verdict.
 
+The Compliance Review Protocol MUST evaluate every applicable Experience Standard rule and record
+its result alongside the constitutional rule results. Every applicable X rule uses PASS, FAIL, or
+N/A; an X FAIL is resolved before merge. An X N/A result names its permitted condition, including
+the no-long-running-activity condition for X2.5 and X2.6.
+
 ### Required output shape
 
 A review emits exactly one line per rule ID, in ascending rule ID order, in this form:
@@ -382,6 +412,7 @@ This list is closed.
 | **N2** | The rule governs a skill section that this artifact type is not required to contain. |
 | **N3** | The rule governs amendment of this constitution, and the reviewed artifact is not this constitution. |
 | **N4** | The rule's stated scope names an artifact type that the reviewed artifact is not. |
+| **N5** | The reviewed workflow has no long-running activity; this condition applies to X2.5 and X2.6. |
 
 ### Merge decision
 
@@ -393,7 +424,7 @@ blocks merge until a human records a verdict for each deferred rule ID.
 1. Write the skill with all required sections present: Purpose, When to use, When not to use,
    Inputs, Outputs, Verification, Error Handling.
 2. Evaluate each of the five quality gate triggers and record which evaluate true.
-3. Run the Compliance Review Protocol against every rule ID in this document.
+3. Run the Compliance Review Protocol against every rule ID in this document and every applicable X rule.
 4. Resolve every `FAIL` before requesting merge.
 
 ### Overlap resolution
@@ -435,9 +466,10 @@ This constitution supersedes every other skill-authoring document in this reposi
 conflict exists. Conflicts between rules inside this document are resolved by Principle
 Precedence.
 
-Every new or amended skill MUST pass the Compliance Review Protocol before merge. A skill that
-cannot satisfy a rule MUST record a written exception in the skill file naming the rule ID and
-the condition that displaces it; silent deviation is a FAIL.
+Every new or amended skill MUST pass both the Compliance Review Protocol and all applicable
+Experience Standard rules before merge. A skill that cannot satisfy a rule MUST record a written
+exception in the skill file naming the rule ID and the condition that displaces it; silent
+deviation is a FAIL.
 
 ### Self-Application
 
@@ -465,4 +497,4 @@ every other skill's version. This is the policy referenced by P7.7.
 - **MINOR**: a capability is added while every existing contract element continues to hold.
 - **PATCH**: wording repair with no change to Inputs, Outputs, or Verification.
 
-**Version**: 2.2.0 | **Ratified**: 2026-09-06 | **Last Amended**: 2026-09-08
+**Version**: 2.4.0 | **Ratified**: 2026-09-06 | **Last Amended**: 2026-09-23

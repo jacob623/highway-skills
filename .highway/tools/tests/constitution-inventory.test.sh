@@ -276,6 +276,36 @@ if [[ -f "$EXPERIENCE" ]]; then
 		echo "FAIL: the Highway Experience Standard tags these rules [auto] but no check decides them:$x_unenforced"
 		fail=1
 	fi
+
+	# Feature 079: the constitutional amendment must define and govern the X namespace without
+	# copying the Experience Standard's interaction rule text into the P-side table.
+	if ! grep -qF '**Experience Standard**' "$CONSTITUTION" || ! grep -qF 'X. Experience Compliance' "$CONSTITUTION"; then
+		echo "FAIL: constitution does not define Experience Standard and Experience Compliance"
+		fail=1
+	fi
+	if ! awk '/^### IX\. Shared Output Contracts/{seen=1} seen && /^### X\. Experience Compliance/{found=1} END{exit(found ? 0 : 1)}' "$CONSTITUTION"; then
+		echo "FAIL: Experience Compliance is not placed after Shared Output Contracts"
+		fail=1
+	fi
+	for rule in P10.1 P10.2; do
+		if ! grep -qE "^\| $rule \|.*\|.*\| \[agent-checkable\] \|$" "$CONSTITUTION"; then
+			echo "FAIL: $rule is missing or is not agent-checkable"
+			fail=1
+		fi
+	done
+	if ! grep -qE '^\| 9 \| X\. Experience Compliance \|' "$CONSTITUTION"; then
+		echo "FAIL: Experience Compliance does not have precedence rank 9"
+		fail=1
+	fi
+	if ! grep -qF 'every applicable Experience Standard rule' "$CONSTITUTION" || \
+		! grep -qF 'X2.5' "$CONSTITUTION" || ! grep -qF 'X2.6' "$CONSTITUTION"; then
+		echo "FAIL: Compliance Review Protocol does not cover applicable X rules and N/A outcomes"
+		fail=1
+	fi
+	if ! awk '/both the Compliance Review Protocol and all applicable$/{getline next_line; if (next_line ~ /Experience Standard rules/) found=1} END{exit(found ? 0 : 1)}' "$CONSTITUTION"; then
+		echo "FAIL: Governance does not require both compliance protocols"
+		fail=1
+	fi
 fi
 
 # Assembled rather than written literally: this file is scanned by shipped-tree-independence.test.sh,
