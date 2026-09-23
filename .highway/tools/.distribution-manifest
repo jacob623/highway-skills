@@ -27,6 +27,7 @@ include	.claude/skills/highway-setup	-
 include	.claude/skills/highway-new	-
 include	.claude/skills/highway-discovery	-
 include	.claude/skills/highway-clarify	-
+include	.claude/skills/highway-adr	-
 exclude	.cursor	-
 include	.cursor/rules/highway-objectives.mdc	-
 include	.cursor/rules/highway-help.mdc	-
@@ -39,6 +40,7 @@ include	.cursor/rules/highway-setup.mdc	-
 include	.cursor/rules/highway-new.mdc	-
 include	.cursor/rules/highway-discovery.mdc	-
 include	.cursor/rules/highway-clarify.mdc	-
+include	.cursor/rules/highway-adr.mdc	-
 exclude	.github	-
 include	.github/skills/highway-objectives	-
 include	.github/skills/highway-help	-
@@ -51,6 +53,7 @@ include	.github/skills/highway-setup	-
 include	.github/skills/highway-new	-
 include	.github/skills/highway-discovery	-
 include	.github/skills/highway-clarify	-
+include	.github/skills/highway-adr	-
 
 # --- The framework directory: excluded by default so each child is a deliberate decision ---
 exclude	.highway	-
@@ -60,6 +63,8 @@ include	.highway/library	-
 include	.highway/library/templates/output/objective-record.md	-
 include	.highway/library/templates/output/request-record.md	-
 include	.highway/library/templates/output/request-catalog.md	-
+include	.highway/library/templates/output/adr-record.md	-
+include	.highway/library/templates/output/adr-catalog.md	-
 include	.highway/library/templates/output/profile.yaml	-
 include	.highway/catalog	-
 include	.highway/governance	-

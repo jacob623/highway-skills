@@ -1,6 +1,20 @@
 {
-  "generated_at": "2026-09-23T00:45:04Z",
+  "generated_at": "2026-09-23T02:10:36Z",
   "entries": [
+    {
+      "library_type": "template",
+      "name": "adr-catalog",
+      "description": "Complete output skeleton for the ADR allocation catalog.",
+      "version": "1.0.0",
+      "source_path": "library/templates/output/adr-catalog.md"
+    },
+    {
+      "library_type": "template",
+      "name": "adr-record",
+      "description": "Complete output skeleton for an accepted architecture decision record.",
+      "version": "1.0.0",
+      "source_path": "library/templates/output/adr-record.md"
+    },
     {
       "library_type": "template",
       "name": "clarification-catalog",
