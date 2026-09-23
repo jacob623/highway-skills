@@ -1,6 +1,30 @@
 <!--
 Sync Impact Report
-Version change: 1.1.0 → 1.2.0 (MINOR), 2026-09-09
+Version change: 1.3.0 → 1.3.1 (PATCH), 2026-09-23
+
+--- Amendment 1.3.0 → 1.3.1 (PATCH), 2026-09-23 ---
+Bump rationale: corrects the X2 table presentation, defines two existing applicability terms,
+and separates the non-normative N/A example without changing any rule, Observable, tier, sample,
+N/A condition, or non-goal boundary.
+Changed elements: the X2.2-X2.6 table placement; the Definitions subsection; X2.3 and X2.4
+Observable terminology; the X2 rationale prose; and the Interaction Examples table structure.
+Unchanged elements carry forward, including X2.1, the X namespace, N5, PASS/FAIL/N/A vocabulary,
+and Feature 079's approved interaction obligations.
+Self-application review: the amendment changes no rule text from the Highway Skills Constitution,
+adds no development rule, and supersedes no other document.
+
+--- Amendment 1.2.0 → 1.3.0 (MINOR), 2026-09-23 ---
+Bump rationale: five additive interaction rules, rationale, and non-normative examples are added
+without invalidating unchanged skills. X2.5 and X2.6 explicitly report N/A when no long-running
+activity exists.
+Added rules: X2.2-X2.6 in the X2 Interaction section.
+Added definitions: Interactive Workflow and Long-running activity.
+Added guidance: rationale and compliant/non-compliant examples for collection and progress output,
+including an N/A example for workflows without long-running activity.
+Applicability: X2.2-X2.6 apply to Interactive Workflows; X2.5 and X2.6 are N/A without a
+long-running activity.
+Constitution synchronization: the Highway Skills Constitution adds Principle X and P10.1-P10.2,
+which govern compliance and exception accountability without restating these rules.
 
 --- Amendment 1.1.0 → 1.2.0 (MINOR), 2026-09-09 ---
 Bump rationale: one additive retained-file rule is added without invalidating conforming work.
@@ -97,6 +121,22 @@ It states no obligation about:
 - how this project is built — that is the development constitution's subject
 - the content of anything a user authors — see Non-goals
 
+### Definitions
+
+**Interactive Workflow**: A workflow that emits user-visible messages and expects a user response,
+decision, confirmation, approval, rejection, or other input.
+
+**Guided information-collection workflow**: An Interactive Workflow whose primary purpose is
+collecting user-provided evidence, answers, decisions, approvals, confirmations, or other
+required inputs.
+
+**Long-running activity**: A workflow that performs multiple user-visible phases or emits one or
+more intermediate progress messages before the final completion result.
+
+**Implementation details**: Information describing workflow ownership, routing, validation logic,
+evaluation order, allocation logic, internal processing, orchestration, or similar internal
+mechanics.
+
 A rule belongs here only if it constrains something a user can see or a skill can write.
 
 ## Non-goals
@@ -150,6 +190,7 @@ further condition, because the rule that needs it lives here:
 | Token | Condition |
 |---|---|
 | **N3** | The specimen repeats no value the skill's metadata also declares. |
+| **N5** | The workflow has no long-running activity; this applies to X2.5 and X2.6. |
 
 If a third governing document ever needs its own condition, the vocabulary should be unified in
 one place rather than split further.
@@ -184,9 +225,34 @@ is copied verbatim into each agent tree. This is the only rule here a script dec
 | ID | Rule | Observable | Tier | Sample |
 |---|---|---|---|---|
 | X2.1 | A confirmation before an irreversible loss MUST state what is lost. | The prompt names the affected items, or states how many there are. | [agent-checkable] | one |
+| X2.2 | An Interactive Workflow MUST prioritize the user's next required action. | For Interactive Workflows, the first emitted content is a greeting, required question, required decision, or required error response. Read-only or informational workflows are N/A. | [agent-checkable] | two |
+| X2.3 | An Interactive Workflow MUST NOT begin with implementation details unless the user requested those details. | The opening response excludes Implementation details unless requested. | [agent-checkable] | two |
+| X2.4 | A guided information-collection workflow MUST ask only the next required question. | During a Guided information-collection workflow, the prompt contains at most one unresolved collection question and does not introduce future workflow stages. | [agent-checkable] | one |
+| X2.5 | A long-running activity MUST disclose current progress. | For a long-running activity, each progress update identifies the current activity, phase, or step. X2.5 is N/A when no long-running activity exists. | [agent-checkable] | one |
+| X2.6 | A progress message MUST describe activity rather than implementation. | Each progress message describes work being performed and excludes reasoning, workflow mechanics, validation behavior, and internal orchestration. X2.6 is N/A when X2.5 is N/A. | [agent-checkable] | one |
 
 A bare "Are you sure?" does not satisfy X2.1: the reader cannot decide from it. Naming the loss is
 what makes the confirmation a decision rather than a formality.
+
+The rationale for X2.2-X2.6 is that an interactive workflow is easiest to follow when its first
+message and each collection step make the user's next action clear. Implementation details belong
+only in a response requested for that purpose, because internal routing and evaluation mechanics
+do not help a person answer the current question. A long-running activity is the permitted
+exception for progress disclosure: the person needs to know what work is currently happening, but
+the update remains activity-focused rather than explaining internal orchestration.
+
+### Interaction Examples (Non-Normative)
+
+These examples are illustrative and do not add rule IDs.
+
+| Scenario | Non-compliant | Compliant |
+|---|---|---|
+| Interactive collection | "I will route your request through validation, then allocate the next stages. What are the owner, deadline, and priority?" | "What is the owner?" |
+| Long-running activity | "The evaluator is traversing its dispatch graph and applying internal checks." | "Checking the repository controls now." |
+
+| Scenario | Example |
+|---|---|
+| No long-running activity (N/A) | A read-only status workflow emits no intermediate activity; record X2.5=N5 and X2.6=N5 in review output. |
 
 ### X4 — Artifact placement
 
