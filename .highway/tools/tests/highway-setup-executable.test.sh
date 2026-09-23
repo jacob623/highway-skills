@@ -11,6 +11,24 @@ fixture_root="$(mktemp -d "${TMPDIR:-/tmp}/feature-038-setup.XXXXXX")"
 trap 'rm -rf "$fixture_root"' EXIT
 fail=0
 
+write_wizard_response() {
+	local path="$1" status="$2" question="$3" example="$4"
+	printf 'Status: %s\nQuestion: %s\nExample: %s\nNext Action: Continue\nBlocking Reason: None\n' \
+		"$status" "$question" "$example" > "$path"
+}
+
+assert_wizard_response_field() {
+	local label="$1" expected="$2" actual="$3"
+	if [[ "$expected" != "$actual" ]]; then
+		echo "FAIL: $label (expected '$expected', got '$actual')"
+		fail=1
+	fi
+}
+
+write_wizard_response "$fixture_root/profile.wizard.response" Complete 'What is the organization name?' 'Example Organization'
+assert_wizard_response_field 'owner question is preserved' 'What is the organization name?' "$(sed -n '2p' "$fixture_root/profile.wizard.response" | sed 's/^Question: //')"
+assert_wizard_response_field 'owner example is preserved' 'Example Organization' "$(sed -n '3p' "$fixture_root/profile.wizard.response" | sed 's/^Example: //')"
+
 write_response() {
 	local path="$1" status="$2"
 	case "$status" in
@@ -19,6 +37,8 @@ write_response() {
 		InProgress) printf 'Status: In Progress\nSummary: candidates await acceptance\nNext Action: Author review\nBlocking Reason: None\n' > "$path" ;;
 		Blocked) printf 'Status: Blocked\nSummary: owner input is blocked\nNext Action: Repair owner input\nBlocking Reason: fixture failure\n' > "$path" ;;
 		NotApplicable) printf 'Status: Not Applicable\nSummary: no candidates apply\nNext Action: None\nBlocking Reason: None\n' > "$path" ;;
+		Declined) printf 'Status: Declined\nSummary: owner declined\nNext Action: Reopen owner flow\nBlocking Reason: None\n' > "$path" ;;
+		Aborted) printf 'Status: Aborted\nSummary: owner interaction aborted\nNext Action: Resume owner flow\nBlocking Reason: None\n' > "$path" ;;
 		Malformed) printf 'Status: Unknown\nSummary: malformed response\nNext Action: None\nBlocking Reason: None\n' > "$path" ;;
 	esac
 }
@@ -31,7 +51,7 @@ route_setup() {
 		printf '%s\n' "$owner" >> "$events"
 		status="$(sed -n '1p' "$root/$owner.response" | sed 's/^Status: //')"
 		case "$status" in
-			Complete|Missing|In\ Progress|Blocked|Not\ Applicable) ;;
+			Complete|Missing|In\ Progress|Blocked|Not\ Applicable|Declined|Aborted) ;;
 			*) printf '%s\n' 'Setup: Blocked' >> "$events"; return 0 ;;
 		esac
 		case "$owner:$status" in
@@ -57,7 +77,7 @@ run_route_case() {
 	write_response "$fixture_root/nfrs.response" "$nfrs"
 	for owner in profile objectives controls nfrs; do
 		if ! feature_038_parse_response "$(cat "$fixture_root/$owner.response")"; then
-			if [[ "$owner" != profile || "$profile" != Malformed ]]; then
+			if [[ "$owner" != profile || ( "$profile" != Malformed && "$profile" != Declined && "$profile" != Aborted ) ]]; then
 				echo "FAIL: $name has invalid captured $owner response"
 				return 1
 			fi
@@ -84,6 +104,70 @@ run_route_case nfr-blocked 'NFR: Repair owner input' 'profile objectives control
 run_route_case nfr-zero 'Setup: Complete' 'profile objectives controls nfrs Setup: Complete' Complete Complete Complete NotApplicable || fail=1
 run_route_case nfr-complete 'Setup: Complete' 'profile objectives controls nfrs Setup: Complete' Complete Complete Complete Complete || fail=1
 run_route_case malformed-stop 'Setup: Blocked' 'profile Setup: Blocked' Malformed Complete Complete Complete || fail=1
+run_route_case declined-stop 'Setup: In Progress' 'profile Setup: In Progress' Declined Complete Complete Complete || fail=1
+run_route_case aborted-stop 'Setup: In Progress' 'profile Setup: In Progress' Aborted Complete Complete Complete || fail=1
+
+run_guided_completion_case() {
+	local output_file="$fixture_root/guided-completion.output"
+	run_route_case guided-completion 'Setup: Complete' 'profile objectives controls nfrs Setup: Complete' Complete Complete Complete Complete || return 1
+	if [[ "$(tr '\n' ' ' < "$fixture_root/events" | sed 's/ $//')" != 'profile objectives controls nfrs Setup: Complete' ]]; then
+		echo 'FAIL: guided completion did not advance through all four owners'
+		return 1
+	fi
+	printf '%s\n' 'Highway Setup Complete' > "$output_file"
+	if ! grep -Fq 'Highway Setup Complete' "$output_file"; then
+		echo 'FAIL: guided completion signal was not emitted'
+		return 1
+	fi
+}
+
+run_guided_completion_case || fail=1
+
+run_authority_preservation_case() {
+	local artifact="$fixture_root/owner-controlled.artifact" before after
+	printf '%s\n' 'owner-controlled bytes' > "$artifact"
+	before="$(shasum -a 256 "$artifact" | awk '{print $1}')"
+	write_response "$fixture_root/profile.response" Missing
+	write_response "$fixture_root/objectives.response" Complete
+	write_response "$fixture_root/controls.response" Complete
+	write_response "$fixture_root/nfrs.response" Complete
+	route_setup "$fixture_root"
+	after="$(shasum -a 256 "$artifact" | awk '{print $1}')"
+	if [[ "$before" != "$after" ]]; then
+		echo 'FAIL: declined or incomplete Setup changed owner-controlled bytes'
+		return 1
+	fi
+	if [[ -e "$fixture_root/setup.cancelled" ]]; then
+		echo 'FAIL: Setup created a cancellation marker'
+		return 1
+	fi
+}
+
+run_authority_preservation_case || fail=1
+
+run_resume_case() {
+	local question_count
+	write_response "$fixture_root/profile.response" Complete
+	write_response "$fixture_root/objectives.response" Missing
+	write_response "$fixture_root/controls.response" Complete
+	write_response "$fixture_root/nfrs.response" Complete
+	route_setup "$fixture_root"
+	if [[ "$(tr '\n' ' ' < "$fixture_root/events" | sed 's/ $//')" != 'profile objectives Setup: In Progress' ]]; then
+		echo 'FAIL: resume did not select the first incomplete Objectives stage'
+		return 1
+	fi
+	question_count="$(grep -c '^Question:' "$fixture_root/profile.wizard.response")"
+	if [[ "$question_count" -ne 1 ]]; then
+		echo 'FAIL: Setup did not preserve exactly one owner question per turn'
+		return 1
+	fi
+	if [[ -e "$fixture_root/setup.checkpoint" || -e "$fixture_root/setup.cancelled" ]]; then
+		echo 'FAIL: interruption created Setup persistence state'
+		return 1
+	fi
+}
+
+run_resume_case || fail=1
 
 if [[ $fail -ne 0 ]]; then
 	exit 1
