@@ -3,19 +3,12 @@ name: clarification-record
 description: "Authoritative output structure for a deterministic retained clarification artifact."
 metadata:
   version: 2.0.0
-id: CLAR-REQ000001
-artifact_id: REQ000001
-artifact_type: REQ
-source_path: requests/REQ000001.md
-status: in-progress
-open_findings: 1
-resolved_findings: 1
-total_findings: 2
-blocking_reason: None
+---
 
 ## File Frontmatter
 
 ```yaml
+---
 id: CLAR-REQ000001
 artifact_id: REQ000001
 artifact_type: REQ
@@ -26,6 +19,7 @@ open_findings: 1
 resolved_findings: 1
 total_findings: 2
 blocking_reason: None
+---
 ```
 
 ## Body
@@ -40,7 +34,7 @@ blocking_reason: None
 Category: missing_input
 Severity: high
 finding_id: CLAR-REQ000001-001
-  fingerprint: missing_input|requirements|REQ000001:field
+fingerprint: missing_input|requirements|REQ000001:field
 State: open
 evidence_ref: <source location or evidence identity after privacy filtering>
 Evidence: <source location or evidence identity after privacy filtering>
@@ -48,11 +42,15 @@ Summary: <finding summary>
 Question: <one deterministic resolution question>
 Why It Matters: <one deterministic consequence explanation>
 Recommended Option: <advisory recommended option or Unknown>
+Recommendation Basis: authoritative
 Recommended Rationale: <deterministic rationale with source traceability>
 Evidence Sources:
 - Source Type: <source type>
-- Source Identifier: <source identifier>
-- Reason Used: <reason this source was used>
+  Source Identifier: <source identifier>
+  Reason Used: <reason this source was used>
+- Source Type: <source type>
+  Source Identifier: <source identifier>
+  Reason Used: <reason this source was used>
 Alternative Option B: <advisory alternative option>
 Alternative Rationale B: <deterministic rationale>
 Alternative Option C: <advisory alternative option>
@@ -60,7 +58,7 @@ Alternative Rationale C: <deterministic rationale>
 Custom Option: <user-supplied answer path>
 Selected Option: None
 Response: None
-Escalation Owner: Request owner
+Escalation Owner: <owner>
 
 ### CLAR-REQ000001-002
 
@@ -75,11 +73,12 @@ Summary: <finding summary>
 Question: <retained deterministic resolution question>
 Why It Matters: <retained deterministic consequence explanation>
 Recommended Option: <retained advisory recommended option>
+Recommendation Basis: authoritative
 Recommended Rationale: <retained deterministic rationale>
 Evidence Sources:
 - Source Type: <source type>
-- Source Identifier: <source identifier>
-- Reason Used: <reason this source was used>
+  Source Identifier: <source identifier>
+  Reason Used: <reason this source was used>
 Alternative Option B: <retained advisory alternative option>
 Alternative Rationale B: <retained deterministic rationale>
 Alternative Option C: <retained advisory alternative option>
@@ -87,20 +86,15 @@ Alternative Rationale C: <retained deterministic rationale>
 Custom Option: <retained user-supplied answer path>
 Selected Option: None
 Response: <accepted response>
-Escalation Owner: Request owner
-
-Selecting an option does not create a response. Only an explicitly accepted Response may transition
-an open finding to resolved. Conflict guidance uses `Unknown / Escalate for Decision`, retains
-conflicting values and evidence sources, and requires explicit selection.
-
-Escalation Owner: Request owner; Discovery consumer or responsible architect; ADR decision authority;
-or Reference Architecture owner, according to artifact type.
+Escalation Owner: <owner>
 
 ## Resolution History
 
+- Finding: CLAR-REQ000001-001
   Response: None
   Revision: 1
   Actor: None
+- Finding: CLAR-REQ000001-002
   Response: <accepted response>
   Revision: 1
   Actor: None
@@ -135,6 +129,41 @@ identifiers, fingerprints, history, and evidence references and never transition
 count invariant is `total_findings = open_findings + resolved_findings`; violations are malformed
 and derive `blocked` before other status evaluation. The status precedence is `blocked`, `complete`,
 `in-progress`, then `not-started`.
+
+## Clarification Contract
+
+Resolution History entries are list items with Finding, Response, Revision, and Actor. Each Finding
+references exactly one finding identifier in this record and no identifier may repeat in the history.
+
+Evidence Sources are separate list items with Source Type, Source Identifier, and Reason Used. When no evidence sources exist, Evidence Sources: None.
+
+Example:
+
+Evidence Sources: None
+
+Recommendation State is stored in Recommended Option. Recommendation Basis maps as follows:
+
+- `authoritative`: an evidence-backed recommendation.
+- `evidence-gap`: `Unknown` when no authoritative evidence exists.
+- `conflict`: `Escalate for Decision` when authoritative evidence conflicts.
+
+Examples of the distinct non-authoritative states are `Recommended Option: Unknown` with
+`Recommendation Basis: evidence-gap` and `Recommended Option: Escalate for Decision` with
+`Recommendation Basis: conflict`. These states are never combined.
+
+For escalation, REQ findings route to the Request owner, DISC findings to the Discovery consumer or responsible architect, ADR findings to the ADR decision authority, and RA findings to the Reference Architecture owner. Escalation remains advisory.
+
+Conflict guidance uses `Escalate for Decision` with `Recommendation Basis: conflict`, retains conflicting values and evidence sources, and requires explicit selection.
+
+## Option Selection Lifecycle
+
+1. The user selects A, B, C, or D.
+2. Selected Option is recorded. Selecting an option does not create a response or change Response.
+3. The user provides or accepts a Response.
+4. Only an explicitly accepted Response may transition `open -> resolved`.
+
+Selected Option is informational and Response remains authoritative. Explanatory contract text appears outside Findings, Resolution History, Source, and Status. The template does not authorize
+source-artifact mutation, governance approval, architecture selection, or automatic resolution.
 
 The placeholders represent user-owned or generated values. The template governs required
 frontmatter and body structure; it does not authorize source-artifact mutation.

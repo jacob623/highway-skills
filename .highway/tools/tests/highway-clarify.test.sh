@@ -41,7 +41,8 @@ if [[ -n "$probe_class" ]]; then
 fi
 
 require_file() { [[ -f "$1" ]] || { echo "FAIL: missing $1"; fail=1; }; }
-require_text() { grep -Fq "$2" "$1" || { echo "FAIL: '$2' missing from $1"; fail=1; }; }
+require_text() { grep -Fq -- "$2" "$1" || { echo "FAIL: '$2' missing from $1"; fail=1; }; }
+require_absent() { grep -Fq -- "$2" "$1" && { echo "FAIL: '$2' remains in $1"; fail=1; } || :; }
 assert_same_bytes() {
 	local expected="$1" actual="$2" label="$3"
 	[[ "$expected" == "$actual" ]] || { echo "FAIL: $label changed"; fail=1; }
@@ -158,7 +159,7 @@ assert_contains_all "$SKILL" "guided resolution contract" \
 
 assert_contains_all "$SKILL" "guided option precedence" \
 	'artifact-specific guidance sources' 'Recommendation Precedence' \
-	'Unknown / Escalate for Decision' 'conflicting evidence sources' \
+	'Escalate for Decision' 'Recommendation Basis: conflict' 'conflicting evidence sources' \
 	'Alternative Option B' 'Alternative Option C' 'Custom Option' \
 	'explicit user selection'
 
@@ -169,7 +170,7 @@ assert_contains_all "$SKILL" "informational selection lifecycle" \
 	'no partial output' 'governance decision' 'architecture' 'ADR decision'
 
 assert_contains_all "$TEMPLATE" "version and finding identity" \
-	'metadata:' 'version: 2.0.0' \
+	'metadata:' 'version: 2.0.0' $'metadata:\n  version: 2.0.0\n---' \
 	'Category: missing_input' 'fingerprint: missing_input|requirements|REQ000001:field'
 
 assert_contains_all "$SKILL" "two-stage recommendation selection" \
@@ -180,8 +181,8 @@ assert_contains_all "$SKILL" "two-stage recommendation selection" \
 
 assert_contains_all "$SKILL" "recommendation state distinction" \
 	'Unknown' 'no authoritative evidence exists' \
-	'Unknown / Escalate for Decision' \
-	'authoritative evidence exists but conflicts'
+	'authoritative evidence exists but conflicts' \
+	'evidence-gap' 'conflict' 'Recommendation Basis and Recommendation State'
 
 assert_contains_all "$TEMPLATE" "evidence traceability structure" \
 	'Evidence Sources:' 'Source Type' 'Source Identifier' 'Reason Used'
@@ -206,7 +207,37 @@ assert_contains_all "$TEMPLATE" "selection and response lifecycle" \
 	'Only an explicitly accepted Response may transition' \
 	'Escalation Owner:' 'Request owner' 'Discovery consumer or responsible architect' \
 	'ADR decision authority' 'Reference Architecture owner' \
-	'Unknown / Escalate for Decision' 'conflicting values'
+	'Recommended Option: Unknown' 'Recommended Option: Escalate for Decision' \
+	'Recommendation Basis: evidence-gap' 'Recommendation Basis: conflict' 'conflicting values'
+
+assert_contains_all "$TEMPLATE" "Feature 073 record integrity" \
+	'- Finding: CLAR-REQ000001-001' '- Finding: CLAR-REQ000001-002' \
+	'Recommendation Basis: authoritative' 'Recommendation Basis: evidence-gap' \
+	'Recommendation Basis: conflict' 'Evidence Sources: None' \
+	'## Clarification Contract' 'Option Selection Lifecycle' \
+	'Explanatory contract text appears outside Findings, Resolution History, Source, and Status'
+
+require_absent "$SKILL" 'Unknown / Escalate for Decision'
+require_absent "$TEMPLATE" 'Unknown / Escalate for Decision'
+require_absent "$TEMPLATE" '- Source:'
+if [[ "$(grep -Fc -- 'Explanatory contract text appears outside Findings, Resolution History, Source, and Status' "$TEMPLATE")" != "1" ]]; then
+	echo "FAIL: explanatory contract text count is not exactly one"
+	fail=1
+fi
+require_text "$SKILL" 'Duplicate Resolution History Finding identifier'
+require_text "$SKILL" 'no duplicate Finding identifiers'
+require_text "$TEMPLATE" 'no identifier may repeat in the history'
+
+if grep -Fq 'Escalation Owner: Request owner; Discovery consumer' "$TEMPLATE"; then
+	echo "FAIL: owner mapping prose remains inside the retained template example"
+	fail=1
+fi
+if grep -Fq 'Response: None' "$TEMPLATE" && grep -Fq 'Response: <accepted response>' "$TEMPLATE"; then
+	:
+else
+	echo "FAIL: representative response lifecycle fields are incomplete"
+	fail=1
+fi
 
 if [[ "$fail" -ne 0 ]]; then
 	exit 1
