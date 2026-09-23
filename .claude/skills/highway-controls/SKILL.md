@@ -98,6 +98,24 @@ If an existing Control baseline is valid, setup reports that baseline, displays 
 prompts, creates no onboarding proposal state, and routes to existing `add`, `update`, `remove`,
 or view actions.
 
+### Control Review Output Contract
+
+Control Review emits one entry per proposed Control. Each entry contains Category, Proposed Title,
+Statement, and Available Decisions: Accept, Modify, Replace, Remove. Entries retain collection order
+through review and re-rendering. A generated Proposed Title is proposal-state content until successful
+`Review Complete`.
+
+Review output and ordering do not depend on timestamps, randomness, environment values, filesystem
+ordering, or user-session state.
+
+When no proposed Controls exist, Control Review emits exactly:
+
+- `Status: Empty`
+- `Entry Count: 0`
+
+The empty review result creates no placeholder governance artifact. Before successful `Review Complete`,
+no proposal content, generated title, identifier allocation, or onboarding state is persisted.
+
 **A Control file** at `library/governance/controls/CTLXXXXXX.md` following the complete structure
 in `.highway/library/templates/output/control-record.md`, including frontmatter and body. The
 template's placeholders remain user-owned values. A Control carries no version of its own; the

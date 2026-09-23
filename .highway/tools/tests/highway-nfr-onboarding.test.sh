@@ -22,6 +22,15 @@ require_text() {
 for text in \
 	"review" \
 	"onboarding" \
+	"one entry per candidate" \
+	"Candidate Title" \
+	"Candidate Statement" \
+	"Candidate Rationale" \
+	"Originating Control Identifier" \
+	"Originating Control Title" \
+	"Available Decisions: Accept, Modify, Replace, Reject" \
+	"Status: Empty" \
+	"Entry Count: 0" \
 	"Review Complete" \
 	"exactly one final decision" \
 	"duplicate" \
@@ -32,6 +41,15 @@ for text in \
 	"Not Applicable" \
 	"Blocked"; do
 	require_text "$SKILL" "$text"
+done
+
+for marker in \
+	"nfr-review-status=Empty" \
+	"nfr-review-entry-count=0"; do
+	if ! grep -R -Fq "$marker" "$FIXTURES/empty-baseline"; then
+		echo "FAIL: Feature 078 NFR Review marker '$marker' missing"
+		fail=1
+	fi
 done
 
 for scenario in empty-baseline valid-existing malformed duplicate undecided injected-failure; do

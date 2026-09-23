@@ -98,6 +98,25 @@ candidate, NFR, catalog, and relationship bytes. Existing NFR duplication is det
 creation and before identifier allocation; duplicate acceptance fails safely with no partial writes.
 Direct NFR authoring remains independent and starts with `controls: []`.
 
+### NFR Review Output Contract
+
+NFR Review emits one entry per candidate. Each entry contains Candidate Title, Candidate Statement,
+Candidate Rationale, Originating Control Identifier, Originating Control Title, and Available Decisions: Accept, Modify, Replace, Reject. Candidate order remains stable through review and
+re-rendering: identical candidate inputs produce identical ordering based on persisted originating
+Control identifier followed by availability, security, performance derivation order.
+
+Review output and ordering do not depend on timestamps, randomness, environment values, filesystem
+ordering, or user-session state.
+
+When no NFR candidates exist, NFR Review emits exactly:
+
+- `Status: Empty`
+- `Entry Count: 0`
+
+The empty review result creates no placeholder governance artifact. successful NFR `Review Complete` outcomes are reflected by subsequent readiness evaluation. Cancellation, rejection, validation failure, allocation failure, duplicate detection failure, and write failure do not change readiness-consumed accepted artifact state. Duplicate detection runs before NFR creation and identifier allocation; a
+duplicate detection failure preserves candidate, NFR, catalog, and relationship state and performs no
+partial NFR write.
+
 A generated prose catalog at `library/governance/nfrs.md`. The catalog contains no timestamp.
 
 ## Decision tables

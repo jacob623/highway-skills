@@ -2,3 +2,5 @@ review=complete
 failure=injected-write
 expected=rollback
 partial-writes=none
+readiness-state=unchanged-on-failure
+duplicate-detection=before-allocation

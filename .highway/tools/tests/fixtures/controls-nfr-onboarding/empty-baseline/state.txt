@@ -1,3 +1,7 @@
 baseline=missing
 expected=guided-collection
 writes=none-before-review
+control-review-status=Empty
+control-review-entry-count=0
+nfr-review-status=Empty
+nfr-review-entry-count=0

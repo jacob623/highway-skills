@@ -44,6 +44,18 @@ require_text "$NFR_SKILL" '`review` and `onboarding` are aliases'
 require_text "$NFR_SKILL" "Review Complete"
 require_text "$NFR_SKILL" "Cancel Review"
 
+# Feature 078 keeps review output contracts in their canonical owner sections.
+require_text "$CONTROL_SKILL" "### Control Review Output Contract"
+require_text "$NFR_SKILL" "### NFR Review Output Contract"
+if [[ "$(grep -Fc '### Control Review Output Contract' "$CONTROL_SKILL")" != "1" ]]; then
+	echo "FAIL: Control review output contract is not declared exactly once"
+	fail=1
+fi
+if [[ "$(grep -Fc '### NFR Review Output Contract' "$NFR_SKILL")" != "1" ]]; then
+	echo "FAIL: NFR review output contract is not declared exactly once"
+	fail=1
+fi
+
 # Both skills expose the required workflow and verification sections.
 require_text "$NFR_SKILL" "## Verification"
 require_text "$NFR_SKILL" "## Error Handling"

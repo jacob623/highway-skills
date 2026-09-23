@@ -40,6 +40,15 @@ for rule in 'zero candidates' 'none accepted' 'unavailable' 'malformed' 'contrad
 		fail=1
 	fi
 done
+for rule in \
+	'successful NFR `Review Complete` outcomes are reflected' \
+	"readiness-consumed accepted artifact state" \
+	"duplicate detection failure"; do
+	if ! grep -Fq "$rule" "$nfr_file"; then
+		echo "FAIL: NFR Feature 078 readiness rule '$rule' is not documented"
+	fail=1
+	fi
+done
 if grep -Eq 'NFR[^[:alnum:]]+`?Missing`?|`Missing`[^[:alnum:]]+NFR' "$nfr_file"; then
 	echo "FAIL: NFR owner state matrix exposes Missing"
 	fail=1

@@ -21,6 +21,12 @@ require_text() {
 
 for text in \
 	"guided Control collection" \
+	"one entry per proposed Control" \
+	"Category" \
+	"Statement" \
+	"Available Decisions: Accept, Modify, Replace, Remove" \
+	"Status: Empty" \
+	"Entry Count: 0" \
 	"Security" \
 	"Availability and Resilience" \
 	"Compliance and Governance" \
@@ -33,6 +39,15 @@ for text in \
 	"existing Control baseline" \
 	"duplicate"; do
 	require_text "$SKILL" "$text"
+done
+
+for marker in \
+	"control-review-status=Empty" \
+	"control-review-entry-count=0"; do
+	if ! grep -R -Fq "$marker" "$FIXTURES/empty-baseline"; then
+		echo "FAIL: Feature 078 Control Review marker '$marker' missing"
+		fail=1
+	fi
 done
 
 for scenario in empty-baseline valid-existing malformed duplicate undecided injected-failure; do
