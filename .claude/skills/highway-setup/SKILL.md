@@ -4,7 +4,7 @@ description: "Orchestrates the initial Highway repository setup through the owni
 usage: "Invoke as `/highway-setup` to assess readiness and complete missing foundational setup in order."
 compatibility: all
 metadata:
-	version: 2.0.0
+	version: 3.0.0
 ---
 
 ## Purpose
@@ -35,10 +35,10 @@ Orchestrates the initial Highway repository setup through an active Guided Setup
 
 ## Outputs
 
-- A Guided Setup progress report with `Step`, `Stage`, `Completed Stages`, `Current Stage`, `Remaining Stages`, and `Current Activity` while setup is incomplete.
-- The active owner's question, example, summary, output, and next action, presented verbatim except for Setup-owned progress framing.
-- The exact complete dashboard when all four owner workflows recognize valid accepted baselines.
-- An in-progress or blocked result when an owner is missing, pending, declined, malformed, blocked, or incomplete.
+- When user input is required, a welcome message or resume greeting, the active owner introduction, and the owner's next unresolved question in that order, followed by a wait for one response.
+- During active collection, the active owner workflow and owner question without routine `Step`, `Stage`, completed-stage, remaining-stage, or current-activity progress framing.
+- When setup completes, is blocked, setup is declined, setup is aborted, or the user explicitly requests status, the applicable status or existing completion dashboard with actionable owner context.
+- The active owner's question, example, summary, output, and next action, presented verbatim except for the simplified Setup opening and status conditions defined here.
 - Do not directly write Profile, Objective, Control, or NFR artifacts.
 - When no owner mutation is required, preserve existing governance artifact bytes exactly.
 
@@ -52,18 +52,20 @@ Orchestrates the initial Highway repository setup through an active Guided Setup
 6. Request NFR readiness from `/highway-nfrs readiness` after Controls terminal success. If NFR setup is incomplete, enter Guided Setup for NFR review or author decision without recomputing candidate, acceptance, catalog, or artifact completeness in Setup.
 7. Classify each owner response using the terminality decision table and the separate User Exit/Owner Outcome classification table. `Complete` and applicable `Not Applicable` are terminal success; `Missing`, `In Progress`, `Blocked`, declined, aborted, malformed, and unknown responses are non-terminal and never fabricate completion.
 8. For a non-terminal response, stop or pause at the first active owner, expose its owner-provided `Next Action` and `Blocking Reason` where supplied, and do not invoke downstream workflows. A user interruption or cancellation ends the current interaction without creating a cancellation marker or Setup checkpoint.
-9. On a new invocation, re-read persisted owner readiness and resume at the first incomplete owner. Report `Step`, `Stage`, `Completed Stages`, `Current Stage`, `Remaining Stages`, and `Current Activity`; use `Step 1: Profile`, `Step 2: Objectives`, `Step 3: Controls`, and `Step 4: NFRs`. When `Current Stage` is `Complete`, no numeric `Step` is emitted at completion.
-10. If Profile, Objectives, Controls, and NFR are complete or not applicable as required, emit `Highway Setup Complete` followed by the exact completion dashboard; otherwise emit the Guided Setup progress report and the next owner activity.
+9. On a new invocation, re-read persisted owner readiness and resume at the first incomplete owner. When input is required, emit a welcome or resume greeting, identify the active owner workflow, present its next unresolved question, and wait for one response. Do not explain owner selection, readiness evaluation, routing, forwarding, orchestration, or repository initialization during routine collection.
+10. If Profile, Objectives, Controls, and NFR are complete or not applicable as required, emit `Highway Setup Complete` followed by the exact completion dashboard; otherwise emit the active owner introduction and next unresolved question. For blocked, declined, aborted, or explicitly requested status output, emit the applicable status and actionable owner context.
 
 ## Guided Setup
 
-Guided Setup is the active orchestration mode used whenever the first incomplete owner is found. It owns only progress framing, ordered routing, continuation, and dashboard output. It does not directly create, update, remove, replace, allocate identifiers for, regenerate catalogs for, or repair relationships among owner artifacts.
+Guided Setup is the internal orchestration mode used whenever the first incomplete owner is found. It owns ordered routing, continuation, and dashboard output. It does not directly create, update, remove, replace, allocate identifiers for, regenerate catalogs for, or repair relationships among owner artifacts. Its internal routing is not presented as user work during routine collection.
 
 After each terminal owner result, Guided Setup automatically advances to the next owner stage in the fixed Profile, Objectives, Controls, and NFRs order.
 
-### Progress Contract
+### Explicit Status Contract
 
-FR-009A numeric step mapping is: Step 1 is Profile, Step 2 is Objectives, Step 3 is Controls, and Step 4 is NFRs.
+Progress details are available only when the user explicitly requests status or when Setup reports a blocked, declined, or aborted outcome. FR-009A numeric step mapping is: Step 1 is Profile, Step 2 is Objectives, Step 3 is Controls, and Step 4 is NFRs.
+
+The explicit status mapping is `Step 1: Profile`, `Step 2: Objectives`, `Step 3: Controls`, and `Step 4: NFRs`. When `Current Stage` is `Complete`, no numeric `Step` is emitted at completion.
 
 | Field | Contract |
 |---|---|
@@ -74,7 +76,20 @@ FR-009A numeric step mapping is: Step 1 is Profile, Step 2 is Objectives, Step 3
 | `Remaining Stages` | Ordered stages not yet terminally successful |
 | `Current Activity` | The active owner's next action or question |
 
-Guided Setup asks exactly one unresolved owner question at a time and waits for its response. Owner questions and examples are byte-identical to the owner workflow output; Setup may add only its own progress framing. When an owner response contains informational output and a next question, Setup presents the informational output first and the owner question afterward without reordering or rewriting owner content.
+Guided Setup asks exactly one unresolved owner question at a time and waits for its response. During active collection, emit the welcome or resume greeting, owner introduction, and owner question without the fields above as routine progress framing. Owner questions and examples are byte-identical to the owner workflow output. When an owner response contains informational output and a next question, Setup presents the informational output first and the owner question afterward without reordering or rewriting owner content.
+
+### Collection Opening and Suppression
+
+When user input is required, emit this ordered conversational sequence:
+
+- First, emit `Welcome to Highway.` or the resume greeting `Welcome back to Highway. Let's continue your setup.`
+- Second, emit a brief introduction naming the active owner workflow.
+- Third, emit the active owner's next unresolved question.
+- Fourth, wait for the user's response.
+
+Do not explain why the owner workflow was selected. Do not present `first incomplete stage`, `owner contract`, `workflow routing`, `forwarding response`, or `repository initialization state` during normal collection. Do not expose readiness evaluation, stage selection, owner selection, contract loading, artifact inspection, orchestration, or internal processing decisions unless the user explicitly requests implementation details.
+
+When setup resumes after a previous interaction, use the resume greeting before the owner introduction and unresolved question. Resume still re-reads persisted owner readiness and does not restore an unanswered question or create a Setup checkpoint.
 
 ### User Exit and Owner Outcome Classification
 
@@ -160,7 +175,7 @@ Questionnaire:
 
 When candidate generation succeeds with zero candidates, emit the same completion dashboard with `NFRs: Not Applicable`; do not invoke NFR authoring and do not create an NFR artifact.
 
-When incomplete, emit the same heading and ordered status fields, with `Setup: In Progress` and a `Current Activity` naming the first incomplete or blocked owner workflow. Later areas remain `Not Evaluated`. For example:
+When blocked, declined, aborted, or explicitly requested, emit the same heading and ordered status fields, with `Setup: In Progress` or the applicable owner outcome and a `Current Activity` naming the first incomplete or blocked owner workflow. Later areas remain `Not Evaluated`. For example:
 
 The status labels include `Profile: Missing`, `Business Objectives: Missing`, `Controls: Missing`, and `NFRs: Not Evaluated` when those states apply.
 

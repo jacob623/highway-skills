@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-23T19:43:45Z",
+  "generated_at": "2026-09-23T22:40:50Z",
   "entries": [
     {
       "id": "highway-adr",
@@ -106,7 +106,7 @@
       "description": "Orchestrates the initial Highway repository setup through the owning governance skills.",
       "usage": "Invoke as `/highway-setup` to assess readiness and complete missing foundational setup in order.",
       "compatibility": "all",
-      "version": "2.0.0",
+      "version": "3.0.0",
       "source_path": "skills/highway-setup/SKILL.md"
     }
   ],
