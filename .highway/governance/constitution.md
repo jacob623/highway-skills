@@ -1,5 +1,18 @@
 <!--
 Sync Impact Report
+Version change: 2.6.0 → 3.0.0 (MAJOR), 2026-09-24
+Bump rationale: moves Principle XII directly after Principle V, changing which principle prevails
+when Persistence and Completion Integrity conflicts with Principles VIII, VII, II, III, X, or XI.
+This changes constitutional conflict-resolution behavior and is classified as MAJOR under the
+Constitution Versioning Policy, independently from the Experience Standard wording correction.
+Changed elements: Principle Precedence ordering and affected ranks, duplicate Principle XI history,
+and this amendment's semantic-version metadata.
+Unchanged elements: principle identifiers, rule identifiers, normative rule text, rule Tiers, N/A
+conditions, and the relative order of unaffected principles.
+Self-application review: the precedence change is a constitutional conflict-resolution amendment;
+P1.1-P1.4, P6.6, P7.3, and the amendment's own version classification were reviewed.
+
+Previous amendment:
 Version change: 2.5.0 → 2.6.0 (MINOR)
 Bump rationale: Principle XII and rules P12.1-P12.5 add verified retained-output completion
 without invalidating unchanged skills; existing skills remain grandfathered until amendment.
@@ -13,7 +26,6 @@ Rule count: 59. Tier counts: [auto] 14, [agent-checkable] 45, [human-review] 0.
 Self-application review: P12.1-P12.4 are N/A under N6 for this constitution's no Retained Output;
 P12.5 is evaluated by its orchestration trigger. P1.1-P1.4, P6.4, P6.6, and P7.3 pass.
 
-Bump rationale: Principle XI and rules P11.1-P11.5 are added without invalidating a conforming
 Bump rationale: Principle XI and rules P11.1-P11.5 are added without invalidating a conforming
 skill; Experience Compliance governs newly created and amended skills while unchanged skills remain
 grandfathered.
@@ -359,13 +371,13 @@ ordering is total: every pair of principles has a defined winner.
 | 2 | I. Unambiguous, Actionable Directives | A rule that cannot be read one way cannot be applied at all. |
 | 3 | VI. Deterministic, Explicit Decision Criteria | Determines which action an agent selects at runtime. |
 | 4 | V. Reusable Patterns and Defined Error Handling | Governs behavior when a step fails. |
-| 5 | VIII. Reliability and Repeatability | Governs whether the outcome can be confirmed. |
-| 6 | VII. Long-Term Maintainability | Governs cost over time rather than correctness now. |
-| 7 | II. Technology-Agnostic Portability | Governs reach across environments. |
-| 8 | III. Grounding in Approved Authority Sources | Governs provenance of a rule already stated. |
-| 9 | X. Experience Compliance | Governs user-visible behavior after correctness requirements are satisfied. |
-| 10 | XI. Repository Context | Governs context use after correctness, provenance, and experience requirements are satisfied. |
-| 11 | XII. Persistence and Completion Integrity | Governs retained-output verification and completion claims after repository context. |
+| 5 | XII. Persistence and Completion Integrity | Governs retained-output verification and completion claims before lower-ranked principles. |
+| 6 | VIII. Reliability and Repeatability | Governs whether the outcome can be confirmed. |
+| 7 | VII. Long-Term Maintainability | Governs cost over time rather than correctness now. |
+| 8 | II. Technology-Agnostic Portability | Governs reach across environments. |
+| 9 | III. Grounding in Approved Authority Sources | Governs provenance of a rule already stated. |
+| 10 | X. Experience Compliance | Governs user-visible behavior after correctness requirements are satisfied. |
+| 11 | XI. Repository Context | Governs context use after correctness, provenance, and experience requirements are satisfied. |
 
 **Security override**: a rule tagged security-affecting outranks every rule in every principle,
 including rank 1 rules that are not security-affecting.
@@ -565,4 +577,4 @@ every other skill's version. This is the policy referenced by P7.7.
 - **MINOR**: a capability is added while every existing contract element continues to hold.
 - **PATCH**: wording repair with no change to Inputs, Outputs, or Verification.
 
-**Version**: 2.6.0 | **Ratified**: 2026-09-06 | **Last Amended**: 2026-09-24
+**Version**: 3.0.0 | **Ratified**: 2026-09-06 | **Last Amended**: 2026-09-24

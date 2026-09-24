@@ -293,8 +293,8 @@ if [[ -f "$EXPERIENCE" ]]; then
 			fail=1
 		fi
 	done
-	if ! grep -qE '^\| 9 \| X\. Experience Compliance \|' "$CONSTITUTION"; then
-		echo "FAIL: Experience Compliance does not have precedence rank 9"
+	if ! grep -qE '^\| 10 \| X\. Experience Compliance \|' "$CONSTITUTION"; then
+		echo "FAIL: Experience Compliance does not have precedence rank 10"
 		fail=1
 	fi
 	if ! grep -qF 'every applicable Experience Standard rule' "$CONSTITUTION" || \
@@ -452,14 +452,20 @@ if ! grep -qF 'P12.1-P12.4' "$CONSTITUTION" || ! grep -qF 'P12.5' "$CONSTITUTION
 	echo 'FAIL: P12 per-rule N6 applicability mapping is missing'
 	fail=1
 fi
-if ! grep -qF '| 10 | XI. Repository Context |' "$CONSTITUTION" || \
-	! grep -qF '| 11 | XII. Persistence and Completion Integrity |' "$CONSTITUTION"; then
-	echo 'FAIL: Principle XII precedence is missing or Repository Context was not retained'
+if ! grep -qF '| 5 | XII. Persistence and Completion Integrity |' "$CONSTITUTION" || \
+	! grep -qF '| 11 | XI. Repository Context |' "$CONSTITUTION" || \
+	! grep -qF '| 6 | VIII. Reliability and Repeatability |' "$CONSTITUTION"; then
+	echo 'FAIL: Principle XII precedence or affected rank sequence is incorrect'
 	fail=1
 fi
-if ! grep -qF 'Version change: 2.5.0 → 2.6.0 (MINOR)' "$CONSTITUTION" || \
-	! grep -qF '**Version**: 2.6.0' "$CONSTITUTION"; then
-	echo 'FAIL: Constitution version reconciliation or Feature 089 bump is missing'
+if ! grep -qF 'Version change: 2.6.0 → 3.0.0 (MAJOR)' "$CONSTITUTION" || \
+	! grep -qF 'This changes constitutional conflict-resolution behavior' "$CONSTITUTION" || \
+	! grep -qF '**Version**: 3.0.0' "$CONSTITUTION"; then
+	echo 'FAIL: Constitution version classification or Feature 090 amendment is missing'
+	fail=1
+fi
+if [[ "$(grep -cF 'Bump rationale: Principle XI and rules P11.1-P11.5 are added without invalidating a conforming' "$CONSTITUTION")" -ne 1 ]]; then
+	echo 'FAIL: Constitution must retain exactly one complete Principle XI bump rationale'
 	fail=1
 fi
 

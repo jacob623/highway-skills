@@ -1,6 +1,18 @@
 <!--
 Sync Impact Report
-Version change: 1.5.0 → 1.6.0 (MINOR), 2026-09-24
+Version change: 1.6.0 → 1.6.1 (PATCH), 2026-09-24
+
+--- Amendment 1.6.0 → 1.6.1 (PATCH), 2026-09-24 ---
+Bump rationale: aligns X2.9's trigger wording with its existing Observable without changing the
+rule's identifier, Tier, Sample classification convention, N7 condition, or intended applicability
+boundary; clarifies that the X2 rules remain the sole normative interaction authority; generalizes
+the UX Contract disclaimer; and removes an orphaned amendment fragment.
+Changed elements: UX Contract authority and disclaimer wording, X2.9 trigger wording, and amendment
+history cleanup.
+Unchanged elements: X2.9 identifier, Tier, Sample classification convention, Observable outcome
+categories, N7 condition, X2.1-X2.8 rules, and the X2.9 applicability boundary.
+Self-application review: the contract remains interpretive and organizational guidance, X2.9 adds
+no obligation, and the amendment changes no rule text from the Highway Skills Constitution.
 
 --- Amendment 1.5.0 → 1.6.0 (MINOR), 2026-09-24 ---
 Bump rationale: adds X1.6, X2.9, and X2.10, plus applicable N/A references and UX Contract
@@ -11,8 +23,6 @@ N/A ownership: N6-N9 are registered by the Highway Skills Constitution; this doc
 N7-N9 and defines no competing entries.
 Self-application review: X1.6, X2.9, and X2.10 are checked against this document's scope and
 the Constitution's P10.1-P10.2 without restating constitutional rule text.
-
-Bump rationale: adds Repository Context definitions, Contextual Guidance, and X2.7-X2.8 without
 
 --- Amendment 1.4.1 → 1.5.0 (MINOR), 2026-09-24 ---
 Bump rationale: adds Repository Context definitions, Contextual Guidance, and X2.7-X2.8 without
@@ -306,7 +316,7 @@ is copied verbatim into each agent tree. This is the only rule here a script dec
 | X2.6 | A progress message MUST describe activity rather than implementation. | Each progress message describes work being performed and excludes reasoning, workflow mechanics, validation behavior, and internal orchestration. X2.6 is N/A when X2.5 is N/A. | [agent-checkable] | one |
 | X2.7 | An Interactive Workflow MUST ground recommendations in relevant Repository Context when such context exists. | A recommendation cites the applicable Repository Context Document or accepted repository artifact when available. | [agent-checkable] | one |
 | X2.8 | An Interactive Workflow MUST acknowledge information that produces a Material Influence on future recommendations, workflow actions, governance interpretation, or decision support. | A concise acknowledgment precedes continuation when the information changes a future action or recommendation. | [agent-checkable] | one |
-| X2.9 | A guided information-collection workflow MUST provide Decision Context when the requested answer affects a downstream outcome. | The prompt explains the downstream recommendation, decision, artifact, interpretation, or action affected. | [agent-checkable] | new |
+| X2.9 | A guided information-collection workflow MUST provide Decision Context when the requested answer affects a downstream recommendation, decision, artifact, governance interpretation, or workflow action. | The prompt explains the downstream recommendation, decision, artifact, governance interpretation, or workflow action affected. | [agent-checkable] | new |
 | X2.10 | A guided information-collection workflow MUST provide a Relevant Example when it clarifies the expected response form. | The prompt includes an illustrative response-form example without constraining user-owned content. | [agent-checkable] | new |
 
 A bare "Are you sure?" does not satisfy X2.1: the reader cannot decide from it. Naming the loss is
@@ -353,11 +363,10 @@ These examples are illustrative and do not add rule IDs.
 ### Interactive Workflow UX Contract
 
 This contract is the single reusable interpretive and organizational guidance section for
-Interactive Workflows. It organizes, scopes, and applies X2.2-X2.6, X2.9-X2.10, N5, N7, and N8 applicability, and the
-defined concepts Interactive Workflow, Guided information-collection workflow, Long-running
-activity, and Implementation details. It does not create additional X-rule obligations, modify
-X2.2-X2.6 normative text, or introduce new X rule identifiers. The X2.2-X2.6 rules remain the
-sole normative interaction authority.
+Interactive Workflows. It interprets and organizes the application of the X2 rules, while the X
+rules remain the sole normative interaction authority. It organizes, scopes, and applies X2.2-X2.6,
+X2.9-X2.10, N5, N7, and N8 applicability, and the defined concepts Interactive Workflow, Guided
+information-collection workflow, Long-running activity, and Implementation details. It does not create additional X-rule obligations, modify normative rule text, or introduce new X rule identifiers.
 
 The contract preserves X2.2-X2.6, N5 applicability while adding the scoped N7 and N8 references.
 
@@ -491,4 +500,4 @@ Rule IDs are stable across amendments; a retired ID is never reused.
 Every amendment records a review against the non-restatement rules of the other two governing
 documents, and states which rules rest on a single example.
 
-**Version**: 1.6.0 | **Ratified**: 2026-09-08 | **Last Amended**: 2026-09-24
+**Version**: 1.6.1 | **Ratified**: 2026-09-08 | **Last Amended**: 2026-09-24

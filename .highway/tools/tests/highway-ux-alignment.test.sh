@@ -41,7 +41,13 @@ require_text "$EXPERIENCE_STANDARD" 'Guided information-collection workflow'
 require_text "$EXPERIENCE_STANDARD" 'Long-running activity'
 require_text "$EXPERIENCE_STANDARD" 'Implementation details'
 require_text "$EXPERIENCE_STANDARD" 'does not create additional X-rule obligations'
+require_text "$EXPERIENCE_STANDARD" 'interprets and organizes the application of the X2 rules'
+require_text "$EXPERIENCE_STANDARD" 'modify normative rule text, or introduce new X rule identifiers'
 require_text "$EXPERIENCE_STANDARD" 'sole normative interaction authority'
+if [[ "$(grep -cF 'Bump rationale: adds Repository Context definitions, Contextual Guidance, and X2.7-X2.8 without' "$EXPERIENCE_STANDARD")" -ne 1 ]]; then
+	echo "FAIL: orphaned or duplicate Repository Context/X2.7-X2.8 bump rationale remains"
+	fail=1
+fi
 require_text "$EXPERIENCE_STANDARD" 'As an application of X2.2'
 require_text "$EXPERIENCE_STANDARD" 'As applications of X2.3 and X2.6'
 require_text "$EXPERIENCE_STANDARD" 'As an application of X2.4'
@@ -58,6 +64,7 @@ require_text "$EXPERIENCE_STANDARD" '### Contextual Guidance'
 require_text "$EXPERIENCE_STANDARD" 'does not promote, advertise, or restate unrelated Highway capabilities'
 require_text "$EXPERIENCE_STANDARD" '| X1.6 | A structured user-facing field MUST visually distinguish its Presentation Label from its value.'
 require_text "$EXPERIENCE_STANDARD" '| X2.9 | A guided information-collection workflow MUST provide Decision Context'
+require_text "$EXPERIENCE_STANDARD" 'downstream recommendation, decision, artifact, governance interpretation, or workflow action'
 require_text "$EXPERIENCE_STANDARD" '| X2.10 | A guided information-collection workflow MUST provide a Relevant Example'
 require_text "$EXPERIENCE_STANDARD" 'N7'
 require_text "$EXPERIENCE_STANDARD" 'N8'
