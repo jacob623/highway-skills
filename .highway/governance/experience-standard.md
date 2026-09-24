@@ -1,5 +1,18 @@
 <!--
 Sync Impact Report
+Version change: 1.4.1 → 1.5.0 (MINOR), 2026-09-24
+
+--- Amendment 1.4.1 → 1.5.0 (MINOR), 2026-09-24 ---
+Bump rationale: adds Repository Context definitions, Contextual Guidance, and X2.7-X2.8 without
+changing X2.1-X2.6 or invalidating the existing interaction rules.
+Added definitions: Repository Context, Material Influence, and Contextual Acknowledgment.
+Added guidance: Contextual Guidance and Context Awareness, including a generic-versus-context-aware
+contrast and a no-promotion boundary for acknowledgments.
+Added rules: X2.7-X2.8. Removed rules: none. Rule count: 17.
+Self-application review: X2.7-X2.8 remain subordinate to the Highway Skills Constitution and do
+not restate P11.1-P11.5; existing X2.1-X2.6 text, identifiers, tiers, Observables, and samples
+remain unchanged.
+
 Version change: 1.4.0 → 1.4.1 (PATCH), 2026-09-23
 
 --- Amendment 1.4.0 → 1.4.1 (PATCH), 2026-09-23 ---
@@ -160,6 +173,15 @@ more intermediate progress messages before the final completion result.
 evaluation order, allocation logic, internal processing, orchestration, or similar internal
 mechanics.
 
+**Repository Context**: Information from Repository Context Documents and accepted repository
+artifacts that can improve a recommendation, explanation, decision support, or workflow guidance.
+
+**Material Influence**: Information that changes a recommendation, workflow action, governance
+interpretation, decision support, or generated artifact outcome.
+
+**Contextual Acknowledgment**: A concise statement explaining how information changes a current or
+future Highway recommendation or Behavior without promoting unrelated Highway capabilities.
+
 A rule belongs here only if it constrains something a user can see or a skill can write.
 
 ## Non-goals
@@ -253,6 +275,8 @@ is copied verbatim into each agent tree. This is the only rule here a script dec
 | X2.4 | A guided information-collection workflow MUST ask only the next required question. | During a Guided information-collection workflow, the prompt contains at most one unresolved collection question and does not introduce future workflow stages. | [agent-checkable] | one |
 | X2.5 | A long-running activity MUST disclose current progress. | For a long-running activity, each progress update identifies the current activity, phase, or step. X2.5 is N/A when no long-running activity exists. | [agent-checkable] | one |
 | X2.6 | A progress message MUST describe activity rather than implementation. | Each progress message describes work being performed and excludes reasoning, workflow mechanics, validation behavior, and internal orchestration. X2.6 is N/A when X2.5 is N/A. | [agent-checkable] | one |
+| X2.7 | An Interactive Workflow MUST ground recommendations in relevant Repository Context when such context exists. | A recommendation cites the applicable Repository Context Document or accepted repository artifact when available. | [agent-checkable] | one |
+| X2.8 | An Interactive Workflow MUST acknowledge information that produces a Material Influence on future recommendations, workflow actions, governance interpretation, or decision support. | A concise acknowledgment precedes continuation when the information changes a future action or recommendation. | [agent-checkable] | one |
 
 A bare "Are you sure?" does not satisfy X2.1: the reader cannot decide from it. Naming the loss is
 what makes the confirmation a decision rather than a formality.
@@ -263,6 +287,24 @@ only in a response requested for that purpose, because internal routing and eval
 do not help a person answer the current question. A long-running activity is the permitted
 exception for progress disclosure: the person needs to know what work is currently happening, but
 the update remains activity-focused rather than explaining internal orchestration.
+
+### Contextual Guidance
+
+Repository Context grounds recommendations when the current workflow can use it. A workflow uses
+repository knowledge over generic guidance when the context applies, while ignoring context that
+does not affect the current decision. Context reduces user effort: it does not add a collection
+question solely to acknowledge or apply information. A Contextual Acknowledgment is concise and
+explains the current or future recommendation or Behavior affected by a Material Influence. It
+does not promote, advertise, or restate unrelated Highway capabilities.
+
+### Context Awareness (Non-Normative Guidance)
+
+| Generic guidance | Context-aware guidance |
+|---|---|
+| "Choose a suitable repository structure." | "Use the repository's declared library and governance paths when selecting the structure." |
+
+The contrast illustrates X2.7 without creating another normative rule. When no applicable context
+exists, the workflow gives bounded generic guidance and emits no Contextual Acknowledgment.
 
 ### Interaction Examples (Non-Normative)
 

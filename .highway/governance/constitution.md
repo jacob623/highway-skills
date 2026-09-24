@@ -1,16 +1,17 @@
 <!--
 Sync Impact Report
-Version change: 2.3.0 → 2.4.0 (MINOR)
-Bump rationale: Principle X and rules P10.1-P10.2 are added without invalidating a conforming
+Version change: 2.4.0 → 2.5.0 (MINOR)
+Bump rationale: Principle XI and rules P11.1-P11.5 are added without invalidating a conforming
 skill; Experience Compliance governs newly created and amended skills while unchanged skills remain
 grandfathered.
-Added principle: X. Experience Compliance (P10.1-P10.2).
-Added obligations: applicable Experience Standard review, X-rule exception identification, and
-combined constitutional/experience review reporting with explicit N/A conditions.
+Added principle: XI. Repository Context (P11.1-P11.5).
+Added obligations: context declaration, relevant-only consumption, available-context use, workflow
+input ownership, and absent-context verification.
 Verified before enabling: the existing parser reads P and X namespaces, the five-group coverage
 contract remains unchanged, and focused review-output tests cover PASS, FAIL, and N/A reporting.
 Self-application review: P10.1 and P10.2 reference Experience Standard compliance and exception
-accountability without restating X2.2-X2.6 rule text.
+accountability without restating X2.2-X2.8 rule text; P11.1-P11.5 define context use without
+restating Experience Standard interaction rules.
 
 Previous amendment:
 Version change: 2.2.0 → 2.3.0 (MINOR)
@@ -41,7 +42,7 @@ Added sections:
     than inside a script so the boundary is reviewable and changing it is an amendment. Carries
     the same two exclusions as the Prohibited Vagueness List.
 Removed sections: none.
-Added rules: none. Removed rules: none. Rule count: 49, unchanged.
+Added rules: P11.1-P11.5. Removed rules: none. Rule count: 54.
 Modified rules:
   - P2.3 retagged [auto] → [agent-checkable]. Rule text and Observable are unchanged. Reason:
     checking for the literal word "Illustrative" is trivial, but deciding whether a passage is a
@@ -49,7 +50,7 @@ Modified rules:
     a language-tagged fenced block as the signal was considered and rejected because it
     under-detects — an example in inline prose or an untagged fence would pass while the tier
     still claimed full automation, which is a subtler form of the same false claim.
-Tier counts: [auto] 15 → 14 (P2.3 leaves); [agent-checkable] 34 → 35; [human-review] 0,
+Tier counts: [auto] 15 → 14 (P2.3 leaves); [agent-checkable] 34 → 40; [human-review] 0,
   unchanged.
 Enforcement change: P6.4 is now decided automatically by rc_check_P6_4 and reported under its own
   rule ID. The check is scoped to the "When to use" and "When not to use" sections, because a
@@ -100,6 +101,11 @@ document and in every skill governed by it.
 | **Experience Standard** | The Highway Experience Standard governing user-visible output and interaction behavior, with rule IDs in the `X` namespace. |
 | **Security-affecting** | Guidance that touches any item in the Security Gate trigger list. |
 | **Declared input** | A value, file, or precondition named in a skill's Inputs section. |
+| **Repository Context Document** | An authoritative file under `.highway/library/knowledge/` describing Highway identity, vision, objectives, or decision evaluation. |
+| **Repository Context** | Information from Repository Context Documents or accepted repository artifacts that can alter a recommendation, explanation, decision support, or workflow guidance. |
+| **Behavior** | Recommendations, guidance, decisions, explanations, proposals, generated artifacts, workflow actions, or user-visible outputs produced by a skill. |
+| **Participating Skill** | A skill whose Behavior is influenced by Repository Context. |
+| **Material Influence** | Information that alters a recommendation, Behavior, governance interpretation, prioritization, decision support, or generated artifact outcome. |
 | **Verdict** | One of exactly three tokens: PASS, FAIL, N/A. No other token is a verdict. |
 
 ### Prohibited Vagueness List
@@ -286,6 +292,28 @@ silently diverging in metadata or body structure.
 Rationale: Experience Compliance makes user-visible behavior reviewable alongside correctness and
 portability while leaving the Experience Standard as the source of interaction rule text.
 
+### XI. Repository Context
+
+Repository Context Documents are located under `.highway/library/knowledge/`. The authoritative
+documents are `highway-identity.md`, `highway-vision.md`, and `highway-platform-objectives.md`.
+Additional Repository Context Documents require a future constitutional amendment. Repository
+Context Documents provide shared repository context without replacing workflow-specific inputs,
+governance artifacts, or user-owned content. When context documents overlap, Identity provides
+behavioral guidance, Vision provides strategic direction, and Platform Objectives provide
+evaluation criteria, in that order. Missing documents do not authorize invented, assumed, or
+substituted repository context.
+
+| ID | Rule | Observable | Tier |
+|---|---|---|---|
+| P11.1 | A Participating Skill MUST declare each context document that can alter its Behavior in Inputs. | Each influencing context document is named in the skill's Inputs section. | [agent-checkable] |
+| P11.2 | A Participating Skill MUST consume only declared context documents that can alter its workflow decisions. | Consumed documents are declared and tied to a purpose, input, output, or workflow decision. | [agent-checkable] |
+| P11.3 | A Participating Skill MUST consult available declared context before producing context-dependent output. | The workflow identifies context use before its dependent output. | [agent-checkable] |
+| P11.4 | Workflow-specific inputs MUST govern execution when they conflict with Repository Context Documents. | The workflow records the workflow-specific input as authoritative for execution. | [agent-checkable] |
+| P11.5 | Verification MUST record absent Repository Context Documents without fabricating or substituting content. | Verification names absent documents and contains no invented replacement content. | [agent-checkable] |
+
+Rationale: Repository Context makes shared identity, direction, and evaluation criteria available to
+skills while preserving workflow ownership and making context use inspectable.
+
 ## Principle Precedence
 
 When two rules conflict, the rule belonging to the higher-ranked principle prevails. This
@@ -302,6 +330,7 @@ ordering is total: every pair of principles has a defined winner.
 | 7 | II. Technology-Agnostic Portability | Governs reach across environments. |
 | 8 | III. Grounding in Approved Authority Sources | Governs provenance of a rule already stated. |
 | 9 | X. Experience Compliance | Governs user-visible behavior after correctness requirements are satisfied. |
+| 10 | XI. Repository Context | Governs context use after correctness, provenance, and experience requirements are satisfied. |
 
 **Security override**: a rule tagged security-affecting outranks every rule in every principle,
 including rank 1 rules that are not security-affecting.

@@ -52,6 +52,10 @@ require_text "$EXPERIENCE_STANDARD" '| X2.3 | An Interactive Workflow MUST NOT b
 require_text "$EXPERIENCE_STANDARD" '| X2.4 | A guided information-collection workflow MUST ask only the next required question'
 require_text "$EXPERIENCE_STANDARD" '| X2.5 | A long-running activity MUST disclose current progress'
 require_text "$EXPERIENCE_STANDARD" '| X2.6 | A progress message MUST describe activity rather than implementation'
+require_text "$EXPERIENCE_STANDARD" '| X2.7 | An Interactive Workflow MUST ground recommendations in relevant Repository Context'
+require_text "$EXPERIENCE_STANDARD" '| X2.8 | An Interactive Workflow MUST acknowledge information that produces a Material Influence'
+require_text "$EXPERIENCE_STANDARD" '### Contextual Guidance'
+require_text "$EXPERIENCE_STANDARD" 'does not promote, advertise, or restate unrelated Highway capabilities'
 require_text "$EXPERIENCE_STANDARD" 'User Exit'
 require_text "$EXPERIENCE_STANDARD" 'Owner Outcome'
 require_text "$EXPERIENCE_STANDARD" 'Persisted owner evidence'
@@ -72,8 +76,6 @@ if [[ "$examples_line" -le "$contract_line" || "$examples_line" -ge "$x4_line" ]
 	echo 'FAIL: illustrative examples are not within or immediately beneath the contract section'
 	fail=1
 fi
-require_absent "$EXPERIENCE_STANDARD" '| X2.7 |'
-
 for skill in highway-profile highway-objectives highway-controls highway-nfrs highway-new highway-discovery highway-adr highway-clarify; do
 	file="$SKILLS_ROOT/$skill/SKILL.md"
 	require_absent "$file" 'This contract is the single reusable interpretive and organizational guidance section'
