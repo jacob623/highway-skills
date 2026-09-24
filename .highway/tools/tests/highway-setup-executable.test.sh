@@ -185,15 +185,73 @@ run_multi_message_order_case() {
 
 run_completion_step_case() {
 	local output="$fixture_root/completion.output"
-	printf 'Current Stage: Complete\nHighway Setup Complete\n' > "$output"
+	printf 'Current Stage: Complete\nHighway Setup Complete\nCompletion Dashboard\n' > "$output"
 	if grep -Fq 'Step:' "$output"; then
 		echo 'FAIL: completion output included a numeric Step'
+		return 1
+	fi
+	if grep -Eq 'Question:|Explicit Status Contract' "$output"; then
+		echo 'FAIL: completion output included collection or status content'
+		return 1
+	fi
+	if ! grep -Fq 'Completion Dashboard' "$output"; then
+		echo 'FAIL: completion output did not use the Completion Dashboard'
 		return 1
 	fi
 }
 
 run_multi_message_order_case || fail=1
 run_completion_step_case || fail=1
+
+run_simplified_collection_case() {
+	local output="$fixture_root/simplified-collection.output" resumed="$fixture_root/resumed-collection.output"
+	printf '%s\n' 'Welcome to Highway.' 'We will continue with your Profile.' 'What is the organization name?' > "$output"
+	if [[ "$(sed -n '1p' "$output")" != 'Welcome to Highway.' || "$(sed -n '2p' "$output")" != 'We will continue with your Profile.' || "$(sed -n '3p' "$output")" != 'What is the organization name?' ]]; then
+		echo 'FAIL: input-required collection did not use welcome, owner introduction, question order'
+		return 1
+	fi
+	if grep -Eq 'Step|Stage|first incomplete stage|owner contract|workflow routing|forwarding response|repository initialization state' "$output"; then
+		echo 'FAIL: routine collection exposed workflow-engine narration'
+		return 1
+	fi
+	printf '%s\n' 'Welcome back to Highway.' 'Let us continue your setup.' 'We will continue with your Objectives.' 'What is the objective?' > "$resumed"
+	if [[ "$(sed -n '1p' "$resumed")" != 'Welcome back to Highway.' || "$(sed -n '3p' "$resumed")" != 'We will continue with your Objectives.' || "$(sed -n '4p' "$resumed")" != 'What is the objective?' ]]; then
+		echo 'FAIL: resumed collection did not use the resume greeting and question order'
+		return 1
+	fi
+	return 0
+}
+
+run_outcome_visibility_case() {
+	local outcome="$1" output="$fixture_root/$1.output"
+	printf 'Highway Setup Status\n\nOwner Workflow: Profile\nOutcome: %s\nBlocking Reason: owner response\nNext Action: Resume owner flow\n' "$outcome" > "$output"
+	if ! grep -Fq "Outcome: $outcome" "$output" || ! grep -Fq 'Next Action: Resume owner flow' "$output"; then
+		echo "FAIL: $outcome outcome did not retain actionable status context"
+		return 1
+	fi
+	return 0
+}
+
+run_simplified_collection_case || fail=1
+run_outcome_visibility_case blocked || fail=1
+run_outcome_visibility_case declined || fail=1
+run_outcome_visibility_case aborted || fail=1
+
+run_status_applicability_case() {
+	local routine="$fixture_root/routine-status.output" explicit="$fixture_root/explicit-status.output"
+	printf '%s\n' 'Owner Workflow: Profile' 'Question: What is the organization name?' > "$routine"
+	if grep -Fq 'Explicit Status Contract' "$routine"; then
+		echo 'FAIL: routine collection emitted the Explicit Status Contract'
+		return 1
+	fi
+	printf '%s\n' 'Explicit Status Contract' 'Current Activity: Profile Setup' > "$explicit"
+	if ! grep -Fq 'Explicit Status Contract' "$explicit"; then
+		echo 'FAIL: explicit status response omitted the Explicit Status Contract'
+		return 1
+	fi
+}
+
+run_status_applicability_case || fail=1
 
 if [[ $fail -ne 0 ]]; then
 	exit 1
