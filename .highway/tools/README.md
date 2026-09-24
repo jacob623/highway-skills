@@ -120,7 +120,9 @@ Output format is a contract, per feature 005 (rename content to library).
 ### `.highway/tools/generate-library-catalog.sh`
 
 Iterates `.highway/library/{templates,knowledge,governance}/*.md` (excluding each directory's
-`README.md`), validates each via `validate-library.sh`, and writes
+`README.md` and the three opaque root-seeded context documents
+`highway-identity.md`, `highway-platform-objectives.md`, and `highway-vision.md`), validates each
+cataloged file via `validate-library.sh`, and writes
 `.highway/catalog/library-index.json` + `.highway/catalog/library-index.md` — a sibling listing
 to the skill catalog, kept separate since the skill catalog's schema is closed to additional
 properties and shaped around skill-only fields.

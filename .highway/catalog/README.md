@@ -21,9 +21,11 @@ the `generated_at` timestamp) — see `data-model.md`'s determinism requirement.
 `index.json` are reviewer-maintained (see `.highway/skills/_authoring-standard.md`'s Manual Overlap
 Review section) and are preserved across regenerations.
 
-- `library-index.json` — authoritative, machine-readable listing of every file under
-  `.highway/library/`, grouped by library type. Conforms to the library catalog schema defined by
-  feature 005 (rename content to library).
+- `library-index.json` — authoritative, machine-readable listing of every cataloged file under
+  `.highway/library/`, grouped by library type. The three opaque root-seeded Highway context
+  documents are intentionally excluded because they have no library frontmatter. The catalog
+  otherwise conforms to the library catalog schema defined by feature 005 (rename content to
+  library).
   Kept as a separate, sibling schema rather than an extension of `index.json`'s schema, since
   that schema is closed to additional properties and shaped around skill-only fields
   (`compatibility`, `overlap_flags`) that do not fit a governance or knowledge file.

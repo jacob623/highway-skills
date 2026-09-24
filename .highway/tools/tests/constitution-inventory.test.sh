@@ -293,8 +293,8 @@ if [[ -f "$EXPERIENCE" ]]; then
 			fail=1
 		fi
 	done
-	if ! grep -qE '^\| 9 \| X\. Experience Compliance \|' "$CONSTITUTION"; then
-		echo "FAIL: Experience Compliance does not have precedence rank 9"
+	if ! grep -qE '^\| 10 \| X\. Experience Compliance \|' "$CONSTITUTION"; then
+		echo "FAIL: Experience Compliance does not have precedence rank 10"
 		fail=1
 	fi
 	if ! grep -qF 'every applicable Experience Standard rule' "$CONSTITUTION" || \
@@ -430,5 +430,43 @@ for test_file in "$SCRIPT_DIR"/*.test.sh; do
 		fail=1
 	fi
 done
+
+# Feature 089: Persistence and Completion Integrity and the closed N/A registry.
+if [[ "$(grep -cE '^\| P12\.[1-5] \|' "$CONSTITUTION")" -ne 5 ]]; then
+	echo "FAIL: Principle XII must contain exactly P12.1 through P12.5"
+	fail=1
+fi
+for rule_id in P12.1 P12.2 P12.3 P12.4 P12.5; do
+	if ! grep -qE "^\| $rule_id \|.*\|.*\| \[(agent-checkable|human-review|auto)\] \|$" "$CONSTITUTION"; then
+		echo "FAIL: $rule_id is missing or has no valid tier"
+		fail=1
+	fi
+done
+for condition_id in N6 N7 N8 N9; do
+	if [[ "$(grep -cE "^\| \*\*$condition_id\*\* \|" "$CONSTITUTION")" -ne 1 ]]; then
+		echo "FAIL: $condition_id must have exactly one constitutional registration"
+		fail=1
+	fi
+done
+if ! grep -qF 'P12.1-P12.4' "$CONSTITUTION" || ! grep -qF 'P12.5' "$CONSTITUTION"; then
+	echo 'FAIL: P12 per-rule N6 applicability mapping is missing'
+	fail=1
+fi
+if ! grep -qF '| 5 | XII. Persistence and Completion Integrity |' "$CONSTITUTION" || \
+	! grep -qF '| 11 | XI. Repository Context |' "$CONSTITUTION" || \
+	! grep -qF '| 6 | VIII. Reliability and Repeatability |' "$CONSTITUTION"; then
+	echo 'FAIL: Principle XII precedence or affected rank sequence is incorrect'
+	fail=1
+fi
+if ! grep -qF 'Version change: 2.6.0 → 3.0.0 (MAJOR)' "$CONSTITUTION" || \
+	! grep -qF 'This changes constitutional conflict-resolution behavior' "$CONSTITUTION" || \
+	! grep -qF '**Version**: 3.0.0' "$CONSTITUTION"; then
+	echo 'FAIL: Constitution version classification or Feature 090 amendment is missing'
+	fail=1
+fi
+if [[ "$(grep -cF 'Bump rationale: Principle XI and rules P11.1-P11.5 are added without invalidating a conforming' "$CONSTITUTION")" -ne 1 ]]; then
+	echo 'FAIL: Constitution must retain exactly one complete Principle XI bump rationale'
+	fail=1
+fi
 
 exit $fail

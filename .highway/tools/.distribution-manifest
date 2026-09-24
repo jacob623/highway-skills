@@ -91,4 +91,7 @@ exclude	specs	-
 exclude	README.md	-
 exclude	governance-plan.md	-
 exclude	nfr-plan.md	-
+exclude	highway-identity.md	-
+exclude	highway-platform-objectives.md	-
+exclude	highway-vision.md	-
 exclude	.DS_Store	-
