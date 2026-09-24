@@ -1,6 +1,18 @@
 <!--
 Sync Impact Report
-Version change: 1.4.1 → 1.5.0 (MINOR), 2026-09-24
+Version change: 1.5.0 → 1.6.0 (MINOR), 2026-09-24
+
+--- Amendment 1.5.0 → 1.6.0 (MINOR), 2026-09-24 ---
+Bump rationale: adds X1.6, X2.9, and X2.10, plus applicable N/A references and UX Contract
+guidance, without changing X1.1-X1.5 or X2.1-X2.8.
+Added rules: X1.6, X2.9, X2.10. Removed rules: none. Rule count: 20.
+Tier counts: [auto] 1, [agent-checkable] 19, [human-review] 0.
+N/A ownership: N6-N9 are registered by the Highway Skills Constitution; this document references
+N7-N9 and defines no competing entries.
+Self-application review: X1.6, X2.9, and X2.10 are checked against this document's scope and
+the Constitution's P10.1-P10.2 without restating constitutional rule text.
+
+Bump rationale: adds Repository Context definitions, Contextual Guidance, and X2.7-X2.8 without
 
 --- Amendment 1.4.1 → 1.5.0 (MINOR), 2026-09-24 ---
 Bump rationale: adds Repository Context definitions, Contextual Guidance, and X2.7-X2.8 without
@@ -176,6 +188,18 @@ mechanics.
 **Repository Context**: Information from Repository Context Documents and accepted repository
 artifacts that can improve a recommendation, explanation, decision support, or workflow guidance.
 
+**Decision Context**: A concise explanation of how requested information can affect a downstream
+recommendation, decision, artifact, governance interpretation, or workflow behavior.
+
+**Relevant Example**: A concise illustrative example of the expected kind or form of an answer
+that does not constrain the user's choice.
+
+**Presentation Label**: A short user-facing label identifying the meaning or role of an adjacent
+value.
+
+**Structured Information**: Two or more named fields, properties, statuses, relationships,
+options, or values presented together for review or decision-making.
+
 **Material Influence**: Information that changes a recommendation, workflow action, governance
 interpretation, decision support, or generated artifact outcome.
 
@@ -228,14 +252,18 @@ A tier tag describes what is true now, not what is planned.
 
 ### N/A conditions
 
-A rule whose trigger does not arise is reported `N/A` under a condition token. `N1` and `N2` are
-declared by the Highway Skills Constitution and are not restated here. This document declares one
-further condition, because the rule that needs it lives here:
+A rule whose trigger does not arise is reported `N/A` under a condition token. The Highway Skills
+Constitution owns the closed N/A vocabulary. This document references applicable IDs and does not
+define competing N6-N9 entries. Existing local N3 and N5 references remain historical and are not
+expanded by this amendment.
 
 | Token | Condition |
 |---|---|
 | **N3** | The specimen repeats no value the skill's metadata also declares. |
 | **N5** | The workflow has no long-running activity; this applies to X2.5 and X2.6. |
+| **N7** | See the Highway Skills Constitution; no Decision Context trigger applies. |
+| **N8** | See the Highway Skills Constitution; no Relevant Example clarifies response form. |
+| **N9** | See the Highway Skills Constitution; no Structured Information is emitted. |
 
 If a third governing document ever needs its own condition, the vocabulary should be unified in
 one place rather than split further.
@@ -257,6 +285,7 @@ recorded `N/A` rather than as an exception.
 | X1.3 | An empty result MUST have a declared form. | The Outputs section states the exact content emitted when there is nothing to report. | [agent-checkable] | one |
 | X1.4 | A specimen MUST agree with the metadata it repeats. | Every value the Example section shares with the skill's frontmatter matches it. | [auto] | two |
 | X1.5 | Every retained file artifact emitted by a skill MUST include frontmatter. | Each retained emitted file begins with frontmatter; transient messages and other non-file output are excluded. | [agent-checkable] | two |
+| X1.6 | A structured user-facing field MUST visually distinguish its Presentation Label from its value. | In Structured Information, each named field has a distinct label adjacent to its value. | [agent-checkable] | new |
 
 X1.3 exists because an empty result is where output contracts are usually left undefined, and an
 empty table tells a reader nothing about whether the skill worked.
@@ -277,6 +306,8 @@ is copied verbatim into each agent tree. This is the only rule here a script dec
 | X2.6 | A progress message MUST describe activity rather than implementation. | Each progress message describes work being performed and excludes reasoning, workflow mechanics, validation behavior, and internal orchestration. X2.6 is N/A when X2.5 is N/A. | [agent-checkable] | one |
 | X2.7 | An Interactive Workflow MUST ground recommendations in relevant Repository Context when such context exists. | A recommendation cites the applicable Repository Context Document or accepted repository artifact when available. | [agent-checkable] | one |
 | X2.8 | An Interactive Workflow MUST acknowledge information that produces a Material Influence on future recommendations, workflow actions, governance interpretation, or decision support. | A concise acknowledgment precedes continuation when the information changes a future action or recommendation. | [agent-checkable] | one |
+| X2.9 | A guided information-collection workflow MUST provide Decision Context when the requested answer affects a downstream outcome. | The prompt explains the downstream recommendation, decision, artifact, interpretation, or action affected. | [agent-checkable] | new |
+| X2.10 | A guided information-collection workflow MUST provide a Relevant Example when it clarifies the expected response form. | The prompt includes an illustrative response-form example without constraining user-owned content. | [agent-checkable] | new |
 
 A bare "Are you sure?" does not satisfy X2.1: the reader cannot decide from it. Naming the loss is
 what makes the confirmation a decision rather than a formality.
@@ -322,11 +353,13 @@ These examples are illustrative and do not add rule IDs.
 ### Interactive Workflow UX Contract
 
 This contract is the single reusable interpretive and organizational guidance section for
-Interactive Workflows. It organizes, scopes, and applies X2.2-X2.6, N5 applicability, and the
+Interactive Workflows. It organizes, scopes, and applies X2.2-X2.6, X2.9-X2.10, N5, N7, and N8 applicability, and the
 defined concepts Interactive Workflow, Guided information-collection workflow, Long-running
 activity, and Implementation details. It does not create additional X-rule obligations, modify
 X2.2-X2.6 normative text, or introduce new X rule identifiers. The X2.2-X2.6 rules remain the
 sole normative interaction authority.
+
+The contract preserves X2.2-X2.6, N5 applicability while adding the scoped N7 and N8 references.
 
 The bullets below interpret and organize those existing rules; they are not a second rule
 namespace. Each skill remains responsible for its domain workflow contract, artifact ownership,
@@ -349,6 +382,10 @@ progress fields, terminality rules, and domain-specific behavior.
 - As an application of X2.4, a guided collection workflow exposes exactly one unresolved
   response-demanding question or decision at a time. Supporting context and examples may
   accompany it.
+- As applications of X2.9 and X2.10, Decision Context and Relevant Examples support the one
+  unresolved question and do not create another response-demanding decision.
+- Presentation Labels affect presentation only. Contextual Acknowledgments continue under X2.8;
+  none of these supporting elements independently creates a user decision.
 - When meaningful ordered work or long-running activity exists, progress identifies current
   activity and the applicable completed/remaining counts or position/remaining counts.
 - When no meaningful ordered work or long-running activity exists, progress stages are not
@@ -453,3 +490,5 @@ Rule IDs are stable across amendments; a retired ID is never reused.
 
 Every amendment records a review against the non-restatement rules of the other two governing
 documents, and states which rules rest on a single example.
+
+**Version**: 1.6.0 | **Ratified**: 2026-09-08 | **Last Amended**: 2026-09-24

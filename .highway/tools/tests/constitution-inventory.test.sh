@@ -431,4 +431,36 @@ for test_file in "$SCRIPT_DIR"/*.test.sh; do
 	fi
 done
 
+# Feature 089: Persistence and Completion Integrity and the closed N/A registry.
+if [[ "$(grep -cE '^\| P12\.[1-5] \|' "$CONSTITUTION")" -ne 5 ]]; then
+	echo "FAIL: Principle XII must contain exactly P12.1 through P12.5"
+	fail=1
+fi
+for rule_id in P12.1 P12.2 P12.3 P12.4 P12.5; do
+	if ! grep -qE "^\| $rule_id \|.*\|.*\| \[(agent-checkable|human-review|auto)\] \|$" "$CONSTITUTION"; then
+		echo "FAIL: $rule_id is missing or has no valid tier"
+		fail=1
+	fi
+done
+for condition_id in N6 N7 N8 N9; do
+	if [[ "$(grep -cE "^\| \*\*$condition_id\*\* \|" "$CONSTITUTION")" -ne 1 ]]; then
+		echo "FAIL: $condition_id must have exactly one constitutional registration"
+		fail=1
+	fi
+done
+if ! grep -qF 'P12.1-P12.4' "$CONSTITUTION" || ! grep -qF 'P12.5' "$CONSTITUTION"; then
+	echo 'FAIL: P12 per-rule N6 applicability mapping is missing'
+	fail=1
+fi
+if ! grep -qF '| 10 | XI. Repository Context |' "$CONSTITUTION" || \
+	! grep -qF '| 11 | XII. Persistence and Completion Integrity |' "$CONSTITUTION"; then
+	echo 'FAIL: Principle XII precedence is missing or Repository Context was not retained'
+	fail=1
+fi
+if ! grep -qF 'Version change: 2.5.0 → 2.6.0 (MINOR)' "$CONSTITUTION" || \
+	! grep -qF '**Version**: 2.6.0' "$CONSTITUTION"; then
+	echo 'FAIL: Constitution version reconciliation or Feature 089 bump is missing'
+	fail=1
+fi
+
 exit $fail

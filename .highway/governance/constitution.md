@@ -1,6 +1,19 @@
 <!--
 Sync Impact Report
-Version change: 2.4.0 → 2.5.0 (MINOR)
+Version change: 2.5.0 → 2.6.0 (MINOR)
+Bump rationale: Principle XII and rules P12.1-P12.5 add verified retained-output completion
+without invalidating unchanged skills; existing skills remain grandfathered until amendment.
+Reconciled metadata: the prior completed report declared 2.5.0 while the footer remained 2.4.0;
+the footer was reconciled to 2.5.0 before calculating this amendment.
+Added principle: XII. Persistence and Completion Integrity (P12.1-P12.5).
+Added definitions: Retained Output, Persistence Verification, Completion Claim, and Verified
+Completion Claim.
+Added permitted N/A conditions: N6-N9, registered here as the sole authoritative vocabulary.
+Rule count: 59. Tier counts: [auto] 14, [agent-checkable] 45, [human-review] 0.
+Self-application review: P12.1-P12.4 are N/A under N6 for this constitution's no Retained Output;
+P12.5 is evaluated by its orchestration trigger. P1.1-P1.4, P6.4, P6.6, and P7.3 pass.
+
+Bump rationale: Principle XI and rules P11.1-P11.5 are added without invalidating a conforming
 Bump rationale: Principle XI and rules P11.1-P11.5 are added without invalidating a conforming
 skill; Experience Compliance governs newly created and amended skills while unchanged skills remain
 grandfathered.
@@ -106,6 +119,10 @@ document and in every skill governed by it.
 | **Behavior** | Recommendations, guidance, decisions, explanations, proposals, generated artifacts, workflow actions, or user-visible outputs produced by a skill. |
 | **Participating Skill** | A skill whose Behavior is influenced by Repository Context. |
 | **Material Influence** | Information that alters a recommendation, Behavior, governance interpretation, prioritization, decision support, or generated artifact outcome. |
+| **Retained Output** | An artifact or repository state that a skill contract declares will remain after successful completion. |
+| **Persistence Verification** | A post-write check that confirms declared Retained Output exists at its declared location or satisfies its declared persisted-state condition. |
+| **Completion Claim** | A user-visible or machine-consumable statement that a mutation, workflow, stage, or retained-output operation completed successfully. |
+| **Verified Completion Claim** | A Completion Claim made only after every Retained Output covered by the claim passes Persistence Verification. |
 | **Verdict** | One of exactly three tokens: PASS, FAIL, N/A. No other token is a verdict. |
 
 ### Prohibited Vagueness List
@@ -314,6 +331,23 @@ substituted repository context.
 Rationale: Repository Context makes shared identity, direction, and evaluation criteria available to
 skills while preserving workflow ownership and making context use inspectable.
 
+### XII. Persistence and Completion Integrity
+
+| ID | Rule | Observable | Tier |
+|---|---|---|---|
+| P12.1 | A skill changing Retained Output MUST perform Persistence Verification before its Verified Completion Claim. | Verification evidence follows the write and precedes the claim. | [agent-checkable] |
+| P12.2 | A skill MUST NOT make a Completion Claim after failed Persistence Verification. | A failed verification is followed by a non-success result. | [agent-checkable] |
+| P12.3 | A persistence failure MUST identify the unverified Retained Output. | The failure result names the expected output or persisted state. | [agent-checkable] |
+| P12.4 | A multi-output Completion Claim MUST verify every covered Retained Output. | Each output covered by the claim has verification evidence. | [agent-checkable] |
+| P12.5 | An orchestrator MUST consume the owning workflow's completion result. | Orchestration advances or stops from the owner result. | [agent-checkable] |
+
+N6 applies to P12.1-P12.4 when the reviewed workflow declares no Retained Output. P12.5 is
+evaluated according to its orchestration trigger rather than inheriting N6 from the orchestrator's
+own output declaration.
+
+Rationale: Verified retained state separates approval, attempted mutation, persistence, and
+completion so an orchestrator cannot infer successful work from an owner request alone.
+
 ## Principle Precedence
 
 When two rules conflict, the rule belonging to the higher-ranked principle prevails. This
@@ -331,6 +365,7 @@ ordering is total: every pair of principles has a defined winner.
 | 8 | III. Grounding in Approved Authority Sources | Governs provenance of a rule already stated. |
 | 9 | X. Experience Compliance | Governs user-visible behavior after correctness requirements are satisfied. |
 | 10 | XI. Repository Context | Governs context use after correctness, provenance, and experience requirements are satisfied. |
+| 11 | XII. Persistence and Completion Integrity | Governs retained-output verification and completion claims after repository context. |
 
 **Security override**: a rule tagged security-affecting outranks every rule in every principle,
 including rank 1 rules that are not security-affecting.
@@ -442,6 +477,10 @@ This list is closed.
 | **N3** | The rule governs amendment of this constitution, and the reviewed artifact is not this constitution. |
 | **N4** | The rule's stated scope names an artifact type that the reviewed artifact is not. |
 | **N5** | The reviewed workflow has no long-running activity; this condition applies to X2.5 and X2.6. |
+| **N6** | The reviewed workflow declares no Retained Output; this condition applies to P12.1-P12.4. |
+| **N7** | No downstream implication exists, or the implication was explicitly established immediately before the prompt; this condition applies to Decision Context. |
+| **N8** | No example clarifies the expected response kind or form; this condition applies to Relevant Example. |
+| **N9** | The emitted content contains no Structured Information; this condition applies to Presentation Label. |
 
 ### Merge decision
 
@@ -526,4 +565,4 @@ every other skill's version. This is the policy referenced by P7.7.
 - **MINOR**: a capability is added while every existing contract element continues to hold.
 - **PATCH**: wording repair with no change to Inputs, Outputs, or Verification.
 
-**Version**: 2.4.0 | **Ratified**: 2026-09-06 | **Last Amended**: 2026-09-23
+**Version**: 2.6.0 | **Ratified**: 2026-09-06 | **Last Amended**: 2026-09-24
