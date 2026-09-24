@@ -37,7 +37,8 @@ Orchestrates the initial Highway repository setup through an active Guided Setup
 
 - When user input is required, a welcome message or resume greeting, the active owner introduction, and the owner's next unresolved question in that order, followed by a wait for one response.
 - During active collection, the active owner workflow and owner question without routine `Step`, `Stage`, completed-stage, remaining-stage, or current-activity progress framing.
-- When setup completes, is blocked, setup is declined, setup is aborted, or the user explicitly requests status, the applicable status or existing completion dashboard with actionable owner context.
+- When setup is blocked, setup is declined, setup is aborted, or the user explicitly requests status, the Explicit Status Contract with actionable owner context. Successful completion instead uses the Completion Dashboard and does not emit a collection question or the Explicit Status Contract.
+- Owner questions, summaries, outputs, blocking reasons, and next actions remain owner-owned content. Emit them only when supplied by the owner workflow and applicable to the current interaction outcome.
 - The active owner's question, example, summary, output, and next action, presented verbatim except for the simplified Setup opening and status conditions defined here.
 - Do not directly write Profile, Objective, Control, or NFR artifacts.
 - When no owner mutation is required, preserve existing governance artifact bytes exactly.
@@ -63,7 +64,7 @@ After each terminal owner result, Guided Setup automatically advances to the nex
 
 ### Explicit Status Contract
 
-Progress details are available only when the user explicitly requests status or when Setup reports a blocked, declined, or aborted outcome. FR-009A numeric step mapping is: Step 1 is Profile, Step 2 is Objectives, Step 3 is Controls, and Step 4 is NFRs.
+Progress details are available only when the user explicitly requests status or when Setup reports a blocked, declined, or aborted outcome. The Explicit Status Contract is never emitted during routine question collection. FR-009A numeric step mapping is: Step 1 is Profile, Step 2 is Objectives, Step 3 is Controls, and Step 4 is NFRs.
 
 The explicit status mapping is `Step 1: Profile`, `Step 2: Objectives`, `Step 3: Controls`, and `Step 4: NFRs`. When `Current Stage` is `Complete`, no numeric `Step` is emitted at completion.
 

@@ -185,9 +185,17 @@ run_multi_message_order_case() {
 
 run_completion_step_case() {
 	local output="$fixture_root/completion.output"
-	printf 'Current Stage: Complete\nHighway Setup Complete\n' > "$output"
+	printf 'Current Stage: Complete\nHighway Setup Complete\nCompletion Dashboard\n' > "$output"
 	if grep -Fq 'Step:' "$output"; then
 		echo 'FAIL: completion output included a numeric Step'
+		return 1
+	fi
+	if grep -Eq 'Question:|Explicit Status Contract' "$output"; then
+		echo 'FAIL: completion output included collection or status content'
+		return 1
+	fi
+	if ! grep -Fq 'Completion Dashboard' "$output"; then
+		echo 'FAIL: completion output did not use the Completion Dashboard'
 		return 1
 	fi
 }
@@ -228,6 +236,22 @@ run_simplified_collection_case || fail=1
 run_outcome_visibility_case blocked || fail=1
 run_outcome_visibility_case declined || fail=1
 run_outcome_visibility_case aborted || fail=1
+
+run_status_applicability_case() {
+	local routine="$fixture_root/routine-status.output" explicit="$fixture_root/explicit-status.output"
+	printf '%s\n' 'Owner Workflow: Profile' 'Question: What is the organization name?' > "$routine"
+	if grep -Fq 'Explicit Status Contract' "$routine"; then
+		echo 'FAIL: routine collection emitted the Explicit Status Contract'
+		return 1
+	fi
+	printf '%s\n' 'Explicit Status Contract' 'Current Activity: Profile Setup' > "$explicit"
+	if ! grep -Fq 'Explicit Status Contract' "$explicit"; then
+		echo 'FAIL: explicit status response omitted the Explicit Status Contract'
+		return 1
+	fi
+}
+
+run_status_applicability_case || fail=1
 
 if [[ $fail -ne 0 ]]; then
 	exit 1
