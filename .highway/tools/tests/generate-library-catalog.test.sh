@@ -60,6 +60,13 @@ for output_template in nfr-record control-record; do
 	fi
 done
 
+for context_document in highway-identity.md highway-platform-objectives.md highway-vision.md; do
+	if grep -q "library/knowledge/$context_document" "$CATALOG_JSON"; then
+		echo "FAIL: opaque context document '$context_document' must not appear in the library catalog"
+		fail=1
+	fi
+done
+
 for field in library_type name description version source_path; do
 	if ! grep -q "\"$field\":" "$CATALOG_JSON"; then
 		echo "FAIL: catalog/library-index.json entry missing field '$field'"

@@ -23,13 +23,22 @@ json_escape() {
 	sed -e 's/\\/\\\\/g' -e 's/"/\\"/g'
 }
 
+is_context_document() {
+	case "$(basename "$1")" in
+		highway-identity.md|highway-platform-objectives.md|highway-vision.md) return 0 ;;
+		*) return 1 ;;
+	esac
+}
+
 # README.md documents the directory's purpose only; it is not itself shared library content
-# (FR-001).
+# (FR-001). The three root-seeded Highway context documents are opaque repository context and
+# intentionally have no library frontmatter or catalog entries.
 library_files=()
 shopt -s nullglob
 for library_type in templates knowledge governance; do
 	while IFS= read -r f; do
 		[[ "$(basename "$f")" == "README.md" ]] && continue
+		is_context_document "$f" && continue
 		library_files+=("$f")
 	done < <(find "$LIBRARY_DIR/$library_type" -type f -name '*.md' -print | sort)
 done
