@@ -1,0 +1,1 @@
+Declined, aborted, interrupted, malformed, and no-op mutations preserve retained bytes.

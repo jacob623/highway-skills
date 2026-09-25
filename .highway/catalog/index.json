@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-24T01:04:25Z",
+  "generated_at": "2026-09-25T12:31:54Z",
   "entries": [
     {
       "id": "highway-adr",
@@ -85,10 +85,10 @@
     {
       "id": "highway-profile",
       "name": "highway-profile",
-      "description": "Manages the repository-wide organizational profile that supplies contextual guidance without becoming governance.",
-      "usage": "Invoke as `/highway-profile` to inspect profile context, or state `setup`, `view`, `add`, `update`, `remove`, or `reset` and the intended profile change.",
+      "description": "Manages the repository-wide organizational Profile and its contextual guidance.",
+      "usage": "Invoke as `/highway-profile` to inspect Profile context, or state setup, view, add, update, remove, or reset.",
       "compatibility": "all",
-      "version": "1.0.0",
+      "version": "3.0.0",
       "source_path": "skills/highway-profile/SKILL.md"
     },
     {
@@ -103,10 +103,10 @@
     {
       "id": "highway-setup",
       "name": "highway-setup",
-      "description": "Orchestrates the initial Highway repository setup through the owning governance skills.",
+      "description": "Orchestrates initial Highway setup through the owning governance skills.",
       "usage": "Invoke as `/highway-setup` to assess readiness and complete missing foundational setup in order.",
       "compatibility": "all",
-      "version": "3.0.0",
+      "version": "5.0.0",
       "source_path": "skills/highway-setup/SKILL.md"
     }
   ],

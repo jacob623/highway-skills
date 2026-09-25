@@ -1,0 +1,5 @@
+Acknowledgment: I understand the organizational context you provided.
+Decision Context: This answer helps evaluate the current Profile domain.
+Relevant Examples: Examples remain tied to the user's evidence.
+Progress: One unresolved question remains.
+Next Action: Answer the current Profile question.

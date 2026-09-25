@@ -27,24 +27,43 @@ expect_invalid() {
 	fi
 }
 
-expect_valid "$HIGHWAY_ROOT/library/templates/output/profile.yaml"
-expect_valid "$FIXTURES/valid-populated.yaml"
-expect_valid "$FIXTURES/valid-future-sections.yaml"
-expect_invalid "$FIXTURES/malformed.yaml"
-expect_invalid "$FIXTURES/missing-metadata.yaml"
-expect_invalid "$FIXTURES/wrong-order.yaml"
-expect_invalid "$FIXTURES/empty-section.yaml"
-expect_invalid "$FIXTURES/generated-value.yaml"
+expect_valid "$HIGHWAY_ROOT/library/templates/output/profile-record.md"
+expect_valid "$SCRIPT_DIR/fixtures/profile-092/profile-record/accepted.md"
+expect_valid "$SCRIPT_DIR/fixtures/profile-092/profile-record/bounded-empty.md"
+
+bounded_without_evidence="$TMPDIR/highway-profile-bounded-without-evidence.$$.md"
+cp "$SCRIPT_DIR/fixtures/profile-092/profile-record/bounded-empty.md" "$bounded_without_evidence"
+printf '%s\n' '## Who We Are' >> "$bounded_without_evidence"
+expect_invalid "$bounded_without_evidence"
+rm -f "$bounded_without_evidence"
 
 SKILL="$HIGHWAY_ROOT/skills/highway-profile/SKILL.md"
 for required_text in \
-	'What is the name of the organization, business unit, team, or project group this repository represents?' \
-	'organization.name' \
-	'whitespace-only' \
-	'does not infer organization identity' \
-	'Profile cannot report `Complete`'; do
+	'five evidence domains' \
+	'not_discussed' \
+	'discussed' \
+	'bounded' \
+	'Profile readiness'; do
 	if ! grep -Fq "$required_text" "$SKILL"; then
 		echo "FAIL: Profile ownership contract missing '$required_text'"
+		fail=1
+	fi
+done
+
+for heading in \
+	'## Who We Are' \
+	"## Where We're Going" \
+	'## How We Plan to Get There' \
+	'## What Guides Our Decisions' \
+	'## How Highway Helps'; do
+	if ! grep -Fq -- "$heading" "$HIGHWAY_ROOT/library/templates/output/profile-record.md"; then
+		echo "FAIL: Profile template omits canonical generated heading '$heading'"
+		fail=1
+	fi
+done
+for rule in 'discussed always renders evidence' 'bounded renders accepted evidence' 'not_discussed never renders a narrative section'; do
+	if ! grep -Fq -- "$rule" "$HIGHWAY_ROOT/library/templates/output/profile-record.md"; then
+		echo "FAIL: Profile template omits state-to-narrative rule '$rule'"
 		fail=1
 	fi
 done

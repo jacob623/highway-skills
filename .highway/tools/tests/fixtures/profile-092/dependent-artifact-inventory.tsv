@@ -1,0 +1,6 @@
+source\tdependent\tgenerator\tresult
+.highway/skills/highway-profile/SKILL.md\t.github/skills/highway-profile/SKILL.md; .claude/skills/highway-profile/SKILL.md; .cursor/rules/highway-profile.mdc; .highway/tools/.adapter-manifest\t.highway/tools/generate-agent-adapters.sh\tPASS
+.highway/skills/highway-setup/SKILL.md\t.github/skills/highway-setup/SKILL.md; .claude/skills/highway-setup/SKILL.md; .cursor/rules/highway-setup.mdc; .highway/tools/.adapter-manifest\t.highway/tools/generate-agent-adapters.sh\tPASS
+.highway/skills/highway-profile/SKILL.md; .highway/skills/highway-setup/SKILL.md\t.highway/catalog/index.json; .highway/catalog/index.md\t.highway/tools/generate-catalog.sh\tPASS
+.highway/library/knowledge/highway-identity.md; .highway/library/templates/output/profile-record.md\t.highway/catalog/library-index.json; .highway/catalog/library-index.md\t.highway/tools/generate-library-catalog.sh\tPASS
+.highway/library/templates/output/profile-record.md\t.highway/tools/.distribution-manifest\tmanual manifest verification\tPASS

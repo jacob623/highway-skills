@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-23T12:00:08Z",
+  "generated_at": "2026-09-25T12:31:59Z",
   "entries": [
     {
       "library_type": "template",
@@ -84,6 +84,13 @@
       "description": "Complete output skeleton for a retained Business Objective record.",
       "version": "1.0.0",
       "source_path": "library/templates/output/objective-record.md"
+    },
+    {
+      "library_type": "template",
+      "name": "Organizational Profile",
+      "description": "Shared Markdown structure for retained organizational Profile evidence.",
+      "version": "2.0.0",
+      "source_path": "library/templates/output/profile-record.md"
     },
     {
       "library_type": "template",

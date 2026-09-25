@@ -1,0 +1,2 @@
+Template metadata is structural input; retained Profile content remains user-owned.
+No placeholder write is allowed.

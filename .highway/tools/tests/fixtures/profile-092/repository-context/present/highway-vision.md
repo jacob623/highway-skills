@@ -1,0 +1,1 @@
+Vision supplies strategic direction.

@@ -7,7 +7,8 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 REPO_ROOT="$(cd "$HIGHWAY_ROOT/.." && pwd)"
 
-# Two tests seed probes into the live tree, because what they check -- packaging and adapter
+# Feature 092 checks are included by the existing *.test.sh discovery below; no separate dispatch
+# list is required. Two tests seed probes into the live tree, because what they check -- packaging and adapter
 # generation -- reads the real tree rather than a copy. Each names its probes with its own PID and
 # removes them on exit, so a run killed before cleanup leaves residue no later run will claim.
 #

@@ -1,0 +1,13 @@
+P11.1 Repository Context definition
+P11.2 declared context inputs
+P11.3 workflow-input precedence
+P11.4 no context promotion
+P14 deterministic output
+P16 completion accountability
+X2.3 implementation-detail boundary
+X2.7 Contextual Acknowledgments
+X2.8 Decision Context
+X2.9 Relevant Examples
+X2.10 user-relevant progress
+D3.7 probe reachability
+D4.5-D4.7 generated correspondence

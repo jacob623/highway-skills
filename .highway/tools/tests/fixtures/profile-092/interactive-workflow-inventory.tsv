@@ -1,0 +1,9 @@
+skill\tX2.3 verdict\trequired change\tversion classification
+highway-profile\tPASS\tinteraction-wide detail boundary and progress wording\tMAJOR 3.0.0
+highway-setup\tPASS\towner-result orchestration wording\tMAJOR 5.0.0
+highway-objectives\tPASS\texisting omit-implementation-details wording\tNone
+highway-controls\tPASS\t existing omit-implementation-details wording\tNone
+highway-nfrs\tPASS\t existing omit-implementation-details wording\tNone
+highway-adr\tPASS\t existing Interactive Workflow UX Contract wording\tNone
+highway-clarify\tPASS\t existing Interactive Workflow UX Contract wording\tNone
+highway-discovery\tPASS\t existing Interactive Workflow UX Contract wording\tNone

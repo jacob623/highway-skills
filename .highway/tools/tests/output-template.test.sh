@@ -17,7 +17,7 @@ CONTROL_SKILL="$HIGHWAY_ROOT/skills/highway-controls/SKILL.md"
 NFR_TEMPLATE="$HIGHWAY_ROOT/library/templates/output/nfr-record.md"
 CONTROL_TEMPLATE="$HIGHWAY_ROOT/library/templates/output/control-record.md"
 PROFILE_SKILL="$HIGHWAY_ROOT/skills/highway-profile/SKILL.md"
-PROFILE_TEMPLATE="$HIGHWAY_ROOT/library/templates/output/profile.yaml"
+PROFILE_TEMPLATE="$HIGHWAY_ROOT/library/templates/output/profile-record.md"
 OBJECTIVE_SKILL="$HIGHWAY_ROOT/skills/highway-objectives/SKILL.md"
 OBJECTIVE_TEMPLATE="$HIGHWAY_ROOT/library/templates/output/objective-record.md"
 NEW_SKILL="$HIGHWAY_ROOT/skills/highway-new/SKILL.md"
@@ -146,10 +146,12 @@ if [[ -f "$CONTROL_TEMPLATE" ]]; then
 fi
 if [[ -f "$PROFILE_TEMPLATE" ]]; then
 	require_text "$PROFILE_TEMPLATE" "metadata:"
-	require_text "$PROFILE_TEMPLATE" "organization:"
-	require_text "$PROFILE_TEMPLATE" "constraints:"
-	require_text "$PROFILE_TEMPLATE" "preferences:"
-	require_text "$PROFILE_TEMPLATE" "vendor_strategy:"
+	require_text "$PROFILE_TEMPLATE" "schema_version: 2.0.0"
+	require_text "$PROFILE_TEMPLATE" "identity: not_discussed"
+	require_text "$PROFILE_TEMPLATE" "vision: not_discussed"
+	require_text "$PROFILE_TEMPLATE" "competitive_path: not_discussed"
+	require_text "$PROFILE_TEMPLATE" "guiding_principles: not_discussed"
+	require_text "$PROFILE_TEMPLATE" "highway_role: not_discussed"
 fi
 if [[ -f "$OBJECTIVE_TEMPLATE" ]]; then
 	require_text "$OBJECTIVE_TEMPLATE" "name: objective-record"
@@ -200,7 +202,7 @@ done
 # Each file-emitting skill must cite its complete skeleton.
 require_text "$NFR_SKILL" ".highway/library/templates/output/nfr-record.md"
 require_text "$CONTROL_SKILL" ".highway/library/templates/output/control-record.md"
-require_text "$PROFILE_SKILL" ".highway/library/templates/output/profile.yaml"
+require_text "$PROFILE_SKILL" ".highway/library/templates/output/profile-record.md"
 require_text "$OBJECTIVE_SKILL" ".highway/library/templates/output/objective-record.md"
 require_text "$OBJECTIVE_SKILL" ".highway/library/templates/output/objective-catalog.md"
 require_text "$CONTROL_SKILL" ".highway/library/templates/output/control-catalog.md"
