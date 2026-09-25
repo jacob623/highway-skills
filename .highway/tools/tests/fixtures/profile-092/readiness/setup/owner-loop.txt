@@ -1,0 +1,4 @@
+active: /highway-profile setup -> readiness -> /highway-objectives setup -> readiness -> /highway-controls setup -> readiness -> /highway-nfrs review
+status-only: report owner result without delegation
+stop: blocked unknown declined aborted failed
+nfr: In Progress is non-terminal

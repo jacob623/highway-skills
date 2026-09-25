@@ -29,6 +29,15 @@ profile_metadata_field() {
 profile_domain_state() {
 	profile_frontmatter "$1" | awk -v domain="$2" '$0 ~ "^[[:space:]]+" domain ":[[:space:]]*" { sub("^[^:]*:[[:space:]]*", ""); print; exit }'
 }
+profile_domain_has_evidence() {
+	local profile_file="$1" heading="$2"
+	awk -v heading="$heading" '
+		$0 == heading { in_section = 1; next }
+		in_section && $0 ~ /^##[[:space:]]/ { exit(found ? 0 : 1) }
+		in_section && $0 !~ /^[[:space:]]*$/ { found = 1 }
+		END { if (in_section) exit(found ? 0 : 1); exit 1 }
+	' "$profile_file"
+}
 profile_next_version() {
 	local version="$1" operation="$2" major minor patch
 	IFS='.' read -r major minor patch <<EOF

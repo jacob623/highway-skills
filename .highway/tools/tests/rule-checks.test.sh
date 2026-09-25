@@ -329,7 +329,7 @@ if ! grep -qF '**Implementation details**: Information describing workflow owner
 fi
 if ! grep -qF '**Interactive Workflow**: A workflow that emits user-visible messages and expects a user response,' "$EXPERIENCE" || \
 	! grep -qF 'During a Guided information-collection workflow, the prompt contains at most one unresolved collection question' "$EXPERIENCE" || \
-	! grep -qF 'The opening response excludes Implementation details unless requested.' "$EXPERIENCE"; then
+	! grep -qF 'Every user-visible response excludes Implementation details unless requested.' "$EXPERIENCE"; then
 	echo "FAIL: X2.3/X2.4 applicability terminology is inconsistent"
 	fail=1
 fi

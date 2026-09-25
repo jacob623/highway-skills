@@ -49,12 +49,12 @@ if [[ "$(grep -cF 'Bump rationale: adds Repository Context definitions, Contextu
 	fail=1
 fi
 require_text "$EXPERIENCE_STANDARD" 'As an application of X2.2'
-require_text "$EXPERIENCE_STANDARD" 'As applications of X2.3 and X2.6'
+require_text "$EXPERIENCE_STANDARD" 'As applications of X2.3 and X2.6, every normal user-facing response'
 require_text "$EXPERIENCE_STANDARD" 'As an application of X2.4'
 require_text "$EXPERIENCE_STANDARD" 'this is an ownership convention, not a new X rule'
 require_text "$EXPERIENCE_STANDARD" 'X2.2-X2.6'
 require_text "$EXPERIENCE_STANDARD" '| X2.2 | An Interactive Workflow MUST prioritize the user'
-require_text "$EXPERIENCE_STANDARD" '| X2.3 | An Interactive Workflow MUST NOT begin with implementation details'
+require_text "$EXPERIENCE_STANDARD" '| X2.3 | An Interactive Workflow MUST NOT expose implementation details'
 require_text "$EXPERIENCE_STANDARD" '| X2.4 | A guided information-collection workflow MUST ask only the next required question'
 require_text "$EXPERIENCE_STANDARD" '| X2.5 | A long-running activity MUST disclose current progress'
 require_text "$EXPERIENCE_STANDARD" '| X2.6 | A progress message MUST describe activity rather than implementation'
@@ -115,8 +115,7 @@ for skill in $skills; do
 done
 
 require_text "$SKILLS_ROOT/highway-profile/SKILL.md" 'Current Question'
-require_text "$SKILLS_ROOT/highway-profile/SKILL.md" 'Completed Questions Count'
-require_text "$SKILLS_ROOT/highway-profile/SKILL.md" 'Remaining Questions Count'
+require_text "$SKILLS_ROOT/highway-profile/SKILL.md" 'Domain Progress'
 require_text "$SKILLS_ROOT/highway-profile/SKILL.md" 'Current Activity'
 require_text "$SKILLS_ROOT/highway-objectives/SKILL.md" 'objective statement'
 require_text "$SKILLS_ROOT/highway-objectives/SKILL.md" 'success measures'

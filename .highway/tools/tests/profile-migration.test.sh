@@ -9,7 +9,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 REPO_ROOT="$(cd "$HIGHWAY_ROOT/.." && pwd)"
 AUDIT="$HIGHWAY_ROOT/tools/audit-profile-migration.sh"
-PROFILE="$HIGHWAY_ROOT/library/templates/output/profile.yaml"
+PROFILE="$HIGHWAY_ROOT/library/templates/output/profile-record.md"
 OLD_PATH=".highway/""profile.yaml"
 fail=0
 
@@ -18,8 +18,8 @@ if ! bash "$AUDIT" >/dev/null 2>&1; then
 	fail=1
 fi
 
-if [[ ! -f "$PROFILE" ]] || grep -Eq '^---[[:space:]]*$' "$PROFILE"; then
-	echo "FAIL: canonical profile is missing or contains frontmatter"
+if [[ ! -f "$PROFILE" ]] || ! grep -Fq 'schema_version: 2.0.0' "$PROFILE"; then
+	echo "FAIL: canonical Profile template is missing or has invalid metadata"
 	fail=1
 fi
 

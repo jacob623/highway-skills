@@ -34,25 +34,44 @@ context without fabricating completion.
 ## Workflow
 
 1. Locate `.highway/`; stop if it cannot be found.
-2. Request Profile readiness from `/highway-profile readiness`.
-3. If Profile is not `Complete`, enter Profile Guided Setup and forward one response at a time.
-4. After Profile terminal success, request Objectives readiness.
-5. After Objectives terminal success, request Controls readiness.
-6. After Controls terminal success, request NFR readiness.
-7. Advance only on `Complete`; NFR `Not Applicable` is also terminal success.
-8. Stop at the first non-terminal or malformed owner response and present its owner-provided next action or blocking reason.
-9. On a new invocation, re-read persisted readiness and resume at the first incomplete owner. Never restore an unanswered question, draft response, cancellation marker, or Setup checkpoint.
-10. Emit `Highway Setup Complete` only after all required owners return terminal success.
+2. Request the active owner's four-field readiness response and validate its field order, status, action vocabulary, and blocking-reason consistency.
+3. Advance immediately only when the owner returns its declared terminal-success status.
+4. During active orchestration, delegate a supported owner `Next Action`; on readiness or status-only requests, report it without initiating collection.
+5. Consume the delegated action result; after verified completion, request that owner's readiness again and advance only from the fresh terminal result.
+6. Stop on Blocked, malformed, unknown, declined, aborted, or failed owner results and report the owner's context without invoking a later owner.
+7. Request Profile readiness and advance only from its declared terminal result.
+8. Request Objectives readiness after Profile terminal success and advance only from its declared terminal result.
+9. Request Controls readiness after Objectives terminal success and advance only from its declared terminal result.
+10. Request NFR readiness after Controls terminal success; NFR `Not Applicable` is terminal and `In Progress` is not terminal.
+11. On a new invocation, re-read persisted readiness and resume at the first incomplete owner. Never restore an unanswered question, draft response, cancellation marker, or Setup checkpoint.
+12. Emit `Highway Setup Complete` only after every owner returns terminal success.
+
+### Workflow failure map
+
+| Step | Failure condition | Action |
+|---|---|---|
+| 1 | `.highway/` cannot be located | abort and request the project root |
+| 2 | The readiness response is missing, reordered, duplicated, or invalid | abort with Blocked |
+| 3 | The owner is non-terminal after readiness is consumed | fall back to Step 4 |
+| 4 | The owner action is unsupported during active orchestration | abort with Blocked |
+| 5 | The delegated action does not report verified completion | abort and preserve owner bytes |
+| 6 | The owner result is Blocked, malformed, unknown, declined, aborted, or failed | abort without invoking a later owner |
+| 7 | Profile readiness is non-terminal after the Profile route is consumed | fall back to Step 4 |
+| 8 | Objectives readiness is non-terminal after Profile reaches terminal success | fall back to Step 4 |
+| 9 | Controls readiness is non-terminal after Objectives reaches terminal success | fall back to Step 4 |
+| 10 | NFR readiness is `In Progress` or otherwise non-terminal | fall back to Step 4 |
+| 11 | Persisted readiness cannot identify the first incomplete owner | abort and report the owner context |
+| 12 | Any owner lacks terminal success | abort without claiming completion |
 
 ## Profile routing
 
-- **No authoritative Profile**: invoke Profile Setup, which starts with Identity's canonical question and keeps collection transient until acceptance.
-- **Valid incomplete Profile**: invoke Profile Setup/Configure at the first `not_discussed` domain using accepted evidence.
+- **No authoritative Profile**: report `Status: Missing` and delegate `/highway-profile setup` only during active orchestration.
+- **Valid incomplete Profile**: report `Status: Missing` and delegate `/highway-profile configure` at the first `not_discussed` domain only during active orchestration.
 - **Valid Complete Profile**: skip Profile collection and request Objectives readiness.
-- **Malformed Profile**: report Blocked and do not overwrite it.
+- **Malformed Profile**: report `Status: Blocked`, `Next Action: None`, and do not overwrite it.
 
 Setup consumes the Profile owner's readiness contract and does not inspect Profile metadata, recompute
-five-domain readiness, or use the retired identity field. It does not recompute owner readiness or
+five-domain readiness, or use the retired identity field. It does not recompute owner readiness and
 does not write owner artifacts. It owns ordered routing, continuation, status, and the dashboard only. Profile owns
 organizational evidence, domain outcomes, readiness, and its artifact.
 
@@ -61,7 +80,14 @@ organizational evidence, domain outcomes, readiness, and its artifact.
 During routine collection, do not expose readiness evaluation, owner selection, forwarding, routing,
 artifact inspection, or implementation details. Use one unresolved owner question at a time. User Exits
 are `pause`, `cancel`, and `stop responding`; Owner Outcomes are `declined`, `aborted`, and `blocked`.
-never restore an unanswered question. Neither category advances Setup or creates persisted wizard state.
+Neither category advances Setup or creates persisted wizard state. Setup resume behavior is strict:
+never restore an unanswered question, draft response, cancellation marker, or hidden checkpoint.
+
+## Interactive Workflow UX Contract
+
+Setup applies the authoritative Interactive Workflow UX Contract in the Highway Experience Standard.
+It emits only user-relevant owner context, questions, decisions, results, actionable errors, and
+applicable progress unless the user requests implementation details.
 
 ## Verification
 

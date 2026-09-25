@@ -9,11 +9,12 @@ HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 source "$HIGHWAY_ROOT/tools/lib/profile.sh"
 VALIDATE="$HIGHWAY_ROOT/tools/validate-profile.sh"
 fail=0
+OBSOLETE_YAML=".highway/library/templates/output/profile"".yaml"
 fixture_root="$(mktemp -d "${TMPDIR:-/tmp}/highway-profile-091.XXXXXX")"
 trap 'rm -rf "$fixture_root"' EXIT
 
 valid="$fixture_root/profile.md"
-cp "$HIGHWAY_ROOT/library/templates/output/profile.md" "$valid"
+cp "$HIGHWAY_ROOT/library/templates/output/profile-record.md" "$valid"
 if ! "$VALIDATE" "$valid" >/dev/null; then echo 'FAIL: shared template is invalid'; fail=1; fi
 
 sed -i '' 's/identity: not_discussed/identity: discussed/' "$valid"
@@ -27,7 +28,7 @@ before="$(shasum -a 256 "$valid" | awk '{print $1}')"
 after="$(shasum -a 256 "$valid" | awk '{print $1}')"
 if [[ "$before" != "$after" ]]; then echo 'FAIL: read-only readiness changed Profile bytes'; fail=1; fi
 
-if grep -Fq '.highway/library/templates/output/profile.yaml' "$HIGHWAY_ROOT/skills/highway-profile/SKILL.md"; then echo 'FAIL: active skill references obsolete YAML'; fail=1; fi
+if grep -Fq "$OBSOLETE_YAML" "$HIGHWAY_ROOT/skills/highway-profile/SKILL.md"; then echo 'FAIL: active skill references obsolete YAML'; fail=1; fi
 if ! grep -Fq '.highway/library/knowledge/profile.md' "$HIGHWAY_ROOT/skills/highway-profile/SKILL.md"; then echo 'FAIL: active skill omits authoritative Markdown path'; fail=1; fi
 if ! grep -Fq 'proposal evidence' "$HIGHWAY_ROOT/skills/highway-profile/SKILL.md"; then echo 'FAIL: proposal evidence lifecycle missing'; fail=1; fi
 

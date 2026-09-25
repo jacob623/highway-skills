@@ -65,7 +65,7 @@ include	.highway/library/templates/output/request-record.md	-
 include	.highway/library/templates/output/request-catalog.md	-
 include	.highway/library/templates/output/adr-record.md	-
 include	.highway/library/templates/output/adr-catalog.md	-
-include	.highway/library/templates/output/profile.yaml	-
+include	.highway/library/templates/output/profile-record.md	-
 include	.highway/catalog	-
 include	.highway/governance	-
 include	.highway/tools	-

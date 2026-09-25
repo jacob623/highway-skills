@@ -5,12 +5,18 @@ set -u
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 REPO_ROOT="$(cd "$HIGHWAY_ROOT/.." && pwd)"
-CANONICAL="$HIGHWAY_ROOT/library/templates/output/profile.yaml"
+CANONICAL="$HIGHWAY_ROOT/library/templates/output/profile-record.md"
+OLD_TEMPLATE="library/templates/output/profile"".yaml"
+OLD_MARKDOWN="library/templates/output/profile"".md"
 OLD_PATH=".highway/""profile.yaml"
 fail=0
 
 if [[ ! -f "$CANONICAL" ]]; then
 	echo "FAIL: canonical profile is missing: $CANONICAL"
+	fail=1
+fi
+if [[ -e "$HIGHWAY_ROOT/$OLD_MARKDOWN" || -e "$HIGHWAY_ROOT/$OLD_TEMPLATE" ]]; then
+	echo "FAIL: obsolete Profile output template still exists"
 	fail=1
 fi
 if [[ -e "$HIGHWAY_ROOT/profile.yaml" ]]; then
@@ -27,7 +33,7 @@ for scan_root in \
 	"$REPO_ROOT/.cursor"; do
 	[[ -d "$scan_root" ]] || continue
 	while IFS= read -r file; do
-		if grep -Fq "$OLD_PATH" "$file"; then
+		if grep -Fq "$OLD_PATH" "$file" || grep -Fq "$OLD_TEMPLATE" "$file"; then
 			echo "FAIL: former profile path referenced by $file"
 			fail=1
 		fi
@@ -35,7 +41,7 @@ for scan_root in \
 done
 
 manifest="$HIGHWAY_ROOT/tools/.distribution-manifest"
-manifest_entry="include"$'\t'".highway/library/templates/output/profile.yaml"
+manifest_entry="include"$'\t'".highway/library/templates/output/profile-record.md"
 canonical_count="$(grep -F -c "$manifest_entry" "$manifest" 2>/dev/null || true)"
 if [[ "$canonical_count" -ne 1 ]]; then
 	echo "FAIL: canonical profile must have exactly one distribution-manifest include (found $canonical_count)"

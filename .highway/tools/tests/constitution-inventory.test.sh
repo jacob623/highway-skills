@@ -459,13 +459,18 @@ if ! grep -qF '| 5 | XII. Persistence and Completion Integrity |' "$CONSTITUTION
 	fail=1
 fi
 if ! grep -qF 'Version change: 2.6.0 → 3.0.0 (MAJOR)' "$CONSTITUTION" || \
-	! grep -qF 'This changes constitutional conflict-resolution behavior' "$CONSTITUTION" || \
-	! grep -qF '**Version**: 3.0.0' "$CONSTITUTION"; then
+   ! grep -qF 'This changes constitutional conflict-resolution behavior' "$CONSTITUTION" || \
+   ! grep -qF '**Version**: 3.0.1' "$CONSTITUTION"; then
 	echo 'FAIL: Constitution version classification or Feature 090 amendment is missing'
 	fail=1
 fi
 if [[ "$(grep -cF 'Bump rationale: Principle XI and rules P11.1-P11.5 are added without invalidating a conforming' "$CONSTITUTION")" -ne 1 ]]; then
 	echo 'FAIL: Constitution must retain exactly one complete Principle XI bump rationale'
+	fail=1
+fi
+if ! grep -qF 'Compliance Review Protocol evidence: constitution-inventory.test.sh' "$CONSTITUTION" || \
+   ! grep -qF '**Last Amended**: 2026-09-25' "$CONSTITUTION"; then
+	echo 'FAIL: current Constitution amendment metadata or compliance evidence is missing'
 	fail=1
 fi
 

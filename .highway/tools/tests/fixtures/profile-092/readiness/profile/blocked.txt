@@ -1,0 +1,4 @@
+Status: Blocked
+Summary: Profile structure is invalid.
+Next Action: None
+Blocking Reason: malformed retained Profile

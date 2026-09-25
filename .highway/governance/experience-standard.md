@@ -1,5 +1,16 @@
 <!--
 Sync Impact Report
+Version change: 1.6.1 -> 2.0.0 (MAJOR), 2026-09-25
+Bump rationale: X2.3 now governs every user-visible response in an Interactive Workflow rather
+than only its opening response, so previously conforming output can fail the strengthened boundary.
+Changed elements: X2.3 rule and Observable, the shared UX Contract's X2.3 application wording, and
+the affected compliance assertion.
+Self-application review: the amended standard contains no implementation-detail output in its
+interaction examples; X2.3 is classified MAJOR under this document's Versioning Policy.
+Compliance evidence: experience-standard-amendment.test.sh, experience-x23-contract.test.sh,
+highway-ux-alignment.test.sh, and feature-092-contract.test.sh pass.
+
+Sync Impact Report
 Version change: 1.6.0 → 1.6.1 (PATCH), 2026-09-24
 
 --- Amendment 1.6.0 → 1.6.1 (PATCH), 2026-09-24 ---
@@ -310,7 +321,7 @@ is copied verbatim into each agent tree. This is the only rule here a script dec
 |---|---|---|---|---|
 | X2.1 | A confirmation before an irreversible loss MUST state what is lost. | The prompt names the affected items, or states how many there are. | [agent-checkable] | one |
 | X2.2 | An Interactive Workflow MUST prioritize the user's next required action. | For Interactive Workflows, the first emitted content is a greeting, required question, required decision, or required error response. Read-only or informational workflows are N/A. | [agent-checkable] | two |
-| X2.3 | An Interactive Workflow MUST NOT begin with implementation details unless the user requested those details. | The opening response excludes Implementation details unless requested. | [agent-checkable] | two |
+| X2.3 | An Interactive Workflow MUST NOT expose implementation details unless the user requested those details. | Every user-visible response excludes Implementation details unless requested. | [agent-checkable] | two |
 | X2.4 | A guided information-collection workflow MUST ask only the next required question. | During a Guided information-collection workflow, the prompt contains at most one unresolved collection question and does not introduce future workflow stages. | [agent-checkable] | one |
 | X2.5 | A long-running activity MUST disclose current progress. | For a long-running activity, each progress update identifies the current activity, phase, or step. X2.5 is N/A when no long-running activity exists. | [agent-checkable] | one |
 | X2.6 | A progress message MUST describe activity rather than implementation. | Each progress message describes work being performed and excludes reasoning, workflow mechanics, validation behavior, and internal orchestration. X2.6 is N/A when X2.5 is N/A. | [agent-checkable] | one |
@@ -378,7 +389,7 @@ progress fields, terminality rules, and domain-specific behavior.
 
 - As an application of X2.2, the first user-facing content prioritizes the next required question,
   decision, confirmation, approval, rejection, or actionable error.
-- As applications of X2.3 and X2.6, normal user-facing output describes user-relevant activity
+- As applications of X2.3 and X2.6, every normal user-facing response describes user-relevant activity
   and omits routing, validation, evaluation-order, allocation, processing, and orchestration
   details unless requested.
 - A delegated action routes the person to the owning workflow without claiming ownership or
@@ -500,4 +511,4 @@ Rule IDs are stable across amendments; a retired ID is never reused.
 Every amendment records a review against the non-restatement rules of the other two governing
 documents, and states which rules rest on a single example.
 
-**Version**: 1.6.1 | **Ratified**: 2026-09-08 | **Last Amended**: 2026-09-24
+**Version**: 2.0.0 | **Ratified**: 2026-09-08 | **Last Amended**: 2026-09-25

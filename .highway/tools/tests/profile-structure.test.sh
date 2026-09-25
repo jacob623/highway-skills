@@ -27,7 +27,15 @@ expect_invalid() {
 	fi
 }
 
-expect_valid "$HIGHWAY_ROOT/library/templates/output/profile.md"
+expect_valid "$HIGHWAY_ROOT/library/templates/output/profile-record.md"
+expect_valid "$SCRIPT_DIR/fixtures/profile-092/profile-record/accepted.md"
+expect_valid "$SCRIPT_DIR/fixtures/profile-092/profile-record/bounded-empty.md"
+
+bounded_without_evidence="$TMPDIR/highway-profile-bounded-without-evidence.$$.md"
+cp "$SCRIPT_DIR/fixtures/profile-092/profile-record/bounded-empty.md" "$bounded_without_evidence"
+printf '%s\n' '## Who We Are' >> "$bounded_without_evidence"
+expect_invalid "$bounded_without_evidence"
+rm -f "$bounded_without_evidence"
 
 SKILL="$HIGHWAY_ROOT/skills/highway-profile/SKILL.md"
 for required_text in \
@@ -38,6 +46,24 @@ for required_text in \
 	'Profile readiness'; do
 	if ! grep -Fq "$required_text" "$SKILL"; then
 		echo "FAIL: Profile ownership contract missing '$required_text'"
+		fail=1
+	fi
+done
+
+for heading in \
+	'## Who We Are' \
+	"## Where We're Going" \
+	'## How We Plan to Get There' \
+	'## What Guides Our Decisions' \
+	'## How Highway Helps'; do
+	if ! grep -Fq -- "$heading" "$HIGHWAY_ROOT/library/templates/output/profile-record.md"; then
+		echo "FAIL: Profile template omits canonical generated heading '$heading'"
+		fail=1
+	fi
+done
+for rule in 'discussed always renders evidence' 'bounded renders accepted evidence' 'not_discussed never renders a narrative section'; do
+	if ! grep -Fq -- "$rule" "$HIGHWAY_ROOT/library/templates/output/profile-record.md"; then
+		echo "FAIL: Profile template omits state-to-narrative rule '$rule'"
 		fail=1
 	fi
 done

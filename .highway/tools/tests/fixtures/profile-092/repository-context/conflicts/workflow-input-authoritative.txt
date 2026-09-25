@@ -1,0 +1,2 @@
+workflow-specific input remains authoritative over contextual guidance
+context does not become retained organizational evidence

@@ -1,5 +1,15 @@
 <!--
 Sync Impact Report
+Version change: 3.0.0 -> 3.0.1 (PATCH), 2026-09-25
+Bump rationale: the Repository Context Document definition explicitly includes user-owned
+organizational context already listed by Principle XI, without changing principle precedence or
+the P11 obligations.
+Changed elements: Repository Context Document definition and synchronized descriptive context text.
+Self-application review: P1.1, P1.3, P6.6, and P7.3 pass; no Principle Precedence change occurs.
+Compliance Review Protocol evidence: constitution-inventory.test.sh, coverage-summary.test.sh, and
+constitution-profile-context.test.sh pass; the amendment changes no rule Observable or Tier.
+
+Sync Impact Report
 Version change: 2.6.0 → 3.0.0 (MAJOR), 2026-09-24
 Bump rationale: moves Principle XII directly after Principle V, changing which principle prevails
 when Persistence and Completion Integrity conflicts with Principles VIII, VII, II, III, X, or XI.
@@ -126,7 +136,7 @@ document and in every skill governed by it.
 | **Experience Standard** | The Highway Experience Standard governing user-visible output and interaction behavior, with rule IDs in the `X` namespace. |
 | **Security-affecting** | Guidance that touches any item in the Security Gate trigger list. |
 | **Declared input** | A value, file, or precondition named in a skill's Inputs section. |
-| **Repository Context Document** | An authoritative file under `.highway/library/knowledge/` describing Highway identity, vision, objectives, or decision evaluation. |
+| **Repository Context Document** | An authoritative file under `.highway/library/knowledge/` describing Highway identity, vision, objectives, decision evaluation, or user-owned organizational context. |
 | **Repository Context** | Information from Repository Context Documents or accepted repository artifacts that can alter a recommendation, explanation, decision support, or workflow guidance. |
 | **Behavior** | Recommendations, guidance, decisions, explanations, proposals, generated artifacts, workflow actions, or user-visible outputs produced by a skill. |
 | **Participating Skill** | A skill whose Behavior is influenced by Repository Context. |
@@ -577,4 +587,4 @@ every other skill's version. This is the policy referenced by P7.7.
 - **MINOR**: a capability is added while every existing contract element continues to hold.
 - **PATCH**: wording repair with no change to Inputs, Outputs, or Verification.
 
-**Version**: 3.0.0 | **Ratified**: 2026-09-06 | **Last Amended**: 2026-09-24
+**Version**: 3.0.1 | **Ratified**: 2026-09-06 | **Last Amended**: 2026-09-25

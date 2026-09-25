@@ -164,18 +164,21 @@ Highway should actively strengthen traceability relationships whenever possible.
 
 # Repository Context Documents
 
-The following repository artifacts collectively define Highway context:
+The following four repository artifacts define the authoritative Highway Repository Context:
 
 1. highway-identity.md
 2. highway-vision.md
 3. highway-platform-objectives.md
 4. profile.md
-5. Repository governance artifacts
 
-These documents represent shared context for Highway workflows. Profile is user-owned organizational context. `profile.md` is user-owned
-organizational context; this identity document remains descriptive, while the Highway Skills
+These documents represent shared context for Highway workflows. Profile is user-owned organizational
+context. Repository governance artifacts remain governing inputs, but are not additional Repository
+Context Documents in this list. Downstream skills consume Profile only after declaring it as
+behavior-influencing context. This identity document remains descriptive, while the Highway Skills
 Constitution is normative for Repository Context membership, participation, precedence, and
-validation.
+validation. Identity supplies behavioral guidance, Vision supplies strategic direction, and Platform
+Objectives supply evaluation criteria. These documents may influence Profile evidence significance
+and follow-up selection, but they do not supply unsupported organizational facts.
 
 ---
 

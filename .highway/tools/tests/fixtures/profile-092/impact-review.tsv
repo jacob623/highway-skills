@@ -1,0 +1,6 @@
+source\tdependent\taction\tresult
+.highway/skills/highway-profile/SKILL.md\t.github/skills/highway-profile/SKILL.md; .claude/skills/highway-profile/SKILL.md; .cursor/rules/highway-profile.mdc\tgenerate-agent-adapters.sh\tPASS
+.highway/skills/highway-setup/SKILL.md\t.github/skills/highway-setup/SKILL.md; .claude/skills/highway-setup/SKILL.md; .cursor/rules/highway-setup.mdc\tgenerate-agent-adapters.sh\tPASS
+.highway/governance/experience-standard.md\t.highway/tools/tests/highway-ux-alignment.test.sh\tstatic validation\tPASS
+.highway/governance/constitution.md\t.highway/tools/tests/constitution-inventory.test.sh\tlong-runtime validation\tPASS in 74.742s
+.highway/library/knowledge/highway-identity.md\t.highway/catalog/library-index.json; .highway/catalog/library-index.md\tgenerate-library-catalog.sh\tPASS

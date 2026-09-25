@@ -10,8 +10,8 @@ VALIDATE="$HIGHWAY_ROOT/tools/validate-profile.sh"
 fixture_root="$(mktemp -d "${TMPDIR:-/tmp}/highway-profile-md.XXXXXX")"
 trap 'rm -rf "$fixture_root"' EXIT
 fail=0
-cp "$HIGHWAY_ROOT/library/templates/output/profile.md" "$fixture_root/one.md"
-cp "$HIGHWAY_ROOT/library/templates/output/profile.md" "$fixture_root/two.md"
+cp "$HIGHWAY_ROOT/library/templates/output/profile-record.md" "$fixture_root/one.md"
+cp "$HIGHWAY_ROOT/library/templates/output/profile-record.md" "$fixture_root/two.md"
 if ! cmp -s "$fixture_root/one.md" "$fixture_root/two.md"; then echo 'FAIL: identical template renders differ'; fail=1; fi
 if ! "$VALIDATE" "$fixture_root/one.md" >/dev/null; then echo 'FAIL: template validation failed'; fail=1; fi
 sed -i '' 's/identity: not_discussed/identity: discussed/' "$fixture_root/one.md"

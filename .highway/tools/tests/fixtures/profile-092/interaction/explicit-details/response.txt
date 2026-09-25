@@ -1,0 +1,1 @@
+The user requested implementation details. Explain the validation boundary and owner delegation without changing ownership or persistence.
