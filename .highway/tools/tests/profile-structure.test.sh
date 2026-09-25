@@ -27,22 +27,15 @@ expect_invalid() {
 	fi
 }
 
-expect_valid "$HIGHWAY_ROOT/library/templates/output/profile.yaml"
-expect_valid "$FIXTURES/valid-populated.yaml"
-expect_valid "$FIXTURES/valid-future-sections.yaml"
-expect_invalid "$FIXTURES/malformed.yaml"
-expect_invalid "$FIXTURES/missing-metadata.yaml"
-expect_invalid "$FIXTURES/wrong-order.yaml"
-expect_invalid "$FIXTURES/empty-section.yaml"
-expect_invalid "$FIXTURES/generated-value.yaml"
+expect_valid "$HIGHWAY_ROOT/library/templates/output/profile.md"
 
 SKILL="$HIGHWAY_ROOT/skills/highway-profile/SKILL.md"
 for required_text in \
-	'What is the name of the organization, business unit, team, or project group this repository represents?' \
-	'organization.name' \
-	'whitespace-only' \
-	'does not infer organization identity' \
-	'Profile cannot report `Complete`'; do
+	'five evidence domains' \
+	'not_discussed' \
+	'discussed' \
+	'bounded' \
+	'Profile readiness'; do
 	if ! grep -Fq "$required_text" "$SKILL"; then
 		echo "FAIL: Profile ownership contract missing '$required_text'"
 		fail=1

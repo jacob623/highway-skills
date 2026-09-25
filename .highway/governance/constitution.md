@@ -324,13 +324,13 @@ portability while leaving the Experience Standard as the source of interaction r
 ### XI. Repository Context
 
 Repository Context Documents are located under `.highway/library/knowledge/`. The authoritative
-documents are `highway-identity.md`, `highway-vision.md`, and `highway-platform-objectives.md`.
-Additional Repository Context Documents require a future constitutional amendment. Repository
-Context Documents provide shared repository context without replacing workflow-specific inputs,
-governance artifacts, or user-owned content. When context documents overlap, Identity provides
-behavioral guidance, Vision provides strategic direction, and Platform Objectives provide
-evaluation criteria, in that order. Missing documents do not authorize invented, assumed, or
-substituted repository context.
+documents are `highway-identity.md`, `highway-vision.md`, `highway-platform-objectives.md`, and
+the user-owned organizational `profile.md` context. Repository Context Documents provide shared repository
+context without replacing workflow-specific inputs, governance artifacts, or user-owned content.
+When context documents overlap, Identity provides behavioral guidance, Vision provides strategic
+direction, Platform Objectives provide evaluation criteria, and Profile provides organizational
+context, in that order. Workflow-specific inputs remain authoritative for the active execution.
+Missing documents do not authorize invented, assumed, or substituted repository context.
 
 | ID | Rule | Observable | Tier |
 |---|---|---|---|

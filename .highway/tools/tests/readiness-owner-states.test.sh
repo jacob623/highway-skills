@@ -58,7 +58,7 @@ for owner in profile objectives controls nfrs; do
 	file="$HIGHWAY_ROOT/skills/highway-$owner/SKILL.md"
 	before_hash="$(shasum -a 256 "$file" | cut -d ' ' -f 1)"
 	case "$owner" in
-		profile) grep -Fq 'organization.name' "$file" ;;
+		profile) grep -Fq 'not_discussed' "$file" ;;
 		objectives) grep -Fq 'next_id' "$file" ;;
 		controls) grep -Fq 'valid Control' "$file" ;;
 		nfrs) grep -Fq 'In Progress' "$file" ;;

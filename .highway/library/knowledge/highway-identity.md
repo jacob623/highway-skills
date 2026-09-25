@@ -169,9 +169,13 @@ The following repository artifacts collectively define Highway context:
 1. highway-identity.md
 2. highway-vision.md
 3. highway-platform-objectives.md
-4. Repository governance artifacts
+4. profile.md
+5. Repository governance artifacts
 
-These documents represent shared context for Highway workflows and should be treated as foundational repository knowledge. 
+These documents represent shared context for Highway workflows. Profile is user-owned organizational context. `profile.md` is user-owned
+organizational context; this identity document remains descriptive, while the Highway Skills
+Constitution is normative for Repository Context membership, participation, precedence, and
+validation.
 
 ---
 
