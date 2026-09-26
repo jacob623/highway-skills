@@ -27,9 +27,32 @@ Do not use this skill to directly create, update, remove, replace, or repair an 
 ## Outputs
 
 When input is required, emit a welcome or resume greeting, the active owner introduction, and exactly
-one owner question. Preserve owner output and ordering. On completion emit the existing Highway Setup
-completion dashboard. On blocked, declined, aborted, or explicit status requests emit actionable owner
-context without fabricating completion.
+one owner question. Preserve owner output and ordering. During multi-owner setup, report the current
+owner activity and the number of owners completed and remaining without exposing routing or validation
+mechanics. On completion emit the existing Highway Setup completion dashboard. On blocked, declined,
+aborted, or explicit status requests emit actionable owner context without fabricating completion.
+
+For the Objective handoff, Setup owns only this purpose introduction:
+
+**Setup-owned**:
+
+> **Let's identify some explicit outcomes worth pursuing.**
+>
+> These give Highway something concrete to connect future decisions back to and help us evaluate whether you're accomplishing what you set out to do.
+
+Setup emits it exactly once, immediately before delegating `/highway-objectives setup`, and only when
+Profile is terminal-success and Objective readiness is non-terminal with `Next Action:
+/highway-objectives setup`. Objectives owns and supplies this complete opening:
+
+**Objectives-owned**:
+
+> **What's an important outcome you'd like to achieve?**
+>
+> If you'd like some suggestions based on your organization's Profile, just let me know. **If you're not sure, just say "I don't know," and we'll work through it together.**
+
+Setup renders the owner opening unchanged and forwards every subsequent Objective question, decision,
+error, and result without interpreting or rewriting it. Setup does not ask Objective questions,
+interpret Objective evidence, allocate identifiers, write Objective artifacts, or persist a draft.
 
 ## Workflow
 
@@ -40,7 +63,7 @@ context without fabricating completion.
 5. Consume the delegated action result; after verified completion, request that owner's readiness again and advance only from the fresh terminal result.
 6. Stop on Blocked, malformed, unknown, declined, aborted, or failed owner results and report the owner's context without invoking a later owner.
 7. Request Profile readiness and advance only from its declared terminal result.
-8. Request Objectives readiness after Profile terminal success and advance only from its declared terminal result.
+8. Request Objectives readiness after Profile terminal success; if non-terminal, emit the Setup-owned purpose introduction exactly once, delegate `/highway-objectives setup`, and render only Objectives-owned results; if terminal `Complete`, skip Objective introduction and discovery, then continue to the next owner; after verified Objective completion, request fresh Objective readiness and do not restore transient state.
 9. Request Controls readiness after Objectives terminal success and advance only from its declared terminal result.
 10. Request NFR readiness after Controls terminal success; NFR `Not Applicable` is terminal and `In Progress` is not terminal.
 11. On a new invocation, re-read persisted readiness and resume at the first incomplete owner. Never restore an unanswered question, draft response, cancellation marker, or Setup checkpoint.
@@ -57,8 +80,8 @@ context without fabricating completion.
 | 5 | The delegated action does not report verified completion | abort and preserve owner bytes |
 | 6 | The owner result is Blocked, malformed, unknown, declined, aborted, or failed | abort without invoking a later owner |
 | 7 | Profile readiness is non-terminal after the Profile route is consumed | fall back to Step 4 |
-| 8 | Objectives readiness is non-terminal after Profile reaches terminal success | fall back to Step 4 |
-| 9 | Controls readiness is non-terminal after Objectives reaches terminal success | fall back to Step 4 |
+| 8 | Objectives readiness is non-terminal after Profile reaches terminal success | emit the purpose introduction once, delegate `/highway-objectives setup`, and forward owner content |
+| 9 | Controls readiness is non-terminal after fresh Objective terminal success | fall back to Step 4 |
 | 10 | NFR readiness is `In Progress` or otherwise non-terminal | fall back to Step 4 |
 | 11 | Persisted readiness cannot identify the first incomplete owner | abort and report the owner context |
 | 12 | Any owner lacks terminal success | abort without claiming completion |
@@ -94,9 +117,17 @@ applicable progress unless the user requests implementation details.
 - Confirm Profile readiness is consumed verbatim and Setup never recomputes it.
 - Confirm Setup advances Profile -> Objectives -> Controls -> NFRs only after terminal owner results.
 - Confirm Complete Profile advances to Objectives and no Profile artifact is written by Setup.
+- Confirm non-terminal Objective readiness causes the exact Setup-owned purpose introduction once,
+  followed by the exact Objectives-owned opening once, with no Setup-authored Objective question.
+- Confirm terminal Objective readiness skips the purpose introduction and Objective discovery before
+  Controls routing.
+- Confirm Objective answers, owner questions, decisions, failures, and completion results are
+  forwarded unchanged and Setup writes no Objective artifact or transient state.
 - Confirm interruption preserves owner artifacts and creates no Setup checkpoint.
 - Confirm malformed and unknown owner responses produce Blocked without invoking later owners.
 - Confirm owner mutations originate from the owning workflow.
+- Confirm multi-owner progress names the current owner activity and completed/remaining owner counts
+  without exposing routing or validation mechanics.
 
 ## Error Handling
 

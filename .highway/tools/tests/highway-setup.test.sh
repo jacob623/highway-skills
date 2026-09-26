@@ -12,12 +12,23 @@ require_text() { grep -Fq "$2" "$1" || { echo "FAIL: '$2' missing from $1"; fail
 require_text "$SKILL" '/highway-profile readiness'
 require_text "$SKILL" 'first `not_discussed` domain'
 require_text "$SKILL" 'advances to Objectives'
+require_text "$SKILL" "Let's identify some explicit outcomes worth pursuing."
+require_text "$SKILL" "These give Highway something concrete to connect future decisions back to"
+require_text "$SKILL" "What's an important outcome you'd like to achieve?"
+require_text "$SKILL" "If you'd like some suggestions based on your organization's Profile"
+require_text "$SKILL" 'Setup-owned'
+require_text "$SKILL" 'Objectives-owned'
 require_text "$SKILL" 'does not inspect Profile metadata'
 require_text "$SKILL" 'does not recompute'
 require_text "$SKILL" 'does not write owner artifacts'
 require_text "$SKILL" 'one unresolved owner question at a time'
 require_text "$SKILL" 'never restore an unanswered question'
 require_text "$SKILL" 'NFR `Not Applicable`'
+require_text "$SKILL" 'current owner activity'
+require_text "$SKILL" 'owners completed and remaining'
+require_text "$SKILL" 'without exposing routing or validation mechanics'
+if grep -Fq 'Step 1 of 3' "$SKILL"; then echo 'FAIL: Setup retains fixed Objective progress language'; fail=1; fi
+if grep -Fq 'Describe the objective.' "$SKILL"; then echo 'FAIL: Setup owns Objective discovery prompts'; fail=1; fi
 if grep -Fq 'organization.name' "$SKILL"; then echo 'FAIL: Setup retains organization.name ownership'; fail=1; fi
 if grep -Fq 'profile.yaml' "$SKILL"; then echo 'FAIL: Setup references obsolete YAML'; fail=1; fi
 profile_line="$(grep -n 'Profile readiness' "$SKILL" | head -n 1 | cut -d: -f1)"

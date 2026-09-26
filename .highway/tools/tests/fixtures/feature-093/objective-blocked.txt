@@ -1,0 +1,4 @@
+Status: Blocked
+Summary: Objective baseline is malformed or inconsistent.
+Next Action: None
+Blocking Reason: Catalog or record validation failed.

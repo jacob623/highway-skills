@@ -4,7 +4,7 @@ description: "Manages the repository-wide Business Objective baseline and its st
 usage: "Invoke as `/highway-objectives` and state whether to inspect, add, update, remove, or reset Business Objectives."
 compatibility: all
 metadata:
-  version: 1.0.0
+  version: 2.0.0
 ---
 
 # highway-objectives
@@ -17,9 +17,10 @@ that explain the business direction later Highway artifacts may reference.
 ## Interactive Workflow UX Contract
 
 Objective creation follows the Interactive Workflow UX Contract in the Highway Experience Standard.
-The ordered flow is objective statement, success measures, and rationale approval; only one
-unresolved prompt is active at a time. Put the `Next Action` first, omit implementation details
-unless requested, and report `Step 1 of 3` with `Current Activity` when collection is active.
+It uses adaptive discovery across Outcome, Success, and Significance. Evaluate the complete active
+response before selecting the next action, expose at most one unresolved response-demanding question
+or decision, and never report fixed discovery progress. Put the `Next Action` first and omit
+implementation details unless requested.
 
 `User Exits` are `pause`, `cancel`, or `stop responding`; `Owner Outcomes` are `declined`,
 `aborted`, or `blocked`. `Resume Applicability`: `New interaction`; unanswered prompts, drafts,
@@ -30,7 +31,7 @@ records, catalogs, and completion claims.
 
 Use this skill to set up, configure, inspect, add, create, update, remove, or reset Business
 Objectives. The supported actions are exactly `setup`, `configure`, `view`, `show`, `describe`,
-`add`, `new`, `update`, `remove`, and `reset`.
+`readiness`, `add`, `new`, `update`, `remove`, and `reset`.
 
 Use it when a user wants a durable objective with measurable success measures, a user-approved
 rationale, or a stable `OBJ` reference for future Capability relationships.
@@ -50,7 +51,6 @@ the permanent identifier, catalog, and baseline version together.
 
 A plain-language request naming one supported action and, for a mutation, the desired objective
 change.
-
 The project root, identified by locating `.highway/`. If `.highway/` cannot be located, the
 project root is unknown and no objective path may be guessed.
 
@@ -63,6 +63,21 @@ The complete retained-record structure in `.highway/library/templates/output/obj
 The template defines the required frontmatter and body ordering; its values remain user-owned.
 
 The complete catalog structure in `.highway/library/templates/output/objective-catalog.md`.
+
+Objectives is a Repository Context Participating Skill. Its declared Repository Context Documents
+are Identity, Highway Vision, Highway Platform Objectives, and Profile. Identity supplies behavioral
+framing only; Highway Vision supplies downstream traceability framing only; Highway Platform
+Objectives evaluates Highway assistance only; Profile is the only declared source that may supply
+accepted organizational evidence for Objective interpretation, suggestions, Significance, or
+Rationale. Existing Objective records are accepted context for exact duplicate and semantic overlap
+guidance, not a declared context document or a source of new organizational facts.
+
+Consume only context relevant to the active decision. Record each unavailable or malformed context
+document, exclude it from interpretation, and continue with valid evidence. An owner-level malformed
+Profile baseline remains authoritative as `Blocked`. Active user evidence remains authoritative when
+it conflicts with accepted context. An exact duplicate names the existing Objective and asks whether
+to change it or create a distinct outcome; semantic overlap is advisory and never silently merges,
+deletes, or rewrites an Objective.
 
 ## Outputs
 
@@ -83,14 +98,20 @@ records is `Missing`; a malformed record, catalog, or allocation state is `Block
 response has a non-empty reason; every other response uses `Blocking Reason: None`. Readiness
 does not write records, catalogs, or identifiers.
 
+Mutation reports contain these fields in this order:
+
 ```text
-Action
-File
-Summary
-Affected Entries
-Confirmation Status
-Resulting Version
+Action: <action>
+File: <changed file>
+Summary: <change summary>
+Affected Entries: <affected identifiers or None>
+Confirmation Status: <Confirmed or non-write state>
+Resulting Version: <version or unchanged>
 ```
+
+Readiness does not write records, catalogs, or identifiers. The readiness state names are exact:
+`Status: Missing` routes to `/highway-objectives setup`, `Status: Complete` has `Next Action: None`,
+and `Status: Blocked` has `Next Action: None` plus a non-empty `Blocking Reason`.
 
 Confirmed mutations write objective records beneath `library/objectives/` and regenerate the
 catalog at `library/governance/objectives.md`. No objective record is ever written beneath
@@ -110,6 +131,12 @@ If the request contains an unsupported or ambiguous action, stop and ask the use
 not infer an action and do not write any file. If no objective baseline exists during a read-only
 action, report its absence without creating an artifact.
 
+For direct invocation, `/highway-objectives setup` and bare `/highway-objectives add` provide concise
+direct invocation context explaining that the interaction identifies an outcome worth pursuing; they
+do not claim Setup introduced the purpose or emit Setup's transition language. `/highway-objectives
+add <evidence>` evaluates supplied evidence before selecting a question and skips the opening Outcome
+question when Outcome is already supported.
+
 ## Read-only workflow
 
 For `readiness`, read and validate the complete baseline, classify it using the Objective rules,
@@ -120,23 +147,75 @@ must remain before and after the response.
 
 ## Creation and update workflow
 
-For `setup`, `configure`, `add`, and `new`, ask exactly three separate prompts:
+Before producing any context-dependent output, consult available declared Repository Context Documents and use only context relevant to the active interaction. Record unavailable or malformed
+declared context and do not fabricate substitute context or user-owned evidence.
 
-- `Describe the objective.` Record the answer as the statement and derive the proposed title
-   deterministically from that answer.
-- `What are the success measures?` Record the answer as success measures.
-- Show the proposed rationale and ask: `Accept, modify, or replace?` Preserve the user's accepted,
-   edited, or replaced rationale exactly as user-owned content.
+For `setup`, `configure`, `add`, and `new`, begin with concise direct-invocation context when Setup
+has not introduced the purpose, then render this complete Objectives-owned opening when no usable
+Outcome evidence was supplied:
 
-For a new objective, read `next_id` from the catalog, allocate it once, and propose an `OBJ`
-identifier followed by six digits. New records default to `status: active`, include
-`capabilities: []`, and follow the complete structure in
-`.highway/library/templates/output/objective-record.md`. Show the proposed identifier, title,
-record content, catalog change, and resulting version before confirmation.
+**What's an important outcome you'd like to achieve?**
 
-After a confirmed creation, ask whether another objective should be created. An affirmative answer
-starts the same three-prompt workflow; a negative answer ends without another record. A declined or
-aborted proposal writes nothing.
+If you'd like some suggestions based on your organization's Profile, just let me know. **If you're
+not sure, just say "I don't know," and we'll work through it together.**
+
+Process supplied `/highway-objectives add` evidence before choosing a question. Evaluate all active
+evidence across Outcome, Success, and Significance, then select exactly one next action in this
+order:
+
+1. If Outcome is unresolved, ask one conversational Outcome question.
+2. Otherwise, if Success is unresolved, ask one Success question. When a Success question has a downstream implication not already established, explain how the answer defines success for future Highway work.
+3. Otherwise, if Significance is unresolved, ask one question about why the outcome matters.
+4. Otherwise, present the complete proposal.
+
+Accept ordinary business language, uncertainty, activity descriptions, natural correction,
+replacement, rejection, cancellation, abandonment, and multiple
+dimensions in one answer. When multiple meaningful outcomes are present without explicit grouping,
+ask whether to represent them together or separately. Preserve explicitly grouped outcomes and
+retain explicitly separate outcomes in user-provided order for sequential processing. `I don't know` starts guided discovery and does not manufacture a
+recommendation. An explicit request for suggestions may present one to three distinct possibilities
+grounded only in relevant accepted Profile evidence; suggestions remain transient until the user
+selects, restates, modifies, or otherwise clearly adopts one. Asking for more information about a
+suggestion is not adoption. If Profile evidence cannot support a meaningful suggestion, say:
+`I don't see enough in your Profile to make a useful suggestion here, but we can work through it
+together.` Then ask one exploratory question.
+
+When user input materially changes the interpretation, suggestion relevance, Rationale synthesis,
+overlap handling, or downstream relationship guidance, provide one concise contextual
+acknowledgment explaining what changed before asking the next question or presenting the next
+decision. Do not turn the acknowledgment into an additional response-demanding question.
+
+After a correction, re-evaluate staged Outcome, Success, and Significance evidence and discard staged interpretations that no longer support the revised intent.
+
+When Outcome evidence supports a Statement, Success evidence supports at least one Success Measure,
+and Significance is supported by either an explicit reason in the active conversation or an
+applicable direct organizational connection from accepted Profile evidence that can be stated
+without adding unsupported facts, present one complete proposal with distinct user-facing sections:
+
+**Here's the objective I've captured:**
+
+[Objective Title]
+
+[Statement]
+
+**Success looks like:**
+- [Success Measure]
+
+**Why it matters:**
+[Rationale]
+
+**Does this reflect what you're trying to accomplish?**
+
+Do not expose an unallocated or newly allocated identifier, catalog change, or version in normal
+pre-persistence review. Natural acceptance authorizes non-destructive creation without a second
+persistence-confirmation question. Natural correction, replacement, rejection, cancellation,
+abandonment, or interruption keeps the proposal transient and writes nothing.
+
+After each verified creation, ask `Anything else you'd like to accomplish?`. A directly supplied
+outcome starts the next transient conversation immediately; an affirmative response without an
+outcome asks `What's another important outcome you'd like to achieve?`; a suggestion request uses
+the same Profile-grounded behavior; uncertainty about whether another Objective exists offers help
+without requiring discovery; and an explicit finish returns terminal collection success.
 
 For `update`, resolve exactly one existing objective by identifier and title before staging a
 change. Preserve its identifier and every untouched field. Confirm the complete staged record and
@@ -167,12 +246,19 @@ including identifiers whose records were removed. An identifier is permanent and
 or reused, including after `reset`. Stable `OBJ` identifiers are reserved for future Capability
 relationships.
 
-Stage every mutation as a transaction: read and validate the complete baseline, construct proposed
-records/catalog/version, show the proposal and confirmation state, then write only after explicit
-confirmation. Write the records and catalog as one successful operation; if validation or writing
-fails, preserve the original affected bytes. Regenerate identical catalog bytes from identical
-objective inputs, with stable identifier ordering and no timestamp, random value, or environment
-value.
+Stage every mutation as a transaction: read and validate the complete baseline, re-evaluate the
+final proposal and overlap, construct the
+proposal, obtain natural user validation, revalidate the authoritative baseline and overlap state,
+allocate one permanent identifier, construct record and catalog mutations, persist both retained outputs as one successful operation, and verify both outputs before claiming completion. If
+validation, writing, or retained-output verification fails, preserve the prior verified bytes; the
+workflow does not claim successful creation and identifies the unverified record or catalog output.
+Regenerate identical
+catalog bytes from identical objective inputs, with stable identifier ordering and no timestamp,
+random value, or environment value.
+
+If pre-write revalidation discovers a new overlap, name the overlapping Objective and return to one
+user decision. The previous creation confirmation is no longer active; if the proposal changes,
+re-evaluate the staged Outcome, Success, and Significance evidence, present the resulting complete proposal again, and require natural validation again before persistence.
 
 Increment the baseline exactly once per confirmed action: Add/New is MINOR, Update is PATCH, and
 Remove/Reset is MAJOR. Failed or declined actions do not change the version. A confirmed mutation
@@ -184,7 +270,7 @@ confirmation state.
 
 - Confirm objective records are under `library/objectives/`, never `.highway`, and the catalog is
   under `library/governance/objectives.md`.
-- Confirm the ten supported actions route exactly as specified and unsupported or ambiguous input
+- Confirm the eleven supported actions route exactly as specified and unsupported or ambiguous input
   asks for clarification without a write.
 - Confirm read-only actions report version, count, identifiers, titles, and statuses without byte
   changes, including when the baseline is absent.
@@ -194,8 +280,19 @@ confirmation state.
   catalog `next_id` is greater than every allocated identifier.
 - Confirm every catalog entry resolves to one record and malformed baselines are rejected without
   overwriting user content.
-- Confirm add/new/setup/configure use three separate prompts, preserve the user's final rationale,
-  and create the complete retained record with `capabilities: []`.
+- Confirm setup/configure/add/new use adaptive discovery, process rich evidence without redundant
+  questions, preserve user-owned wording, and create the complete retained record with
+  `capabilities: []` only after natural validation.
+- Confirm the opening, complete proposal labels, one unresolved decision rule, uncertainty guidance,
+  suggestion adoption boundary, collection loop, and `New interaction` resume behavior.
+- Confirm every suggestion is grounded in relevant accepted Profile evidence, excludes unrelated Profile information, and contains no unsupported organizational facts.
+- Confirm materially changing input receives one concise contextual acknowledgment and that
+  multiple outcomes are grouped or processed in explicit user-provided order.
+- Confirm absent or malformed Identity, Highway Vision, Highway Platform Objectives, and Profile
+  are recorded without fabricated replacement context or user-owned evidence.
+- Confirm no normal pre-persistence review exposes an identifier, catalog change, or version.
+- Confirm final baseline and overlap revalidation precedes allocation, both retained outputs verify
+  before completion, and persistence failure names the unverified output without claiming success.
 - Confirm add/new, update, and remove/reset increment MINOR, PATCH, and MAJOR exactly once only
   after a confirmed successful mutation.
 - Confirm declined, ambiguous, malformed, or aborted operations leave all affected bytes
@@ -219,6 +316,7 @@ confirmation state.
 
 `/highway-objectives add Improve delivery reliability by reducing escaped defects.`
 
-The skill asks for the objective statement, success measures, and rationale review, proposes a
-deterministic title and the next permanent `OBJ` identifier, shows the record and catalog change,
-then writes only after confirmation. It reports the confirmed action and resulting MINOR version.
+The skill treats the supplied text as initial Outcome evidence, asks only for unresolved Success or
+Significance evidence, presents the complete labeled proposal for natural validation, allocates the
+next permanent `OBJ` identifier only after confirmation, persists and verifies the record and
+catalog together, and reports the identifier only after successful verification.
