@@ -1,0 +1,4 @@
+Status: Missing
+Summary: No valid Objective baseline exists.
+Next Action: /highway-objectives setup
+Blocking Reason: None
