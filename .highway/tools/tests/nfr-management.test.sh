@@ -36,7 +36,7 @@ nfr_structure_not_duplicated() {
 for required in \
 	"name: highway-nfrs" \
 	"metadata:" \
-	"version: 1.0.1" \
+	"version: 9.0.0" \
 	"library/governance/nfrs.md" \
 	"library/governance/nfrs/NFRXXXXXX.md" \
 	"controls: []" \

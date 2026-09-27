@@ -33,16 +33,15 @@ require_text "$NFR_SKILL" "one existing NFR or the entire baseline"
 
 # Advice is not refusal, and relationship ownership remains deferred.
 require_text "$NFR_SKILL" "If the user keeps a vague NFR, record it after advice."
-require_text "$NFR_SKILL" "reserved relationship fields remain empty in this phase"
 require_text "$CONTROL_SKILL" "This skill MUST NOT refuse a Control the user still wants"
 
-# Feature 077 onboarding aliases and review boundaries stay owned by their canonical skills.
+# Feature 094 onboarding aliases and review boundaries stay owned by their canonical skills.
 require_text "$CONTROL_SKILL" '`setup` and `configure` are aliases'
-require_text "$CONTROL_SKILL" "Review Complete"
-require_text "$CONTROL_SKILL" "Cancel Review"
+require_text "$CONTROL_SKILL" "one complete Control proposal at a time"
+require_text "$CONTROL_SKILL" "Proposal decisions are Accept, Correct, Replace, Reject, or Cancel"
 require_text "$NFR_SKILL" '`review` and `onboarding` are aliases'
-require_text "$NFR_SKILL" "Review Complete"
-require_text "$NFR_SKILL" "Cancel Review"
+require_text "$NFR_SKILL" "NFR Review emits one entry per candidate"
+require_text "$NFR_SKILL" "Accept, Modify, Replace, Reject, or Cancel"
 
 # Feature 078 keeps review output contracts in their canonical owner sections.
 require_text "$CONTROL_SKILL" "### Control Review Output Contract"

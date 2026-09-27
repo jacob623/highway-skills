@@ -15,7 +15,11 @@ duplicated or hand-adapted per agent.
 - **Generate agent adapters**: `.highway/tools/generate-agent-adapters.sh` writes
   `.github/skills/`, `.claude/skills/`, and `.cursor/rules/` from the skills under
   `.highway/skills/`.
+- **Configure Controls conversationally**: invoke `/highway-controls setup` or `/highway-controls configure`
+  for adaptive Concern, Condition, and Obligation discovery; direct `/highway-controls add` creates one Control.
 - **Run the test suite**: `.highway/tools/tests/run-all.sh`
+
+Feature 094 full-suite validation allows up to 240 seconds for completion.
 
 See [.highway/tools/README.md](.highway/tools/README.md) for full tool documentation (including
 how to add a new agent) and [specs/001-multi-agent-skill-suite/quickstart.md](specs/001-multi-agent-skill-suite/quickstart.md)

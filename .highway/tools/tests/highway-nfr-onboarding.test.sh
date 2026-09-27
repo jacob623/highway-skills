@@ -42,6 +42,16 @@ for text in \
 	"Blocked"; do
 	require_text "$SKILL" "$text"
 done
+for text in \
+	"candidate-generation state" \
+	"exactly once" \
+	"immediately after" \
+	"Collection Result: Finished" \
+	"zero candidates" \
+	"non-empty reason" \
+	"no partial NFR relationship"; do
+	require_text "$SKILL" "$text"
+done
 
 for marker in \
 	"nfr-review-status=Empty" \

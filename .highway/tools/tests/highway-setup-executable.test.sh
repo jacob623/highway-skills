@@ -90,9 +90,35 @@ if setup_route_fixture "$fixture_root/state" 'Missing' 'Blocked' "$blocked_outpu
 else
 	echo 'FAIL: blocked handoff mutated the disposable Setup fixture'; fail=1
 fi
-for case_text in 'No authoritative Profile' 'Valid incomplete Profile' 'Valid Complete Profile' 'Malformed Profile'; do
+for case_text in \
+	'Profile `Status: Missing`' \
+	'Profile `Status: Complete`' \
+	'Profile `Status: Blocked`' \
+	'otherwise malformed'; do
 	grep -Fq "$case_text" "$SKILL" || { echo "FAIL: missing routing case '$case_text'"; fail=1; }
 done
+for case_text in \
+	'Controls-purpose transition' \
+	'Controls Action Result' \
+	'Collection Result: Continue' \
+	'Collection Result: Finished' \
+	'Created Control IDs: []' \
+	'pre-delegation `Complete`' \
+	'does not claim Controls or Setup completion'; do
+	grep -Fq "$case_text" "$SKILL" || { echo "FAIL: missing Controls handoff contract '$case_text'"; fail=1; }
+done
+controls_result="$fixture_root/controls-result.out"
+cat >"$controls_result" <<'EOF'
+Action Status: Succeeded
+Collection Result: Continue
+Created Control IDs: [CTL000001]
+Next Action: /highway-controls setup
+EOF
+if ! feature093_assert_order "$controls_result" 'Action Status: Succeeded' 'Collection Result: Continue' ||
+	! feature093_assert_order "$controls_result" 'Collection Result: Continue' 'Created Control IDs' ||
+	! feature093_assert_order "$controls_result" 'Created Control IDs' 'Next Action'; then
+	echo 'FAIL: Controls Action Result field order is invalid'; fail=1
+fi
 if grep -Fq 'Setup checkpoint' "$SKILL" && ! grep -Fq 'Never restore' "$SKILL"; then echo 'FAIL: Setup checkpoint behavior is ambiguous'; fail=1; fi
 if [[ $fail -ne 0 ]]; then exit 1; fi
 if ! feature093_assert_order "$SKILL" 'Profile readiness' 'Objectives readiness'; then
@@ -101,10 +127,10 @@ fi
 if ! feature093_assert_order "$SKILL" 'Objectives readiness' 'Controls readiness'; then
 	echo 'FAIL: Setup does not request Controls after Objectives readiness'; fail=1
 fi
-if ! feature093_require_text "$SKILL" 'terminal `Complete`, skip Objective introduction and discovery'; then
+if ! feature093_require_text "$SKILL" 'pre-delegation `Complete` skips'; then
 	echo 'FAIL: Complete Objective readiness branch is not explicit'; fail=1
 fi
-if ! feature093_require_text "$SKILL" 'after verified Objective completion, request fresh Objective readiness'; then
+if ! feature093_require_text "$SKILL" 'fresh Objective readiness'; then
 	echo 'FAIL: fresh Objective readiness recheck is not explicit'; fail=1
 fi
 if ! feature093_forbid_text "$SKILL" 'Setup persists Objective draft'; then

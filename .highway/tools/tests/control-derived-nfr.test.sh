@@ -67,23 +67,31 @@ fi
 
 # --- Candidate and review contract -------------------------------------------------------------
 for required in \
-	"Control-derived NFR proposals" \
+	"candidate-generation state" \
+	"receives exactly one durable" \
+	"deferred until" \
+	"Collection Result: Finished" \
 	"normalized title and statement" \
 	"availability" \
 	"security" \
 	"performance" \
-	"candidate title" \
-	"candidate statement" \
-	"candidate rationale" \
 	"zero candidates" \
-	"Accept" \
-	"Modify" \
-	"Replace" \
-	"Reject" \
-	"Cancel" \
-	"before allocating an NFR ID" \
-	"stable candidate order"; do
+	"candidate-generation state" \
+	"classification and review decisions" \
+	"Candidate review remains deferred" \
+	"accepted NFR persistence" \
+	"fixed availability, security, performance rule order"; do
 	require_text "$CONTROL_SKILL" "$required"
+done
+
+for required in \
+	"zero candidates" \
+	"Not Applicable" \
+	"In Progress" \
+	"Blocked" \
+	"non-empty reason" \
+	"no partial NFR relationship"; do
+	require_text "$NFR_SKILL" "$required"
 done
 
 for required in \
@@ -121,18 +129,17 @@ done
 
 # --- Accepted relationship and direct-authoring contract --------------------------------------
 for required in \
-	"controls: [CTL" \
 	"nfrs" \
 	"identifier-only" \
 	"duplicate" \
-	"next_id" \
-	"zero partial" \
-	"Phase 4"; do
+	"catalog" \
+	"no partial NFR relationship" \
+	"NFR owner"; do
 	require_text "$CONTROL_SKILL" "$required"
 done
 for required in \
 	"controls: []" \
-	"accepted through the Control-derived workflow" \
+	"accepted candidates from the Control-derived workflow may populate" \
 	"does not infer or create a Control relationship"; do
 	require_text "$NFR_SKILL" "$required"
 done
@@ -148,12 +155,13 @@ require_text "$FIXTURE_DIR/candidate-rules.expected" "inputs=normalized_title_an
 require_text "$FIXTURE_DIR/candidate-rules.expected" "forbidden=timestamp,randomness,environment,catalog_order"
 require_text "$FIXTURE_DIR/candidate-rules.expected" "no_match=zero_candidates"
 
-if grep -Fq "relationship store" "$CONTROL_SKILL" && grep -Fq "reverse" "$CONTROL_SKILL"; then
-	echo "PASS: derived workflow declares one-way relationship scope"
-else
-	echo "FAIL: derived workflow scope declaration is incomplete"
-	fail=1
-fi
+for scope_text in \
+	"allocate NFR identifiers" \
+	"mutate the NFR catalog" \
+	"candidate store"; do
+	require_text "$CONTROL_SKILL" "$scope_text"
+done
+require_text "$NFR_SKILL" "relationship store"
 
 # --- Behavioral evidence: proposal, review barrier, accepted write, and rollback -------------
 behavior_root="$tmp_root/behavior"

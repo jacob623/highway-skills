@@ -13,6 +13,12 @@ This repository shipped **framework only** at first (FR-011 of feature 001), wit
 `.highway/skills/help/` by feature 009). Additional skill topics are added by separate,
 follow-on work.
 
+Owner action results and readiness results are distinct contracts. A collection action may report
+`Continue` or `Finished`; readiness reports only persisted-baseline state. Owner output places the
+next action first for human interaction, while machine-consumable result fields remain in their
+declared order. Continuation is explicit, transient interaction state is not restored, and an owner
+must verify retained outputs before claiming completion.
+
 ## Directory layout
 
 ```text

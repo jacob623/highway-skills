@@ -10,8 +10,8 @@ SKILL="$HIGHWAY_ROOT/skills/highway-setup/SKILL.md"
 fail=0
 require_text() { grep -Fq "$2" "$1" || { echo "FAIL: '$2' missing from $1"; fail=1; }; }
 require_text "$SKILL" '/highway-profile readiness'
-require_text "$SKILL" 'first `not_discussed` domain'
-require_text "$SKILL" 'advances to Objectives'
+require_text "$SKILL" 'Profile readiness'
+require_text "$SKILL" 'Objectives readiness'
 require_text "$SKILL" "Let's identify some explicit outcomes worth pursuing."
 require_text "$SKILL" "These give Highway something concrete to connect future decisions back to"
 require_text "$SKILL" "What's an important outcome you'd like to achieve?"
@@ -19,14 +19,23 @@ require_text "$SKILL" "If you'd like some suggestions based on your organization
 require_text "$SKILL" 'Setup-owned'
 require_text "$SKILL" 'Objectives-owned'
 require_text "$SKILL" 'does not inspect Profile metadata'
-require_text "$SKILL" 'does not recompute'
-require_text "$SKILL" 'does not write owner artifacts'
+require_text "$SKILL" 'never recomputes it'
+require_text "$SKILL" 'does not author a Controls discovery question'
 require_text "$SKILL" 'one unresolved owner question at a time'
 require_text "$SKILL" 'never restore an unanswered question'
 require_text "$SKILL" 'NFR `Not Applicable`'
 require_text "$SKILL" 'current owner activity'
 require_text "$SKILL" 'owners completed and remaining'
 require_text "$SKILL" 'without exposing routing or validation mechanics'
+require_text "$SKILL" "We've identified what you're trying to accomplish. Now let's think about what needs to be true as you pursue those outcomes."
+require_text "$SKILL" 'Controls-purpose transition'
+require_text "$SKILL" 'Collection Result: Finished'
+require_text "$SKILL" 'Created Control IDs: []'
+require_text "$SKILL" 'pre-delegation `Complete`'
+require_text "$SKILL" 'does not claim Controls or Setup completion'
+require_text "$SKILL" 'fresh Controls readiness'
+require_text "$SKILL" 'does not advance through NFR review'
+require_text "$SKILL" 'stop-before-NFR-review'
 if grep -Fq 'Step 1 of 3' "$SKILL"; then echo 'FAIL: Setup retains fixed Objective progress language'; fail=1; fi
 if grep -Fq 'Describe the objective.' "$SKILL"; then echo 'FAIL: Setup owns Objective discovery prompts'; fail=1; fi
 if grep -Fq 'organization.name' "$SKILL"; then echo 'FAIL: Setup retains organization.name ownership'; fail=1; fi
