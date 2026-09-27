@@ -30,7 +30,6 @@ Setup evaluates owner readiness in this order:
 - `/highway-profile readiness` and its four-line response contract.
 - `/highway-objectives readiness`.
 - `/highway-controls readiness`.
-- `/highway-nfrs readiness`.
 - `.highway/governance/experience-standard.md` as the authoritative user-visible interaction contract.
 - `/highway-nfrs readiness` and its declared readiness response contract.
 - The NFR-owner `Next Action` returned for `In Progress`.
@@ -56,19 +55,24 @@ Setup validates the field order and accepted values before consuming either Cont
 When input is required, Setup emits a welcome or resume greeting, the active owner introduction, and
 exactly one owner question. Setup preserves owner output and ordering. Applicable multi-owner progress
  names the current owner activity and the number of owners completed and remaining without exposing routing
- or validation mechanics. Successful completion emits exactly this dashboard, with fields in this order:
+ or validation mechanics. Successful completion emits exactly this conclusion:
 
 ```text
-Highway Setup Complete
-Profile: <terminal owner status>
-Business Objectives: <terminal owner status>
-Controls: <terminal owner status>
-NFRs: <terminal owner status>
+**Your foundational Highway context is now in place.**
+
+Highway understands more about your organization, what you're trying to accomplish, the safeguards that should guide future decisions, and the operational expectations those decisions may need to satisfy.
+
+**This is where Highway starts becoming more useful.**
+The context you've established can help Highway make future guidance more relevant, connect decisions back to your objectives and governance, and build on what it already knows instead of starting over each time.
+
+**Where would you like to go next?**
+Run `/highway-help` to explore what Highway can help you do.
 ```
 
-The dashboard is emitted only after Workflow Step 26 establishes that every required owner returned the
-terminal result required by its owner contract. Blocked, declined, aborted, or explicit status requests emit
-actionable owner context without fabricating completion.
+The conclusion is emitted only after Workflow Step 27 establishes that every required owner returned the
+terminal result required by its owner contract. Blocked, incomplete, malformed, declined, aborted, failed,
+or explicit status requests emit actionable owner context without fabricating completion. Setup offers
+`/highway-help` without invoking it.
 
 For the Objective handoff, Setup owns only this purpose introduction:
 
@@ -117,6 +121,22 @@ Setup renders this complete opening unchanged immediately after the transition:
 Controls owns every subsequent question, acknowledgment, suggestion, proposal, decision, result, and error.
 Setup renders Controls-owned interaction unchanged and does not author a Controls discovery question.
 
+### Controls-to-NFR handoff
+
+**Setup-owned:**
+
+> **We've established the safeguards that should guide future technology decisions. Now let's consider what those decisions need to achieve in operation.**
+>
+> Based on the Controls we've defined, Highway may already have identified qualities or operational outcomes worth considering.
+
+After either pre-delegation Controls readiness `Complete` or fresh Controls readiness `Complete` following
+an explicit Controls `Finished` result, Setup requests NFR readiness. If that readiness is `In Progress`
+with an owner-provided `Next Action` that requires user input, Setup emits this transition exactly once
+immediately before delegating that action to `/highway-nfrs`. A terminal NFR result with `Next Action: None`
+does not require interaction, so Setup emits neither the transition nor a manufactured NFR interaction.
+Setup does not emit the transition for Controls `Continue`, fresh Controls `Missing` or `Blocked`, direct
+`/highway-nfrs` invocation, or resumed NFR work.
+
 ## Workflow
 
 1. Locate `.highway/`; stop if it cannot be found.
@@ -141,11 +161,12 @@ Setup renders Controls-owned interaction unchanged and does not author a Control
 20. After Step 19 returns fresh Controls readiness `Missing`, fall back to Step 13 as a New interaction, regardless of `Created Control IDs`; a zero-Control result with `Created Control IDs: []` remains at Controls and does not invoke NFR review or claim completion.
 21. After Step 19 returns fresh Controls readiness `Blocked`, stop without invoking NFRs and report the Controls owner's context.
 22. After Step 10 receives pre-delegation Controls readiness `Complete`, or after Step 19 returns fresh Controls readiness `Complete`, request `/highway-nfrs readiness` and evaluate the result at Step 23.
-23. After Step 22, evaluate NFR readiness; if it is `In Progress`, fall back to Step 4 and delegate the NFR owner's declared review action.
+23. After Step 22, evaluate NFR readiness; if it is `In Progress` with an owner-provided `Next Action` that requires user input, emit the exact Setup-owned Controls-to-NFR transition once before the first NFR-owned interaction, then fall back to Step 4 and delegate that declared owner action. If the owner returns a terminal result with `Next Action: None`, do not manufacture an interaction or emit the transition.
 24. After Step 22 returns NFR readiness `Blocked`, stop Setup and report the NFR owner's context.
-25. After Step 22 returns NFR `Not Applicable` or the NFR owner's declared successful terminal state, treat it as terminal according to the NFR contract.
-26. After Step 25 returns a terminal result, emit `Highway Setup Complete` only after every required owner has returned the terminal result required by its contract.
-27. On a New interaction after any prior step, re-read persisted readiness and resume at the first incomplete owner. Never restore an unanswered question, draft response, cancellation marker, Setup checkpoint, or transient Controls discovery state.
+25. After Step 22 returns NFR `Not Applicable` or the NFR owner's declared successful terminal state, treat it as terminal according to the NFR contract without manufacturing an interaction.
+26. After Step 25 returns a terminal result, verify that every required owner has returned the terminal result required by its contract; otherwise stop without claiming completion.
+27. After Step 26 passes, emit the exact forward-looking Setup conclusion once. Do not emit the former completion dashboard or its Profile, Business Objectives, Controls, or NFR summary fields.
+28. On a New interaction after any prior step, re-read persisted readiness and resume at the first incomplete owner. Never restore an unanswered question, draft response, cancellation marker, Setup checkpoint, transient Controls discovery state, or the non-persisted handoff transition.
 
 ### Controls orchestration state
 
@@ -190,8 +211,9 @@ not infer a Controls `Not Applicable` state.
 | 23 | NFR readiness is `In Progress` but its declared owner review action cannot be delegated | abort with Blocked |
 | 24 | NFR readiness is `Blocked` but its owner context cannot be reported without advancing beyond NFRs | abort without advancing beyond NFRs |
 | 25 | A declared terminal NFR result cannot be consumed without contradicting the NFR owner contract | abort with Blocked |
-| 26 | Any required owner lacks its terminal result | abort without claiming completion |
-| 27 | Persisted readiness cannot identify the first incomplete owner on a New interaction | abort and report the owner context |
+| 26 | Any required owner lacks, fails, or returns an invalid terminal result | abort without claiming completion |
+| 27 | A successful completion claim would not be supported by every required owner contract | abort without emitting the conclusion |
+| 28 | Persisted readiness cannot identify the first incomplete owner on a New interaction | abort and report the owner context |
 
 For each owner-result decision, evaluate recognized states in the declared order and use an explicit
 default. Profile Readiness is evaluated in the order declared by `/highway-profile`: recognized `Complete`,
@@ -215,7 +237,7 @@ structures are evaluated in their declared order; identical owner results select
 
 Setup consumes the Profile owner's readiness contract and does not inspect Profile metadata, recompute
 the five Profile domains, use the retired identity field, or write the Profile artifact. It does not
-recompute owner readiness. Setup owns ordered routing, continuation, status, and the dashboard only. Profile owns
+recompute owner readiness. Setup owns ordered routing, continuation, status, and the final conclusion only. Profile owns
 organizational evidence, domain outcomes, readiness, and its artifact.
 
 ## Guided Setup interaction contract
@@ -269,9 +291,21 @@ The separate readiness result uses `Status: Complete|Missing|Blocked`, `Summary`
 A `Continue` result is non-terminal even when fresh readiness is `Complete`. A zero-Control finish
 includes `Created Control IDs: []`, leaves fresh readiness `Missing`, and does not claim Controls or Setup completion.
 
-Confirm the emitted completion dashboard exactly follows the declared `Highway Setup Complete`, `Profile`,
-`Business Objectives`, `Controls`, `NFRs` structure and order, and is emitted only after Workflow Step 26's
-required terminal owner-result condition.
+Confirm the emitted conclusion exactly follows the declared forward-looking contract and is emitted only
+after Workflow Step 27's required terminal owner-result condition.
+
+After either pre-delegation Controls readiness `Complete` or post-Finished fresh Controls readiness `Complete`,
+verify that Setup emits this exact transition once immediately before the first NFR-owned interaction:
+
+> **We've established the safeguards that should guide future technology decisions. Now let's consider what those decisions need to achieve in operation.**
+> Based on the Controls we've defined, Highway may already have identified qualities or operational outcomes worth considering.
+
+The transition is Setup-owned and is not emitted for Controls `Continue`, fresh `Missing` or `Blocked`,
+direct `/highway-nfrs` invocation, resumed NFR work, or a terminal result without requiring interaction.
+Verify that NFR-owned questions, recommendations, decisions, errors, and results remain unchanged.
+After all required owners satisfy their contracts, verify that Setup emits the exact forward-looking
+conclusion once, including the exact line "Run `/highway-help` to explore what Highway can help you do.",
+without invoking the command or restoring any former dashboard fields.
 
 After explicit `Finished` and fresh Controls readiness, Setup may route to NFR review only when NFR
 readiness permits it. Candidate-generation `Blocked` keeps Setup stopped and does not advance through NFR review. Setup never treats a stale result or a fresh Controls readiness `Complete` as a substitute
@@ -315,7 +349,7 @@ for the delegated collection result. This is the stop-before-NFR-review behavior
 - Confirm NFR `Blocked` stops Setup, `In Progress` delegates owner review, and `Not Applicable` is terminal
   according to the NFR contract.
 - Confirm failed Controls creation or retained-output verification yields no completed Control baseline, a
-  non-success owner result, no `Controls: Complete`, and no `Highway Setup Complete` claim.
+  non-success owner result, no `Controls: Complete`, and no successful Setup conclusion claim.
 - Confirm Setup writes no Control or NFR owner artifacts and restores no transient Controls state.
 
 ## Example
