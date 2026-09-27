@@ -14,8 +14,17 @@ done
 require "$FIXTURES/readiness/setup/owner-loop.txt" 'status-only: report owner result without delegation'
 require "$FIXTURES/readiness/setup/owner-loop.txt" 'stop: blocked unknown declined aborted failed'
 require "$FIXTURES/readiness/setup/owner-loop.txt" 'nfr: In Progress is non-terminal'
-for token in 'Profile readiness' 'Objectives readiness' 'Controls readiness' 'NFR readiness' 'first `not_discussed` domain' 'does not write owner artifacts'; do
+for token in 'Profile readiness' 'Objectives readiness' 'Controls readiness' 'NFR readiness' 'never restore an unanswered question' 'does not author a Controls discovery question'; do
 	require "$HIGHWAY_ROOT/skills/highway-setup/SKILL.md" "$token"
 done
+for token in 'Controls-purpose transition' 'Controls Action Result' 'Collection Result: Continue|Finished' 'Created Control IDs' 'fresh Controls readiness' 'pre-delegation `Complete`'; do
+	require "$HIGHWAY_ROOT/skills/highway-setup/SKILL.md" "$token"
+done
+action_line="$(grep -n 'Controls Action Result' "$HIGHWAY_ROOT/skills/highway-setup/SKILL.md" | head -n 1 | cut -d: -f1)"
+fresh_line="$(grep -n 'fresh Controls readiness' "$HIGHWAY_ROOT/skills/highway-setup/SKILL.md" | head -n 1 | cut -d: -f1)"
+if [[ -z "$action_line" || -z "$fresh_line" || "$action_line" -ge "$fresh_line" ]]; then
+	echo 'FAIL: Setup does not consume Controls action result before fresh readiness'
+	fail=1
+fi
 if [[ $fail -ne 0 ]]; then exit 1; fi
 echo 'OK: Setup owner-loop contract passes'

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Verifies Feature 077 Control collection and review contracts.
+# Verifies Feature 094 adaptive Control collection and review contracts.
 set -u
 # Instrument class: mixed (static-document-contract and executed-behavior)
 # Artifact classes: source-document, generated-artifact, disposable-fixture
@@ -20,26 +20,47 @@ require_text() {
 }
 
 for text in \
-	"guided Control collection" \
-	"one entry per proposed Control" \
-	"Category" \
-	"Statement" \
-	"Available Decisions: Accept, Modify, Replace, Remove" \
+	"adaptive discovery" \
+	"Concern" \
+	"Condition" \
+	"Obligation" \
+	"Action Status: Succeeded|Declined|Aborted|Blocked" \
+	"Collection Result: Continue|Finished" \
+	"Created Control IDs" \
+	"Declined" \
+	"Aborted" \
+	"perform no Control write" \
+	"Controls Readiness Result" \
 	"Status: Empty" \
-	"Entry Count: 0" \
-	"Security" \
-	"Availability and Resilience" \
-	"Compliance and Governance" \
-	"Proposed Title" \
-	"Cancel Review" \
-	"Review Complete" \
-	"exactly one final decision" \
-	"all-or-nothing" \
-	"no candidate generation" \
-	"existing Control baseline" \
-	"duplicate"; do
+	"Status: Empty" \
+	"Next Action:" \
+	"Title" \
+	"Statement" \
+	"Rationale" \
+	"one complete Control proposal at a time" \
+	"Proposal decisions are Accept, Correct, Replace, Reject, or Cancel" \
+	"immediately" \
+	"authoritative baseline" \
+	"duplicate" \
+	"byte-for-byte" \
+	"one Add MINOR" \
+	"revalidate" \
+	"user-override" \
+	"Material Influence" \
+	"Contextual Acknowledgment" \
+	"Decision Context" \
+	"Relevant Example" \
+	"Reuse writes no record" \
+	"deterministic initial" \
+	"candidate derivation" \
+	"NFR owner"; do
 	require_text "$SKILL" "$text"
 done
+
+if grep -Eq 'Process these categories in order|Security; Availability and Resilience|Completed Categories|Current Category' "$SKILL"; then
+	echo "FAIL: legacy category-driven onboarding remains in the Controls setup path"
+	fail=1
+fi
 
 for marker in \
 	"control-review-status=Empty" \

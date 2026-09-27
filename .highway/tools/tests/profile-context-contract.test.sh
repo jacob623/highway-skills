@@ -7,8 +7,17 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 FIXTURES="$SCRIPT_DIR/fixtures/profile-092"
 PROFILE="$HIGHWAY_ROOT/skills/highway-profile/SKILL.md"
+CONTROLS="$HIGHWAY_ROOT/skills/highway-controls/SKILL.md"
 fail=0
 require() { grep -Fq -- "$2" "$1" || { echo "FAIL: $1 missing '$2'"; fail=1; }; }
+for text in \
+	'Profile-owned `Blocked`' \
+	'Action Status: Blocked' \
+	'other unavailable optional context is excluded' \
+	'complete direct obligation' \
+	'active user input wins'; do
+	require "$CONTROLS" "$text"
+done
 for context in highway-identity.md highway-vision.md highway-platform-objectives.md; do require "$PROFILE" "$context"; done
 require "$PROFILE" 'behavioral guidance'
 require "$PROFILE" 'strategic direction'

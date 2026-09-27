@@ -32,9 +32,9 @@ require_text "$PROFILE" 'Next Action: None'
 require_text "$PROFILE" 'must not be promoted into the retained Profile'
 require_text "$SETUP" 'status-only requests'
 require_text "$SETUP" 'declined, aborted, or failed'
-require_text "$SETUP" 'In Progress` is not terminal'
+require_text "$SETUP" 'NFR readiness; if it is `In Progress`'
 require_text "$SETUP" 'Interactive Workflow UX Contract'
-require_text "$SETUP" 'Workflow failure map'
+require_text "$SETUP" '## Error Handling'
 require_text "$STANDARD" 'Every user-visible response excludes Implementation details unless requested.'
 
 fixture_root="$(mktemp -d "${TMPDIR:-/tmp}/highway-profile-092.XXXXXX")"

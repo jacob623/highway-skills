@@ -7,6 +7,17 @@ set -u
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 fail=0
+CONTROLS="$HIGHWAY_ROOT/skills/highway-controls/SKILL.md"
+for text in \
+	'active user input' \
+	'accepted existing Controls' \
+	'accepted Profile' \
+	'accepted Business Objectives' \
+	'Identity, Vision, and Platform Objectives' \
+	'relevant connections' \
+	'cannot choose policy'; do
+	if ! grep -Fq "$text" "$CONTROLS"; then echo "FAIL: Controls context contract missing '$text'"; fail=1; fi
+done
 participant="$HIGHWAY_ROOT/tools/tests/fixtures/profile-091/reference-participant/SKILL.md"
 for text in '.highway/library/knowledge/profile.md' 'declared Profile Repository Context' 'workflow-specific request' 'ask for a missing capability'; do
 	if ! grep -Fq "$text" "$participant"; then echo "FAIL: participant missing '$text'"; fail=1; fi

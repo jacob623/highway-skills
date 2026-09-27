@@ -43,6 +43,17 @@ VALIDATE_SKILL="$HIGHWAY_ROOT/tools/validate-skill.sh"
 
 fail=0
 
+for proposal_token in \
+	'**Next Action:** Review this proposed Control and accept, correct, replace, or reject it.' \
+	'Title:' \
+	'Statement:' \
+	'Rationale:'; do
+	if ! grep -Fq "$proposal_token" "$CONTROL_SKILL"; then
+		echo "FAIL: Controls proposal framing missing '$proposal_token'"
+		fail=1
+	fi
+done
+
 require_text() {
 	local file="$1" text="$2"
 	if ! grep -Fq -- "$text" "$file"; then
@@ -231,7 +242,7 @@ for behavior_token in "readiness" "relationship" "version" "transaction"; do
 	require_text "$CONTROL_SKILL" "$behavior_token"
 	require_text "$NFR_SKILL" "$behavior_token"
 done
-for control_behavior in "catalog" "derived" "No timestamp" "unchanged baseline" "next identifier" "allocation" "transaction" "readiness" "NFR proposal"; do
+for control_behavior in "catalog" "derived" "No timestamp" "unchanged baseline" "next identifier" "allocation" "transaction" "readiness" "Control-Derived NFR Candidates"; do
 	require_text "$CONTROL_SKILL" "$control_behavior"
 done
 for behavior_token in "elimination" "filter" "scor" "recommend" "traceab" "determin"; do
