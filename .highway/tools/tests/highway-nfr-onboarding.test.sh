@@ -22,13 +22,28 @@ require_text() {
 for text in \
 	"review" \
 	"onboarding" \
-	"one entry per candidate" \
+	"setup" \
+	"configure" \
+	"one unresolved candidate at a time" \
+	"Based on your [Control subject] [descriptor], Highway recommends:" \
+	"requirements" \
+	"safeguards" \
+	"obligations" \
+	"constraints" \
+	"conditions" \
+	"accept, change, replace, or skip" \
+	"Are there any qualities or operational expectations you'd like future solutions to meet?" \
+	"I don't know" \
+	"Collection Result: Continue|Finished" \
+	"Action Status: Succeeded|Declined|Aborted|Blocked" \
+	"does not include a created-NFR-ID list" \
 	"Candidate Title" \
 	"Candidate Statement" \
 	"Candidate Rationale" \
 	"Originating Control Identifier" \
 	"Originating Control Title" \
-	"Available Decisions: Accept, Modify, Replace, Reject" \
+	"Would you like to accept, change, replace, or skip it?" \
+	"Recommendation <position> of <total>" \
 	"Status: Empty" \
 	"Entry Count: 0" \
 	"Review Complete" \

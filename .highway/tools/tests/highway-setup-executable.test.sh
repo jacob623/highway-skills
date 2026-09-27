@@ -107,6 +107,19 @@ for case_text in \
 	'does not claim Controls or Setup completion'; do
 	grep -Fq "$case_text" "$SKILL" || { echo "FAIL: missing Controls handoff contract '$case_text'"; fail=1; }
 done
+for case_text in \
+	"We've established the safeguards that should guide future technology decisions. Now let's consider what those decisions need to achieve in operation." \
+	"Based on the Controls we've defined, Highway may already have identified qualities or operational outcomes worth considering." \
+	'first NFR-owned interaction' \
+	'without requiring interaction' \
+	'Your foundational Highway context is now in place.' \
+	'Run `/highway-help` to explore what Highway can help you do.'; do
+	grep -Fq "$case_text" "$SKILL" || { echo "FAIL: missing Feature 095 contract '$case_text'"; fail=1; }
+done
+if grep -Fq 'Highway Setup Complete' "$SKILL"; then
+	echo 'FAIL: Feature 095 leaves the old completion dashboard in Setup'
+	fail=1
+fi
 controls_result="$fixture_root/controls-result.out"
 cat >"$controls_result" <<'EOF'
 Action Status: Succeeded

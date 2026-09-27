@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Verifies Feature 091 Setup ownership and routing contract.
+# Verifies Feature 095 Setup handoff, ownership, and routing contract.
 set -u
 # Instrument class: mixed (static-document-contract and executed-behavior)
 # Artifact classes: source-document, generated-artifact, disposable-fixture
@@ -36,6 +36,23 @@ require_text "$SKILL" 'does not claim Controls or Setup completion'
 require_text "$SKILL" 'fresh Controls readiness'
 require_text "$SKILL" 'does not advance through NFR review'
 require_text "$SKILL" 'stop-before-NFR-review'
+require_text "$SKILL" "We've established the safeguards that should guide future technology decisions. Now let's consider what those decisions need to achieve in operation."
+require_text "$SKILL" "Based on the Controls we've defined, Highway may already have identified qualities or operational outcomes worth considering."
+require_text "$SKILL" 'first NFR-owned interaction'
+require_text "$SKILL" 'terminal result without requiring interaction'
+require_text "$SKILL" 'Next Action: None'
+require_text "$SKILL" 'requires user input'
+require_text "$SKILL" 'NFR Collection Result'
+require_text "$SKILL" 'Collection Result: Continue|Finished'
+require_text "$SKILL" 'fresh NFR readiness'
+require_text "$SKILL" 'without inspecting candidate contents, counts, records, relationships, or internal state'
+require_text "$SKILL" 'Your foundational Highway context is now in place.'
+require_text "$SKILL" '**Your foundational Highway context is now in place.**'
+require_text "$SKILL" '**This is where Highway starts becoming more useful.**'
+require_text "$SKILL" '**Where would you like to go next?**'
+require_text "$SKILL" 'Run `/highway-help` to explore what Highway can help you do.'
+if grep -Fq 'Highway Setup Complete' "$SKILL"; then echo 'FAIL: Setup retains the completion dashboard'; fail=1; fi
+if grep -Fq 'Business Objectives: <terminal owner status>' "$SKILL"; then echo 'FAIL: Setup retains dashboard summary fields'; fail=1; fi
 if grep -Fq 'Step 1 of 3' "$SKILL"; then echo 'FAIL: Setup retains fixed Objective progress language'; fail=1; fi
 if grep -Fq 'Describe the objective.' "$SKILL"; then echo 'FAIL: Setup owns Objective discovery prompts'; fail=1; fi
 if grep -Fq 'organization.name' "$SKILL"; then echo 'FAIL: Setup retains organization.name ownership'; fail=1; fi
