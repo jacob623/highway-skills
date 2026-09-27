@@ -95,13 +95,13 @@ for required in \
 done
 
 for required in \
-	"NFR Review emits one entry per candidate" \
-	"Candidate Title" \
-	"Candidate Statement" \
-	"Candidate Rationale" \
-	"Originating Control Identifier" \
-	"Originating Control Title" \
-	"Available Decisions: Accept, Modify, Replace, Reject" \
+	"Contextual NFR Review Output Contract" \
+	"Recommendation <position> of <total>" \
+	"Based on your [Control subject] [descriptor], Highway recommends:" \
+	"Why it matters:" \
+	"Would you like to accept, change, replace, or skip it?" \
+	"Candidate-Generation Action Result" \
+	"Candidate Classification / Readiness State" \
 	"Status: Empty" \
 	"Entry Count: 0"; do
 	require_text "$NFR_SKILL" "$required"
