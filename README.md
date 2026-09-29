@@ -15,6 +15,10 @@ duplicated or hand-adapted per agent.
 - **Generate agent adapters**: `.highway/tools/generate-agent-adapters.sh` writes
   `.github/skills/`, `.claude/skills/`, and `.cursor/skills/` from the skills under
   `.highway/skills/`.
+- **Author an always-on instruction**: create `.highway/instructions/<id>.md` with `name` and
+  `description`, then run `.highway/tools/generate-instructions.sh`. Claude Code receives
+  `.claude/CLAUDE.md` and GitHub Copilot receives `.github/copilot-instructions.md`, one merged
+  file each. Cursor receives one always-on rule per instruction at `.cursor/rules/<id>.mdc`.
 - **Configure Controls conversationally**: invoke `/highway-controls setup` or `/highway-controls configure`
   for adaptive Concern, Condition, and Obligation discovery; direct `/highway-controls add` creates one Control.
 - **Run the test suite**: `.highway/tools/tests/run-all.sh`

@@ -24,12 +24,19 @@ rm -rf "$REPO_ROOT"/distribution-probe-*.md \
 	"$REPO_ROOT"/.github/skills/test-adapter-fixture-* \
 	"$REPO_ROOT"/.claude/skills/test-adapter-fixture-* \
 	"$REPO_ROOT"/.cursor/skills/test-adapter-fixture-* \
+	"$HIGHWAY_ROOT"/instructions/test-instruction-* \
+	"$REPO_ROOT"/.cursor/rules/test-instruction-*.mdc \
 	"$HIGHWAY_ROOT"/tools/shipped-tree-cliprobe-*.tmp \
 	"$HIGHWAY_ROOT"/tools/tests/fixtures/shipped-tree-cliprobe-*.tmp
 adapter_manifest="$HIGHWAY_ROOT/tools/.adapter-manifest"
 if [[ -f "$adapter_manifest" ]] && grep -q 'test-adapter-fixture-' "$adapter_manifest"; then
 	grep -v 'test-adapter-fixture-' "$adapter_manifest" >"$adapter_manifest.tmp" || true
 	mv "$adapter_manifest.tmp" "$adapter_manifest"
+fi
+instruction_manifest="$HIGHWAY_ROOT/tools/.instruction-manifest"
+if [[ -f "$instruction_manifest" ]] && grep -q 'test-instruction-' "$instruction_manifest"; then
+	grep -v 'test-instruction-' "$instruction_manifest" >"$instruction_manifest.tmp" || true
+	mv "$instruction_manifest.tmp" "$instruction_manifest"
 fi
 
 pass=0

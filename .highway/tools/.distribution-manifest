@@ -16,6 +16,7 @@
 
 # --- Agent adapter trees: the highway-* entries ship, their speckit-* siblings do not ---
 exclude	.claude	-
+include	.claude/CLAUDE.md	-
 include	.claude/skills/highway-objectives	-
 include	.claude/skills/highway-help	-
 include	.claude/skills/highway-controls	-
@@ -29,6 +30,7 @@ include	.claude/skills/highway-discovery	-
 include	.claude/skills/highway-clarify	-
 include	.claude/skills/highway-adr	-
 exclude	.cursor	-
+include	.cursor/rules/highway-agent-context.mdc	-
 include	.cursor/skills/highway-objectives	-
 include	.cursor/skills/highway-help	-
 include	.cursor/skills/highway-controls	-
@@ -42,6 +44,7 @@ include	.cursor/skills/highway-discovery	-
 include	.cursor/skills/highway-clarify	-
 include	.cursor/skills/highway-adr	-
 exclude	.github	-
+include	.github/copilot-instructions.md	-
 include	.github/skills/highway-objectives	-
 include	.github/skills/highway-help	-
 include	.github/skills/highway-controls	-
@@ -68,6 +71,7 @@ include	.highway/library/templates/output/adr-catalog.md	-
 include	.highway/library/templates/output/profile-record.md	-
 include	.highway/catalog	-
 include	.highway/governance	-
+include	.highway/instructions	-
 include	.highway/tools	-
 
 # --- Toolchain carve-outs ---

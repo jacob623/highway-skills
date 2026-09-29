@@ -71,7 +71,8 @@ cleanup() {
 		"$REPO_ROOT/.github/skills/$TMP_ID" \
 		"$REPO_ROOT/.claude/skills/$TMP_ID" \
 		"$REPO_ROOT/.cursor/skills/$TMP_ID" \
-		"$REPO_ROOT/.cursor/rules/$TMP_ID.mdc"
+		"$REPO_ROOT/.cursor/rules/$TMP_ID.mdc" \
+		"$REPO_ROOT"/.cursor/rules/highway-leftover-*.mdc
 	if [[ -f "$MANIFEST" ]]; then
 		grep -vF "$TMP_ID" "$MANIFEST" >"$MANIFEST.tmp" || true
 		mv "$MANIFEST.tmp" "$MANIFEST"
@@ -99,6 +100,21 @@ sed -i.bak "s/^name: .*/name: $TMP_ID/" "$SKILL_SRC_DIR/SKILL.md" && rm -f "$SKI
 
 speckit_before="$(sha256sum "$SPECKIT_SENTINEL" 2>/dev/null || shasum -a 256 "$SPECKIT_SENTINEL")"
 cursor_speckit_before="$(sha256sum "$CURSOR_SPECKIT_SENTINEL" 2>/dev/null || shasum -a 256 "$CURSOR_SPECKIT_SENTINEL")"
+instruction_claude="$REPO_ROOT/.claude/CLAUDE.md"
+instruction_copilot="$REPO_ROOT/.github/copilot-instructions.md"
+instruction_manifest_path="$HIGHWAY_ROOT/tools/.instruction-manifest"
+instruction_hash() {
+	if [[ ! -f "$1" ]]; then
+		printf 'absent\n'
+	elif command -v sha256sum >/dev/null 2>&1; then
+		sha256sum "$1" | awk '{print $1}'
+	else
+		shasum -a 256 "$1" | awk '{print $1}'
+	fi
+}
+instruction_claude_before="$(instruction_hash "$instruction_claude")"
+instruction_copilot_before="$(instruction_hash "$instruction_copilot")"
+instruction_manifest_before="$(instruction_hash "$instruction_manifest_path")"
 
 if ! "$GENERATE" >/tmp/generate-agent-adapters.$$.log 2>&1; then
 	echo "FAIL: .highway/tools/generate-agent-adapters.sh exited non-zero"
@@ -150,15 +166,36 @@ if [[ -e "$REPO_ROOT/.cursor/rules/$TMP_ID.mdc" ]]; then
 	fail=1
 fi
 
-# Regression guard (feature 097): once the one-time migration has retired the old Cursor rule
-# files, none may reappear and no adapter manifest row may name the rules location. This fails
-# for as long as any Highway rule file or row remains, and again if a change reintroduces one.
+# Regression guard (feature 097, narrowed by feature 098). The loop previously failed on every
+# highway-*.mdc because no instruction outputs existed (D3.5). A file is a leftover skill rule
+# only when the instruction manifest has no row for that path. The adapter manifest still must
+# not name .cursor/rules/.
+instruction_manifest="$HIGHWAY_ROOT/tools/.instruction-manifest"
 for stale_rule in "$REPO_ROOT"/.cursor/rules/highway-*.mdc; do
 	if [[ -e "$stale_rule" ]]; then
-		echo "FAIL: superseded Cursor rule file still present: ${stale_rule#"$REPO_ROOT"/}"
-		fail=1
+		rel_rule="${stale_rule#"$REPO_ROOT"/}"
+		if [[ ! -f "$instruction_manifest" ]] || ! grep -qF "$(printf '%s\t' "$rel_rule")" "$instruction_manifest"; then
+			echo "FAIL: superseded Cursor rule file still present: $rel_rule"
+			fail=1
+		fi
 	fi
 done
+# The same predicate, executed against a file that has no instruction-manifest row.
+leftover_rule="$REPO_ROOT/.cursor/rules/highway-leftover-$$.mdc"
+mkdir -p "$(dirname "$leftover_rule")"
+printf 'leftover\n' >"$leftover_rule"
+leftover_rel="${leftover_rule#"$REPO_ROOT"/}"
+leftover_reported=0
+if [[ -e "$leftover_rule" ]]; then
+	if [[ ! -f "$instruction_manifest" ]] || ! grep -qF "$(printf '%s\t' "$leftover_rel")" "$instruction_manifest"; then
+		leftover_reported=1
+	fi
+fi
+rm -f "$leftover_rule"
+if [[ "$leftover_reported" -ne 1 ]]; then
+	echo "FAIL: a highway-*.mdc with no instruction-manifest row was not treated as a leftover skill rule"
+	fail=1
+fi
 if [[ -f "$MANIFEST" ]] && grep -q '^\.cursor/rules/' "$MANIFEST"; then
 	echo "FAIL: the adapter manifest still holds $(grep -c '^\.cursor/rules/' "$MANIFEST") row(s) naming .cursor/rules/"
 	fail=1
@@ -225,6 +262,13 @@ if [[ -f "$GH_TARGET" ]]; then
 		echo "FAIL: a hand-edited adapter was overwritten; the edit was lost"
 		fail=1
 	fi
+fi
+
+if [[ "$instruction_claude_before" != "$(instruction_hash "$instruction_claude")" \
+	|| "$instruction_copilot_before" != "$(instruction_hash "$instruction_copilot")" \
+	|| "$instruction_manifest_before" != "$(instruction_hash "$instruction_manifest_path")" ]]; then
+	echo "FAIL: generate-agent-adapters.sh changed an instruction output or .instruction-manifest"
+	fail=1
 fi
 
 exit $fail

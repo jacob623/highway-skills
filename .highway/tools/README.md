@@ -75,6 +75,23 @@ no namespace prefix of its own.
   `.cursor/skills/` — those are external tooling used to build this repository, not part of this
   suite. The generator removes no file at all.
 
+### `.highway/tools/generate-instructions.sh`
+
+Publishes every `.highway/instructions/<id>.md` file to the always-on instruction locations.
+Author one instruction as its own file. The frontmatter is `name` (equal to the filename id) and
+`description`. The body is plain markdown and is copied unchanged.
+
+- Cursor receives one always-on rule per instruction: `.cursor/rules/<id>.mdc`, with
+  `alwaysApply: true`.
+- Claude Code receives every body in `.claude/CLAUDE.md`.
+- GitHub Copilot receives the same bytes in `.github/copilot-instructions.md`.
+
+Bodies in the two merged files are in filename order, with one blank line between bodies.
+
+- **Exit 0**: every output written or already current.
+- **Exit 1**: a source is invalid, or a target was hand-edited outside this generator (refuses
+  to overwrite, names the file). A non-zero exit writes nothing. The generator removes no file.
+
 ### `.highway/tools/tests/run-all.sh`
 
 Discovers and runs every `*.test.sh` under `.highway/tools/tests/`, prints a pass/fail summary,
