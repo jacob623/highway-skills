@@ -56,7 +56,8 @@ adapter_paths() {
 	printf '%s\n' \
 		".github/skills/$id" \
 		".claude/skills/$id" \
-		".cursor/skills/$id"
+		".cursor/skills/$id" \
+		".agents/skills/$id"
 }
 
 # The file each adapter path resolves to. All three are directories holding a SKILL.md.
@@ -65,7 +66,8 @@ adapter_files() {
 	printf '%s\n' \
 		".github/skills/$id/SKILL.md" \
 		".claude/skills/$id/SKILL.md" \
-		".cursor/skills/$id/SKILL.md"
+		".cursor/skills/$id/SKILL.md" \
+		".agents/skills/$id/SKILL.md"
 }
 
 skill_exists() {
@@ -143,6 +145,7 @@ orphan_problems() {
 			.github/skills/*) row_id="${path#.github/skills/}" ;;
 			.claude/skills/*) row_id="${path#.claude/skills/}" ;;
 			.cursor/skills/*) row_id="${path#.cursor/skills/}" ;;
+			.agents/skills/*) row_id="${path#.agents/skills/}" ;;
 			*) continue ;;
 		esac
 		row_id="${row_id%%/*}"
@@ -156,7 +159,7 @@ orphan_problems() {
 	while IFS= read -r rel; do
 		[[ -n "$rel" ]] || continue
 		case "$rel" in
-			.github/*|.claude/*|.cursor/*) ;;
+			.github/*|.claude/*|.cursor/*|.agents/*) ;;
 			*) continue ;;  # fixture agent trees are not declared agent trees
 		esac
 		if [[ ! -f "$REPO_ROOT/$rel" ]]; then

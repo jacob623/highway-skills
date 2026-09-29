@@ -1,0 +1,197 @@
+---
+name: highway-relationships
+description: "Inspects and repairs repository-wide Control-to-NFR relationship integrity with explicit confirmation."
+usage: "Invoke as `/highway-relationships` and state Inspect, Repair, or Impact followed by the governance relationship scope."
+compatibility: all
+metadata:
+  version: 1.0.0
+---
+
+# highway-relationships
+
+## Purpose
+
+Maintains the integrity of the existing identifier-only relationships between the repository's user-owned Controls and NFRs through review-first inspection, repair, and impact analysis.
+
+## When to use
+
+Use this skill to:
+
+- inspect every `Control.nfrs` and `NFR.controls` relationship;
+- classify valid, malformed, orphaned, asymmetric, duplicate, and blocked relationship findings;
+- review and apply explicitly approved reciprocal additions or orphan-reference removals; or
+- analyze the relationship impact of removing or replacing Controls or NFRs.
+
+State one mode explicitly: `Inspect`, `Repair`, or `Impact`.
+
+## When not to use
+
+Do not use this skill to create, update, remove, or replace a Control or NFR. Those operations remain
+owned by `/highway-controls` and `/highway-nfrs`.
+
+Do not use it to derive NFR wording, infer a missing Control, reclassify an artifact, edit titles,
+statements, rationales, statuses, versions, catalogs, or immutable IDs, or introduce a relationship
+store. A direct NFR with `controls: []` is valid and does not require an inferred Control.
+
+## Inputs
+
+- The project root, found by locating `.highway/`. If it cannot be located, abort and ask where the
+   project root is.
+- The user-owned baseline at root-level `library/governance/`, sibling to `.highway/`.
+- Control records under `library/governance/controls/`, NFR records under
+   `library/governance/nfrs/`, and their existing catalogs.
+- The requested mode and, for `Repair` or `Impact`, the requested relationship or destructive
+   operation scope.
+
+The relationship graph is read only from the existing `nfrs` field on Control records and the
+existing `controls` field on NFR records. Relationship values are immutable identifiers only:
+`CTL` followed by six digits or `NFR` followed by six digits.
+
+## Outputs
+
+### Inspect report
+
+Produce a deterministic report with these sections, in this order:
+
+- Relationship Summary
+- Valid Relationships
+- Broken Relationships
+- Asymmetric Relationships
+- Orphan References
+- Required Repairs
+- Blocking Conditions
+
+Each finding names its source artifact type, immutable ID, path, target type and ID when available,
+current state, expected state, reason, and impact. Empty sections are reported explicitly.
+
+### Repair proposal
+
+Before any write, show the complete ordered proposal. Every recommendation contains:
+
+- affected artifact type, immutable ID, and path;
+- current relationship state;
+- proposed relationship state;
+- reason for the recommendation; and
+- impact on reciprocal traceability.
+
+A reciprocal repair adds only the missing identifier to the opposite relationship field. An orphan
+repair removes only the invalid identifier from the field that contains it. A duplicate repair may
+remove only the approved duplicate value when the baseline remains otherwise valid.
+
+### Impact analysis
+
+For Control removal, NFR removal, or baseline replacement, list every affected artifact individually
+by immutable identifier and title, the relationship direction, and the traceability that would be
+lost. A count is never sufficient. Report an explicit empty impact set when no relationship is
+affected.
+
+## Workflow
+
+### Locate and validate the baseline
+
+Find `.highway/`, resolve root-level `library/governance/`, and read both artifact types and their
+catalogs. Abort before repair or impact processing when a required catalog is absent, a record is
+malformed, an immutable ID is duplicated, or the baseline is internally inconsistent. Name the file
+and blocking condition; do not repair a malformed baseline implicitly.
+
+Parse all relationship lists without changing their authored content. Validate identifier format,
+expected prefix, target existence, target type, duplicate membership, and reciprocal membership.
+Treat an empty direct-NFR `controls` list as valid.
+
+### Canonicalize the graph for reporting
+
+Order records by artifact type and immutable identifier. Order relationship IDs numerically by their
+immutable identifier. Order findings and recommendations by source type, source ID, target type,
+target ID, and finding class. Do not depend on filesystem order, catalog order, environment values,
+randomness, or generated run metadata.
+
+### Inspect without writing
+
+`Inspect` is always read-only. Emit the complete report and all required repairs. Do not write
+records, catalogs, relationship fields, or a repair plan. A valid baseline with no findings is a
+successful inspection and reports zero required repairs.
+
+### Propose repairs before confirmation
+
+`Repair` first renders every recommendation using the current and proposed relationship states,
+reason, and impact. Recommendations remain independently reviewable. Do not allocate identifiers,
+rewrite artifact content, or write one side of a relationship before the full proposal is shown.
+
+Ask for an explicit decision for every recommendation: `Approve`, `Reject`, or `Cancel`. Treat an
+ambiguous or incomplete decision as `Cancel`. Rejected and cancelled recommendations produce no
+write.
+
+### Validate and apply approved repairs atomically
+
+After decisions, validate the unchanged baseline snapshot, every approved recommendation, both sides
+of each resulting relationship, immutable identifiers, and relationship-only mutation scope. Stage
+the complete approved set before committing it. If validation, staging, or any write cannot be
+completed safely, stop with zero partial writes.
+
+Commit only approved changes to `Control.nfrs` and `NFR.controls`. Preserve all other frontmatter,
+body content, identifiers, titles, statements, rationales, statuses, catalogs, and unrelated records.
+Report each changed relationship by source ID, previous value, and resulting value.
+
+### Analyze destructive impact before authoring workflows proceed
+
+`Impact` is read-only. For a requested Control removal, NFR removal, or complete baseline replacement,
+resolve the affected records and list each lost relationship and affected artifact by immutable ID and
+title. Existing `/highway-controls` and `/highway-nfrs` workflows must show this complete analysis
+before their own destructive confirmation. This skill does not delete records or perform baseline
+version changes.
+
+## Determinism
+
+For identical baseline bytes and identical mode inputs, report classifications, recommendation keys,
+proposal fields, ordering, and serialized output are identical. Output contains no timestamp,
+random identifier, environment-derived value, or incidental filesystem ordering.
+
+## Verification
+
+- Confirm every Control and NFR relationship field was inspected.
+- Confirm valid reciprocal edges are reported as valid and direct NFRs with `controls: []` remain valid.
+- Confirm malformed, wrong-type, missing, asymmetric, and duplicate references are classified.
+- Confirm Inspect and Impact write nothing.
+- Confirm the complete Repair proposal appears before confirmation.
+- Confirm declined, cancelled, or incomplete Repair decisions write nothing.
+- Confirm approved repairs change relationship fields only and result in reciprocal resolvable edges.
+- Confirm every destructive impact item is named by immutable ID and title.
+- Confirm repeated identical inputs produce identical output and no partial write is possible.
+
+## Error Handling
+
+- The project root cannot be located: abort and ask where `.highway/` is located.
+- A governance catalog is absent while records exist: abort and name the missing catalog.
+- A record or relationship field is malformed: abort repair and name the file and field.
+- An identifier is missing, duplicated, reused, or has the wrong type: abort and report the blocking finding without reinterpretation.
+- A relationship target is absent: report the orphan finding and fall back to Repair mode for a removal proposal.
+- A reciprocal relationship is missing: report the asymmetric finding and fall back to Repair mode for an addition proposal.
+- Confirmation is declined, cancelled, or incomplete: abort and report that no changes were made.
+- A baseline changes before commit or a write fails: abort the entire repair with zero partial writes.
+- A destructive impact set is empty: report the empty set and fall back to the owning workflow without inventing affected artifacts.
+
+## Example
+
+```text
+/highway-relationships Inspect all Control-to-NFR relationships
+
+Relationship Summary
+  Controls inspected: 2
+  NFRs inspected: 2
+  Valid reciprocal relationships: 1
+  Findings requiring review: 1
+
+Asymmetric Relationships
+  CTL000001 -> NFR000001
+  Missing reciprocal reference in NFR000001.controls
+
+Required Repairs
+  R001
+    Artifact: NFR NFR000001
+    Current: controls: []
+    Proposed: controls: [CTL000001]
+    Reason: reciprocal Control reference is missing
+    Impact: restores one reciprocal traceability edge
+
+No files were changed. Use `/highway-relationships Repair ...` to review this proposal.
+```
