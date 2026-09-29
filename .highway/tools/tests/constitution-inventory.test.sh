@@ -495,10 +495,29 @@ if ! grep -qF '3.0.1 → 4.0.0 (MAJOR)' "$CONSTITUTION"; then
 	echo 'FAIL: historical 4.0.0 report is missing'
 	fail=1
 fi
-if ! grep -qF '**Version**: 4.1.0' "$CONSTITUTION" || \
+# Superseded footer behavior: **Version**: 4.1.0 described the prior amendment.
+if ! grep -qF '4.0.0 → 4.1.0 (MINOR)' "$CONSTITUTION"; then
+	echo 'FAIL: historical 4.1.0 report is missing'
+	fail=1
+fi
+if ! grep -qF '**Version**: 5.0.0' "$CONSTITUTION" || \
    ! grep -qF '**Ratified**: 2026-09-06' "$CONSTITUTION" || \
    ! grep -qF '**Last Amended**: 2026-09-29' "$CONSTITUTION"; then
 	echo 'FAIL: current Constitution amendment metadata is missing'
+	fail=1
+fi
+p76_row="$(grep -E '^\| P7\.6 \|' "$CONSTITUTION" || true)"
+if ! printf '%s\n' "$p76_row" | grep -qF 'A skill exceeding P7.4 or P7.5 MUST be reduced until it satisfies those limits.'; then
+	echo 'FAIL: current P7.6 row does not require reduction'
+	fail=1
+fi
+if ! printf '%s\n' "$p76_row" | grep -qF 'The resulting skill satisfies P7.4 and P7.5.'; then
+	echo 'FAIL: current P7.6 observable does not require the resulting skill to satisfy both limits'
+	fail=1
+fi
+# Superseded behavior: the current P7.6 row required the skill to be split into two or more skills.
+if printf '%s\n' "$p76_row" | grep -qF 'split into two or more skills'; then
+	echo 'FAIL: current P7.6 row still requires a split'
 	fail=1
 fi
 for rule_id in P9.2 P9.3 P9.4 P9.6 P9.7 P9.8; do

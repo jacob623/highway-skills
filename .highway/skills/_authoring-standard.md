@@ -117,8 +117,8 @@ Cited rules, not restated. Read the rule text in the constitution.
 - Do not use "secure", "performant", or "maintainable" as an acceptance criterion: **P4.2**
 - Record failure handling where the common model does not already cover it: **P5.14**
 - Make every choice deterministic, with an explicit default branch: **P6.1, P6.2, P6.4**
-- Stay within 12 MUST-level rules and 400 words per normative section; split the skill rather
-  than exceeding either: **P7.4, P7.5, P7.6**
+- Stay within 12 MUST-level rules and 400 words per normative section; reduce the skill until
+  both limits hold: **P7.4, P7.5, P7.6**
 - Declare ordering only where it changes behavior, ownership, safety, mutation, or output: **P8.2**
 
 ## Before merge

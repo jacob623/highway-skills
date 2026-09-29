@@ -50,8 +50,13 @@ require_text "$EXPERIENCE_STANDARD" '11. Stop when the person is satisfied or no
 require_text "$EXPERIENCE_STANDARD" "does not govern the person's strategy, policy, requirements, priorities, or preferred wording."
 require_text "$EXPERIENCE_STANDARD" '.highway/library/knowledge/highway-identity.md'
 require_text "$EXPERIENCE_STANDARD" '.highway/library/knowledge/highway-platform-objectives.md'
-if [[ "$(grep -cF 'Bump rationale: adds Repository Context definitions, Contextual Guidance, and X2.7-X2.8 without' "$EXPERIENCE_STANDARD")" -ne 1 ]]; then
-	echo "FAIL: orphaned or duplicate Repository Context/X2.7-X2.8 bump rationale remains"
+# Superseded behavior: the runtime document was required to keep exactly one Repository Context bump rationale.
+if [[ "$(grep -cF 'Bump rationale: adds Repository Context definitions, Contextual Guidance, and X2.7-X2.8 without' "$EXPERIENCE_STANDARD")" -ne 0 ]]; then
+	echo "FAIL: removed Repository Context bump rationale is still present"
+	fail=1
+fi
+if ! grep -qF '3.0.0 → 4.0.0 (MAJOR)' "$EXPERIENCE_STANDARD"; then
+	echo "FAIL: current Experience Standard amendment record is missing"
 	fail=1
 fi
 # Superseded behavior: the contract section restated X2.2-X2.6, N5, N7-N9, and resume tokens.
@@ -64,11 +69,11 @@ require_text "$EXPERIENCE_STANDARD" '| X2.4 | An Interactive Workflow MUST ask o
 require_text "$EXPERIENCE_STANDARD" '| X2.5 | Progress MUST appear only when remaining work is meaningful to the person.'
 require_text "$EXPERIENCE_STANDARD" '| X2.6 | Progress MUST describe the activity rather than an internal stage, validation step, route, or implementation step.'
 require_text "$EXPERIENCE_STANDARD" '| X2.8 | An acknowledgment MUST appear only when new information changes the recommendation, interpretation, or next user-relevant action.'
-require_text "$EXPERIENCE_STANDARD" '| X2.9 | Decision Context MUST explain why the answer matters to the person without asking a second question.'
+require_text "$EXPERIENCE_STANDARD" '| X2.9 | Decision Context MUST use the label "**Why it matters:**" and explain why the answer matters to the person without asking a second question.'
 require_text "$EXPERIENCE_STANDARD" '| X2.10 | An example MUST appear only when it makes the expected answer clearer without becoming a required category.'
 require_text "$EXPERIENCE_STANDARD" '| X2.23 | An accepted Profile organization name MUST be used in contextual guidance where it improves clarity.'
 require_text "$EXPERIENCE_STANDARD" '| X2.24 | An organization name that has not been accepted MUST NOT be invented.'
-require_text "$EXPERIENCE_STANDARD" '| X2.25 | Profile enrichment, Objectives, Controls, and Non-Functional Requirements MUST share one recommendation pattern: a grounding line, a short numbered list of labeled choices, and one closing choice.'
+require_text "$EXPERIENCE_STANDARD" '| X2.25 | Profile enrichment, Objectives, Controls, and Non-Functional Requirements MUST use the shared recommendation interaction model.'
 require_text "$EXPERIENCE_STANDARD" '| X2.26 | Recommendation rationale MUST appear only when it helps the person decide.'
 require_text "$EXPERIENCE_STANDARD" '| X2.27 | An orchestrator MUST introduce a new domain with one short outcome-oriented transition without repeating the owner'"'"'s opening.'
 require_text "$EXPERIENCE_STANDARD" '| X2.28 | A visible move into a new setup domain MUST be separated with a horizontal rule.'

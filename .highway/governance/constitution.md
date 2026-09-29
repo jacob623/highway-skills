@@ -1,5 +1,14 @@
 <!--
 Sync Impact Report
+Version change: 4.1.0 → 5.0.0 (MAJOR), 2026-09-29
+Bump rationale: P7.6 is redefined. An oversized skill is reduced until it meets P7.4 and P7.5. Redefining a governance rule is MAJOR under the Constitution Versioning Policy.
+Changed elements:
+- Version footer: 4.1.0 → 5.0.0. Ratified stays 2026-09-06. Last Amended stays 2026-09-29.
+- Redefined rule row: P7.6.
+Unchanged elements: every other current rule, principle precedence, and the older sync reports.
+Self-application review: P1.1, P1.2, P1.3, P1.4, P6.4, P6.6, and P7.3 were reviewed. The redefined row has one keyword, one obligation, and no more than 25 words.
+
+Sync Impact Report
 Version change: 4.0.0 → 4.1.0 (MINOR), 2026-09-29
 Bump rationale: P9.2 through P9.8 place existing output obligations in Principle IX. Precedence is unchanged. Adding rules without invalidating conforming work is MINOR.
 Changed elements:
@@ -317,7 +326,7 @@ fully written down.
 | P7.3 | A skill MUST NOT restate a requirement owned outside that skill. | A cross-reference names the Skills Constitution, the Experience Standard, a shared contract, or the owning skill. | [agent-checkable] |
 | P7.4 | A skill MUST NOT contain more than 12 MUST-level rules. | Count of MUST and MUST NOT rules is 12 or fewer. | [auto] |
 | P7.5 | A normative section MUST NOT exceed 400 words. | Word count per normative section is 400 or fewer. | [auto] |
-| P7.6 | A skill exceeding P7.4 or P7.5 MUST be split into two or more skills. | Each resulting skill satisfies P7.4 and P7.5. | [agent-checkable] |
+| P7.6 | A skill exceeding P7.4 or P7.5 MUST be reduced until it satisfies those limits. | The resulting skill satisfies P7.4 and P7.5. | [agent-checkable] |
 | P7.7 | A breaking change to a skill contract MUST increment MAJOR per the Skill Versioning Policy. | The version increment matches the change classification. | [agent-checkable] |
 
 Rationale: A skill is a long-lived artifact and is held to the maintainability standard it
@@ -510,4 +519,4 @@ every other skill's version. This is the policy referenced by P7.7.
 - **MINOR**: a capability is added while every existing contract element continues to hold.
 - **PATCH**: wording repair with no change to Inputs, Outputs, or Verification.
 
-**Version**: 4.1.0 | **Ratified**: 2026-09-06 | **Last Amended**: 2026-09-29
+**Version**: 5.0.0 | **Ratified**: 2026-09-06 | **Last Amended**: 2026-09-29
