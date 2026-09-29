@@ -14,9 +14,9 @@ metadata:
 Maintains the repository-wide Business Objective baseline as user-owned, identified Markdown records
 that explain the business direction later Highway artifacts may reference.
 
-## Interactive Workflow UX Contract
+## Experience
 
-Objective creation follows the Interactive Workflow UX Contract in the Highway Experience Standard.
+Objective creation follows the Highway Experience Standard.
 It uses adaptive discovery across Outcome, Success, and Significance. Evaluate the complete active
 response before selecting the next action, expose at most one unresolved response-demanding question
 or decision, and never report fixed discovery progress. Put the `Next Action` first and omit

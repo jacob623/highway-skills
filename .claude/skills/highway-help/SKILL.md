@@ -42,7 +42,7 @@ Print a registered skill's own registration details, or list every registered sk
 
 ## Outputs
 
-Satisfies `X1.1`, `X1.2`, `X1.3` and `X5.1` of the Highway Experience Standard.
+Satisfies `P9.2`, `P9.3`, `P9.4` and `X5.1` of the Highway Skills Constitution and the Highway Experience Standard.
 
 - Single-Skill mode: exactly six labeled lines — `Name:`, `Description:`, `Dependencies:`,
   `Version:`, `Usage:`, `Example:` — in that order, per the help output contract defined by
@@ -61,7 +61,7 @@ Satisfies `X1.1`, `X1.2`, `X1.3` and `X5.1` of the Highway Experience Standard.
 
 ## Verification
 
-This self-check exercises `X1.1`, `X1.2`, `X1.3` and `X5.1`.
+This self-check exercises `P9.2`, `P9.3`, `P9.4` and `X5.1`.
 
 - Request help for `highway-help` itself and confirm the response has exactly six fields in the
   order above, with a non-blank value on every line, `Name: highway-help`, and an `Example:`

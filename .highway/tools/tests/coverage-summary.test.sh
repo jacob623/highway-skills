@@ -113,24 +113,14 @@ if ! printf '%s\n' "$output" | grep -qE "^OK: skill 'valid-skill' is valid \([0-
 	fail=1
 fi
 
-# Feature 079: constitutional and Experience Standard results share one output contract, and
-# long-running activity rules retain explicit N/A conditions rather than becoming PASS silently.
-if ! grep -qF 'X2.5' "$EXPERIENCE" || ! grep -qF 'X2.6' "$EXPERIENCE"; then
-	echo "FAIL: coverage contract does not see X2.5 and X2.6"
+# Superseded behavior: X2.5 and X2.6 reported N5 when no long-running activity existed.
+if ! grep -qF '| X2.5 | Progress MUST appear only when remaining work is meaningful to the person.' "$EXPERIENCE" || \
+	! grep -qF '| X2.6 | Progress MUST describe the activity rather than an internal stage, validation step, route, or implementation step.' "$EXPERIENCE"; then
+	echo "FAIL: X2.5/X2.6 do not state meaningful, activity-focused progress"
 	fail=1
 fi
-if ! grep -qF 'no long-running activity exists' "$EXPERIENCE" || \
-	! grep -qF 'X2.6 is N/A when X2.5 is N/A' "$EXPERIENCE"; then
-	echo "FAIL: X2.5/X2.6 N/A conditions are not explicit"
-	fail=1
-fi
-if ! grep -qF '| Scenario | Example |' "$EXPERIENCE" || \
-	! grep -qE '^\| No long-running activity \(N/A\) \| A read-only status workflow emits no intermediate activity; record X2\.5=N5 and X2\.6=N5 in review output\. \|$' "$EXPERIENCE"; then
-	echo "FAIL: N/A example is not a separate Scenario/Example record with both N5 outcomes"
-	fail=1
-fi
-if grep -qE '^\| No long-running activity \(N/A\) \| N/A:.*\| N/A:.*\|$' "$EXPERIENCE"; then
-	echo "FAIL: N/A example is still classified under compliant/non-compliant columns"
+if grep -qF 'X2.5=N5' "$EXPERIENCE" && grep -qF '| No long-running activity (N/A) |' "$EXPERIENCE"; then
+	echo "FAIL: superseded N5 review example is still a current row"
 	fail=1
 fi
 if grep -qE '^((WARN|INFO|PARTIAL|NOT TESTED):|.*\| (WARN|INFO|PARTIAL|NOT TESTED) \|)' "$CONSTITUTION" "$EXPERIENCE"; then

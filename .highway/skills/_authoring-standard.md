@@ -72,7 +72,7 @@ Eight sections, each non-empty:
 | `## Inputs` | P1.5, P2.2 | Every value, file, tool, and precondition the skill depends on. |
 | `## Outputs` | — | What exists after the skill is followed. |
 | `## Verification` | P8.3, P8.4, P4.2 | At least one command, file state, or output string to check. |
-| `## Error Handling` | P5.1, P5.2, P5.3 | One list item per failure condition, each naming one next action. |
+| `## Error Handling` | P5.14 | A difference from the common failure model, when one exists. |
 | `## Example` | — | Exactly one copy-able example: the literal invocation MUST be an inline code span (backtick-wrapped, not solely a fenced block), so it can be selected and copied on its own; a fenced block MAY still show accompanying sample output below it. |
 
 ## Linking out of a skill
@@ -112,25 +112,22 @@ Cited rules, not restated. Read the rule text in the constitution.
 - One obligation per line, one keyword per line, 25 words or fewer: **P1.1, P1.2, P1.3**
 - No vague qualifier without a countable condition: **P1.4** and the Prohibited Vagueness List
 - No unstated tool, file, or step dependency: **P1.5**
-- Cite an Approved Authority Source for each MUST-level rule, using the Citation Format:
-  **P3.1, P3.2, P3.5**
-- Pair every quality claim with a check; never use "secure", "performant", or "maintainable" as
-  an acceptance criterion: **P4.1, P4.2**
-- Give every failure condition exactly one next action from retry, abort, escalate, fall back;
-  state a maximum attempt count for a retry: **P5.2, P5.3**
+- Cite an external source only for an asserted external requirement, using the Citation Format:
+  **P3.2, P3.3, P3.5**
+- Do not use "secure", "performant", or "maintainable" as an acceptance criterion: **P4.2**
+- Record failure handling where the common model does not already cover it: **P5.14**
 - Make every choice deterministic, with an explicit default branch: **P6.1, P6.2, P6.4**
 - Stay within 12 MUST-level rules and 400 words per normative section; split the skill rather
   than exceeding either: **P7.4, P7.5, P7.6**
-- Number workflow steps and state their ordering dependencies: **P8.1, P8.2**
+- Declare ordering only where it changes behavior, ownership, safety, mutation, or output: **P8.2**
 
 ## Before merge
 
 1. Run `.highway/tools/validate-skill.sh .highway/skills/<id>` and resolve every `ERROR:` line.
 2. Read the `DEFERRED` and `UNCHECKED` groups in the output. Those rules were not verified for
    you; check them yourself against the constitution.
-3. Review the skill against the constitution's Compliance Review Protocol. Any rule you cannot
-   satisfy needs a written exception in the skill file naming the rule id, per the constitution's
-   Governance section.
+3. A SHOULD you cannot satisfy needs a written exception naming the condition that displaces it.
+   An Experience Standard rule you cannot satisfy names the X rule and that condition (P10.2).
 4. Run the overlap review below.
 
 ## Manual overlap review

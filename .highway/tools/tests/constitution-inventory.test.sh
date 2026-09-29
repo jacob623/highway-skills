@@ -490,10 +490,29 @@ if [[ "$(grep -cF 'Bump rationale: Principle XI and rules P11.1-P11.5 are added 
 	echo 'FAIL: Constitution must retain exactly one complete Principle XI bump rationale'
 	fail=1
 fi
-if ! grep -qF '3.0.1 → 4.0.0 (MAJOR)' "$CONSTITUTION" || \
-   ! grep -qF '**Version**: 4.0.0' "$CONSTITUTION" || \
+# Superseded footer behavior: **Version**: 4.0.0 described the prior amendment.
+if ! grep -qF '3.0.1 → 4.0.0 (MAJOR)' "$CONSTITUTION"; then
+	echo 'FAIL: historical 4.0.0 report is missing'
+	fail=1
+fi
+if ! grep -qF '**Version**: 4.1.0' "$CONSTITUTION" || \
+   ! grep -qF '**Ratified**: 2026-09-06' "$CONSTITUTION" || \
    ! grep -qF '**Last Amended**: 2026-09-29' "$CONSTITUTION"; then
 	echo 'FAIL: current Constitution amendment metadata is missing'
+	fail=1
+fi
+for rule_id in P9.2 P9.3 P9.4 P9.6 P9.7 P9.8; do
+	if ! grep -qE "^\| ${rule_id} \|.*\| \[agent-checkable\] \|$" "$CONSTITUTION"; then
+		echo "FAIL: $rule_id is missing or is not agent-checkable"
+		fail=1
+	fi
+done
+if ! grep -qE '^\| P9\.5 \|.*\| \[auto\] \|$' "$CONSTITUTION"; then
+	echo 'FAIL: P9.5 is missing or is not auto'
+	fail=1
+fi
+if ! grep -qF '| 5 | XII. Owner-Controlled Completion and Orchestration |' "$CONSTITUTION"; then
+	echo 'FAIL: precedence table changed'
 	fail=1
 fi
 

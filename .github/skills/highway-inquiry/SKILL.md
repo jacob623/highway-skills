@@ -36,8 +36,7 @@ a question at a stated position.
 
 ## Outputs
 
-Satisfies `X1.1`, `X1.2`, `X2.1`, `X4.1`, `X5.1`, `X5.2` and `X6.1` of the Highway Experience
-Standard.
+Satisfies `P9.2`, `P9.3`, `P9.7`, and `P9.8` of the Highway Skills Constitution, and `X2.1`, `X5.1`, and `X5.2` of the Highway Experience Standard.
 
 ## Questionnaire Contract
 
@@ -102,7 +101,7 @@ duplicate in the abstract.
 
 ## Verification
 
-This self-check exercises `X1.1`, `X1.2`, `X2.1`, `X4.1`, `X5.1`, `X5.2` and `X6.1`.
+This self-check exercises `P9.2`, `P9.3`, `P9.7`, `P9.8`, `X2.1`, `X5.1`, and `X5.2`.
 
 - Confirm the numbers run from 1 to the question count with no gap and no duplicate.
 - Confirm no two questions carry identical text.

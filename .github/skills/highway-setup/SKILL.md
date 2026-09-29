@@ -282,9 +282,9 @@ transient user-authored NFR proposals, suggestion state, NFR collection continua
 collection provenance. Setup re-reads authoritative NFR owner state and delegates according to the owner
 contract; durable candidate recovery remains an NFR-owner concern.
 
-## Interactive Workflow UX Contract
+## Experience
 
-Setup applies the authoritative Interactive Workflow UX Contract in the Highway Experience Standard.
+Setup follows the Highway Experience Standard.
 It emits only user-relevant owner context, questions, decisions, results, actionable errors, and
 applicable progress unless the user requests implementation details.
 

@@ -13,10 +13,9 @@ metadata:
 
 Maintains the repository-wide Non-Functional Requirement baseline as identified files the user owns.
 
-## Interactive Workflow UX Contract
+## Experience
 
-NFR candidate review follows the Interactive Workflow UX Contract in the Highway Experience
-Standard. Present one candidate decision at a time, put the `Next Action` first, and omit
+NFR candidate review follows the Highway Experience Standard. Present one candidate decision at a time, put the `Next Action` first, and omit
 implementation details unless requested. When candidates are being reviewed, report secondary
 user-relevant progress as `Recommendation <position> of <total>` before the contextual recommendation.
 

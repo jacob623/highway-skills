@@ -13,10 +13,9 @@ metadata:
 
 Create one authoritative, accepted architecture decision from exactly one completed Discovery handoff while preserving Discovery as an advisory, immutable source.
 
-## Interactive Workflow UX Contract
+## Experience
 
-ADR decision work is governed by the Interactive Workflow UX Contract in the Highway Experience
-Standard for applicable activity output and decisions. Put the `Next Action` first, describe
+ADR decision work follows the Highway Experience Standard for applicable activity output and decisions. Put the `Next Action` first, describe
 user-relevant ADR activity rather than implementation details or orchestration, and preserve the
 interactive decision workflow without artificial collection stages.
 

@@ -27,9 +27,9 @@ user-owned wording and continue through the explicit proposal route. [AS-6: .hig
 
 Do not use it to edit a Control file or catalog by hand.
 
-## Interactive Workflow UX Contract
+## Experience
 
-Controls follows the Interactive Workflow UX Contract in the Highway Experience Standard. Put
+Controls follows the Highway Experience Standard. Put
 `Next Action` first and omit implementation details unless requested. User Exits are `pause`,
 `cancel`, and `stop responding`; Owner Outcomes are `declined`, `aborted`, and `blocked`.
 `Resume Applicability` is `New interaction`. Controls retains ownership of Control artifacts,
@@ -441,11 +441,10 @@ absent or malformed context handling.
 The Feature 094 compliance review evaluates these phases separately: adaptive discovery, proposal
 validation, Control persistence, destructive actions, read-only readiness/inspection, Control-derived NFR
 candidate generation, and the deferred NFR review boundary. The review explicitly includes, according to
-applicability, P11.1-P11.5, P12.1-P12.5, X1.6, and X2.2-X2.10. For every applicable P or X rule, record
+applicability, P11.1-P11.4, P12.5-P12.12, X1.6, and X2.1-X2.31. For every applicable P or X rule, record
 exactly `PASS`, `FAIL`, or `N/A` with the evidence required by the Constitution and permitted N/A
 conditions. List human-review items separately in `DEFERRED`. Release requires zero `FAIL` and no
-unresolved required `DEFERRED` entry. Use the authoritative Constitution Compliance Review Protocol
-without duplicating that full normative protocol here.
+unresolved required `DEFERRED` entry. Use the Skills Constitution for that review.
 
 Because Controls handles authentication, authorization, input handling, and retained file writes, the
 Security Gate applies. Security-affecting guidance is grounded by [AS-2: A03:2021 Injection], does not

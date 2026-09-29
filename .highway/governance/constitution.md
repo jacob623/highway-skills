@@ -1,5 +1,14 @@
 <!--
 Sync Impact Report
+Version change: 4.0.0 → 4.1.0 (MINOR), 2026-09-29
+Bump rationale: P9.2 through P9.8 place existing output obligations in Principle IX. Precedence is unchanged. Adding rules without invalidating conforming work is MINOR.
+Changed elements:
+- Version footer: 4.0.0 → 4.1.0. Last Amended stays 2026-09-29.
+- Added rule rows: P9.2, P9.3, P9.4, P9.5, P9.6, P9.7, P9.8.
+- P9.5 is [auto]. P9.2, P9.3, P9.4, P9.6, P9.7, and P9.8 are [agent-checkable].
+Self-application review: P1.1, P1.2, P1.3, P1.4, P6.4, P6.6, and P7.3 were reviewed. Each added row has one keyword, one obligation, and no more than 25 words.
+
+Sync Impact Report
 Version change: 3.0.1 → 4.0.0 (MAJOR), 2026-09-29
 Bump rationale: multiple governance rules are removed or redefined, including Principle XII.
 Removing or redefining a governance rule is MAJOR under the Constitution Versioning Policy.
@@ -333,6 +342,13 @@ time.
 | ID | Rule | Observable | Tier |
 |---|---|---|---|
 | P9.1 | A skill MUST NOT repeat a shared output template's structure or generic invariants. | The Outputs section names the template, the output location, and the domain meaning the template does not own. | [auto] |
+| P9.2 | A skill MUST declare the shape of what it emits. | The Outputs section states the fields, sections, or file structure produced. | [agent-checkable] |
+| P9.3 | A skill MUST emit content in its declared shape. | Every field and ordering in the output appears in the Outputs declaration. | [agent-checkable] |
+| P9.4 | An empty result MUST have a declared form. | The Outputs section states the content emitted when there is nothing to report. | [agent-checkable] |
+| P9.5 | A specimen MUST agree with the metadata it repeats. | Every value the Example section shares with the skill frontmatter matches it. | [auto] |
+| P9.6 | A retained file artifact MUST include frontmatter. | Each retained emitted file begins with frontmatter. Transient messages are excluded. | [agent-checkable] |
+| P9.7 | A skill that writes a file MUST declare its path. | The Outputs section names each path written. | [agent-checkable] |
+| P9.8 | A retained artifact MUST derive its content from declared inputs. | The artifact contains no timestamp, random value, or environment-dependent content. | [agent-checkable] |
 
 Rationale: A shared complete skeleton prevents two skills producing the same kind of record from
 silently diverging in metadata or body structure.
@@ -494,4 +510,4 @@ every other skill's version. This is the policy referenced by P7.7.
 - **MINOR**: a capability is added while every existing contract element continues to hold.
 - **PATCH**: wording repair with no change to Inputs, Outputs, or Verification.
 
-**Version**: 4.0.0 | **Ratified**: 2026-09-06 | **Last Amended**: 2026-09-29
+**Version**: 4.1.0 | **Ratified**: 2026-09-06 | **Last Amended**: 2026-09-29

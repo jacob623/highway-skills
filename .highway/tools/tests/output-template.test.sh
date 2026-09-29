@@ -111,8 +111,9 @@ nfr_catalog_structure_not_duplicated() {
 }
 
 # Governance rules and the P9.1 registered check must be present before validation is trusted.
+# Superseded behavior: a current X1.5 row in the Experience Standard carried the frontmatter obligation.
 require_text "$CONSTITUTION" "| P9.1 |"
-require_text "$EXPERIENCE" "| X1.5 |"
+require_text "$CONSTITUTION" "| P9.6 |"
 require_text "$DEV_CONSTITUTION" "| D8.1 |"
 require_text "$RULE_CHECKS" "P9.1"
 
