@@ -10,6 +10,8 @@ fixture_root="$(mktemp -d "${TMPDIR:-/tmp}/highway-profile-life.XXXXXX")"
 trap 'rm -rf "$fixture_root"' EXIT
 fail=0
 accepted="$fixture_root/accepted.md"
+# Superseded behavior: the shared template schema was 2.0.0.
+if ! grep -Fq 'schema_version: 3.0.0' "$HIGHWAY_ROOT/library/templates/output/profile-record.md"; then echo 'FAIL: shared template schema is not 3.0.0'; fail=1; fi
 cp "$HIGHWAY_ROOT/library/templates/output/profile-record.md" "$accepted"
 before="$(shasum -a 256 "$accepted" | awk '{print $1}')"
 

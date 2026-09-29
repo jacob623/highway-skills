@@ -17,7 +17,8 @@ collect() { errors="${errors}${1}"$'\n'; }
 if [[ "$(sed -n '1p' "$profile_file")" != '---' ]]; then collect 'ERROR: [FRONTMATTER] Markdown Profile must begin with frontmatter'; fi
 fence_count="$(grep -c '^---[[:space:]]*$' "$profile_file" || true)"
 if [[ "$fence_count" -ne 2 ]]; then collect 'ERROR: [FRONTMATTER] Markdown Profile must contain exactly two frontmatter delimiters'; fi
-if [[ "$(profile_metadata_field "$profile_file" schema_version)" != '2.0.0' ]]; then collect 'ERROR: [METADATA] schema_version must be 2.0.0'; fi
+if [[ "$(profile_metadata_field "$profile_file" schema_version)" != '3.0.0' ]]; then collect 'ERROR: [METADATA] schema_version must be 3.0.0'; fi
+if [[ -n "$(profile_domain_state "$profile_file" highway_role)" ]]; then collect 'ERROR: [DOMAIN] highway_role is not a Profile domain'; fi
 if ! grep -Fxq '# Organizational Profile' "$profile_file"; then collect 'ERROR: [STRUCTURE] # Organizational Profile is required'; fi
 domain_count=0
 previous_line=0
@@ -43,6 +44,6 @@ for domain in $(profile_domain_keys); do
 			;;
 	esac
 done
-if [[ "$domain_count" -ne 5 ]]; then collect 'ERROR: [DOMAIN] exactly five domain outcomes are required'; fi
+if [[ "$domain_count" -ne 4 ]]; then collect 'ERROR: [DOMAIN] exactly four domain outcomes are required'; fi
 if [[ -n "$errors" ]]; then printf '%s' "$errors" >&2; echo "FAILED: profile '$profile_file' is structurally invalid" >&2; exit 1; fi
 echo "OK: profile '$profile_file' is structurally valid"
