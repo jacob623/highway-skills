@@ -15,13 +15,13 @@ Creates one deterministic architectural Discovery analysis between a completed R
 ADR work, producing bounded Candidate Solution Options, exact Reference Architecture matches, a
 complete Comparison Matrix, and one advisory Recommendation.
 
-## Interactive Workflow UX Contract
+## Experience
 
-Discovery is governed by the Interactive Workflow UX Contract in the Highway Experience Standard
+Discovery follows the Highway Experience Standard
 for applicable activity output only. It remains analytical and non-wizard: when it emits progress,
 describe user-relevant analysis activity rather than implementation details, routing, validation,
 orchestration, or evaluation mechanics. Put the `Next Action` first when user input is required;
-otherwise record X2.5/X2.6 as N5 rather than manufacturing progress stages.
+otherwise do not manufacture progress stages.
 
 `User Exits` are `pause`, `cancel`, or `stop responding`; `Owner Outcomes` are `declined`,
 `aborted`, or `blocked`. `Resume Applicability`: `New interaction`. Discovery preserves ownership

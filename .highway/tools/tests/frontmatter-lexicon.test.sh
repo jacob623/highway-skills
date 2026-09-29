@@ -59,8 +59,9 @@ if ! fl_check_field "$HIGHWAY_ROOT" "test" "P6.4"; then
 	fail=1
 fi
 
-if ! fl_check_field "$HIGHWAY_ROOT" "test" "X1.4"; then
-	echo "FAIL: an existing X-prefixed rule id (X1.4) was not accepted"
+# Superseded behavior: X1.4 was accepted as a current Experience Standard rule id.
+if ! fl_check_field "$HIGHWAY_ROOT" "test" "P9.5"; then
+	echo "FAIL: an existing rule id (P9.5) was not accepted"
 	fail=1
 fi
 

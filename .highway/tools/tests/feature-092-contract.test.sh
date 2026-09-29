@@ -33,7 +33,14 @@ require_text "$PROFILE" 'must not be promoted into the retained Profile'
 require_text "$SETUP" 'status-only requests'
 require_text "$SETUP" 'declined, aborted, or failed'
 require_text "$SETUP" 'NFR readiness; if it is `In Progress`'
-require_text "$SETUP" 'Interactive Workflow UX Contract'
+# Superseded behavior: Setup was required to name the Interactive Workflow UX Contract.
+if grep -Fq 'Interactive Workflow UX Contract' "$SETUP"; then
+	echo "FAIL: $SETUP still names the removed Interactive Workflow UX Contract"
+	fail=1
+fi
+require_text "$SETUP" 'Highway Experience Standard'
+require_text "$STANDARD" '### Interaction model'
+require_text "$STANDARD" '| X1.7 | Setup presentation MUST place one decision or question last'
 require_text "$SETUP" '## Error Handling'
 require_text "$STANDARD" 'Every user-visible response excludes Implementation details unless requested.'
 

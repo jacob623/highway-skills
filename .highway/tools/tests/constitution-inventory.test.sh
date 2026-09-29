@@ -297,13 +297,17 @@ if [[ -f "$EXPERIENCE" ]]; then
 		echo "FAIL: Experience Compliance does not have precedence rank 10"
 		fail=1
 	fi
-	if ! grep -qF 'every applicable Experience Standard rule' "$CONSTITUTION" || \
-		! grep -qF 'X2.5' "$CONSTITUTION" || ! grep -qF 'X2.6' "$CONSTITUTION"; then
-		echo "FAIL: Compliance Review Protocol does not cover applicable X rules and N/A outcomes"
-		fail=1
-	fi
-	if ! awk '/both the Compliance Review Protocol and all applicable$/{getline next_line; if (next_line ~ /Experience Standard rules/) found=1} END{exit(found ? 0 : 1)}' "$CONSTITUTION"; then
-		echo "FAIL: Governance does not require both compliance protocols"
+	# Superseded behavior: the Compliance Review Protocol, its X2.5/X2.6 N/A text, and the
+	# governance sentence that required that protocol before merge. Feature 100 removes those
+	# current sections. A historical sync-report mention is not a current section.
+	if grep -qE '^## Compliance Review Protocol$' "$CONSTITUTION" \
+		|| grep -qE '^## Skill Authoring Workflow$' "$CONSTITUTION" \
+		|| grep -qE '^### Merge decision$' "$CONSTITUTION" \
+		|| grep -qE '^### Code Generation Gate$' "$CONSTITUTION" \
+		|| grep -qE '^### Testing Gate$' "$CONSTITUTION" \
+		|| grep -qE '^### Maintainability Gate$' "$CONSTITUTION" \
+		|| grep -qE '^### Performance Gate$' "$CONSTITUTION"; then
+		echo "FAIL: a development-only procedure is still a current section"
 		fail=1
 	fi
 fi
@@ -431,36 +435,54 @@ for test_file in "$SCRIPT_DIR"/*.test.sh; do
 	fi
 done
 
-# Feature 089: Persistence and Completion Integrity and the closed N/A registry.
-if [[ "$(grep -cE '^\| P12\.[1-5] \|' "$CONSTITUTION")" -ne 5 ]]; then
-	echo "FAIL: Principle XII must contain exactly P12.1 through P12.5"
-	fail=1
-fi
-for rule_id in P12.1 P12.2 P12.3 P12.4 P12.5; do
-	if ! grep -qE "^\| $rule_id \|.*\|.*\| \[(agent-checkable|human-review|auto)\] \|$" "$CONSTITUTION"; then
+# Feature 100: owner-controlled completion replaces the Feature 089 persistence rows.
+# Superseded behavior: exactly P12.1 through P12.5, a current N6 registration, the P12.1-P12.4
+# N6 mapping, and the precedence label "Persistence and Completion Integrity".
+current_rule_row() {
+	local rule_id="$1"
+	grep -qE "^\| ${rule_id} \|.*\|.*\| \[(agent-checkable|human-review|auto)\] \|$" "$CONSTITUTION"
+}
+for rule_id in P12.5 P12.6 P12.7 P12.8 P12.9 P12.10 P12.11 P12.12; do
+	if ! current_rule_row "$rule_id"; then
 		echo "FAIL: $rule_id is missing or has no valid tier"
 		fail=1
 	fi
 done
-for condition_id in N6 N7 N8 N9; do
-	if [[ "$(grep -cE "^\| \*\*$condition_id\*\* \|" "$CONSTITUTION")" -ne 1 ]]; then
-		echo "FAIL: $condition_id must have exactly one constitutional registration"
+for rule_id in P12.1 P12.2 P12.3 P12.4; do
+	if current_rule_row "$rule_id"; then
+		echo "FAIL: retired $rule_id is still a current rule row"
 		fail=1
 	fi
 done
-if ! grep -qF 'P12.1-P12.4' "$CONSTITUTION" || ! grep -qF 'P12.5' "$CONSTITUTION"; then
-	echo 'FAIL: P12 per-rule N6 applicability mapping is missing'
+if grep -qE '^\| \*\*N6\*\* \|' "$CONSTITUTION"; then
+	echo "FAIL: N6 still has a current registration"
 	fail=1
 fi
-if ! grep -qF '| 5 | XII. Persistence and Completion Integrity |' "$CONSTITUTION" || \
+if ! grep -qF '| 5 | XII. Owner-Controlled Completion and Orchestration |' "$CONSTITUTION" || \
 	! grep -qF '| 11 | XI. Repository Context |' "$CONSTITUTION" || \
 	! grep -qF '| 6 | VIII. Reliability and Repeatability |' "$CONSTITUTION"; then
 	echo 'FAIL: Principle XII precedence or affected rank sequence is incorrect'
 	fail=1
 fi
+
+# Feature 100 identifier map. Superseded behavior: the retired identifiers below were current rows.
+for rule_id in P3.1 P4.1 P4.3 P8.1 P11.5 P5.1 P5.2 P5.3 P5.4 P5.5; do
+	if current_rule_row "$rule_id"; then
+		echo "FAIL: retired $rule_id is still a current rule row"
+		fail=1
+	fi
+done
+for rule_id in P3.3 P4.2 P4.4 P4.5 P4.6 P5.6 P5.7 P5.8 P5.9 P5.10 P5.11 P5.12 P5.13 P5.14 \
+	P7.3 P8.2 P8.3 P8.4 P9.1 P11.1 P11.2 P11.3 P11.4; do
+	if ! current_rule_row "$rule_id"; then
+		echo "FAIL: $rule_id is missing or has no valid tier"
+		fail=1
+	fi
+done
+
+# Historical reports stay. Superseded footer behavior: version 3.0.1 and last amended 2026-09-25.
 if ! grep -qF 'Version change: 2.6.0 → 3.0.0 (MAJOR)' "$CONSTITUTION" || \
-   ! grep -qF 'This changes constitutional conflict-resolution behavior' "$CONSTITUTION" || \
-   ! grep -qF '**Version**: 3.0.1' "$CONSTITUTION"; then
+   ! grep -qF 'This changes constitutional conflict-resolution behavior' "$CONSTITUTION"; then
 	echo 'FAIL: Constitution version classification or Feature 090 amendment is missing'
 	fail=1
 fi
@@ -468,9 +490,48 @@ if [[ "$(grep -cF 'Bump rationale: Principle XI and rules P11.1-P11.5 are added 
 	echo 'FAIL: Constitution must retain exactly one complete Principle XI bump rationale'
 	fail=1
 fi
-if ! grep -qF 'Compliance Review Protocol evidence: constitution-inventory.test.sh' "$CONSTITUTION" || \
-   ! grep -qF '**Last Amended**: 2026-09-25' "$CONSTITUTION"; then
-	echo 'FAIL: current Constitution amendment metadata or compliance evidence is missing'
+# Superseded footer behavior: **Version**: 4.0.0 described the prior amendment.
+if ! grep -qF '3.0.1 → 4.0.0 (MAJOR)' "$CONSTITUTION"; then
+	echo 'FAIL: historical 4.0.0 report is missing'
+	fail=1
+fi
+# Superseded footer behavior: **Version**: 4.1.0 described the prior amendment.
+if ! grep -qF '4.0.0 → 4.1.0 (MINOR)' "$CONSTITUTION"; then
+	echo 'FAIL: historical 4.1.0 report is missing'
+	fail=1
+fi
+if ! grep -qF '**Version**: 5.0.0' "$CONSTITUTION" || \
+   ! grep -qF '**Ratified**: 2026-09-06' "$CONSTITUTION" || \
+   ! grep -qF '**Last Amended**: 2026-09-29' "$CONSTITUTION"; then
+	echo 'FAIL: current Constitution amendment metadata is missing'
+	fail=1
+fi
+p76_row="$(grep -E '^\| P7\.6 \|' "$CONSTITUTION" || true)"
+if ! printf '%s\n' "$p76_row" | grep -qF 'A skill exceeding P7.4 or P7.5 MUST be reduced until it satisfies those limits.'; then
+	echo 'FAIL: current P7.6 row does not require reduction'
+	fail=1
+fi
+if ! printf '%s\n' "$p76_row" | grep -qF 'The resulting skill satisfies P7.4 and P7.5.'; then
+	echo 'FAIL: current P7.6 observable does not require the resulting skill to satisfy both limits'
+	fail=1
+fi
+# Superseded behavior: the current P7.6 row required the skill to be split into two or more skills.
+if printf '%s\n' "$p76_row" | grep -qF 'split into two or more skills'; then
+	echo 'FAIL: current P7.6 row still requires a split'
+	fail=1
+fi
+for rule_id in P9.2 P9.3 P9.4 P9.6 P9.7 P9.8; do
+	if ! grep -qE "^\| ${rule_id} \|.*\| \[agent-checkable\] \|$" "$CONSTITUTION"; then
+		echo "FAIL: $rule_id is missing or is not agent-checkable"
+		fail=1
+	fi
+done
+if ! grep -qE '^\| P9\.5 \|.*\| \[auto\] \|$' "$CONSTITUTION"; then
+	echo 'FAIL: P9.5 is missing or is not auto'
+	fail=1
+fi
+if ! grep -qF '| 5 | XII. Owner-Controlled Completion and Orchestration |' "$CONSTITUTION"; then
+	echo 'FAIL: precedence table changed'
 	fail=1
 fi
 

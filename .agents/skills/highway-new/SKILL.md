@@ -11,9 +11,9 @@ metadata:
 
 Create a business request artifact by collecting the business evidence required by the Evidence Completeness Rules.
 
-## Interactive Workflow UX Contract
+## Experience
 
-Request intake follows the Interactive Workflow UX Contract in the Highway Experience Standard.
+Request intake follows the Highway Experience Standard.
 Ask one unresolved evidence question at a time, put the `Next Action` first, and omit
 implementation details unless requested. During collection report `Current Domain`,
 `Completed Domains`, `Remaining Domains`, and `Current Activity`; resume begins at the first incomplete evidence domain.

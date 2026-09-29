@@ -27,7 +27,7 @@ rc_registry() {
 		P8.3	rc_check_P8_3	-
 		P8.7	rc_check_P8_7	-
 		P9.1	rc_check_P9_1	N4
-		X1.4	rc_check_X1_4	N3
+		P9.5	rc_check_P9_5	N3
 	EOF
 }
 
@@ -368,12 +368,11 @@ rc_check_P6_4() {
 	return $found
 }
 
-# X1.4 -- a specimen agrees with the metadata it repeats.
+# P9.5 -- a specimen agrees with the metadata it repeats.
 # The Example section is a recorded specimen of the skill's output. Where it repeats a value the
-# frontmatter also declares, the two must match: a specimen that contradicts the skill it
-# illustrates misinforms every reader who trusts it, and it is copied verbatim into each agent
-# tree. Returns 2 where the Example repeats no such value, which is the common case.
-rc_check_X1_4() {
+# frontmatter also declares, the two must match. Returns 2 where the Example repeats no such value.
+# Superseded reported identifier: X1.4. The verdict is unchanged.
+rc_check_P9_5() {
 	local file="$1" declared shown
 	declared="$(awk '/^  version:/ { sub(/^  version:[[:space:]]*/, ""); print; exit }' "$file")"
 	shown="$(awk '/^## Example/ { f = 1 } f && /^Version:/ { sub(/^Version:[[:space:]]*/, ""); print; exit }' "$file")"

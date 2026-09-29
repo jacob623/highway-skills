@@ -194,10 +194,9 @@ and view, show, or describe reports absence without creating an artifact. It is 
 
 `/highway-profile readiness`
 
-## Interactive Workflow UX Contract
+## Experience
 
-This contract applies the Highway Experience Standard's Interactive Workflow rules to Profile
-responses; the Experience Standard remains the normative authority for user-visible interaction.
+Profile responses follow the Highway Experience Standard. The Experience Standard remains the normative authority for user-visible interaction.
 Current Question, Domain Progress, and Current Activity are transient presentation labels; accepted
 evidence and domain outcomes remain the persisted Profile state. Progress is described using domain
 outcomes rather than question counts. The workflow suppresses implementation details unless requested,
