@@ -26,7 +26,12 @@ for context in highway-identity.md highway-vision.md highway-platform-objectives
 done
 require_text "$PROFILE" 'Next Action: /highway-profile setup'
 require_text "$PROFILE" 'Next Action: /highway-profile configure'
-require_text "$PROFILE" 'Experience Standard remains the normative authority'
+# Superseded behavior: the Profile skill said the Experience Standard remains the normative authority.
+require_text "$PROFILE" 'User-visible interaction follows the Highway Experience Standard.'
+if grep -Fq 'Experience Standard remains the normative authority' "$PROFILE"; then
+	echo "FAIL: $PROFILE still states the superseded authority sentence"
+	fail=1
+fi
 require_text "$PROFILE" 'An absent Profile is a valid initial state'
 require_text "$PROFILE" 'Next Action: None'
 require_text "$PROFILE" 'must not be promoted into the retained Profile'
@@ -47,7 +52,28 @@ require_text "$PROFILE" 'Customer / Participant, Offering, Market / Reach, Diffe
 require_text "$PROFILE" 'People, Trust, Quality, Simplicity, Change, Stewardship, and Autonomy'
 require_text "$PROFILE" 'those names are not retained'
 require_text "$PROFILE" 'enrichment does not block completion'
-require_text "$PROFILE" 'a selected recommendation is accepted without a second confirmation'
+# Superseded behavior: the Profile skill restated that a selected recommendation is accepted without a second confirmation.
+if grep -Fq 'a selected recommendation is accepted without a second confirmation' "$PROFILE"; then
+	echo "FAIL: $PROFILE still restates recommendation-selection acceptance"
+	fail=1
+fi
+require_text "$PROFILE" '## Profile model'
+require_text "$PROFILE" '## Enrichment'
+require_text "$PROFILE" '## Operations'
+require_text "$PROFILE" '## Acquisition'
+require_text "$PROFILE" 'classify the retained Profile'
+require_text "$PROFILE" 'establish Repository Name when missing'
+require_text "$PROFILE" 'use supported existing-information or website acquisition when available'
+require_text "$PROFILE" 'reuse accepted or accepted-discovered evidence across all four domains'
+require_text "$PROFILE" 'ask the first unresolved canonical domain question'
+require_text "$PROFILE" 'use optional grounded enrichment where useful'
+require_text "$PROFILE" 'persist accepted evidence'
+require_text "$PROFILE" 'report readiness'
+require_text "$PROFILE" 'optional Context structure is owned by .highway/library/templates/output/profile-record.md'
+if grep -Fq '### Repository Name' "$PROFILE"; then
+	echo "FAIL: $PROFILE restates the Context heading skeleton"
+	fail=1
+fi
 require_text "$PROFILE" 'version: 4.0.0'
 if grep -Fq '.highway/tools/validate-profile.sh' "$PROFILE"; then
 	echo "FAIL: $PROFILE still instructs .highway/tools/validate-profile.sh"

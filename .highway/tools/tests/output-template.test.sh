@@ -168,9 +168,15 @@ if [[ -f "$PROFILE_TEMPLATE" ]]; then
 		echo "FAIL: $PROFILE_TEMPLATE still names highway_role"
 		fail=1
 	fi
-	for heading in '## Repository Name' '## Organization Name' '## Organization URL' '## Organizational Context'; do
+	# Superseded behavior: optional context used sibling headings ## Repository Name, ## Organization Name, ## Organization URL, and ## Organizational Context.
+	require_text "$PROFILE_TEMPLATE" "## Context"
+	for heading in '### Repository Name' '### Organization Name' '### Organization URL' '### Organizational Context'; do
 		require_text "$PROFILE_TEMPLATE" "$heading"
 	done
+	if grep -Fq -- '- ## Repository Name' "$PROFILE_TEMPLATE"; then
+		echo "FAIL: $PROFILE_TEMPLATE still uses the superseded sibling Repository Name heading"
+		fail=1
+	fi
 	if grep -Eq '^(repository_name|organization_name|organization_url|organizational_context):' "$PROFILE_TEMPLATE"; then
 		echo "FAIL: $PROFILE_TEMPLATE stores optional context as a domain key"
 		fail=1

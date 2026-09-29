@@ -60,13 +60,15 @@ any `not_discussed` domain is `Missing` with `Next Action: /highway-profile conf
 Profile with all four outcomes `discussed` or `bounded` is `Complete` with `Next Action: None`.
 Optional context and optional enrichment do not change readiness.
 
-## Evidence
+## Profile model
 
 The four readiness domains are `identity`, `vision`, `competitive_path`, and `guiding_principles`. Each persists exactly one of `not_discussed`, `discussed`, or `bounded`. `not_discussed` has no narrative; `discussed` has one; `bounded` has one only when accepted evidence exists. A new record uses `schema_version: 3.0.0`. Content mutations do not change that schema version. Schema 2.0.0 is Blocked and left unchanged.
 
-Accepted optional context is body Markdown after the domain narratives and is omitted rather than stored as a placeholder: Repository Name, Organization Name, Organization URL, and Organizational Context.
+The optional Context structure is owned by .highway/library/templates/output/profile-record.md. Optional context does not change readiness. Profile owns its evidence, artifact, domain state, and readiness. proposal evidence stays transient until accepted. Foundational Highway context may show what evidence is useful, and it must not be promoted into the retained Profile. Workflow-specific input remains authoritative.
 
-Profile orders work as: classify the retained record, acquire context, accept evidence, Persist, and report readiness.
+## Acquisition
+
+Acquisition follows this order: classify the retained Profile; establish Repository Name when missing; use supported existing-information or website acquisition when available; reuse accepted or accepted-discovered evidence across all four domains; ask the first unresolved canonical domain question; use optional grounded enrichment where useful; persist accepted evidence; report readiness.
 
 Begin first-time Setup with:
 
@@ -76,13 +78,17 @@ If you're using Highway for a company or organization, its name is usually a goo
 
 Treat that answer as accepted Repository Name context and reuse it in the next prompt. When supported public-website retrieval is available, ask for the public website using the accepted Repository Name before ordinary domain questioning. The supplied Organization URL is accepted. website-derived Organization Name and other derived facts stay proposed until accepted. When retrieval is unavailable, continue without exposing the missing retrieval capability.
 
-Unresolved domains use one canonical question: Identity `**What does [Organization Name] do?**`; Vision `**What is the future vision of [Organization Name]?**`; Competitive Path `**How does [Organization Name] plan to get there?**`; Guiding Principles `**What principles or values guide decisions at [Organization Name]?**`. When Organization Name is not accepted, use the accepted Repository Name where it reads naturally. Process each response across all four domains before choosing the next question. When evidence is already accepted or active, a domain with accepted or active evidence is not asked. One question at a time, `**Why it matters:**`, and examples follow the Highway Experience Standard.
+Unresolved domains use one canonical question: Identity `**What does [Organization Name] do?**`; Vision `**What is the future vision of [Organization Name]?**`; Competitive Path `**How does [Organization Name] plan to get there?**`; Guiding Principles `**What principles or values guide decisions at [Organization Name]?**`. When Organization Name is not accepted, use the accepted Repository Name where it reads naturally. Process each response across all four domains before choosing the next question. When evidence is already accepted or active, a domain with accepted or active evidence is not asked.
 
-Optional enrichment may continue after a domain is `discussed` or `bounded`. Vision grounding uses Future State, Impact, Reach / Scale, Position, and Experience / Reputation. Competitive Path grounding uses Customer / Participant, Offering, Market / Reach, Differentiation, Operations, and Capability Development. Guiding Principles grounding uses People, Trust, Quality, Simplicity, Change, Stewardship, and Autonomy, for how a principle should influence later decisions. Coverage of every category is not required, those names are not retained, and enrichment does not block completion. A grounded recommendation is preferred, and a selected recommendation is accepted without a second confirmation. Ask another question only when available evidence cannot support a useful recommendation. Profile does not store a small-business, enterprise, maturity, persona, or advisory classification.
+## Enrichment
 
-An explicit user boundary may produce `bounded`; inability to find evidence may not. proposal evidence stays transient until accepted. Persist writes only information the person supplied, selected, or accepted. Foundational Highway context may show what evidence is useful, and it must not be promoted into the retained Profile. Workflow-specific input remains authoritative. Profile ownership of evidence and readiness stays with Profile.
+Optional enrichment may continue after a domain is `discussed` or `bounded`. Vision grounding uses Future State, Impact, Reach / Scale, Position, and Experience / Reputation. Competitive Path grounding uses Customer / Participant, Offering, Market / Reach, Differentiation, Operations, and Capability Development. Guiding Principles grounding uses People, Trust, Quality, Simplicity, Change, Stewardship, and Autonomy, for how a principle should influence later decisions. Coverage of every category is not required, those names are not retained, and enrichment does not block completion. Profile does not store a small-business, enterprise, maturity, persona, or advisory classification.
 
-Operations remain setup, configure, readiness, view, show, describe, add, update, remove, and reset. Destructive confirmation follows the Highway Experience Standard. An action that standard already counts as acceptance does not gain another confirmation.
+## Operations
+
+An explicit user boundary may produce `bounded`; inability to find evidence may not. Persist writes only information the person supplied, selected, or accepted.
+
+Operations remain setup, configure, readiness, view, show, describe, add, update, remove, and reset.
 
 ## Verification
 
@@ -95,9 +101,7 @@ Operations remain setup, configure, readiness, view, show, describe, add, update
 - Canonical questions are limited to unresolved domains.
 - Accepted evidence prevents a repeated question.
 - Enrichment categories are not persisted.
-- A selected recommendation needs no second confirmation.
 - Material interpretation follows the Highway Experience Standard.
-- No validator run or byte check is required.
 - Profile ownership and readiness stay with Profile.
 
 ## Error Handling
@@ -106,12 +110,10 @@ Operations remain setup, configure, readiness, view, show, describe, add, update
 - An obsolete YAML Profile is ignored and is never a fallback or a migration input.
 - A malformed retained Profile is Blocked and is not mutated.
 
-A failed mutation is not reported as success. That remains the common failure model, without a second procedure here.
-
 ## Example
 
 `/highway-profile readiness`
 
 ## Experience
 
-Profile responses follow the Highway Experience Standard. The Experience Standard remains the normative authority for user-visible interaction.
+User-visible interaction follows the Highway Experience Standard.
