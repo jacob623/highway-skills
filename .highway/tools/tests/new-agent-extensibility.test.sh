@@ -34,7 +34,7 @@ cleanup() {
 	rm -rf "$SKILL_SRC_DIR" \
 		"$REPO_ROOT/.github/skills/$TMP_ID" \
 		"$REPO_ROOT/.claude/skills/$TMP_ID" \
-		"$REPO_ROOT/.cursor/rules/$TMP_ID.mdc" \
+		"$REPO_ROOT/.cursor/skills/$TMP_ID" \
 		"$REPO_ROOT/.mock-agent-4"
 	local manifest="$HIGHWAY_ROOT/tools/.adapter-manifest"
 	if [[ -f "$manifest" ]]; then

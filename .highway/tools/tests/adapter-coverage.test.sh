@@ -56,16 +56,16 @@ adapter_paths() {
 	printf '%s\n' \
 		".github/skills/$id" \
 		".claude/skills/$id" \
-		".cursor/rules/$id.mdc"
+		".cursor/skills/$id"
 }
 
-# The file each adapter path resolves to. Two of the three are directories holding a SKILL.md.
+# The file each adapter path resolves to. All three are directories holding a SKILL.md.
 adapter_files() {
 	local id="$1"
 	printf '%s\n' \
 		".github/skills/$id/SKILL.md" \
 		".claude/skills/$id/SKILL.md" \
-		".cursor/rules/$id.mdc"
+		".cursor/skills/$id/SKILL.md"
 }
 
 skill_exists() {
@@ -142,7 +142,7 @@ orphan_problems() {
 		case "$path" in
 			.github/skills/*) row_id="${path#.github/skills/}" ;;
 			.claude/skills/*) row_id="${path#.claude/skills/}" ;;
-			.cursor/rules/*.mdc) row_id="${path#.cursor/rules/}"; row_id="${row_id%.mdc}" ;;
+			.cursor/skills/*) row_id="${path#.cursor/skills/}" ;;
 			*) continue ;;
 		esac
 		row_id="${row_id%%/*}"
@@ -299,6 +299,7 @@ if [[ -n "$probe_class" ]]; then
 				.highway/tools/generate-catalog.sh
 				.highway/tools/generate-library-catalog.sh
 				.highway/tools/generate-agent-adapters.sh
+				.highway/tools/generate-instructions.sh
 			) >/dev/null 2>&1
 			if skill_currency_ok "$SKILL_ID" "$currency_tmp" >/dev/null 2>&1; then
 				exit 0
@@ -358,6 +359,7 @@ cp -R "$HIGHWAY_ROOT" "$CURRENCY_TMP/.highway"
 	.highway/tools/generate-catalog.sh
 	.highway/tools/generate-library-catalog.sh
 	.highway/tools/generate-agent-adapters.sh
+	.highway/tools/generate-instructions.sh
 ) >/dev/null 2>&1
 
 for rel in catalog/index.json catalog/index.md catalog/library-index.json catalog/library-index.md; do
@@ -371,6 +373,28 @@ for skill_dir in "$HIGHWAY_ROOT"/skills/*/; do
 	[[ -f "$skill_dir/SKILL.md" ]] || continue
 	skill_id="$(basename "$skill_dir")"
 	skill_currency_ok "$skill_id" "$CURRENCY_TMP" || fail=1
+done
+
+# Instruction outputs have no generation timestamp, so the comparison is the raw bytes.
+if ! diff "$HIGHWAY_ROOT/tools/.instruction-manifest" "$CURRENCY_TMP/.highway/tools/.instruction-manifest" >/dev/null 2>&1; then
+	echo "FAIL: .highway/tools/.instruction-manifest is stale; regenerating from current sources produces a different file"
+	fail=1
+fi
+shopt -s nullglob
+for instruction_src in "$HIGHWAY_ROOT"/instructions/*.md; do
+	instruction_id="$(basename "$instruction_src" .md)"
+	instruction_rel=".cursor/rules/$instruction_id.mdc"
+	if ! diff "$REPO_ROOT/$instruction_rel" "$CURRENCY_TMP/$instruction_rel" >/dev/null 2>&1; then
+		echo "FAIL: $instruction_rel is stale; regenerating from current sources produces a different file"
+		fail=1
+	fi
+done
+shopt -u nullglob
+for instruction_rel in .claude/CLAUDE.md .github/copilot-instructions.md; do
+	if ! diff "$REPO_ROOT/$instruction_rel" "$CURRENCY_TMP/$instruction_rel" >/dev/null 2>&1; then
+		echo "FAIL: $instruction_rel is stale; regenerating from current sources produces a different file"
+		fail=1
+	fi
 done
 
 exit $fail

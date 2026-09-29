@@ -1,5 +1,24 @@
 <!--
 Sync Impact Report
+Version change: 2.0.0 → 2.1.0 (MINOR), 2026-09-29
+Bump rationale: `generate-instructions.sh` is added to the declared-generator list. The list is
+the scope D4.7 names. Adding a generator does not remove or redefine a principle, and it does
+not make previously conforming work fail: the new generator's outputs are produced in this
+same change, and D4.5 and D4.6 are unchanged.
+Changed elements:
+- Version line: 2.0.0 → 2.1.0
+- Last Amended date: 2026-09-11 → 2026-09-29
+- Declared generators, under Principle IV: `generate-instructions.sh` is added. It writes no
+  generation timestamp. `generate-distribution.sh` stays excluded.
+- Enforcement Map, D4.7 cell: the `adapter-coverage.test.sh` regeneration now includes
+  `generate-instructions.sh`. The recorded-timestamp exception still applies only to generators
+  that write one.
+Unchanged: D4.5, D4.6, their Enforcement Map cells, and every other rule.
+Self-application review: D1.3 PASS (no Highway Skills Constitution rule sentence is copied);
+D1.4 PASS (this report cites rule IDs); D5.3 PASS (the four changed elements are listed above
+and every unlisted element carries forward).
+
+Sync Impact Report
 Version change: 1.6.0 → 2.0.0 (MAJOR), 2026-09-11
 Bump rationale: Principle V (Specification Record Integrity) and Principle VII (Completion
 Integrity) are removed. Per this document's own Versioning Policy, removing a principle is a
@@ -321,7 +340,7 @@ table cannot silently go stale.
 | D4.3 | distribution-packaging.test.sh | Asserts refusal to overwrite an untracked directory and a modified file, naming each |
 | D4.5 | adapter-coverage.test.sh | Asserts every skill present has a catalog entry, an adapter in each declared agent tree, an adapter manifest row for each adapter, and an included distribution manifest row for each adapter |
 | D4.6 | adapter-coverage.test.sh | Asserts no catalog entry, adapter file, adapter manifest row, or distribution manifest row names a skill with no source directory |
-| D4.7 | adapter-coverage.test.sh | Regenerates into a temporary tree and asserts no diff against the committed artifacts, excepting the recorded generation timestamp |
+| D4.7 | adapter-coverage.test.sh | Regenerates into a temporary tree, including generate-instructions.sh, and asserts no diff against the committed artifacts, excepting the recorded generation timestamp on generators that write one |
 | D3.7 | constitution-inventory.test.sh | Executes each mapped test's declared probe per artifact class and requires a non-zero exit; requires a zero exit when the same probe is invoked neutralised |
 
 ## Core Principles
@@ -409,7 +428,8 @@ skill that has no source and cannot be maintained. Neither is expressible as "no
 because adapters are never pruned and manifest rows are hand-maintained.
 
 **Declared generators** (referenced by D4.7): `generate-catalog.sh`,
-`generate-library-catalog.sh`, `generate-agent-adapters.sh`. `generate-distribution.sh` is
+`generate-library-catalog.sh`, `generate-agent-adapters.sh`, `generate-instructions.sh`.
+`generate-instructions.sh` writes no generation timestamp. `generate-distribution.sh` is
 excluded — it takes a target directory and writes outside the repository, so it produces no
 committed artifact to compare against.
 
@@ -491,4 +511,4 @@ Highway Skills Constitution prevails for artifact content and this document prev
 This document is subject to D1.3, D1.4, and D5.3. Every amendment records a review against those
 rule IDs.
 
-**Version**: 2.0.0 | **Ratified**: 2026-09-08 | **Last Amended**: 2026-09-11
+**Version**: 2.1.0 | **Ratified**: 2026-09-08 | **Last Amended**: 2026-09-29

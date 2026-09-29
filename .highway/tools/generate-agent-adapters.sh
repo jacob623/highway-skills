@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
 # Regenerates the per-agent adapters for every valid skill under skills/ into
-# .github/skills/<id>/SKILL.md, .claude/skills/<id>/SKILL.md, and .cursor/rules/<id>.mdc, per
-# feature 009 (skill id namespace alignment). <id> is already
-# the full agent-facing identifier (e.g. highway-help) -- this generator injects no namespace
-# prefix of its own; the prefix lives once, at the source directory name.
+# .github/skills/<id>/SKILL.md, .claude/skills/<id>/SKILL.md, and .cursor/skills/<id>/SKILL.md, per
+# feature 009 (skill id namespace alignment) and feature 097 (Cursor receives skills, not rules).
+# <id> is already the full agent-facing identifier (e.g. highway-help) -- this generator injects
+# no namespace prefix of its own; the prefix lives once, at the source directory name. The three
+# deliverables for one skill are byte-identical. The generator never creates, modifies, or removes
+# the speckit-* skills that sit beside them, and it never removes any file.
 #
 # Usage: .highway/tools/generate-agent-adapters.sh
 # Exit 0: all adapters (re)generated / confirmed up to date.
@@ -13,8 +15,8 @@
 # Declarative per-agent config (FR-004/FR-008: adding an agent = one new row here, never an
 # edit to skills/).
 AGENT_IDS=(github-copilot claude-code cursor)
-AGENT_TARGET_TEMPLATES=(".github/skills/%s/SKILL.md" ".claude/skills/%s/SKILL.md" ".cursor/rules/%s.mdc")
-AGENT_TRANSFORMS=(identity-copy identity-copy mdc-transform)
+AGENT_TARGET_TEMPLATES=(".github/skills/%s/SKILL.md" ".claude/skills/%s/SKILL.md" ".cursor/skills/%s/SKILL.md")
+AGENT_TRANSFORMS=(identity-copy identity-copy identity-copy)
 
 set -u
 
@@ -89,19 +91,14 @@ write_target_from_file() {
 	manifest_set "$rel_path" "$skill_id" "$skill_version" "$(sha256_of "$abs_target")"
 }
 
-# Writes a target from an in-memory content string (used for transforms, e.g. mdc-transform).
+# Writes a target from an in-memory content string. No agent row uses it today; it is the seam
+# for a future agent whose deliverable must differ from the source (add a transform name to
+# AGENT_TRANSFORMS and a matching case arm below).
 write_target_from_content() {
 	local abs_target="$1" rel_path="$2" skill_id="$3" skill_version="$4" content="$5"
 	mkdir -p "$(dirname "$abs_target")"
 	printf '%s\n' "$content" >"$abs_target"
 	manifest_set "$rel_path" "$skill_id" "$skill_version" "$(sha256_of "$abs_target")"
-}
-
-transform_mdc() {
-	local skill_file="$1" description body
-	description="$(grep -E '^description:' "$skill_file" | head -n1)"
-	body="$(fm_body "$skill_file")"
-	printf -- '---\n%s\nalwaysApply: false\n---\n%s' "$description" "$body"
 }
 
 shopt -s nullglob
@@ -158,10 +155,6 @@ for ((i = 0; i < skill_count; i++)); do
 		case "$transform" in
 			identity-copy)
 				write_target_from_file "$abs_target" "$rel_path" "$id" "$version" "$skill_file"
-				;;
-			mdc-transform)
-				content="$(transform_mdc "$skill_file")"
-				write_target_from_content "$abs_target" "$rel_path" "$id" "$version" "$content"
 				;;
 			*)
 				echo "ERROR: unknown transform '$transform' for agent '${AGENT_IDS[$j]}'" >&2

@@ -15,8 +15,16 @@ never duplicated or hand-adapted per agent.
 └── tools/         Validators and generators
 ```
 
-Agent adapters are generated into `.github/skills/`, `.claude/skills/`, and `.cursor/rules/` at the
+Agent adapters are generated into `.github/skills/`, `.claude/skills/`, and `.cursor/skills/` at the
 root of your project.
+
+Always-on instructions are generated from `.highway/instructions/<id>.md`. `.claude/CLAUDE.md` and
+`.github/copilot-instructions.md` each contain every instruction body. `.cursor/rules/<id>.mdc` is
+one always-on Cursor rule per instruction. These three outputs ship with the distribution.
+
+If you installed an earlier version, Cursor received each skill as a rule in `.cursor/rules/`, in a
+file named `<id>.mdc` for each Highway skill. Those files are superseded by the skills in
+`.cursor/skills/` and can be deleted; leave any other rules you wrote yourself in place.
 
 ## Using the skills you have
 
