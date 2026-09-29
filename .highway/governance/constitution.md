@@ -1,5 +1,20 @@
 <!--
 Sync Impact Report
+Version change: 3.0.1 → 4.0.0 (MAJOR), 2026-09-29
+Bump rationale: multiple governance rules are removed or redefined, including Principle XII.
+Removing or redefining a governance rule is MAJOR under the Constitution Versioning Policy.
+Changed elements:
+- Version footer: 3.0.1 → 4.0.0. Last Amended: 2026-09-25 → 2026-09-29.
+- Retired rule rows: P3.1, P4.1, P4.3, P5.1, P5.2, P5.3, P5.4, P5.5, P8.1, P11.5, P12.1, P12.2, P12.3, P12.4.
+- Redefined rule rows: P1.7, P3.3, P7.3, P8.2, P8.4, P9.1, P10.1, P11.1, P11.2, P11.3, P11.4, P12.5.
+- Added rule rows: P5.7, P5.8, P5.9, P5.10, P5.11, P5.12, P5.13, P5.14, P12.6, P12.7, P12.8, P12.9, P12.10, P12.11, P12.12.
+- Principle XII is renamed Owner-Controlled Completion and Orchestration. Precedence rank stays 5. The rank reason describes owner-controlled completion.
+- Removed sections: Code Generation Gate, Testing Gate, Maintainability Gate, Performance Gate, Compliance Review Protocol, Skill Authoring Workflow, merge decision, N5, N6, N7, N8, N9, Persistence Verification, and Verified Completion Claim.
+- The Security Gate applies when the skill performs the triggering action.
+- The approved-source list stays closed. A later amendment may add an entry that names its provenance.
+Self-application review: P1.1, P1.2, P1.3, P1.4, P6.4, P6.6, and P7.3 were reviewed. Each new or redefined row has one keyword, one obligation, and no more than 25 words. This report cites identifiers.
+
+Sync Impact Report
 Version change: 3.0.0 -> 3.0.1 (PATCH), 2026-09-25
 Bump rationale: the Repository Context Document definition explicitly includes user-owned
 organizational context already listed by Principle XI, without changing principle precedence or
@@ -114,6 +129,11 @@ Follow-up TODOs: none.
 
 # Highway Skills Constitution
 
+This constitution is runtime governance for a shipped Highway skill. Development constitutions,
+feature specifications, tests, fixtures, merge procedures, compliance tooling, and development-only
+scripts are not runtime skill dependencies. Development governance may validate a skill before
+release without being consumed by the skill at runtime.
+
 ## Definitions
 
 These definitions are normative. A term defined here carries this meaning everywhere in this
@@ -132,7 +152,7 @@ document and in every skill governed by it.
 | **Behavioral guarantee** | A statement in a skill asserting what will be true after the skill is followed. |
 | **Breaking change** | A change that removes, narrows, or redefines any element of a skill contract or behavioral guarantee. |
 | **Observable** | The specific condition, countable property, or command result that decides PASS or FAIL for one rule. |
-| **Tier** | How a rule is decided: `[auto]`, `[agent-checkable]`, or `[human-review]`, defined in the Compliance Review Protocol. |
+| **Tier** | How a rule is decided: `[auto]`, `[agent-checkable]`, or `[human-review]`. |
 | **Experience Standard** | The Highway Experience Standard governing user-visible output and interaction behavior, with rule IDs in the `X` namespace. |
 | **Security-affecting** | Guidance that touches any item in the Security Gate trigger list. |
 | **Declared input** | A value, file, or precondition named in a skill's Inputs section. |
@@ -141,10 +161,7 @@ document and in every skill governed by it.
 | **Behavior** | Recommendations, guidance, decisions, explanations, proposals, generated artifacts, workflow actions, or user-visible outputs produced by a skill. |
 | **Participating Skill** | A skill whose Behavior is influenced by Repository Context. |
 | **Material Influence** | Information that alters a recommendation, Behavior, governance interpretation, prioritization, decision support, or generated artifact outcome. |
-| **Retained Output** | An artifact or repository state that a skill contract declares will remain after successful completion. |
-| **Persistence Verification** | A post-write check that confirms declared Retained Output exists at its declared location or satisfies its declared persisted-state condition. |
-| **Completion Claim** | A user-visible or machine-consumable statement that a mutation, workflow, stage, or retained-output operation completed successfully. |
-| **Verified Completion Claim** | A Completion Claim made only after every Retained Output covered by the claim passes Persistence Verification. |
+| **Completion Claim** | A user-visible or machine-consumable statement that a mutation or workflow completed successfully. |
 | **Verdict** | One of exactly three tokens: PASS, FAIL, N/A. No other token is a verdict. |
 
 ### Prohibited Vagueness List
@@ -173,7 +190,7 @@ occurrences inside the section titled "Illustrative Examples (Non-Normative)".
 
 ### Approved Authority Sources
 
-This list is closed. A citation that names no item on this list does not satisfy P3.1.
+This list is closed. A later amendment may add an entry that names its provenance. A skill cites an entry only when it asserts that external requirement. A citation that names no item on this list does not satisfy P3.5.
 
 | ID | Source |
 |---|---|
@@ -210,7 +227,7 @@ never softened. Rule IDs are stable across amendments; a retired ID is never reu
 | P1.4 | A skill MUST NOT use a Prohibited Vagueness List term in a normative rule without an inline parenthetical defining a countable condition. | Each occurrence of a listed term is followed by a parenthetical stating a number, unit, or enumerated set. | [agent-checkable] |
 | P1.5 | A skill MUST name every tool, file, and prior step it depends on. | Each dependency appears by name in the Inputs section. | [agent-checkable] |
 | P1.6 | A skill MUST NOT instruct an agent to request clarification about the meaning of the skill's own steps. | No step directs the agent to ask what a step means. | [agent-checkable] |
-| P1.7 | A skill MUST require clarification when a declared input is absent or self-contradictory. | The Error Handling section names this condition and directs escalation. | [agent-checkable] |
+| P1.7 | A skill MUST handle an absent or self-contradictory declared input under the common failure model. | The skill follows P5.7 for that input. | [agent-checkable] |
 
 Rationale: One obligation per addressable line is what allows a rule to be cited, checked, and
 failed on its own.
@@ -232,9 +249,8 @@ is replaced.
 
 | ID | Rule | Observable | Tier |
 |---|---|---|---|
-| P3.1 | Every MUST-level rule in a skill MUST cite one Approved Authority Source. | The rule names an AS-1 through AS-6 source. | [agent-checkable] |
 | P3.2 | A citation MUST name the source and its specific section, control, or identifier. | The citation matches the Citation Format and its identifier field is non-empty. | [agent-checkable] |
-| P3.3 | A skill MUST NOT encode a naming, formatting, or architectural preference as a MUST-level rule without a citation. | Every such rule carries an AS-1 through AS-6 citation. | [agent-checkable] |
+| P3.3 | A skill MUST cite an external source only when asserting an external requirement. | The citation is present exactly when the rule asserts an external technical, security, regulatory, protocol, or standards requirement. | [agent-checkable] |
 | P3.4 | A rule that applies only under a condition MUST state that condition. | The rule text contains an explicit "when", "if", or "unless" clause. | [agent-checkable] |
 | P3.5 | A skill MUST NOT cite a source outside the Approved Authority Sources list. | Every citation matches the Citation Format and its `AS-N` token resolves to AS-1 through AS-6. | [auto] |
 
@@ -245,9 +261,7 @@ evaluator's knowledge.
 
 | ID | Rule | Observable | Tier |
 |---|---|---|---|
-| P4.1 | Every quality claim MUST be paired with one check that returns pass or fail. | The claim is followed by a named command, threshold, or file-state check. | [agent-checkable] |
 | P4.2 | A skill MUST NOT use "secure", "performant", or "maintainable" as an acceptance criterion. | None of the three words appears in an acceptance criterion. | [auto] |
-| P4.3 | Each applicable gate MUST name its verification command or check in the skill. | For each gate whose trigger is true, a named check appears. | [agent-checkable] |
 | P4.4 | A numeric threshold MUST state a number and a unit. | The threshold contains a numeral and a unit token. | [agent-checkable] |
 | P4.5 | A skill MUST NOT instruct disabling verification, hardcoding credentials, or bypassing input validation. | No step directs any of these three actions. | [agent-checkable] |
 | P4.6 | A skill MUST require the agent to report a suspected vulnerability rather than altering it silently. | The Error Handling section directs reporting on this condition. | [agent-checkable] |
@@ -259,14 +273,17 @@ accident.
 
 | ID | Rule | Observable | Tier |
 |---|---|---|---|
-| P5.1 | Every workflow step MUST define its failure detection condition. | Each step has a stated exit code, output string, or file state that signals failure. | [agent-checkable] |
-| P5.2 | Every failure condition MUST name exactly one next action from: retry, abort, escalate, fall back. | The condition names one of the four tokens. | [auto] |
-| P5.3 | A retry action MUST state a maximum attempt count. | A numeral follows the retry instruction. | [auto] |
-| P5.4 | A fall back action MUST name its alternative by identifier. | The alternative is named by step number, command, or skill id. | [agent-checkable] |
-| P5.5 | A skill MUST NOT leave a step without an error path. | Every numbered step maps to an Error Handling entry. | [agent-checkable] |
 | P5.6 | A skill MUST apply to two or more triggering scenarios. | The "When to use" section lists at least two scenarios. | [agent-checkable] |
+| P5.7 | A skill MUST obtain missing or contradictory required input before continuing. | Continuation waits until that input is present and consistent. | [agent-checkable] |
+| P5.8 | A skill MUST stop without mutation when authoritative state is malformed or unsafe. | No write follows detection of that state. | [agent-checkable] |
+| P5.9 | A skill MUST identify the malformed or unsafe authoritative state that stopped it. | The stop names that state. | [agent-checkable] |
+| P5.10 | A skill MUST stop without unintended mutation when the user declines or exits. | No write follows the decline or exit. | [agent-checkable] |
+| P5.11 | A skill MUST consume a dependent owner's preserved non-success result. | The calling skill keeps that result and uses it. | [agent-checkable] |
+| P5.12 | A skill MUST NOT report a failed mutation as success. | The reported outcome is not a Completion Claim. | [agent-checkable] |
+| P5.13 | A skill MUST stop for an unexpected failure with actionable user-facing context. | The stop states what the user can do next. | [agent-checkable] |
+| P5.14 | A skill MUST document failure handling only where it differs from this model. | Documented handling names the difference. No per-step error table is required. | [agent-checkable] |
 
-Rationale: Undefined error paths are where agent behavior stops being predictable.
+Rationale: Ordinary failure behavior is stated once. A skill records only a domain difference.
 
 ### VI. Deterministic, Explicit Decision Criteria
 
@@ -288,7 +305,7 @@ fully written down.
 |---|---|---|---|
 | P7.1 | A skill MUST declare exactly one Purpose. | A section titled `## Purpose` is present and contains exactly one sentence. | [auto] |
 | P7.2 | A skill MUST carry a semantic version. | `metadata.version` matches MAJOR.MINOR.PATCH. | [auto] |
-| P7.3 | A skill MUST NOT restate a normative rule defined in another skill. | Duplicated rules are replaced by a cross-reference naming the other skill id. | [agent-checkable] |
+| P7.3 | A skill MUST NOT restate a requirement owned outside that skill. | A cross-reference names the Skills Constitution, the Experience Standard, a shared contract, or the owning skill. | [agent-checkable] |
 | P7.4 | A skill MUST NOT contain more than 12 MUST-level rules. | Count of MUST and MUST NOT rules is 12 or fewer. | [auto] |
 | P7.5 | A normative section MUST NOT exceed 400 words. | Word count per normative section is 400 or fewer. | [auto] |
 | P7.6 | A skill exceeding P7.4 or P7.5 MUST be split into two or more skills. | Each resulting skill satisfies P7.4 and P7.5. | [agent-checkable] |
@@ -301,10 +318,9 @@ imposes on code.
 
 | ID | Rule | Observable | Tier |
 |---|---|---|---|
-| P8.1 | Workflow steps MUST be numbered. | Each step carries a sequential numeral. | [auto] |
-| P8.2 | A skill MUST state every ordering dependency between its steps. | Each dependent step names the step it follows. | [agent-checkable] |
+| P8.2 | A skill MUST declare step order only when order affects behavior, ownership, safety, mutation, or output. | The skill names that order in those cases and does not number steps otherwise. | [agent-checkable] |
 | P8.3 | A skill MUST contain a Verification section. | A section titled Verification is present and non-empty. | [auto] |
-| P8.4 | The Verification section MUST name at least one command, file state, or output string to check. | One checkable item is named. | [agent-checkable] |
+| P8.4 | The Verification section MUST name a checkable outcome. | The section states what is true when the skill is done. An ordinary artifact workflow does not need a command. | [agent-checkable] |
 | P8.5 | A skill MUST require the agent to read and state project configuration that changes its output. | Each configuration-dependent step directs the agent to read and report that value. | [agent-checkable] |
 | P8.6 | A skill MUST NOT rely on an environment default it has not stated. | Every default value the skill assumes appears in its text. | [agent-checkable] |
 | P8.7 | A skill MUST NOT link to a relative path. | No Markdown link target in the skill body is a relative filesystem path. | [auto] |
@@ -316,7 +332,7 @@ time.
 
 | ID | Rule | Observable | Tier |
 |---|---|---|---|
-| P9.1 | A skill that emits a file MUST cite a shared template for that file's complete structure. | The Outputs section names a path under `.highway/library/templates/output/` and does not restate the template's frontmatter or body structure as a separate contract. | [auto] |
+| P9.1 | A skill MUST NOT repeat a shared output template's structure or generic invariants. | The Outputs section names the template, the output location, and the domain meaning the template does not own. | [auto] |
 
 Rationale: A shared complete skeleton prevents two skills producing the same kind of record from
 silently diverging in metadata or body structure.
@@ -325,7 +341,7 @@ silently diverging in metadata or body structure.
 
 | ID | Rule | Observable | Tier |
 |---|---|---|---|
-| P10.1 | Every new or amended skill MUST comply with all applicable Experience Standard rules. | Each applicable X rule is reviewed and recorded in the Compliance Review Protocol output. | [agent-checkable] |
+| P10.1 | Every new or amended skill MUST comply with all applicable Experience Standard rules. | The skill references the Experience Standard and does not restate its generic interaction rules. | [agent-checkable] |
 | P10.2 | A skill that cannot satisfy an applicable Experience Standard rule MUST identify the X-rule and exception condition. | Each exception names one X rule and the condition that displaces it in the skill file. | [agent-checkable] |
 
 Rationale: Experience Compliance makes user-visible behavior reviewable alongside correctness and
@@ -339,36 +355,33 @@ the user-owned organizational `profile.md` context. Repository Context Documents
 context without replacing workflow-specific inputs, governance artifacts, or user-owned content.
 When context documents overlap, Identity provides behavioral guidance, Vision provides strategic
 direction, Platform Objectives provide evaluation criteria, and Profile provides organizational
-context, in that order. Workflow-specific inputs remain authoritative for the active execution.
-Missing documents do not authorize invented, assumed, or substituted repository context.
+context, in that order. Active workflow and user evidence override conflicting repository context
+for the active interaction. Missing context is not invented or silently substituted.
 
 | ID | Rule | Observable | Tier |
 |---|---|---|---|
-| P11.1 | A Participating Skill MUST declare each context document that can alter its Behavior in Inputs. | Each influencing context document is named in the skill's Inputs section. | [agent-checkable] |
-| P11.2 | A Participating Skill MUST consume only declared context documents that can alter its workflow decisions. | Consumed documents are declared and tied to a purpose, input, output, or workflow decision. | [agent-checkable] |
-| P11.3 | A Participating Skill MUST consult available declared context before producing context-dependent output. | The workflow identifies context use before its dependent output. | [agent-checkable] |
-| P11.4 | Workflow-specific inputs MUST govern execution when they conflict with Repository Context Documents. | The workflow records the workflow-specific input as authoritative for execution. | [agent-checkable] |
-| P11.5 | Verification MUST record absent Repository Context Documents without fabricating or substituting content. | Verification names absent documents and contains no invented replacement content. | [agent-checkable] |
+| P11.1 | A skill MUST declare each context source that can influence its behavior. | Each influencing source is named in Inputs. | [agent-checkable] |
+| P11.2 | A skill MUST use available relevant accepted context before context-dependent behavior. | Context use precedes the behavior it influences. | [agent-checkable] |
+| P11.3 | Active workflow or user evidence MUST override conflicting repository context for that interaction. | The workflow or user evidence is the authority for that interaction. | [agent-checkable] |
+| P11.4 | A skill MUST NOT substitute missing context, including by invention. | Missing context stays missing. No replacement content is written. | [agent-checkable] |
 
 Rationale: Repository Context makes shared identity, direction, and evaluation criteria available to
 skills while preserving workflow ownership and making context use inspectable.
 
-### XII. Persistence and Completion Integrity
+### XII. Owner-Controlled Completion and Orchestration
 
 | ID | Rule | Observable | Tier |
 |---|---|---|---|
-| P12.1 | A skill changing Retained Output MUST perform Persistence Verification before its Verified Completion Claim. | Verification evidence follows the write and precedes the claim. | [agent-checkable] |
-| P12.2 | A skill MUST NOT make a Completion Claim after failed Persistence Verification. | A failed verification is followed by a non-success result. | [agent-checkable] |
-| P12.3 | A persistence failure MUST identify the unverified Retained Output. | The failure result names the expected output or persisted state. | [agent-checkable] |
-| P12.4 | A multi-output Completion Claim MUST verify every covered Retained Output. | Each output covered by the claim has verification evidence. | [agent-checkable] |
-| P12.5 | An orchestrator MUST consume the owning workflow's completion result. | Orchestration advances or stops from the owner result. | [agent-checkable] |
+| P12.5 | An orchestrator MUST consume the owner's declared result. | Orchestration uses that result. | [agent-checkable] |
+| P12.6 | An owner MUST determine its own readiness. | Readiness comes from the owner. | [agent-checkable] |
+| P12.7 | An owner MUST determine its own domain state. | Domain state comes from the owner. | [agent-checkable] |
+| P12.8 | An owner MUST supply its next supported action when interaction is required. | The next action is the one the owner supplies. | [agent-checkable] |
+| P12.9 | An orchestrator MUST delegate the action the owner supplied. | The delegated action is that supplied action. | [agent-checkable] |
+| P12.10 | An orchestrator MUST advance only from the owner's declared terminal result. | Advance follows that terminal result. | [agent-checkable] |
+| P12.11 | An orchestrator MUST NOT inspect owner-internal state. | Owner-internal records are not read to decide the result. | [agent-checkable] |
+| P12.12 | An orchestrator MUST NOT reconstruct owner-internal state. | Owner-internal records are not rebuilt to decide the result. | [agent-checkable] |
 
-N6 applies to P12.1-P12.4 when the reviewed workflow declares no Retained Output. P12.5 is
-evaluated according to its orchestration trigger rather than inheriting N6 from the orchestrator's
-own output declaration.
-
-Rationale: Verified retained state separates approval, attempted mutation, persistence, and
-completion so an orchestrator cannot infer successful work from an owner request alone.
+Rationale: The owner decides its own state. The orchestrator advances only from the result the owner declares.
 
 ## Principle Precedence
 
@@ -381,7 +394,7 @@ ordering is total: every pair of principles has a defined winner.
 | 2 | I. Unambiguous, Actionable Directives | A rule that cannot be read one way cannot be applied at all. |
 | 3 | VI. Deterministic, Explicit Decision Criteria | Determines which action an agent selects at runtime. |
 | 4 | V. Reusable Patterns and Defined Error Handling | Governs behavior when a step fails. |
-| 5 | XII. Persistence and Completion Integrity | Governs retained-output verification and completion claims before lower-ranked principles. |
+| 5 | XII. Owner-Controlled Completion and Orchestration | Governs owner readiness and orchestrator advance from the owner's declared result. |
 | 6 | VIII. Reliability and Repeatability | Governs whether the outcome can be confirmed. |
 | 7 | VII. Long-Term Maintainability | Governs cost over time rather than correctness now. |
 | 8 | II. Technology-Agnostic Portability | Governs reach across environments. |
@@ -405,92 +418,19 @@ Each gate below applies to a skill only when its trigger test evaluates true. A 
 trigger evaluates false is recorded as N/A under condition N1. No gate uses a scope phrase
 broader than its trigger list.
 
-### Code Generation Gate
-
-**Trigger**: the skill instructs an agent to create or modify a source file.
-
-When triggered, the skill MUST name the command an agent runs to confirm correctness before
-reporting the task complete. The named command MUST be one of: a test command, a build
-command, or a lint command.
-
-### Testing Gate
-
-**Trigger**: the skill instructs an agent to create or modify executable behavior.
-
-When triggered, the skill MUST state the required test action using this table, and MUST state
-what result counts as passing.
-
-| Change type | Required test action |
-|---|---|
-| New behavior added | Add a test asserting the new behavior; the test fails before the change and passes after. |
-| Existing behavior modified | Update the test that asserts the old behavior to assert the new behavior. |
-| Defect repaired | Add a test that reproduces the defect and fails before the repair. |
-| Refactor with no behavior change | Run the existing suite unchanged; every test passes. |
-| Dependency version changed | Run the existing suite unchanged; every test passes. |
-| Comment, documentation, or formatting change only | No test action required. |
-
 ### Security Gate
 
-**Trigger**: the skill's guidance touches any of: authentication, authorization, input
-handling, secrets or credentials, network calls, file writes outside the working directory,
-deserialization of external data, cryptography, or dependency selection.
+**Trigger**: the skill performs any of: authentication, authorization, input handling, secrets
+or credentials, network calls, file writes outside the working directory, deserialization of
+external data, cryptography, or dependency selection.
 
-When triggered, the skill MUST cite AS-2 and MUST satisfy P4.5 and P4.6. Rules produced under
-this gate are security-affecting and take the Security override in Principle Precedence.
+When triggered, the skill MUST satisfy P4.5 and P4.6. An external security citation is required
+only when the skill asserts an external security requirement. Rules produced under this gate are
+security-affecting and take the Security override in Principle Precedence.
 
-### Maintainability Gate
+## Permitted N/A Conditions
 
-**Trigger**: the skill produces or modifies a file that is retained after the task completes.
-
-When triggered, the skill MUST require a comment only where the comment states intent that the
-code does not state, and MUST NOT require a comment that restates the adjacent line.
-
-### Performance Gate
-
-**Trigger**: the skill's guidance names a loop over unbounded input, a network call, a
-database query, or a file-system scan.
-
-When triggered, the skill MUST require the agent to state the cost as either an algorithmic
-complexity expression or a measured number with a unit.
-
-## Compliance Review Protocol
-
-### Tiers
-
-| Tag | Meaning | Who decides |
-|---|---|---|
-| `[auto]` | Decidable by a deterministic script with no model involved. | Tooling |
-| `[agent-checkable]` | Decidable by any conforming agent from the artifact text alone, with no judgment and no knowledge beyond this document. | Agent |
-| `[human-review]` | Requires human judgment. | Human |
-
-A reviewing agent MUST NOT emit a verdict for a rule tagged `[human-review]`. Those rule IDs
-are listed in a separate DEFERRED block for a human. DEFERRED is a block name, not a verdict.
-
-The Compliance Review Protocol MUST evaluate every applicable Experience Standard rule and record
-its result alongside the constitutional rule results. Every applicable X rule uses PASS, FAIL, or
-N/A; an X FAIL is resolved before merge. An X N/A result names its permitted condition, including
-the no-long-running-activity condition for X2.5 and X2.6.
-
-### Required output shape
-
-A review emits exactly one line per rule ID, in ascending rule ID order, in this form:
-
-    <RULE-ID> | <VERDICT> | <EVIDENCE>
-
-- `<VERDICT>` is exactly one of `PASS`, `FAIL`, `N/A`. No other token is permitted.
-- A `PASS` line MUST carry evidence: either quoted text of 25 words or fewer copied from the
-  artifact, or a file path plus a line number.
-- A `FAIL` line MUST carry either the same evidence form pointing at the violation, or the
-  literal token `ABSENT` when the required element does not exist.
-- An `N/A` line MUST name one condition ID from the table below. An `N/A` line that names no
-  condition ID is itself recorded as a `FAIL`.
-
-After the per-rule lines, the review emits a DEFERRED block listing every `[human-review]` rule
-ID, then a single summary line stating the count of each verdict.
-
-### Permitted N/A conditions
-
-This list is closed.
+This list is closed. It names the conditions a remaining gate or rule may use.
 
 | ID | Condition |
 |---|---|
@@ -498,68 +438,35 @@ This list is closed.
 | **N2** | The rule governs a skill section that this artifact type is not required to contain. |
 | **N3** | The rule governs amendment of this constitution, and the reviewed artifact is not this constitution. |
 | **N4** | The rule's stated scope names an artifact type that the reviewed artifact is not. |
-| **N5** | The reviewed workflow has no long-running activity; this condition applies to X2.5 and X2.6. |
-| **N6** | The reviewed workflow declares no Retained Output; this condition applies to P12.1-P12.4. |
-| **N7** | No downstream implication exists, or the implication was explicitly established immediately before the prompt; this condition applies to Decision Context. |
-| **N8** | No example clarifies the expected response kind or form; this condition applies to Relevant Example. |
-| **N9** | The emitted content contains no Structured Information; this condition applies to Presentation Label. |
-
-### Merge decision
-
-One or more `FAIL` verdicts blocks merge. A review containing an unresolved DEFERRED block
-blocks merge until a human records a verdict for each deferred rule ID.
-
-## Skill Authoring Workflow
-
-1. Write the skill with all required sections present: Purpose, When to use, When not to use,
-   Inputs, Outputs, Verification, Error Handling.
-2. Evaluate each of the five quality gate triggers and record which evaluate true.
-3. Run the Compliance Review Protocol against every rule ID in this document and every applicable X rule.
-4. Resolve every `FAIL` before requesting merge.
-
-### Overlap resolution
-
-Count the MUST-level rules in the new skill that restate a MUST-level rule in an existing
-skill. Divide by the count of MUST-level rules in the new skill.
-
-- If the result exceeds 0.50, consolidate the two skills into one.
-- Otherwise, remove the restated rules and replace them with a cross-reference naming the
-  other skill's id.
-
-Exactly one branch applies to any input, so this rule selects one action every time.
-
-### Breaking changes
-
-A change to a skill contract or a behavioral guarantee MUST be named in the change description
-and classified per the Skill Versioning Policy.
 
 ## Illustrative Examples (Non-Normative)
 
 These examples illustrate two principles. They state no obligation and are excluded from every
-compliance review.
+check that references the prohibited token lists.
 
 **Illustrative, for Principle I:**
 
 | Non-compliant | Compliant |
 |---|---|
-| "Add adequate test coverage for the change." | "Add one test asserting the new behavior. The test fails before the change and passes after." |
+| "Handle problems appropriately." | "If required input is missing or contradictory, obtain it before continuing." |
 
 **Illustrative, for Principle VI:**
 
 | Non-compliant | Compliant |
 |---|---|
-| "Choose the best error-handling strategy for the situation." | "If the failure is a network timeout, retry up to 3 times. If the failure is a 4xx response, abort. Otherwise, escalate." |
+| "Choose the best next action." | "If the owner declares a terminal result, advance only from that result. Otherwise, delegate the action the owner supplied." |
 
 ## Governance
 
-This constitution supersedes every other skill-authoring document in this repository when a
-conflict exists. Conflicts between rules inside this document are resolved by Principle
+This constitution supersedes every other runtime skill-governance document in this repository
+when a conflict exists. Conflicts between rules inside this document are resolved by Principle
 Precedence.
 
-Every new or amended skill MUST pass both the Compliance Review Protocol and all applicable
-Experience Standard rules before merge. A skill that cannot satisfy a rule MUST record a written
-exception in the skill file naming the rule ID and the condition that displaces it; silent
-deviation is a FAIL.
+Highway does not invent organizational facts or silently promote inferred or discovered
+information into user-owned authoritative content. Objectives, Controls, Non-Functional
+Requirements, architectures, decisions, implementations, and organizational Profile stay
+user-owned. A skill may classify, recommend, normalize, and propose. A proposal is not
+authoritative until the applicable user-acceptance boundary is satisfied.
 
 ### Self-Application
 
@@ -587,4 +494,4 @@ every other skill's version. This is the policy referenced by P7.7.
 - **MINOR**: a capability is added while every existing contract element continues to hold.
 - **PATCH**: wording repair with no change to Inputs, Outputs, or Verification.
 
-**Version**: 3.0.1 | **Ratified**: 2026-09-06 | **Last Amended**: 2026-09-25
+**Version**: 4.0.0 | **Ratified**: 2026-09-06 | **Last Amended**: 2026-09-29
