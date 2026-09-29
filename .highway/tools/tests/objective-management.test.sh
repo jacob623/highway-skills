@@ -72,14 +72,46 @@ done
 for phrase in "Confirmation Status" "Resulting Version" "Affected Entries" "next_id" "byte-for-byte" "No timestamp" "never reused"; do
 	require_text "$SKILL" "$phrase" "contract phrase $phrase"
 done
-for phrase in "adaptive discovery" "Outcome" "Success" "Significance" "one unresolved" \
+# Superseded behavior: discovery used Outcome, Success, and Significance. Adaptive discovery, one-unresolved wording, and Resume Applicability stay with the Highway Experience Standard.
+for phrase in \
 	"What's an important outcome you'd like to achieve?" \
-	"If you'd like some suggestions based on your organization's Profile" \
-	"Here's the objective I've captured:" "Why it matters:" \
+	"How would you measure success in" "What role should technology play in helping" \
+	"Here's what I've captured as your objective:" "Does this objective look right?" "Why it matters:" \
 	"[Objective Title]" "[Statement]" "Success looks like:" \
-	"Profile-grounded" '`Resume Applicability`: `New interaction`'; do
+	"Profile-grounded" "accepted Profile" "without a second confirmation" \
+	"Business Objective" "Highway Relevance" "## Statement" "## Success Measures" "## Rationale" \
+	"User-visible interaction follows the Highway Experience Standard." "version: 3.0.0" "successful atomic persistence"; do
 	require_text "$SKILL" "$phrase" "Feature 093 contract phrase $phrase"
 done
+if grep -Fq 'if Significance is unresolved' "$SKILL" || grep -Fq '## Highway Relevance' "$SKILL" || grep -Fq 'highway_relevance:' "$SKILL"; then
+	echo "FAIL: Objective skill still uses Significance discovery or a persisted Highway Relevance field" >&2
+	fail=1
+fi
+# Superseded behavior: continuation asked "Anything else you'd like to accomplish?".
+if grep -Fq "Anything else you'd like to accomplish?" "$SKILL"; then
+	echo "FAIL: Objective skill still uses the superseded continuation question" >&2
+	fail=1
+fi
+# Superseded behavior: the review opened with "Here's the objective I've captured:" and used "Success Measures Success looks like:".
+if grep -Fq "Here's the objective I've captured:" "$SKILL" || grep -Fq 'Success Measures Success looks like:' "$SKILL"; then
+	echo "FAIL: Objective skill still uses the superseded capture review" >&2
+	fail=1
+fi
+# Superseded behavior: the opening told the person to ask for suggestions.
+if grep -Fq "If you'd like some suggestions based on your organization's Profile" "$SKILL"; then
+	echo "FAIL: Objective skill still tells the person to ask for suggestions" >&2
+	fail=1
+fi
+# Superseded behavior: persistence said persist and verify.
+if grep -Fq 'persist and verify' "$SKILL" || grep -Fq 'persists and verifies' "$SKILL"; then
+	echo "FAIL: Objective skill still requires persist-and-verify" >&2
+	fail=1
+fi
+# Superseded behavior: suggestions waited for an explicit request.
+if grep -Fq 'explicit request for suggestions' "$SKILL"; then
+	echo "FAIL: Objective skill still waits for an explicit suggestion request" >&2
+	fail=1
+fi
 if grep -Fq 'Step 1 of 3' "$SKILL"; then
 	echo "FAIL: legacy fixed progress remains in Objective skill" >&2
 	fail=1
@@ -94,26 +126,19 @@ else
 fi
 for phrase in "Repository Context Participating Skill" "Identity" "Highway Vision" \
 	"Highway Platform Objectives" "Profile" "malformed" "unavailable" \
-	"exact duplicate" "semantic overlap" "Active user evidence remains authoritative" \
-	"/highway-objectives setup" "direct invocation" "Anything else you'd like to accomplish?" \
+	"exact duplicate" "semantic overlap" \
+	"/highway-objectives setup" "direct invocation" "Is there another objective you'd like to capture?" \
+	"once after a selection of several" \
 	"What's another important outcome you'd like to achieve?" "Status: Missing" \
 	"Status: Complete" "Status: Blocked"; do
 	require_text "$SKILL" "$phrase" "Feature 093 extended contract phrase $phrase"
 done
-for phrase in "Before producing any context-dependent output" \
-	"consult available declared Repository Context Documents" \
-	"use only context relevant to the active interaction" \
-	"do not fabricate substitute context or user-owned evidence"; do
-	require_text "$SKILL" "$phrase" "context consumption ordering phrase $phrase"
-done
-require_text "$SKILL" "Confirm absent or malformed Identity, Highway Vision, Highway Platform Objectives, and Profile" \
-	"verification covers absent and malformed declared context without substitution"
-require_text "$SKILL" "Confirm every suggestion is grounded in relevant accepted Profile evidence, excludes unrelated Profile information, and contains no unsupported organizational facts" \
-	"verification covers suggestion grounding and Profile disclosure boundaries"
+# Superseded behavior: Inputs restated generic context-consumption rules and Verification restated generic Experience Standard and Constitution checks.
+require_text "$SKILL" "A Profile baseline is Blocked" "Profile-owner Blocked handling remains"
+require_text "$SKILL" "no post-write persistence verification" "verification drops post-write persistence checks"
 for phrase in "natural correction" "replacement" "rejection" "cancellation" "abandonment" \
 	"re-evaluate" "revalidate the authoritative baseline" "allocate one permanent identifier" \
-	"persist both retained outputs" "verify both outputs" "unverified record or catalog output" \
-	"does not claim successful creation" "byte-for-byte" "capabilities: []" \
+	"persist both retained outputs" "byte-for-byte" "capabilities: []" \
 	"If pre-write revalidation discovers a new overlap, name the overlapping Objective" \
 	"previous creation confirmation is no longer active" \
 	"present the resulting complete proposal again" \
@@ -124,25 +149,19 @@ done
 # Executable interaction probes use the source contract as the owning workflow
 # in this Markdown-only skill suite; each probe names the behavior it protects.
 for interaction in \
-	"Outcome is unresolved, ask one conversational Outcome question" \
-	"Otherwise, if Success is unresolved, ask one Success question" \
-	"When a Success question has a downstream implication not already established, explain how the answer defines success for future Highway work." \
-	"Otherwise, if Significance is unresolved, ask one question about why the outcome matters" \
-	"Otherwise, present the complete proposal" \
-	"explicit reason in the active conversation" \
-	"applicable direct organizational connection from accepted Profile evidence" \
+	"Business Objective is what the organization wants to accomplish" \
+	"Success is how the organization will know it succeeded" \
+	"Highway Relevance is not stored" \
 	"without adding unsupported facts" \
 	"Accept ordinary business language, uncertainty, activity descriptions" \
 	"dimensions in one answer" \
 	"\`I don't know\` starts guided discovery" \
-	"explicit request for suggestions" \
 	"suggestion is not adoption" \
-	"contextual acknowledgment" \
-	"After a correction, re-evaluate staged Outcome, Success, and Significance evidence" \
+	"After a correction, re-evaluate staged Business Objective, Success, and Highway Relevance evidence" \
 	"discard staged interpretations that no longer support the revised intent" \
 	"represent them together or separately" \
 	"user-provided order" \
-	"Outcome evidence supports a Statement" \
+	"Business Objective evidence supports a Statement" \
 	"abandonment, or interruption keeps the proposal transient"; do
 	require_text "$SKILL" "$interaction" "adaptive interaction probe: $interaction"
 done

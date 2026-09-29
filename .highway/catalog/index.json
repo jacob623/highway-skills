@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-29T21:15:18Z",
+  "generated_at": "2026-09-29T23:23:44Z",
   "entries": [
     {
       "id": "highway-adr",
@@ -79,7 +79,7 @@
       "description": "Manages the repository-wide Business Objective baseline and its stable traceability references.",
       "usage": "Invoke as `/highway-objectives` and state whether to inspect, add, update, remove, or reset Business Objectives.",
       "compatibility": "all",
-      "version": "2.0.0",
+      "version": "3.0.0",
       "source_path": "skills/highway-objectives/SKILL.md"
     },
     {

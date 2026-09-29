@@ -15,7 +15,11 @@ require_text "$SKILL" 'Objectives readiness'
 require_text "$SKILL" "Let's identify some explicit outcomes worth pursuing."
 require_text "$SKILL" "These give Highway something concrete to connect future decisions back to"
 require_text "$SKILL" "What's an important outcome you'd like to achieve?"
-require_text "$SKILL" "If you'd like some suggestions based on your organization's Profile"
+# Superseded behavior: the Objectives opening told the person to ask for suggestions.
+if grep -Fq "If you'd like some suggestions based on your organization's Profile" "$SKILL"; then
+	echo "FAIL: Setup still quotes the superseded Objectives suggestion sentence"
+	fail=1
+fi
 require_text "$SKILL" 'Setup-owned'
 require_text "$SKILL" 'Objectives-owned'
 require_text "$SKILL" 'does not inspect Profile metadata'

@@ -98,8 +98,8 @@ for skill in $skills; do
 	require_text "$file" 'Highway Experience Standard'
 	require_absent "$file" 'Interactive Workflow UX Contract'
 	require_text "$file" 'Next Action'
-	# Superseded behavior: Profile restated implementation details, User Exits, Owner Outcomes, and Resume Applicability. Those stay with the Highway Experience Standard.
-	if [[ "$skill" != highway-profile ]]; then
+	# Superseded behavior: Profile and Objectives restated implementation details, User Exits, Owner Outcomes, and Resume Applicability. Those stay with the Highway Experience Standard.
+	if [[ "$skill" != highway-profile && "$skill" != highway-objectives ]]; then
 		require_text "$file" 'implementation details'
 		require_text "$file" 'User Exits'
 		require_text "$file" 'Owner Outcomes'
@@ -112,10 +112,13 @@ done
 require_absent "$SKILLS_ROOT/highway-profile/SKILL.md" 'Current Question'
 require_absent "$SKILLS_ROOT/highway-profile/SKILL.md" 'Domain Progress'
 require_absent "$SKILLS_ROOT/highway-profile/SKILL.md" 'Current Activity'
-require_text "$SKILLS_ROOT/highway-objectives/SKILL.md" 'Outcome evidence'
+# Superseded behavior: Objective discovery was labeled Outcome evidence.
+require_text "$SKILLS_ROOT/highway-objectives/SKILL.md" 'Business Objective'
+require_text "$SKILLS_ROOT/highway-objectives/SKILL.md" 'Highway Relevance'
 require_text "$SKILLS_ROOT/highway-objectives/SKILL.md" 'Success Measures'
 require_text "$SKILLS_ROOT/highway-objectives/SKILL.md" 'Why it matters:'
 require_absent "$SKILLS_ROOT/highway-objectives/SKILL.md" 'Step 1 of 3'
+require_absent "$SKILLS_ROOT/highway-objectives/SKILL.md" 'User Exits'
 require_text "$SKILLS_ROOT/highway-controls/SKILL.md" 'Concern'
 require_text "$SKILLS_ROOT/highway-controls/SKILL.md" 'Condition'
 require_text "$SKILLS_ROOT/highway-controls/SKILL.md" 'Obligation'
