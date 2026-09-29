@@ -3,14 +3,13 @@
 set -u
 
 profile_path() { printf '%s\n' '.highway/library/knowledge/profile.md'; }
-profile_domain_keys() { printf '%s\n' identity vision competitive_path guiding_principles highway_role; }
+profile_domain_keys() { printf '%s\n' identity vision competitive_path guiding_principles; }
 profile_domain_heading() {
 	case "$1" in
 		identity) printf '%s\n' '## Who We Are' ;;
 		vision) printf '%s\n' "## Where We're Going" ;;
 		competitive_path) printf '%s\n' '## How We Plan to Get There' ;;
 		guiding_principles) printf '%s\n' '## What Guides Our Decisions' ;;
-		highway_role) printf '%s\n' '## How Highway Helps' ;;
 		*) return 1 ;;
 	esac
 }

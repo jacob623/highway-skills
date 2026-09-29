@@ -39,7 +39,7 @@ rm -f "$bounded_without_evidence"
 
 SKILL="$HIGHWAY_ROOT/skills/highway-profile/SKILL.md"
 for required_text in \
-	'five evidence domains' \
+	'four readiness domains' \
 	'not_discussed' \
 	'discussed' \
 	'bounded' \
@@ -54,13 +54,17 @@ for heading in \
 	'## Who We Are' \
 	"## Where We're Going" \
 	'## How We Plan to Get There' \
-	'## What Guides Our Decisions' \
-	'## How Highway Helps'; do
+	'## What Guides Our Decisions'; do
 	if ! grep -Fq -- "$heading" "$HIGHWAY_ROOT/library/templates/output/profile-record.md"; then
 		echo "FAIL: Profile template omits canonical generated heading '$heading'"
 		fail=1
 	fi
 done
+# Superseded behavior: the template included ## How Highway Helps for highway_role.
+if grep -Fq '## How Highway Helps' "$HIGHWAY_ROOT/library/templates/output/profile-record.md" || grep -Fq 'highway_role' "$HIGHWAY_ROOT/library/templates/output/profile-record.md"; then
+	echo 'FAIL: Profile template still includes Highway Role'
+	fail=1
+fi
 for rule in 'discussed always renders evidence' 'bounded renders accepted evidence' 'not_discussed never renders a narrative section'; do
 	if ! grep -Fq -- "$rule" "$HIGHWAY_ROOT/library/templates/output/profile-record.md"; then
 		echo "FAIL: Profile template omits state-to-narrative rule '$rule'"

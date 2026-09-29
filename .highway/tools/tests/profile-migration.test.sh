@@ -18,7 +18,8 @@ if ! bash "$AUDIT" >/dev/null 2>&1; then
 	fail=1
 fi
 
-if [[ ! -f "$PROFILE" ]] || ! grep -Fq 'schema_version: 2.0.0' "$PROFILE"; then
+# Superseded behavior: the canonical template schema was 2.0.0.
+if [[ ! -f "$PROFILE" ]] || ! grep -Fq 'schema_version: 3.0.0' "$PROFILE"; then
 	echo "FAIL: canonical Profile template is missing or has invalid metadata"
 	fail=1
 fi

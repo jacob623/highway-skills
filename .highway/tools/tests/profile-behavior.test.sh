@@ -15,6 +15,8 @@ trap 'rm -rf "$fixture_root"' EXIT
 
 valid="$fixture_root/profile.md"
 cp "$HIGHWAY_ROOT/library/templates/output/profile-record.md" "$valid"
+# Superseded behavior: the shared template schema was 2.0.0.
+if ! grep -Fq 'schema_version: 3.0.0' "$HIGHWAY_ROOT/library/templates/output/profile-record.md"; then echo 'FAIL: shared template schema is not 3.0.0'; fail=1; fi
 if ! "$VALIDATE" "$valid" >/dev/null; then echo 'FAIL: shared template is invalid'; fail=1; fi
 
 sed -i '' 's/identity: not_discussed/identity: discussed/' "$valid"

@@ -13,6 +13,8 @@ fail=0
 cp "$HIGHWAY_ROOT/library/templates/output/profile-record.md" "$fixture_root/one.md"
 cp "$HIGHWAY_ROOT/library/templates/output/profile-record.md" "$fixture_root/two.md"
 if ! cmp -s "$fixture_root/one.md" "$fixture_root/two.md"; then echo 'FAIL: identical template renders differ'; fail=1; fi
+# Superseded behavior: the shared template schema was 2.0.0.
+if ! grep -Fq 'schema_version: 3.0.0' "$HIGHWAY_ROOT/library/templates/output/profile-record.md"; then echo 'FAIL: shared template schema is not 3.0.0'; fail=1; fi
 if ! "$VALIDATE" "$fixture_root/one.md" >/dev/null; then echo 'FAIL: template validation failed'; fail=1; fi
 sed -i '' 's/identity: not_discussed/identity: discussed/' "$fixture_root/one.md"
 printf '%s\n' '## Who We Are' 'Evidence supplied by the user.' >> "$fixture_root/one.md"

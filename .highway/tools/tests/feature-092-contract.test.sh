@@ -30,6 +30,29 @@ require_text "$PROFILE" 'Experience Standard remains the normative authority'
 require_text "$PROFILE" 'An absent Profile is a valid initial state'
 require_text "$PROFILE" 'Next Action: None'
 require_text "$PROFILE" 'must not be promoted into the retained Profile'
+require_text "$PROFILE" '**What would you like to call your Highway repository?**'
+require_text "$PROFILE" "If you're using Highway for a company or organization, its name is usually a good choice."
+require_text "$PROFILE" 'ask for the public website using the accepted Repository Name'
+require_text "$PROFILE" 'The supplied Organization URL is accepted'
+require_text "$PROFILE" 'website-derived Organization Name and other derived facts stay proposed until accepted'
+require_text "$PROFILE" 'continue without exposing the missing retrieval capability'
+require_text "$PROFILE" '**What does [Organization Name] do?**'
+require_text "$PROFILE" '**What is the future vision of [Organization Name]?**'
+require_text "$PROFILE" '**How does [Organization Name] plan to get there?**'
+require_text "$PROFILE" '**What principles or values guide decisions at [Organization Name]?**'
+require_text "$PROFILE" 'use the accepted Repository Name where it reads naturally'
+require_text "$PROFILE" 'a domain with accepted or active evidence is not asked'
+require_text "$PROFILE" 'Future State, Impact, Reach / Scale, Position, and Experience / Reputation'
+require_text "$PROFILE" 'Customer / Participant, Offering, Market / Reach, Differentiation, Operations, and Capability Development'
+require_text "$PROFILE" 'People, Trust, Quality, Simplicity, Change, Stewardship, and Autonomy'
+require_text "$PROFILE" 'those names are not retained'
+require_text "$PROFILE" 'enrichment does not block completion'
+require_text "$PROFILE" 'a selected recommendation is accepted without a second confirmation'
+require_text "$PROFILE" 'version: 4.0.0'
+if grep -Fq '.highway/tools/validate-profile.sh' "$PROFILE"; then
+	echo "FAIL: $PROFILE still instructs .highway/tools/validate-profile.sh"
+	fail=1
+fi
 require_text "$SETUP" 'status-only requests'
 require_text "$SETUP" 'declined, aborted, or failed'
 require_text "$SETUP" 'NFR readiness; if it is `In Progress`'
@@ -48,15 +71,24 @@ fixture_root="$(mktemp -d "${TMPDIR:-/tmp}/highway-profile-092.XXXXXX")"
 trap 'rm -rf "$fixture_root"' EXIT
 valid="$fixture_root/valid.md"
 cp "$HIGHWAY_ROOT/library/templates/output/profile-record.md" "$valid"
-if ! "$VALIDATE" "$valid" >/dev/null 2>&1; then echo 'FAIL: schema 2.0.0 fixture rejected'; fail=1; fi
+if ! "$VALIDATE" "$valid" >/dev/null 2>&1; then echo 'FAIL: schema 3.0.0 fixture rejected'; fail=1; fi
+
+# Superseded behavior: schema 2.0.0 was valid, and schema 3.0.0 was the unsupported example.
+legacy="$fixture_root/legacy-2.0.0.md"
+cp "$valid" "$legacy"
+sed -i '' 's/schema_version: 3.0.0/schema_version: 2.0.0/' "$legacy"
+legacy_before="$(shasum -a 256 "$legacy" | awk '{print $1}')"
+if "$VALIDATE" "$legacy" >/dev/null 2>&1; then echo 'FAIL: schema 2.0.0 fixture was accepted'; fail=1; fi
+legacy_after="$(shasum -a 256 "$legacy" | awk '{print $1}')"
+[[ "$legacy_before" == "$legacy_after" ]] || { echo 'FAIL: schema 2.0.0 fixture was rewritten'; fail=1; }
 
 for name in absent malformed unsupported; do
 	candidate="$fixture_root/$name.md"
 	cp "$valid" "$candidate"
 	case "$name" in
 		absent) sed -i '' '/schema_version:/d' "$candidate" ;;
-		malformed) sed -i '' 's/schema_version: 2.0.0/schema_version: two/' "$candidate" ;;
-		unsupported) sed -i '' 's/schema_version: 2.0.0/schema_version: 3.0.0/' "$candidate" ;;
+		malformed) sed -i '' 's/schema_version: 3.0.0/schema_version: two/' "$candidate" ;;
+		unsupported) sed -i '' 's/schema_version: 3.0.0/schema_version: 4.0.0/' "$candidate" ;;
 	esac
 	if "$VALIDATE" "$candidate" >/dev/null 2>&1; then
 		echo "FAIL: $name schema fixture was accepted"

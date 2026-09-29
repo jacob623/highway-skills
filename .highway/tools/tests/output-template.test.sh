@@ -158,12 +158,23 @@ if [[ -f "$CONTROL_TEMPLATE" ]]; then
 fi
 if [[ -f "$PROFILE_TEMPLATE" ]]; then
 	require_text "$PROFILE_TEMPLATE" "metadata:"
-	require_text "$PROFILE_TEMPLATE" "schema_version: 2.0.0"
+	# Superseded behavior: the template schema was 2.0.0 and included highway_role.
+	require_text "$PROFILE_TEMPLATE" "schema_version: 3.0.0"
 	require_text "$PROFILE_TEMPLATE" "identity: not_discussed"
 	require_text "$PROFILE_TEMPLATE" "vision: not_discussed"
 	require_text "$PROFILE_TEMPLATE" "competitive_path: not_discussed"
 	require_text "$PROFILE_TEMPLATE" "guiding_principles: not_discussed"
-	require_text "$PROFILE_TEMPLATE" "highway_role: not_discussed"
+	if grep -Fq 'highway_role' "$PROFILE_TEMPLATE"; then
+		echo "FAIL: $PROFILE_TEMPLATE still names highway_role"
+		fail=1
+	fi
+	for heading in '## Repository Name' '## Organization Name' '## Organization URL' '## Organizational Context'; do
+		require_text "$PROFILE_TEMPLATE" "$heading"
+	done
+	if grep -Eq '^(repository_name|organization_name|organization_url|organizational_context):' "$PROFILE_TEMPLATE"; then
+		echo "FAIL: $PROFILE_TEMPLATE stores optional context as a domain key"
+		fail=1
+	fi
 fi
 if [[ -f "$OBJECTIVE_TEMPLATE" ]]; then
 	require_text "$OBJECTIVE_TEMPLATE" "name: objective-record"

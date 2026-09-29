@@ -98,16 +98,20 @@ for skill in $skills; do
 	require_text "$file" 'Highway Experience Standard'
 	require_absent "$file" 'Interactive Workflow UX Contract'
 	require_text "$file" 'Next Action'
-	require_text "$file" 'implementation details'
-	require_text "$file" 'User Exits'
-	require_text "$file" 'Owner Outcomes'
-	require_text "$file" 'Resume Applicability'
+	# Superseded behavior: Profile restated implementation details, User Exits, Owner Outcomes, and Resume Applicability. Those stay with the Highway Experience Standard.
+	if [[ "$skill" != highway-profile ]]; then
+		require_text "$file" 'implementation details'
+		require_text "$file" 'User Exits'
+		require_text "$file" 'Owner Outcomes'
+		require_text "$file" 'Resume Applicability'
+	fi
 	require_text "$file" 'ownership'
 done
 
-require_text "$SKILLS_ROOT/highway-profile/SKILL.md" 'Current Question'
-require_text "$SKILLS_ROOT/highway-profile/SKILL.md" 'Domain Progress'
-require_text "$SKILLS_ROOT/highway-profile/SKILL.md" 'Current Activity'
+# Superseded behavior: Current Question, Domain Progress, and Current Activity were restated in the Profile skill. They are left to the Highway Experience Standard.
+require_absent "$SKILLS_ROOT/highway-profile/SKILL.md" 'Current Question'
+require_absent "$SKILLS_ROOT/highway-profile/SKILL.md" 'Domain Progress'
+require_absent "$SKILLS_ROOT/highway-profile/SKILL.md" 'Current Activity'
 require_text "$SKILLS_ROOT/highway-objectives/SKILL.md" 'Outcome evidence'
 require_text "$SKILLS_ROOT/highway-objectives/SKILL.md" 'Success Measures'
 require_text "$SKILLS_ROOT/highway-objectives/SKILL.md" 'Why it matters:'
