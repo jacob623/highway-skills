@@ -1,6 +1,10 @@
 ---
+name: highway-objectives
 description: "Manages the repository-wide Business Objective baseline and its stable traceability references."
-alwaysApply: false
+usage: "Invoke as `/highway-objectives` and state whether to inspect, add, update, remove, or reset Business Objectives."
+compatibility: all
+metadata:
+  version: 2.0.0
 ---
 
 # highway-objectives

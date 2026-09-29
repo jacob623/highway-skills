@@ -173,7 +173,7 @@ if [[ -f "$MANIFEST" ]]; then
 		'.highway/library/templates/output/request-catalog.md' \
 		'.github/skills/highway-new' \
 		'.claude/skills/highway-new' \
-		'.cursor/rules/highway-new.mdc'; do
+		'.cursor/skills/highway-new'; do
 		require_text "$MANIFEST" "$path"
 	done
 fi

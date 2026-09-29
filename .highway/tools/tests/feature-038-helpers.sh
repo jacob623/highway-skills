@@ -70,7 +70,7 @@ feature_038_source_path() {
 		profile|objectives|controls|nfrs|setup) printf '%s\n' ".highway/skills/highway-$1/SKILL.md" ;;
 		github) printf '%s\n' '.github/skills/' ;;
 		claude) printf '%s\n' '.claude/skills/' ;;
-		cursor) printf '%s\n' '.cursor/rules/' ;;
+		cursor) printf '%s\n' '.cursor/skills/' ;;
 		catalog) printf '%s\n' '.highway/catalog/' ;;
 		*) echo "unknown Feature 038 source key: $1" >&2; return 1 ;;
 	esac

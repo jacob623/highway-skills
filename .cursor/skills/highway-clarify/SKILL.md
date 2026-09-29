@@ -1,6 +1,10 @@
 ---
+name: highway-clarify
 description: "Generates, updates, validates, and serves deterministic clarification records for Highway artifacts."
-alwaysApply: false
+usage: "Invoke as `/highway-clarify <ARTIFACT-ID>`, `/highway-clarify update <ARTIFACT-ID>`, `/highway-clarify inspect <ARTIFACT-ID>`, `/highway-clarify read <ARTIFACT-ID>`, or `/highway-clarify status <ARTIFACT-ID>`."
+compatibility: all
+metadata:
+  version: 2.0.0
 ---
 
 # highway-clarify

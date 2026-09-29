@@ -13,7 +13,7 @@ duplicated or hand-adapted per agent.
 - **Build the catalog**: `.highway/tools/generate-catalog.sh` writes `.highway/catalog/index.json`
   and `.highway/catalog/index.md`.
 - **Generate agent adapters**: `.highway/tools/generate-agent-adapters.sh` writes
-  `.github/skills/`, `.claude/skills/`, and `.cursor/rules/` from the skills under
+  `.github/skills/`, `.claude/skills/`, and `.cursor/skills/` from the skills under
   `.highway/skills/`.
 - **Configure Controls conversationally**: invoke `/highway-controls setup` or `/highway-controls configure`
   for adaptive Concern, Condition, and Obligation discovery; direct `/highway-controls add` creates one Control.

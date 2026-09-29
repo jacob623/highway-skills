@@ -1,6 +1,10 @@
 ---
+name: highway-nfrs
 description: "Manages the repository-wide Non-Functional Requirement baseline; use it to add, update, remove, replace, or inspect NFRs."
-alwaysApply: false
+usage: "Invoke as `/highway-nfrs` and state the NFR baseline change in plain language."
+compatibility: all
+metadata:
+  version: 10.0.0
 ---
 
 # highway-nfrs

@@ -23,7 +23,7 @@ rm -rf "$REPO_ROOT"/distribution-probe-*.md \
 	"$HIGHWAY_ROOT"/skills/test-adapter-fixture-* \
 	"$REPO_ROOT"/.github/skills/test-adapter-fixture-* \
 	"$REPO_ROOT"/.claude/skills/test-adapter-fixture-* \
-	"$REPO_ROOT"/.cursor/rules/test-adapter-fixture-*.mdc \
+	"$REPO_ROOT"/.cursor/skills/test-adapter-fixture-* \
 	"$HIGHWAY_ROOT"/tools/shipped-tree-cliprobe-*.tmp \
 	"$HIGHWAY_ROOT"/tools/tests/fixtures/shipped-tree-cliprobe-*.tmp
 adapter_manifest="$HIGHWAY_ROOT/tools/.adapter-manifest"

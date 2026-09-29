@@ -1,6 +1,10 @@
 ---
+name: highway-discovery
 description: "Manages a repository-wide Discovery baseline."
-alwaysApply: false
+usage: "Invoke as `/highway-discovery` and state the Request."
+compatibility: all
+metadata:
+  version: 2.1.0
 ---
 
 # highway-discovery

@@ -1,6 +1,10 @@
 ---
+name: highway-relationships
 description: "Inspects and repairs repository-wide Control-to-NFR relationship integrity with explicit confirmation."
-alwaysApply: false
+usage: "Invoke as `/highway-relationships` and state Inspect, Repair, or Impact followed by the governance relationship scope."
+compatibility: all
+metadata:
+  version: 1.0.0
 ---
 
 # highway-relationships

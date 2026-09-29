@@ -56,16 +56,16 @@ adapter_paths() {
 	printf '%s\n' \
 		".github/skills/$id" \
 		".claude/skills/$id" \
-		".cursor/rules/$id.mdc"
+		".cursor/skills/$id"
 }
 
-# The file each adapter path resolves to. Two of the three are directories holding a SKILL.md.
+# The file each adapter path resolves to. All three are directories holding a SKILL.md.
 adapter_files() {
 	local id="$1"
 	printf '%s\n' \
 		".github/skills/$id/SKILL.md" \
 		".claude/skills/$id/SKILL.md" \
-		".cursor/rules/$id.mdc"
+		".cursor/skills/$id/SKILL.md"
 }
 
 skill_exists() {
@@ -142,7 +142,7 @@ orphan_problems() {
 		case "$path" in
 			.github/skills/*) row_id="${path#.github/skills/}" ;;
 			.claude/skills/*) row_id="${path#.claude/skills/}" ;;
-			.cursor/rules/*.mdc) row_id="${path#.cursor/rules/}"; row_id="${row_id%.mdc}" ;;
+			.cursor/skills/*) row_id="${path#.cursor/skills/}" ;;
 			*) continue ;;
 		esac
 		row_id="${row_id%%/*}"

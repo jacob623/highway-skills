@@ -1,6 +1,10 @@
 ---
+name: highway-new
 description: "Manages a repository-wide request baseline and updating its state."
-alwaysApply: false
+usage: "Invoke as `/highway-new` with a business request in plain language."
+compatibility: all
+metadata:
+  version: 1.0.0
 ---
 
 ## Purpose

@@ -1,6 +1,10 @@
 ---
+name: highway-profile
 description: "Manages the repository-wide organizational Profile and its contextual guidance."
-alwaysApply: false
+usage: "Invoke as `/highway-profile` to inspect Profile context, or state setup, view, add, update, remove, or reset."
+compatibility: all
+metadata:
+  version: 3.0.0
 ---
 
 ## highway-profile

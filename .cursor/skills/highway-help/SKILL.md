@@ -1,6 +1,10 @@
 ---
+name: highway-help
 description: "Prints registration details for one named skill, or a discovery listing of every registered skill when none is named."
-alwaysApply: false
+usage: "Invoke as `/highway-help` for all skills, or `/highway-help <skill-id>` for one named skill's registration details."
+compatibility: all
+metadata:
+  version: 3.0.4
 ---
 
 ## Purpose

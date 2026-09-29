@@ -1,6 +1,10 @@
 ---
+name: highway-setup
 description: "Orchestrates initial Highway setup through the owning governance skills."
-alwaysApply: false
+usage: "Invoke as `/highway-setup` to assess readiness and complete missing foundational setup in order."
+compatibility: all
+metadata:
+  version: 7.0.0
 ---
 
 ## highway-setup

@@ -1,6 +1,10 @@
 ---
+name: highway-inquiry
 description: "Manages the requirements discovery questionnaire that Highway skills ask from, adding, changing, removing and reordering its questions on request."
-alwaysApply: false
+usage: "Invoke as `/highway-inquiry` and state what to change, for example `/highway-inquiry add a question about data retention`."
+compatibility: all
+metadata:
+  version: 1.0.2
 ---
 
 ## Purpose

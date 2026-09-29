@@ -59,8 +59,9 @@ TMP_ID="test-adapter-fixture-$$"
 SKILL_SRC_DIR="$HIGHWAY_ROOT/skills/$TMP_ID"
 GH_TARGET="$REPO_ROOT/.github/skills/$TMP_ID/SKILL.md"
 CLAUDE_TARGET="$REPO_ROOT/.claude/skills/$TMP_ID/SKILL.md"
-CURSOR_TARGET="$REPO_ROOT/.cursor/rules/$TMP_ID.mdc"
+CURSOR_TARGET="$REPO_ROOT/.cursor/skills/$TMP_ID/SKILL.md"
 SPECKIT_SENTINEL="$REPO_ROOT/.github/skills/speckit-tasks/SKILL.md"
+CURSOR_SPECKIT_SENTINEL="$REPO_ROOT/.cursor/skills/speckit-tasks/SKILL.md"
 MANIFEST="$HIGHWAY_ROOT/tools/.adapter-manifest"
 
 fail=0
@@ -69,7 +70,8 @@ cleanup() {
 	rm -rf "$SKILL_SRC_DIR" \
 		"$REPO_ROOT/.github/skills/$TMP_ID" \
 		"$REPO_ROOT/.claude/skills/$TMP_ID" \
-		"$CURSOR_TARGET"
+		"$REPO_ROOT/.cursor/skills/$TMP_ID" \
+		"$REPO_ROOT/.cursor/rules/$TMP_ID.mdc"
 	if [[ -f "$MANIFEST" ]]; then
 		grep -vF "$TMP_ID" "$MANIFEST" >"$MANIFEST.tmp" || true
 		mv "$MANIFEST.tmp" "$MANIFEST"
@@ -82,6 +84,7 @@ trap cleanup EXIT
 rm -rf "$HIGHWAY_ROOT"/skills/test-adapter-fixture-* \
 	"$REPO_ROOT"/.github/skills/test-adapter-fixture-* \
 	"$REPO_ROOT"/.claude/skills/test-adapter-fixture-* \
+	"$REPO_ROOT"/.cursor/skills/test-adapter-fixture-* \
 	"$REPO_ROOT"/.cursor/rules/test-adapter-fixture-*.mdc
 if [[ -f "$MANIFEST" ]] && grep -q 'test-adapter-fixture-' "$MANIFEST"; then
 	grep -v 'test-adapter-fixture-' "$MANIFEST" >"$MANIFEST.tmp" || true
@@ -95,6 +98,7 @@ cp "$FIXTURES/valid-skill/SKILL.md" "$SKILL_SRC_DIR/SKILL.md"
 sed -i.bak "s/^name: .*/name: $TMP_ID/" "$SKILL_SRC_DIR/SKILL.md" && rm -f "$SKILL_SRC_DIR/SKILL.md.bak"
 
 speckit_before="$(sha256sum "$SPECKIT_SENTINEL" 2>/dev/null || shasum -a 256 "$SPECKIT_SENTINEL")"
+cursor_speckit_before="$(sha256sum "$CURSOR_SPECKIT_SENTINEL" 2>/dev/null || shasum -a 256 "$CURSOR_SPECKIT_SENTINEL")"
 
 if ! "$GENERATE" >/tmp/generate-agent-adapters.$$.log 2>&1; then
 	echo "FAIL: .highway/tools/generate-agent-adapters.sh exited non-zero"
@@ -113,27 +117,51 @@ if [[ ! -f "$CLAUDE_TARGET" ]] || ! diff -q "$SKILL_SRC_DIR/SKILL.md" "$CLAUDE_T
 	fail=1
 fi
 
+# Cursor receives a skill, not a rule (feature 097). The four assertions this block replaces
+# (alwaysApply, globs omitted, description-only frontmatter, body re-emitted below rule
+# frontmatter) described the removed mdc-transform conversion, which no longer exists; the
+# Cursor deliverable is now an identity copy, so byte-identity supersedes all four.
 if [[ ! -f "$CURSOR_TARGET" ]]; then
 	echo "FAIL: $CURSOR_TARGET was not generated"
 	fail=1
 else
-	if ! grep -q '^alwaysApply: false$' "$CURSOR_TARGET"; then
-		echo "FAIL: $CURSOR_TARGET missing 'alwaysApply: false'"
+	if ! diff -q "$SKILL_SRC_DIR/SKILL.md" "$CURSOR_TARGET" >/dev/null 2>&1; then
+		echo "FAIL: $CURSOR_TARGET is not byte-identical to source"
 		fail=1
 	fi
-	if grep -q '^globs:' "$CURSOR_TARGET"; then
-		echo "FAIL: $CURSOR_TARGET must omit 'globs'"
+	if [[ -f "$CLAUDE_TARGET" ]] && ! diff -q "$CLAUDE_TARGET" "$CURSOR_TARGET" >/dev/null 2>&1; then
+		echo "FAIL: $CURSOR_TARGET is not byte-identical to the Claude Code deliverable"
 		fail=1
 	fi
-	expected_desc="$(grep -E '^description:' "$SKILL_SRC_DIR/SKILL.md" | head -n1)"
-	if ! grep -qF "$expected_desc" "$CURSOR_TARGET"; then
-		echo "FAIL: $CURSOR_TARGET description does not match source verbatim"
+	for key in name description usage compatibility metadata; do
+		if grep -q "^$key:" "$SKILL_SRC_DIR/SKILL.md" && ! grep -q "^$key:" "$CURSOR_TARGET"; then
+			echo "FAIL: $CURSOR_TARGET is missing source frontmatter key '$key'"
+			fail=1
+		fi
+	done
+	if grep -q '^alwaysApply:' "$CURSOR_TARGET"; then
+		echo "FAIL: $CURSOR_TARGET carries rule frontmatter ('alwaysApply')"
 		fail=1
 	fi
-	if ! grep -q '^## When to use$' "$CURSOR_TARGET"; then
-		echo "FAIL: $CURSOR_TARGET body was not copied verbatim below frontmatter"
+fi
+
+if [[ -e "$REPO_ROOT/.cursor/rules/$TMP_ID.mdc" ]]; then
+	echo "FAIL: a Cursor rule file was generated for $TMP_ID; Cursor receives skills, not rules"
+	fail=1
+fi
+
+# Regression guard (feature 097): once the one-time migration has retired the old Cursor rule
+# files, none may reappear and no adapter manifest row may name the rules location. This fails
+# for as long as any Highway rule file or row remains, and again if a change reintroduces one.
+for stale_rule in "$REPO_ROOT"/.cursor/rules/highway-*.mdc; do
+	if [[ -e "$stale_rule" ]]; then
+		echo "FAIL: superseded Cursor rule file still present: ${stale_rule#"$REPO_ROOT"/}"
 		fail=1
 	fi
+done
+if [[ -f "$MANIFEST" ]] && grep -q '^\.cursor/rules/' "$MANIFEST"; then
+	echo "FAIL: the adapter manifest still holds $(grep -c '^\.cursor/rules/' "$MANIFEST") row(s) naming .cursor/rules/"
+	fail=1
 fi
 
 speckit_after="$(sha256sum "$SPECKIT_SENTINEL" 2>/dev/null || shasum -a 256 "$SPECKIT_SENTINEL")"
@@ -141,6 +169,48 @@ if [[ "$speckit_before" != "$speckit_after" ]]; then
 	echo "FAIL: existing speckit-* file $SPECKIT_SENTINEL was modified"
 	fail=1
 fi
+
+cursor_speckit_after="$(sha256sum "$CURSOR_SPECKIT_SENTINEL" 2>/dev/null || shasum -a 256 "$CURSOR_SPECKIT_SENTINEL")"
+if [[ "$cursor_speckit_before" != "$cursor_speckit_after" ]]; then
+	echo "FAIL: existing speckit-* file $CURSOR_SPECKIT_SENTINEL was modified"
+	fail=1
+fi
+
+# Untracked collision (feature 097): a file already sitting at the Cursor skill path that the
+# generator did not produce must be refused and named, left byte-for-byte as found, and must not
+# cause a partial adapter set. The GitHub and Claude targets and every manifest row for this
+# skill are removed first, so a run that ignored the collision would visibly recreate them.
+{
+	rm -f "$GH_TARGET" "$CLAUDE_TARGET"
+	mkdir -p "$(dirname "$CURSOR_TARGET")"
+	grep -vF "$TMP_ID" "$MANIFEST" >"$MANIFEST.tmp" || true
+	mv "$MANIFEST.tmp" "$MANIFEST"
+	printf 'collision content\n' >"$CURSOR_TARGET"
+	collision_out="$("$GENERATE" 2>&1)"
+	collision_rc=$?
+	if [[ $collision_rc -eq 0 ]]; then
+		echo "FAIL: the generator exited 0 despite an untracked file at $CURSOR_TARGET"
+		fail=1
+	fi
+	if ! printf '%s' "$collision_out" | grep -qF ".cursor/skills/$TMP_ID/SKILL.md"; then
+		echo "FAIL: the generator did not name the colliding file .cursor/skills/$TMP_ID/SKILL.md"
+		fail=1
+	fi
+	if [[ "$(cat "$CURSOR_TARGET")" != "collision content" ]]; then
+		echo "FAIL: the generator overwrote an untracked file at $CURSOR_TARGET"
+		fail=1
+	fi
+	if [[ -e "$GH_TARGET" || -e "$CLAUDE_TARGET" ]]; then
+		echo "FAIL: a partial adapter set was written despite the Cursor collision"
+		fail=1
+	fi
+	# Recover so the remaining checks start from a fully generated tree.
+	rm -f "$CURSOR_TARGET"
+	if ! "$GENERATE" >/dev/null 2>&1; then
+		echo "FAIL: the generator did not recover once the colliding file was removed"
+		fail=1
+	fi
+}
 
 # A generated artifact that was hand-edited must not be silently overwritten: the edit would
 # vanish with no indication it ever existed. Enforces D4.1, which the Enforcement Map in the

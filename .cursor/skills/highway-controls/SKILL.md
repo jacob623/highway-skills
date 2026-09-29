@@ -1,6 +1,10 @@
 ---
+name: highway-controls
 description: "Manages the repository-wide Control baseline, adding, updating, removing and replacing the Controls that govern the repository."
-alwaysApply: false
+usage: "Invoke as `/highway-controls` and state what to change, for example `/highway-controls add a control requiring administrative access to use MFA`."
+compatibility: all
+metadata:
+  version: 3.0.0
 ---
 
 # highway-controls

@@ -1,6 +1,10 @@
 ---
+name: highway-adr
 description: "Manages the repository-wide decision baseline."
-alwaysApply: false
+usage: "Invoke as `/highway-adr` with one Discovery ID."
+compatibility: all
+metadata:
+  version: 1.0.0
 ---
 
 # highway-adr
