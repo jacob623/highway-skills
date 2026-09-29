@@ -1,5 +1,21 @@
 <!--
 Sync Impact Report
+Version change: 2.1.0 → 2.2.0 (MINOR), 2026-09-29
+Bump rationale: `codex` is added to the declared agent trees. The copies for that tree are
+produced in this same change, so previously conforming work still conforms. Adding the name
+does not remove or redefine a principle. D4.5 and D4.6 rule text is unchanged; their
+enforcement-map cells already say each declared agent tree.
+Changed elements:
+- Version line: 2.1.0 → 2.2.0
+- Last Amended date: unchanged at 2026-09-29
+- Declared agent trees, under Principle IV: `codex` is added
+Unchanged: D4.5, D4.6, their Enforcement Map cells, the declared-generator list, and every
+other rule.
+Self-application review: D1.3 PASS (no Highway Skills Constitution rule sentence is copied);
+D1.4 PASS (this report cites rule IDs); D5.3 PASS (the three changed elements are listed above
+and every unlisted element carries forward).
+
+Sync Impact Report
 Version change: 2.0.0 → 2.1.0 (MINOR), 2026-09-29
 Bump rationale: `generate-instructions.sh` is added to the declared-generator list. The list is
 the scope D4.7 names. Adding a generator does not remove or redefine a principle, and it does
@@ -433,7 +449,7 @@ because adapters are never pruned and manifest rows are hand-maintained.
 excluded — it takes a target directory and writes outside the repository, so it produces no
 committed artifact to compare against.
 
-**Declared agent trees** (referenced by D4.5 and D4.6): `github-copilot`, `claude-code`, `cursor`.
+**Declared agent trees** (referenced by D4.5 and D4.6): `github-copilot`, `claude-code`, `cursor`, `codex`.
 Trees created by test fixtures are not declared agent trees.
 
 ### VI. Documentation Currency
@@ -511,4 +527,4 @@ Highway Skills Constitution prevails for artifact content and this document prev
 This document is subject to D1.3, D1.4, and D5.3. Every amendment records a review against those
 rule IDs.
 
-**Version**: 2.1.0 | **Ratified**: 2026-09-08 | **Last Amended**: 2026-09-29
+**Version**: 2.2.0 | **Ratified**: 2026-09-08 | **Last Amended**: 2026-09-29

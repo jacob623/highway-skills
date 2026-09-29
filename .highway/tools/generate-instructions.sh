@@ -26,6 +26,7 @@ INSTRUCTIONS_DIR="$HIGHWAY_ROOT/instructions"
 MANIFEST="$HIGHWAY_ROOT/tools/.instruction-manifest"
 CLAUDE_REL=".claude/CLAUDE.md"
 COPILOT_REL=".github/copilot-instructions.md"
+AGENTS_REL="AGENTS.md"
 
 sha256_of() {
 	local file="$1"
@@ -136,7 +137,7 @@ if [[ -s "$sorted" ]]; then
 		printf '%s\n' ".cursor/rules/$id.mdc" >>"$stage/targets"
 	done <"$sorted"
 fi
-printf '%s\n' "$CLAUDE_REL" "$COPILOT_REL" >>"$stage/targets"
+printf '%s\n' "$CLAUDE_REL" "$COPILOT_REL" "$AGENTS_REL" >>"$stage/targets"
 
 drift=0
 while IFS= read -r rel_path; do
@@ -196,9 +197,10 @@ if [[ -s "$sorted" ]]; then
 		cp "$stage/cursor-$id.mdc" "$abs_target"
 	done <"$sorted"
 fi
-mkdir -p "$(dirname "$REPO_ROOT/$CLAUDE_REL")" "$(dirname "$REPO_ROOT/$COPILOT_REL")"
+mkdir -p "$(dirname "$REPO_ROOT/$CLAUDE_REL")" "$(dirname "$REPO_ROOT/$COPILOT_REL")" "$(dirname "$REPO_ROOT/$AGENTS_REL")"
 cp "$merged_tmp" "$REPO_ROOT/$CLAUDE_REL"
 cp "$merged_tmp" "$REPO_ROOT/$COPILOT_REL"
+cp "$merged_tmp" "$REPO_ROOT/$AGENTS_REL"
 
 manifest_tmp="$stage/manifest"
 : >"$manifest_tmp"
@@ -211,6 +213,7 @@ if [[ -s "$sorted" ]]; then
 fi
 printf '%s\t%s\t%s\n' "$CLAUDE_REL" "$joined_ids" "$(sha256_of "$REPO_ROOT/$CLAUDE_REL")" >>"$manifest_tmp"
 printf '%s\t%s\t%s\n' "$COPILOT_REL" "$joined_ids" "$(sha256_of "$REPO_ROOT/$COPILOT_REL")" >>"$manifest_tmp"
+printf '%s\t%s\t%s\n' "$AGENTS_REL" "$joined_ids" "$(sha256_of "$REPO_ROOT/$AGENTS_REL")" >>"$manifest_tmp"
 
 # A removed source leaves its Cursor file and its manifest row. Copy those rows forward.
 if [[ -f "$MANIFEST" ]]; then

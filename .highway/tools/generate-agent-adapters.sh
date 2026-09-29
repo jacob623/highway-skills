@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 # Regenerates the per-agent adapters for every valid skill under skills/ into
-# .github/skills/<id>/SKILL.md, .claude/skills/<id>/SKILL.md, and .cursor/skills/<id>/SKILL.md, per
-# feature 009 (skill id namespace alignment) and feature 097 (Cursor receives skills, not rules).
+# .github/skills/<id>/SKILL.md, .claude/skills/<id>/SKILL.md, .cursor/skills/<id>/SKILL.md, and
+# .agents/skills/<id>/SKILL.md, per feature 009 (skill id namespace alignment), feature 097
+# (Cursor receives skills, not rules), and feature 099 (Codex receives the same identity copy).
 # <id> is already the full agent-facing identifier (e.g. highway-help) -- this generator injects
-# no namespace prefix of its own; the prefix lives once, at the source directory name. The three
+# no namespace prefix of its own; the prefix lives once, at the source directory name. The
 # deliverables for one skill are byte-identical. The generator never creates, modifies, or removes
 # the speckit-* skills that sit beside them, and it never removes any file.
 #
@@ -14,9 +15,9 @@
 #
 # Declarative per-agent config (FR-004/FR-008: adding an agent = one new row here, never an
 # edit to skills/).
-AGENT_IDS=(github-copilot claude-code cursor)
-AGENT_TARGET_TEMPLATES=(".github/skills/%s/SKILL.md" ".claude/skills/%s/SKILL.md" ".cursor/skills/%s/SKILL.md")
-AGENT_TRANSFORMS=(identity-copy identity-copy identity-copy)
+AGENT_IDS=(github-copilot claude-code cursor codex)
+AGENT_TARGET_TEMPLATES=(".github/skills/%s/SKILL.md" ".claude/skills/%s/SKILL.md" ".cursor/skills/%s/SKILL.md" ".agents/skills/%s/SKILL.md")
+AGENT_TRANSFORMS=(identity-copy identity-copy identity-copy identity-copy)
 
 set -u
 

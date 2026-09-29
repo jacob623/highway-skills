@@ -18,6 +18,7 @@ SRC="$HIGHWAY_ROOT/instructions/$TMP_ID.md"
 CURSOR="$REPO_ROOT/.cursor/rules/$TMP_ID.mdc"
 CLAUDE="$REPO_ROOT/.claude/CLAUDE.md"
 COPILOT="$REPO_ROOT/.github/copilot-instructions.md"
+AGENTS="$REPO_ROOT/AGENTS.md"
 SPECKIT_CURSOR="$REPO_ROOT/.cursor/skills/speckit-tasks/SKILL.md"
 SPECKIT_GITHUB="$REPO_ROOT/.github/skills/speckit-tasks/SKILL.md"
 ADAPTER_MANIFEST="$HIGHWAY_ROOT/tools/.adapter-manifest"
@@ -61,6 +62,7 @@ cleanup() {
 	rm -f "$SRC" "$CURSOR"
 	restore_optional "$CLAUDE" "$WORK/claude"
 	restore_optional "$COPILOT" "$WORK/copilot"
+	restore_optional "$AGENTS" "$WORK/agents"
 	restore_optional "$MANIFEST" "$WORK/manifest"
 	rm -rf "$WORK"
 }
@@ -68,6 +70,7 @@ trap cleanup EXIT
 
 save_optional "$CLAUDE" "$WORK/claude"
 save_optional "$COPILOT" "$WORK/copilot"
+save_optional "$AGENTS" "$WORK/agents"
 save_optional "$MANIFEST" "$WORK/manifest"
 
 if [[ ! -f "$GENERATE" ]]; then
@@ -132,11 +135,11 @@ else
 	fi
 fi
 
-if [[ ! -f "$CLAUDE" || ! -f "$COPILOT" ]]; then
+if [[ ! -f "$CLAUDE" || ! -f "$COPILOT" || ! -f "$AGENTS" ]]; then
 	echo "FAIL: a merged repository file was not written"
 	fail=1
-elif ! cmp -s "$CLAUDE" "$COPILOT"; then
-	echo "FAIL: .claude/CLAUDE.md and .github/copilot-instructions.md differ"
+elif ! cmp -s "$CLAUDE" "$COPILOT" || ! cmp -s "$CLAUDE" "$AGENTS"; then
+	echo "FAIL: merged repository files differ"
 	fail=1
 elif ! cmp -s "$WORK/body" "$CLAUDE"; then
 	# Equality to this body holds only when it is the only instruction. With a permanent
@@ -159,6 +162,7 @@ fi
 hash_cursor="$(file_hash "$CURSOR")"
 hash_claude="$(file_hash "$CLAUDE")"
 hash_copilot="$(file_hash "$COPILOT")"
+hash_agents="$(file_hash "$AGENTS")"
 hash_manifest="$(file_hash "$MANIFEST")"
 if ! "$GENERATE" >"$WORK/gen2.log" 2>&1; then
 	echo "FAIL: the second generate-instructions.sh run exited non-zero"
@@ -167,6 +171,7 @@ if ! "$GENERATE" >"$WORK/gen2.log" 2>&1; then
 elif [[ "$hash_cursor" != "$(file_hash "$CURSOR")" \
 	|| "$hash_claude" != "$(file_hash "$CLAUDE")" \
 	|| "$hash_copilot" != "$(file_hash "$COPILOT")" \
+	|| "$hash_agents" != "$(file_hash "$AGENTS")" \
 	|| "$hash_manifest" != "$(file_hash "$MANIFEST")" ]]; then
 	echo "FAIL: a second run changed an output or the instruction manifest"
 	fail=1
@@ -176,6 +181,7 @@ fi
 printf 'hand-edited line\n' >>"$CLAUDE"
 cp "$CLAUDE" "$WORK/claude-edited"
 cp "$COPILOT" "$WORK/copilot-before-refuse"
+cp "$AGENTS" "$WORK/agents-before-refuse"
 cp "$CURSOR" "$WORK/cursor-before-refuse"
 if "$GENERATE" >"$WORK/refuse.log" 2>&1; then
 	echo "FAIL: a hand-edited .claude/CLAUDE.md was overwritten"
@@ -189,6 +195,7 @@ elif ! grep -qx 'hand-edited line' "$CLAUDE"; then
 	fail=1
 elif ! cmp -s "$CLAUDE" "$WORK/claude-edited" \
 	|| ! cmp -s "$COPILOT" "$WORK/copilot-before-refuse" \
+	|| ! cmp -s "$AGENTS" "$WORK/agents-before-refuse" \
 	|| ! cmp -s "$CURSOR" "$WORK/cursor-before-refuse"; then
 	echo "FAIL: a refused run changed an output"
 	fail=1
@@ -269,7 +276,7 @@ expect_reject "$empty_body" "an empty body" "sample-instruction.md"
 
 empty_set="$WORK/empty-set"
 make_copy "$empty_set"
-rm -f "$empty_set/.claude/CLAUDE.md"
+rm -f "$empty_set/.claude/CLAUDE.md" "$empty_set/AGENTS.md"
 if ! "$empty_set/.highway/tools/generate-instructions.sh" >"$empty_set/run.log" 2>&1; then
 	echo "FAIL: zero instructions exited non-zero"
 	sed 's/^/    /' "$empty_set/run.log"
@@ -282,6 +289,10 @@ else
 	fi
 	if ! cmp -s "$empty_set/.github/copilot-instructions.md" "$WORK/one-newline"; then
 		echo "FAIL: zero instructions did not write .github/copilot-instructions.md as one newline"
+		fail=1
+	fi
+	if ! cmp -s "$empty_set/AGENTS.md" "$WORK/one-newline"; then
+		echo "FAIL: zero instructions did not write AGENTS.md as one newline"
 		fail=1
 	fi
 	if find "$empty_set/.cursor" -name '*.mdc' -type f 2>/dev/null | grep -q .; then
@@ -312,12 +323,14 @@ if ! "$ordered/.highway/tools/generate-instructions.sh" >"$ordered/run.log" 2>&1
 	echo "FAIL: two valid instructions were rejected"
 	sed 's/^/    /' "$ordered/run.log"
 	fail=1
-elif ! cmp -s "$ordered/.claude/CLAUDE.md" "$ordered/.github/copilot-instructions.md"; then
+elif ! cmp -s "$ordered/.claude/CLAUDE.md" "$ordered/.github/copilot-instructions.md" \
+	|| ! cmp -s "$ordered/.claude/CLAUDE.md" "$ordered/AGENTS.md"; then
 	echo "FAIL: two-instruction merged files differ"
 	fail=1
 else
 	printf '%s\n' '# First' '' '# Second' >"$WORK/joined"
-	if ! cmp -s "$ordered/.claude/CLAUDE.md" "$WORK/joined"; then
+	if ! cmp -s "$ordered/.claude/CLAUDE.md" "$WORK/joined" \
+		|| ! cmp -s "$ordered/AGENTS.md" "$WORK/joined"; then
 		echo "FAIL: two instruction bodies were not joined in filename order"
 		fail=1
 	fi

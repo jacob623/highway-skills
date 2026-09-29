@@ -60,6 +60,7 @@ SKILL_SRC_DIR="$HIGHWAY_ROOT/skills/$TMP_ID"
 GH_TARGET="$REPO_ROOT/.github/skills/$TMP_ID/SKILL.md"
 CLAUDE_TARGET="$REPO_ROOT/.claude/skills/$TMP_ID/SKILL.md"
 CURSOR_TARGET="$REPO_ROOT/.cursor/skills/$TMP_ID/SKILL.md"
+CODEX_TARGET="$REPO_ROOT/.agents/skills/$TMP_ID/SKILL.md"
 SPECKIT_SENTINEL="$REPO_ROOT/.github/skills/speckit-tasks/SKILL.md"
 CURSOR_SPECKIT_SENTINEL="$REPO_ROOT/.cursor/skills/speckit-tasks/SKILL.md"
 MANIFEST="$HIGHWAY_ROOT/tools/.adapter-manifest"
@@ -71,6 +72,7 @@ cleanup() {
 		"$REPO_ROOT/.github/skills/$TMP_ID" \
 		"$REPO_ROOT/.claude/skills/$TMP_ID" \
 		"$REPO_ROOT/.cursor/skills/$TMP_ID" \
+		"$REPO_ROOT/.agents/skills/$TMP_ID" \
 		"$REPO_ROOT/.cursor/rules/$TMP_ID.mdc" \
 		"$REPO_ROOT"/.cursor/rules/highway-leftover-*.mdc
 	if [[ -f "$MANIFEST" ]]; then
@@ -86,6 +88,7 @@ rm -rf "$HIGHWAY_ROOT"/skills/test-adapter-fixture-* \
 	"$REPO_ROOT"/.github/skills/test-adapter-fixture-* \
 	"$REPO_ROOT"/.claude/skills/test-adapter-fixture-* \
 	"$REPO_ROOT"/.cursor/skills/test-adapter-fixture-* \
+	"$REPO_ROOT"/.agents/skills/test-adapter-fixture-* \
 	"$REPO_ROOT"/.cursor/rules/test-adapter-fixture-*.mdc
 if [[ -f "$MANIFEST" ]] && grep -q 'test-adapter-fixture-' "$MANIFEST"; then
 	grep -v 'test-adapter-fixture-' "$MANIFEST" >"$MANIFEST.tmp" || true
@@ -161,6 +164,11 @@ else
 	fi
 fi
 
+if [[ ! -f "$CODEX_TARGET" ]] || ! diff -q "$SKILL_SRC_DIR/SKILL.md" "$CODEX_TARGET" >/dev/null 2>&1; then
+	echo "FAIL: $CODEX_TARGET is not byte-identical to source"
+	fail=1
+fi
+
 if [[ -e "$REPO_ROOT/.cursor/rules/$TMP_ID.mdc" ]]; then
 	echo "FAIL: a Cursor rule file was generated for $TMP_ID; Cursor receives skills, not rules"
 	fail=1
@@ -213,12 +221,17 @@ if [[ "$cursor_speckit_before" != "$cursor_speckit_after" ]]; then
 	fail=1
 fi
 
+if find "$REPO_ROOT/.agents/skills" -name 'speckit-*' -print -quit 2>/dev/null | grep -q .; then
+	echo "FAIL: a speckit skill was created under .agents/skills/"
+	fail=1
+fi
+
 # Untracked collision (feature 097): a file already sitting at the Cursor skill path that the
 # generator did not produce must be refused and named, left byte-for-byte as found, and must not
 # cause a partial adapter set. The GitHub and Claude targets and every manifest row for this
 # skill are removed first, so a run that ignored the collision would visibly recreate them.
 {
-	rm -f "$GH_TARGET" "$CLAUDE_TARGET"
+	rm -f "$GH_TARGET" "$CLAUDE_TARGET" "$CODEX_TARGET"
 	mkdir -p "$(dirname "$CURSOR_TARGET")"
 	grep -vF "$TMP_ID" "$MANIFEST" >"$MANIFEST.tmp" || true
 	mv "$MANIFEST.tmp" "$MANIFEST"
@@ -237,7 +250,7 @@ fi
 		echo "FAIL: the generator overwrote an untracked file at $CURSOR_TARGET"
 		fail=1
 	fi
-	if [[ -e "$GH_TARGET" || -e "$CLAUDE_TARGET" ]]; then
+	if [[ -e "$GH_TARGET" || -e "$CLAUDE_TARGET" || -e "$CODEX_TARGET" ]]; then
 		echo "FAIL: a partial adapter set was written despite the Cursor collision"
 		fail=1
 	fi

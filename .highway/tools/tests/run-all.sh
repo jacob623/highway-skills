@@ -24,6 +24,8 @@ rm -rf "$REPO_ROOT"/distribution-probe-*.md \
 	"$REPO_ROOT"/.github/skills/test-adapter-fixture-* \
 	"$REPO_ROOT"/.claude/skills/test-adapter-fixture-* \
 	"$REPO_ROOT"/.cursor/skills/test-adapter-fixture-* \
+	"$REPO_ROOT"/.agents/skills/test-adapter-fixture-* \
+	"$REPO_ROOT"/.agents/skills/test-newagent-fixture-* \
 	"$HIGHWAY_ROOT"/instructions/test-instruction-* \
 	"$REPO_ROOT"/.cursor/rules/test-instruction-*.mdc \
 	"$HIGHWAY_ROOT"/tools/shipped-tree-cliprobe-*.tmp \

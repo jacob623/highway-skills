@@ -57,6 +57,20 @@ include	.github/skills/highway-new	-
 include	.github/skills/highway-discovery	-
 include	.github/skills/highway-clarify	-
 include	.github/skills/highway-adr	-
+exclude	.agents	-
+include	.agents/skills/highway-objectives	-
+include	.agents/skills/highway-help	-
+include	.agents/skills/highway-controls	-
+include	.agents/skills/highway-inquiry	-
+include	.agents/skills/highway-nfrs	-
+include	.agents/skills/highway-profile	-
+include	.agents/skills/highway-relationships	-
+include	.agents/skills/highway-setup	-
+include	.agents/skills/highway-new	-
+include	.agents/skills/highway-discovery	-
+include	.agents/skills/highway-clarify	-
+include	.agents/skills/highway-adr	-
+include	AGENTS.md	-
 
 # --- The framework directory: excluded by default so each child is a deliberate decision ---
 exclude	.highway	-

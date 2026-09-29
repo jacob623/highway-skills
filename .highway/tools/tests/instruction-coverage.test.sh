@@ -99,12 +99,21 @@ if ! awk -F '\t' -v path=".github/copilot-instructions.md" -v ids="$ids" \
 	echo "FAIL: .github/copilot-instructions.md manifest id is not '$ids'"
 	fail=1
 fi
+if ! awk -F '\t' -v path="AGENTS.md" -v ids="$ids" \
+	'NF && $1 == path && $2 == ids { found = 1 } END { exit !found }' "$MANIFEST"; then
+	echo "FAIL: AGENTS.md manifest id is not '$ids'"
+	fail=1
+fi
 if ! include_row ".claude/CLAUDE.md"; then
 	echo "FAIL: .claude/CLAUDE.md is not an include in the distribution manifest"
 	fail=1
 fi
 if ! include_row ".github/copilot-instructions.md"; then
 	echo "FAIL: .github/copilot-instructions.md is not an include in the distribution manifest"
+	fail=1
+fi
+if ! include_row "AGENTS.md"; then
+	echo "FAIL: AGENTS.md is not an include in the distribution manifest"
 	fail=1
 fi
 

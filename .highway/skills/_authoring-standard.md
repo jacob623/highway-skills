@@ -37,7 +37,7 @@ exactly, byte-for-byte (see the `name` row below).
 name: skill-id
 description: "One-line purpose AND when to use (<= 500 characters)."
 usage: "One-line guidance on how to invoke/use the skill (<= 500 characters)."
-compatibility: all # or one of: github-copilot | claude-code | cursor
+compatibility: all # or one of: github-copilot | claude-code | cursor | codex
 metadata:
   version: 1.0.0
   # agent_exceptions: # optional, only for a declared, isolated agent-specific deviation
@@ -51,7 +51,7 @@ metadata:
 | `name` | Yes | SCHEMA | MUST equal the directory-derived id exactly, byte-for-byte (case, whitespace, and punctuation all count). Enforced by `sv_validate_name`. |
 | `description` | Yes | — | Non-empty, <= 500 characters. Sole carrier of applicability in the generated catalog. Keep "when not to use" detail in the body. |
 | `usage` | Yes | — | Non-empty, <= 500 characters. One-line guidance on how to invoke/use the skill; carried into the generated catalog for discovery (the help skill's all-skills listing). |
-| `compatibility` | No | — | One of `all`, `github-copilot`, `claude-code`, `cursor`. Defaults to `all`. |
+| `compatibility` | No | — | One of `all`, `github-copilot`, `claude-code`, `cursor`, `codex`. Defaults to `all`. |
 | `metadata.version` | Yes | P7.2 | Semantic version. See the Skill Versioning Policy in the constitution's Governance section. |
 | `metadata.agent_exceptions` | No | P2.2 | List of `{agent, deviation}`, each naming one supported agent. |
 | `metadata.dependencies` | No | DEPENDENCY | List of `{path, version}` pins into the shared content library; each path must exist and its target's `metadata.version` must match the pinned `version`, enforced by `dc_validate_dependencies`. |

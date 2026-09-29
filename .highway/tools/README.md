@@ -61,19 +61,20 @@ Iterates `.highway/skills/*/SKILL.md`, validates each via `validate-skill.sh`, a
 ### `.highway/tools/generate-agent-adapters.sh`
 
 Regenerates the per-agent adapters for every valid skill under `.highway/skills/`, into
-`.github/skills/<id>/SKILL.md`, `.claude/skills/<id>/SKILL.md`, and `.cursor/skills/<id>/SKILL.md`
+`.github/skills/<id>/SKILL.md`, `.claude/skills/<id>/SKILL.md`, `.cursor/skills/<id>/SKILL.md`,
+and `.agents/skills/<id>/SKILL.md`
 (at the true repository root, not under `.highway/`), per feature 009 (skill id namespace
-alignment). All three deliverables for one skill are byte-identical copies of the source, so Cursor
-receives each skill as a skill, not as a rule.
+alignment). The deliverables for one skill are byte-identical copies of the source, so Cursor
+and Codex each receive the skill as a skill.
 `<id>` is already the full agent-facing identifier (e.g. `highway-help`) — this generator injects
 no namespace prefix of its own.
 
 - **Exit 0**: all adapters regenerated (or confirmed already up to date).
 - **Exit 1**: any skill fails validation (no partial adapter set is written), or a target file was
   hand-edited outside this generator (refuses to overwrite, names the file).
-- Never reads, writes, or removes existing `speckit-*` folders under `.github/skills/` or
-  `.cursor/skills/` — those are external tooling used to build this repository, not part of this
-  suite. The generator removes no file at all.
+- Never reads, writes, or removes existing `speckit-*` folders under `.github/skills/`,
+  `.cursor/skills/`, or `.agents/skills/` — those are external tooling used to build this
+  repository, not part of this suite. The generator removes no file at all.
 
 ### `.highway/tools/generate-instructions.sh`
 
@@ -85,8 +86,9 @@ Author one instruction as its own file. The frontmatter is `name` (equal to the 
   `alwaysApply: true`.
 - Claude Code receives every body in `.claude/CLAUDE.md`.
 - GitHub Copilot receives the same bytes in `.github/copilot-instructions.md`.
+- Codex receives the same bytes in `AGENTS.md` at the repository root.
 
-Bodies in the two merged files are in filename order, with one blank line between bodies.
+Bodies in the merged files are in filename order, with one blank line between bodies.
 
 - **Exit 0**: every output written or already current.
 - **Exit 1**: a source is invalid, or a target was hand-edited outside this generator (refuses
