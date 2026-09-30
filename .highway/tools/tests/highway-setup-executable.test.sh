@@ -102,7 +102,6 @@ for case_text in \
 	'Controls Action Result' \
 	'Collection Result: Continue' \
 	'Collection Result: Finished' \
-	'Created Control IDs: []' \
 	'pre-delegation `Complete`' \
 	'does not claim Controls or Setup completion'; do
 	grep -Fq "$case_text" "$SKILL" || { echo "FAIL: missing Controls handoff contract '$case_text'"; fail=1; }
@@ -124,12 +123,10 @@ controls_result="$fixture_root/controls-result.out"
 cat >"$controls_result" <<'EOF'
 Action Status: Succeeded
 Collection Result: Continue
-Created Control IDs: [CTL000001]
 Next Action: /highway-controls setup
 EOF
 if ! feature093_assert_order "$controls_result" 'Action Status: Succeeded' 'Collection Result: Continue' ||
-	! feature093_assert_order "$controls_result" 'Collection Result: Continue' 'Created Control IDs' ||
-	! feature093_assert_order "$controls_result" 'Created Control IDs' 'Next Action'; then
+	! feature093_assert_order "$controls_result" 'Collection Result: Continue' 'Next Action'; then
 	echo 'FAIL: Controls Action Result field order is invalid'; fail=1
 fi
 if grep -Fq 'Setup checkpoint' "$SKILL" && ! grep -Fq 'Never restore' "$SKILL"; then echo 'FAIL: Setup checkpoint behavior is ambiguous'; fail=1; fi

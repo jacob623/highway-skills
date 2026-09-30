@@ -119,7 +119,7 @@ Candidate-Generation Action Result. Controls owns deterministic derivation; NFRs
 durable state and result, candidate classification/review, and NFR completion claims. This action is
 owner-internal and is not a user-facing NFR authoring action.
 
-The retained candidate-state file contains one immutable-ID-keyed record for every persistence-verified
+The retained candidate-state file contains one immutable-ID-keyed record for every successfully created
 new Control, in ascending originating Control ID order, with this structure:
 
 ```text
@@ -217,7 +217,7 @@ state remains authoritative for later review and readiness.
 ## Control-Derived Candidate Onboarding
 
 Candidate-generation state is durable NFR owner state. Controls invokes deterministic derivation exactly
-once immediately after each verified new Control persistence and submits the resulting candidate-generation
+once immediately after each successfully created new Control and submits the resulting candidate-generation
 request to the NFR owner. User-visible candidate review
 is deferred until the Controls collection returns `Collection Result: Finished`; it does not depend
 on transient `Created Control IDs` or restored conversation state.
@@ -230,7 +230,7 @@ derivation; NFRs own candidate-generation state and result, candidate classifica
 persistence, identifiers, catalogs, readiness, and completion claims.
 
 The durable state at `.highway/catalog/nfr-candidate-state.md` is the authoritative recovery projection.
-For each verified new Control it retains the single classification result and candidate entries before
+For each successfully created new Control it retains the single classification result and candidate entries before
 any user-visible review. Readiness and deferred review read this state by originating `CTLXXXXXX`; they
 do not require transient Controls provenance, a restored conversation, or a second derivation attempt.
 
@@ -478,10 +478,10 @@ contents of an accepted NFR record.
   `/highway-nfrs`.
 - Feature 094 Control-derived NFR reconciliation (FR-037, FR-037a, FR-037b, FR-041f, FR-041h,
   FR-042e, FR-042i, SC-010, SC-019, and SC-025):
-  - Confirm deterministic candidate generation runs only after a new Control is atomically persisted
-    and all retained Control outputs verify; reused, updated, rejected, failed, and pre-existing
+  - Confirm deterministic candidate generation runs only after a new Control is successfully created;
+    reused, updated, rejected, failed, and pre-existing
     Controls do not trigger it.
-  - Confirm each persistence-verified new Control reaches candidate classification exactly once,
+  - Confirm each successfully created new Control reaches candidate classification exactly once,
     records `Generation Attempt: 1`, and retains its classification and candidate entries by immutable
     originating Control ID even when the surrounding collection pauses, aborts, or is interrupted.
   - Confirm readiness maps durable state to `Not Applicable` for valid zero candidates, `In Progress`

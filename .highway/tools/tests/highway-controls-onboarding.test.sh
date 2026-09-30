@@ -20,13 +20,12 @@ require_text() {
 }
 
 for text in \
-	"adaptive discovery" \
+	"evidence" \
 	"Concern" \
 	"Condition" \
 	"Obligation" \
 	"Action Status: Succeeded|Declined|Aborted|Blocked" \
 	"Collection Result: Continue|Finished" \
-	"Created Control IDs" \
 	"Declined" \
 	"Aborted" \
 	"perform no Control write" \
@@ -36,26 +35,36 @@ for text in \
 	"Next Action:" \
 	"Title" \
 	"Statement" \
-	"Rationale" \
-	"one complete Control proposal at a time" \
-	"Proposal decisions are Accept, Correct, Replace, Reject, or Cancel" \
+	"Why it matters" \
+	"Would you like to accept this Control?" \
+	"Selected recommendations are captured directly" \
 	"immediately" \
 	"authoritative baseline" \
 	"duplicate" \
-	"byte-for-byte" \
 	"one Add MINOR" \
-	"revalidate" \
+	"Revalidate" \
 	"user-override" \
-	"Material Influence" \
-	"Contextual Acknowledgment" \
-	"Decision Context" \
-	"Relevant Example" \
 	"Reuse writes no record" \
 	"deterministic initial" \
 	"candidate derivation" \
-	"NFR owner"; do
+	"NFR owner" \
+	"## Recommendation Grounding" \
+	"Ask for missing information, not missing phrasing"; do
 	require_text "$SKILL" "$text"
 done
+
+for retired_text in \
+	"## Provenance" \
+	"Before allocation, revalidate the authoritative baseline" \
+	"A failed mutation cannot report success." \
+	"Created Control IDs"; do
+	if grep -Fq "$retired_text" "$SKILL"; then
+		echo "FAIL: retired Controls contract text remains: $retired_text"
+		fail=1
+	fi
+done
+
+require_text "$SKILL" "Revalidate the authoritative baseline, catalog, allocation state, and final-proposal overlap before"
 
 if grep -Eq 'Process these categories in order|Security; Availability and Resilience|Completed Categories|Current Category' "$SKILL"; then
 	echo "FAIL: legacy category-driven onboarding remains in the Controls setup path"

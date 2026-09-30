@@ -44,10 +44,11 @@ VALIDATE_SKILL="$HIGHWAY_ROOT/tools/validate-skill.sh"
 fail=0
 
 for proposal_token in \
-	'**Next Action:** Review this proposed Control and accept, correct, replace, or reject it.' \
+	"**Here's what I've captured as your Control:**" \
 	'Title:' \
 	'Statement:' \
-	'Rationale:'; do
+	'Why it matters:' \
+	'Would you like to accept this Control?'; do
 	if ! grep -Fq "$proposal_token" "$CONTROL_SKILL"; then
 		echo "FAIL: Controls proposal framing missing '$proposal_token'"
 		fail=1
@@ -151,10 +152,18 @@ if [[ -f "$CONTROL_TEMPLATE" ]]; then
 	require_text "$CONTROL_TEMPLATE" "id: CTLXXXXXX"
 	require_text "$CONTROL_TEMPLATE" "nfrs: []"
 	require_text "$CONTROL_TEMPLATE" "status: active"
+	require_text "$CONTROL_TEMPLATE" "version: 2.0.0"
 	require_text "$CONTROL_TEMPLATE" "## File Frontmatter"
 	require_text "$CONTROL_TEMPLATE" "## Body"
 	require_text "$CONTROL_TEMPLATE" "<user-provided statement>"
 	require_text "$CONTROL_TEMPLATE" "<user-provided rationale>"
+	require_text "$CONTROL_TEMPLATE" "## Recommendation Grounding"
+	require_text "$CONTROL_TEMPLATE" "<recommendation grounding sources that influenced the accepted Control, when applicable>"
+	require_text "$CONTROL_TEMPLATE" "not itself organizational policy"
+	if grep -Fq "## Provenance" "$CONTROL_TEMPLATE" || grep -Fq "provenance" "$CONTROL_TEMPLATE"; then
+		echo "FAIL: Control template still uses legacy Provenance terminology"
+		fail=1
+	fi
 fi
 if [[ -f "$PROFILE_TEMPLATE" ]]; then
 	require_text "$PROFILE_TEMPLATE" "metadata:"
@@ -260,7 +269,7 @@ for behavior_token in "readiness" "relationship" "version" "transaction"; do
 	require_text "$CONTROL_SKILL" "$behavior_token"
 	require_text "$NFR_SKILL" "$behavior_token"
 done
-for control_behavior in "catalog" "derived" "No timestamp" "unchanged baseline" "next identifier" "allocation" "transaction" "readiness" "Control-Derived NFR Candidates"; do
+for control_behavior in "catalog" "derivation" "No timestamp" "unchanged baseline" "identifier" "allocation" "transaction" "readiness" "Control-Derived NFR Candidates"; do
 	require_text "$CONTROL_SKILL" "$control_behavior"
 done
 for behavior_token in "elimination" "filter" "scor" "recommend" "traceab" "determin"; do

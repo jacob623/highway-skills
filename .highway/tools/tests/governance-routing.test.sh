@@ -37,8 +37,8 @@ require_text "$CONTROL_SKILL" "This skill MUST NOT refuse a Control the user sti
 
 # Feature 094 onboarding aliases and review boundaries stay owned by their canonical skills.
 require_text "$CONTROL_SKILL" '`setup` and `configure` are aliases'
-require_text "$CONTROL_SKILL" "one complete Control proposal at a time"
-require_text "$CONTROL_SKILL" "Proposal decisions are Accept, Correct, Replace, Reject, or Cancel"
+require_text "$CONTROL_SKILL" "materially interpreted user-authored proposal"
+require_text "$CONTROL_SKILL" "Selected recommendations are captured directly"
 require_text "$NFR_SKILL" '`review` and `onboarding` are aliases'
 require_text "$NFR_SKILL" "NFR Review emits one entry per candidate"
 require_text "$NFR_SKILL" "Accept, Modify, Replace, Reject, or Cancel"
