@@ -34,19 +34,10 @@ expect_state nfrs in_progress '`In Progress`'
 expect_state nfrs complete '`Complete`'
 
 nfr_file="$HIGHWAY_ROOT/skills/highway-nfrs/SKILL.md"
-for rule in 'zero candidates' 'none accepted' 'unavailable' 'malformed' 'contradictory'; do
+for rule in 'zero candidates' 'no accepted NFRs' 'unavailable' 'malformed' 'inconsistent'; do
 	if ! grep -Fqi "$rule" "$nfr_file"; then
 		echo "FAIL: NFR readiness rule '$rule' is not documented"
 		fail=1
-	fi
-done
-for rule in \
-	'successful NFR `Review Complete` outcomes are reflected' \
-	"readiness-consumed accepted artifact state" \
-	"duplicate detection failure"; do
-	if ! grep -Fq "$rule" "$nfr_file"; then
-		echo "FAIL: NFR Feature 078 readiness rule '$rule' is not documented"
-	fail=1
 	fi
 done
 if grep -Eq 'NFR[^[:alnum:]]+`?Missing`?|`Missing`[^[:alnum:]]+NFR' "$nfr_file"; then

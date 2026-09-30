@@ -20,37 +20,21 @@ require_text() {
 }
 
 for text in \
-	"review" \
-	"onboarding" \
 	"setup" \
 	"configure" \
-	"one unresolved candidate at a time" \
-	"Based on your [Control subject] [descriptor], Highway recommends:" \
-	"requirements" \
-	"safeguards" \
-	"obligations" \
-	"constraints" \
-	"conditions" \
-	"accept, change, replace, or skip" \
+	"pending Control-derived candidates" \
+	"accept, modify, replace, reject, or skip" \
 	"Are there any qualities or operational expectations you'd like future solutions to meet?" \
-	"I don't know" \
 	"Collection Result: Continue|Finished" \
 	"Action Status: Succeeded|Declined|Aborted|Blocked" \
 	"does not include a created-NFR-ID list" \
-	"Candidate Title" \
-	"Candidate Statement" \
-	"Candidate Rationale" \
-	"Originating Control Identifier" \
-	"Originating Control Title" \
-	"Would you like to accept, change, replace, or skip it?" \
-	"Recommendation <position> of <total>" \
-	"Status: Empty" \
-	"Entry Count: 0" \
-	"Review Complete" \
-	"exactly one final decision" \
-	"duplicate" \
-	"before identifier allocation" \
-	"Cancel Review" \
+	"captured as your NFR" \
+	"Why it matters" \
+	"Would you like to accept this NFR?" \
+	"Direct capture skips the inferred-content review" \
+	"Explicitly selected recommendations" \
+	"pending Control-derived candidates" \
+	"direct capture" \
 	"controls: []" \
 	"In Progress" \
 	"Not Applicable" \
@@ -58,9 +42,8 @@ for text in \
 	require_text "$SKILL" "$text"
 done
 for text in \
-	"candidate-generation state" \
+	"candidate state" \
 	"exactly once" \
-	"immediately after" \
 	"Collection Result: Finished" \
 	"zero candidates" \
 	"non-empty reason" \

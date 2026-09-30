@@ -36,31 +36,72 @@ nfr_structure_not_duplicated() {
 for required in \
 	"name: highway-nfrs" \
 	"metadata:" \
-	"version: 10.0.0" \
+	"version: 11.0.0" \
 	"library/governance/nfrs.md" \
 	"library/governance/nfrs/NFRXXXXXX.md" \
 	"controls: []" \
 	".highway/library/templates/output/nfr-record.md" \
 	".highway/library/templates/output/nfr-catalog.md" \
-	"The catalog contains no timestamp" \
-	"next_id" \
-	"Add is MINOR" \
-	"Remove or Set is MAJOR" \
-	"identifier is" \
-	"followed by six digits" \
-	"never reissued after removal" \
-	"every NFR that would be lost by identifier and title" \
-	"concrete alternative" \
-	"one existing NFR or the entire baseline" \
-	"skips Highway prose" \
-	"obligation-preserving Update is PATCH" \
-	"Confirmation is withheld: abort and write nothing"; do
+	"permanent non-reused identifiers" \
+	"deterministic catalog output" \
+	"atomic" \
+	"destructive safeguards" \
+	"User-visible interaction follows the Highway Experience Standard." \
+	"candidate state" \
+	"Direct capture skips the inferred-content review; it does not bypass NFR validation, duplicate handling, identifier allocation, relationship handling, or atomic persistence." \
+	"authoritative persisted NFR-owned recovery state"; do
 	require_text "$SKILL" "$required"
 done
 
-for behavior_token in "Control-shaped" "/highway-controls" "outcome-shaped" "/highway-nfrs" "transaction" "identical catalog" "write nothing"; do
+for behavior_token in "Control-shaped" "/highway-controls" "desired quality" "transaction" "write nothing"; do
 	require_text "$SKILL" "$behavior_token"
 done
+
+for dependency in \
+	"project root located from \`.highway/\`" \
+	"library/governance/nfrs/NFRXXXXXX.md" \
+	"library/governance/nfrs.md" \
+	".highway/library/templates/output/nfr-record.md" \
+	".highway/library/templates/output/nfr-catalog.md" \
+	".highway/catalog/nfr-candidate-state.md" \
+	".highway/governance/experience-standard.md" \
+	".highway/library/knowledge/highway-identity.md" \
+	".highway/library/knowledge/highway-vision.md" \
+	".highway/library/knowledge/highway-platform-objectives.md" \
+	".highway/library/knowledge/profile.md" \
+	"accepted Business Objective records and catalog" \
+	"accepted Control records and catalog" \
+	"existing accepted NFR records and catalog" \
+	"active user request and active interaction evidence" \
+	".highway/skills/highway-controls/SKILL.md" \
+	".highway/skills/highway-relationships/SKILL.md"; do
+	require_text "$SKILL" "$dependency"
+done
+
+for obsolete in "Feature 094" "Security Gate" "Maintainability Gate" "persistence-verified" "Created Control IDs" "Next Action first"; do
+	if grep -Fq "$obsolete" "$SKILL"; then
+		echo "FAIL: obsolete NFR runtime terminology '$obsolete' remains"
+		fail=1
+	fi
+done
+
+for candidate_field in "Originating Control ID" "Generation Attempt" "Candidate Entries" "Review Status"; do
+	require_text "$HIGHWAY_ROOT/catalog/nfr-candidate-state.md" "$candidate_field"
+done
+
+require_text "$SKILL" "**Here's what I've captured as your NFR:**"
+require_text "$SKILL" "**Title:**  "
+require_text "$SKILL" "**Statement:**  "
+require_text "$SKILL" "**Why it matters:**  "
+require_text "$SKILL" "**Would you like to accept this NFR?**"
+if grep -Fq "The schema defines \`Generation Attempt\`, \`Candidate Entries\`, and \`Review Status\`" "$SKILL"; then
+	echo "FAIL: NFR skill duplicates candidate-state schema authority"
+	fail=1
+fi
+if grep -Fq "Created Control IDs" "$HIGHWAY_ROOT/catalog/nfr-candidate-state.md"; then
+	echo "FAIL: candidate state retains obsolete Created Control IDs terminology"
+	fail=1
+fi
 
 # Structural authority must be cited, while record and catalog shape remain owned by templates.
 record_citation_fixture="$tmp_root/nfr-record-missing-citation.md"
@@ -83,9 +124,7 @@ if ! nfr_structure_not_duplicated "$SKILL"; then
 	fail=1
 fi
 
-for action in "### Action selection" "| Explicitly says add" "| Explicitly says update" "| Explicitly says remove" "| Explicitly says set"; do
-	require_text "$SKILL" "$action"
-done
+require_text "$SKILL" "Classify the action and authoritative NFR baseline."
 
 # --- A user-owned NFR is declined by the Highway library validator by both path forms -----------
 user_dir="$tmp_root/library/governance/nfrs"

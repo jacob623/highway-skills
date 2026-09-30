@@ -67,20 +67,9 @@ fi
 
 # --- Candidate and review contract -------------------------------------------------------------
 for required in \
-	"candidate-generation state" \
-	"receives exactly one candidate-generation result" \
-	"deferred until" \
-	"Collection Result: Finished" \
-	"normalized title and statement" \
-	"availability" \
-	"security" \
-	"performance" \
-	"zero candidates" \
-	"candidate-generation state" \
-	"classification and review decisions" \
-	"Candidate review remains deferred" \
-	"accepted NFR persistence" \
-	"fixed availability, security, performance rule order"; do
+	"successfully created new Control" \
+	"candidate generation" \
+	"NFR owner"; do
 	require_text "$CONTROL_SKILL" "$required"
 done
 
@@ -95,27 +84,23 @@ for required in \
 done
 
 for required in \
-	"Contextual NFR Review Output Contract" \
-	"Recommendation <position> of <total>" \
-	"Based on your [Control subject] [descriptor], Highway recommends:" \
 	"Why it matters:" \
-	"Would you like to accept, change, replace, or skip it?" \
-	"Candidate-Generation Action Result" \
-	"Candidate Classification / Readiness State" \
-	"Status: Empty" \
-	"Entry Count: 0"; do
+	"authoritative persisted NFR-owned recovery state"; do
 	require_text "$NFR_SKILL" "$required"
 done
 
-for required in \
-	"timestamp" \
-	"randomness" \
-	"environment" \
-	"filesystem" \
-	"session state"; do
-	require_text "$CONTROL_SKILL" "$required"
-	require_text "$NFR_SKILL" "$required"
+for required in "Candidate Entries" "Review Status" "Generation Attempt"; do
+	require_text "$HIGHWAY_ROOT/catalog/nfr-candidate-state.md" "$required"
 done
+
+if grep -Fq "The schema defines \`Generation Attempt\`, \`Candidate Entries\`, and \`Review Status\`" "$NFR_SKILL"; then
+	echo "FAIL: NFR skill repeats candidate-state schema details"
+	fail=1
+fi
+if grep -Fq "Recommendation Grounding" "$NFR_TEMPLATE"; then
+	echo "FAIL: NFR record template contains Control recommendation grounding"
+	fail=1
+fi
 
 for marker in \
 	"ordering=stable" \
@@ -139,8 +124,8 @@ for required in \
 done
 for required in \
 	"controls: []" \
-	"accepted candidates from the Control-derived workflow may populate" \
-	"does not infer or create a Control relationship"; do
+	"Control-derived NFRs use" \
+	"immutable"; do
 	require_text "$NFR_SKILL" "$required"
 done
 
@@ -161,7 +146,6 @@ for scope_text in \
 	"candidate store"; do
 	require_text "$CONTROL_SKILL" "$scope_text"
 done
-require_text "$NFR_SKILL" "relationship store"
 
 # --- Behavioral evidence: proposal, review barrier, accepted write, and rollback -------------
 behavior_root="$tmp_root/behavior"

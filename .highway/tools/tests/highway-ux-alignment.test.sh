@@ -99,7 +99,7 @@ for skill in $skills; do
 	require_absent "$file" 'Interactive Workflow UX Contract'
 	require_text "$file" 'Next Action'
 	# Superseded behavior: Profile and Objectives restated implementation details, User Exits, Owner Outcomes, and Resume Applicability. Those stay with the Highway Experience Standard.
-	if [[ "$skill" != highway-profile && "$skill" != highway-objectives && "$skill" != highway-controls ]]; then
+	if [[ "$skill" != highway-profile && "$skill" != highway-objectives && "$skill" != highway-controls && "$skill" != highway-nfrs ]]; then
 		require_text "$file" 'implementation details'
 		require_text "$file" 'User Exits'
 		require_text "$file" 'Owner Outcomes'
@@ -130,8 +130,8 @@ require_text "$SKILLS_ROOT/highway-controls/SKILL.md" "Are there any other conce
 require_text "$SKILLS_ROOT/highway-controls/SKILL.md" 'candidate-generation result'
 require_absent "$SKILLS_ROOT/highway-controls/SKILL.md" 'Completed Categories'
 require_absent "$SKILLS_ROOT/highway-controls/SKILL.md" 'Current Category'
-require_text "$SKILLS_ROOT/highway-nfrs/SKILL.md" 'one candidate decision at a time'
-require_text "$SKILLS_ROOT/highway-nfrs/SKILL.md" 'Candidate Position'
+require_text "$SKILLS_ROOT/highway-nfrs/SKILL.md" 'pending Control-derived candidates'
+require_text "$SKILLS_ROOT/highway-nfrs/SKILL.md" 'first unresolved candidate'
 require_text "$SKILLS_ROOT/highway-new/SKILL.md" 'Current Domain'
 require_text "$SKILLS_ROOT/highway-new/SKILL.md" 'Completed Domains'
 require_text "$SKILLS_ROOT/highway-new/SKILL.md" 'Remaining Domains'
