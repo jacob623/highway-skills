@@ -15,8 +15,9 @@ require "$FIXTURES/cross-rule/response.txt" 'Decision Context:'
 require "$FIXTURES/cross-rule/response.txt" 'Relevant Examples:'
 require "$FIXTURES/explicit-details/response.txt" 'implementation details'
 require "$HIGHWAY_ROOT/governance/experience-standard.md" 'Every user-visible response excludes Implementation details unless requested.'
-# Superseded behavior: highway-profile and highway-objectives restated the X2.3 implementation-detail boundary. They cite the Highway Experience Standard instead.
-for skill in highway-setup highway-nfrs; do
+# Superseded behavior: runtime skills cite the Experience Standard instead of restating its
+# implementation-detail boundary. Setup retains its owner-specific contract wording.
+for skill in highway-setup; do
 	if ! grep -Fq 'implementation details' "$HIGHWAY_ROOT/skills/$skill/SKILL.md" ||
 		{ ! grep -Fq 'unless requested' "$HIGHWAY_ROOT/skills/$skill/SKILL.md" &&
 		  ! grep -Fq 'only when needed' "$HIGHWAY_ROOT/skills/$skill/SKILL.md" &&

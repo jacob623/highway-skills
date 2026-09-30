@@ -67,20 +67,9 @@ fi
 
 # --- Candidate and review contract -------------------------------------------------------------
 for required in \
-	"candidate-generation state" \
-	"receives exactly one candidate-generation result" \
-	"deferred until" \
-	"Collection Result: Finished" \
-	"normalized title and statement" \
-	"availability" \
-	"security" \
-	"performance" \
-	"zero candidates" \
-	"candidate-generation state" \
-	"classification and review decisions" \
-	"Candidate review remains deferred" \
-	"accepted NFR persistence" \
-	"fixed availability, security, performance rule order"; do
+	"successfully created new Control" \
+	"candidate generation" \
+	"NFR owner"; do
 	require_text "$CONTROL_SKILL" "$required"
 done
 
@@ -95,25 +84,10 @@ for required in \
 done
 
 for required in \
-	"Contextual NFR Review Output Contract" \
-	"Recommendation <position> of <total>" \
-	"Based on your [Control subject] [descriptor], Highway recommends:" \
 	"Why it matters:" \
-	"Would you like to accept, change, replace, or skip it?" \
-	"Candidate-Generation Action Result" \
-	"Candidate Classification / Readiness State" \
-	"Status: Empty" \
-	"Entry Count: 0"; do
-	require_text "$NFR_SKILL" "$required"
-done
-
-for required in \
-	"timestamp" \
-	"randomness" \
-	"environment" \
-	"filesystem" \
-	"session state"; do
-	require_text "$CONTROL_SKILL" "$required"
+	"Candidate Entries" \
+	"Review Status" \
+	"Generation Attempt"; do
 	require_text "$NFR_SKILL" "$required"
 done
 
@@ -139,8 +113,8 @@ for required in \
 done
 for required in \
 	"controls: []" \
-	"accepted candidates from the Control-derived workflow may populate" \
-	"does not infer or create a Control relationship"; do
+	"Control-derived NFRs use" \
+	"immutable"; do
 	require_text "$NFR_SKILL" "$required"
 done
 
@@ -161,7 +135,6 @@ for scope_text in \
 	"candidate store"; do
 	require_text "$CONTROL_SKILL" "$scope_text"
 done
-require_text "$NFR_SKILL" "relationship store"
 
 # --- Behavioral evidence: proposal, review barrier, accepted write, and rollback -------------
 behavior_root="$tmp_root/behavior"

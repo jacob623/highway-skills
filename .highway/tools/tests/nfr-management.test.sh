@@ -36,30 +36,34 @@ nfr_structure_not_duplicated() {
 for required in \
 	"name: highway-nfrs" \
 	"metadata:" \
-	"version: 10.0.0" \
+	"version: 11.0.0" \
 	"library/governance/nfrs.md" \
 	"library/governance/nfrs/NFRXXXXXX.md" \
 	"controls: []" \
 	".highway/library/templates/output/nfr-record.md" \
 	".highway/library/templates/output/nfr-catalog.md" \
-	"The catalog contains no timestamp" \
-	"next_id" \
-	"Add is MINOR" \
-	"Remove or Set is MAJOR" \
-	"identifier is" \
-	"followed by six digits" \
-	"never reissued after removal" \
-	"every NFR that would be lost by identifier and title" \
-	"concrete alternative" \
-	"one existing NFR or the entire baseline" \
-	"skips Highway prose" \
-	"obligation-preserving Update is PATCH" \
-	"Confirmation is withheld: abort and write nothing"; do
+	"permanent non-reused identifiers" \
+	"deterministic catalog output" \
+	"atomic" \
+	"destructive safeguards" \
+	"User-visible interaction follows the Highway Experience Standard." \
+	"candidate state"; do
 	require_text "$SKILL" "$required"
 done
 
-for behavior_token in "Control-shaped" "/highway-controls" "outcome-shaped" "/highway-nfrs" "transaction" "identical catalog" "write nothing"; do
+for behavior_token in "Control-shaped" "/highway-controls" "desired quality" "transaction" "write nothing"; do
 	require_text "$SKILL" "$behavior_token"
+done
+
+for obsolete in "Feature 094" "Security Gate" "Maintainability Gate" "persistence-verified" "Created Control IDs" "Next Action first"; do
+	if grep -Fq "$obsolete" "$SKILL"; then
+		echo "FAIL: obsolete NFR runtime terminology '$obsolete' remains"
+		fail=1
+	fi
+done
+
+for candidate_field in "Originating Control ID" "Generation Attempt" "Candidate Entries" "Review Status"; do
+	require_text "$HIGHWAY_ROOT/catalog/nfr-candidate-state.md" "$candidate_field"
 done
 
 # Structural authority must be cited, while record and catalog shape remain owned by templates.
@@ -83,9 +87,7 @@ if ! nfr_structure_not_duplicated "$SKILL"; then
 	fail=1
 fi
 
-for action in "### Action selection" "| Explicitly says add" "| Explicitly says update" "| Explicitly says remove" "| Explicitly says set"; do
-	require_text "$SKILL" "$action"
-done
+require_text "$SKILL" "Classify the action and authoritative NFR baseline."
 
 # --- A user-owned NFR is declined by the Highway library validator by both path forms -----------
 user_dir="$tmp_root/library/governance/nfrs"

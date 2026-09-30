@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-30T12:58:27Z",
+  "generated_at": "2026-09-30T14:20:22Z",
   "entries": [
     {
       "id": "highway-adr",
@@ -70,7 +70,7 @@
       "description": "Manages the repository-wide Non-Functional Requirement baseline; use it to add, update, remove, replace, or inspect NFRs.",
       "usage": "Invoke as `/highway-nfrs` and state the NFR baseline change in plain language.",
       "compatibility": "all",
-      "version": "10.0.0",
+      "version": "11.0.0",
       "source_path": "skills/highway-nfrs/SKILL.md"
     },
     {

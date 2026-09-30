@@ -144,8 +144,10 @@ if [[ -f "$NFR_TEMPLATE" ]]; then
 	require_text "$NFR_TEMPLATE" "status: active"
 	require_text "$NFR_TEMPLATE" "## File Frontmatter"
 	require_text "$NFR_TEMPLATE" "## Body"
-	require_text "$NFR_TEMPLATE" "<user-provided statement>"
-	require_text "$NFR_TEMPLATE" "<user-provided rationale>"
+	require_text "$NFR_TEMPLATE" "version: 2.0.0"
+	require_text "$NFR_TEMPLATE" "<accepted NFR statement>"
+	require_text "$NFR_TEMPLATE" "<accepted evidence-grounded rationale>"
+	require_text "$NFR_TEMPLATE" "explicitly selected Highway recommendation"
 fi
 if [[ -f "$CONTROL_TEMPLATE" ]]; then
 	require_text "$CONTROL_TEMPLATE" "name: control-record"

@@ -25,33 +25,22 @@ require_text "$CONTROL_SKILL" "Do not use it to author non-functional requiremen
 require_text "$CONTROL_SKILL" "/highway-nfrs"
 
 # Control-shaped input offered to NFRs must have a named destination.
-require_text "$NFR_SKILL" "Specific, testable, auditable, or enforceable implementation requirement"
-require_text "$NFR_SKILL" "offer \`/highway-controls\` instead"
-require_text "$NFR_SKILL" "concrete alternative"
-require_text "$NFR_SKILL" "author may keep the original wording"
-require_text "$NFR_SKILL" "one existing NFR or the entire baseline"
+require_text "$NFR_SKILL" "enforceable, auditable, or checkable safeguard"
+require_text "$NFR_SKILL" "/highway-controls"
 
 # Advice is not refusal, and relationship ownership remains deferred.
-require_text "$NFR_SKILL" "If the user keeps a vague NFR, record it after advice."
 require_text "$CONTROL_SKILL" "This skill MUST NOT refuse a Control the user still wants"
 
 # Feature 094 onboarding aliases and review boundaries stay owned by their canonical skills.
 require_text "$CONTROL_SKILL" '`setup` and `configure` are aliases'
 require_text "$CONTROL_SKILL" "materially interpreted user-authored proposal"
 require_text "$CONTROL_SKILL" "Selected recommendations are captured directly"
-require_text "$NFR_SKILL" '`review` and `onboarding` are aliases'
-require_text "$NFR_SKILL" "NFR Review emits one entry per candidate"
-require_text "$NFR_SKILL" "Accept, Modify, Replace, Reject, or Cancel"
+require_text "$NFR_SKILL" "accept, modify, replace, reject, or skip"
 
 # Feature 078 keeps review output contracts in their canonical owner sections.
 require_text "$CONTROL_SKILL" "### Control Review Output Contract"
-require_text "$NFR_SKILL" "### NFR Review Output Contract"
 if [[ "$(grep -Fc '### Control Review Output Contract' "$CONTROL_SKILL")" != "1" ]]; then
 	echo "FAIL: Control review output contract is not declared exactly once"
-	fail=1
-fi
-if [[ "$(grep -Fc '### NFR Review Output Contract' "$NFR_SKILL")" != "1" ]]; then
-	echo "FAIL: NFR review output contract is not declared exactly once"
 	fail=1
 fi
 
