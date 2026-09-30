@@ -32,7 +32,7 @@ expect_text "$setup" "Profile readiness"
 expect_text "$setup" "Objectives readiness"
 expect_text "$setup" "Controls readiness"
 expect_text "$setup" "NFR readiness"
-expect_text "$setup" "orchestration only"
+expect_text "$setup" "consuming their declared results"
 
 workflow_rules="$(sed -n '/^## Workflow$/,/^## Ordered Readiness Rules$/p' "$setup")"
 for forbidden in 'organization.name' 'next_id' 'valid Objective' 'valid Control'; do

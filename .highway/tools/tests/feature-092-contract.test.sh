@@ -79,9 +79,9 @@ if grep -Fq '.highway/tools/validate-profile.sh' "$PROFILE"; then
 	echo "FAIL: $PROFILE still instructs .highway/tools/validate-profile.sh"
 	fail=1
 fi
-require_text "$SETUP" 'status-only requests'
-require_text "$SETUP" 'declined, aborted, or failed'
-require_text "$SETUP" 'NFR readiness; if it is `In Progress`'
+require_text "$SETUP" 'Request readiness from the current owner'
+require_text "$SETUP" 'owner `Declined` or `Aborted`'
+require_text "$SETUP" 'NFR readiness'
 # Superseded behavior: Setup was required to name the Interactive Workflow UX Contract.
 if grep -Fq 'Interactive Workflow UX Contract' "$SETUP"; then
 	echo "FAIL: $SETUP still names the removed Interactive Workflow UX Contract"
