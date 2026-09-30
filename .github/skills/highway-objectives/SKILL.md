@@ -59,11 +59,11 @@ Objectives is a Repository Context Participating Skill. Its declared Repository 
 are Identity, Highway Vision, Highway Platform Objectives, and Profile. Identity supplies behavioral
 framing only; Highway Vision supplies downstream traceability framing only; Highway Platform
 Objectives evaluates Highway assistance only; Profile is the only declared source that may supply
-accepted organizational evidence for Objective interpretation, suggestions, Significance, or
+accepted organizational evidence for Objective interpretation, recommendations, Highway Relevance, or
 Rationale. Existing Objective records are accepted context for exact duplicate and semantic overlap
 guidance, not a declared context document or a source of new organizational facts.
 
-A Profile baseline is Blocked. Objective behavior that depends on accepted Profile evidence cannot proceed. An unavailable Profile is not a source of organizational facts. An exact duplicate names the existing Objective and asks whether
+A Profile-owned Blocked result blocks Objective behavior that depends on accepted Profile evidence. An unavailable Profile remains distinct from a Profile-owned Blocked result and is not a source of organizational facts. An exact duplicate names the existing Objective and asks whether
 to change it or create a distinct outcome; semantic overlap is advisory and never silently merges,
 deletes, or rewrites an Objective.
 
@@ -120,10 +120,10 @@ not infer an action and do not write any file. If no objective baseline exists d
 action, report its absence without creating an artifact.
 
 For direct invocation, `/highway-objectives setup` and bare `/highway-objectives add` provide concise
-direct invocation context explaining that the interaction identifies an outcome worth pursuing; they
+direct invocation context explaining that the interaction identifies a Business Objective worth pursuing; they
 do not claim Setup introduced the purpose or emit Setup's transition language. `/highway-objectives
-add <evidence>` evaluates supplied evidence before selecting a question and skips the opening Outcome
-question when Outcome is already supported.
+add <evidence>` evaluates supplied evidence before selecting a question and skips the opening Business
+Objective question when Business Objective evidence is already supported.
 
 ## Read-only workflow
 
@@ -152,7 +152,8 @@ order:
 
 1. If Business Objective is unresolved, ask one conversational question about what the organization wants to accomplish.
 2. Otherwise, if Success is unresolved, ask one Success question.
-3. Otherwise, present the complete proposal.
+3. Otherwise, if unresolved Highway Relevance would improve downstream Highway use, ask one Highway Relevance question.
+4. Otherwise, synthesize Rationale and present the Objective review.
 
 Accept ordinary business language, uncertainty, activity descriptions, natural correction,
 replacement, rejection, cancellation, abandonment, and multiple
@@ -162,12 +163,15 @@ retain explicitly separate outcomes in user-provided order for sequential proces
 recommendation. When accepted Profile evidence supports a useful Objective, offer a Profile-grounded recommendation before asking an unnecessary question. Do not wait for a suggestion request. Prefer the accepted Organization Name. The user-authored path stays available. A selection of one, several, or all displayed recommendations is captured directly, without a second confirmation. Identity, Highway Vision, and Highway Platform Objectives stay framing sources and are not organizational facts. Existing Objectives are used for duplicate and overlap detection. Asking for more information about a
 suggestion is not adoption. If Profile evidence cannot support a meaningful suggestion, ask `**What's an important outcome you'd like to achieve?**` and do not manufacture a recommendation.
 
+Selected recommendations create Statement, Success Measures, and synthesized Rationale only from
+the recommendation and its grounding evidence. Do not ask a separate Rationale question. If a
+selected recommendation lacks enough accepted evidence for a required Success Measure, ask only the
+unresolved Success question. The user-authored alternative remains available.
 After a correction, re-evaluate staged Business Objective, Success, and Highway Relevance evidence and discard staged interpretations that no longer support the revised intent.
 
-When Business Objective evidence supports a Statement, Success evidence supports at least one Success Measure,
-and Significance is supported by either an explicit reason in the active conversation or an
-applicable direct organizational connection from accepted Profile evidence that can be stated
-without adding unsupported facts, present one complete proposal with distinct user-facing sections:
+When Business Objective evidence supports a Statement and Success evidence supports at least one Success Measure, present the Objective review. Ask one Highway Relevance question only when unresolved
+information would improve downstream Highway use. Otherwise synthesize Rationale from accepted evidence
+and proceed to review. Business Objective and Success are sufficient for review. Highway Relevance does not independently block Objective creation.
 
 **Here's what I've captured as your objective:**
 
@@ -178,12 +182,18 @@ without adding unsupported facts, present one complete proposal with distinct us
 **Success looks like:**
 - [Success Measure]
 
-**Why it matters:**
+**Why it matters:**  
 [Rationale]
 
 **Does this objective look right?**
 
 Do not use this review for an Objective selected from displayed recommendations.
+
+Rationale is synthesized from accepted evidence. Specifically, it uses accepted Business Objective,
+Success, Highway Relevance, and applicable accepted Profile evidence without adding unsupported facts.
+Highway Identity, Highway Vision, and Highway Platform Objectives are not organizational facts. Use a
+concise rationale when that is all accepted evidence supports; do not ask a separate Rationale question.
+Why it matters is not a fourth discovery dimension.
 
 Do not expose an unallocated or newly allocated identifier, catalog change, or version in normal
 pre-persistence review. Natural acceptance authorizes non-destructive creation without a second
@@ -230,7 +240,8 @@ random value, or environment value.
 
 If pre-write revalidation discovers a new overlap, name the overlapping Objective and return to one
 user decision. The previous creation confirmation is no longer active; if the proposal changes,
-re-evaluate the staged Outcome, Success, and Significance evidence, present the resulting complete proposal again, and require natural validation again before persistence.
+re-evaluate the staged Business Objective, Success, and Highway Relevance evidence, and present the
+resulting complete proposal again and obtain renewed acceptance before persistence.
 
 Increment the baseline exactly once per confirmed action: Add/New is MINOR, Update is PATCH, and
 Remove/Reset is MAJOR. Failed or declined actions do not change the version. A confirmed mutation
@@ -242,11 +253,8 @@ confirmation state.
 
 - Retained Objective records follow `.highway/library/templates/output/objective-record.md`.
 - Readiness and mutation outputs preserve their declared contracts.
-- Business Objective, Success, and Highway Relevance replace Outcome, Success, and Significance.
+- Business Objective, Success, and Highway Relevance are the current discovery dimensions.
 - Recommendations are grounded primarily in accepted Profile evidence.
-- Useful grounded recommendations are offered before unnecessary questions.
-- Selected recommendations are captured without redundant confirmation.
-- User-authored materially interpreted Objectives use the captured-content review.
 - Follow-ups are direct and tied to the stated Objective.
 - Highway Relevance follow-ups stay relevant to technology, governance, architecture, implementation, automation, or operations.
 - Setup and configure continue until explicit finish.

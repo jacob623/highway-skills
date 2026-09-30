@@ -115,6 +115,7 @@ require_absent "$SKILLS_ROOT/highway-profile/SKILL.md" 'Current Activity'
 # Superseded behavior: Objective discovery was labeled Outcome evidence.
 require_text "$SKILLS_ROOT/highway-objectives/SKILL.md" 'Business Objective'
 require_text "$SKILLS_ROOT/highway-objectives/SKILL.md" 'Highway Relevance'
+require_text "$SKILLS_ROOT/highway-objectives/SKILL.md" 'A Profile-owned Blocked result blocks Objective behavior'
 require_text "$SKILLS_ROOT/highway-objectives/SKILL.md" 'Success Measures'
 require_text "$SKILLS_ROOT/highway-objectives/SKILL.md" 'Why it matters:'
 require_absent "$SKILLS_ROOT/highway-objectives/SKILL.md" 'Step 1 of 3'

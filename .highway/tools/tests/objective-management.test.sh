@@ -97,6 +97,10 @@ if grep -Fq "Here's the objective I've captured:" "$SKILL" || grep -Fq 'Success 
 	echo "FAIL: Objective skill still uses the superseded capture review" >&2
 	fail=1
 fi
+if grep -Fq '**Why it matters:**[' "$SKILL"; then
+	echo "FAIL: Objective skill still uses malformed Rationale presentation" >&2
+	fail=1
+fi
 # Superseded behavior: the opening told the person to ask for suggestions.
 if grep -Fq "If you'd like some suggestions based on your organization's Profile" "$SKILL"; then
 	echo "FAIL: Objective skill still tells the person to ask for suggestions" >&2
@@ -134,15 +138,28 @@ for phrase in "Repository Context Participating Skill" "Identity" "Highway Visio
 	require_text "$SKILL" "$phrase" "Feature 093 extended contract phrase $phrase"
 done
 # Superseded behavior: Inputs restated generic context-consumption rules and Verification restated generic Experience Standard and Constitution checks.
-require_text "$SKILL" "A Profile baseline is Blocked" "Profile-owner Blocked handling remains"
+require_text "$SKILL" "A Profile-owned Blocked result blocks Objective behavior that depends on accepted Profile evidence." "Profile-owned Blocked handling remains"
+require_text "$SKILL" "accepted organizational evidence for Objective interpretation, recommendations, Highway Relevance, or" "Profile context roles use current terminology"
+if grep -Fq "A Profile baseline is Blocked." "$SKILL"; then
+	echo "FAIL: legacy Profile Blocked wording remains" >&2
+	fail=1
+fi
 require_text "$SKILL" "no post-write persistence verification" "verification drops post-write persistence checks"
+require_text "$SKILL" "When Business Objective evidence supports a Statement and Success evidence supports at least one Success Measure" "review-ready condition uses Business Objective and Success"
+require_text "$SKILL" "Highway Relevance does not independently block Objective creation" "Highway Relevance is non-blocking"
+require_text "$SKILL" "Business Objective and Success are sufficient for review" "Business Objective and Success are sufficient"
+require_text "$SKILL" "Rationale is synthesized from accepted evidence" "Rationale synthesis is explicit"
+require_text "$SKILL" "Why it matters is not a fourth discovery dimension" "Rationale is not a discovery dimension"
+if grep -Fq "Significance is supported" "$SKILL" || grep -Fq "Why it matters" "$SKILL" && grep -Fq "ask one question" "$SKILL"; then
+	echo "FAIL: Rationale remains a discovery requirement" >&2
+	fail=1
+fi
 for phrase in "natural correction" "replacement" "rejection" "cancellation" "abandonment" \
 	"re-evaluate" "revalidate the authoritative baseline" "allocate one permanent identifier" \
 	"persist both retained outputs" "byte-for-byte" "capabilities: []" \
 	"If pre-write revalidation discovers a new overlap, name the overlapping Objective" \
 	"previous creation confirmation is no longer active" \
-	"present the resulting complete proposal again" \
-	"require natural validation again before persistence"; do
+	"resulting complete proposal again and obtain renewed acceptance before persistence"; do
 	require_text "$SKILL" "$phrase" "Feature 093 safety contract phrase $phrase"
 done
 
@@ -162,6 +179,9 @@ for interaction in \
 	"represent them together or separately" \
 	"user-provided order" \
 	"Business Objective evidence supports a Statement" \
+	"Rationale is synthesized from accepted evidence" \
+	"accepted Business Objective," "applicable accepted Profile evidence without adding unsupported facts" \
+	"Highway Identity, Highway Vision, and Highway Platform Objectives are not organizational facts" \
 	"abandonment, or interruption keeps the proposal transient"; do
 	require_text "$SKILL" "$interaction" "adaptive interaction probe: $interaction"
 done
