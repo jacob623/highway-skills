@@ -106,9 +106,9 @@ Profile is terminal-success and Objective readiness is non-terminal with `Next A
 
 > **What's an important outcome you'd like to achieve?**
 >
-> If you'd like some suggestions based on your organization's Profile, just let me know. **If you're not sure, just say "I don't know," and we'll work through it together.**
+> **If you're not sure, just say "I don't know," and we'll work through it together.**
 
-Setup renders the owner opening unchanged and forwards every subsequent Objective question, decision,
+Objectives supplies either a grounded recommendation or that opening. Setup renders the owner opening unchanged and forwards every subsequent Objective question, decision,
 error, and result without interpreting or rewriting it. Setup does not ask Objective questions,
 interpret Objective evidence, allocate identifiers, write Objective artifacts, or persist a draft.
 

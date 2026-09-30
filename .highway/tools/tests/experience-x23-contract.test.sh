@@ -15,8 +15,8 @@ require "$FIXTURES/cross-rule/response.txt" 'Decision Context:'
 require "$FIXTURES/cross-rule/response.txt" 'Relevant Examples:'
 require "$FIXTURES/explicit-details/response.txt" 'implementation details'
 require "$HIGHWAY_ROOT/governance/experience-standard.md" 'Every user-visible response excludes Implementation details unless requested.'
-# Superseded behavior: highway-profile restated the X2.3 implementation-detail boundary. It cites the Highway Experience Standard instead.
-for skill in highway-setup highway-objectives highway-controls highway-nfrs; do
+# Superseded behavior: highway-profile and highway-objectives restated the X2.3 implementation-detail boundary. They cite the Highway Experience Standard instead.
+for skill in highway-setup highway-controls highway-nfrs; do
 	if ! grep -Fq 'implementation details' "$HIGHWAY_ROOT/skills/$skill/SKILL.md" ||
 		{ ! grep -Fq 'unless requested' "$HIGHWAY_ROOT/skills/$skill/SKILL.md" &&
 		  ! grep -Fq 'only when needed' "$HIGHWAY_ROOT/skills/$skill/SKILL.md" &&
@@ -24,5 +24,8 @@ for skill in highway-setup highway-objectives highway-controls highway-nfrs; do
 		echo "FAIL: $skill does not state the X2.3 detail boundary"; fail=1
 	fi
 done
+if grep -Fq 'implementation details' "$HIGHWAY_ROOT/skills/highway-objectives/SKILL.md"; then
+	echo "FAIL: highway-objectives restates the implementation-detail boundary"; fail=1
+fi
 if [[ $fail -ne 0 ]]; then exit 1; fi
 echo 'OK: X2.3 interaction contract passes'

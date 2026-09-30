@@ -29,7 +29,7 @@ capabilities: []
 
 ## Rationale
 
-<user-approved rationale>
+<accepted evidence-grounded rationale>
 ```
 
 The placeholders represent user-owned values. The template governs the presence and ordering of
