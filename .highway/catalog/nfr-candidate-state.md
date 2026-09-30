@@ -39,9 +39,8 @@ creating a partial NFR relationship.
 ## Recovery
 
 Every candidate decision is persisted before the next candidate is presented. Review resumes at the
-first `Decision: Pending` entry and does not restore prompts, conversation state, candidate counts,
-or `Created Control IDs`. Cancellation or interruption preserves durable state and leaves unresolved
-entries pending.
+first `Decision: Pending` entry and does not restore prompts, conversation state, or candidate counts.
+Cancellation or interruption preserves durable state and leaves unresolved entries pending.
 
 ## Readiness interpretation
 

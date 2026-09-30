@@ -148,6 +148,10 @@ if [[ -f "$NFR_TEMPLATE" ]]; then
 	require_text "$NFR_TEMPLATE" "<accepted NFR statement>"
 	require_text "$NFR_TEMPLATE" "<accepted evidence-grounded rationale>"
 	require_text "$NFR_TEMPLATE" "explicitly selected Highway recommendation"
+	if grep -Fq "Recommendation Grounding" "$NFR_TEMPLATE"; then
+		echo "FAIL: NFR record template contains Recommendation Grounding"
+		fail=1
+	fi
 fi
 if [[ -f "$CONTROL_TEMPLATE" ]]; then
 	require_text "$CONTROL_TEMPLATE" "name: control-record"

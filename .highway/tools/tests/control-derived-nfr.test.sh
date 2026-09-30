@@ -85,11 +85,22 @@ done
 
 for required in \
 	"Why it matters:" \
-	"Candidate Entries" \
-	"Review Status" \
-	"Generation Attempt"; do
+	"authoritative persisted NFR-owned recovery state"; do
 	require_text "$NFR_SKILL" "$required"
 done
+
+for required in "Candidate Entries" "Review Status" "Generation Attempt"; do
+	require_text "$HIGHWAY_ROOT/catalog/nfr-candidate-state.md" "$required"
+done
+
+if grep -Fq "The schema defines \`Generation Attempt\`, \`Candidate Entries\`, and \`Review Status\`" "$NFR_SKILL"; then
+	echo "FAIL: NFR skill repeats candidate-state schema details"
+	fail=1
+fi
+if grep -Fq "Recommendation Grounding" "$NFR_TEMPLATE"; then
+	echo "FAIL: NFR record template contains Control recommendation grounding"
+	fail=1
+fi
 
 for marker in \
 	"ordering=stable" \

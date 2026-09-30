@@ -31,6 +31,9 @@ for text in \
 	"captured as your NFR" \
 	"Why it matters" \
 	"Would you like to accept this NFR?" \
+	"Direct capture skips the inferred-content review" \
+	"Explicitly selected recommendations" \
+	"pending Control-derived candidates" \
 	"direct capture" \
 	"controls: []" \
 	"In Progress" \

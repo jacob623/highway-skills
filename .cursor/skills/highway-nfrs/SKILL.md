@@ -30,20 +30,38 @@ Do not use this skill for a specific enforceable, auditable, or checkable safegu
 
 ## Inputs
 
-Load the authoritative baseline and relevant accepted context before acting:
+Runtime dependencies are:
 
-- accepted Profile, Business Objectives, and Controls;
-- existing NFR records and catalog;
-- Highway Identity, Vision, and Platform Objectives only for their declared framing roles;
-- NFR-owned durable Control-derived candidate state;
-- the Controls candidate-generation input/result contract;
-- relationship impact analysis for destructive mutations.
+- the project root located from `.highway/`;
+- authoritative NFR artifacts at `library/governance/nfrs/NFRXXXXXX.md` and
+  `library/governance/nfrs.md`;
+- shared output templates at `.highway/library/templates/output/nfr-record.md` and
+  `.highway/library/templates/output/nfr-catalog.md`;
+- NFR-owned durable recovery state at `.highway/catalog/nfr-candidate-state.md`;
+- the Highway Experience Standard at `.highway/governance/experience-standard.md`;
+- `.highway/library/knowledge/highway-identity.md` for behavioral framing;
+- `.highway/library/knowledge/highway-vision.md` for strategic direction;
+- `.highway/library/knowledge/highway-platform-objectives.md` for evaluation criteria;
+- `.highway/library/knowledge/profile.md` for accepted organizational context;
+- accepted Business Objective records and catalog as recommendation and operational-context inputs;
+- accepted Control records and catalog as NFR recommendation, Control-derived candidate, and
+  relationship inputs;
+- existing accepted NFR records and catalog as reuse, duplicate, overlap, and recommendation
+  context;
+- the `/highway-setup` owner contract at `.highway/skills/highway-setup/SKILL.md` for setup/configure
+  collection completion;
+- the active user request and active interaction evidence;
+- the `/highway-controls` owner contract at `.highway/skills/highway-controls/SKILL.md`, including
+  the successfully created
+  originating `CTLXXXXXX`, deterministic candidate-generation input, and the candidate-generation
+  result consumed by NFRs;
+- the `/highway-relationships` owner contract at `.highway/skills/highway-relationships/SKILL.md`,
+  its impact analysis, and its authoritative impact result for destructive NFR mutations.
 
-Active user evidence is authoritative under the Constitution. Do not duplicate Constitution
-precedence or generic missing-context and interaction rules here. A Control-derived NFR is grounded
-by its originating immutable `CTLXXXXXX` relationship. Additional recommendations may use accepted
-Profile, Objectives, Controls, and existing NFRs. Do not infer benchmark applicability from a Control
-or create external applicability, certification, compliance, or policy claims.
+The Controls-owned derivation algorithm is not duplicated here. Control-derived NFRs are grounded
+by their originating immutable `CTLXXXXXX` relationship. Additional recommendations may use
+accepted Profile, Objectives, Controls, and existing NFRs. Control benchmark grounding does not
+itself establish benchmark applicability for an NFR.
 
 ## Ownership boundary
 
@@ -56,13 +74,10 @@ transient Controls collection identifiers or post-write verification state.
 
 ## Durable candidate state
 
-`.highway/catalog/nfr-candidate-state.md` is the single authoritative schema for NFR-owned recovery
-state. It preserves the originating Control, ordered candidate content, candidate decisions, pending
-review, and readiness. Generation is exactly once per successfully created `CTLXXXXXX`; zero valid
-candidates are a successful empty result. Persist each decision before advancing and resume from the
-first unresolved candidate without restoring prompts or conversation state. The schema defines
-`Generation Attempt`, `Candidate Entries`, and `Review Status`; this skill references those fields
-without redefining their record shape.
+`.highway/catalog/nfr-candidate-state.md` is the authoritative persisted NFR-owned recovery state.
+It preserves the originating Control, ordered candidate content, candidate decisions, pending review,
+and readiness. Generation is exactly once per successfully created `CTLXXXXXX`; zero valid candidates
+are a successful empty result. Persist each decision before advancing and resume at the first unresolved candidate without restoring prompts or conversation state.
 
 When unresolved Control-derived candidates exist, present them before broad discovery. A user may
 accept, modify, replace, reject, or skip a candidate, and an explicitly presented recommendation is
@@ -83,8 +98,7 @@ Use concise examples such as availability, performance, recoverability, scalabil
 or operability only when they improve clarity. Do not require the user to ask for suggestions first,
 and do not generate generic recommendations merely to keep a loop active.
 
-Treat a direct NFR statement as direct capture when no material transformation is needed. For a
-materially interpreted, classified, normalized, or synthesized user-authored NFR, use:
+Treat a direct NFR statement as direct capture when no material transformation is needed. Direct capture skips the inferred-content review; it does not bypass NFR validation, duplicate handling, identifier allocation, relationship handling, or atomic persistence. For a materially interpreted, classified, normalized, or synthesized user-authored NFR, use:
 
 **Here's what I've captured as your NFR:**
 
@@ -100,10 +114,10 @@ materially interpreted, classified, normalized, or synthesized user-authored NFR
 **Would you like to accept this NFR?**
 
 Synthesize Rationale from accepted evidence and grounding; do not ask a separate rationale question.
-Do not review a selected Highway recommendation a second time. If classification remains ambiguous
-after evaluating evidence, ask one bounded question distinguishing a desired quality or operational
-outcome (NFR) from an enforceable, auditable, or checkable safeguard (Control). Classification is
-transient and does not become a persisted field.
+Explicitly selected recommendations and direct NFR statements do not receive this redundant review.
+If classification remains ambiguous after evaluating evidence, ask one bounded question distinguishing
+a desired quality or operational outcome (NFR) from an enforceable, auditable, or checkable safeguard
+(Control). Classification is transient and does not become a persisted field.
 
 The catalog at `library/governance/nfrs.md` and records at
 `library/governance/nfrs/NFRXXXXXX.md` are user-owned. Their structure is governed by
