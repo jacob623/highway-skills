@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Verifies owner readiness and collection routing boundaries.
+# Verifies owner-specific readiness and result routing.
 set -u
 # Instrument class: mixed (static-document-contract and executed-behavior)
 # Artifact classes: source-document, disposable-fixture
@@ -9,6 +9,5 @@ HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 SKILL="$HIGHWAY_ROOT/skills/highway-setup/SKILL.md"
 fail=0
 require() { grep -Fq -- "$2" "$1" || { echo "FAIL: $1 missing '$2'"; fail=1; }; }
-for token in 'Request readiness from the current owner' 'terminal with `Next Action: None`' 'supported `Next Action`' 'collection continues' 'collection finished' 'fresh readiness' 'owner `Blocked`' 'owner `Declined` or `Aborted`'; do require "$SKILL" "$token"; done
-if grep -Fq 'candidate state' "$SKILL" && ! grep -Fq 'does not list or inspect owner-internal artifacts, state' "$SKILL"; then echo 'FAIL: Setup may inspect owner state'; fail=1; fi
+for token in 'Request readiness from the current owner' 'terminal with `Next Action: None`' 'result declared by that owner' 'requires additional owner interaction' 'active collection/work finished' 'malformed or unsupported owner output' 'Collection Result contracts' 'own declared owner results'; do require "$SKILL" "$token"; done
 [[ $fail -eq 0 ]] && echo 'OK: Setup owner-loop contract passes' || exit 1

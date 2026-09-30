@@ -81,7 +81,7 @@ if grep -Fq '.highway/tools/validate-profile.sh' "$PROFILE"; then
 fi
 require_text "$SETUP" 'Request readiness from the current owner'
 require_text "$SETUP" 'owner `Declined` or `Aborted`'
-require_text "$SETUP" 'NFR readiness'
+require_text "$SETUP" 'NFRs'
 # Superseded behavior: Setup was required to name the Interactive Workflow UX Contract.
 if grep -Fq 'Interactive Workflow UX Contract' "$SETUP"; then
 	echo "FAIL: $SETUP still names the removed Interactive Workflow UX Contract"

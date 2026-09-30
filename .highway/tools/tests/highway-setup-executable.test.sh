@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Verifies deterministic Setup collection result cases.
+# Verifies first-run, resume, and transition behavior.
 set -u
 # Instrument class: mixed (static-document-contract and executed-behavior)
 # Artifact classes: source-document, generated-artifact, disposable-fixture
@@ -8,8 +8,5 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 SKILL="$HIGHWAY_ROOT/skills/highway-setup/SKILL.md"
 fail=0
-for token in 'Continue' 'Finished' 'Declined' 'Aborted' 'Blocked' 'malformed' 'fresh owner readiness'; do
-  grep -Fq -- "$token" "$SKILL" || { echo "FAIL: missing routing case '$token'"; fail=1; }
-done
-if grep -Fq '30-step' "$SKILL" || grep -Fq 'Created Control IDs' "$SKILL"; then echo 'FAIL: obsolete routing contract remains'; fail=1; fi
+for token in '## Welcome to Highway' 'Do not emit this welcome on a resumed Setup interaction' 'fresh owner readiness' '---' 'first active interaction' 'Do not emit a' ; do grep -Fq -- "$token" "$SKILL" || { echo "FAIL: missing '$token'"; fail=1; }; done
 [[ $fail -eq 0 ]] && echo 'OK: Setup resume routing passes' || exit 1

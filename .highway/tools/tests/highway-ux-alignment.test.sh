@@ -142,9 +142,9 @@ require_text "$SKILLS_ROOT/highway-clarify/SKILL.md" 'one open finding question 
 require_text "$SKILLS_ROOT/highway-clarify/SKILL.md" 'Finding Position'
 require_text "$SKILLS_ROOT/highway-clarify/SKILL.md" 'Remaining Findings'
 require_text "$SKILLS_ROOT/highway-setup/SKILL.md" 'operational expectations future solutions should meet'
-require_text "$SKILLS_ROOT/highway-setup/SKILL.md" 'collection continues'
+require_text "$SKILLS_ROOT/highway-setup/SKILL.md" 'requires additional owner interaction'
 require_text "$SKILLS_ROOT/highway-setup/SKILL.md" 'Your foundational Highway context is now in place.'
-require_text "$SKILLS_ROOT/highway-setup/SKILL.md" 'Run `/highway-help` to explore what Highway can help you do.'
+require_text "$SKILLS_ROOT/highway-setup/SKILL.md" 'Run /highway-help to explore what Highway can help you do.'
 require_absent "$SKILLS_ROOT/highway-setup/SKILL.md" 'Highway Setup Complete'
 require_absent "$SKILLS_ROOT/highway-setup/SKILL.md" 'Business Objectives: <terminal owner status>'
 

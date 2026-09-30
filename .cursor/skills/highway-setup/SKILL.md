@@ -29,20 +29,30 @@ Do not use this skill to perform owner discovery, recommendations, interpretatio
 - `.highway/governance/experience-standard.md`.
 - active user request.
 
-Setup does not list or inspect owner-internal artifacts, state, records, catalogs, relationships,
-candidate state, identifiers, or persistence results.
+## Welcome
 
-Owner order is Profile, Objectives, Controls, NFRs.
+When beginning initial Setup, before the first Profile-owned action, emit exactly once:
 
-- Profile readiness
-- Objectives readiness
-- Controls readiness
-- NFR readiness
+```text
+## Welcome to Highway
+
+*Turn organizational knowledge into connected decisions.*
+
+**Your context stays yours.**
+
+Highway builds on information you choose to accept into your repository. Your repository remains the authoritative source of truth, and you retain ownership of the context and artifacts created through Highway.
+
+---
+
+Let's get started.
+```
+
+Do not emit this welcome on a resumed Setup interaction.
 
 ## Outputs
 
-Setup consumes owner readiness and collection results, delegates owner-provided actions, emits
-concise domain transitions, and emits the following conclusion once after all owners complete:
+Setup consumes owner readiness and owner-specific action results, delegates owner-provided actions,
+and emits the following conclusion once after all four owners permit advancement in Setup order:
 
 ```text
 **Your foundational Highway context is now in place.**
@@ -51,40 +61,54 @@ Highway now has organizational context, business objectives, safeguards, and ope
 
 **Where would you like to go next?**
 
-Run `/highway-help` to explore what Highway can help you do.
+Run /highway-help to explore what Highway can help you do.
 ```
 
 ## Workflow
 
-1. Request readiness from the current owner in this order: Profile readiness, Objectives readiness, Controls readiness, NFR readiness.
-2. If readiness is terminal with `Next Action: None`, advance to the next owner.
-3. If readiness is `Blocked`, stop and report the owner-provided reason.
-4. If readiness supplies a supported `Next Action`, emit the domain transition when entering a new domain and delegate only that action.
-5. Render the delegated owner interaction without reinterpretation and consume its declared result.
-6. If the owner result says `Action Status: Succeeded` and `Collection Result: Continue|Finished`, remain with that owner while collection continues.
-7. If the owner result says collection finished, request fresh readiness from that owner.
-8. Advance only when fresh readiness permits it; otherwise stop on a malformed or unsupported result.
-9. A new Setup interaction begins by requesting fresh owner readiness in Setup order.
+1. Request readiness from the current owner.
+2. If readiness is terminal with `Next Action: None`, advance.
+3. If readiness is `Blocked`, stop with the owner-provided context.
+4. If readiness supplies a supported `Next Action`, emit the applicable domain transition and delegate that action.
+5. Render the owner interaction without reinterpretation and consume the result declared by that owner.
+6. If that result requires additional owner interaction, remain with the owner and continue according to its contract.
+7. If the owner reports its active collection/work finished, request fresh readiness.
+8. Advance only when fresh owner readiness permits advancement.
+9. Otherwise stop on malformed or unsupported owner output.
 
-Use this same loop for Profile, Objectives, Controls, and NFRs. Setup does not derive readiness,
-inspect owner artifacts, or infer interaction need from a status alone.
+Owner order is Profile → Objectives → Controls → NFRs. Controls and NFRs use their declared
+Collection Result contracts. Profile and Objectives use their own declared owner results. Setup does
+not impose one shared collection-result shape.
 
 ### Domain transitions
 
-Use a Markdown horizontal rule before each visible transition into a new Setup domain. Do not add
-owner labels or duplicate an owner's opening.
+Emit each block only when delegating the first active interaction for that domain. Do not emit a
+transition when the owner is already terminal and skipped, repeat it while continuing, or duplicate
+the owner opening.
+
+```text
+---
 
 **Let's identify some outcomes worth pursuing.**
 
 These give Highway something concrete to connect future decisions back to.
+```
+
+```text
+---
 
 **Now let's establish the safeguards that should guide future technology decisions.**
 
 These help Highway keep future recommendations aligned with what needs to remain true.
+```
+
+```text
+---
 
 **Now let's consider the operational expectations future solutions should meet.**
 
 These help connect your safeguards to how solutions need to behave in practice.
+```
 
 ## Experience
 
@@ -97,8 +121,7 @@ persist a checkpoint or restore owner conversational state.
 
 ## Completion
 
-Setup completes only after Profile, Objectives, Controls, and NFRs have each returned the terminal
-result required by their current owner contract. Emit the conclusion in Outputs once.
+After all four owners permit advancement in Setup order, emit the conclusion in Outputs once.
 
 ## Error Handling
 
@@ -111,18 +134,19 @@ Rely on the Constitution common failure model. Setup-specific exceptions are:
 
 ## Verification
 
+- The skill contains exactly one `## Purpose` section with the declared Purpose sentence.
 - Owner order is Profile → Objectives → Controls → NFRs.
-- Setup consumes owner readiness and delegates only owner-provided actions.
-- Setup advances only from owner-declared terminal results.
-- Owner `Blocked`, `Declined`, `Aborted`, malformed, or unsupported results do not advance.
-- Controls collection uses its declared four-field owner result.
-- NFR routing does not inspect candidate state, counts, records, or relationships.
-- Collection `Continue` remains with the active owner; `Finished` triggers fresh readiness.
-- Transitions are concise, horizontally separated, and do not duplicate owner openings.
-- Setup writes no owner artifact and persists no wizard or checkpoint state.
-- A new interaction starts from fresh owner readiness.
-- Completion occurs only after every required owner reaches its declared terminal result.
-- Generic Constitution and Experience Standard requirements are not restated.
+- Owner-specific result contracts are consumed without imposing one common result schema.
+- Controls and NFRs use their declared Collection Result contracts.
+- Profile and Objectives use their own declared owner results.
+- `Continue` remains with an owner when that owner's contract uses Collection Result.
+- `Finished` triggers fresh readiness when that owner's contract uses Collection Result.
+- Initial Setup emits the Highway welcome once; resumed Setup does not repeat it.
+- Every visible domain transition contains `---` and occurs only when entering an active domain.
+- Owner openings are not duplicated.
+- Setup persists no checkpoint or owner artifact.
+- A new interaction starts from fresh readiness.
+- The final conclusion is emitted once after all four owner contracts permit advancement.
 
 ## Example
 
