@@ -17,7 +17,7 @@ require "$FIXTURES/readiness/setup/owner-loop.txt" 'nfr: In Progress is non-term
 for token in 'Profile readiness' 'Objectives readiness' 'Controls readiness' 'NFR readiness' 'never restore an unanswered question' 'does not author a Controls discovery question'; do
 	require "$HIGHWAY_ROOT/skills/highway-setup/SKILL.md" "$token"
 done
-for token in 'Controls-purpose transition' 'Controls Action Result' 'Collection Result: Continue|Finished' 'Created Control IDs' 'fresh Controls readiness' 'pre-delegation `Complete`'; do
+for token in 'Controls-purpose transition' 'Controls Action Result' 'Collection Result: Continue|Finished' 'fresh Controls readiness' 'pre-delegation `Complete`'; do
 	require "$HIGHWAY_ROOT/skills/highway-setup/SKILL.md" "$token"
 done
 action_line="$(grep -n 'Controls Action Result' "$HIGHWAY_ROOT/skills/highway-setup/SKILL.md" | head -n 1 | cut -d: -f1)"

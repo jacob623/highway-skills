@@ -39,11 +39,10 @@ Setup evaluates owner readiness in this order:
 - The NFR-owner `Next Action` returned for `In Progress`.
 - The delegated NFR owner result that Setup consumes before advancement.
 - The NFR Collection Result returned by active NFR `setup` or `configure`.
-- The Controls Action Result contract: `Action Status`, `Collection Result`, `Created Control IDs`, `Next Action`, and `Blocking Reason`.
+- The Controls Action Result contract: `Action Status`, `Collection Result`, `Next Action`, and `Blocking Reason`.
 - Controls Action Result:
   - `Action Status: Succeeded|Declined|Aborted|Blocked`
   - `Collection Result: Continue|Finished`
-  - `Created Control IDs: [CTLXXXXXX, ...]`
   - `Next Action: <owner route or None>`
   - `Blocking Reason: <reason or None>`
 - Controls Readiness Result:
@@ -177,7 +176,7 @@ override an owner-provided active route that requires user input.
 17. After Step 15 returns `Action Status: Succeeded` and `Collection Result: Continue`, fall back to Step 14 and remain with Controls.
 18. While Step 17 remains active, do not treat Controls readiness `Complete` as collection completion.
 19. After Step 15 returns `Action Status: Succeeded` and `Collection Result: Finished`, request fresh `/highway-controls readiness`.
-20. After Step 19 returns fresh Controls readiness `Missing`, fall back to Step 13 as a New interaction, regardless of `Created Control IDs`; a zero-Control result with `Created Control IDs: []` remains at Controls and does not invoke NFR review or claim completion.
+20. After Step 19 returns fresh Controls readiness `Missing`, fall back to Step 13 as a New interaction; a zero-Control result remains at Controls and does not invoke NFR review or claim completion.
 21. After Step 19 returns fresh Controls readiness `Blocked`, stop without invoking NFRs and report the Controls owner's context.
 22. After Step 10 receives pre-delegation Controls readiness `Complete`, or after Step 19 returns fresh Controls readiness `Complete`, request `/highway-nfrs readiness` and evaluate the result at Step 23. For active NFR collection, Steps 23–27 are the specialized governing path and supersede the generic Step 4–6 owner-action behavior. Setup evaluates and delegates according to the NFR readiness and Collection Result contracts without inspecting NFR internals.
 23. After Step 22, consume the NFR owner's declared readiness and `Next Action` without inspecting candidates, candidate counts, records, relationships, or internal state. For NFR readiness; if it is `In Progress`, delegate the owner-provided active `setup` or `configure` route. If the owner provides an active `setup` or `configure` `Next Action`, emit the exact Setup-owned Controls-to-NFR transition once before the first NFR-owned interaction, then delegate that declared owner action regardless of whether readiness is `Not Applicable`, `In Progress`, `Complete`, or another owner-defined non-terminal state. If the owner returns `Next Action: None`, do not manufacture an interaction and continue only according to the owner's declared terminal contract.
@@ -316,12 +315,12 @@ following Controls-owned opening unchanged immediately after that transition:
 Verify that Controls owns and Setup renders every subsequent question, acknowledgment, suggestion, proposal,
 decision, error, and result unchanged. Setup consumes the Controls Action Result
 before requesting fresh Controls readiness. Before delegation, pre-delegation `Complete` skips this
-route. The action result uses `Action Status`, `Collection Result: Continue|Finished`, `Created Control IDs`,
-`Next Action`, and `Blocking Reason` in that order; `Finished` is terminal only after explicit user intent.
+route. The action result uses `Action Status`, `Collection Result: Continue|Finished`, `Next Action`, and
+`Blocking Reason` in that order; `Finished` is terminal only after explicit user intent.
 The separate readiness result uses `Status: Complete|Missing|Blocked`, `Summary`, `Next Action`, and
 `Blocking Reason` in that order. Setup validates both field orders and accepted values before consumption.
 A `Continue` result is non-terminal even when fresh readiness is `Complete`. A zero-Control finish
-includes `Created Control IDs: []`, leaves fresh readiness `Missing`, and does not claim Controls or Setup completion.
+leaves fresh readiness `Missing` and does not claim Controls or Setup completion.
 
 Confirm the emitted conclusion exactly follows the declared forward-looking contract and is emitted only
 after Workflow Step 28's required terminal owner-result condition.
@@ -393,8 +392,8 @@ collection result. This is the stop-before-NFR-review behavior.
   NFRs, and only malformed, unsupported, or owner-`Blocked` results stop Setup.
 - Confirm user-authored NFR creation does not itself end collection; Setup concludes only after explicit
   NFR collection finish and the subsequent owner readiness/result permits terminal advancement.
-- Confirm Setup does not inspect candidate contents, candidate counts, NFR records, relationships, or
-  `Created Control IDs` to derive NFR readiness or completion; it consumes the NFR owner's result.
+- Confirm Setup does not inspect candidate contents, candidate counts, NFR records, or relationships
+  to derive NFR readiness or completion; it consumes the NFR owner's result.
 - Confirm NFR `Blocked` stops Setup; an owner-provided active NFR route delegates NFR interaction; and
   terminal readiness advances only when the NFR owner contract requires no further collection.
 - Confirm failed Controls creation or retained-output verification yields no completed Control baseline, a

@@ -20,13 +20,12 @@ require_text() {
 }
 
 for text in \
-	"adaptive discovery" \
+	"evidence" \
 	"Concern" \
 	"Condition" \
 	"Obligation" \
 	"Action Status: Succeeded|Declined|Aborted|Blocked" \
 	"Collection Result: Continue|Finished" \
-	"Created Control IDs" \
 	"Declined" \
 	"Aborted" \
 	"perform no Control write" \
@@ -36,24 +35,21 @@ for text in \
 	"Next Action:" \
 	"Title" \
 	"Statement" \
-	"Rationale" \
-	"one complete Control proposal at a time" \
-	"Proposal decisions are Accept, Correct, Replace, Reject, or Cancel" \
+	"Why it matters" \
+	"Would you like to accept this Control?" \
+	"Selected recommendations are captured directly" \
 	"immediately" \
 	"authoritative baseline" \
 	"duplicate" \
-	"byte-for-byte" \
 	"one Add MINOR" \
 	"revalidate" \
 	"user-override" \
-	"Material Influence" \
-	"Contextual Acknowledgment" \
-	"Decision Context" \
-	"Relevant Example" \
 	"Reuse writes no record" \
 	"deterministic initial" \
 	"candidate derivation" \
-	"NFR owner"; do
+	"NFR owner" \
+	"## Provenance" \
+	"Ask for missing information, not missing phrasing"; do
 	require_text "$SKILL" "$text"
 done
 

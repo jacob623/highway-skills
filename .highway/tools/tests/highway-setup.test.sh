@@ -34,7 +34,10 @@ require_text "$SKILL" 'without exposing routing or validation mechanics'
 require_text "$SKILL" "We've identified what you're trying to accomplish. Now let's think about what needs to be true as you pursue those outcomes."
 require_text "$SKILL" 'Controls-purpose transition'
 require_text "$SKILL" 'Collection Result: Finished'
-require_text "$SKILL" 'Created Control IDs: []'
+if grep -Fq 'Created Control IDs' "$SKILL"; then
+	echo "FAIL: Setup still depends on transient Created Control IDs"
+	fail=1
+fi
 require_text "$SKILL" 'pre-delegation `Complete`'
 require_text "$SKILL" 'does not claim Controls or Setup completion'
 require_text "$SKILL" 'fresh Controls readiness'

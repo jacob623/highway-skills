@@ -4,7 +4,7 @@ description: "Manages the repository-wide Control baseline, adding, updating, re
 usage: "Invoke as `/highway-controls` and state what to change, for example `/highway-controls add a control requiring administrative access to use MFA`."
 compatibility: all
 metadata:
-  version: 3.0.0
+  version: 4.0.0
 ---
 
 # highway-controls
@@ -16,7 +16,7 @@ Maintains the repository-wide Control baseline and owns adaptive conversational 
 ## When to use
 
 Use this skill to configure or add a Control, inspect readiness, or update, remove, or replace an existing Control.
-Use it to derive deterministic Control-based NFR candidates after a verified new Control is persisted.
+Use it to invoke deterministic Control-based NFR candidate generation after a successfully created new Control.
 
 ## When not to use
 
@@ -29,11 +29,7 @@ Do not use it to edit a Control file or catalog by hand.
 
 ## Experience
 
-Controls follows the Highway Experience Standard. Put
-`Next Action` first and omit implementation details unless requested. User Exits are `pause`,
-`cancel`, and `stop responding`; Owner Outcomes are `declined`, `aborted`, and `blocked`.
-`Resume Applicability` is `New interaction`. Controls retains ownership of Control artifacts,
-proposals, catalogs, identifiers, persistence, readiness, and completion claims.
+User-visible interaction follows the Highway Experience Standard.
 
 ## Inputs
 
@@ -55,27 +51,14 @@ Controls consumes these dependencies:
 - the canonical `/highway-nfrs` owner contract, including its durable candidate-generation state,
   candidate-generation result (`Not Applicable`, `In Progress`, `Complete`, or `Blocked` with a
   non-empty reason), and the originating `CTLXXXXXX` supplied to that owner;
+- declared external security, industry, regulatory, or governance expertise when available;
 - `/highway-relationships` impact analysis for Remove or Set, including its named impact report and
   explicit empty-impact result; Controls consumes that report as authoritative relationship state
   and retains the existing confirmation and mutation safeguards.
 
-Locate `.highway/` and the user-owned baseline at `library/governance/` before consuming these
-dependencies. Context precedence is:
-
-1. active user evidence;
-2. accepted existing Controls;
-3. accepted Profile;
-4. accepted Business Objectives;
-5. Identity, Vision, and Platform Objectives according to their declared framing roles.
-
-Active user evidence remains authoritative for the active Control interaction.
-
-Before producing context-dependent output, consult the available declared Repository Context Documents:
-Identity, Vision, Platform Objectives, and Profile. Accepted Business Objectives and existing Controls may
-also guide the conversation as accepted repository artifacts. Record each unavailable or malformed context
-document, exclude it from interpretation, and continue only with remaining valid evidence.
-
-Use context priority in this order: active user input, accepted existing Controls, accepted Profile, accepted Business Objectives, then Identity, Vision, and Platform Objectives framing. A malformed Profile is consumed as Profile-owned `Blocked`; other unavailable optional context is excluded.
+Load only relevant accepted grounding before context-dependent output. Active user evidence remains
+authoritative. accepted existing Controls and accepted Business Objectives provide governance and
+outcome context; Identity, Vision, and Platform Objectives provide declared framing roles. Profile-owned `Blocked` remains distinct from unavailable optional context, and other unavailable optional context is excluded. External expertise grounds recommendations but does not establish policy, applicability, certification, or compliance.
 
 ## Outputs
 
@@ -95,7 +78,9 @@ Next Action: <owner route or None>
 Blocking Reason: <reason or None>
 ```
 
-Readiness reads only verified persisted Control state. At least one valid Control with a consistent baseline is `Complete`; no valid Control is `Missing`; malformed or inconsistent state is `Blocked` with a non-empty reason. Readiness writes no files, versions, IDs, relationships, or NFR artifacts.
+Readiness reads only persisted Control state. At least one valid Control with a consistent baseline is
+`Complete`; no valid Control is `Missing`; malformed or inconsistent state is `Blocked` with a
+non-empty reason. Readiness writes no files, versions, IDs, relationships, or NFR artifacts.
 
 Direct `add`, `update`, `remove`, and `set` emit the existing direct mutation result in this order:
 
@@ -109,28 +94,29 @@ Blocking Reason: <reason or None>
 
 `Control ID` is populated only when the existing mutation contract allocates one, and `Version` reports
 the resulting semantic version after successful persistence. Declined, aborted, blocked, and failed
-mutations preserve the prior verified baseline and do not claim a new identifier or version. These fields
+mutations preserve the prior baseline and do not claim a new identifier or version. These fields
 do not expose identifiers, versions, or transaction mechanics in a pre-persistence proposal. Controls does
 not introduce a second mutation format.
 
-Control proposals emit these fields in this order:
+Materially interpreted user-authored Controls use this review:
 
-```text
-**Next Action:** Review this proposed Control and accept, correct, replace, or reject it.
+```markdown
+**Here's what I've captured as your Control:**
 
-**Title:**
-<proposed user-approved title>
+**Title:**  
+[Title]
 
-**Statement:**
-<proposed Control statement>
+**Statement:**  
+[Statement]
 
-**Rationale:**
-<evidence-grounded rationale>
+**Why it matters:**  
+[Rationale]
+
+**Would you like to accept this Control?**
 ```
 
-Labels are visually distinct from their values. `Next Action` is interaction framing and is not retained.
-The proposal contains no allocated Control identifier, resulting version, catalog mutation, or transaction
-mechanics.
+Selected recommendations are captured directly. The review contains no allocated identifier, catalog
+mutation, version, or transaction mechanics.
 
 Read-only inspection with no valid Control baseline emits:
 
@@ -148,7 +134,6 @@ Delegated `setup` and `configure` collection returns this owner-only result in t
 ```text
 Action Status: Succeeded|Declined|Aborted|Blocked
 Collection Result: Continue|Finished
-Created Control IDs: [CTLXXXXXX, ...]
 Next Action: <owner route or None>
 Blocking Reason: <reason or None>
 ```
@@ -159,23 +144,16 @@ user declined the applicable owner action. `Aborted` means the current interacti
 the applicable owner action. `Blocked` requires a non-empty `Blocking Reason`; every other result uses
 `Blocking Reason: None` except the explicit zero-Control finish below. `Finished` is Controls-specific
 collection state, not a shared Owner Outcome, and `Continue` is non-terminal. `Declined` and `Aborted`
-perform no Control write and do not permit Setup completion. `Created Control IDs` is the cumulative ordered
-list of all persistence-verified new Control
-IDs created in the active setup/configure interaction through the current result. After Control 1 it is
-`[CTL000001]`; after Control 2 it is `[CTL000001, CTL000002]`; explicit finish reports the same cumulative
-list, and zero creation reports `[]`. Reused, updated, rejected, failed, and pre-existing Controls are
-excluded. This cumulative list remains transient, is never persisted or restored in a New interaction,
-and is not durable NFR candidate recovery state. This collection result remains separate from the
-four-field Controls Readiness Result.
+perform no Control write and do not permit Setup completion. This collection result remains separate
+from the four-field Controls Readiness Result.
 
 When the user explicitly finishes before accepting any Control, the terminal zero-Control result is exactly:
 
 ```text
 Action Status: Succeeded
 Collection Result: Finished
-Created Control IDs: []
 Next Action: /highway-controls setup
-Blocking Reason: No accepted Control exists.
+Blocking Reason: None
 ```
 
 The separate fresh Controls Readiness Result remains `Missing`; this result does not claim Controls or Setup
@@ -197,13 +175,16 @@ Controls selects exactly one supported action using this ordered table:
 | Otherwise | abort and ask which supported action is intended |
 
 `setup` and `configure` are aliases for multi-Control conversational discovery. `add` creates one Control
-and terminates after its verified mutation result. `new` is not added by this contract. `view`, `show`,
+and terminates after its mutation result. `new` is not added by this contract. `view`, `show`,
 `describe`, and `inspect` are equivalent read-only inspection requests. Update, Remove, and Set retain
 their existing action contracts and do not enter Concern -> Condition -> Obligation discovery.
 
 ## Adaptive Control Discovery
 
-`setup` and `configure` are aliases that open multi-Control conversational collection. Direct `add` creates one Control and returns its existing verified mutation result. `readiness`, inspection, update, remove, and set use their existing action contracts and do not enter discovery.
+`setup` and `configure` are aliases that open multi-Control conversational collection. Direct `add` creates one Control and returns its existing mutation result. `readiness`, inspection, update, remove, and set use their existing action contracts and do not enter discovery.
+
+Ask for missing information, not missing phrasing. Concern, Condition, and Obligation are evidence
+categories rather than questions that must each be asked.
 
 For direct `setup`, `configure`, or bare `add` with no usable Control evidence, emit exactly:
 
@@ -259,6 +240,9 @@ Concern, Condition, and Obligation are internal discovery dimensions, and they r
 retained Control structure remains the structure governed by `control-record.md`: identifier,
 user-approved title, status, `nfrs`, statement, and rationale.
 
+When a recommendation is accepted, preserve its accepted grounding in the optional `## Provenance`
+body section governed by `control-record.md`; never place provenance in frontmatter.
+
 Before single-Control discovery, inspect the active response for multiple distinct obligations. Preserve
 explicit user grouping. When obligations are explicitly separate, process them sequentially in user-provided
 order. When grouping is unclear, ask exactly one grouping question and do not partially refine one
@@ -284,16 +268,18 @@ When Profile is owner-Blocked, the active Profile-dependent action returns `Acti
 with the owner-provided reason. Other unavailable optional context is excluded. A complete direct obligation is not blocked by absent optional context. Applying context does not create an additional
 question when active evidence already supports the decision.
 
-After a successful verified creation in setup/configure, ask exactly:
+After a successfully created Control in setup/configure, ask exactly:
 
-**Would you like to define another Control, ask for suggestions, or finish?**
+**Are there any other concerns or safeguards you'd like to establish?**
+
+If you'd like additional suggestions or help working through them, just let me know.
 
 A direct Concern, Condition, or Obligation is evaluated immediately. An affirmative response without
 new evidence asks one broad Concern question. A suggestion request invokes the existing suggestion
 behavior, and `I don't know` or equivalent uncertainty begins guided discovery. Explicit finish returns
 `Collection Result: Finished`. Pause, cancellation, or interruption ends the interaction using `New
 interaction` resume semantics. Direct `add` does not display this prompt and terminates after its one
-verified Control result.
+Control result.
 
 Before presenting a user-override proposal, explain that the wording is not clear enough to check
 whether it is being followed and offer one concrete refinement opportunity. If the user adopts the
@@ -307,50 +293,33 @@ complete proposal.
 
 ### Control Review Output Contract
 
-Controls presents one complete Control proposal at a time with Title, Statement, and Rationale.
-Proposal decisions are Accept, Correct, Replace, Reject, or Cancel. Natural acceptance authorizes
-one existing Add transaction. That Control is persisted and verified independently; setup/configure
-then continues to another Control or explicit finish. Direct `add` terminates after the one verified
-Control result. Rejection, cancellation, abandonment, interruption, malformed input, and failed
-validation write nothing.
-
-Present a normal proposal with this interaction framing first:
-
-```text
-**Next Action:** Review this proposed Control and accept, correct, replace, or reject it.
-
-**Title:**
-[title]
-
-**Statement:**
-[statement]
-
-**Rationale:**
-[rationale]
-```
-
-Presentation labels are visually distinct from their values. `Next Action` remains interaction framing,
-not a retained Control field. Do not expose identifiers, catalog changes, versions, or transaction mechanics before acceptance. A user
-override preserves the exact approved Statement but is never described as measurable and adds no
-classification field. Generated transient Control titles do not depend on timestamps, randomness,
-environment values, filesystem order, or session state. The generated title remains transient until the
-user accepts the proposal.
+Controls presents one complete materially interpreted user-authored proposal using the captured-Control
+review above. Natural acceptance authorizes one existing Add transaction. Selected recommendations are
+captured directly. Rejection, cancellation, abandonment, interruption, malformed input, and failed
+validation write nothing. A user override preserves the exact approved Statement without adding a
+classification field.
 
 Before allocation, revalidate the authoritative baseline, catalog, allocation state, and final-proposal overlap. Name exact duplicates and decision-changing overlaps, invalidate prior confirmation, and require renewed validation; unrelated overlap does not invalidate confirmation. Preserve permanent `CTLXXXXXX` identifiers, deterministic catalogs, identifier non-reuse, identifier-only `nfrs`, existing version semantics, destructive impact analysis, and explicit confirmation for Remove and Set.
 
-Verify every retained output before claiming creation. A failure preserves the prior verified baseline byte-for-byte and names the unverified output. Each accepted new Control is one Add MINOR increment and one transaction. Reuse writes no record, relationship, identifier, candidate, or version.
+Revalidate the authoritative baseline, catalog, allocation state, and final-proposal overlap before
+persistence. Name exact duplicates and decision-changing overlaps, invalidate prior acceptance, and
+obtain renewed acceptance of the resulting complete proposal. Preserve permanent identifiers,
+deterministic catalogs, identifier non-reuse, identifier-only `nfrs`, existing version semantics,
+destructive impact analysis, and explicit confirmation for Remove and Set. Each accepted new Control is
+one Add MINOR increment and one transaction. Reuse writes no record, relationship, identifier,
+candidate, or version.
 
 ## Control-Derived NFR Candidates
 
-Controls owns only the trigger after a new Control is persistence-verified, deterministic initial
-candidate derivation from that verified Control, the immutable originating `CTLXXXXXX` supplied to
+Controls owns only the trigger after a successfully created new Control, deterministic initial
+candidate derivation from that Control, the immutable originating `CTLXXXXXX` supplied to
 `/highway-nfrs`, and consumption of the NFR owner's candidate-generation result. Derivation uses the
 normalized title and statement in fixed availability, security, performance rule order and excludes
 timestamp, randomness, environment, filesystem order, and session state.
 
-Every persistence-verified new Control receives exactly one durable candidate-classification result.
+Every successfully created new Control receives exactly one candidate-generation result.
 Pause, cancellation, abortion, interruption, or a New interaction does not discard or duplicate that
-result. Derivation begins only after Control persistence verification succeeds; it does not run for
+result. Derivation begins only after Control creation succeeds; it does not run for
 reuse, update, rejected proposals, failed creation, pre-existing Controls, or simply because a later
 interaction begins.
 
@@ -359,137 +328,90 @@ accepted NFR persistence, identifiers, catalog, readiness, and completion claims
 allocate NFR identifiers, create NFR records, mutate the NFR catalog or accepted relationships, or
 declare NFR review outputs. Candidate review remains deferred until setup/configure returns
 `Collection Result: Finished`. Controls consumes the owner result indicating zero candidates,
-available candidates, or `Blocked` generation; a blocked result retains the verified Control and writes
-no partial NFR relationship. No candidate store or durable recovery state is created in Controls, and
-transient `Created Control IDs` are not used as recovery state.
+available candidates, or `Blocked` generation; a blocked result retains the created Control and writes
+no partial NFR relationship. No candidate store or durable recovery state is created in Controls.
 
 ## Workflow
 
-### Step 1: Locate and classify
+### Step 1: Classify action and baseline
 
-Locate `.highway/`, the authoritative Control records and catalog, the requested action, and required
-owner state. An absent Control baseline is a valid `Missing` state: readiness emits `Status: Missing`,
-inspection emits the declared empty inspection result, and setup/configure/add continues through the
-appropriate creation flow without creating a placeholder Control.
+Locate the authoritative Control baseline, classify the requested action, and preserve Missing,
+Complete, and Blocked readiness semantics.
 
-### Step 2: Select action
+### Step 2: Load accepted grounding
 
-After Step 1, evaluate the ordered Action Selection table and select exactly one supported action.
+Load relevant accepted Profile, Business Objective, existing Control, Highway framing, and declared
+external expertise before context-dependent output.
 
-### Step 3: Consult declared context
+### Step 3: Recommend or reuse
 
-For setup/configure/add discovery, after Step 2 consult available declared context before producing
-context-dependent output. Record unavailable optional context and exclude it.
+For setup/configure/add, reuse existing Controls and offer grounded recommendations when available.
 
-### Step 4: Classify and collect
+### Step 4: Process user-authored evidence
 
-After Step 3, resolve obligation grouping and Control-vs-NFR classification, then evaluate Concern,
-Condition, and Obligation evidence with at most one unresolved question or decision.
+Evaluate Concern, Condition, and Obligation as transient evidence, classify Control versus NFR, and
+ask only for missing information.
 
-### Step 5: Build and present proposal
+### Step 5: Route or capture
 
-After Step 4 reaches normal Control-ready evidence or an explicit override route, present one complete
-Control proposal.
+Route NFR-shaped evidence to NFRs, capture selected recommendations directly, and review materially
+interpreted user-authored Controls.
 
-### Step 6: Revalidate, persist, and verify
+### Step 6: Revalidate and persist
 
-After Step 5 acceptance, revalidate authoritative state and overlap, perform one Add transaction, and
-verify every covered retained Control output.
+Revalidate duplicates and overlap, then persist the accepted Control transaction atomically while
+preserving identifier, catalog, and destructive-action safeguards.
 
-### Step 7: Derive NFR candidates
+### Step 7: Invoke NFR owner
 
-After Step 6 succeeds for a new Control, invoke deterministic candidate derivation and consume the
-canonical `/highway-nfrs` owner candidate-generation result.
+After a successfully created new Control, invoke the NFR-owner candidate-generation action once and
+consume only its declared result.
 
 ### Step 8: Continue or finish
 
-After Step 7, setup/configure asks the exact continuation question. Direct Add terminates instead of
-opening multi-Control continuation.
+For setup/configure, continue until explicit finish; direct add terminates after one Control.
 
 ### Step 9: Preserve ownership
 
-After Steps 1 through 8, preserve Controls ownership and defer NFR-owned responsibilities to
-`/highway-nfrs`.
+Keep Control readiness and persistence with Controls and all NFR candidate lifecycle responsibilities
+with `/highway-nfrs`.
 
 ## Verification
 
-Confirm every Control is under `library/governance/`, catalog identifiers match records, the next identifier
-is safe, an unchanged baseline produces an identical catalog, and a transaction failure preserves all
-affected bytes. Record absent or malformed declared context in the verification result and confirm it was
-excluded without substituted content. Confirm setup/configure emits the Controls Action Result according
-to its declared contract and that readiness remains a separate persisted-baseline result. Confirm Controls
-does not infer collection completion from readiness `Complete`, and that explicit finish ends collection.
+Confirm retained Controls follow the shared record and catalog templates, including optional body-only
+provenance and unchanged frontmatter. Confirm readiness preserves Missing, Complete, and Blocked
+semantics and remains separate from collection completion.
 
-Verify the exact purpose sentence, exact Controls opening, supplied Obligation bypass, Concern-only and
-Concern-plus-Condition discovery, complete Obligation direct-to-proposal, ambiguous and clearly NFR-shaped
-routing, multiple-obligation grouping, one unresolved question or decision, no discovery progress labels,
-the exact zero-suggestion fallback, suggestion adoption boundary, and active-user context precedence.
-Verify reuse without mutation, exact duplicate and semantic overlap handling, the user-override advice,
-refinement, retention, and acceptance path, the exact continuation prompt, direct Add termination,
-non-terminal `Continue`, explicit `Finished`, and New interaction reset.
+Confirm discovery asks for missing information rather than missing phrasing, stops when accepted
+evidence supports a Control, preserves Control-versus-NFR classification, and keeps Concern,
+Condition, and Obligation transient. Confirm recommendations use accepted context or declared
+external expertise, do not imply applicability or compliance, preserve provenance when retained, and
+selected recommendations are captured directly.
 
-Verify one Add MINOR increment per accepted Control, persistence verification before creation completion,
-candidate derivation only after verification, no derivation for reuse/update/rejection/failure/pre-existing
-Controls, durable candidate survival without duplicate derivation, blocked generation retaining the Control
-without a partial NFR relationship, and NFR-owned review/persistence. Verify successful Control mutations
-write only `library/governance/controls/CTLXXXXXX.md` and `library/governance/controls.md`. Verify the
-declared direct mutation result fields and order for Add, Update, Remove, and Set, and verify the declared
-proposal fields and order. Verify the Controls Action Result, Readiness Result, unchanged mutation results,
-empty inspection result, and exact zero-Control terminal result. Preserve deterministic catalog bytes and
-absent or malformed context handling.
+Confirm materially interpreted user-authored Controls use the captured-Control review, Rationale is
+synthesized, setup/configure uses the exact continuation wording, explicit finish ends collection,
+and direct add remains single-Control. Confirm duplicate/overlap handling, identifiers, deterministic
+catalogs, atomic persistence, and destructive safeguards remain intact.
 
-The Feature 094 compliance review evaluates these phases separately: adaptive discovery, proposal
-validation, Control persistence, destructive actions, read-only readiness/inspection, Control-derived NFR
-candidate generation, and the deferred NFR review boundary. The review explicitly includes, according to
-applicability, P11.1-P11.4, P12.5-P12.12, X1.6, and X2.1-X2.31. For every applicable P or X rule, record
-exactly `PASS`, `FAIL`, or `N/A` with the evidence required by the Constitution and permitted N/A
-conditions. List human-review items separately in `DEFERRED`. Release requires zero `FAIL` and no
-unresolved required `DEFERRED` entry. Use the Skills Constitution for that review.
+Confirm post-write persistence verification and generic Constitution/Experience Standard restatements
+are absent. Confirm a successfully created new Control invokes only the declared NFR-owner
+candidate-generation boundary and that Controls does not duplicate NFR internals.
 
-Because Controls handles authentication, authorization, input handling, and retained file writes, the
-Security Gate applies. Security-affecting guidance is grounded by [AS-2: A03:2021 Injection], does not
-disable verification or bypass input validation, and requires suspected vulnerabilities to be reported
-rather than silently altered. The Maintainability Gate also applies: when implementation work modifies
-retained source/code files and comments are applicable, require a comment only when it states intent not
-already expressed by adjacent content. Never insert comments into user-owned Control statements or
-rationales merely to satisfy the gate, and keep retained structure governed by the shared Control template.
-
-### Security Gate check
-
-`Security Gate Check: verify the skill contains [AS-2: A03:2021 Injection], contains no instruction to disable verification or bypass input validation, and maps suspected-vulnerability handling to Error Handling.`
-
-### Maintainability Gate check
-
-`Maintainability Gate Check: verify retained-source/code comment guidance requires comments only for intent not expressed by adjacent content and never requires comments that merely restate adjacent content.`
+The verification checks are limited to the Control-specific contracts above. Generic Constitution,
+Experience Standard, and development-governance checks remain owned by those documents.
 
 ## Error Handling
 
-Every Workflow step has one mapped action. `fall back` destinations are named workflow steps or owner
-identifiers.
+Use the Constitution's common failure model. Control-specific exceptions are:
 
-| Step | Failure detection condition | Action | Destination or result |
-|---|---|---|---|
-| 1 | The required project root cannot be resolved from the declared input | escalate | Obtain the project root before continuing |
-| 1 | A required declared input other than the project root is absent or self-contradictory | escalate | Obtain clarification before continuing |
-| 1 | A supplied project root has been resolved and does not contain the required `.highway/` structure | abort | Report the actionable path and context |
-| 2 | Action is unsupported or ambiguous | abort | Action selection |
-| 3 | Profile owner is `Blocked` for a Profile-dependent action | abort | Controls Blocked result using the Profile-owner reason, without reclassifying Profile |
-| 3 | A declared owner result is malformed | abort | Blocked owner result with the concrete reason |
-| 4 | The user's discovery input is malformed and an additional attempt remains | retry | Step 4; maximum 1 additional attempt |
-| 4 | The user's discovery input is malformed and the retry limit is exhausted | abort | Non-success result; preserve retained state |
-| 4 | A declared owner result is malformed | abort | Blocked owner result with the concrete reason; do not retry as user discovery |
-| 4 | Control-vs-NFR classification remains unresolved after evaluating the supplied evidence | fall back | Step 4 bounded user classification question; NFR choice routes to `/highway-nfrs`, Control choice continues discovery, and malformed ambiguity uses the Step 4 retry path |
-| 5 | Proposal requires invented facts | abort | Step 4 |
-| 5 | User rejects, cancels, abandons, or interrupts | abort | New interaction with no write |
-| 6 | Pre-write revalidation discovers an exact duplicate or semantic overlap that changes the proposal decision | fall back | Step 5 for renewed user validation; name the overlapping Control, invalidate prior confirmation, re-evaluate changed evidence, present the complete proposal again when required, and require renewed acceptance |
-| 6 | Persistence fails | abort | Prior verified baseline, no write claim |
-| 6 | Persistence verification fails | abort | Prior verified baseline and named unverified output |
-| 3 | An optional declared Repository Context source is unavailable or malformed | fall back | Step 4 with that source recorded as unavailable and excluded from interpretation |
-| 7 | The canonical NFR owner returns `Blocked` for candidate generation after the new Control has been persistence-verified | abort | For setup/configure, return the exact five-field result: `Action Status: Blocked`; `Collection Result: Continue` because `Finished` requires explicit user intent; `Created Control IDs: <cumulative active-interaction list including the verified Control>`; `Next Action: None`; `Blocking Reason: <non-empty NFR-owner reason>`. Preserve the verified Control and catalog transaction, write no partial NFR relationship, and claim no downstream NFR completion. For direct `add`, preserve the verified Add result while surfacing the blocked downstream NFR condition according to the direct mutation contract |
-| 8 | Continuation input is malformed and an additional attempt remains | retry | Step 8; maximum 1 additional attempt |
-| 8 | Continuation input is malformed and the retry limit is exhausted | abort | Abort the active interaction under New interaction semantics |
-| 9 | Unsupported ownership transfer is requested | abort | `/highway-nfrs` owner boundary |
-| 6 | A suspected vulnerability is discovered during Control processing | abort | Report the suspected vulnerability, do not silently alter it, and preserve affected retained state until the owning workflow or user resolves it |
+- malformed Control record, catalog, or allocation state → Blocked without mutation;
+- unresolved update or remove target → stop and identify the target;
+- unresolved Control-versus-NFR classification → ask the bounded classification question;
+- destructive Remove or Set → use the Experience Standard's confirmation behavior;
+- NFR candidate-generation Blocked → preserve the successfully created Control, create no partial
+  NFR relationship, and consume the NFR-owner result.
+
+A failed mutation cannot report success.
 
 ## Example
 

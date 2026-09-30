@@ -68,7 +68,7 @@ fi
 # --- Candidate and review contract -------------------------------------------------------------
 for required in \
 	"candidate-generation state" \
-	"receives exactly one durable" \
+	"receives exactly one candidate-generation result" \
 	"deferred until" \
 	"Collection Result: Finished" \
 	"normalized title and statement" \

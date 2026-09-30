@@ -22,10 +22,15 @@ nfrs: []
 <user-provided statement>
 
 <user-provided rationale>
+
+## Provenance
+
+<accepted recommendation grounding source, when applicable>
 ```
 
-The placeholders represent user-owned values. The template governs the presence and ordering of
-the record structure, not the meaning or quality of those values.
+The placeholders represent user-owned values. The `## Provenance` section is optional and belongs in
+the record body; it MUST NOT be added to frontmatter. The template governs the presence and ordering
+of the record structure, not the meaning or quality of those values.
 
 The `nfrs` field is an identifier-only relationship list. Direct Control creation starts empty;
 accepted Control-derived NFRs may append immutable `NFRXXXXXX` identifiers without changing this
