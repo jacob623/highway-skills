@@ -42,16 +42,29 @@ for text in \
 	"authoritative baseline" \
 	"duplicate" \
 	"one Add MINOR" \
-	"revalidate" \
+	"Revalidate" \
 	"user-override" \
 	"Reuse writes no record" \
 	"deterministic initial" \
 	"candidate derivation" \
 	"NFR owner" \
-	"## Provenance" \
+	"## Recommendation Grounding" \
 	"Ask for missing information, not missing phrasing"; do
 	require_text "$SKILL" "$text"
 done
+
+for retired_text in \
+	"## Provenance" \
+	"Before allocation, revalidate the authoritative baseline" \
+	"A failed mutation cannot report success." \
+	"Created Control IDs"; do
+	if grep -Fq "$retired_text" "$SKILL"; then
+		echo "FAIL: retired Controls contract text remains: $retired_text"
+		fail=1
+	fi
+done
+
+require_text "$SKILL" "Revalidate the authoritative baseline, catalog, allocation state, and final-proposal overlap before"
 
 if grep -Eq 'Process these categories in order|Security; Availability and Resilience|Completed Categories|Current Category' "$SKILL"; then
 	echo "FAIL: legacy category-driven onboarding remains in the Controls setup path"

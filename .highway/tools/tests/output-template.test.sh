@@ -152,10 +152,18 @@ if [[ -f "$CONTROL_TEMPLATE" ]]; then
 	require_text "$CONTROL_TEMPLATE" "id: CTLXXXXXX"
 	require_text "$CONTROL_TEMPLATE" "nfrs: []"
 	require_text "$CONTROL_TEMPLATE" "status: active"
+	require_text "$CONTROL_TEMPLATE" "version: 2.0.0"
 	require_text "$CONTROL_TEMPLATE" "## File Frontmatter"
 	require_text "$CONTROL_TEMPLATE" "## Body"
 	require_text "$CONTROL_TEMPLATE" "<user-provided statement>"
 	require_text "$CONTROL_TEMPLATE" "<user-provided rationale>"
+	require_text "$CONTROL_TEMPLATE" "## Recommendation Grounding"
+	require_text "$CONTROL_TEMPLATE" "<recommendation grounding sources that influenced the accepted Control, when applicable>"
+	require_text "$CONTROL_TEMPLATE" "not itself organizational policy"
+	if grep -Fq "## Provenance" "$CONTROL_TEMPLATE" || grep -Fq "provenance" "$CONTROL_TEMPLATE"; then
+		echo "FAIL: Control template still uses legacy Provenance terminology"
+		fail=1
+	fi
 fi
 if [[ -f "$PROFILE_TEMPLATE" ]]; then
 	require_text "$PROFILE_TEMPLATE" "metadata:"

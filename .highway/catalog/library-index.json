@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-30T12:58:31Z",
+  "generated_at": "2026-09-30T13:42:22Z",
   "entries": [
     {
       "library_type": "template",
@@ -40,7 +40,7 @@
       "library_type": "template",
       "name": "control-record",
       "description": "Complete output skeleton for a retained Control record.",
-      "version": "1.0.0",
+      "version": "2.0.0",
       "source_path": "library/templates/output/control-record.md"
     },
     {

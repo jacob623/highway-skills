@@ -240,8 +240,11 @@ Concern, Condition, and Obligation are internal discovery dimensions, and they r
 retained Control structure remains the structure governed by `control-record.md`: identifier,
 user-approved title, status, `nfrs`, statement, and rationale.
 
-When a recommendation is accepted, preserve its accepted grounding in the optional `## Provenance`
-body section governed by `control-record.md`; never place provenance in frontmatter.
+When a Highway recommendation materially influences an accepted Control, preserve only the sources
+that influenced that recommendation in the optional `## Recommendation Grounding` body section
+governed by `control-record.md`; never place Recommendation Grounding in frontmatter. Recommendation
+Grounding is lineage, not organizational policy, framework applicability, certification, or compliance,
+and directly authored Controls omit it when no Highway recommendation materially influenced them.
 
 Before single-Control discovery, inspect the active response for multiple distinct obligations. Preserve
 explicit user grouping. When obligations are explicitly separate, process them sequentially in user-provided
@@ -298,8 +301,6 @@ review above. Natural acceptance authorizes one existing Add transaction. Select
 captured directly. Rejection, cancellation, abandonment, interruption, malformed input, and failed
 validation write nothing. A user override preserves the exact approved Statement without adding a
 classification field.
-
-Before allocation, revalidate the authoritative baseline, catalog, allocation state, and final-proposal overlap. Name exact duplicates and decision-changing overlaps, invalidate prior confirmation, and require renewed validation; unrelated overlap does not invalidate confirmation. Preserve permanent `CTLXXXXXX` identifiers, deterministic catalogs, identifier non-reuse, identifier-only `nfrs`, existing version semantics, destructive impact analysis, and explicit confirmation for Remove and Set.
 
 Revalidate the authoritative baseline, catalog, allocation state, and final-proposal overlap before
 persistence. Name exact duplicates and decision-changing overlaps, invalidate prior acceptance, and
@@ -379,14 +380,15 @@ with `/highway-nfrs`.
 ## Verification
 
 Confirm retained Controls follow the shared record and catalog templates, including optional body-only
-provenance and unchanged frontmatter. Confirm readiness preserves Missing, Complete, and Blocked
-semantics and remains separate from collection completion.
+Recommendation Grounding and unchanged frontmatter. Confirm readiness preserves Missing, Complete,
+and Blocked semantics and remains separate from collection completion.
 
 Confirm discovery asks for missing information rather than missing phrasing, stops when accepted
 evidence supports a Control, preserves Control-versus-NFR classification, and keeps Concern,
 Condition, and Obligation transient. Confirm recommendations use accepted context or declared
-external expertise, do not imply applicability or compliance, preserve provenance when retained, and
-selected recommendations are captured directly.
+external expertise, do not imply applicability or compliance, preserve Recommendation Grounding only
+when retained recommendation lineage materially influenced the Control, and selected recommendations
+are captured directly.
 
 Confirm materially interpreted user-authored Controls use the captured-Control review, Rationale is
 synthesized, setup/configure uses the exact continuation wording, explicit finish ends collection,
@@ -410,8 +412,6 @@ Use the Constitution's common failure model. Control-specific exceptions are:
 - destructive Remove or Set → use the Experience Standard's confirmation behavior;
 - NFR candidate-generation Blocked → preserve the successfully created Control, create no partial
   NFR relationship, and consume the NFR-owner result.
-
-A failed mutation cannot report success.
 
 ## Example
 

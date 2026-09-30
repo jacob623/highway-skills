@@ -69,9 +69,14 @@ for owner in profile objectives controls nfrs; do
 	done < "$case_file"
 done
 controls_skill="$HIGHWAY_ROOT/skills/highway-controls/SKILL.md"
-for token in 'one Add MINOR' 'identifier non-reuse' 'Collection Result: Continue|Finished' 'revalidate' 'failed mutation' 'cannot report success'; do
+for token in 'one Add MINOR' 'identifier non-reuse' 'Collection Result: Continue|Finished' 'Revalidate'; do
 	if ! grep -Fq "$token" "$controls_skill"; then
 		echo "FAIL: Controls persistence contract missing '$token'"; fail=1
+	fi
+done
+for retired_token in 'A failed mutation cannot report success.' 'failed mutation'; do
+	if grep -Fq "$retired_token" "$controls_skill"; then
+		echo "FAIL: retired Controls persistence contract remains '$retired_token'"; fail=1
 	fi
 done
 
