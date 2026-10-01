@@ -56,5 +56,19 @@ fi
 # Legacy YAML is inert even when present.
 printf '%s\n' 'organization:' '  name: Legacy' > "$fixture_root/profile.yaml"
 if grep -Fq Legacy "$accepted"; then echo 'FAIL: legacy YAML influenced accepted Profile'; fail=1; fi
+
+SKILL="$HIGHWAY_ROOT/skills/highway-profile/SKILL.md"
+for required_text in \
+	'only the accepted cohesive domain narrative' \
+	'acknowledgment and advisory commentary remain transient' \
+	'Accepted paragraph evidence establishes the domain as `discussed`' \
+	'accepting enrichment for an already `discussed` or `bounded` domain does not change readiness' \
+	'persist the retained Profile, and only then return dependent readiness'; do
+	if ! grep -Fq "$required_text" "$SKILL"; then
+		echo "FAIL: Profile lifecycle boundary missing '$required_text'"
+		fail=1
+	fi
+done
+
 if [[ $fail -ne 0 ]]; then exit 1; fi
 echo 'OK: Profile lifecycle contract passes'

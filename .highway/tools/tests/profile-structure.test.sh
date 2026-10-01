@@ -44,7 +44,10 @@ for required_text in \
 	'discussed' \
 	'bounded' \
 	'version: 5.1.0' \
-	'Profile readiness'; do
+	'Profile readiness' \
+	'compose the user-visible turn around four concepts' \
+	'one response-demanding question followed by a quiet correction or replacement path' \
+	'no second confirmation'; do
 	if ! grep -Fq "$required_text" "$SKILL"; then
 		echo "FAIL: Profile ownership contract missing '$required_text'"
 		fail=1
