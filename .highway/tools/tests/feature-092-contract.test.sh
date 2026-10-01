@@ -36,6 +36,8 @@ require_text "$PROFILE" 'ask for the public website using the accepted Repositor
 require_text "$PROFILE" 'The supplied Organization URL is accepted'
 require_text "$PROFILE" 'website-derived Organization Name and other derived facts stay proposed until accepted'
 require_text "$PROFILE" 'continue without exposing the missing retrieval capability'
+require_text "$PROFILE" "### Let's get to know your organization"
+require_text "$PROFILE" 'This helps Highway make more relevant recommendations as we go.'
 require_text "$PROFILE" '**What does [Organization Name] do?**'
 require_text "$PROFILE" '**What is the future vision of [Organization Name]?**'
 require_text "$PROFILE" '**How does [Organization Name] plan to get there?**'
@@ -69,7 +71,7 @@ if grep -Fq '### Repository Name' "$PROFILE"; then
 	echo "FAIL: $PROFILE restates the Context heading skeleton"
 	fail=1
 fi
-require_text "$PROFILE" 'version: 5.0.0'
+require_text "$PROFILE" 'version: 5.1.0'
 if grep -Fq '.highway/tools/validate-profile.sh' "$PROFILE"; then
 	echo "FAIL: $PROFILE still instructs .highway/tools/validate-profile.sh"
 	fail=1

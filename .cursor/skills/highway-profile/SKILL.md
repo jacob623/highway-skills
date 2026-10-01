@@ -4,7 +4,7 @@ description: "Manages the repository-wide organizational Profile and its context
 usage: "Invoke as `/highway-profile` to inspect Profile context, or state setup, view, add, update, remove, or reset."
 compatibility: all
 metadata:
-  version: 5.0.0
+  version: 5.1.0
 ---
 
 ## highway-profile
@@ -64,7 +64,13 @@ The optional Context structure is owned by .highway/library/templates/output/pro
 
 Acquisition follows this order: classify the retained Profile; establish Repository Name when missing; use supported existing-information or website acquisition when available; reuse accepted or accepted-discovered evidence across all four domains; re-evaluate accumulated accepted evidence across all four domains before each unresolved guided question; present a useful grounded recommendation instead of that canonical question when one exists; ask the canonical question only when grounding is insufficient; persist accepted evidence; report readiness.
 
-Begin first-time Setup with:
+When no retained Profile exists, begin first-time Setup with this one-time introduction:
+
+### Let's get to know your organization
+
+This helps Highway make more relevant recommendations as we go.
+
+Then ask:
 
 **What would you like to call your Highway repository?**
 
@@ -76,7 +82,15 @@ Unresolved domains use one canonical question: Identity `**What does [Organizati
 
 ## Enrichment
 
-Optional enrichment may continue after a domain is `discussed` or `bounded`. Vision recommendations use accepted Identity, website-derived accepted information, existing Vision evidence, and other accepted Profile context across Future State, Impact, Reach / Scale, Position, and Experience / Reputation. Competitive Path recommendations use accepted Profile evidence across Customer / Participant, Offering, Market / Reach, Differentiation, Operations, and Capability Development. Guiding Principles recommendations use accepted Identity, Vision, Competitive Path, website-derived accepted information, and previously accepted principles across People, Trust, Quality, Simplicity, Change, Stewardship, and Autonomy. Coverage of every category is not required, those names are not retained, and optional enrichment never changes readiness by itself, blocks continuation, or requires another question. Profile does not store a small-business, enterprise, maturity, persona, or advisory classification.
+Optional enrichment may continue after a domain is `discussed` or `bounded`. When accepted evidence supports a useful synthesis, present one concise cohesive paragraph for the domain rather than several fragments. Vision recommendations use accepted Identity, website-derived accepted information, existing Vision evidence, and other accepted Profile context across Future State, Impact, Reach / Scale, Position, and Experience / Reputation. Competitive Path recommendations use accepted Profile evidence across Customer / Participant, Offering, Market / Reach, Differentiation, Operations, and Capability Development. Guiding Principles recommendations use accepted Identity, Vision, Competitive Path, website-derived accepted information, and previously accepted principles across People, Trust, Quality, Simplicity, Change, Stewardship, and Autonomy. Coverage of every category is not required, those names are not retained, and optional enrichment never changes readiness by itself, blocks continuation, or requires another question. Profile does not store a small-business, enterprise, maturity, persona, or advisory classification.
+
+Use these Profile-specific paragraph forms when the evidence supports them:
+
+- Vision: `Based on what I know about [Organization Name], I could see your vision as [grounded Vision paragraph].`
+- Competitive Path: `Based on that direction, [Organization Name] could pursue it by [grounded Competitive Path paragraph].`
+- Guiding Principles: `From what you've shared, [Organization Name] seems guided by [grounded Guiding Principles paragraph].`
+
+Each paragraph contains only accepted-evidence claims and is offered as one reviewable recommendation. Generic acceptance, alternatives, clarification handling, and presentation follow the Highway Experience Standard. When no useful cohesive paragraph can be grounded, ask the applicable canonical question. Accepted paragraph evidence establishes the domain as `discussed` and prevents that domain's canonical question; accepting enrichment for an already `discussed` or `bounded` domain does not change readiness.
 
 ## Operations
 

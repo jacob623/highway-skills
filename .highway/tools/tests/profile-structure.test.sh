@@ -43,7 +43,7 @@ for required_text in \
 	'not_discussed' \
 	'discussed' \
 	'bounded' \
-	'version: 5.0.0' \
+	'version: 5.1.0' \
 	'Profile readiness'; do
 	if ! grep -Fq "$required_text" "$SKILL"; then
 		echo "FAIL: Profile ownership contract missing '$required_text'"
