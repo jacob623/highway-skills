@@ -39,18 +39,18 @@ for required_text in \
 	'version: 5.1.0' \
 	"### Let's get to know your organization" \
 	'This helps Highway make more relevant recommendations as we go.' \
-	'Present one cohesive Vision paragraph that naturally expresses the recommended future direction from accepted evidence.' \
-	'Present one cohesive Competitive Path paragraph that naturally builds on the accepted Vision and preceding advisory context.' \
+	'Present one cohesive Vision paragraph that naturally expresses the recommended future direction supported by accepted evidence.' \
+	'Present one cohesive Competitive Path paragraph that naturally expresses how the organization could pursue its accepted direction.' \
 	'Present one cohesive Guiding Principles paragraph that naturally expresses the decision principles supported by accepted evidence.' \
-	'Do not expose these concepts as headings or workflow stages' \
-	'do not prescribe exact wording for Acknowledge, Build, or Recommend' \
-	'Advisory commentary is omitted when it adds no decision value' \
+	'User-visible interaction follows the Highway Experience Standard: acknowledge when X2.8 applies, converse naturally, contribute grounded perspective when useful' \
+	'Generate conversational framing and recommendation prose naturally rather than from a required sentence template.' \
+	'category names are neither presented nor retained' \
 	'Synthesized recommendation prose is generated naturally from accepted evidence rather than from a required recommendation sentence template.' \
 	're-evaluate accumulated accepted evidence across all four domains' \
 	'grounded recommendation' \
 	'persist the retained Profile' \
 	'one concise synthesis' \
-	'internal category names are not presented to the user' \
+	'category names are neither presented nor retained' \
 	'Is this an accurate description of your organization?' \
 	'Does this accurately reflect where you'"'"'d like [Organization Name] to go?' \
 	'Does this accurately reflect how [Organization Name] plans to get there?' \

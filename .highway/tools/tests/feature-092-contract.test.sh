@@ -47,8 +47,8 @@ require_text "$PROFILE" 'A domain is not asked its canonical question when accep
 require_text "$PROFILE" 'Future State, Impact, Reach / Scale, Position, and Experience / Reputation'
 require_text "$PROFILE" 'Customer / Participant, Offering, Market / Reach, Differentiation, Operations, and Capability Development'
 require_text "$PROFILE" 'People, Trust, Quality, Simplicity, Change, Stewardship, and Autonomy'
-require_text "$PROFILE" 'those names are not retained'
-require_text "$PROFILE" 'optional enrichment never changes readiness by itself'
+require_text "$PROFILE" 'category names are neither presented nor retained'
+require_text "$PROFILE" 'Optional enrichment does not change readiness by itself'
 # Superseded behavior: the Profile skill restated that a selected recommendation is accepted without a second confirmation.
 if grep -Fq 'a selected recommendation is accepted without a second confirmation' "$PROFILE"; then
 	echo "FAIL: $PROFILE still restates recommendation-selection acceptance"

@@ -60,7 +60,7 @@ if grep -Fq Legacy "$accepted"; then echo 'FAIL: legacy YAML influenced accepted
 SKILL="$HIGHWAY_ROOT/skills/highway-profile/SKILL.md"
 for required_text in \
 	'only the accepted cohesive domain narrative' \
-	'acknowledgment and advisory commentary remain transient' \
+	'Acknowledgment, explanation, reflection, and advisory commentary remain transient' \
 	'Accepted paragraph evidence establishes the domain as `discussed`' \
 	'accepting enrichment for an already `discussed` or `bounded` domain does not change readiness' \
 	'persist the retained Profile, and only then return dependent readiness'; do

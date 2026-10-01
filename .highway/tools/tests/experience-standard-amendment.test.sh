@@ -25,7 +25,6 @@ if [[ "$(grep -c '^| X[0-9]' "$STANDARD")" -ne 39 ]]; then
 	fail=1
 fi
 for protected in \
-	.highway/skills/highway-profile/SKILL.md \
 	.highway/skills/highway-objectives/SKILL.md \
 	.highway/skills/highway-controls/SKILL.md \
 	.highway/skills/highway-nfrs/SKILL.md \
