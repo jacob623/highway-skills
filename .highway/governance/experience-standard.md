@@ -1,15 +1,15 @@
 <!--
 Sync Impact Report
-Version change: 4.0.0 → 5.0.0 (MAJOR), 2026-10-01
-Bump rationale: X1.7, X2.9, and X2.13 are redefined, and previously conforming presentation can now fail. Redefining a rule is MAJOR. Strengthening an obligation so previously conforming work fails is MAJOR.
+Version change: 5.0.0 → 6.0.0 (MAJOR), 2026-10-01
+Bump rationale: X1.7, X2.9, X2.13, X2.25, X2.27, X2.28, X2.33, X2.34, and X2.35 are redefined or strengthened, and previously conforming presentation can now fail. Redefining a rule or strengthening an obligation so previously conforming work fails is MAJOR.
 Changed elements:
-- Version footer: 4.0.0 → 5.0.0. Ratified stays 2026-09-08. Last Amended becomes 2026-10-01.
-- Redefined rule rows: X1.7 and X2.9. X2.13 and X2.25 keep their rule sentences; their observables change.
-- Added rule rows: X2.32, X2.33, X2.34, and X2.35. Rule count: 35 → 39.
-- Interaction model, contextual guidance, and non-normative examples match the redefined presentation.
-- Prior sync impact reports are removed from this document. Repository history keeps them.
-Unchanged elements: X2.3, X2.7, X2.16, X2.17, X2.18, X2.19, X2.20, X2.21, X2.22, X2.27, X2.28, X2.29, X2.30, X2.31, and every other current rule not named above.
-Self-application review: this amendment cites the Skills Constitution for non-restatement and does not copy a constitution rule sentence.
+- Version footer: 5.0.0 → 6.0.0. Ratified stays 2026-09-08. Last Amended remains 2026-10-01.
+- Redefined or strengthened rule rows: X1.7, X2.9, X2.13, X2.25, X2.27, X2.28, X2.33, X2.34, and X2.35.
+- Existing rule count remains 39; no X identifier is added, retired, reused, or renumbered.
+- Interaction model, contextual guidance, and non-normative examples now match the current owner and Setup contracts.
+- Prior sync impact reports remain represented by repository history; this document carries one current report.
+Unchanged elements: X2.3, X2.7, X2.16, X2.17, X2.18, X2.19, X2.20, X2.21, X2.22, X2.29, X2.30, X2.31, and every other current rule not named above.
+Self-application review: D1.3 and D1.4 PASS. This amendment cites the Skills Constitution for non-restatement and does not copy a constitution rule sentence.
 -->
 
 # Highway Experience Standard
@@ -110,7 +110,7 @@ Each row states one obligation. A rule that does not arise for a given skill is 
 | ID | Rule | Observable | Tier |
 |---|---|---|---|
 | X1.6 | A structured user-facing field MUST visually distinguish its Presentation Label from its value. | In Structured Information, each named field has a distinct label adjacent to its value. | [agent-checkable] |
-| X1.7 | Setup presentation MUST keep one response-demanding question or decision in the final interaction block. | The final interaction block contains one response-demanding question or decision; Decision Context governed by X2.9 may follow that question. | [agent-checkable] |
+| X1.7 | Setup presentation MUST keep at most one response-demanding question or decision in the final interaction block. | The final interaction block contains no more than one response-demanding question or decision; Decision Context governed by X2.9 may follow that question. | [agent-checkable] |
 
 ### X2 — Interaction
 
@@ -148,7 +148,7 @@ Each row states one obligation. A rule that does not arise for a given skill is 
 | X2.30 | Evidence that cannot be recommended or inferred MUST stay unknown. | The response does not fill that evidence with a guess. | [agent-checkable] |
 | X2.31 | Optional enrichment MUST NOT block continuation unless the owning domain requires it for validity. | The person can continue when the enrichment is optional. | [agent-checkable] |
 | X2.32 | Recommendation choice wording MUST match the number of recommendations shown. | One recommendation uses singular accept/change/alternative wording; multiple recommendations permit one, several, all, or a user-authored alternative. | [agent-checkable] |
-| X2.33 | A completed guided Setup domain MUST close with one concise synthesis when accepted context from that domain can be meaningfully summarized. | Before the orchestrator enters the next active domain, the owner emits at most one concise user-relevant synthesis of what Highway learned or established; it contains no machine status, owner result, implementation detail, or new question. | [agent-checkable] |
+| X2.33 | A completed guided Setup domain MUST close with one concise synthesis when accepted context from that domain can be meaningfully summarized. | Before the orchestrator enters the next active domain, the owner emits one concise user-relevant synthesis of what Highway learned or established; it contains no machine status, owner result, implementation detail, or new question. | [agent-checkable] |
 | X2.34 | Machine-consumable owner results MUST NOT appear in normal orchestrated user-visible output. | Readiness, mutation, action, and collection result fields consumed only for orchestration are absent unless the person requested them or needs them to act. | [agent-checkable] |
 | X2.35 | A delegated guided interaction MUST NOT expose a machine result after its final user-facing acknowledgment or question. | After the user's final guided decision, only user-relevant closure, synthesis, or the orchestrator's next-domain transition is visible. | [agent-checkable] |
 
@@ -185,6 +185,31 @@ Accepted information compounds during a guided interaction. Each accepted answer
 
 A workflow should become more specific as accepted context accumulates rather than return to generic questioning.
 
+### Constructive Advisory (Non-Normative Guidance)
+
+Highway may contribute useful thinking beyond literal request fulfillment when grounded context supports it.
+
+Useful advisory contribution can include:
+
+- an implication of what the person just said;
+- a grounded recommendation;
+- a meaningful alternative;
+- a relevant tradeoff;
+- a concern or inconsistency;
+- a downstream consequence;
+- a connection to accepted Highway knowledge.
+
+Highway should not manufacture disagreement or commentary merely to extend the conversation.
+
+A useful conversational pattern is:
+
+direct response
+→ useful observation, when one exists
+→ grounded recommendation, alternative, or concern, when one exists
+→ required question or decision, when the workflow needs one
+
+Additional commentary should create decision value. Brevity is not the goal by itself; useful, context-aware conversation is.
+
 ### Context Awareness (Non-Normative Guidance)
 
 | Generic guidance | Context-aware guidance |
@@ -201,7 +226,7 @@ These examples are illustrative and do not add rule IDs.
 | Scenario | Non-compliant | Compliant |
 |---|---|---|
 | Interactive collection | "I will route your request through validation, then allocate the next stages. What are the owner, deadline, and priority?" | "What is the owner?" |
-| Decision Context | `**Why it matters:**` before `**What would success look like?**` | `**What would success look like?**` before `**Why it matters:**` and one concise explanation |
+| Decision Context | `**Why it matters:**` before `**What outcome should this objective achieve?**` | `**What outcome should this objective achieve?**` before `**Why it matters:**` and one concise explanation |
 | Owner result | `Status: Complete`, `Summary: One Objective has been captured.`, and `Next Action: None` | I've captured that objective. We can build on it in the next part of Setup. |
 | Progress | "The evaluator is traversing its dispatch graph and applying internal checks." | "Checking the repository controls now." |
 
@@ -210,6 +235,10 @@ These examples are illustrative and do not add rule IDs.
 Profile enrichment, Objectives, Controls, and Non-Functional Requirements share the meaning in X2.25. A single recommendation, bullets, or numbers can all carry that meaning. This sketch is not a required layout.
 
 Grounded in what Highway already knows about the accepted context.
+
+When one recommendation is shown: "Would you like to accept this, change it, or provide your own?"
+
+When several recommendations are shown:
 
 - Retain evidence for the stated period.
 - Name an owner for the control.
@@ -260,4 +289,4 @@ Rule IDs are stable across amendments; a retired ID is never reused.
 
 Every amendment records a review against the Highway Skills Constitution's non-restatement rules.
 
-**Version**: 5.0.0 | **Ratified**: 2026-09-08 | **Last Amended**: 2026-10-01
+**Version**: 6.0.0 | **Ratified**: 2026-09-08 | **Last Amended**: 2026-10-01
