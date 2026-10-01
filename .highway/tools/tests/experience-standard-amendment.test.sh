@@ -5,11 +5,37 @@ set -u
 # Artifact classes: source-document
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+REPO_ROOT="$(cd "$HIGHWAY_ROOT/.." && pwd)"
 fail=0
 STANDARD="$HIGHWAY_ROOT/governance/experience-standard.md"
 # Superseded behavior: the runtime document was required to keep '3.0.0 → 4.0.0 (MAJOR)'.
-for token in '5.0.0 → 6.0.0 (MAJOR)' '**Version**: 6.0.0 | **Ratified**: 2026-09-08 | **Last Amended**: 2026-10-01' 'Every user-visible response excludes Implementation details unless requested.' 'X2.7' 'X2.8' 'X2.9' 'X2.10'; do
+for token in '6.0.0 → 7.0.0 (MAJOR)' '**Version**: 7.0.0 | **Ratified**: 2026-09-08 | **Last Amended**: 2026-10-01' 'Every user-visible response excludes Implementation details unless requested.' 'X2.7' 'X2.8' 'X2.9' 'X2.10'; do
 	grep -Fq "$token" "$STANDARD" || { echo "FAIL: Experience Standard missing $token"; fail=1; }
+done
+for token in \
+	'Version change: 6.0.0 → 7.0.0 (MAJOR)' \
+	'**Version**: 7.0.0 | **Ratified**: 2026-09-08 | **Last Amended**: 2026-10-01' \
+	'#### Conversational Voice (Non-Normative Guidance)' \
+	'| X2.8 | When accepted information changes Highway'"'"'s understanding, interpretation, recommendation, or next user-relevant action, the next response MUST acknowledge what changed.' \
+	'| X2.8 | When accepted information changes Highway'"'"'s understanding, interpretation, recommendation, or next user-relevant action, the next response MUST acknowledge what changed. | The next response connects the accepted information to Highway'"'"'s updated understanding, interpretation, recommendation, or next action; it is not acknowledgment-only and does not merely repeat the person'"'"'s words. | [agent-checkable]'; do
+	grep -Fq "$token" "$STANDARD" || { echo "FAIL: Feature 120 missing $token"; fail=1; }
+done
+if [[ "$(grep -c '^| X[0-9]' "$STANDARD")" -ne 39 ]]; then
+	echo 'FAIL: Experience Standard rule inventory must remain 39 rules'
+	fail=1
+fi
+for protected in \
+	.highway/skills/highway-profile/SKILL.md \
+	.highway/skills/highway-objectives/SKILL.md \
+	.highway/skills/highway-controls/SKILL.md \
+	.highway/skills/highway-nfrs/SKILL.md \
+	.highway/skills/highway-setup/SKILL.md \
+	.highway/library/knowledge/highway-identity.md \
+	.highway/library/templates/output/profile-record.md; do
+	if git -C "$REPO_ROOT" diff --name-only -- "$protected" | grep -q .; then
+		echo "FAIL: protected path changed: $protected"
+		fail=1
+	fi
 done
 # Feature 101 evidence-first rows. Superseded X2.2 behavior: the first emitted content is a greeting or required question.
 for token in \
@@ -55,8 +81,8 @@ if grep -Fq '| X2.9 | Decision Context MUST use the label "**Why it matters:**" 
 	echo 'FAIL: former X2.9 explanation-before-question rule is still present'
 	fail=1
 fi
-if grep -Fq '3.0.0 → 4.0.0 (MAJOR)' "$STANDARD"; then
-	echo 'FAIL: superseded 4.0.0 Experience Standard report is still present'
+if grep -Fq '5.0.0 → 6.0.0 (MAJOR)' "$STANDARD"; then
+	echo 'FAIL: superseded 6.0.0 Experience Standard report is still present'
 	fail=1
 fi
 if [[ "$(grep -cF 'Sync Impact Report' "$STANDARD")" -ne 1 ]]; then

@@ -36,17 +36,24 @@ if grep -q '^### Interactive Workflow UX Contract$' "$EXPERIENCE_STANDARD"; then
 	fail=1
 fi
 require_text "$EXPERIENCE_STANDARD" '### Interaction model'
+require_text "$EXPERIENCE_STANDARD" '#### Conversational Voice (Non-Normative Guidance)'
+require_text "$EXPERIENCE_STANDARD" 'Use natural first-person language when referring to the current interaction'
+require_text "$EXPERIENCE_STANDARD" 'The person should experience one increasingly informed Highway advisor across participating skills'
+require_text "$EXPERIENCE_STANDARD" 'Conversational continuity and Constructive Advisory serve different purposes.'
+require_text "$EXPERIENCE_STANDARD" 'When X2.8 applies, acknowledgment is required. Additional advisory contribution remains conditional on having something useful to contribute.'
 require_text "$EXPERIENCE_STANDARD" '1. Understand available accepted context.'
 require_text "$EXPERIENCE_STANDARD" '2. Reuse existing information when it satisfies the need.'
 # Superseded behavior: the interaction model discovered information and then offered recommendations without an acceptance and re-evaluation step.
 require_text "$EXPERIENCE_STANDARD" '3. Discover or import existing authoritative information when supported.'
 require_text "$EXPERIENCE_STANDARD" '4. Accept or validate discovered information at the applicable boundary.'
-require_text "$EXPERIENCE_STANDARD" '5. Re-evaluate accumulated accepted context for grounded recommendations.'
-require_text "$EXPERIENCE_STANDARD" '6. Offer grounded recommendations when Highway can responsibly help.'
-require_text "$EXPERIENCE_STANDARD" '7. Ask one clear question only when useful grounded recommendations do not resolve the need.'
-require_text "$EXPERIENCE_STANDARD" '8. Capture accepted information.'
-require_text "$EXPERIENCE_STANDARD" '9. Re-evaluate accumulated accepted context before the next guided question.'
-require_text "$EXPERIENCE_STANDARD" '10. Continue until the person is satisfied or no required work remains.'
+require_text "$EXPERIENCE_STANDARD" "5. When accepted information changes Highway's understanding or next behavior, acknowledge what changed."
+require_text "$EXPERIENCE_STANDARD" '6. Re-evaluate accumulated accepted context for grounded recommendations.'
+require_text "$EXPERIENCE_STANDARD" '7. Contribute a useful implication, alternative, tradeoff, concern, or connection when grounded context supports one.'
+require_text "$EXPERIENCE_STANDARD" '8. Offer grounded recommendations when Highway can responsibly help.'
+require_text "$EXPERIENCE_STANDARD" '9. Ask one clear question only when useful grounded recommendations do not resolve the need.'
+require_text "$EXPERIENCE_STANDARD" '10. Capture accepted information.'
+require_text "$EXPERIENCE_STANDARD" '11. Re-evaluate accumulated accepted context before the next guided interaction.'
+require_text "$EXPERIENCE_STANDARD" '12. Continue until the person is satisfied or no required work remains.'
 require_absent "$EXPERIENCE_STANDARD" '3. Discover or import existing authoritative information when the organization already has it.'
 require_absent "$EXPERIENCE_STANDARD" '7. Present the inferred-content heading only when Highway materially inferred or transformed the input.'
 require_text "$EXPERIENCE_STANDARD" "does not govern the person's strategy, policy, requirements, priorities, or preferred wording."
@@ -57,13 +64,13 @@ if [[ "$(grep -cF 'Bump rationale: adds Repository Context definitions, Contextu
 	echo "FAIL: removed Repository Context bump rationale is still present"
 	fail=1
 fi
-# Superseded behavior: the current Experience Standard report was required to keep '4.0.0 → 5.0.0 (MAJOR)'.
-if ! grep -qF '5.0.0 → 6.0.0 (MAJOR)' "$EXPERIENCE_STANDARD"; then
+# Superseded behavior: the current Experience Standard report was required to keep '5.0.0 → 6.0.0 (MAJOR)'.
+if ! grep -qF '6.0.0 → 7.0.0 (MAJOR)' "$EXPERIENCE_STANDARD"; then
 	echo "FAIL: current Experience Standard amendment record is missing"
 	fail=1
 fi
-if grep -qF '3.0.0 → 4.0.0 (MAJOR)' "$EXPERIENCE_STANDARD"; then
-	echo "FAIL: superseded 4.0.0 Experience Standard report is still present"
+if grep -qF '5.0.0 → 6.0.0 (MAJOR)' "$EXPERIENCE_STANDARD"; then
+	echo "FAIL: superseded 6.0.0 Experience Standard report is still present"
 	fail=1
 fi
 # Superseded behavior: the contract section restated X2.2-X2.6, N5, N7-N9, and resume tokens.
@@ -77,7 +84,12 @@ require_text "$EXPERIENCE_STANDARD" 'Every user-visible response excludes Implem
 require_text "$EXPERIENCE_STANDARD" '| X2.4 | An Interactive Workflow MUST ask only one unresolved question, and only for information still needed.'
 require_text "$EXPERIENCE_STANDARD" '| X2.5 | Progress MUST appear only when remaining work is meaningful to the person.'
 require_text "$EXPERIENCE_STANDARD" '| X2.6 | Progress MUST describe the activity rather than an internal stage, validation step, route, or implementation step.'
-require_text "$EXPERIENCE_STANDARD" '| X2.8 | An acknowledgment MUST appear only when new information changes the recommendation, interpretation, or next user-relevant action.'
+require_text "$EXPERIENCE_STANDARD" '| X2.8 | When accepted information changes Highway'"'"'s understanding, interpretation, recommendation, or next user-relevant action, the next response MUST acknowledge what changed.'
+require_text "$EXPERIENCE_STANDARD" 'The next response connects the accepted information to Highway'"'"'s updated understanding, interpretation, recommendation, or next action; it is not acknowledgment-only and does not merely repeat the person'"'"'s words.'
+require_text "$EXPERIENCE_STANDARD" 'Constructive Advisory should make Highway more useful, not merely more verbose.'
+require_text "$EXPERIENCE_STANDARD" 'A guided interaction should read as a continuing conversation rather than a sequence of independent generated prompts.'
+require_text "$EXPERIENCE_STANDARD" 'Does this reflect what you have in mind? You can also change it or provide your own.'
+require_absent "$EXPERIENCE_STANDARD" '| X2.8 | An acknowledgment MUST appear only when new information changes the recommendation, interpretation, or next user-relevant action.'
 # Superseded behavior: X2.9 required the explanation before the unresolved question.
 require_text "$EXPERIENCE_STANDARD" '| X2.9 | Decision Context MUST follow the question it explains under the label "**Why it matters:**".'
 require_absent "$EXPERIENCE_STANDARD" '| X2.9 | Decision Context MUST use the label "**Why it matters:**" and explain why the answer matters to the person without asking a second question.'
