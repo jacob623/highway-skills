@@ -46,6 +46,7 @@ for required_text in \
 	'grounded recommendation' \
 	'persist the retained Profile' \
 	'one concise synthesis' \
+	'internal category names are not presented to the user' \
 	'User-visible interaction follows the Highway Experience Standard.'; do
 	if ! grep -Fq "$required_text" "$SKILL"; then
 		echo "FAIL: Feature 116 contract missing '$required_text'"
