@@ -1,5 +1,15 @@
 <!--
 Sync Impact Report
+Version change: 5.0.0 → 6.0.0 (MAJOR), 2026-09-30
+Bump rationale: P12.13–P12.15 strengthen owner-mutation, owner-result, and orchestration-completion obligations so previously conforming work may fail.
+Changed elements:
+- Version footer: 5.0.0 → 6.0.0. Ratified stays 2026-09-06. Last Amended becomes 2026-09-30.
+- Added rule rows: P12.13, P12.14, and P12.15.
+- Updated Principle XII rationale, precedence reason, rule counts, and acceptance-to-owner-result persistence boundary.
+Rule count: 73. Tier counts: [auto] 13, [agent-checkable] 60, [human-review] 0.
+Self-application review: P1.1–P1.4, P6.4, P6.6, and P7.3 were reviewed. P12.13–P12.15 each have one keyword, one obligation, one Observable, and the [agent-checkable] tier.
+
+Sync Impact Report
 Version change: 4.1.0 → 5.0.0 (MAJOR), 2026-09-29
 Bump rationale: P7.6 is redefined. An oversized skill is reduced until it meets P7.4 and P7.5. Redefining a governance rule is MAJOR under the Constitution Versioning Policy.
 Changed elements:
@@ -405,8 +415,18 @@ skills while preserving workflow ownership and making context use inspectable.
 | P12.10 | An orchestrator MUST advance only from the owner's declared terminal result. | Advance follows that terminal result. | [agent-checkable] |
 | P12.11 | An orchestrator MUST NOT inspect owner-internal state. | Owner-internal records are not read to decide the result. | [agent-checkable] |
 | P12.12 | An orchestrator MUST NOT reconstruct owner-internal state. | Owner-internal records are not rebuilt to decide the result. | [agent-checkable] |
+| P12.13 | An owner MUST perform its accepted mutation before returning a dependent result. | The mutation occurs before the dependent result. | [agent-checkable] |
+| P12.14 | An orchestrator MUST wait for the owning skill's declared mutation result after acceptance. | Acceptance is followed by the owning skill's declared result, not treated as that result. | [agent-checkable] |
+| P12.15 | An orchestrator MUST wait for every required owner's terminal result before claiming completion. | The Completion Claim follows every required owner's terminal result. | [agent-checkable] |
 
-Rationale: The owner decides its own state. The orchestrator advances only from the result the owner declares.
+Rationale: Owners perform accepted mutations they own. The owner decides its own readiness and state, and the orchestrator advances only from the results the owners declare.
+
+### Acceptance-to-owner-result persistence boundary (Non-Normative)
+
+Acceptance authorizes an applicable owner mutation; it is not the owner result. The owner performs
+the mutation it owns and returns its declared result, after which orchestration may advance when
+all required terminal results are present. This boundary does not add a post-write Persistence
+Verification stage or related read-back checks.
 
 ## Principle Precedence
 
@@ -419,7 +439,7 @@ ordering is total: every pair of principles has a defined winner.
 | 2 | I. Unambiguous, Actionable Directives | A rule that cannot be read one way cannot be applied at all. |
 | 3 | VI. Deterministic, Explicit Decision Criteria | Determines which action an agent selects at runtime. |
 | 4 | V. Reusable Patterns and Defined Error Handling | Governs behavior when a step fails. |
-| 5 | XII. Owner-Controlled Completion and Orchestration | Governs owner readiness and orchestrator advance from the owner's declared result. |
+| 5 | XII. Owner-Controlled Completion and Orchestration | Governs owner mutation, readiness, declared results, and orchestrator advancement. |
 | 6 | VIII. Reliability and Repeatability | Governs whether the outcome can be confirmed. |
 | 7 | VII. Long-Term Maintainability | Governs cost over time rather than correctness now. |
 | 8 | II. Technology-Agnostic Portability | Governs reach across environments. |
@@ -497,7 +517,9 @@ authoritative until the applicable user-acceptance boundary is satisfied.
 
 This constitution is itself subject to P1.1 through P1.4 (clarity), P6.4 and P6.6
 (determinism), and P7.3 (non-duplication). Every amendment MUST record a review against those
-rule IDs. Rules P7.4 and P7.5 state limits on skills and do not apply to this document.
+rule IDs. Rules P7.4 and P7.5 state limits on skills and do not apply to this document. The
+P12.13–P12.15 amendment review confirms that each new row has one keyword, one obligation, one
+Observable, and the [agent-checkable] tier.
 
 ### Constitution Versioning Policy
 
@@ -519,4 +541,4 @@ every other skill's version. This is the policy referenced by P7.7.
 - **MINOR**: a capability is added while every existing contract element continues to hold.
 - **PATCH**: wording repair with no change to Inputs, Outputs, or Verification.
 
-**Version**: 5.0.0 | **Ratified**: 2026-09-06 | **Last Amended**: 2026-09-29
+**Version**: 6.0.0 | **Ratified**: 2026-09-06 | **Last Amended**: 2026-09-30

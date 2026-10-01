@@ -209,17 +209,15 @@ done < <(candidate_files | dist_classify_many)
 echo "  included $included paths from .highway/tools/.distribution-manifest"
 
 # Written last so it records the finished tree. Excluded from its own listing.
-# Hashed in one pass: the per-file form spawned two processes per file.
+# Hash each file independently so the record generation does not exceed the platform's
+# command-line argument limit when the distribution contains many files.
 record="$TARGET/$RECORD_REL"
 mkdir -p "$(dirname "$record")"
 : >"$record"
-dist_files | grep -vxF "$RECORD_REL" | sed "s|^|$TARGET/|" | tr '\n' '\0' |
-	if command -v sha256sum >/dev/null 2>&1; then
-		xargs -0 sha256sum
-	else
-		xargs -0 shasum -a 256
-	fi |
-	awk -v n="${#TARGET}" '{ h = $1; p = substr($0, length(h) + 3); print substr(p, n + 2) "\t" h }' >"$record"
+while IFS= read -r rel; do
+	[[ "$rel" == "$RECORD_REL" ]] && continue
+	printf '%s\t%s\n' "$rel" "$(sha256_of "$TARGET/$rel")" >>"$record"
+done < <(dist_files)
 
 # --- Verify, and reject rather than warn (FR-011) ---
 
