@@ -57,8 +57,8 @@ if [[ "$(grep -cF 'Bump rationale: adds Repository Context definitions, Contextu
 	echo "FAIL: removed Repository Context bump rationale is still present"
 	fail=1
 fi
-# Superseded behavior: the current Experience Standard report was required to keep '3.0.0 → 4.0.0 (MAJOR)'.
-if ! grep -qF '4.0.0 → 5.0.0 (MAJOR)' "$EXPERIENCE_STANDARD"; then
+# Superseded behavior: the current Experience Standard report was required to keep '4.0.0 → 5.0.0 (MAJOR)'.
+if ! grep -qF '5.0.0 → 6.0.0 (MAJOR)' "$EXPERIENCE_STANDARD"; then
 	echo "FAIL: current Experience Standard amendment record is missing"
 	fail=1
 fi
@@ -69,7 +69,7 @@ fi
 # Superseded behavior: the contract section restated X2.2-X2.6, N5, N7-N9, and resume tokens.
 require_text "$EXPERIENCE_STANDARD" '| X1.6 | A structured user-facing field MUST visually distinguish its Presentation Label from its value.'
 # Superseded behavior: X1.7 required the question after framing, main content, and supporting rationale.
-require_text "$EXPERIENCE_STANDARD" '| X1.7 | Setup presentation MUST keep one response-demanding question or decision in the final interaction block.'
+require_text "$EXPERIENCE_STANDARD" '| X1.7 | Setup presentation MUST keep at most one response-demanding question or decision in the final interaction block.'
 require_absent "$EXPERIENCE_STANDARD" '| X1.7 | Setup presentation MUST place one decision or question last, after framing, the main content, and any supporting rationale or example.'
 require_text "$EXPERIENCE_STANDARD" '| X2.1 | A confirmation before an irreversible loss MUST state what is lost.'
 require_text "$EXPERIENCE_STANDARD" '| X2.3 | Implementation details MUST stay hidden unless the person requested them or needs them in order to act.'

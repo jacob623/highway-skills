@@ -8,7 +8,7 @@ HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 fail=0
 STANDARD="$HIGHWAY_ROOT/governance/experience-standard.md"
 # Superseded behavior: the runtime document was required to keep '3.0.0 → 4.0.0 (MAJOR)'.
-for token in '4.0.0 → 5.0.0 (MAJOR)' '**Version**: 5.0.0 | **Ratified**: 2026-09-08 | **Last Amended**: 2026-10-01' 'Every user-visible response excludes Implementation details unless requested.' 'X2.7' 'X2.8' 'X2.9' 'X2.10'; do
+for token in '5.0.0 → 6.0.0 (MAJOR)' '**Version**: 6.0.0 | **Ratified**: 2026-09-08 | **Last Amended**: 2026-10-01' 'Every user-visible response excludes Implementation details unless requested.' 'X2.7' 'X2.8' 'X2.9' 'X2.10'; do
 	grep -Fq "$token" "$STANDARD" || { echo "FAIL: Experience Standard missing $token"; fail=1; }
 done
 # Feature 101 evidence-first rows. Superseded X2.2 behavior: the first emitted content is a greeting or required question.
