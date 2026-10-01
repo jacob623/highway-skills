@@ -9,12 +9,12 @@ REPO_ROOT="$(cd "$HIGHWAY_ROOT/.." && pwd)"
 fail=0
 STANDARD="$HIGHWAY_ROOT/governance/experience-standard.md"
 # Superseded behavior: the runtime document was required to keep '3.0.0 → 4.0.0 (MAJOR)'.
-for token in '6.0.0 → 7.0.0 (MAJOR)' '**Version**: 7.0.0 | **Ratified**: 2026-09-08 | **Last Amended**: 2026-10-01' 'Every user-visible response excludes Implementation details unless requested.' 'X2.7' 'X2.8' 'X2.9' 'X2.10'; do
+for token in '7.0.0 → 7.1.0 (MINOR)' '**Version**: 7.1.0 | **Ratified**: 2026-09-08 | **Last Amended**: 2026-10-01' 'Every user-visible response excludes Implementation details unless requested.' 'X2.7' 'X2.8' 'X2.9' 'X2.10'; do
 	grep -Fq "$token" "$STANDARD" || { echo "FAIL: Experience Standard missing $token"; fail=1; }
 done
 for token in \
-	'Version change: 6.0.0 → 7.0.0 (MAJOR)' \
-	'**Version**: 7.0.0 | **Ratified**: 2026-09-08 | **Last Amended**: 2026-10-01' \
+	'Version change: 7.0.0 → 7.1.0 (MINOR)' \
+	'**Version**: 7.1.0 | **Ratified**: 2026-09-08 | **Last Amended**: 2026-10-01' \
 	'#### Conversational Voice (Non-Normative Guidance)' \
 	'| X2.8 | When accepted information changes Highway'"'"'s understanding, interpretation, recommendation, or next user-relevant action, the next response MUST acknowledge what changed.' \
 	'| X2.8 | When accepted information changes Highway'"'"'s understanding, interpretation, recommendation, or next user-relevant action, the next response MUST acknowledge what changed. | The next response connects the accepted information to Highway'"'"'s updated understanding, interpretation, recommendation, or next action; it is not acknowledgment-only and does not merely repeat the person'"'"'s words. | [agent-checkable]'; do
@@ -81,8 +81,8 @@ if grep -Fq '| X2.9 | Decision Context MUST use the label "**Why it matters:**" 
 	echo 'FAIL: former X2.9 explanation-before-question rule is still present'
 	fail=1
 fi
-if grep -Fq '5.0.0 → 6.0.0 (MAJOR)' "$STANDARD"; then
-	echo 'FAIL: superseded 6.0.0 Experience Standard report is still present'
+if grep -Fq '6.0.0 → 7.0.0 (MAJOR)' "$STANDARD"; then
+	echo 'FAIL: superseded Feature 120 Experience Standard report is still present'
 	fail=1
 fi
 if [[ "$(grep -cF 'Sync Impact Report' "$STANDARD")" -ne 1 ]]; then

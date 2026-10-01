@@ -37,9 +37,24 @@ if grep -q '^### Interactive Workflow UX Contract$' "$EXPERIENCE_STANDARD"; then
 fi
 require_text "$EXPERIENCE_STANDARD" '### Interaction model'
 require_text "$EXPERIENCE_STANDARD" '#### Conversational Voice (Non-Normative Guidance)'
+require_absent "$EXPERIENCE_STANDARD" '##### Conversational Voice (Non-Normative Guidance)'
+require_text "$EXPERIENCE_STANDARD" '#### Conversational Presence (Non-Normative Guidance)'
+require_text "$EXPERIENCE_STANDARD" 'Conversational Voice governs whose perspective Highway speaks from.'
+require_text "$EXPERIENCE_STANDARD" 'Conversational Presence governs the room Highway has to respond, explain, reflect, and converse naturally.'
+require_text "$EXPERIENCE_STANDARD" 'Constructive Advisory governs the additional intellectual contribution Highway makes through implications, recommendations, alternatives, tradeoffs, concerns, and connections.'
+require_text "$EXPERIENCE_STANDARD" 'A response does not need to contain a question, recommendation, decision, or next action merely to keep the interaction moving.'
+require_text "$EXPERIENCE_STANDARD" 'The one-question constraints limit unnecessary or competing questions; they do not require every Interactive Workflow response to contain a question.'
+require_text "$EXPERIENCE_STANDARD" 'When the person has not left an unresolved information need or decision, Highway may respond without asking one.'
+require_text "$EXPERIENCE_STANDARD" 'Multiple short paragraphs are appropriate when they improve comprehension, separate distinct ideas, or allow Highway to respond naturally before advancing.'
+require_text "$EXPERIENCE_STANDARD" 'Additional commentary should create conversational, explanatory, or decision value.'
+require_text "$EXPERIENCE_STANDARD" '| Conversational presence |'
+require_text "$EXPERIENCE_STANDARD" '| No-question conversational turn |'
+require_absent "$EXPERIENCE_STANDARD" 'default to 2–4 paragraphs'
+require_absent "$EXPERIENCE_STANDARD" 'minimum paragraph'
+require_absent "$EXPERIENCE_STANDARD" 'maximum paragraph'
 require_text "$EXPERIENCE_STANDARD" 'Use natural first-person language when referring to the current interaction'
 require_text "$EXPERIENCE_STANDARD" 'The person should experience one increasingly informed Highway advisor across participating skills'
-require_text "$EXPERIENCE_STANDARD" 'Conversational continuity and Constructive Advisory serve different purposes.'
+require_text "$EXPERIENCE_STANDARD" 'Conversational continuity, Conversational Presence, and Constructive Advisory serve different purposes.'
 require_text "$EXPERIENCE_STANDARD" 'When X2.8 applies, acknowledgment is required. Additional advisory contribution remains conditional on having something useful to contribute.'
 require_text "$EXPERIENCE_STANDARD" '1. Understand available accepted context.'
 require_text "$EXPERIENCE_STANDARD" '2. Reuse existing information when it satisfies the need.'
@@ -47,13 +62,12 @@ require_text "$EXPERIENCE_STANDARD" '2. Reuse existing information when it satis
 require_text "$EXPERIENCE_STANDARD" '3. Discover or import existing authoritative information when supported.'
 require_text "$EXPERIENCE_STANDARD" '4. Accept or validate discovered information at the applicable boundary.'
 require_text "$EXPERIENCE_STANDARD" "5. When accepted information changes Highway's understanding or next behavior, acknowledge what changed."
-require_text "$EXPERIENCE_STANDARD" '6. Re-evaluate accumulated accepted context for grounded recommendations.'
-require_text "$EXPERIENCE_STANDARD" '7. Contribute a useful implication, alternative, tradeoff, concern, or connection when grounded context supports one.'
-require_text "$EXPERIENCE_STANDARD" '8. Offer grounded recommendations when Highway can responsibly help.'
-require_text "$EXPERIENCE_STANDARD" '9. Ask one clear question only when useful grounded recommendations do not resolve the need.'
-require_text "$EXPERIENCE_STANDARD" '10. Capture accepted information.'
-require_text "$EXPERIENCE_STANDARD" '11. Re-evaluate accumulated accepted context before the next guided interaction.'
-require_text "$EXPERIENCE_STANDARD" '12. Continue until the person is satisfied or no required work remains.'
+require_text "$EXPERIENCE_STANDARD" '7. Re-evaluate accumulated accepted context for grounded recommendations.'
+require_text "$EXPERIENCE_STANDARD" '8. Contribute a useful implication, alternative, tradeoff, concern, explanation, or connection when grounded context supports one.'
+require_text "$EXPERIENCE_STANDARD" '9. Offer grounded recommendations when Highway can responsibly help.'
+require_text "$EXPERIENCE_STANDARD" '10. Ask one clear question only when unresolved information is still needed and useful grounded recommendations do not resolve the need.'
+require_text "$EXPERIENCE_STANDARD" '11. Capture accepted information when the interaction produces accepted evidence.'
+require_text "$EXPERIENCE_STANDARD" '12. Continue when required work remains; otherwise allow the conversational response to conclude naturally.'
 require_absent "$EXPERIENCE_STANDARD" '3. Discover or import existing authoritative information when the organization already has it.'
 require_absent "$EXPERIENCE_STANDARD" '7. Present the inferred-content heading only when Highway materially inferred or transformed the input.'
 require_text "$EXPERIENCE_STANDARD" "does not govern the person's strategy, policy, requirements, priorities, or preferred wording."
@@ -64,13 +78,9 @@ if [[ "$(grep -cF 'Bump rationale: adds Repository Context definitions, Contextu
 	echo "FAIL: removed Repository Context bump rationale is still present"
 	fail=1
 fi
-# Superseded behavior: the current Experience Standard report was required to keep '5.0.0 → 6.0.0 (MAJOR)'.
-if ! grep -qF '6.0.0 → 7.0.0 (MAJOR)' "$EXPERIENCE_STANDARD"; then
-	echo "FAIL: current Experience Standard amendment record is missing"
-	fail=1
-fi
-if grep -qF '5.0.0 → 6.0.0 (MAJOR)' "$EXPERIENCE_STANDARD"; then
-	echo "FAIL: superseded 6.0.0 Experience Standard report is still present"
+# Superseded behavior: the previous Feature 120 MAJOR report must not remain current.
+if grep -qF '6.0.0 → 7.0.0 (MAJOR)' "$EXPERIENCE_STANDARD"; then
+	echo "FAIL: superseded Feature 120 amendment report is still present"
 	fail=1
 fi
 # Superseded behavior: the contract section restated X2.2-X2.6, N5, N7-N9, and resume tokens.
