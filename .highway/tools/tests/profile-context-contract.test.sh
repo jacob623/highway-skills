@@ -23,6 +23,8 @@ require "$PROFILE" 'behavioral guidance'
 require "$PROFILE" 'strategic direction'
 require "$PROFILE" 'evaluation criteria'
 require "$PROFILE" 'must not be promoted into the retained Profile'
+require "$PROFILE" 'Accepted evidence that establishes a domain sets it to `discussed`'
+require "$PROFILE" 'explicit user boundary sets an otherwise unresolved domain to `bounded`'
 require "$FIXTURES/repository-context/conflicts/workflow-input-authoritative.txt" 'workflow-specific input remains authoritative'
 require "$FIXTURES/participation/reference/SKILL.md" '.highway/library/knowledge/profile.md'
 if grep -Fq '.highway/library/knowledge/profile.md' "$FIXTURES/participation/negative/SKILL.md"; then

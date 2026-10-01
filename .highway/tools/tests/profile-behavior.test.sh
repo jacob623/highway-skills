@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Verifies the Feature 091 Markdown Profile contract.
+# Verifies the Feature 115 Markdown Profile contract.
 set -u
 # Instrument class: mixed (static-document-contract and executed-behavior)
 # Artifact classes: source-document, generated-artifact, disposable-fixture
@@ -34,5 +34,27 @@ if grep -Fq "$OBSOLETE_YAML" "$HIGHWAY_ROOT/skills/highway-profile/SKILL.md"; th
 if ! grep -Fq '.highway/library/knowledge/profile.md' "$HIGHWAY_ROOT/skills/highway-profile/SKILL.md"; then echo 'FAIL: active skill omits authoritative Markdown path'; fail=1; fi
 if ! grep -Fq 'proposal evidence' "$HIGHWAY_ROOT/skills/highway-profile/SKILL.md"; then echo 'FAIL: proposal evidence lifecycle missing'; fail=1; fi
 
+SKILL="$HIGHWAY_ROOT/skills/highway-profile/SKILL.md"
+for required_text in \
+	'version: 5.0.0' \
+	're-evaluate accumulated accepted evidence across all four domains' \
+	'grounded recommendation' \
+	'persist the retained Profile' \
+	'one concise synthesis' \
+	'User-visible interaction follows the Highway Experience Standard.'; do
+	if ! grep -Fq "$required_text" "$SKILL"; then
+		echo "FAIL: Feature 115 contract missing '$required_text'"
+		fail=1
+	fi
+done
+
+if grep -Fq 'ask the first unresolved canonical domain question; use optional grounded enrichment' "$SKILL"; then
+	echo 'FAIL: superseded question-first acquisition contract remains'
+	fail=1
+fi
+if grep -Fq 'Status: <Complete, Missing, or Blocked>' "$SKILL"; then
+	echo 'FAIL: machine readiness result is still presented as the default output contract'
+	fail=1
+fi
 if [[ $fail -ne 0 ]]; then exit 1; fi
 echo 'OK: Markdown Profile behavior contract passes'

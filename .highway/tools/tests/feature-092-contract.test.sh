@@ -26,12 +26,7 @@ for context in highway-identity.md highway-vision.md highway-platform-objectives
 done
 require_text "$PROFILE" 'Next Action: /highway-profile setup'
 require_text "$PROFILE" 'Next Action: /highway-profile configure'
-# Superseded behavior: the Profile skill said the Experience Standard remains the normative authority.
 require_text "$PROFILE" 'User-visible interaction follows the Highway Experience Standard.'
-if grep -Fq 'Experience Standard remains the normative authority' "$PROFILE"; then
-	echo "FAIL: $PROFILE still states the superseded authority sentence"
-	fail=1
-fi
 require_text "$PROFILE" 'An absent Profile is a valid initial state'
 require_text "$PROFILE" 'Next Action: None'
 require_text "$PROFILE" 'must not be promoted into the retained Profile'
@@ -46,12 +41,12 @@ require_text "$PROFILE" '**What is the future vision of [Organization Name]?**'
 require_text "$PROFILE" '**How does [Organization Name] plan to get there?**'
 require_text "$PROFILE" '**What principles or values guide decisions at [Organization Name]?**'
 require_text "$PROFILE" 'use the accepted Repository Name where it reads naturally'
-require_text "$PROFILE" 'a domain with accepted or active evidence is not asked'
+require_text "$PROFILE" 'A domain is not asked its canonical question when accepted evidence establishes that domain or an explicit user boundary makes it bounded.'
 require_text "$PROFILE" 'Future State, Impact, Reach / Scale, Position, and Experience / Reputation'
 require_text "$PROFILE" 'Customer / Participant, Offering, Market / Reach, Differentiation, Operations, and Capability Development'
 require_text "$PROFILE" 'People, Trust, Quality, Simplicity, Change, Stewardship, and Autonomy'
 require_text "$PROFILE" 'those names are not retained'
-require_text "$PROFILE" 'enrichment does not block completion'
+require_text "$PROFILE" 'optional enrichment never changes readiness by itself'
 # Superseded behavior: the Profile skill restated that a selected recommendation is accepted without a second confirmation.
 if grep -Fq 'a selected recommendation is accepted without a second confirmation' "$PROFILE"; then
 	echo "FAIL: $PROFILE still restates recommendation-selection acceptance"
@@ -65,8 +60,8 @@ require_text "$PROFILE" 'classify the retained Profile'
 require_text "$PROFILE" 'establish Repository Name when missing'
 require_text "$PROFILE" 'use supported existing-information or website acquisition when available'
 require_text "$PROFILE" 'reuse accepted or accepted-discovered evidence across all four domains'
-require_text "$PROFILE" 'ask the first unresolved canonical domain question'
-require_text "$PROFILE" 'use optional grounded enrichment where useful'
+require_text "$PROFILE" 're-evaluate accumulated accepted evidence across all four domains'
+require_text "$PROFILE" 'present a useful grounded recommendation instead of that canonical question'
 require_text "$PROFILE" 'persist accepted evidence'
 require_text "$PROFILE" 'report readiness'
 require_text "$PROFILE" 'optional Context structure is owned by .highway/library/templates/output/profile-record.md'
@@ -74,7 +69,7 @@ if grep -Fq '### Repository Name' "$PROFILE"; then
 	echo "FAIL: $PROFILE restates the Context heading skeleton"
 	fail=1
 fi
-require_text "$PROFILE" 'version: 4.0.0'
+require_text "$PROFILE" 'version: 5.0.0'
 if grep -Fq '.highway/tools/validate-profile.sh' "$PROFILE"; then
 	echo "FAIL: $PROFILE still instructs .highway/tools/validate-profile.sh"
 	fail=1
@@ -89,7 +84,8 @@ if grep -Fq 'Interactive Workflow UX Contract' "$SETUP"; then
 fi
 require_text "$SETUP" 'Highway Experience Standard'
 require_text "$STANDARD" '### Interaction model'
-require_text "$STANDARD" '| X1.7 | Setup presentation MUST place one decision or question last'
+# Superseded behavior: X1.7 required the question after supporting rationale.
+require_text "$STANDARD" '| X1.7 | Setup presentation MUST keep one response-demanding question or decision'
 require_text "$SETUP" '## Error Handling'
 require_text "$STANDARD" 'Every user-visible response excludes Implementation details unless requested.'
 

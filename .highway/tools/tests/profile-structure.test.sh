@@ -43,9 +43,20 @@ for required_text in \
 	'not_discussed' \
 	'discussed' \
 	'bounded' \
+	'version: 5.0.0' \
 	'Profile readiness'; do
 	if ! grep -Fq "$required_text" "$SKILL"; then
 		echo "FAIL: Profile ownership contract missing '$required_text'"
+		fail=1
+	fi
+done
+
+for internal_category in \
+	'Future State' \
+	'Customer / Participant' \
+	'Experience / Reputation'; do
+	if grep -Fq "$internal_category" "$HIGHWAY_ROOT/library/templates/output/profile-record.md"; then
+		echo "FAIL: internal grounding category persisted in Profile template: $internal_category"
 		fail=1
 	fi
 done
