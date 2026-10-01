@@ -89,7 +89,8 @@ if grep -Fq 'Interactive Workflow UX Contract' "$SETUP"; then
 fi
 require_text "$SETUP" 'Highway Experience Standard'
 require_text "$STANDARD" '### Interaction model'
-require_text "$STANDARD" '| X1.7 | Setup presentation MUST place one decision or question last'
+# Superseded behavior: X1.7 required the question after supporting rationale.
+require_text "$STANDARD" '| X1.7 | Setup presentation MUST keep one response-demanding question or decision'
 require_text "$SETUP" '## Error Handling'
 require_text "$STANDARD" 'Every user-visible response excludes Implementation details unless requested.'
 

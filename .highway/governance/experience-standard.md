@@ -1,13 +1,14 @@
 <!--
 Sync Impact Report
-Version change: 3.0.0 → 4.0.0 (MAJOR), 2026-09-29
-Bump rationale: Decision Context is strengthened so unlabeled context fails, and the shared recommendation rule is redefined. Removing or redefining a rule is MAJOR. Strengthening an obligation so previously conforming work fails is MAJOR.
+Version change: 4.0.0 → 5.0.0 (MAJOR), 2026-10-01
+Bump rationale: X1.7, X2.9, and X2.13 are redefined, and previously conforming presentation can now fail. Redefining a rule is MAJOR. Strengthening an obligation so previously conforming work fails is MAJOR.
 Changed elements:
-- Version footer: 3.0.0 → 4.0.0. Ratified stays 2026-09-08. Last Amended stays 2026-09-29.
-- Redefined rule rows: X2.9, X2.25.
-- Recommendation guidance now demonstrates the shared meaning without one required layout.
+- Version footer: 4.0.0 → 5.0.0. Ratified stays 2026-09-08. Last Amended becomes 2026-10-01.
+- Redefined rule rows: X1.7 and X2.9. X2.13 and X2.25 keep their rule sentences; their observables change.
+- Added rule rows: X2.32, X2.33, X2.34, and X2.35. Rule count: 35 → 39.
+- Interaction model, contextual guidance, and non-normative examples match the redefined presentation.
 - Prior sync impact reports are removed from this document. Repository history keeps them.
-Unchanged elements: every other current rule, including X2.16 through X2.22 and X2.27 through X2.31.
+Unchanged elements: X2.3, X2.7, X2.16, X2.17, X2.18, X2.19, X2.20, X2.21, X2.22, X2.27, X2.28, X2.29, X2.30, X2.31, and every other current rule not named above.
 Self-application review: this amendment cites the Skills Constitution for non-restatement and does not copy a constitution rule sentence.
 -->
 
@@ -109,7 +110,7 @@ Each row states one obligation. A rule that does not arise for a given skill is 
 | ID | Rule | Observable | Tier |
 |---|---|---|---|
 | X1.6 | A structured user-facing field MUST visually distinguish its Presentation Label from its value. | In Structured Information, each named field has a distinct label adjacent to its value. | [agent-checkable] |
-| X1.7 | Setup presentation MUST place one decision or question last, after framing, the main content, and any supporting rationale or example. | That decision or question is the last response-demanding element. | [agent-checkable] |
+| X1.7 | Setup presentation MUST keep one response-demanding question or decision in the final interaction block. | The final interaction block contains one response-demanding question or decision; Decision Context governed by X2.9 may follow that question. | [agent-checkable] |
 
 ### X2 — Interaction
 
@@ -123,11 +124,11 @@ Each row states one obligation. A rule that does not arise for a given skill is 
 | X2.6 | Progress MUST describe the activity rather than an internal stage, validation step, route, or implementation step. | The progress text names the activity the person can recognize. | [agent-checkable] |
 | X2.7 | A recommendation MUST be grounded in context the owning workflow declares. | The recommendation uses accepted organizational or repository context before generic advice. An external source appears only when the owning workflow declares it, and is not presented as applying, certifying, or setting policy unless that status is separately established. | [agent-checkable] |
 | X2.8 | An acknowledgment MUST appear only when new information changes the recommendation, interpretation, or next user-relevant action. | The response is not acknowledgment-only, and it does not promote an unrelated capability. | [agent-checkable] |
-| X2.9 | Decision Context MUST use the label "**Why it matters:**" and explain why the answer matters to the person without asking a second question. | When Decision Context applies, the response shows the literal label `**Why it matters:**`, then a concise user-relevant explanation, then one unresolved question. It includes no implementation explanation, no second question, and no repetition when the implication was just established. The label is absent when Decision Context is not needed. | [agent-checkable] |
+| X2.9 | Decision Context MUST follow the question it explains under the label "**Why it matters:**". | When Decision Context applies, one unresolved question appears first, followed by the literal label **Why it matters:** and one concise user-relevant explanation. No second question, implementation explanation, or repeated rationale appears. | [agent-checkable] |
 | X2.10 | An example MUST appear only when it makes the expected answer clearer without becoming a required category. | The prompt uses a few short examples specific to the current question. | [agent-checkable] |
 | X2.11 | Accepted information that already answers the need MUST be reused. | The response uses that accepted information and does not ask for it again. | [agent-checkable] |
 | X2.12 | When the workflow supports it, authoritative organizational information MUST be imported or validated rather than recreated conversationally. | The workflow offers import or validation before asking the person to recreate that information. | [agent-checkable] |
-| X2.13 | Grounded recommendations MUST be offered before a question when context supports useful choices. | A question is not asked while a useful grounded choice remains available. | [agent-checkable] |
+| X2.13 | Grounded recommendations MUST be offered before a question when context supports useful choices. | Before each unresolved guided-collection question, the workflow evaluates accumulated accepted context; a useful grounded choice is shown instead of the question. | [agent-checkable] |
 | X2.14 | A question MUST NOT be asked only to satisfy an internal workflow dimension. | The question requests information the person still needs to provide. | [agent-checkable] |
 | X2.15 | Organization size, maturity, or operating model MUST NOT be assigned from organization identity alone. | No size, maturity, or operating-model label is presented from identity alone. | [agent-checkable] |
 | X2.16 | A recommendation set MUST contain at most 5 distinct actionable choices. | The shown set contains no more than 5 distinct actionable choices. | [agent-checkable] |
@@ -139,16 +140,22 @@ Each row states one obligation. A rule that does not arise for a given skill is 
 | X2.22 | An explicit selection, a direct statement already in the requested category, or clearly presented imported information MUST be captured without that review. | Those inputs are recorded without the inferred-content heading. | [agent-checkable] |
 | X2.23 | An accepted Profile organization name MUST be used in contextual guidance where it improves clarity. | The guidance uses that accepted name. | [agent-checkable] |
 | X2.24 | An organization name that has not been accepted MUST NOT be invented. | No organization name appears unless the person has accepted it. | [agent-checkable] |
-| X2.25 | Profile enrichment, Objectives, Controls, and Non-Functional Requirements MUST use the shared recommendation interaction model. | The set shows concise grounding, one or more distinct actionable recommendations, a clear selection path, and a user-authored alternative. Selecting a shown recommendation follows X2.18. Numbering is permitted and is not required. | [agent-checkable] |
+| X2.25 | Profile enrichment, Objectives, Controls, and Non-Functional Requirements MUST use the shared recommendation interaction model. | The set shows concise grounding tied to what Highway already knows, one or more distinct actionable recommendations, a choice prompt appropriate to that number, and a user-authored alternative. Selecting a shown recommendation follows X2.18. Numbering is permitted and is not required. | [agent-checkable] |
 | X2.26 | Recommendation rationale MUST appear only when it helps the person decide. | Rationale is omitted when the choice is already clear. | [agent-checkable] |
 | X2.27 | An orchestrator MUST introduce a new domain with one short outcome-oriented transition without repeating the owner's opening. | The transition does not preview internal downstream mechanics and does not claim recommendations may exist when the receiving workflow can present them. | [agent-checkable] |
 | X2.28 | A visible move into a new setup domain MUST be separated with a horizontal rule. | A horizontal rule appears between major setup domains. | [agent-checkable] |
 | X2.29 | Discovered or extracted information MUST stay proposed until the user-acceptance boundary is satisfied. | That information is not presented as user-owned before acceptance. | [agent-checkable] |
 | X2.30 | Evidence that cannot be recommended or inferred MUST stay unknown. | The response does not fill that evidence with a guess. | [agent-checkable] |
 | X2.31 | Optional enrichment MUST NOT block continuation unless the owning domain requires it for validity. | The person can continue when the enrichment is optional. | [agent-checkable] |
+| X2.32 | Recommendation choice wording MUST match the number of recommendations shown. | One recommendation uses singular accept/change/alternative wording; multiple recommendations permit one, several, all, or a user-authored alternative. | [agent-checkable] |
+| X2.33 | A completed guided Setup domain MUST close with one concise synthesis when accepted context from that domain can be meaningfully summarized. | Before the orchestrator enters the next active domain, the owner emits at most one concise user-relevant synthesis of what Highway learned or established; it contains no machine status, owner result, implementation detail, or new question. | [agent-checkable] |
+| X2.34 | Machine-consumable owner results MUST NOT appear in normal orchestrated user-visible output. | Readiness, mutation, action, and collection result fields consumed only for orchestration are absent unless the person requested them or needs them to act. | [agent-checkable] |
+| X2.35 | A delegated guided interaction MUST NOT expose a machine result after its final user-facing acknowledgment or question. | After the user's final guided decision, only user-relevant closure, synthesis, or the orchestrator's next-domain transition is visible. | [agent-checkable] |
 
 A bare "Are you sure?" does not satisfy X2.1: the reader cannot decide from it. Naming the loss is
 what makes the confirmation a decision rather than a formality.
+
+Machine-consumable owner results include Status, Summary, Next Action, Blocking Reason, Action Status, Collection Result, and mutation-result fields used only by an orchestrator. Those results may still be returned to the orchestrator. A direct readiness, status, inspection, or mutation request may still show its requested result.
 
 ### Interaction model
 
@@ -156,15 +163,14 @@ The rules above are the obligations. This order is how an interaction proceeds. 
 
 1. Understand available accepted context.
 2. Reuse existing information when it satisfies the need.
-3. Discover or import existing authoritative information when the organization already has it.
-4. Offer grounded recommendations when Highway can responsibly help.
-5. Accept selected recommendations directly.
-6. Ask one clear question only when information remains unresolved.
-7. Present the inferred-content heading only when Highway materially inferred or transformed the input.
-8. Put that review's acceptance request at the bottom.
-9. Capture accepted information.
-10. Offer additional grounded recommendations or let the person continue.
-11. Stop when the person is satisfied or no useful recommendations remain.
+3. Discover or import existing authoritative information when supported.
+4. Accept or validate discovered information at the applicable boundary.
+5. Re-evaluate accumulated accepted context for grounded recommendations.
+6. Offer grounded recommendations when Highway can responsibly help.
+7. Ask one clear question only when useful grounded recommendations do not resolve the need.
+8. Capture accepted information.
+9. Re-evaluate accumulated accepted context before the next guided question.
+10. Continue until the person is satisfied or no required work remains.
 
 ### Contextual Guidance
 
@@ -175,11 +181,15 @@ question solely to acknowledge or apply information. A Contextual Acknowledgment
 explains the current or future recommendation or Behavior affected by a Material Influence. It
 does not promote, advertise, or restate unrelated Highway capabilities.
 
+Accepted information compounds during a guided interaction. Each accepted answer, selection, or validated discovery can expand the grounding available to the next recommendation.
+
+A workflow should become more specific as accepted context accumulates rather than return to generic questioning.
+
 ### Context Awareness (Non-Normative Guidance)
 
 | Generic guidance | Context-aware guidance |
 |---|---|
-| "Choose a suitable repository structure." | "Use the repository's declared library and governance paths when selecting the structure." |
+| "What is your vision?" | "Based on what you've shared about growing your community, here are a few ways that future could take shape." |
 
 The contrast illustrates X2.7 without creating another normative rule. When no applicable context
 exists, the workflow gives bounded generic guidance and emits no Contextual Acknowledgment.
@@ -191,18 +201,20 @@ These examples are illustrative and do not add rule IDs.
 | Scenario | Non-compliant | Compliant |
 |---|---|---|
 | Interactive collection | "I will route your request through validation, then allocate the next stages. What are the owner, deadline, and priority?" | "What is the owner?" |
+| Decision Context | `**Why it matters:**` before `**What would success look like?**` | `**What would success look like?**` before `**Why it matters:**` and one concise explanation |
+| Owner result | `Status: Complete`, `Summary: One Objective has been captured.`, and `Next Action: None` | I've captured that objective. We can build on it in the next part of Setup. |
 | Progress | "The evaluator is traversing its dispatch graph and applying internal checks." | "Checking the repository controls now." |
 
 ### Recommendation sets (Non-Normative)
 
 Profile enrichment, Objectives, Controls, and Non-Functional Requirements share the meaning in X2.25. A single recommendation, bullets, or numbers can all carry that meaning. This sketch is not a required layout.
 
-Grounded in the accepted repository context.
+Grounded in what Highway already knows about the accepted context.
 
 - Retain evidence for the stated period.
 - Name an owner for the control.
 
-Select any of these, or write your own.
+Which would you like to capture? You can choose one, several, all, or tell me something different.
 
 ### X5 — Addressability of emitted messages
 
@@ -248,4 +260,4 @@ Rule IDs are stable across amendments; a retired ID is never reused.
 
 Every amendment records a review against the Highway Skills Constitution's non-restatement rules.
 
-**Version**: 4.0.0 | **Ratified**: 2026-09-08 | **Last Amended**: 2026-09-29
+**Version**: 5.0.0 | **Ratified**: 2026-09-08 | **Last Amended**: 2026-10-01

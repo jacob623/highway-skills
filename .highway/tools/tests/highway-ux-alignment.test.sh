@@ -38,15 +38,17 @@ fi
 require_text "$EXPERIENCE_STANDARD" '### Interaction model'
 require_text "$EXPERIENCE_STANDARD" '1. Understand available accepted context.'
 require_text "$EXPERIENCE_STANDARD" '2. Reuse existing information when it satisfies the need.'
-require_text "$EXPERIENCE_STANDARD" '3. Discover or import existing authoritative information when the organization already has it.'
-require_text "$EXPERIENCE_STANDARD" '4. Offer grounded recommendations when Highway can responsibly help.'
-require_text "$EXPERIENCE_STANDARD" '5. Accept selected recommendations directly.'
-require_text "$EXPERIENCE_STANDARD" '6. Ask one clear question only when information remains unresolved.'
-require_text "$EXPERIENCE_STANDARD" '7. Present the inferred-content heading only when Highway materially inferred or transformed the input.'
-require_text "$EXPERIENCE_STANDARD" '8. Put that review'"'"'s acceptance request at the bottom.'
-require_text "$EXPERIENCE_STANDARD" '9. Capture accepted information.'
-require_text "$EXPERIENCE_STANDARD" '10. Offer additional grounded recommendations or let the person continue.'
-require_text "$EXPERIENCE_STANDARD" '11. Stop when the person is satisfied or no useful recommendations remain.'
+# Superseded behavior: the interaction model discovered information and then offered recommendations without an acceptance and re-evaluation step.
+require_text "$EXPERIENCE_STANDARD" '3. Discover or import existing authoritative information when supported.'
+require_text "$EXPERIENCE_STANDARD" '4. Accept or validate discovered information at the applicable boundary.'
+require_text "$EXPERIENCE_STANDARD" '5. Re-evaluate accumulated accepted context for grounded recommendations.'
+require_text "$EXPERIENCE_STANDARD" '6. Offer grounded recommendations when Highway can responsibly help.'
+require_text "$EXPERIENCE_STANDARD" '7. Ask one clear question only when useful grounded recommendations do not resolve the need.'
+require_text "$EXPERIENCE_STANDARD" '8. Capture accepted information.'
+require_text "$EXPERIENCE_STANDARD" '9. Re-evaluate accumulated accepted context before the next guided question.'
+require_text "$EXPERIENCE_STANDARD" '10. Continue until the person is satisfied or no required work remains.'
+require_absent "$EXPERIENCE_STANDARD" '3. Discover or import existing authoritative information when the organization already has it.'
+require_absent "$EXPERIENCE_STANDARD" '7. Present the inferred-content heading only when Highway materially inferred or transformed the input.'
 require_text "$EXPERIENCE_STANDARD" "does not govern the person's strategy, policy, requirements, priorities, or preferred wording."
 require_text "$EXPERIENCE_STANDARD" '.highway/library/knowledge/highway-identity.md'
 require_text "$EXPERIENCE_STANDARD" '.highway/library/knowledge/highway-platform-objectives.md'
@@ -55,13 +57,20 @@ if [[ "$(grep -cF 'Bump rationale: adds Repository Context definitions, Contextu
 	echo "FAIL: removed Repository Context bump rationale is still present"
 	fail=1
 fi
-if ! grep -qF '3.0.0 → 4.0.0 (MAJOR)' "$EXPERIENCE_STANDARD"; then
+# Superseded behavior: the current Experience Standard report was required to keep '3.0.0 → 4.0.0 (MAJOR)'.
+if ! grep -qF '4.0.0 → 5.0.0 (MAJOR)' "$EXPERIENCE_STANDARD"; then
 	echo "FAIL: current Experience Standard amendment record is missing"
+	fail=1
+fi
+if grep -qF '3.0.0 → 4.0.0 (MAJOR)' "$EXPERIENCE_STANDARD"; then
+	echo "FAIL: superseded 4.0.0 Experience Standard report is still present"
 	fail=1
 fi
 # Superseded behavior: the contract section restated X2.2-X2.6, N5, N7-N9, and resume tokens.
 require_text "$EXPERIENCE_STANDARD" '| X1.6 | A structured user-facing field MUST visually distinguish its Presentation Label from its value.'
-require_text "$EXPERIENCE_STANDARD" '| X1.7 | Setup presentation MUST place one decision or question last, after framing, the main content, and any supporting rationale or example.'
+# Superseded behavior: X1.7 required the question after framing, main content, and supporting rationale.
+require_text "$EXPERIENCE_STANDARD" '| X1.7 | Setup presentation MUST keep one response-demanding question or decision in the final interaction block.'
+require_absent "$EXPERIENCE_STANDARD" '| X1.7 | Setup presentation MUST place one decision or question last, after framing, the main content, and any supporting rationale or example.'
 require_text "$EXPERIENCE_STANDARD" '| X2.1 | A confirmation before an irreversible loss MUST state what is lost.'
 require_text "$EXPERIENCE_STANDARD" '| X2.3 | Implementation details MUST stay hidden unless the person requested them or needs them in order to act.'
 require_text "$EXPERIENCE_STANDARD" 'Every user-visible response excludes Implementation details unless requested.'
@@ -69,7 +78,9 @@ require_text "$EXPERIENCE_STANDARD" '| X2.4 | An Interactive Workflow MUST ask o
 require_text "$EXPERIENCE_STANDARD" '| X2.5 | Progress MUST appear only when remaining work is meaningful to the person.'
 require_text "$EXPERIENCE_STANDARD" '| X2.6 | Progress MUST describe the activity rather than an internal stage, validation step, route, or implementation step.'
 require_text "$EXPERIENCE_STANDARD" '| X2.8 | An acknowledgment MUST appear only when new information changes the recommendation, interpretation, or next user-relevant action.'
-require_text "$EXPERIENCE_STANDARD" '| X2.9 | Decision Context MUST use the label "**Why it matters:**" and explain why the answer matters to the person without asking a second question.'
+# Superseded behavior: X2.9 required the explanation before the unresolved question.
+require_text "$EXPERIENCE_STANDARD" '| X2.9 | Decision Context MUST follow the question it explains under the label "**Why it matters:**".'
+require_absent "$EXPERIENCE_STANDARD" '| X2.9 | Decision Context MUST use the label "**Why it matters:**" and explain why the answer matters to the person without asking a second question.'
 require_text "$EXPERIENCE_STANDARD" '| X2.10 | An example MUST appear only when it makes the expected answer clearer without becoming a required category.'
 require_text "$EXPERIENCE_STANDARD" '| X2.23 | An accepted Profile organization name MUST be used in contextual guidance where it improves clarity.'
 require_text "$EXPERIENCE_STANDARD" '| X2.24 | An organization name that has not been accepted MUST NOT be invented.'
@@ -80,6 +91,18 @@ require_text "$EXPERIENCE_STANDARD" '| X2.28 | A visible move into a new setup d
 require_text "$EXPERIENCE_STANDARD" '| X2.29 | Discovered or extracted information MUST stay proposed until the user-acceptance boundary is satisfied.'
 require_text "$EXPERIENCE_STANDARD" '| X2.30 | Evidence that cannot be recommended or inferred MUST stay unknown.'
 require_text "$EXPERIENCE_STANDARD" '| X2.31 | Optional enrichment MUST NOT block continuation unless the owning domain requires it for validity.'
+# Superseded behavior: X2.13 was checked only by its rule sentence, and the recommendation sketch used a count-insensitive invitation.
+require_text "$EXPERIENCE_STANDARD" 'Before each unresolved guided-collection question, the workflow evaluates accumulated accepted context; a useful grounded choice is shown instead of the question.'
+require_text "$EXPERIENCE_STANDARD" 'The set shows concise grounding tied to what Highway already knows, one or more distinct actionable recommendations, a choice prompt appropriate to that number, and a user-authored alternative.'
+require_text "$EXPERIENCE_STANDARD" '| X2.32 | Recommendation choice wording MUST match the number of recommendations shown.'
+require_text "$EXPERIENCE_STANDARD" '| X2.33 | A completed guided Setup domain MUST close with one concise synthesis when accepted context from that domain can be meaningfully summarized.'
+require_text "$EXPERIENCE_STANDARD" '| X2.34 | Machine-consumable owner results MUST NOT appear in normal orchestrated user-visible output.'
+require_text "$EXPERIENCE_STANDARD" '| X2.35 | A delegated guided interaction MUST NOT expose a machine result after its final user-facing acknowledgment or question.'
+require_text "$EXPERIENCE_STANDARD" 'Status, Summary, Next Action, Blocking Reason, Action Status, Collection Result'
+require_text "$EXPERIENCE_STANDARD" "I've captured that objective. We can build on it in the next part of Setup."
+require_text "$EXPERIENCE_STANDARD" 'Accepted information compounds during a guided interaction.'
+require_absent "$EXPERIENCE_STANDARD" 'Select any of these'
+require_absent "$EXPERIENCE_STANDARD" 'Choose a suitable repository structure.'
 require_text "$EXPERIENCE_STANDARD" '| X5.1 | An emitted message MUST name something the person can act on.'
 require_text "$EXPERIENCE_STANDARD" '| X5.2 | A report of a conflict with existing content MUST name the existing item.'
 for skill in highway-profile highway-objectives highway-controls highway-nfrs highway-new highway-discovery highway-adr highway-clarify; do
