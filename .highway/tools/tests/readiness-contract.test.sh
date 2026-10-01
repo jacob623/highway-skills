@@ -28,11 +28,9 @@ for owner in profile objectives controls nfrs; do
 done
 
 setup="$HIGHWAY_ROOT/skills/highway-setup/SKILL.md"
-expect_text "$setup" "Profile readiness"
-expect_text "$setup" "Objectives readiness"
-expect_text "$setup" "Controls readiness"
-expect_text "$setup" "NFR readiness"
-expect_text "$setup" "orchestration only"
+expect_text "$setup" "Profile → Objectives → Controls → NFRs"
+expect_text "$setup" "result declared by that owner"
+expect_text "$setup" "Collection Result contracts"
 
 workflow_rules="$(sed -n '/^## Workflow$/,/^## Ordered Readiness Rules$/p' "$setup")"
 for forbidden in 'organization.name' 'next_id' 'valid Objective' 'valid Control'; do
