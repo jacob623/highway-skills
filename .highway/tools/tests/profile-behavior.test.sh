@@ -39,7 +39,7 @@ for required_text in \
 	'version: 5.1.0' \
 	"### Let's get to know your organization" \
 	'This helps Highway make more relevant recommendations as we go.' \
-	'Seed a Working Idea when further development could materially improve the Vision' \
+	'A Vision Working Idea may be a grounded direction, distinction, implication, alternative, or recommendation' \
 	'Re-evaluate Identity, Vision, and other accepted Profile context before opening' \
 	'sharpen principles already implicit in the accepted direction' \
 	'Profile does not add a local acknowledgment stage' \
@@ -47,7 +47,7 @@ for required_text in \
 	'category names are neither presented nor retained' \
 	'Synthesized recommendation prose is generated naturally from accepted evidence rather than from a required recommendation sentence template.' \
 	're-evaluate accumulated accepted evidence across all four domains' \
-	'grounded recommendation' \
+	'When accepted Profile evidence supports neither a Converged Proposal nor a useful Working Idea' \
 	'persist the retained Profile' \
 	'one concise synthesis' \
 	'category names are neither presented nor retained' \

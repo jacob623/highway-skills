@@ -74,7 +74,7 @@ complete candidate has been presented as a Converged Proposal.
 
 ## Acquisition
 
-Acquisition follows this order: classify the retained Profile; establish Repository Name when missing; use supported existing-information or website acquisition when available; reuse accepted or accepted-discovered evidence across all four domains; re-evaluate accumulated accepted evidence across all four domains before each unresolved guided question; present a useful grounded recommendation instead of that canonical question when one exists; ask the canonical question only when grounding is insufficient; persist accepted evidence; report readiness.
+Acquisition follows the Highway Experience Standard contribution precedence: classify the retained Profile; establish Repository Name when missing; use supported existing-information or website acquisition when available; reuse accepted or accepted-discovered evidence across all four domains; re-evaluate accumulated accepted evidence across all four domains before each unresolved guided question; present a Converged Proposal when supported, otherwise contribute a useful Working Idea when supported, otherwise ask the focused canonical question; persist accepted evidence; report readiness.
 
 When no retained Profile exists, begin first-time Setup with this one-time introduction:
 
@@ -91,6 +91,8 @@ If you're using Highway for a company or organization, its name is usually a goo
 Treat that answer as accepted Repository Name context and reuse it in the next prompt. When supported public-website retrieval is available, ask for the public website using the accepted Repository Name before ordinary domain questioning. Website acquisition is limited to organizational Profile evidence; technology-platform discovery is outside Profile scope. The supplied Organization URL is accepted. website-derived Organization Name and other derived facts stay proposed until accepted. When retrieval is unavailable, continue without exposing the missing retrieval capability.
 
 Unresolved domains use one canonical question: Identity `**What does [Organization Name] do?**`; Vision `**What is the future vision of [Organization Name]?**`; Competitive Path `**How does [Organization Name] plan to get there?**`; Guiding Principles `**What principles or values guide decisions at [Organization Name]?**`. When Organization Name is not accepted, use the accepted Repository Name where it reads naturally. Process each response, selected recommendation, or validated discovery across all four domains before choosing the next question.
+
+Lack of grounding for a complete Profile-domain proposal does not by itself justify asking the canonical question. Evaluate accepted evidence for a responsible domain-specific Working Idea before using that question as fallback; a focused question remains appropriate when the person's information is genuinely required.
 
 ## Enrichment
 
@@ -133,9 +135,10 @@ naturally without manufacturing commentary. Related ideas remain in transient Ac
 Context and stay anchored to the active subject until the relevant domain becomes active.
 
 - Identity validation: `**Is this an accurate description of your organization?**` followed by `You can also change it or provide your own description.`
-- Vision uses accepted Identity, accepted website-derived organizational evidence, existing accepted Vision evidence, and other accepted Profile context as grounding. Seed a Working Idea when further development could materially improve the Vision; when the evidence already supports a complete Vision, present it as the Converged Proposal. Once coherent enough to represent where the organization intends to go, ask `**Does this accurately reflect where you'd like [Organization Name] to go?**` followed by `You can also change it or provide your own vision.`
-- Competitive Path begins from accepted Vision or sufficient accepted evidence. Re-evaluate Identity, Vision, and other accepted Profile context before opening `### How you'll get there`; use newly visible implications rather than merely summarizing Vision. Develop a Working Idea when useful choices, tensions, opportunities, or implications remain, then present the coherent Converged Proposal and ask `**Does this accurately reflect how [Organization Name] plans to get there?**` followed by `You can also change it or provide your own approach.`
-- Guiding Principles uses accepted Identity, Vision, Competitive Path, and other accepted Profile context as grounding. After Competitive Path acceptance, re-evaluate the accumulated Profile, sharpen principles already implicit in the accepted direction, and present the complete recommendation as a Converged Proposal before asking `**Does this accurately reflect what should guide decisions at [Organization Name]?**` followed by `You can also change it or provide your own principles.`
+- Vision evaluates accepted Identity, accepted website-derived organizational evidence, existing accepted Vision evidence, and other accepted Profile context using the shared contribution precedence before asking the Vision canonical question: present a Converged Proposal when supported, otherwise contribute a useful Vision Working Idea, otherwise ask `**What is the future vision of [Organization Name]?**`. Once coherent enough to represent where the organization intends to go, ask `**Does this accurately reflect where you'd like [Organization Name] to go?**` followed by `You can also change it or provide your own vision.`
+- A Vision Working Idea may be a grounded direction, distinction, implication, alternative, or recommendation that materially advances the Vision without completing it; it remains transient until a complete Converged Proposal crosses the existing acceptance boundary.
+- Competitive Path begins from accepted Vision or sufficient accepted evidence. Re-evaluate Identity, Vision, and other accepted Profile context before opening `### How you'll get there`; use newly visible implications rather than merely summarizing Vision. Apply the shared contribution precedence before asking `**How does [Organization Name] plan to get there?**`: present a Converged Proposal when supported, otherwise contribute a useful Working Idea, otherwise ask the canonical question. Develop a Working Idea when useful choices, tensions, opportunities, or implications remain, then present the coherent Converged Proposal and ask `**Does this accurately reflect how [Organization Name] plans to get there?**` followed by `You can also change it or provide your own approach.`
+- Guiding Principles uses accepted Identity, Vision, Competitive Path, and other accepted Profile context as grounding. After Competitive Path acceptance, re-evaluate the accumulated Profile, sharpen principles already implicit in the accepted direction, and apply the shared contribution precedence before asking `**What principles or values guide decisions at [Organization Name]?**`: present a Converged Proposal when supported, otherwise contribute a useful Working Idea, otherwise ask the canonical question. Present the complete recommendation as a Converged Proposal before asking `**Does this accurately reflect what should guide decisions at [Organization Name]?**` followed by `You can also change it or provide your own principles.`
 
 Identity may converge immediately when website or user evidence provides a complete organizational
 description. When evidence is incomplete, conflicting, vague, or would benefit from interpretation,
@@ -147,8 +150,7 @@ A synthesized recommendation may be a Working Idea or a Converged Proposal. Do n
 artifact-acceptance question around a Working Idea. A complete candidate contains only claims supported
 by accepted organizational evidence. A natural affirmative accepts an explicitly presented Converged
 Proposal without redundant confirmation; an explanation request, correction, or replacement remains
-collaboration until the complete candidate is presented. When no grounded recommendation can seed
-useful collaboration, the applicable canonical question remains the fallback. A natural affirmative
+collaboration until the complete candidate is presented. When accepted Profile evidence supports neither a Converged Proposal nor a useful Working Idea, or the person's information is genuinely required, the applicable focused canonical question remains the fallback. A natural affirmative
 accepts the displayed Converged Proposal without a second confirmation.
 
 ## Operations
@@ -172,12 +174,16 @@ Operations remain setup, configure, readiness, view, show, describe, add, update
 - Website acquisition is limited to evidence relevant to the organizational Profile.
 - Profile does not perform technology-platform discovery from the supplied website.
 - Canonical questions are limited to unresolved domains.
-- Before each unresolved canonical question, accepted evidence is evaluated for a useful grounded recommendation.
+- Before each unresolved canonical question, accepted evidence is evaluated in the shared contribution order: present a Converged Proposal when supported; otherwise contribute a useful Working Idea when supported; otherwise ask the focused canonical question.
+- Lack of grounding for a complete Profile-domain proposal does not by itself justify asking the canonical question; Profile evaluates for a responsible Working Idea first.
 - Accepted evidence prevents a repeated question.
 - Accepted evidence is persisted before dependent readiness or owner results.
 - Vision may develop through a Working Idea and presents one cohesive Converged Proposal when accepted evidence supports a grounded Vision synthesis.
+- After accepted Identity changes the understanding used by Vision, Vision evaluates accumulated accepted Profile context for a Converged Proposal or useful Working Idea before its canonical question.
 - Competitive Path may develop through a Working Idea and presents one cohesive Converged Proposal when accepted evidence supports a grounded Competitive Path synthesis.
+- After accepted Vision changes the understanding used by Competitive Path, Competitive Path evaluates accumulated accepted Profile context for a Converged Proposal or useful Working Idea before its canonical question.
 - Guiding Principles may develop through a Working Idea and presents one cohesive Converged Proposal when accepted evidence supports a grounded Guiding Principles synthesis.
+- After accepted Competitive Path changes the understanding used by Guiding Principles, Guiding Principles evaluates accumulated accepted Profile context for a Converged Proposal or useful Working Idea before its canonical question.
 - After accepted Profile knowledge changes the active understanding, subsequent Profile behavior uses that knowledge with relevant accumulated Profile context before advancing.
 - Interpretation, explanation, subject introductions, and Profile-specific advisory commentary remain transient unless explicitly incorporated into accepted Profile evidence; advisory commentary remains grounded in accepted evidence.
 - A Working Idea remains transient and does not establish the applicable Profile domain as discussed.
@@ -202,7 +208,7 @@ Operations remain setup, configure, readiness, view, show, describe, add, update
 - The validation question remains the single response-demanding decision in the recommendation turn.
 - A synthesized Converged Proposal contains only claims supported by accepted organizational evidence.
 - Internal enrichment-category names are neither presented to the user nor persisted.
-- When accepted evidence cannot support a useful Working Idea or Converged Proposal, the applicable canonical question remains the fallback.
+- When accepted evidence cannot support a responsible Working Idea or Converged Proposal, or the person's information is genuinely required, the applicable focused canonical question remains the fallback.
 - Acceptance of a Converged Proposal establishes the applicable unresolved domain as discussed.
 - A domain established as discussed by accepted Converged Proposal evidence does not receive its canonical question afterward.
 - Accepting optional enrichment for an already `discussed` or `bounded` domain does not change readiness.
