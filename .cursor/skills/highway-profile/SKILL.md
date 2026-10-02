@@ -60,6 +60,18 @@ The four readiness domains are `identity`, `vision`, `competitive_path`, and `gu
 
 The optional Context structure is owned by .highway/library/templates/output/profile-record.md. Optional context does not change readiness. Profile owns its evidence, artifact, domain state, and readiness. Accepted evidence that establishes a domain sets it to `discussed`; an explicit user boundary sets an otherwise unresolved domain to `bounded`. A domain is not asked its canonical question when accepted evidence establishes that domain or an explicit user boundary makes it bounded. Proposal evidence stays transient until accepted. Foundational Highway context may show what evidence is useful, and it must not be promoted into the retained Profile. Workflow-specific input remains authoritative.
 
+Profile uses the shared collaborative-development model from the Highway Experience Standard. A user
+contribution or Highway recommendation may begin as a Working Idea rather than a finished Profile
+domain. Do not seek domain acceptance until the current understanding is complete enough to represent
+the domain as a Converged Proposal. A mature contribution or sufficiently grounded Highway synthesis
+may converge immediately; do not force additional discussion merely to demonstrate collaboration.
+
+A Working Idea is transient Profile reasoning that may be interpreted, sharpened, extended, questioned,
+corrected, redirected, or abandoned. A Converged Proposal is a complete candidate that answers the
+active domain's purpose coherently without unsupported facts. Agreement with a Working Idea does not
+establish a discussed Profile domain. Natural acceptance crosses the existing boundary only when the
+complete candidate has been presented as a Converged Proposal.
+
 ## Acquisition
 
 Acquisition follows this order: classify the retained Profile; establish Repository Name when missing; use supported existing-information or website acquisition when available; reuse accepted or accepted-discovered evidence across all four domains; re-evaluate accumulated accepted evidence across all four domains before each unresolved guided question; present a useful grounded recommendation instead of that canonical question when one exists; ask the canonical question only when grounding is insufficient; persist accepted evidence; report readiness.
@@ -82,11 +94,30 @@ Unresolved domains use one canonical question: Identity `**What does [Organizati
 
 ## Enrichment
 
-Optional enrichment may continue after a domain is `discussed` or `bounded`. User-visible interaction follows the Highway Experience Standard: acknowledge when X2.8 applies, converse naturally, contribute grounded perspective when useful, and present recommendations without imposing a local sentence, paragraph, or brevity pattern. X2.36 additionally prohibits narrating persistence, readiness, routing, evaluation, or workflow progression. Acknowledgment, explanation, reflection, and advisory commentary remain transient unless the person explicitly incorporates them into accepted Profile evidence.
+Optional enrichment may continue after a domain is `discussed` or `bounded`. User-visible interaction
+follows the Highway Experience Standard. Profile does not add a local acknowledgment stage, narrate
+persistence or readiness, or impose a local sentence, paragraph, or brevity pattern. X2.36 prohibits
+narrating persistence, readiness, routing, evaluation, or workflow progression. Interpret, sharpen,
+and contribute when contextual re-evaluation reveals something useful; transition naturally when it
+does not. Acknowledgment, explanation, reflection, and advisory commentary remain transient unless
+the person explicitly incorporates them into accepted Profile evidence.
 
-Vision recommendations use accepted Identity, accepted website-derived organizational evidence, existing accepted Vision evidence, and other accepted Profile context as grounding across Future State, Impact, Reach / Scale, Position, and Experience / Reputation. Competitive Path recommendations use accepted Vision and the accumulated accepted Profile as grounding across Customer / Participant, Offering, Market / Reach, Differentiation, Operations, and Capability Development. Guiding Principles recommendations use accepted Competitive Path and the accumulated accepted Profile as grounding across People, Trust, Quality, Simplicity, Change, Stewardship, and Autonomy. Coverage of every category is not required; category names are neither presented nor retained. Optional enrichment does not change readiness by itself. Profile does not store a small-business, enterprise, maturity, persona, or advisory classification.
+Vision uses accepted Identity, accepted website-derived organizational evidence, existing accepted
+Vision evidence, and other accepted Profile context as grounding across Future State, Impact,
+Reach / Scale, Position, and Experience / Reputation. Competitive Path uses accepted Vision and the
+accumulated accepted Profile as grounding across Customer / Participant, Offering, Market / Reach,
+Differentiation, Operations, and Capability Development. Guiding Principles uses accepted Identity,
+Vision, Competitive Path, and the accumulated accepted Profile as grounding across People, Trust,
+Quality, Simplicity, Change, Stewardship, and Autonomy. These categories remain reasoning aids:
+coverage of every category is not required, category names are neither presented nor retained, and
+they do not dictate conversational order. Optional enrichment does not change readiness by itself.
+Profile does not store a small-business, enterprise, maturity, persona, or advisory classification.
 
-When accepted evidence supports a useful synthesis, use the subject rhythm `Introduce -> Suggest -> Validate`: introduce the organizational subject, present one cohesive recommendation grounded only in accepted evidence, and end with the domain validation question and user-authored alternative. present one cohesive organizational paragraph grounded only in accepted evidence. Generate conversational framing and recommendation prose naturally rather than from a required sentence template. Only the accepted organizational narrative is retained.
+A Profile domain is ready to become a Converged Proposal when accumulated evidence supports one
+coherent organizational narrative that meaningfully answers the domain's purpose without unsupported
+facts. Do not prolong a domain solely because additional detail could theoretically be collected.
+One cohesive organizational narrative that meaningfully answers the domain uses clear sentences and,
+when useful, short paragraphs; it does not require one sentence or one paragraph.
 
 The synthesized subject headings are:
 
@@ -94,14 +125,31 @@ The synthesized subject headings are:
 - Competitive Path: `### How you'll get there`, followed by a natural practical-direction introduction.
 - Guiding Principles: `### What will guide your decisions`, followed by a natural decision-principles introduction.
 
-After recommendation acceptance, apply the X2.8 acknowledgment intent: acknowledge what the accepted information established. When another grounded subject remains, continue with `Acknowledge -> Introduce next subject -> Suggest -> Validate`. Acknowledgment closes the accepted subject and the introduction opens the next subject; neither describes persistence, readiness, domain state, internal categories, or workflow progression. When no grounded recommendation is available, the applicable canonical question remains the fallback.
+After accepted Profile knowledge is persisted, re-evaluate it together with the accumulated accepted
+Profile before deciding what to contribute next. When re-evaluation reveals a useful distinction,
+implication, relationship, tension, opportunity, concern, or recommendation, carry that stronger
+understanding into the next Profile subject. When it reveals nothing useful to add, transition
+naturally without manufacturing commentary. Related ideas remain in transient Active Reasoning
+Context and stay anchored to the active subject until the relevant domain becomes active.
 
 - Identity validation: `**Is this an accurate description of your organization?**` followed by `You can also change it or provide your own description.`
-- Vision uses accepted Identity, accepted website-derived organizational evidence, existing accepted Vision evidence, and other accepted Profile context as grounding. Present one cohesive Vision paragraph that naturally expresses the recommended future direction supported by accepted evidence. Ask `**Does this accurately reflect where you'd like [Organization Name] to go?**` followed by `You can also change it or provide your own vision.`
-- Competitive Path uses the accepted Vision and accumulated accepted Profile as grounding. Present one cohesive Competitive Path paragraph that naturally expresses how the organization could pursue its accepted direction. Ask `**Does this accurately reflect how [Organization Name] plans to get there?**` followed by `You can also change it or provide your own approach.`
-- Guiding Principles uses the accepted Competitive Path and accumulated accepted Profile as grounding. Present one cohesive Guiding Principles paragraph that naturally expresses the decision principles supported by accepted evidence. Ask `**Does this accurately reflect what should guide decisions at [Organization Name]?**` followed by `You can also change it or provide your own principles.`
+- Vision uses accepted Identity, accepted website-derived organizational evidence, existing accepted Vision evidence, and other accepted Profile context as grounding. Seed a Working Idea when further development could materially improve the Vision; when the evidence already supports a complete Vision, present it as the Converged Proposal. Once coherent enough to represent where the organization intends to go, ask `**Does this accurately reflect where you'd like [Organization Name] to go?**` followed by `You can also change it or provide your own vision.`
+- Competitive Path begins from accepted Vision or sufficient accepted evidence. Re-evaluate Identity, Vision, and other accepted Profile context before opening `### How you'll get there`; use newly visible implications rather than merely summarizing Vision. Develop a Working Idea when useful choices, tensions, opportunities, or implications remain, then present the coherent Converged Proposal and ask `**Does this accurately reflect how [Organization Name] plans to get there?**` followed by `You can also change it or provide your own approach.`
+- Guiding Principles uses accepted Identity, Vision, Competitive Path, and other accepted Profile context as grounding. After Competitive Path acceptance, re-evaluate the accumulated Profile, sharpen principles already implicit in the accepted direction, and present the complete recommendation as a Converged Proposal before asking `**Does this accurately reflect what should guide decisions at [Organization Name]?**` followed by `You can also change it or provide your own principles.`
 
-Each paragraph contains only accepted-evidence claims and is offered as one reviewable recommendation. A natural affirmative accepts the displayed proposal through the existing acceptance boundary; a correction or replacement becomes the user's proposed alternative; an explanation request is not acceptance; and no second confirmation is added after acceptance. Generic acceptance, alternatives, clarification handling, and presentation follow the Highway Experience Standard. When no useful cohesive paragraph can be grounded, ask the applicable canonical question. Accepted paragraph evidence establishes the domain as `discussed` and prevents that domain's canonical question; accepting enrichment for an already `discussed` or `bounded` domain does not change readiness.
+Identity may converge immediately when website or user evidence provides a complete organizational
+description. When evidence is incomplete, conflicting, vague, or would benefit from interpretation,
+keep it as a Working Idea and combine evidence, surface ambiguity, allow correction, or ask one bounded
+question when genuinely needed before presenting `**Is this an accurate description of your organization?**`
+and `You can also change it or provide your own description.`
+
+A synthesized recommendation may be a Working Idea or a Converged Proposal. Do not ask an
+artifact-acceptance question around a Working Idea. A complete candidate contains only claims supported
+by accepted organizational evidence. A natural affirmative accepts an explicitly presented Converged
+Proposal without redundant confirmation; an explanation request, correction, or replacement remains
+collaboration until the complete candidate is presented. When no grounded recommendation can seed
+useful collaboration, the applicable canonical question remains the fallback. A natural affirmative
+accepts the displayed Converged Proposal without a second confirmation.
 
 ## Operations
 

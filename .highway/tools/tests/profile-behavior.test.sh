@@ -39,11 +39,11 @@ for required_text in \
 	'version: 5.1.0' \
 	"### Let's get to know your organization" \
 	'This helps Highway make more relevant recommendations as we go.' \
-	'Present one cohesive Vision paragraph that naturally expresses the recommended future direction supported by accepted evidence.' \
-	'Present one cohesive Competitive Path paragraph that naturally expresses how the organization could pursue its accepted direction.' \
-	'Present one cohesive Guiding Principles paragraph that naturally expresses the decision principles supported by accepted evidence.' \
-	'User-visible interaction follows the Highway Experience Standard: acknowledge when X2.8 applies, converse naturally, contribute grounded perspective when useful' \
-	'Generate conversational framing and recommendation prose naturally rather than from a required sentence template.' \
+	'Seed a Working Idea when further development could materially improve the Vision' \
+	'Re-evaluate Identity, Vision, and other accepted Profile context before opening' \
+	'sharpen principles already implicit in the accepted direction' \
+	'Profile does not add a local acknowledgment stage' \
+	'One cohesive organizational narrative that meaningfully answers the domain' \
 	'category names are neither presented nor retained' \
 	'Synthesized recommendation prose is generated naturally from accepted evidence rather than from a required recommendation sentence template.' \
 	're-evaluate accumulated accepted evidence across all four domains' \
@@ -70,9 +70,9 @@ for subject_text in \
 	"### Where you're going" \
 	"### How you'll get there" \
 	'### What will guide your decisions' \
-	'Introduce -> Suggest -> Validate' \
-	'Acknowledge -> Introduce next subject -> Suggest -> Validate' \
-	'acknowledge what the accepted information established'; do
+	'A Working Idea is transient Profile reasoning' \
+	'After accepted Profile knowledge is persisted, re-evaluate it together with the accumulated accepted' \
+	'A synthesized recommendation may be a Working Idea or a Converged Proposal'; do
 	if ! grep -Fq "$subject_text" "$SKILL"; then
 		echo "FAIL: Feature 123 subject rhythm missing '$subject_text'"
 		fail=1

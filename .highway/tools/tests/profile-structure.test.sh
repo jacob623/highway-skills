@@ -45,9 +45,9 @@ for required_text in \
 	'bounded' \
 	'version: 5.1.0' \
 	'Profile readiness' \
-	'present one cohesive organizational paragraph grounded only in accepted evidence' \
-	'Only the accepted organizational narrative is retained' \
-	'no second confirmation'; do
+	'One cohesive organizational narrative that meaningfully answers' \
+	'Retain only the accepted cohesive domain narrative' \
+	'without a second confirmation'; do
 	if ! grep -Fq "$required_text" "$SKILL"; then
 		echo "FAIL: Profile ownership contract missing '$required_text'"
 		fail=1

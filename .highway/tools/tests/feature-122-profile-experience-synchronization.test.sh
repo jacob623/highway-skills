@@ -27,15 +27,15 @@ require_absent() {
 	fi
 }
 
-require_text 'acknowledge when X2.8 applies, converse naturally, contribute grounded perspective when useful'
-require_text 'Acknowledgment, explanation, reflection, and advisory commentary remain transient unless the person explicitly incorporates them into accepted Profile evidence.'
+require_text 'Profile does not add a local acknowledgment stage, narrate'
+require_text 'Acknowledgment, explanation, reflection, and advisory commentary remain transient'
 require_text 'Vision uses accepted Identity, accepted website-derived organizational evidence, existing accepted Vision evidence, and other accepted Profile context as grounding.'
-require_text 'Competitive Path uses the accepted Vision and accumulated accepted Profile as grounding.'
-require_text 'Guiding Principles uses the accepted Competitive Path and accumulated accepted Profile as grounding.'
+require_text 'Competitive Path begins from accepted Vision or sufficient accepted evidence.'
+require_text 'Guiding Principles uses accepted Identity, Vision, Competitive Path, and other accepted Profile context as grounding.'
 require_text 'naturally connect the accepted Profile understanding to how it can inform later Highway guidance.'
 require_text 'User-visible interaction follows the Highway Experience Standard.'
 require_text 'The validation question remains the single response-demanding decision in the recommendation turn.'
-require_text 'Generate conversational framing and recommendation prose naturally rather than from a required sentence template.'
+require_text 'One cohesive organizational narrative that meaningfully answers the domain'
 require_text 'Profile does not impose a local brevity requirement that conflicts with shared Conversational Presence guidance.'
 require_absent 'Profile does not require fixed recommendation sentence templates.'
 require_text 'X2.36'

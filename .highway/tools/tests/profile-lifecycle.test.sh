@@ -61,8 +61,8 @@ SKILL="$HIGHWAY_ROOT/skills/highway-profile/SKILL.md"
 for required_text in \
 	'only the accepted cohesive domain narrative' \
 	'Acknowledgment, explanation, reflection, and advisory commentary remain transient' \
-	'Accepted paragraph evidence establishes the domain as `discussed`' \
-	'accepting enrichment for an already `discussed` or `bounded` domain does not change readiness' \
+	'Accepted evidence that establishes a domain sets it to `discussed`' \
+	'Optional enrichment does not change readiness by itself' \
 	'persist the retained Profile, and only then return dependent readiness'; do
 	if ! grep -Fq "$required_text" "$SKILL"; then
 		echo "FAIL: Profile lifecycle boundary missing '$required_text'"
