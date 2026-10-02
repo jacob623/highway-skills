@@ -43,7 +43,7 @@ for token in \
 	'| X2.2 | An Interactive Workflow MUST use accepted information, available evidence, or a grounded recommendation before asking a question.' \
 	'| X2.11 | Accepted information that already answers the need MUST be reused.' \
 	'| X2.12 | When the workflow supports it, authoritative organizational information MUST be imported or validated rather than recreated conversationally.' \
-	'| X2.13 | Grounded recommendations MUST be offered before a question when context supports useful choices.' \
+	'| X2.13 | An Interactive Workflow MUST contribute a grounded Converged Proposal or useful Working Idea before asking when available relevant context supports either.' \
 	'| X2.14 | A question MUST NOT be asked only to satisfy an internal workflow dimension.' \
 	'| X2.15 | Organization size, maturity, or operating model MUST NOT be assigned from organization identity alone.' \
 	'| X2.7 | A recommendation MUST be grounded in context the owning workflow declares.' \
@@ -61,9 +61,9 @@ for token in \
 do
 	grep -Fq "$token" "$STANDARD" || { echo "FAIL: Experience Standard missing $token"; fail=1; }
 done
-# Superseded behavior: X2.13's observable did not require evaluation before each unresolved guided-collection question.
-if ! grep -Fq 'Before each unresolved guided-collection question, the workflow evaluates accumulated accepted context; a useful grounded choice is shown instead of the question.' "$STANDARD"; then
-	echo 'FAIL: X2.13 observable does not evaluate before each unresolved guided-collection question'
+# X2.13 contribution precedence: evaluate context in order before asking.
+if ! grep -Fq 'Before an unresolved question, the workflow evaluates available relevant context in order: present a Converged Proposal when supported; otherwise contribute a useful Working Idea when supported; otherwise ask the focused unresolved question.' "$STANDARD"; then
+	echo 'FAIL: X2.13 observable does not express contribution precedence'
 	fail=1
 fi
 if ! grep -Fq '| X2.32 | Recommendation choice wording MUST match the number of recommendations shown.' "$STANDARD"; then

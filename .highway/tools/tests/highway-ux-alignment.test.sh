@@ -65,7 +65,6 @@ require_text "$EXPERIENCE_STANDARD" '4. Treat a new contribution as a Working Id
 require_text "$EXPERIENCE_STANDARD" '5. Interpret the contribution in relevant context and sharpen useful distinctions, implications,'
 require_text "$EXPERIENCE_STANDARD" "7. Receive the person's response, update the working understanding, and re-evaluate related ideas."
 require_text "$EXPERIENCE_STANDARD" '8. Continue the inner development loop only while further development adds value; a mature contribution'
-require_text "$EXPERIENCE_STANDARD" '9. Offer a complete proposal or a grounded starting point when the owning workflow can responsibly help,'
 require_text "$EXPERIENCE_STANDARD" '10. Ask one clear question only when unresolved information is still needed and useful grounded'
 require_text "$EXPERIENCE_STANDARD" '11. Present the Converged Proposal for the owning workflow'
 require_text "$EXPERIENCE_STANDARD" '12. After acceptance, allow the owner to persist accepted knowledge, update the available context, and'
@@ -115,8 +114,8 @@ require_text "$EXPERIENCE_STANDARD" '| X2.28 | A visible move into a new setup d
 require_text "$EXPERIENCE_STANDARD" '| X2.29 | Discovered or extracted information MUST stay proposed until the user-acceptance boundary is satisfied.'
 require_text "$EXPERIENCE_STANDARD" '| X2.30 | Evidence that cannot be recommended or inferred MUST stay unknown.'
 require_text "$EXPERIENCE_STANDARD" '| X2.31 | Optional enrichment MUST NOT block continuation unless the owning domain requires it for validity.'
-# Superseded behavior: X2.13 was checked only by its rule sentence, and the recommendation sketch used a count-insensitive invitation.
-require_text "$EXPERIENCE_STANDARD" 'Before each unresolved guided-collection question, the workflow evaluates accumulated accepted context; a useful grounded choice is shown instead of the question.'
+# X2.13 contribution precedence is checked by its ordered observable.
+require_text "$EXPERIENCE_STANDARD" 'Before an unresolved question, the workflow evaluates available relevant context in order: present a Converged Proposal when supported; otherwise contribute a useful Working Idea when supported; otherwise ask the focused unresolved question.'
 require_text "$EXPERIENCE_STANDARD" 'A grounded recommendation may be presented as a Working Idea when further development could improve it,'
 require_text "$EXPERIENCE_STANDARD" '| X2.32 | Recommendation choice wording MUST match the number of recommendations shown.'
 require_text "$EXPERIENCE_STANDARD" '| X2.33 | A completed guided Setup domain MUST close with one concise synthesis when accepted context from that domain can be meaningfully summarized.'
