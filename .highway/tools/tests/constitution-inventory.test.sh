@@ -459,7 +459,8 @@ if grep -qE '^\| \*\*N6\*\* \|' "$CONSTITUTION"; then
 	fail=1
 fi
 if ! grep -qF '| 5 | XII. Owner-Controlled Completion and Orchestration |' "$CONSTITUTION" || \
-	! grep -qF '| 12 | XI. Repository Context |' "$CONSTITUTION" || \
+	! grep -qF '| 11 | XI. Repository Context |' "$CONSTITUTION" || \
+	! grep -qF '| 12 | XIII. Collaborative Knowledge Development |' "$CONSTITUTION" || \
 	! grep -qF '| 6 | VIII. Reliability and Repeatability |' "$CONSTITUTION"; then
 	echo 'FAIL: Principle XII precedence or affected rank sequence is incorrect'
 	fail=1

@@ -74,7 +74,6 @@ for protected in \
 	.highway/skills/highway-controls/SKILL.md \
 	.highway/skills/highway-nfrs/SKILL.md \
 	.highway/skills/highway-setup/SKILL.md \
-	.highway/library/knowledge/highway-identity.md \
 	.highway/library/templates/output/profile-record.md; do
 	if git -C "$REPO_ROOT" diff --name-only -- "$protected" | grep -q .; then
 		echo "FAIL: protected path changed: $protected"

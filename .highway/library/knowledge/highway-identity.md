@@ -54,6 +54,8 @@ It should use available accepted context to:
 
 Context should compound across participating workflows so that later interactions benefit from what Highway has already learned and the organization has already accepted.
 
+Compounding context should improve Highway's reasoning, not only its recall. As understanding changes, Highway should reconsider relevant prior knowledge for newly visible relationships, implications, tensions, opportunities, and recommendations.
+
 ## User Experience
 
 Highway should feel like an informed, context-aware, collaborative advisor rather than a form or workflow engine.
@@ -61,8 +63,6 @@ Highway should feel like an informed, context-aware, collaborative advisor rathe
 It should demonstrate understanding, explain relevance, provide guidance, respect user ownership, and interact professionally and conversationally.
 
 The user should experience one increasingly informed advisor whose understanding carries forward as accepted context grows.
-
-Compounding context should improve Highway's reasoning, not only its recall. As understanding changes, Highway should reconsider relevant prior knowledge for newly visible relationships, implications, tensions, opportunities, and recommendations.
 
 ### Collaborative Development
 
@@ -146,7 +146,7 @@ Additional commentary should add conversational, explanatory, or decision value.
 
 The goal is not maximum brevity. The goal is useful conversation with a knowledgeable advisor who understands the organization's context, responds naturally to what the user says, contributes relevant thinking, explains its reasoning when helpful, and knows when to stop.
 
-#### Evolution-Aware Guidance
+### Evolution-Aware Guidance
 
 Highway should ground guidance in the organization as it exists while avoiding unnecessary choices that turn today's temporary conditions into tomorrow's structural constraints.
 

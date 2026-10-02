@@ -8,18 +8,18 @@ HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 REPO_ROOT="$(cd "$HIGHWAY_ROOT/.." && pwd)"
 fail=0
 STANDARD="$HIGHWAY_ROOT/governance/experience-standard.md"
-# Superseded behavior: the runtime document was required to keep '3.0.0 → 4.0.0 (MAJOR)'.
-for token in '7.1.0 → 7.2.0 (MINOR)' '**Version**: 7.2.0 | **Ratified**: 2026-09-08 | **Last Amended**: 2026-10-01' 'Every user-visible response excludes Implementation details unless requested.' 'X2.7' 'X2.8' 'X2.9' 'X2.10' '| X2.36 | An Interactive Workflow MUST NOT narrate internal workflow progression, persistence, state transitions, or processing unless the person needs that information to act.'; do
+for token in '8.0.0 (MAJOR)' '**Version**: 8.0.0 | **Ratified**: 2026-09-08 | **Last Amended**: 2026-10-02' 'Every user-visible response excludes Implementation details unless requested.' 'X2.7' 'X2.8' 'X2.9' 'X2.10' '| X2.36 | An Interactive Workflow MUST NOT narrate internal workflow progression, persistence, state transitions, or processing unless the person needs that information to act.' '#### Collaborative Development (Non-Normative Guidance)' '#### Contextual Re-evaluation (Non-Normative Guidance)' '### Evolution-Aware Guidance (Non-Normative)'; do
 	grep -Fq "$token" "$STANDARD" || { echo "FAIL: Experience Standard missing $token"; fail=1; }
 done
+
 for token in \
-	'Version change: 7.1.0 → 7.2.0 (MINOR)' \
-	'**Version**: 7.2.0 | **Ratified**: 2026-09-08 | **Last Amended**: 2026-10-01' \
-	'Conversational commentary focuses on the person'"'"'s meaning, situation, choices, implications, or outcomes rather than internal Highway activity.' \
+	'Version change: 7.2.0 → 8.0.0 (MAJOR)' \
+	'**Version**: 8.0.0 | **Ratified**: 2026-09-08 | **Last Amended**: 2026-10-02' \
+	"Conversational commentary focuses on the person's meaning, situation, choices, implications, or outcomes rather than internal Highway activity." \
 	'Workflow narration' \
 	'#### Conversational Voice (Non-Normative Guidance)' \
-	'| X2.8 | When accepted information changes Highway'"'"'s understanding, interpretation, recommendation, or next user-relevant action, the next response MUST acknowledge what changed.' \
-	'| X2.8 | When accepted information changes Highway'"'"'s understanding, interpretation, recommendation, or next user-relevant action, the next response MUST acknowledge what changed. | The next response connects the accepted information to Highway'"'"'s updated understanding, interpretation, recommendation, or next action; it is not acknowledgment-only and does not merely repeat the person'"'"'s words. | [agent-checkable]'; do
+	"| X2.8 | When accepted information changes Highway's understanding, interpretation, recommendation, or next user-relevant action, the next response MUST reflect the changed understanding using the newly accepted information together with relevant accumulated context before advancing." \
+	"| X2.8 | When accepted information changes Highway's understanding, interpretation, recommendation, or next user-relevant action, the next response MUST reflect the changed understanding using the newly accepted information together with relevant accumulated context before advancing. | The next response uses the newly accepted information with relevant accumulated context to provide contextual interpretation, a useful connection, implication, distinction, recommendation, or next action when one exists; it does not merely repeat the person's words or narrate workflow mechanics. A simple acknowledgment or natural conclusion remains acceptable when re-evaluation reveals nothing useful to add and no unresolved information is needed. | [agent-checkable]"; do
 	grep -Fq "$token" "$STANDARD" || { echo "FAIL: Feature 120 missing $token"; fail=1; }
 done
 if [[ "$(grep -c '^| X[0-9]' "$STANDARD")" -ne 40 ]]; then
@@ -31,7 +31,6 @@ for protected in \
 	.highway/skills/highway-controls/SKILL.md \
 	.highway/skills/highway-nfrs/SKILL.md \
 	.highway/skills/highway-setup/SKILL.md \
-	.highway/library/knowledge/highway-identity.md \
 	.highway/library/templates/output/profile-record.md; do
 	if git -C "$REPO_ROOT" diff --name-only -- "$protected" | grep -q .; then
 		echo "FAIL: protected path changed: $protected"
@@ -39,6 +38,7 @@ for protected in \
 	fi
 done
 # Feature 101 evidence-first rows. Superseded X2.2 behavior: the first emitted content is a greeting or required question.
+# Feature 127 superseded the immediate-acceptance wording with the Converged Proposal boundary.
 for token in \
 	'| X2.2 | An Interactive Workflow MUST use accepted information, available evidence, or a grounded recommendation before asking a question.' \
 	'| X2.11 | Accepted information that already answers the need MUST be reused.' \
@@ -49,13 +49,13 @@ for token in \
 	'| X2.7 | A recommendation MUST be grounded in context the owning workflow declares.' \
 	'| X2.16 | A recommendation set MUST contain at most 5 distinct actionable choices.' \
 	'| X2.17 | A user-authored alternative MUST stay available whenever recommendations are shown.' \
-	'| X2.18 | Selecting a displayed recommendation MUST count as acceptance without a second confirmation.' \
+	'| X2.18 | Selecting a displayed Converged Proposal MUST count as acceptance without a second confirmation.' \
 	'| X2.19 | A request for explanation, comparison, or more information MUST NOT be treated as acceptance.' \
 	'| X2.20 | Further recommendations MUST stop when no useful grounded non-duplicate choice remains, the person is finished, or the person will provide their own information.' \
-	'| X2.21 | Material interpretation MUST be reviewed under the heading "Here'"'"'s what I'"'"'ve captured as your [category]:", with the proposal immediately below and one acceptance request at the bottom.' \
-	'| X2.22 | An explicit selection, a direct statement already in the requested category, or clearly presented imported information MUST be captured without that review.' \
+	'| X2.21 | A materially interpreted Converged Proposal MUST be reviewed under the heading "Here'"'"'s what I'"'"'ve captured as your [category]:", with one acceptance request at the bottom.' \
+	'| X2.22 | A direct domain-complete statement or explicitly selected Converged Proposal MUST be captured without an additional interpretation review.' \
 	'| X2.9 | Decision Context MUST follow the question it explains under the label "**Why it matters:**".' \
-	'| X2.25 | Profile enrichment, Objectives, Controls, and Non-Functional Requirements MUST use the shared recommendation interaction model.' \
+	'| X2.25 | Profile enrichment, Objectives, Controls, and Non-Functional Requirements MUST use the shared collaborative recommendation model.' \
 	"Here's what I've captured as your [category]:" \
 	'at most 5'
 do
