@@ -60,7 +60,8 @@ if grep -Fq Legacy "$accepted"; then echo 'FAIL: legacy YAML influenced accepted
 SKILL="$HIGHWAY_ROOT/skills/highway-profile/SKILL.md"
 for required_text in \
 	'only the accepted cohesive domain narrative' \
-	'Acknowledgment, explanation, reflection, and advisory commentary remain transient' \
+	'Interpretation, explanation, reflection, connections,' \
+	'advisory commentary remain transient' \
 	'Accepted evidence that establishes a domain sets it to `discussed`' \
 	'Optional enrichment does not change readiness by itself' \
 	'persist the retained Profile, and only then return dependent readiness'; do
@@ -71,8 +72,7 @@ for required_text in \
 done
 for required_text in \
 	'Presentation headings and introductions remain transient' \
-	'canonical question remains the fallback' \
-	'X2.36'; do
+	'canonical question remains the fallback'; do
 	if ! grep -Fq "$required_text" "$SKILL"; then
 		echo "FAIL: Feature 123 lifecycle boundary missing '$required_text'"
 		fail=1

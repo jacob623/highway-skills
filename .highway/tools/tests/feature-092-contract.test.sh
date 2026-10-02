@@ -26,7 +26,7 @@ for context in highway-identity.md highway-vision.md highway-platform-objectives
 done
 require_text "$PROFILE" 'Next Action: /highway-profile setup'
 require_text "$PROFILE" 'Next Action: /highway-profile configure'
-require_text "$PROFILE" 'User-visible interaction follows the Highway Experience Standard.'
+require_text "$PROFILE" 'Material interpretation follows the Highway Experience Standard.'
 require_text "$PROFILE" 'An absent Profile is a valid initial state'
 require_text "$PROFILE" 'Next Action: None'
 require_text "$PROFILE" 'must not be promoted into the retained Profile'

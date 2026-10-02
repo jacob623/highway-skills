@@ -59,7 +59,7 @@ for required_text in \
 	'You can also change it or provide your own vision.' \
 	'You can also change it or provide your own approach.' \
 	'You can also change it or provide your own principles.' \
-	'User-visible interaction follows the Highway Experience Standard.'; do
+	'Material interpretation follows the Highway Experience Standard.'; do
 	if ! grep -Fq "$required_text" "$SKILL"; then
 		echo "FAIL: Feature 116 contract missing '$required_text'"
 		fail=1

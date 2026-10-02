@@ -96,11 +96,11 @@ Unresolved domains use one canonical question: Identity `**What does [Organizati
 
 Optional enrichment may continue after a domain is `discussed` or `bounded`. User-visible interaction
 follows the Highway Experience Standard. Profile does not add a local acknowledgment stage, narrate
-persistence or readiness, or impose a local sentence, paragraph, or brevity pattern. X2.36 prohibits
-narrating persistence, readiness, routing, evaluation, or workflow progression. Interpret, sharpen,
-and contribute when contextual re-evaluation reveals something useful; transition naturally when it
-does not. Acknowledgment, explanation, reflection, and advisory commentary remain transient unless
-the person explicitly incorporates them into accepted Profile evidence.
+persistence or readiness, or impose a local sentence, paragraph, or brevity pattern. Interpret,
+sharpen, connect, and contribute when contextual re-evaluation reveals something useful; transition
+naturally when it does not. Interpretation, explanation, reflection, connections, and advisory
+commentary remain transient unless the person explicitly incorporates them into accepted Profile
+evidence.
 
 Vision uses accepted Identity, accepted website-derived organizational evidence, existing accepted
 Vision evidence, and other accepted Profile context as grounding across Future State, Impact,
@@ -175,12 +175,24 @@ Operations remain setup, configure, readiness, view, show, describe, add, update
 - Before each unresolved canonical question, accepted evidence is evaluated for a useful grounded recommendation.
 - Accepted evidence prevents a repeated question.
 - Accepted evidence is persisted before dependent readiness or owner results.
-- Vision uses one cohesive paragraph recommendation when accepted evidence supports a grounded Vision synthesis.
-- Competitive Path uses one cohesive paragraph recommendation when accepted evidence supports a grounded Competitive Path synthesis.
-- Guiding Principles uses one cohesive paragraph recommendation when accepted evidence supports a grounded Guiding Principles synthesis.
-- Synthesized Profile recommendations do not bypass an applicable Experience Standard acknowledgment before advancing from newly accepted grounding evidence.
-- A synthesized recommendation may include one grounded advisory observation when accepted evidence supports one.
-- Acknowledgment, explanation, and Profile-specific advisory commentary remain transient unless explicitly incorporated into accepted Profile narrative; advisory commentary remains grounded in accepted evidence.
+- Vision may develop through a Working Idea and presents one cohesive Converged Proposal when accepted evidence supports a grounded Vision synthesis.
+- Competitive Path may develop through a Working Idea and presents one cohesive Converged Proposal when accepted evidence supports a grounded Competitive Path synthesis.
+- Guiding Principles may develop through a Working Idea and presents one cohesive Converged Proposal when accepted evidence supports a grounded Guiding Principles synthesis.
+- After accepted Profile knowledge changes the active understanding, subsequent Profile behavior uses that knowledge with relevant accumulated Profile context before advancing.
+- Interpretation, explanation, subject introductions, and Profile-specific advisory commentary remain transient unless explicitly incorporated into accepted Profile evidence; advisory commentary remains grounded in accepted evidence.
+- A Working Idea remains transient and does not establish the applicable Profile domain as discussed.
+- Agreement with a Working Idea does not trigger Profile persistence or establish the applicable domain as discussed.
+- A mature contribution may converge directly into a Converged Proposal without unnecessary exploratory turns.
+- A partial, vague, or developing contribution may remain a Working Idea while interpretation, sharpening, or additional user evidence materially improves it.
+- Relevant Working Ideas may remain in transient Active Reasoning Context while the active Profile task continues.
+- Related Working Ideas remain anchored to the active Profile subject and do not create retained Profile evidence unless incorporated into an accepted Converged Proposal.
+- After domain acceptance, Profile re-evaluates the newly accepted knowledge with relevant accumulated Profile context before determining the next contribution.
+- Contextual re-evaluation may produce interpretation, sharpening, a useful connection, or advisory contribution without making that contribution accepted Profile evidence.
+- When contextual re-evaluation reveals nothing useful to add, Profile may transition naturally without manufacturing commentary.
+- Artifact-level validation is presented only for a Converged Proposal, not for a Working Idea.
+- A cohesive Profile recommendation may use multiple sentences or short paragraphs when that improves readability.
+- Profile does not compress several meaningful ideas into one sentence merely to minimize response length.
+- A synthesized recommendation may include grounded advisory contribution when accepted evidence supports it.
 - Synthesized recommendation prose is generated naturally from accepted evidence rather than from a required recommendation sentence template.
 - Profile does not impose a local brevity requirement that conflicts with shared Conversational Presence guidance.
 - Identity retains its accuracy-oriented validation wording.
@@ -188,11 +200,11 @@ Operations remain setup, configure, readiness, view, show, describe, add, update
 - Competitive Path retains its accuracy-oriented validation wording.
 - Guiding Principles retains its accuracy-oriented validation wording.
 - The validation question remains the single response-demanding decision in the recommendation turn.
-- A synthesized paragraph contains only claims supported by accepted organizational evidence.
+- A synthesized Converged Proposal contains only claims supported by accepted organizational evidence.
 - Internal enrichment-category names are neither presented to the user nor persisted.
-- When no cohesive grounded paragraph can be produced, the applicable canonical question remains the fallback.
-- Acceptance of a paragraph recommendation establishes the applicable unresolved domain as `discussed`.
-- A domain established as `discussed` by accepted paragraph evidence does not receive its canonical question afterward.
+- When accepted evidence cannot support a useful Working Idea or Converged Proposal, the applicable canonical question remains the fallback.
+- Acceptance of a Converged Proposal establishes the applicable unresolved domain as discussed.
+- A domain established as discussed by accepted Converged Proposal evidence does not receive its canonical question afterward.
 - Accepting optional enrichment for an already `discussed` or `bounded` domain does not change readiness.
 - Guided completion emits one concise user-relevant synthesis before control returns to Setup.
 - Material interpretation follows the Highway Experience Standard.
@@ -207,7 +219,3 @@ Operations remain setup, configure, readiness, view, show, describe, add, update
 ## Example
 
 `/highway-profile readiness`
-
-## Experience
-
-User-visible interaction follows the Highway Experience Standard.

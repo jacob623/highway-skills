@@ -28,17 +28,18 @@ require_absent() {
 }
 
 require_text 'Profile does not add a local acknowledgment stage, narrate'
-require_text 'Acknowledgment, explanation, reflection, and advisory commentary remain transient'
+require_text 'Interpretation, explanation, reflection, connections,'
+require_text 'advisory commentary remain transient'
 require_text 'Vision uses accepted Identity, accepted website-derived organizational evidence, existing accepted Vision evidence, and other accepted Profile context as grounding.'
 require_text 'Competitive Path begins from accepted Vision or sufficient accepted evidence.'
 require_text 'Guiding Principles uses accepted Identity, Vision, Competitive Path, and other accepted Profile context as grounding.'
 require_text 'naturally connect the accepted Profile understanding to how it can inform later Highway guidance.'
-require_text 'User-visible interaction follows the Highway Experience Standard.'
+require_text 'Material interpretation follows the Highway Experience Standard.'
 require_text 'The validation question remains the single response-demanding decision in the recommendation turn.'
 require_text 'One cohesive organizational narrative that meaningfully answers the domain'
 require_text 'Profile does not impose a local brevity requirement that conflicts with shared Conversational Presence guidance.'
 require_absent 'Profile does not require fixed recommendation sentence templates.'
-require_text 'X2.36'
+require_absent 'X2.36'
 
 for old_text in \
 	'Acknowledge and Build are optional conversational context' \
