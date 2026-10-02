@@ -66,6 +66,26 @@ for required_text in \
 	fi
 done
 
+for subject_text in \
+	"### Where you're going" \
+	"### How you'll get there" \
+	'### What will guide your decisions' \
+	'Introduce -> Suggest -> Validate' \
+	'Acknowledge -> Introduce next subject -> Suggest -> Validate' \
+	'acknowledge what the accepted information established'; do
+	if ! grep -Fq "$subject_text" "$SKILL"; then
+		echo "FAIL: Feature 123 subject rhythm missing '$subject_text'"
+		fail=1
+	fi
+done
+
+for narration_text in 'persisted' 'readiness' 'workflow progression'; do
+	if grep -Fq "narrate $narration_text" "$SKILL"; then
+		echo "FAIL: Profile narrates internal mechanics: narrate $narration_text"
+		fail=1
+	fi
+done
+
 for forbidden_text in \
 	'Based on what I know about [Organization Name], I could see your vision as' \
 	'Based on that direction, [Organization Name] could pursue it by' \

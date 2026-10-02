@@ -54,6 +54,22 @@ for required_text in \
 	fi
 done
 
+for subject_heading in \
+	"### Where you're going" \
+	"### How you'll get there" \
+	'### What will guide your decisions'; do
+	if ! grep -Fq -- "$subject_heading" "$SKILL"; then
+		echo "FAIL: subject heading missing from Profile source: $subject_heading"
+		fail=1
+	fi
+done
+for forbidden in 'presents Status: Complete' 'announces Next Action: None' 'readiness-domain'; do
+	if grep -Fq -- "$forbidden" "$SKILL"; then
+		echo "FAIL: Profile source exposes workflow mechanics: $forbidden"
+		fail=1
+	fi
+done
+
 for internal_category in \
 	'Future State' \
 	'Customer / Participant' \

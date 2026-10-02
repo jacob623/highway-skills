@@ -69,6 +69,15 @@ for required_text in \
 		fail=1
 	fi
 done
+for required_text in \
+	'Presentation headings and introductions remain transient' \
+	'canonical question remains the fallback' \
+	'X2.36'; do
+	if ! grep -Fq "$required_text" "$SKILL"; then
+		echo "FAIL: Feature 123 lifecycle boundary missing '$required_text'"
+		fail=1
+	fi
+done
 
 if [[ $fail -ne 0 ]]; then exit 1; fi
 echo 'OK: Profile lifecycle contract passes'

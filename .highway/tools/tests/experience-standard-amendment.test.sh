@@ -9,19 +9,21 @@ REPO_ROOT="$(cd "$HIGHWAY_ROOT/.." && pwd)"
 fail=0
 STANDARD="$HIGHWAY_ROOT/governance/experience-standard.md"
 # Superseded behavior: the runtime document was required to keep '3.0.0 → 4.0.0 (MAJOR)'.
-for token in '7.0.0 → 7.1.0 (MINOR)' '**Version**: 7.1.0 | **Ratified**: 2026-09-08 | **Last Amended**: 2026-10-01' 'Every user-visible response excludes Implementation details unless requested.' 'X2.7' 'X2.8' 'X2.9' 'X2.10'; do
+for token in '7.1.0 → 7.2.0 (MINOR)' '**Version**: 7.2.0 | **Ratified**: 2026-09-08 | **Last Amended**: 2026-10-01' 'Every user-visible response excludes Implementation details unless requested.' 'X2.7' 'X2.8' 'X2.9' 'X2.10' '| X2.36 | An Interactive Workflow MUST NOT narrate internal workflow progression, persistence, state transitions, or processing unless the person needs that information to act.'; do
 	grep -Fq "$token" "$STANDARD" || { echo "FAIL: Experience Standard missing $token"; fail=1; }
 done
 for token in \
-	'Version change: 7.0.0 → 7.1.0 (MINOR)' \
-	'**Version**: 7.1.0 | **Ratified**: 2026-09-08 | **Last Amended**: 2026-10-01' \
+	'Version change: 7.1.0 → 7.2.0 (MINOR)' \
+	'**Version**: 7.2.0 | **Ratified**: 2026-09-08 | **Last Amended**: 2026-10-01' \
+	'Conversational commentary focuses on the person'"'"'s meaning, situation, choices, implications, or outcomes rather than internal Highway activity.' \
+	'Workflow narration' \
 	'#### Conversational Voice (Non-Normative Guidance)' \
 	'| X2.8 | When accepted information changes Highway'"'"'s understanding, interpretation, recommendation, or next user-relevant action, the next response MUST acknowledge what changed.' \
 	'| X2.8 | When accepted information changes Highway'"'"'s understanding, interpretation, recommendation, or next user-relevant action, the next response MUST acknowledge what changed. | The next response connects the accepted information to Highway'"'"'s updated understanding, interpretation, recommendation, or next action; it is not acknowledgment-only and does not merely repeat the person'"'"'s words. | [agent-checkable]'; do
 	grep -Fq "$token" "$STANDARD" || { echo "FAIL: Feature 120 missing $token"; fail=1; }
 done
-if [[ "$(grep -c '^| X[0-9]' "$STANDARD")" -ne 39 ]]; then
-	echo 'FAIL: Experience Standard rule inventory must remain 39 rules'
+if [[ "$(grep -c '^| X[0-9]' "$STANDARD")" -ne 40 ]]; then
+	echo 'FAIL: Experience Standard rule inventory must contain 40 rules'
 	fail=1
 fi
 for protected in \
@@ -82,6 +84,10 @@ if grep -Fq '| X2.9 | Decision Context MUST use the label "**Why it matters:**" 
 fi
 if grep -Fq '6.0.0 → 7.0.0 (MAJOR)' "$STANDARD"; then
 	echo 'FAIL: superseded Feature 120 Experience Standard report is still present'
+	fail=1
+fi
+if ! grep -Fq 'internal persistence, state evaluation, routing, and progression occur without narration unless the person needs the information to act' "$STANDARD"; then
+	echo 'FAIL: X2.36 interaction-model guidance is missing'
 	fail=1
 fi
 if [[ "$(grep -cF 'Sync Impact Report' "$STANDARD")" -ne 1 ]]; then

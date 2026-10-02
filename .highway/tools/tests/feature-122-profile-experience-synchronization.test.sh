@@ -38,6 +38,7 @@ require_text 'The validation question remains the single response-demanding deci
 require_text 'Generate conversational framing and recommendation prose naturally rather than from a required sentence template.'
 require_text 'Profile does not impose a local brevity requirement that conflicts with shared Conversational Presence guidance.'
 require_absent 'Profile does not require fixed recommendation sentence templates.'
+require_text 'X2.36'
 
 for old_text in \
 	'Acknowledge and Build are optional conversational context' \
@@ -74,7 +75,6 @@ for protected in \
 	.highway/skills/highway-nfrs/SKILL.md \
 	.highway/skills/highway-setup/SKILL.md \
 	.highway/library/knowledge/highway-identity.md \
-	.highway/governance/experience-standard.md \
 	.highway/library/templates/output/profile-record.md; do
 	if git -C "$REPO_ROOT" diff --name-only -- "$protected" | grep -q .; then
 		echo "FAIL: protected path changed: $protected"
