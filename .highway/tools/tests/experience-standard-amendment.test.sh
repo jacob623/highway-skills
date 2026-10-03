@@ -32,7 +32,6 @@ for protected in \
 	.highway/skills/highway-nfrs/SKILL.md \
 	.highway/skills/highway-setup/SKILL.md \
 	.highway/skills/highway-clarify/SKILL.md \
-	.highway/skills/highway-profile/SKILL.md \
 	.highway/governance/constitution.md \
 	.highway/library/templates/output/profile-record.md; do
 	if git -C "$REPO_ROOT" diff --name-only -- "$protected" | grep -q .; then

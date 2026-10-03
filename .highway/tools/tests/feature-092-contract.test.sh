@@ -85,7 +85,7 @@ if grep -Fq '### Repository Name' "$PROFILE"; then
 	echo "FAIL: $PROFILE restates the Context heading skeleton"
 	fail=1
 fi
-require_text "$PROFILE" 'version: 5.2.0'
+require_text "$PROFILE" 'version: 5.3.0'
 if grep -Fq '.highway/tools/validate-profile.sh' "$PROFILE"; then
 	echo "FAIL: $PROFILE still instructs .highway/tools/validate-profile.sh"
 	fail=1

@@ -36,7 +36,7 @@ if ! grep -Fq 'proposal evidence' "$HIGHWAY_ROOT/skills/highway-profile/SKILL.md
 
 SKILL="$HIGHWAY_ROOT/skills/highway-profile/SKILL.md"
 for required_text in \
-	'version: 5.2.0' \
+	       'version: 5.3.0' \
 	"### Let's get to know your organization" \
 	'This helps Highway make more relevant recommendations as we go.' \
 	'A Vision Working Idea may be a grounded direction, distinction, implication, alternative, or recommendation' \
@@ -44,7 +44,7 @@ for required_text in \
 	'When a Vision Working Idea already exists, ask only the one focused question' \
 	'When a Competitive Path Working Idea already exists, ask only the one focused question' \
 	'When a Guiding Principles Working Idea already exists, ask only the one focused question' \
-	'Re-evaluate Identity, Vision, and other accepted Profile context before opening' \
+	       'Re-evaluate the full accepted Identity, accepted Vision, relationships among their meaningful organizational activities or expressions, and other accepted Profile context before opening' \
 	'sharpen principles already implicit in the accepted direction' \
 	'Profile does not add a local acknowledgment stage' \
 	'One cohesive organizational narrative that meaningfully answers the domain' \

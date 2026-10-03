@@ -4,7 +4,7 @@ description: "Manages the repository-wide organizational Profile and its context
 usage: "Invoke as `/highway-profile` to inspect Profile context, or state setup, view, add, update, remove, or reset."
 compatibility: all
 metadata:
-  version: 5.2.0
+  version: 5.3.0
 ---
 
 ## highway-profile
@@ -60,17 +60,9 @@ The four readiness domains are `identity`, `vision`, `competitive_path`, and `gu
 
 The optional Context structure is owned by .highway/library/templates/output/profile-record.md. Optional context does not change readiness. Profile owns its evidence, artifact, domain state, and readiness. Accepted evidence that establishes a domain sets it to `discussed`; an explicit user boundary sets an otherwise unresolved domain to `bounded`. A domain is not asked its canonical question when accepted evidence establishes that domain or an explicit user boundary makes it bounded. Proposal evidence stays transient until accepted. Foundational Highway context may show what evidence is useful, and it must not be promoted into the retained Profile. Workflow-specific input remains authoritative.
 
-Profile uses the shared collaborative-development model from the Highway Experience Standard. A user
-contribution or Highway recommendation may begin as a Working Idea rather than a finished Profile
-domain. Do not seek domain acceptance until the current understanding is complete enough to represent
-the domain as a Converged Proposal. A mature contribution or sufficiently grounded Highway synthesis
-may converge immediately; do not force additional discussion merely to demonstrate collaboration.
+Profile uses the shared collaborative-development model from the Highway Experience Standard. A user contribution or Highway recommendation may begin as a Working Idea rather than a finished Profile domain. Apply X2.38-X2.40 to each Substantive Contribution before selecting the next Profile behavior: re-evaluate what the contribution changes in the active understanding, resolve consequential uncertainty through one focused Conversational Clarification when the person's information is required, and otherwise incorporate one responsible interpretation without a ceremonial question. Do not seek domain acceptance until the current understanding is complete enough to represent the domain as a Converged Proposal. A mature contribution or sufficiently grounded Highway synthesis may converge immediately; do not force additional discussion merely to demonstrate collaboration.
 
-A Working Idea is transient Profile reasoning that may be interpreted, sharpened, extended, questioned,
-corrected, redirected, or abandoned. A Converged Proposal is a complete candidate that answers the
-active domain's purpose coherently without unsupported facts. Agreement with a Working Idea does not
-establish a discussed Profile domain. Natural acceptance crosses the existing boundary only when the
-complete candidate has been presented as a Converged Proposal.
+A Working Idea is transient Profile reasoning that may be interpreted, sharpened, extended, questioned, clarified, corrected, redirected, or abandoned. Each Substantive Contribution becomes new reasoning material for the active Working Idea and may also affect related unresolved Profile domains when the contribution supplies relevant evidence. A Converged Proposal is a complete candidate that answers the active domain's purpose coherently without unsupported facts. Agreement with a Working Idea does not establish a discussed Profile domain. Natural acceptance crosses the existing boundary only when the complete candidate has been presented as a Converged Proposal.
 
 Profile consumes the shared Contribution Opportunity behavior in X2.37. When Profile has materially
 shaped an incomplete Vision, Competitive Path, or Guiding Principles Working Idea, and no equivalent
@@ -106,19 +98,13 @@ If you're using Highway for a company or organization, its name is usually a goo
 
 Treat that answer as accepted Repository Name context and reuse it in the next prompt. When supported public-website retrieval is available, ask for the public website using the accepted Repository Name before ordinary domain questioning. Website acquisition is limited to organizational Profile evidence; technology-platform discovery is outside Profile scope. The supplied Organization URL is accepted. website-derived Organization Name and other derived facts stay proposed until accepted. When retrieval is unavailable, continue without exposing the missing retrieval capability.
 
-Unresolved domains use one canonical question: Identity `**What does [Organization Name] do?**`; Vision `**What is the future vision of [Organization Name]?**`; Competitive Path `**How does [Organization Name] plan to get there?**`; Guiding Principles `**What principles or values guide decisions at [Organization Name]?**`. When Organization Name is not accepted, use the accepted Repository Name where it reads naturally. Process each response, selected recommendation, or validated discovery across all four domains before choosing the next question.
+Unresolved domains use one canonical question: Identity `**What does [Organization Name] do?**`; Vision `**What is the future vision of [Organization Name]?**`; Competitive Path `**How does [Organization Name] plan to get there?**`; Guiding Principles `**What principles or values guide decisions at [Organization Name]?**`. When Organization Name is not accepted, use the accepted Repository Name where it reads naturally. Process each response, selected recommendation, or validated discovery across all four domains before choosing the next behavior. When the response is a Substantive Contribution, first re-evaluate what it changes, clarifies, introduces, qualifies, connects, or leaves unresolved in the active Profile understanding. Use one focused Conversational Clarification only when consequential uncertainty can change the active result and requires the person's information to resolve.
 
 Lack of grounding for a complete Profile-domain proposal does not by itself justify asking the canonical question. Evaluate accepted evidence for a responsible domain-specific Working Idea before using that question as fallback; a focused question remains appropriate when the person's information is genuinely required.
 
 ## Enrichment
 
-Optional enrichment may continue after a domain is `discussed` or `bounded`. User-visible interaction
-follows the Highway Experience Standard. Profile does not add a local acknowledgment stage, narrate
-persistence or readiness, or impose a local sentence, paragraph, or brevity pattern. Interpret,
-sharpen, connect, and contribute when contextual re-evaluation reveals something useful; transition
-naturally when it does not. Interpretation, explanation, reflection, connections, and advisory
-commentary remain transient unless the person explicitly incorporates them into accepted Profile
-evidence.
+Optional enrichment may continue after a domain is `discussed` or `bounded`. User-visible interaction follows the Highway Experience Standard. Profile does not add a local acknowledgment stage, narrate persistence or readiness, or impose a local sentence, paragraph, or brevity pattern. After each Substantive Contribution, re-evaluate the active understanding before deciding whether to interpret, clarify, sharpen, connect, contribute, converge, or continue. A substantive response is new reasoning material rather than merely completion of the preceding Profile question. Interpret, sharpen, connect, and contribute when re-evaluation reveals something useful; transition naturally when it does not. Ask a Conversational Clarification only when the person's information is required to resolve consequential uncertainty that can change the active result. Interpretation, clarification reasoning, explanation, reflection, connections, and advisory commentary remain transient unless the person explicitly incorporates them into accepted Profile evidence.
 
 For Vision, Competitive Path, and Guiding Principles, Contribution Opportunity substance must be
 provisional and meaningfully useful rather than a restatement of accepted evidence. Keep the
@@ -170,11 +156,20 @@ domain, or otherwise announce the internal state change. Express what the accept
 for the organization or for the subject now being developed.
 
 - Identity validation: `**Is this an accurate description of your organization?**` followed by `You can also change it or provide your own description.`
-- Vision opens with `### Where you're going` after any distinguishable contextual re-evaluation of the accepted subject. Vision evaluates accepted Identity, accepted website-derived organizational evidence, existing accepted Vision evidence, and other accepted Profile context using the shared contribution precedence before asking the Vision canonical question: present a Converged Proposal when supported, otherwise contribute a useful Vision Working Idea, otherwise ask `**What is the future vision of [Organization Name]?**`. When a Vision Working Idea already exists, ask only the one focused question about the unresolved choice, distinction, priority, boundary, or organizational fact needed to develop it; do not restart with the broad canonical question. When the Vision Working Idea has a coherent substantive shape and Profile materially shaped that substance, apply the shared Contribution Opportunity before convergence unless an equivalent opportunity or another shared exception already applies. After that opportunity resolves, synthesize the complete Vision once as the Converged Proposal and ask `**Does this accurately reflect where you'd like [Organization Name] to go?**` followed by `You can also change it or provide your own vision.`
+- Vision opens with `### Where you're going` after any distinguishable contextual re-evaluation of the accepted subject. Vision evaluates the full accepted Identity, including distinct meaningful organizational activities or expressions represented in that Identity, together with accepted website-derived organizational evidence, existing accepted Vision evidence, and other accepted Profile context using the shared contribution precedence before asking the Vision canonical question: present a Converged Proposal when supported, otherwise contribute a useful Vision Working Idea, otherwise ask `**What is the future vision of [Organization Name]?**`. When a Vision Working Idea already exists, ask only the one focused question about the unresolved choice, distinction, priority, boundary, or organizational fact needed to develop it; do not restart with the broad canonical question. When the Vision Working Idea has a coherent substantive shape and Profile materially shaped that substance, apply the shared Contribution Opportunity before convergence unless an equivalent opportunity or another shared exception already applies. After that opportunity resolves, synthesize the complete Vision once as the Converged Proposal and ask `**Does this accurately reflect where you'd like [Organization Name] to go?**` followed by `You can also change it or provide your own vision.`
 - A Vision Working Idea may be a grounded direction, distinction, implication, alternative, or recommendation that materially advances the Vision without completing it; it remains transient until a complete Converged Proposal crosses the existing acceptance boundary. When a Vision Contribution Opportunity applies, present the developing substance through provisional future-direction themes, intended impact, boundaries, reach, experience, or other grounded pieces that help the person add to or correct the Vision before Profile synthesizes the cohesive final narrative. Do not expose the internal enrichment-category names.
+- When accepted Identity contains multiple meaningful organizational activities or expressions, Vision should consider whether their relationship creates a useful future-direction question, distinction, implication, or recommendation. Do not let one prominent Identity facet become the entire Vision merely because it provides the easiest conversational continuation.
+
+  A focused Vision question may explore how accepted Identity facets should relate or evolve when that relationship remains consequentially unresolved. The question should arise from accepted Identity evidence rather than from an internal category.
+
+  When the responsible relationship is already supported by accepted evidence, incorporate it into the Working Idea without a clarification question.
 - When accepted evidence supports materially distinct directions, a Working Idea may present a small set of grounded alternatives and a grounded advisory preference, while keeping the user-authored path available and making clear that none is accepted organizational truth. Do not invent alternatives merely to create a choice, and keep generic examples subordinate to the grounded direction, distinction, alternative, or implication already under development.
-- Competitive Path begins from accepted Vision or sufficient accepted evidence. Re-evaluate Identity, Vision, and other accepted Profile context before opening `### How you'll get there`; use newly visible implications rather than merely summarizing Vision. Apply the shared contribution precedence before asking `**How does [Organization Name] plan to get there?**`: present a Converged Proposal when supported, otherwise contribute a useful Working Idea, otherwise ask the canonical question. When a Competitive Path Working Idea already exists, ask only the one focused question about the unresolved choice, tradeoff, capability, approach, or organizational fact needed to develop it; do not restart with the broad canonical question. Develop the Working Idea while useful choices, tensions, opportunities, or implications remain. When Profile materially shaped the resulting substantive path and no equivalent Contribution Opportunity or other shared exception already applies, present the developing approaches, priorities, tradeoffs, capabilities, experiments, or related directions provisionally and give the person the shared Contribution Opportunity before convergence. After incorporating any additions or corrections, synthesize the coherent Competitive Path once as the Converged Proposal and ask `**Does this accurately reflect how [Organization Name] plans to get there?**` followed by `You can also change it or provide your own approach.`
-- Guiding Principles uses accepted Identity, Vision, Competitive Path, and other accepted Profile context as grounding. After Competitive Path acceptance, re-evaluate the accumulated Profile and sharpen principles already implicit in the accepted direction. Open `### What will guide your decisions`, then apply the shared contribution precedence before asking `**What principles or values guide decisions at [Organization Name]?**`: present a Converged Proposal when supported, otherwise contribute a useful Working Idea, otherwise ask the canonical question. When a Guiding Principles Working Idea already exists, ask only the one focused question about the unresolved principle, decision boundary, tension, or priority needed to develop it; do not restart with the broad canonical question. When the developing principles have a coherent substantive shape and Profile materially shaped that substance, apply the shared Contribution Opportunity before convergence unless an equivalent opportunity or another shared exception already applies. Present the emerging principles provisionally so the person can add, correct, remove, extend, or redirect what should guide decisions. After that opportunity resolves, synthesize the complete Guiding Principles once as the Converged Proposal and ask `**Does this accurately reflect what should guide decisions at [Organization Name]?**` followed by `You can also change it or provide your own principles.`
+- Competitive Path begins from accepted Vision or sufficient accepted evidence. Re-evaluate the full accepted Identity, accepted Vision, relationships among their meaningful organizational activities or expressions, and other accepted Profile context before opening `### How you'll get there`; use newly visible implications rather than merely summarizing Vision. Apply the shared contribution precedence before asking `**How does [Organization Name] plan to get there?**`: present a Converged Proposal when supported, otherwise contribute a useful Working Idea, otherwise ask the canonical question. When a Competitive Path Working Idea already exists, ask only the one focused question about the unresolved choice, tradeoff, capability, approach, or organizational fact needed to develop it; do not restart with the broad canonical question. Develop the Working Idea while useful choices, tensions, opportunities, or implications remain. When Profile materially shaped the resulting substantive path and no equivalent Contribution Opportunity or other shared exception already applies, present the developing approaches, priorities, tradeoffs, capabilities, experiments, or related directions provisionally and give the person the shared Contribution Opportunity before convergence. After incorporating any additions or corrections, synthesize the coherent Competitive Path once as the Converged Proposal and ask `**Does this accurately reflect how [Organization Name] plans to get there?**` followed by `You can also change it or provide your own approach.`
+
+  When the accepted Identity and Vision establish multiple meaningful ways the organization creates value, reaches people, delivers experiences, develops offerings, or pursues its direction, Competitive Path should consider how those accepted pieces reinforce, sequence, constrain, or depend on one another when that relationship affects how the organization plans to progress.
+
+  When the relationship is consequentially ambiguous and the person's information is required, use one focused Conversational Clarification. When one responsible interpretation is already supported, incorporate it directly.
+- Guiding Principles uses accepted Identity, Vision, Competitive Path, and other accepted Profile context as grounding. After Competitive Path acceptance, re-evaluate the accumulated Profile and sharpen principles already implicit in the accepted direction. During Guiding Principles development, treat each Substantive Contribution as new reasoning material and apply X2.38-X2.40 before selecting the next behavior. Open `### What will guide your decisions`, then apply the shared contribution precedence before asking `**What principles or values guide decisions at [Organization Name]?**`: present a Converged Proposal when supported, otherwise contribute a useful Working Idea, otherwise ask the canonical question. When a Guiding Principles Working Idea already exists, ask only the one focused question about the unresolved principle, decision boundary, tension, or priority needed to develop it; do not restart with the broad canonical question. When the developing principles have a coherent substantive shape and Profile materially shaped that substance, apply the shared Contribution Opportunity before convergence unless an equivalent opportunity or another shared exception already applies. Present the emerging principles provisionally so the person can add, correct, remove, extend, or redirect what should guide decisions. After that opportunity resolves, synthesize the complete Guiding Principles once as the Converged Proposal and ask `**Does this accurately reflect what should guide decisions at [Organization Name]?**` followed by `You can also change it or provide your own principles.`
 
 When a Guiding Principles Contribution Opportunity applies, a natural provisional shape may be:
 
@@ -191,6 +186,29 @@ A few principles are taking shape:
 This is an illustrative interaction shape, not required wording. The provisional list remains a Working Idea. After the person's response, synthesize the resulting substance once into the cohesive Guiding Principles Converged Proposal.
 
 For Vision, Competitive Path, and Guiding Principles, Contribution Opportunity wording remains generative. The domain-specific provisional substance should make the developing understanding easy to inspect and extend without prematurely presenting the cohesive final artifact.
+
+Across Identity, Vision, Competitive Path, and Guiding Principles, a person's Substantive Contribution is not merely completion of the preceding question. Re-evaluate it against the active Working Idea and relevant accumulated Profile context before selecting the next contribution, clarification, question, Contribution Opportunity, or Converged Proposal.
+
+Re-evaluation may reveal:
+
+- a newly relevant organizational fact;
+- a meaningful relationship between accepted or developing evidence;
+- a distinction or qualification that changes the Working Idea;
+- tension with earlier evidence;
+- an assumption Profile was making;
+- consequential uncertainty requiring the person's information;
+- a stronger interpretation or recommendation;
+- no useful change beyond direct incorporation.
+
+Do not manufacture visible commentary for every item in this list. The user-visible response should express only what is useful to the active conversation.
+
+When a response both accepts a displayed Converged Proposal and supplies new substantive information, preserve the normal acceptance behavior and also re-evaluate the new information under X2.38 before choosing the next Profile behavior. The newly supplied information does not silently rewrite the already accepted domain. When it materially changes that accepted domain, treat it as new Profile evidence and use the existing owner-controlled change path before representing the changed content as accepted Profile knowledge.
+
+A Conversational Clarification is the one unresolved response-demanding question for that turn. Do not combine it with another discovery question, a Contribution Opportunity, or a domain acceptance question. After the clarification response, re-evaluate again before selecting the next behavior.
+
+Do not treat every clarification response as satisfying Profile's Contribution Opportunity. A clarification response counts as an equivalent Contribution Opportunity only when the same interaction meaningfully gave the person room to add, correct, remove, extend, or redirect the broader developed substance. Resolving one ambiguity does not by itself mean the person had an opportunity to complete the whole developing domain.
+
+New substantive evidence is evaluated for relevance across all unresolved Profile domains before Profile chooses the next behavior.
 
 The intended shape is:
 
@@ -210,11 +228,34 @@ provisional substantive pieces
 
 Do not present the Contribution Opportunity and domain acceptance question in the same turn.
 
-Identity may converge immediately when website or user evidence provides a complete organizational
-description. When evidence is incomplete, conflicting, vague, or would benefit from interpretation,
-keep it as a Working Idea and combine evidence, surface ambiguity, allow correction, or ask one bounded
-question when genuinely needed before presenting `**Is this an accurate description of your organization?**`
-and `You can also change it or provide your own description.`
+Identity establishes the meaningful organizational picture that later Profile domains reason from. When website, discovered, or user-supplied evidence establishes multiple meaningful aspects of what the organization does, organize those aspects provisionally before final Identity synthesis when doing so helps the person inspect the breadth of Profile's understanding. Apply substantive-contribution re-evaluation and selective Conversational Clarification throughout Identity development. Before final Identity convergence, give the person a Contribution Opportunity when Profile materially assembled or interpreted the organizational picture and the person has not already had an equivalent opportunity. After that opportunity resolves, synthesize the cohesive Identity once and validate it with `**Is this an accurate description of your organization?**` followed by `You can also change it or provide your own description.`
+
+Identity may converge immediately when the person directly supplies a domain-complete organizational description that Profile does not materially reshape. When Profile materially assembles Identity from website discovery, multiple evidence sources, or substantial interpretation, first present the meaningful organizational facets provisionally when that gives the person a useful opportunity to identify something missing, incorrect, overstated, or incomplete. When evidence is incomplete, conflicting, ambiguous, qualified, or leaves a consequential relationship unresolved, apply X2.38-X2.40 before convergence: re-evaluate the changed understanding, ask one focused Conversational Clarification only when the person's information is required, and otherwise incorporate the responsible interpretation directly. After the Identity substance is complete, synthesize the cohesive Identity once and present `**Is this an accurate description of your organization?**` followed by `You can also change it or provide your own description.`
+
+When an Identity Contribution Opportunity applies, prefer provisional substantive facets over a completed Identity narrative. Facets may describe meaningful parts of what the organization does, whom or what it serves, important forms of its offering or participation, and other organizational activities supported by available evidence. Do not create mandatory Identity categories or require a fixed number of facets.
+
+A natural interaction may resemble:
+
+From what I've found, a few parts of the organization stand out:
+
+- [grounded organizational facet]
+- [grounded organizational facet]
+- [grounded organizational facet]
+
+`**Is there another important part of [Organization Name] that belongs in this picture?**`
+
+`You can also correct or change anything I've listed.`
+
+This is an illustrative interaction shape, not required wording. The provisional facets remain a Working Idea. The person's response is a Substantive Contribution when it adds, corrects, removes, qualifies, or redirects organizational evidence, and Profile re-evaluates the resulting Identity before convergence.
+
+Identity breadth concerns durable organizational activity and purpose, not the organization's technology estate. Do not use Identity completeness to inventory platforms, applications, hosting providers, implementation technologies, or other technology-landscape details.
+
+Identity Contribution Opportunity and Identity Conversational Clarification serve different purposes.
+
+- Contribution Opportunity asks whether Profile's developing organizational picture is missing an important part the person can add.
+- Conversational Clarification resolves consequential uncertainty about the meaning or relationship of evidence that is already present.
+
+For example, disclosure of another meaningful activity does not automatically require a clarification question. Re-evaluate what the disclosure changes first. Clarify only when materially different interpretations of that activity can change the Identity or later Profile reasoning and the person's information is required to distinguish them.
 
 A synthesized recommendation may be a Working Idea or a Converged Proposal. Do not ask an
 artifact-acceptance question around a Working Idea. A complete candidate contains only claims supported
@@ -245,7 +286,10 @@ Operations remain setup, configure, readiness, view, show, describe, add, update
 - A domain-complete contribution, prior equivalent opportunity, explicitly finished substantive contribution, or complete discovered Identity may skip a distinct Contribution Opportunity.
 - Contribution Opportunity substance is kept distinct from the cohesive Converged Proposal, so Profile does not repeat substantially identical cohesive final-form domain prose twice.
 - The Contribution Opportunity is the only response-demanding question in its turn and remains separate from domain acceptance and other unresolved discovery questions.
-- Identity accuracy validation remains the existing path for complete discovered Identity unless Profile materially developed incomplete or ambiguous Identity substance.
+- A user-supplied domain-complete Identity may proceed directly to the existing Identity accuracy validation when Profile does not materially reshape its substance.
+- When Profile materially assembles or interprets Identity from website discovery or multiple evidence sources, the person receives a provisional opportunity to identify another important organizational facet unless an equivalent Contribution Opportunity already occurred.
+- Identity provisional facets remain Working Idea content; the cohesive Identity narrative is synthesized once afterward for the existing accuracy validation.
+- Identity breadth captures durable organizational activity and purpose without becoming a technology-platform inventory.
 - When Profile presents multiple Working Idea directions, each direction is grounded in accepted Profile evidence, meaningfully distinct, and remains transient until incorporated into an accepted Converged Proposal.
 - Profile may state a grounded advisory preference among presented Working Idea directions when accepted evidence supports that perspective.
 - User-visible contextual re-evaluation expresses what accepted information means rather than announcing that information has been established, retained, persisted, loaded, stored, or made available as workflow context.
@@ -300,6 +344,16 @@ Operations remain setup, configure, readiness, view, show, describe, add, update
 - Guided completion emits one concise user-relevant synthesis before control returns to Setup.
 - Material interpretation follows the Highway Experience Standard.
 - Profile ownership and readiness stay with Profile.
+- After each Substantive Contribution, Profile re-evaluates what changed in the active understanding before selecting its next user-relevant behavior.
+- Re-evaluation considers the active Working Idea together with relevant accepted and developing Profile evidence rather than treating the person's response merely as completion of the preceding question.
+- A clear Substantive Contribution is incorporated without a ceremonial clarification question when one responsible interpretation is already supported.
+- When re-evaluation reveals consequential ambiguity, an unresolved assumption, contradiction, missing organizational fact, unclear relationship, or materially different interpretation that can change the active result and requires the person's information, Profile asks one focused Conversational Clarification before advancing past that uncertainty.
+- Profile does not ask a Conversational Clarification merely to demonstrate that it noticed new information.
+- Profile does not create a clarification record or invoke highway-clarify for Conversational Clarification unless that separate capability is explicitly requested through its own supported contract. Conversational Clarification remains transient.
+- New substantive evidence is evaluated for relevance across all unresolved Profile domains before Profile chooses the next behavior.
+- Vision reasons from the full accepted Identity rather than selecting one Identity facet merely because it provides the easiest continuation.
+- When multiple accepted Identity facets create a consequential unresolved relationship for future direction, Vision may explore that relationship through a focused question.
+- Competitive Path reasons over accepted Identity, Vision, and useful relationships among them when those relationships affect how the organization plans to progress.
 
 ## Error Handling
 
