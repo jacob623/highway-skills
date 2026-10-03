@@ -63,12 +63,12 @@ require_text "$EXPERIENCE_STANDARD" '2. Reuse existing information when it satis
 require_text "$EXPERIENCE_STANDARD" '3. Discover or import existing authoritative information when supported.'
 require_text "$EXPERIENCE_STANDARD" '4. Treat a new contribution as a Working Idea until the applicable acceptance boundary is crossed.'
 require_text "$EXPERIENCE_STANDARD" '5. Interpret the contribution in relevant context and sharpen useful distinctions, implications,'
-require_text "$EXPERIENCE_STANDARD" "7. Receive the person's response, update the working understanding, and re-evaluate related ideas."
-require_text "$EXPERIENCE_STANDARD" '8. Continue the inner development loop only while further development adds value; a mature contribution'
-require_text "$EXPERIENCE_STANDARD" '10. Ask one clear question only when unresolved information is still needed and useful grounded'
-require_text "$EXPERIENCE_STANDARD" '11. Present the Converged Proposal for the owning workflow'
-require_text "$EXPERIENCE_STANDARD" '12. After acceptance, allow the owner to persist accepted knowledge, update the available context, and'
-require_text "$EXPERIENCE_STANDARD" '13. Continue when required work remains; otherwise allow the conversational response to conclude naturally.'
+require_text "$EXPERIENCE_STANDARD" "7. Receive the person's response. When it is a Substantive Contribution"
+require_text "$EXPERIENCE_STANDARD" '10. Continue the inner development loop only while further development adds value; a mature contribution'
+require_text "$EXPERIENCE_STANDARD" '12. Ask one clear question only when unresolved information is still needed and useful grounded'
+require_text "$EXPERIENCE_STANDARD" '13. Present the Converged Proposal for the owning workflow'
+require_text "$EXPERIENCE_STANDARD" '14. After acceptance, allow the owner to persist accepted knowledge, update the available context, and'
+require_text "$EXPERIENCE_STANDARD" '15. Continue when required work remains; otherwise allow the conversational response to conclude naturally.'
 require_absent "$EXPERIENCE_STANDARD" '3. Discover or import existing authoritative information when the organization already has it.'
 require_absent "$EXPERIENCE_STANDARD" '7. Present the inferred-content heading only when Highway materially inferred or transformed the input.'
 require_text "$EXPERIENCE_STANDARD" "does not govern the person's strategy, policy, requirements, priorities, or preferred wording."

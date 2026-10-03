@@ -54,7 +54,6 @@ if grep -Fq 'Contribution Opportunity authorizes acceptance' "$PROFILE"; then
 fi
 
 for protected in \
-	.highway/governance/experience-standard.md \
 	.highway/governance/constitution.md \
 	.highway/library/templates/output/profile-record.md \
 	.highway/skills/highway-setup/SKILL.md \
