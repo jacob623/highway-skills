@@ -8,13 +8,13 @@ HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 REPO_ROOT="$(cd "$HIGHWAY_ROOT/.." && pwd)"
 fail=0
 STANDARD="$HIGHWAY_ROOT/governance/experience-standard.md"
-for token in '8.0.0 (MAJOR)' '**Version**: 8.0.0 | **Ratified**: 2026-09-08 | **Last Amended**: 2026-10-02' 'Every user-visible response excludes Implementation details unless requested.' 'X2.7' 'X2.8' 'X2.9' 'X2.10' '| X2.36 | An Interactive Workflow MUST NOT narrate internal workflow progression, persistence, state transitions, or processing unless the person needs that information to act.' '#### Collaborative Development (Non-Normative Guidance)' '#### Contextual Re-evaluation (Non-Normative Guidance)' '### Evolution-Aware Guidance (Non-Normative)'; do
+for token in '8.1.0 (MINOR)' '**Version**: 8.1.0 | **Ratified**: 2026-09-08 | **Last Amended**: 2026-10-02' 'Every user-visible response excludes Implementation details unless requested.' 'X2.7' 'X2.8' 'X2.9' 'X2.10' '| X2.36 | An Interactive Workflow MUST NOT narrate internal workflow progression, persistence, state transitions, or processing unless the person needs that information to act.' '| X2.37 | When Highway materially shaped a Working Idea, the person MUST receive a Contribution Opportunity before convergence unless prior interaction already provided one.' '#### Collaborative Development (Non-Normative Guidance)' '#### Contribution Opportunity (Non-Normative Guidance)' '#### Contextual Re-evaluation (Non-Normative Guidance)' '### Evolution-Aware Guidance (Non-Normative)'; do
 	grep -Fq "$token" "$STANDARD" || { echo "FAIL: Experience Standard missing $token"; fail=1; }
 done
 
 for token in \
-	'Version change: 7.2.0 → 8.0.0 (MAJOR)' \
-	'**Version**: 8.0.0 | **Ratified**: 2026-09-08 | **Last Amended**: 2026-10-02' \
+	'Version change: 8.0.0 → 8.1.0 (MINOR)' \
+	'**Version**: 8.1.0 | **Ratified**: 2026-09-08 | **Last Amended**: 2026-10-02' \
 	"Conversational commentary focuses on the person's meaning, situation, choices, implications, or outcomes rather than internal Highway activity." \
 	'Workflow narration' \
 	'#### Conversational Voice (Non-Normative Guidance)' \
@@ -22,8 +22,8 @@ for token in \
 	"| X2.8 | When accepted information changes Highway's understanding, interpretation, recommendation, or next user-relevant action, the next response MUST reflect the changed understanding using the newly accepted information together with relevant accumulated context before advancing. | The next response uses the newly accepted information with relevant accumulated context to provide contextual interpretation, a useful connection, implication, distinction, recommendation, or next action when one exists; it does not merely repeat the person's words or narrate workflow mechanics. A simple acknowledgment or natural conclusion remains acceptable when re-evaluation reveals nothing useful to add and no unresolved information is needed. | [agent-checkable]"; do
 	grep -Fq "$token" "$STANDARD" || { echo "FAIL: Feature 120 missing $token"; fail=1; }
 done
-if [[ "$(grep -c '^| X[0-9]' "$STANDARD")" -ne 40 ]]; then
-	echo 'FAIL: Experience Standard rule inventory must contain 40 rules'
+if [[ "$(grep -c '^| X[0-9]' "$STANDARD")" -ne 41 ]]; then
+	echo 'FAIL: Experience Standard rule inventory must contain 41 rules'
 	fail=1
 fi
 for protected in \
