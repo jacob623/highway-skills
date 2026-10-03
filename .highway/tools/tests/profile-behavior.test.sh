@@ -36,7 +36,7 @@ if ! grep -Fq 'proposal evidence' "$HIGHWAY_ROOT/skills/highway-profile/SKILL.md
 
 SKILL="$HIGHWAY_ROOT/skills/highway-profile/SKILL.md"
 for required_text in \
-	'version: 5.1.0' \
+	'version: 5.2.0' \
 	"### Let's get to know your organization" \
 	'This helps Highway make more relevant recommendations as we go.' \
 	'A Vision Working Idea may be a grounded direction, distinction, implication, alternative, or recommendation' \
