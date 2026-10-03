@@ -40,6 +40,10 @@ for required_text in \
 	"### Let's get to know your organization" \
 	'This helps Highway make more relevant recommendations as we go.' \
 	'A Vision Working Idea may be a grounded direction, distinction, implication, alternative, or recommendation' \
+	'visibly open the new' \
+	'When a Vision Working Idea already exists, ask only the one focused question' \
+	'When a Competitive Path Working Idea already exists, ask only the one focused question' \
+	'When a Guiding Principles Working Idea already exists, ask only the one focused question' \
 	'Re-evaluate Identity, Vision, and other accepted Profile context before opening' \
 	'sharpen principles already implicit in the accepted direction' \
 	'Profile does not add a local acknowledgment stage' \

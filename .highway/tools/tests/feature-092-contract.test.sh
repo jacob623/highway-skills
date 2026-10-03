@@ -67,8 +67,14 @@ require_text "$PROFILE" 'present a Converged Proposal when supported, otherwise 
 require_text "$PROFILE" 'Lack of grounding for a complete Profile-domain proposal does not by itself justify asking the canonical question'
 require_text "$PROFILE" 'using the shared contribution precedence before asking the Vision canonical question'
 require_text "$PROFILE" 'A Vision Working Idea may be a grounded direction, distinction, implication, alternative, or recommendation'
+require_text "$PROFILE" 'visibly open the new'
+require_text "$PROFILE" "Vision opens with \`### Where you're going\`"
+require_text "$PROFILE" "Competitive Path begins from accepted Vision or sufficient accepted evidence"
+require_text "$PROFILE" 'Open `### What will guide your decisions`, then apply the shared contribution precedence before asking'
+require_text "$PROFILE" 'When a Vision Working Idea already exists, ask only the one focused question'
+require_text "$PROFILE" 'When a Competitive Path Working Idea already exists, ask only the one focused question'
+require_text "$PROFILE" 'When a Guiding Principles Working Idea already exists, ask only the one focused question'
 require_text "$PROFILE" 'Apply the shared contribution precedence before asking `**How does [Organization Name] plan to get there?**`'
-require_text "$PROFILE" 'apply the shared contribution precedence before asking `**What principles or values guide decisions at [Organization Name]?**`'
 require_text "$PROFILE" 'After accepted Identity changes the understanding used by Vision'
 require_text "$PROFILE" 'After accepted Vision changes the understanding used by Competitive Path'
 require_text "$PROFILE" 'After accepted Competitive Path changes the understanding used by Guiding Principles'

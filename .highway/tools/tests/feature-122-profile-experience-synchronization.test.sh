@@ -33,6 +33,12 @@ require_text 'advisory commentary remain transient'
 require_text 'Vision evaluates accepted Identity, accepted website-derived organizational evidence, existing accepted Vision evidence, and other accepted Profile context using the shared contribution precedence'
 require_text 'Competitive Path begins from accepted Vision or sufficient accepted evidence.'
 require_text 'Guiding Principles uses accepted Identity, Vision, Competitive Path, and other accepted Profile context as grounding. After Competitive Path acceptance, re-evaluate the accumulated Profile'
+require_text "### Where you're going"
+require_text "### How you'll get there"
+require_text "### What will guide your decisions"
+require_text 'When a Vision Working Idea already exists, ask only the one focused question'
+require_text 'When a Competitive Path Working Idea already exists, ask only the one focused question'
+require_text 'When a Guiding Principles Working Idea already exists, ask only the one focused question'
 require_text 'naturally connect the accepted Profile understanding to how it can inform later Highway guidance.'
 require_text 'Material interpretation follows the Highway Experience Standard.'
 require_text 'The validation question remains the single response-demanding decision in the recommendation turn.'
