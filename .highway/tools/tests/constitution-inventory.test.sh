@@ -146,7 +146,7 @@ fail=0
 
 # --- The parsed inventory matches the constitution itself ---------------------------------
 
-expected_total="$(grep -cE '^\| P[0-9]+\.[0-9]+ ' "$CONSTITUTION" | tr -d ' ')"
+expected_total="$(grep -cE '^\| P[0-9]+[A-Z]?\.[0-9]+ ' "$CONSTITUTION" | tr -d ' ')"
 actual_total="$(con_rules "$CONSTITUTION" | wc -l | tr -d ' ')"
 if [[ "$actual_total" != "$expected_total" ]]; then
 	echo "FAIL: parsed $actual_total rules, constitution contains $expected_total"
@@ -170,7 +170,7 @@ if [[ -n "$dupes" ]]; then
 	fail=1
 fi
 
-malformed_ids="$(con_rule_ids "$CONSTITUTION" | grep -vE '^P[0-9]+\.[0-9]+$' || true)"
+malformed_ids="$(con_rule_ids "$CONSTITUTION" | grep -vE '^P[0-9]+[A-Z]?\.[0-9]+$' || true)"
 if [[ -n "$malformed_ids" ]]; then
 	echo "FAIL: malformed rule ids parsed: $malformed_ids"
 	fail=1
@@ -460,6 +460,7 @@ if grep -qE '^\| \*\*N6\*\* \|' "$CONSTITUTION"; then
 fi
 if ! grep -qF '| 5 | XII. Owner-Controlled Completion and Orchestration |' "$CONSTITUTION" || \
 	! grep -qF '| 11 | XI. Repository Context |' "$CONSTITUTION" || \
+	! grep -qF '| 12 | XIII. Collaborative Knowledge Development |' "$CONSTITUTION" || \
 	! grep -qF '| 6 | VIII. Reliability and Repeatability |' "$CONSTITUTION"; then
 	echo 'FAIL: Principle XII precedence or affected rank sequence is incorrect'
 	fail=1
@@ -500,9 +501,9 @@ if ! grep -qF '4.0.0 → 4.1.0 (MINOR)' "$CONSTITUTION"; then
 	echo 'FAIL: historical 4.1.0 report is missing'
 	fail=1
 fi
-if ! grep -qF '**Version**: 6.0.0' "$CONSTITUTION" || \
+if ! grep -qF '**Version**: 6.1.0' "$CONSTITUTION" || \
    ! grep -qF '**Ratified**: 2026-09-06' "$CONSTITUTION" || \
-   ! grep -qF '**Last Amended**: 2026-09-30' "$CONSTITUTION"; then
+	! grep -qF '**Last Amended**: 2026-10-02' "$CONSTITUTION"; then
 	echo 'FAIL: current Constitution amendment metadata is missing'
 	fail=1
 fi

@@ -14,10 +14,10 @@ fixture_root="$(mktemp -d "${TMPDIR:-/tmp}/highway-profile-091.XXXXXX")"
 trap 'rm -rf "$fixture_root"' EXIT
 
 valid="$fixture_root/profile.md"
-cp "$HIGHWAY_ROOT/library/templates/output/profile-record.md" "$valid"
-# Superseded behavior: the shared template schema was 2.0.0.
+# Superseded behavior: tests copied profile-record.md as a valid Profile. Feature 138 makes it a skeleton (D3.5).
+cp "$HIGHWAY_ROOT/tools/tests/fixtures/profile-092/profile-record/empty.md" "$valid"
 if ! grep -Fq 'schema_version: 3.0.0' "$HIGHWAY_ROOT/library/templates/output/profile-record.md"; then echo 'FAIL: shared template schema is not 3.0.0'; fail=1; fi
-if ! "$VALIDATE" "$valid" >/dev/null; then echo 'FAIL: shared template is invalid'; fail=1; fi
+if ! "$VALIDATE" "$valid" >/dev/null; then echo 'FAIL: retained empty Profile fixture is invalid'; fail=1; fi
 
 sed -i '' 's/identity: not_discussed/identity: discussed/' "$valid"
 printf '%s\n' '## Who We Are' 'A user-supplied organization.' >> "$valid"
@@ -35,21 +35,68 @@ if ! grep -Fq '.highway/library/knowledge/profile.md' "$HIGHWAY_ROOT/skills/high
 if ! grep -Fq 'proposal evidence' "$HIGHWAY_ROOT/skills/highway-profile/SKILL.md"; then echo 'FAIL: proposal evidence lifecycle missing'; fail=1; fi
 
 SKILL="$HIGHWAY_ROOT/skills/highway-profile/SKILL.md"
+# Superseded behavior: version 5.3.0, enrichment-category coverage, and Competitive Path opening from accepted Vision or sufficient accepted evidence.
 for required_text in \
-	'version: 5.1.0' \
+	       'version: 7.0.0' \
 	"### Let's get to know your organization" \
 	'This helps Highway make more relevant recommendations as we go.' \
-	'Based on what I know about [Organization Name], I could see your vision as' \
-	'Based on that direction, [Organization Name] could pursue it by' \
-	"From what you've shared, [Organization Name] seems guided by" \
-	're-evaluate accumulated accepted evidence across all four domains' \
-	'grounded recommendation' \
-	'persist the retained Profile' \
+	'A Vision Working Idea may be a grounded future direction, distinction, implication, alternative, or recommendation' \
+	'visibly open the new' \
+	'When a Vision Working Idea already exists, ask only the one focused question' \
+	'When a Competitive Path Working Idea already exists, ask only the one focused question' \
+	'When a Guiding Principles Working Idea already exists, ask only the one focused question' \
+	       'Re-evaluate accepted Identity, accepted Vision, and other relevant accepted Profile evidence before opening' \
+	're-evaluate the accumulated Profile for principles already becoming visible' \
+	'Profile does not add a local acknowledgment stage' \
+	'One cohesive organizational narrative that meaningfully answers the domain' \
+	'not coverage of an internal category framework' \
+	'Synthesized recommendation prose is generated naturally from accepted evidence rather than from a required recommendation sentence template.' \
+	're-evaluate accumulated accepted evidence before each unresolved guided question' \
+	'When accepted Profile evidence supports neither a Converged Proposal nor a useful Working Idea' \
+	'Acceptance authorizes the mutation but is not successful persistence' \
 	'one concise synthesis' \
-	'internal category names are not presented to the user' \
-	'User-visible interaction follows the Highway Experience Standard.'; do
+	'Internal category names are not presented to the user or persisted.' \
+	'Is this an accurate description of your organization?' \
+	'Does this accurately reflect where you'"'"'d like [Organization Name] to go?' \
+	'Does this accurately reflect how [Organization Name] plans to get there?' \
+	'Does this accurately reflect what should guide decisions at [Organization Name]?' \
+	'You can also change it or provide your own description.' \
+	'You can also change it or provide your own vision.' \
+	'You can also change it or provide your own approach.' \
+	'You can also change it or provide your own principles.'; do
+# Superseded behavior: version 6.0.0 restated generic material-interpretation guidance.
+# Feature 138 leaves that check to the Experience Standard (D3.5).
 	if ! grep -Fq "$required_text" "$SKILL"; then
 		echo "FAIL: Feature 116 contract missing '$required_text'"
+		fail=1
+	fi
+done
+
+# Superseded behavior: version 6.0.0 restated generic Working Idea, re-evaluation, and recommendation tutorials.
+# Feature 138 removes those Experience Standard restatements (D3.5).
+for subject_text in \
+	"### Where you're going" \
+	"### How you'll get there" \
+	'### What will guide your decisions'; do
+	if ! grep -Fq "$subject_text" "$SKILL"; then
+		echo "FAIL: Feature 123 subject rhythm missing '$subject_text'"
+		fail=1
+	fi
+done
+
+for narration_text in 'persisted' 'readiness' 'workflow progression'; do
+	if grep -Fq "narrate $narration_text" "$SKILL"; then
+		echo "FAIL: Profile narrates internal mechanics: narrate $narration_text"
+		fail=1
+	fi
+done
+
+for forbidden_text in \
+	'Based on what I know about [Organization Name], I could see your vision as' \
+	'Based on that direction, [Organization Name] could pursue it by' \
+	"From what you've shared, [Organization Name] seems guided by"; do
+	if grep -Fq "$forbidden_text" "$SKILL"; then
+		echo "FAIL: fixed Profile recommendation opening remains '$forbidden_text'"
 		fail=1
 	fi
 done

@@ -10,8 +10,9 @@ VALIDATE="$HIGHWAY_ROOT/tools/validate-profile.sh"
 fixture_root="$(mktemp -d "${TMPDIR:-/tmp}/highway-profile-md.XXXXXX")"
 trap 'rm -rf "$fixture_root"' EXIT
 fail=0
-cp "$HIGHWAY_ROOT/library/templates/output/profile-record.md" "$fixture_root/one.md"
-cp "$HIGHWAY_ROOT/library/templates/output/profile-record.md" "$fixture_root/two.md"
+# Superseded behavior: these copies used profile-record.md as a valid Profile. Feature 138 uses the retained empty fixture (D3.5).
+cp "$HIGHWAY_ROOT/tools/tests/fixtures/profile-092/profile-record/empty.md" "$fixture_root/one.md"
+cp "$HIGHWAY_ROOT/tools/tests/fixtures/profile-092/profile-record/empty.md" "$fixture_root/two.md"
 if ! cmp -s "$fixture_root/one.md" "$fixture_root/two.md"; then echo 'FAIL: identical template renders differ'; fail=1; fi
 # Superseded behavior: the shared template schema was 2.0.0.
 if ! grep -Fq 'schema_version: 3.0.0' "$HIGHWAY_ROOT/library/templates/output/profile-record.md"; then echo 'FAIL: shared template schema is not 3.0.0'; fail=1; fi

@@ -26,13 +26,15 @@ for context in highway-identity.md highway-vision.md highway-platform-objectives
 done
 require_text "$PROFILE" 'Next Action: /highway-profile setup'
 require_text "$PROFILE" 'Next Action: /highway-profile configure'
-require_text "$PROFILE" 'User-visible interaction follows the Highway Experience Standard.'
+# Superseded behavior: version 6.0.0 restated generic material-interpretation guidance.
+# Feature 138 leaves that check to the Experience Standard (D3.5).
 require_text "$PROFILE" 'An absent Profile is a valid initial state'
 require_text "$PROFILE" 'Next Action: None'
-require_text "$PROFILE" 'must not be promoted into the retained Profile'
+require_text "$PROFILE" 'it is not retained as organizational fact'
 require_text "$PROFILE" '**What would you like to call your Highway repository?**'
 require_text "$PROFILE" "If you're using Highway for a company or organization, its name is usually a good choice."
-require_text "$PROFILE" 'ask for the public website using the accepted Repository Name'
+# Superseded behavior: acquisition asked only for a public website before ordinary domain questioning.
+require_text "$PROFILE" 'one opportunity to reuse existing organizational material before ordinary domain questioning'
 require_text "$PROFILE" 'The supplied Organization URL is accepted'
 require_text "$PROFILE" 'website-derived Organization Name and other derived facts stay proposed until accepted'
 require_text "$PROFILE" 'continue without exposing the missing retrieval capability'
@@ -44,11 +46,9 @@ require_text "$PROFILE" '**How does [Organization Name] plan to get there?**'
 require_text "$PROFILE" '**What principles or values guide decisions at [Organization Name]?**'
 require_text "$PROFILE" 'use the accepted Repository Name where it reads naturally'
 require_text "$PROFILE" 'A domain is not asked its canonical question when accepted evidence establishes that domain or an explicit user boundary makes it bounded.'
-require_text "$PROFILE" 'Future State, Impact, Reach / Scale, Position, and Experience / Reputation'
-require_text "$PROFILE" 'Customer / Participant, Offering, Market / Reach, Differentiation, Operations, and Capability Development'
-require_text "$PROFILE" 'People, Trust, Quality, Simplicity, Change, Stewardship, and Autonomy'
-require_text "$PROFILE" 'those names are not retained'
-require_text "$PROFILE" 'optional enrichment never changes readiness by itself'
+# Superseded behavior: Vision, Competitive Path, and Guiding Principles required internal enrichment-category coverage.
+require_text "$PROFILE" 'not coverage of an internal category framework'
+require_text "$PROFILE" 'Optional enrichment does not change readiness by itself'
 # Superseded behavior: the Profile skill restated that a selected recommendation is accepted without a second confirmation.
 if grep -Fq 'a selected recommendation is accepted without a second confirmation' "$PROFILE"; then
 	echo "FAIL: $PROFILE still restates recommendation-selection acceptance"
@@ -60,10 +60,26 @@ require_text "$PROFILE" '## Operations'
 require_text "$PROFILE" '## Acquisition'
 require_text "$PROFILE" 'classify the retained Profile'
 require_text "$PROFILE" 'establish Repository Name when missing'
-require_text "$PROFILE" 'use supported existing-information or website acquisition when available'
-require_text "$PROFILE" 'reuse accepted or accepted-discovered evidence across all four domains'
-require_text "$PROFILE" 're-evaluate accumulated accepted evidence across all four domains'
-require_text "$PROFILE" 'present a useful grounded recommendation instead of that canonical question'
+# Superseded behavior: acquisition named only existing-information or website retrieval and re-evaluated accepted evidence across all four domains as a category pass.
+require_text "$PROFILE" 'use supported existing organizational material or public-website acquisition when available'
+require_text "$PROFILE" 'process acquired evidence across all unresolved Profile domains'
+require_text "$PROFILE" 're-evaluate accumulated accepted evidence before each unresolved guided question'
+require_text "$PROFILE" 'present a Converged Proposal when supported, otherwise contribute a useful Working Idea when supported, otherwise ask the focused canonical question'
+require_text "$PROFILE" 'Lack of grounding for a complete Profile-domain proposal does not by itself justify asking the canonical question'
+require_text "$PROFILE" 'using the shared contribution precedence before asking the Vision canonical question'
+# Superseded behavior: a Vision Working Idea was any grounded direction, and Competitive Path began from accepted Vision or sufficient accepted evidence without a broad-approach boundary.
+require_text "$PROFILE" 'A Vision Working Idea may be a grounded future direction, distinction, implication, alternative, or recommendation'
+require_text "$PROFILE" 'visibly open the new'
+require_text "$PROFILE" "Vision opens with \`### Where you're going\`"
+require_text "$PROFILE" 'what broad approach the organization intends to take'
+require_text "$PROFILE" 'Open `### What will guide your decisions`, then apply the shared contribution precedence before asking'
+require_text "$PROFILE" 'When a Vision Working Idea already exists, ask only the one focused question'
+require_text "$PROFILE" 'When a Competitive Path Working Idea already exists, ask only the one focused question'
+require_text "$PROFILE" 'When a Guiding Principles Working Idea already exists, ask only the one focused question'
+require_text "$PROFILE" 'Apply the shared contribution precedence before asking `**How does [Organization Name] plan to get there?**`'
+require_text "$PROFILE" 'After accepted Identity changes the understanding used by Vision'
+require_text "$PROFILE" 'After accepted Vision changes the understanding used by Competitive Path'
+require_text "$PROFILE" 'After accepted Competitive Path changes the understanding used by Guiding Principles'
 require_text "$PROFILE" 'persist accepted evidence'
 require_text "$PROFILE" 'report readiness'
 require_text "$PROFILE" 'optional Context structure is owned by .highway/library/templates/output/profile-record.md'
@@ -71,7 +87,9 @@ if grep -Fq '### Repository Name' "$PROFILE"; then
 	echo "FAIL: $PROFILE restates the Context heading skeleton"
 	fail=1
 fi
-require_text "$PROFILE" 'version: 5.1.0'
+# Superseded behavior: highway-profile version 5.3.0 locked the narrower domain and acquisition contract.
+# Superseded behavior: highway-profile 6.0.0. Feature 138 is MAJOR 7.0.0 because projection and verification narrowed (D3.5).
+require_text "$PROFILE" 'version: 7.0.0'
 if grep -Fq '.highway/tools/validate-profile.sh' "$PROFILE"; then
 	echo "FAIL: $PROFILE still instructs .highway/tools/validate-profile.sh"
 	fail=1
@@ -94,7 +112,8 @@ require_text "$STANDARD" 'Every user-visible response excludes Implementation de
 fixture_root="$(mktemp -d "${TMPDIR:-/tmp}/highway-profile-092.XXXXXX")"
 trap 'rm -rf "$fixture_root"' EXIT
 valid="$fixture_root/valid.md"
-cp "$HIGHWAY_ROOT/library/templates/output/profile-record.md" "$valid"
+# Superseded behavior: this copied profile-record.md as a valid Profile. Feature 138 uses the retained empty fixture (D3.5).
+cp "$HIGHWAY_ROOT/tools/tests/fixtures/profile-092/profile-record/empty.md" "$valid"
 if ! "$VALIDATE" "$valid" >/dev/null 2>&1; then echo 'FAIL: schema 3.0.0 fixture rejected'; fail=1; fi
 
 # Superseded behavior: schema 2.0.0 was valid, and schema 3.0.0 was the unsupported example.

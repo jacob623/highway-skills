@@ -12,7 +12,8 @@ fail=0
 accepted="$fixture_root/accepted.md"
 # Superseded behavior: the shared template schema was 2.0.0.
 if ! grep -Fq 'schema_version: 3.0.0' "$HIGHWAY_ROOT/library/templates/output/profile-record.md"; then echo 'FAIL: shared template schema is not 3.0.0'; fail=1; fi
-cp "$HIGHWAY_ROOT/library/templates/output/profile-record.md" "$accepted"
+# Superseded behavior: this copied profile-record.md as a valid Profile. Feature 138 uses the retained empty fixture (D3.5).
+cp "$HIGHWAY_ROOT/tools/tests/fixtures/profile-092/profile-record/empty.md" "$accepted"
 before="$(shasum -a 256 "$accepted" | awk '{print $1}')"
 
 # A declined proposal remains transient and cannot change the accepted artifact.
@@ -56,5 +57,29 @@ fi
 # Legacy YAML is inert even when present.
 printf '%s\n' 'organization:' '  name: Legacy' > "$fixture_root/profile.yaml"
 if grep -Fq Legacy "$accepted"; then echo 'FAIL: legacy YAML influenced accepted Profile'; fail=1; fi
+
+SKILL="$HIGHWAY_ROOT/skills/highway-profile/SKILL.md"
+for required_text in \
+	'only the accepted cohesive domain narrative' \
+	'Interpretation, clarification reasoning, explanation, reflection, connections, and advisory commentary remain transient' \
+	'advisory commentary remain transient' \
+	'Accepted evidence that establishes a domain sets it to `discussed`' \
+	'Optional enrichment does not change readiness by itself' \
+	'Acceptance authorizes the mutation but is not successful persistence'; do
+# Superseded behavior: persistence was locked to the malformed fragment 'persist the retained Profile, and only then return dependent readiness'. Feature 138 replaces that core (D3.5).
+	if ! grep -Fq "$required_text" "$SKILL"; then
+		echo "FAIL: Profile lifecycle boundary missing '$required_text'"
+		fail=1
+	fi
+done
+for required_text in \
+	'Presentation headings and introductions remain transient' \
+	'canonical question remains the fallback'; do
+	if ! grep -Fq "$required_text" "$SKILL"; then
+		echo "FAIL: Feature 123 lifecycle boundary missing '$required_text'"
+		fail=1
+	fi
+done
+
 if [[ $fail -ne 0 ]]; then exit 1; fi
 echo 'OK: Profile lifecycle contract passes'

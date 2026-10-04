@@ -41,7 +41,7 @@ con_rules() {
 	awk -F'|' '
 		BEGIN { OFS = "\t"; bad = 0 }
 		function trim(s) { gsub(/^[[:space:]]+|[[:space:]]+$/, "", s); return s }
-		/^\|[[:space:]]*[PX][0-9]+\.[0-9]+[[:space:]]*\|/ {
+		/^\|[[:space:]]*[PX][0-9]+[A-Z]?\.[0-9]+[[:space:]]*\|/ {
 			id = trim($2); text = trim($3); obs = trim($4); tier = trim($5)
 			if (NF < 5 || text == "" || obs == "" || tier !~ /^\[(auto|agent-checkable|human-review)\]$/) {
 				printf("ERROR: malformed rule row for %s at line %d\n", id, NR) > "/dev/stderr"

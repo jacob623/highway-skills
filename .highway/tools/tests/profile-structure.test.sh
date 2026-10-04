@@ -27,7 +27,9 @@ expect_invalid() {
 	fi
 }
 
-expect_valid "$HIGHWAY_ROOT/library/templates/output/profile-record.md"
+# Superseded behavior: profile-record.md was a valid retained Profile. Feature 138 makes it a skeleton (D3.5).
+expect_invalid "$HIGHWAY_ROOT/library/templates/output/profile-record.md"
+expect_valid "$SCRIPT_DIR/fixtures/profile-092/profile-record/empty.md"
 expect_valid "$SCRIPT_DIR/fixtures/profile-092/profile-record/accepted.md"
 expect_valid "$SCRIPT_DIR/fixtures/profile-092/profile-record/bounded-empty.md"
 
@@ -38,15 +40,35 @@ expect_invalid "$bounded_without_evidence"
 rm -f "$bounded_without_evidence"
 
 SKILL="$HIGHWAY_ROOT/skills/highway-profile/SKILL.md"
+# Superseded behavior: the Profile skill version was 5.3.0 before the domain-meaning breaking change.
 for required_text in \
 	'four readiness domains' \
 	'not_discussed' \
 	'discussed' \
 	'bounded' \
-	'version: 5.1.0' \
-	'Profile readiness'; do
+	'version: 7.0.0' \
+	'Profile readiness' \
+	'One cohesive organizational narrative that meaningfully answers' \
+	'Retain only the accepted cohesive domain narrative'; do
+# Superseded behavior: version 6.0.0 restated generic acceptance confirmation. Feature 138 removes that tutorial (D3.5).
 	if ! grep -Fq "$required_text" "$SKILL"; then
 		echo "FAIL: Profile ownership contract missing '$required_text'"
+		fail=1
+	fi
+done
+
+for subject_heading in \
+	"### Where you're going" \
+	"### How you'll get there" \
+	'### What will guide your decisions'; do
+	if ! grep -Fq -- "$subject_heading" "$SKILL"; then
+		echo "FAIL: subject heading missing from Profile source: $subject_heading"
+		fail=1
+	fi
+done
+for forbidden in 'presents Status: Complete' 'announces Next Action: None' 'readiness-domain'; do
+	if grep -Fq -- "$forbidden" "$SKILL"; then
+		echo "FAIL: Profile source exposes workflow mechanics: $forbidden"
 		fail=1
 	fi
 done
@@ -76,7 +98,13 @@ if grep -Fq '## How Highway Helps' "$HIGHWAY_ROOT/library/templates/output/profi
 	echo 'FAIL: Profile template still includes Highway Role'
 	fail=1
 fi
-for rule in 'discussed always renders evidence' 'bounded renders accepted evidence' 'not_discussed never renders a narrative section'; do
+# Superseded behavior: the hidden comment used 'discussed always renders evidence',
+# 'bounded renders accepted evidence', and 'not_discussed never renders a narrative section'.
+# Feature 138 states the same rendering rules in visible prose (D3.5).
+for rule in \
+	'discussed` renders accepted narrative' \
+	'not_discussed` renders no narrative section' \
+	'Omit ## Context when no Context child has accepted content.'; do
 	if ! grep -Fq -- "$rule" "$HIGHWAY_ROOT/library/templates/output/profile-record.md"; then
 		echo "FAIL: Profile template omits state-to-narrative rule '$rule'"
 		fail=1

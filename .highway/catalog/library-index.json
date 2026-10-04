@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-01T19:15:00Z",
+  "generated_at": "2026-10-04T00:52:14Z",
   "entries": [
     {
       "library_type": "template",
@@ -88,8 +88,8 @@
     {
       "library_type": "template",
       "name": "Organizational Profile",
-      "description": "Shared Markdown structure for retained organizational Profile evidence.",
-      "version": "3.0.0",
+      "description": "Complete output skeleton for retained organizational Profile evidence.",
+      "version": "3.1.0",
       "source_path": "library/templates/output/profile-record.md"
     },
     {

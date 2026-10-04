@@ -1,5 +1,24 @@
 <!--
 Sync Impact Report
+Version change: 6.0.0 → 6.1.0 (MINOR), 2026-10-02
+Bump rationale: Principle XII-A and rules P12A.1–P12A.4 add collaborative knowledge boundaries
+without changing existing owner-controlled completion rules or invalidating conforming artifacts.
+Changed elements:
+- Version footer: 6.0.0 → 6.1.0. Last Amended becomes 2026-10-02.
+- Added definitions: Accepted Repository Knowledge, Active Reasoning Context, Working Idea,
+  Converged Proposal, and Accepted User-Owned Artifact.
+- Added principle: XII-A. Collaborative Knowledge Development, with P12A.1–P12A.4.
+- Updated Principle Precedence to place XII-A below X and above XI.
+- Updated Repository Context, Governance, Self-Application, rule counts, and lifecycle boundary.
+- Recorded synchronization impact for Experience Standard, highway-profile, highway-objectives,
+  highway-controls, highway-nfrs, and future Architecture/ADR workflows.
+Self-application review: P12A.1–P12A.4 each have one normative keyword, one obligation, one
+Observable, and the [agent-checkable] tier; no rule prescribes conversational technique or durable
+reasoning state. Rollout order: Highway Identity, Experience Standard, highway-profile, behavioral
+testing, highway-objectives, highway-controls, highway-nfrs, then architecture workflows.
+Rule count: 77. Tier counts: [auto] 13, [agent-checkable] 64, [human-review] 0.
+
+Previous amendment:
 Version change: 5.0.0 → 6.0.0 (MAJOR), 2026-09-30
 Bump rationale: P12.13–P12.15 strengthen owner-mutation, owner-result, and orchestration-completion obligations so previously conforming work may fail.
 Changed elements:
@@ -186,6 +205,11 @@ document and in every skill governed by it.
 | **Declared input** | A value, file, or precondition named in a skill's Inputs section. |
 | **Repository Context Document** | An authoritative file under `.highway/library/knowledge/` describing Highway identity, vision, objectives, decision evaluation, or user-owned organizational context. |
 | **Repository Context** | Information from Repository Context Documents or accepted repository artifacts that can alter a recommendation, explanation, decision support, or workflow guidance. |
+| **Accepted Repository Knowledge** | Accepted user-owned or authoritative repository information available to guide later work. |
+| **Active Reasoning Context** | Transient information organized during the active interaction to support reasoning toward the active task. |
+| **Working Idea** | A user contribution, Highway proposal, or evolving synthesis inside Active Reasoning Context that is not authoritative user-owned knowledge. |
+| **Converged Proposal** | A complete candidate artifact or artifact set produced from the active interaction and presented at the applicable acceptance boundary for possible promotion into user-owned authoritative knowledge. |
+| **Accepted User-Owned Artifact** | A candidate accepted through its owning workflow and persisted through the existing owner-controlled mutation path. |
 | **Behavior** | Recommendations, guidance, decisions, explanations, proposals, generated artifacts, workflow actions, or user-visible outputs produced by a skill. |
 | **Participating Skill** | A skill whose Behavior is influenced by Repository Context. |
 | **Material Influence** | Information that alters a recommendation, Behavior, governance interpretation, prioritization, decision support, or generated artifact outcome. |
@@ -391,7 +415,10 @@ context without replacing workflow-specific inputs, governance artifacts, or use
 When context documents overlap, Identity provides behavioral guidance, Vision provides strategic
 direction, Platform Objectives provide evaluation criteria, and Profile provides organizational
 context, in that order. Active workflow and user evidence override conflicting repository context
-for the active interaction. Missing context is not invented or silently substituted.
+for the active interaction. Active Reasoning Context may influence the active interaction, but it
+remains subordinate to accepted user evidence and authoritative repository state. A Working Idea
+does not override accepted repository knowledge merely because Highway is exploring an alternative.
+Missing context is not invented or silently substituted.
 
 | ID | Rule | Observable | Tier |
 |---|---|---|---|
@@ -401,7 +428,8 @@ for the active interaction. Missing context is not invented or silently substitu
 | P11.4 | A skill MUST NOT substitute missing context, including by invention. | Missing context stays missing. No replacement content is written. | [agent-checkable] |
 
 Rationale: Repository Context makes shared identity, direction, and evaluation criteria available to
-skills while preserving workflow ownership and making context use inspectable.
+skills while preserving workflow ownership and making context use inspectable. The context boundary
+keeps transient collaborative development subordinate to accepted knowledge.
 
 ### XII. Owner-Controlled Completion and Orchestration
 
@@ -428,6 +456,39 @@ the mutation it owns and returns its declared result, after which orchestration 
 all required terminal results are present. This boundary does not add a post-write Persistence
 Verification stage or related read-back checks.
 
+### XIII. Collaborative Knowledge Development
+
+Highway may collaboratively develop ideas before they become authoritative artifacts. Retained
+artifact schema does not dictate conversational question order. Working Ideas remain transient until
+they become a Converged Proposal and cross the applicable acceptance boundary.
+
+| ID | Rule | Observable | Tier |
+|---|---|---|---|
+| P12A.1 | A skill MUST treat Active Reasoning Context as transient until the applicable acceptance boundary is satisfied. | Unaccepted Working Ideas, interpretations, alternatives, implications, and recommendations are not accepted repository knowledge. | [agent-checkable] |
+| P12A.2 | A skill MUST distinguish a Working Idea from a Converged Proposal. | Artifact acceptance occurs only after a complete candidate result exists. | [agent-checkable] |
+| P12A.3 | A skill MUST preserve relevant Active Reasoning Context until the active task resolves or the interaction ends. | Active Working Ideas influencing the current task remain available to later reasoning within that interaction. | [agent-checkable] |
+| P12A.4 | A skill MUST re-evaluate relevant context after accepted knowledge changes the active task. | Subsequent behavior uses the accepted knowledge together with other relevant declared context. | [agent-checkable] |
+
+Rationale: Collaborative development supports interpretation, refinement, alternatives, implications,
+tradeoffs, questions, relationships, and recommendations without creating authoritative
+organizational facts before acceptance. The Experience Standard governs how collaboration appears
+to the person, while the owning skill governs what constitutes a complete candidate for its domain.
+
+### Collaborative knowledge lifecycle (Non-Normative)
+
+Accepted context informs an active interaction. Contributions and recommendations become Working
+Ideas within Active Reasoning Context while they are interpreted, refined, compared, connected, or
+challenged. A Working Idea may be discarded, corrected, replaced, split, combined, or abandoned
+without creating a retained artifact. When the owning workflow can present a complete candidate
+artifact or artifact set, it is a Converged Proposal. The applicable user acceptance boundary then
+determines whether the owner performs its existing mutation. Accepted repository knowledge becomes
+available for re-evaluation with other relevant context, which may produce new Working Ideas.
+
+The Experience Standard governs how collaboration appears to the person, and the owning skill
+governs domain completeness. Retained artifact structure and conversational discovery are separate
+concerns; an owning skill may derive retained structure from converged accepted understanding when
+its contract permits. Active Reasoning Context and Working Ideas are not new retained artifact types.
+
 ## Principle Precedence
 
 When two rules conflict, the rule belonging to the higher-ranked principle prevails. This
@@ -445,7 +506,8 @@ ordering is total: every pair of principles has a defined winner.
 | 8 | II. Technology-Agnostic Portability | Governs reach across environments. |
 | 9 | III. Grounding in Approved Authority Sources | Governs provenance of a rule already stated. |
 | 10 | X. Experience Compliance | Governs user-visible behavior after correctness requirements are satisfied. |
-| 11 | XI. Repository Context | Governs context use after correctness, provenance, and experience requirements are satisfied. |
+| 11 | XI. Repository Context | Governs the authoritative accepted context that constrains context-dependent behavior. |
+| 12 | XIII. Collaborative Knowledge Development | Governs transient collaborative reasoning within the boundaries established by accepted context and user authority. |
 
 **Security override**: a rule tagged security-affecting outranks every rule in every principle,
 including rank 1 rules that are not security-affecting.
@@ -511,15 +573,17 @@ Highway does not invent organizational facts or silently promote inferred or dis
 information into user-owned authoritative content. Objectives, Controls, Non-Functional
 Requirements, architectures, decisions, implementations, and organizational Profile stay
 user-owned. A skill may classify, recommend, normalize, and propose. A proposal is not
-authoritative until the applicable user-acceptance boundary is satisfied.
+authoritative until the applicable user-acceptance boundary is satisfied. Working Ideas and Active
+Reasoning Context remain non-authoritative until that boundary is satisfied.
 
 ### Self-Application
 
 This constitution is itself subject to P1.1 through P1.4 (clarity), P6.4 and P6.6
 (determinism), and P7.3 (non-duplication). Every amendment MUST record a review against those
 rule IDs. Rules P7.4 and P7.5 state limits on skills and do not apply to this document. The
-P12.13–P12.15 amendment review confirms that each new row has one keyword, one obligation, one
-Observable, and the [agent-checkable] tier.
+P12A.1–P12A.4 amendment review confirms that each new row has one keyword, one obligation, one
+Observable, and the [agent-checkable] tier. Existing P12.5–P12.15 owner mutation and orchestration
+rules remain unchanged.
 
 ### Constitution Versioning Policy
 
@@ -541,4 +605,4 @@ every other skill's version. This is the policy referenced by P7.7.
 - **MINOR**: a capability is added while every existing contract element continues to hold.
 - **PATCH**: wording repair with no change to Inputs, Outputs, or Verification.
 
-**Version**: 6.0.0 | **Ratified**: 2026-09-06 | **Last Amended**: 2026-09-30
+**Version**: 6.1.0 | **Ratified**: 2026-09-06 | **Last Amended**: 2026-10-02
