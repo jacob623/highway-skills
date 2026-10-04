@@ -26,8 +26,9 @@ require_absent() {
 	fi
 }
 
+# Superseded behavior: version 5.3.0 and Identity assembly that omitted imported organizational material.
 for required in \
-	'version: 5.3.0' \
+	'version: 6.0.0' \
 	'Apply X2.38-X2.40 to each Substantive Contribution' \
 	'Each Substantive Contribution becomes new reasoning material' \
 	'first re-evaluate what it changes, clarifies, introduces, qualifies, connects, or leaves unresolved' \
@@ -37,14 +38,14 @@ for required in \
 	'After each Substantive Contribution, re-evaluate the active understanding' \
 	'Identity establishes the meaningful organizational picture' \
 	'provisional substantive facets' \
-	'materially assembles Identity from website discovery, multiple evidence sources, or substantial interpretation' \
+	'materially assembles Identity from website discovery, imported organizational material, multiple evidence sources, or substantial interpretation' \
 	'domain-complete organizational description that Profile does not materially reshape' \
 	'durable organizational activity and purpose' \
 	'Do not use Identity completeness to inventory platforms' \
 	'Identity Contribution Opportunity and Identity Conversational Clarification serve different purposes' \
-	'full accepted Identity, including distinct meaningful organizational activities or expressions' \
-	'useful future-direction question, distinction, implication, or recommendation' \
-	'relationships among their meaningful organizational activities or expressions' \
+	'evaluates the full accepted Identity and other relevant accepted Profile evidence' \
+	'how those parts affect the future being created' \
+	'how those accepted pieces reinforce, sequence, constrain, or depend on one another' \
 	'treat each Substantive Contribution as new reasoning material and apply X2.38-X2.40' \
 	'When a response both accepts a displayed Converged Proposal and supplies new substantive information' \
 	'The newly supplied information does not silently rewrite the already accepted domain' \

@@ -30,8 +30,9 @@ require_absent() {
 require_text 'Profile does not add a local acknowledgment stage, narrate'
 require_text 'Interpretation, clarification reasoning, explanation, reflection, connections, and advisory commentary remain transient'
 require_text 'advisory commentary remain transient'
-require_text 'Vision evaluates the full accepted Identity, including distinct meaningful organizational activities or expressions represented in that Identity, together with accepted website-derived organizational evidence, existing accepted Vision evidence, and other accepted Profile context using the shared contribution precedence'
-require_text 'Competitive Path begins from accepted Vision or sufficient accepted evidence.'
+# Superseded behavior: Vision grounded itself in accepted website-derived evidence and named enrichment categories; Competitive Path began from accepted Vision or sufficient accepted evidence.
+require_text 'Vision asks what future the organization is trying to create. It evaluates the full accepted Identity and other relevant accepted Profile evidence using the shared contribution precedence'
+require_text 'Competitive Path asks what broad approach the organization intends to take toward its accepted Vision.'
 require_text 'Guiding Principles uses accepted Identity, Vision, Competitive Path, and other accepted Profile context as grounding. After Competitive Path acceptance, re-evaluate the accumulated Profile'
 require_text "### Where you're going"
 require_text "### How you'll get there"

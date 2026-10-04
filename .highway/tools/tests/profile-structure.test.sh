@@ -38,12 +38,13 @@ expect_invalid "$bounded_without_evidence"
 rm -f "$bounded_without_evidence"
 
 SKILL="$HIGHWAY_ROOT/skills/highway-profile/SKILL.md"
+# Superseded behavior: the Profile skill version was 5.3.0 before the domain-meaning breaking change.
 for required_text in \
 	'four readiness domains' \
 	'not_discussed' \
 	'discussed' \
 	'bounded' \
-	'version: 5.3.0' \
+	'version: 6.0.0' \
 	'Profile readiness' \
 	'One cohesive organizational narrative that meaningfully answers' \
 	'Retain only the accepted cohesive domain narrative' \

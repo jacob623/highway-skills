@@ -35,26 +35,27 @@ if ! grep -Fq '.highway/library/knowledge/profile.md' "$HIGHWAY_ROOT/skills/high
 if ! grep -Fq 'proposal evidence' "$HIGHWAY_ROOT/skills/highway-profile/SKILL.md"; then echo 'FAIL: proposal evidence lifecycle missing'; fail=1; fi
 
 SKILL="$HIGHWAY_ROOT/skills/highway-profile/SKILL.md"
+# Superseded behavior: version 5.3.0, enrichment-category coverage, and Competitive Path opening from accepted Vision or sufficient accepted evidence.
 for required_text in \
-	       'version: 5.3.0' \
+	       'version: 6.0.0' \
 	"### Let's get to know your organization" \
 	'This helps Highway make more relevant recommendations as we go.' \
-	'A Vision Working Idea may be a grounded direction, distinction, implication, alternative, or recommendation' \
+	'A Vision Working Idea may be a grounded future direction, distinction, implication, alternative, or recommendation' \
 	'visibly open the new' \
 	'When a Vision Working Idea already exists, ask only the one focused question' \
 	'When a Competitive Path Working Idea already exists, ask only the one focused question' \
 	'When a Guiding Principles Working Idea already exists, ask only the one focused question' \
-	       'Re-evaluate the full accepted Identity, accepted Vision, relationships among their meaningful organizational activities or expressions, and other accepted Profile context before opening' \
-	'sharpen principles already implicit in the accepted direction' \
+	       'Re-evaluate accepted Identity, accepted Vision, and other relevant accepted Profile evidence before opening' \
+	're-evaluate the accumulated Profile for principles already becoming visible' \
 	'Profile does not add a local acknowledgment stage' \
 	'One cohesive organizational narrative that meaningfully answers the domain' \
-	'category names are neither presented nor retained' \
+	'not coverage of an internal category framework' \
 	'Synthesized recommendation prose is generated naturally from accepted evidence rather than from a required recommendation sentence template.' \
-	're-evaluate accumulated accepted evidence across all four domains' \
+	're-evaluate accumulated accepted evidence before each unresolved guided question' \
 	'When accepted Profile evidence supports neither a Converged Proposal nor a useful Working Idea' \
 	'persist the retained Profile' \
 	'one concise synthesis' \
-	'category names are neither presented nor retained' \
+	'Internal category names are not presented to the user or persisted.' \
 	'Is this an accurate description of your organization?' \
 	'Does this accurately reflect where you'"'"'d like [Organization Name] to go?' \
 	'Does this accurately reflect how [Organization Name] plans to get there?' \
