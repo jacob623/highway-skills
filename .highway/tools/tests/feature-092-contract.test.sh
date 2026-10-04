@@ -26,10 +26,11 @@ for context in highway-identity.md highway-vision.md highway-platform-objectives
 done
 require_text "$PROFILE" 'Next Action: /highway-profile setup'
 require_text "$PROFILE" 'Next Action: /highway-profile configure'
-require_text "$PROFILE" 'Material interpretation follows the Highway Experience Standard.'
+# Superseded behavior: version 6.0.0 restated generic material-interpretation guidance.
+# Feature 138 leaves that check to the Experience Standard (D3.5).
 require_text "$PROFILE" 'An absent Profile is a valid initial state'
 require_text "$PROFILE" 'Next Action: None'
-require_text "$PROFILE" 'must not be promoted into the retained Profile'
+require_text "$PROFILE" 'it is not retained as organizational fact'
 require_text "$PROFILE" '**What would you like to call your Highway repository?**'
 require_text "$PROFILE" "If you're using Highway for a company or organization, its name is usually a good choice."
 # Superseded behavior: acquisition asked only for a public website before ordinary domain questioning.
@@ -87,7 +88,8 @@ if grep -Fq '### Repository Name' "$PROFILE"; then
 	fail=1
 fi
 # Superseded behavior: highway-profile version 5.3.0 locked the narrower domain and acquisition contract.
-require_text "$PROFILE" 'version: 6.0.0'
+# Superseded behavior: highway-profile 6.0.0. Feature 138 is MAJOR 7.0.0 because projection and verification narrowed (D3.5).
+require_text "$PROFILE" 'version: 7.0.0'
 if grep -Fq '.highway/tools/validate-profile.sh' "$PROFILE"; then
 	echo "FAIL: $PROFILE still instructs .highway/tools/validate-profile.sh"
 	fail=1
@@ -110,7 +112,8 @@ require_text "$STANDARD" 'Every user-visible response excludes Implementation de
 fixture_root="$(mktemp -d "${TMPDIR:-/tmp}/highway-profile-092.XXXXXX")"
 trap 'rm -rf "$fixture_root"' EXIT
 valid="$fixture_root/valid.md"
-cp "$HIGHWAY_ROOT/library/templates/output/profile-record.md" "$valid"
+# Superseded behavior: this copied profile-record.md as a valid Profile. Feature 138 uses the retained empty fixture (D3.5).
+cp "$HIGHWAY_ROOT/tools/tests/fixtures/profile-092/profile-record/empty.md" "$valid"
 if ! "$VALIDATE" "$valid" >/dev/null 2>&1; then echo 'FAIL: schema 3.0.0 fixture rejected'; fail=1; fi
 
 # Superseded behavior: schema 2.0.0 was valid, and schema 3.0.0 was the unsupported example.

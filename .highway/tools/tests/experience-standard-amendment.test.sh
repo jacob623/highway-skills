@@ -32,8 +32,8 @@ for protected in \
 	.highway/skills/highway-nfrs/SKILL.md \
 	.highway/skills/highway-setup/SKILL.md \
 	.highway/skills/highway-clarify/SKILL.md \
-	.highway/governance/constitution.md \
-	.highway/library/templates/output/profile-record.md; do
+	.highway/governance/constitution.md; do
+# Superseded behavior: this amendment treated profile-record.md as unchanged. Feature 138 owns that template (D3.5).
 	if git -C "$REPO_ROOT" diff --name-only -- "$protected" | grep -q .; then
 		echo "FAIL: protected path changed: $protected"
 		fail=1

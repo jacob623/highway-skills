@@ -41,8 +41,8 @@ require_text 'When a Vision Working Idea already exists, ask only the one focuse
 require_text 'When a Competitive Path Working Idea already exists, ask only the one focused question'
 require_text 'When a Guiding Principles Working Idea already exists, ask only the one focused question'
 require_text 'naturally connect the accepted Profile understanding to how it can inform later Highway guidance.'
-require_text 'Material interpretation follows the Highway Experience Standard.'
-require_text 'The validation question remains the single response-demanding decision in the recommendation turn.'
+# Superseded behavior: version 6.0.0 restated generic interpretation and one-question checks.
+# Feature 138 leaves those checks to the Experience Standard (D3.5).
 require_text 'One cohesive organizational narrative that meaningfully answers the domain'
 require_text 'Profile does not impose a local brevity requirement that conflicts with shared Conversational Presence guidance.'
 require_absent 'Profile does not require fixed recommendation sentence templates.'
@@ -81,8 +81,8 @@ for protected in \
 	.highway/skills/highway-objectives/SKILL.md \
 	.highway/skills/highway-controls/SKILL.md \
 	.highway/skills/highway-nfrs/SKILL.md \
-	.highway/skills/highway-setup/SKILL.md \
-	.highway/library/templates/output/profile-record.md; do
+	.highway/skills/highway-setup/SKILL.md; do
+# Superseded behavior: feature 122 treated profile-record.md as unchanged. Feature 138 owns that template (D3.5).
 	if git -C "$REPO_ROOT" diff --name-only -- "$protected" | grep -q .; then
 		echo "FAIL: protected path changed: $protected"
 		fail=1

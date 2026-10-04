@@ -14,10 +14,10 @@ fixture_root="$(mktemp -d "${TMPDIR:-/tmp}/highway-profile-091.XXXXXX")"
 trap 'rm -rf "$fixture_root"' EXIT
 
 valid="$fixture_root/profile.md"
-cp "$HIGHWAY_ROOT/library/templates/output/profile-record.md" "$valid"
-# Superseded behavior: the shared template schema was 2.0.0.
+# Superseded behavior: tests copied profile-record.md as a valid Profile. Feature 138 makes it a skeleton (D3.5).
+cp "$HIGHWAY_ROOT/tools/tests/fixtures/profile-092/profile-record/empty.md" "$valid"
 if ! grep -Fq 'schema_version: 3.0.0' "$HIGHWAY_ROOT/library/templates/output/profile-record.md"; then echo 'FAIL: shared template schema is not 3.0.0'; fail=1; fi
-if ! "$VALIDATE" "$valid" >/dev/null; then echo 'FAIL: shared template is invalid'; fail=1; fi
+if ! "$VALIDATE" "$valid" >/dev/null; then echo 'FAIL: retained empty Profile fixture is invalid'; fail=1; fi
 
 sed -i '' 's/identity: not_discussed/identity: discussed/' "$valid"
 printf '%s\n' '## Who We Are' 'A user-supplied organization.' >> "$valid"
@@ -37,7 +37,7 @@ if ! grep -Fq 'proposal evidence' "$HIGHWAY_ROOT/skills/highway-profile/SKILL.md
 SKILL="$HIGHWAY_ROOT/skills/highway-profile/SKILL.md"
 # Superseded behavior: version 5.3.0, enrichment-category coverage, and Competitive Path opening from accepted Vision or sufficient accepted evidence.
 for required_text in \
-	       'version: 6.0.0' \
+	       'version: 7.0.0' \
 	"### Let's get to know your organization" \
 	'This helps Highway make more relevant recommendations as we go.' \
 	'A Vision Working Idea may be a grounded future direction, distinction, implication, alternative, or recommendation' \
@@ -53,7 +53,7 @@ for required_text in \
 	'Synthesized recommendation prose is generated naturally from accepted evidence rather than from a required recommendation sentence template.' \
 	're-evaluate accumulated accepted evidence before each unresolved guided question' \
 	'When accepted Profile evidence supports neither a Converged Proposal nor a useful Working Idea' \
-	'persist the retained Profile' \
+	'Acceptance authorizes the mutation but is not successful persistence' \
 	'one concise synthesis' \
 	'Internal category names are not presented to the user or persisted.' \
 	'Is this an accurate description of your organization?' \
@@ -63,21 +63,21 @@ for required_text in \
 	'You can also change it or provide your own description.' \
 	'You can also change it or provide your own vision.' \
 	'You can also change it or provide your own approach.' \
-	'You can also change it or provide your own principles.' \
-	'Material interpretation follows the Highway Experience Standard.'; do
+	'You can also change it or provide your own principles.'; do
+# Superseded behavior: version 6.0.0 restated generic material-interpretation guidance.
+# Feature 138 leaves that check to the Experience Standard (D3.5).
 	if ! grep -Fq "$required_text" "$SKILL"; then
 		echo "FAIL: Feature 116 contract missing '$required_text'"
 		fail=1
 	fi
 done
 
+# Superseded behavior: version 6.0.0 restated generic Working Idea, re-evaluation, and recommendation tutorials.
+# Feature 138 removes those Experience Standard restatements (D3.5).
 for subject_text in \
 	"### Where you're going" \
 	"### How you'll get there" \
-	'### What will guide your decisions' \
-	'A Working Idea is transient Profile reasoning' \
-	'After accepted Profile knowledge is persisted, re-evaluate it together with the accumulated accepted' \
-	'A synthesized recommendation may be a Working Idea or a Converged Proposal'; do
+	'### What will guide your decisions'; do
 	if ! grep -Fq "$subject_text" "$SKILL"; then
 		echo "FAIL: Feature 123 subject rhythm missing '$subject_text'"
 		fail=1

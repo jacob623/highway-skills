@@ -26,16 +26,14 @@ require_absent() {
 	fi
 }
 
-# Superseded behavior: version 5.3.0 and Identity assembly that omitted imported organizational material.
+# Superseded behavior: version 6.0.0 restated X2.38-X2.40, generic clarification, and acceptance-plus-new-information tutorials.
+# Feature 138 replaces those with Profile-specific citations (D3.5).
 for required in \
-	'version: 6.0.0' \
-	'Apply X2.38-X2.40 to each Substantive Contribution' \
-	'Each Substantive Contribution becomes new reasoning material' \
-	'first re-evaluate what it changes, clarifies, introduces, qualifies, connects, or leaves unresolved' \
-	'consequential uncertainty can change the active result' \
-	'without a ceremonial question' \
-	'Process each response, selected recommendation, or validated discovery across all four domains before choosing the next behavior' \
-	'After each Substantive Contribution, re-evaluate the active understanding' \
+	'version: 7.0.0' \
+	'Profile uses the collaborative-development model defined by the Highway Experience Standard' \
+	'Evaluate new substantive organizational evidence for relevance across every unresolved Profile domain before selecting the next Profile behavior' \
+	'New substantive organizational evidence supplied with acceptance does not silently rewrite previously accepted Profile knowledge' \
+	'Profile uses shared Conversational Clarification when consequential uncertainty in organizational evidence requires the person'"'"'s information' \
 	'Identity establishes the meaningful organizational picture' \
 	'provisional substantive facets' \
 	'materially assembles Identity from website discovery, imported organizational material, multiple evidence sources, or substantial interpretation' \
@@ -46,15 +44,9 @@ for required in \
 	'evaluates the full accepted Identity and other relevant accepted Profile evidence' \
 	'how those parts affect the future being created' \
 	'how those accepted pieces reinforce, sequence, constrain, or depend on one another' \
-	'treat each Substantive Contribution as new reasoning material and apply X2.38-X2.40' \
-	'When a response both accepts a displayed Converged Proposal and supplies new substantive information' \
-	'The newly supplied information does not silently rewrite the already accepted domain' \
-	'A Conversational Clarification is the one unresolved response-demanding question for that turn' \
-	'Do not treat every clarification response as satisfying Profile' \
-	'New substantive evidence is evaluated for relevance across all unresolved Profile domains' \
+	'Evaluate new substantive organizational evidence for relevance across every unresolved Profile domain before selecting the next Profile behavior' \
 	'Identity provisional facets remain Working Idea content' \
-	'Profile does not create a clarification record or invoke highway-clarify' \
-	'schema_version: 3.0.0'; do
+	'It remains transient and does not invoke the persisted highway-clarify capability unless that capability is separately requested through its supported contract.'; do
 	require_text "$required"
 done
 
@@ -76,9 +68,9 @@ for generated in \
 	fi
 done
 
+# Superseded behavior: feature 136 treated profile-record.md as unchanged. Feature 138 owns that template (D3.5).
 for protected in \
 	.highway/governance/experience-standard.md \
-	.highway/library/templates/output/profile-record.md \
 	.highway/skills/highway-setup/SKILL.md \
 	.highway/skills/highway-clarify/SKILL.md \
 	.highway/governance/constitution.md; do

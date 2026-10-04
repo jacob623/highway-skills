@@ -30,17 +30,13 @@ require_text 'Contribution Opportunity'
 require_text 'X2.37'
 require_text 'materially shaped'
 require_text 'equivalent opportunity'
-require_text 'add, correct, remove, extend, or redirect'
-require_text 'nothing else'
+require_text 'apply the shared X2.37 Contribution Opportunity unless an equivalent opportunity already occurred'
 require_text 'remains transient'
-require_text 'does not authorize persistence'
-require_text 'does not repeat substantially identical cohesive final-form domain prose'
 require_text 'Vision, Competitive Path, and Guiding Principles'
+# Superseded behavior: feature 134 locked generic Contribution Opportunity lifecycle sentences.
+# Feature 138 keeps the Profile-specific exception and does not restate that shared lifecycle (D3.5).
 # Superseded behavior: a complete discovered Identity skipped a distinct Contribution Opportunity.
 require_text 'A user-supplied domain-complete Identity that Profile does not materially reshape may proceed directly to its accuracy-oriented validation path'
-require_text 'the only response-demanding question'
-require_text 'Identity accuracy'
-require_text 'The Contribution Opportunity is the only response-demanding question in its turn and remains separate from domain acceptance and other unresolved discovery questions.'
 require_text '### Where you'
 require_text '### How you'
 require_text '### What will guide'
@@ -54,9 +50,9 @@ if grep -Fq 'Contribution Opportunity authorizes acceptance' "$PROFILE"; then
 	fail=1
 fi
 
+# Superseded behavior: feature 134 treated profile-record.md as unchanged. Feature 138 owns that template (D3.5).
 for protected in \
 	.highway/governance/constitution.md \
-	.highway/library/templates/output/profile-record.md \
 	.highway/skills/highway-setup/SKILL.md \
 	.highway/skills/highway-objectives/SKILL.md \
 	.highway/skills/highway-controls/SKILL.md \

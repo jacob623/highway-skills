@@ -27,7 +27,9 @@ expect_invalid() {
 	fi
 }
 
-expect_valid "$HIGHWAY_ROOT/library/templates/output/profile-record.md"
+# Superseded behavior: profile-record.md was a valid retained Profile. Feature 138 makes it a skeleton (D3.5).
+expect_invalid "$HIGHWAY_ROOT/library/templates/output/profile-record.md"
+expect_valid "$SCRIPT_DIR/fixtures/profile-092/profile-record/empty.md"
 expect_valid "$SCRIPT_DIR/fixtures/profile-092/profile-record/accepted.md"
 expect_valid "$SCRIPT_DIR/fixtures/profile-092/profile-record/bounded-empty.md"
 
@@ -44,11 +46,11 @@ for required_text in \
 	'not_discussed' \
 	'discussed' \
 	'bounded' \
-	'version: 6.0.0' \
+	'version: 7.0.0' \
 	'Profile readiness' \
 	'One cohesive organizational narrative that meaningfully answers' \
-	'Retain only the accepted cohesive domain narrative' \
-	'without a second confirmation'; do
+	'Retain only the accepted cohesive domain narrative'; do
+# Superseded behavior: version 6.0.0 restated generic acceptance confirmation. Feature 138 removes that tutorial (D3.5).
 	if ! grep -Fq "$required_text" "$SKILL"; then
 		echo "FAIL: Profile ownership contract missing '$required_text'"
 		fail=1
@@ -96,7 +98,13 @@ if grep -Fq '## How Highway Helps' "$HIGHWAY_ROOT/library/templates/output/profi
 	echo 'FAIL: Profile template still includes Highway Role'
 	fail=1
 fi
-for rule in 'discussed always renders evidence' 'bounded renders accepted evidence' 'not_discussed never renders a narrative section'; do
+# Superseded behavior: the hidden comment used 'discussed always renders evidence',
+# 'bounded renders accepted evidence', and 'not_discussed never renders a narrative section'.
+# Feature 138 states the same rendering rules in visible prose (D3.5).
+for rule in \
+	'discussed` renders accepted narrative' \
+	'not_discussed` renders no narrative section' \
+	'Omit ## Context when no Context child has accepted content.'; do
 	if ! grep -Fq -- "$rule" "$HIGHWAY_ROOT/library/templates/output/profile-record.md"; then
 		echo "FAIL: Profile template omits state-to-narrative rule '$rule'"
 		fail=1

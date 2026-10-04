@@ -3,8 +3,12 @@
 set -u
 profile_fixture_copy_template() {
 	local root="$1" output="$2"
+	local here
+	here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 	mkdir -p "$root"
-	cp "$root/../../../../library/templates/output/profile-record.md" "$output"
+	# Superseded behavior: this helper copied profile-record.md, which was itself a valid Profile.
+	# Feature 138 makes that file a skeleton, so copies use the retained empty fixture (D3.5).
+	cp "$here/profile-record/empty.md" "$output"
 }
 profile_fixture_cleanup() {
 	local root="$1"

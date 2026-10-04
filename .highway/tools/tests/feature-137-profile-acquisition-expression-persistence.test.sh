@@ -2,7 +2,7 @@
 # Verifies Feature 137 Profile acquisition, expression, persistence, and ownership boundaries.
 # Superseded behavior: a prior draft locked skill version 5.4.0, website-only acquisition,
 # enrichment-category coverage, and acceptance-as-persistence. The accepted amendment is MAJOR
-# 6.0.0 and narrows those guarantees (D3.5).
+# 6.0.0 and narrows those guarantees. Feature 138 further replaces the projection and persistence sentences (D3.5).
 set -u
 # Instrument class: static-document-contract
 # Artifact classes: source-document, generated-artifact
@@ -39,7 +39,7 @@ if grep -Eq '^## highway-profile$' "$PROFILE"; then
 fi
 
 for required in \
-	'version: 6.0.0' \
+	'version: 7.0.0' \
 	'User-supplied existing organizational material provided for Profile acquisition' \
 	'public organizational website supplied by the person' \
 	'use supported existing organizational material or public-website acquisition when available' \
@@ -66,15 +66,13 @@ for required in \
 	'what future the organization is trying to create' \
 	'grounded future direction' \
 	'what broad approach the organization intends to take' \
-	'does not develop or retain that detail as a safeguard, NFR, architecture, or implementation requirement' \
+	'Do not develop, refine, recommend, validate, or retain the downstream-owned detail itself' \
 	'Do not turn a principle into an enforceable Control' \
-	'immediately construct and perform the accepted Profile mutation' \
-	'Do not advance from an accepted Profile domain as though its knowledge were retained until the applicable Profile mutation succeeds' \
-	'Guided Profile completion requires the accepted mutations' \
+	'perform the accepted Profile mutation before any behavior that depends on that accepted knowledge' \
+	'Acceptance authorizes the mutation but is not successful persistence' \
+	'persist that mutation before emitting the guided completion synthesis' \
 	'An accepted Profile mutation that fails does not establish the affected domain as successfully persisted' \
-	'Acceptance alone is not treated as successful Profile persistence' \
-	'persist that mutation before emitting the completion synthesis' \
-	'schema_version: 3.0.0'; do
+	'Content mutations do not change the Profile schema version.'; do
 	require_text "$required"
 done
 
@@ -116,10 +114,10 @@ for generated in \
 	fi
 done
 
+# Superseded behavior: feature 137 treated profile-record.md as unchanged. Feature 138 owns that template (D3.5).
 for protected in \
 	.highway/governance/experience-standard.md \
 	.highway/governance/constitution.md \
-	.highway/library/templates/output/profile-record.md \
 	.highway/skills/highway-setup/SKILL.md \
 	.highway/skills/highway-objectives/SKILL.md \
 	.highway/skills/highway-clarify/SKILL.md; do
