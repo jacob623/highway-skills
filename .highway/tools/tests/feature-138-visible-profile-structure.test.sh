@@ -61,16 +61,16 @@ if ! "$VALIDATE" "$EMPTY" >/dev/null 2>&1; then
 	fail=1
 fi
 
-require_text "$PROFILE" 'version: 7.0.0'
+require_text "$PROFILE" 'version: 7.1.0'
 require_text "$PROFILE" 'The retained artifact is `.highway/library/knowledge/profile.md`.'
 require_text "$PROFILE" 'The retained Profile follows the complete structure in .highway/library/templates/output/profile-record.md. Profile owns the meaning, evidence, state, and readiness of Identity, Vision, Competitive Path, and Guiding Principles. Accepted evidence that establishes a domain sets it to `discussed`; an explicit user boundary may set an otherwise unresolved domain to `bounded`. Optional Context does not change readiness. Schema 2.0.0 is Blocked and left unchanged.'
 require_text "$PROFILE" 'A Repository Name supplied directly in response to this request is accepted as supplied and does not require a separate proposal review.'
 require_text "$PROFILE" 'A domain becomes bounded only when the person explicitly indicates that they do not want to establish further Profile evidence for that domain.'
-require_text "$PROFILE" 'Profile uses the collaborative-development model defined by the Highway Experience Standard. Working Ideas, Substantive Contributions, Conversational Clarification, Contribution Opportunities, Converged Proposals, and their interaction boundaries follow that shared contract. Profile defines what constitutes a complete candidate for each Profile domain and the Profile-specific evidence, readiness, persistence, and downstream ownership boundaries below.'
+require_text "$PROFILE" 'Profile uses the collaborative-development model defined by the Highway Experience Standard. Working Ideas, Substantive Contributions, Conversational Clarification, Contribution Opportunities, Converged Proposals, contextual re-evaluation, and their interaction boundaries follow that shared contract.'
 require_text "$PROFILE" 'Website and imported-source acquisition are limited to evidence relevant to the organizational Profile.'
 require_text "$PROFILE" 'Website-derived and imported organizational information remains proposed until the applicable Profile acceptance boundary is crossed.'
 require_text "$PROFILE" 'Do not use tone, style, phrasing, terminology, or communication patterns as evidence that a substantive organizational claim is true.'
-require_text "$PROFILE" 'When the person volunteers a safeguard, operational expectation, architecture detail, implementation detail, or other downstream-owned information while developing Competitive Path, re-evaluate what that information reveals about the organization'"'"'s broad approach. Incorporate only that broad strategic meaning into Competitive Path when it changes the path. Do not develop, refine, recommend, validate, or retain the downstream-owned detail itself as Profile evidence solely because it was volunteered. When the detail does not change the broad organizational approach, leave it outside Competitive Path.'
+require_text "$PROFILE" 'When the person volunteers a safeguard, operational expectation, architecture detail, implementation detail, or other downstream-owned information while developing Competitive Path, re-evaluate what that information reveals about the organization'"'"'s broad approach.'
 require_text "$PROFILE" 'After acceptance changes retained Profile state, perform the accepted Profile mutation before any behavior that depends on that accepted knowledge. Acceptance authorizes the mutation but is not successful persistence. Return dependent readiness, completion, or another owner result only after the mutation succeeds.'
 require_text "$PROFILE" 'If the final Profile domain is accepted, persist that mutation before emitting the guided completion synthesis.'
 require_text "$PROFILE" 'Volunteered downstream-owned information appears in Competitive Path only through the broad strategic meaning it establishes; Profile does not develop or retain the downstream-owned specification itself.'

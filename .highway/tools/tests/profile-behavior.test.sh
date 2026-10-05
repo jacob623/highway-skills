@@ -37,10 +37,10 @@ if ! grep -Fq 'proposal evidence' "$HIGHWAY_ROOT/skills/highway-profile/SKILL.md
 SKILL="$HIGHWAY_ROOT/skills/highway-profile/SKILL.md"
 # Superseded behavior: version 5.3.0, enrichment-category coverage, and Competitive Path opening from accepted Vision or sufficient accepted evidence.
 for required_text in \
-	       'version: 7.0.0' \
+	       'version: 7.1.0' \
 	"### Let's get to know your organization" \
 	'This helps Highway make more relevant recommendations as we go.' \
-	'A Vision Working Idea may be a grounded future direction, distinction, implication, alternative, or recommendation' \
+	'A Vision Working Idea may be a grounded future direction, distinction, implication, possibility, alternative, or recommendation' \
 	'visibly open the new' \
 	'When a Vision Working Idea already exists, ask only the one focused question' \
 	'When a Competitive Path Working Idea already exists, ask only the one focused question' \
@@ -52,7 +52,7 @@ for required_text in \
 	'not coverage of an internal category framework' \
 	'Synthesized recommendation prose is generated naturally from accepted evidence rather than from a required recommendation sentence template.' \
 	're-evaluate accumulated accepted evidence before each unresolved guided question' \
-	'When accepted Profile evidence supports neither a Converged Proposal nor a useful Working Idea' \
+	'When accepted Profile evidence and active Working Idea context support neither a Converged Proposal nor a useful Profile contribution' \
 	'Acceptance authorizes the mutation but is not successful persistence' \
 	'one concise synthesis' \
 	'Internal category names are not presented to the user or persisted.' \

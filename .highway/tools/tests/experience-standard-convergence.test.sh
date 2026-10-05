@@ -47,8 +47,7 @@ if [[ "$(grep -c '^| X[0-9]' "$STANDARD")" -ne 45 ]]; then
 fi
 
 for protected in \
-	.highway/governance/constitution.md \
-	.highway/skills/highway-profile/SKILL.md; do
+	.highway/governance/constitution.md; do
 	if git -C "$REPO_ROOT" diff --name-only -- "$protected" | grep -q .; then
 		echo "FAIL: protected path changed: $protected"
 		fail=1

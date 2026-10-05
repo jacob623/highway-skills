@@ -64,11 +64,11 @@ require_text "$PROFILE" 'establish Repository Name when missing'
 require_text "$PROFILE" 'use supported existing organizational material or public-website acquisition when available'
 require_text "$PROFILE" 'process acquired evidence across all unresolved Profile domains'
 require_text "$PROFILE" 're-evaluate accumulated accepted evidence before each unresolved guided question'
-require_text "$PROFILE" 'present a Converged Proposal when supported, otherwise contribute a useful Working Idea when supported, otherwise ask the focused canonical question'
+require_text "$PROFILE" 'present a Converged Proposal when the domain candidate is complete and its Working Idea has converged under the Highway Experience Standard'
 require_text "$PROFILE" 'Lack of grounding for a complete Profile-domain proposal does not by itself justify asking the canonical question'
 require_text "$PROFILE" 'using the shared contribution precedence before asking the Vision canonical question'
 # Superseded behavior: a Vision Working Idea was any grounded direction, and Competitive Path began from accepted Vision or sufficient accepted evidence without a broad-approach boundary.
-require_text "$PROFILE" 'A Vision Working Idea may be a grounded future direction, distinction, implication, alternative, or recommendation'
+require_text "$PROFILE" 'A Vision Working Idea may be a grounded future direction, distinction, implication, possibility, alternative, or recommendation'
 require_text "$PROFILE" 'visibly open the new'
 require_text "$PROFILE" "Vision opens with \`### Where you're going\`"
 require_text "$PROFILE" 'what broad approach the organization intends to take'
@@ -89,7 +89,7 @@ if grep -Fq '### Repository Name' "$PROFILE"; then
 fi
 # Superseded behavior: highway-profile version 5.3.0 locked the narrower domain and acquisition contract.
 # Superseded behavior: highway-profile 6.0.0. Feature 138 is MAJOR 7.0.0 because projection and verification narrowed (D3.5).
-require_text "$PROFILE" 'version: 7.0.0'
+require_text "$PROFILE" 'version: 7.1.0'
 if grep -Fq '.highway/tools/validate-profile.sh' "$PROFILE"; then
 	echo "FAIL: $PROFILE still instructs .highway/tools/validate-profile.sh"
 	fail=1

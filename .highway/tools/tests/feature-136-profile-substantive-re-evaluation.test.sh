@@ -29,7 +29,7 @@ require_absent() {
 # Superseded behavior: version 6.0.0 restated X2.38-X2.40, generic clarification, and acceptance-plus-new-information tutorials.
 # Feature 138 replaces those with Profile-specific citations (D3.5).
 for required in \
-	'version: 7.0.0' \
+	'version: 7.1.0' \
 	'Profile uses the collaborative-development model defined by the Highway Experience Standard' \
 	'Evaluate new substantive organizational evidence for relevance across every unresolved Profile domain before selecting the next Profile behavior' \
 	'New substantive organizational evidence supplied with acceptance does not silently rewrite previously accepted Profile knowledge' \
