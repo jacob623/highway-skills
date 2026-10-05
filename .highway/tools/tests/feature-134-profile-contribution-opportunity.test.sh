@@ -27,16 +27,15 @@ require_absent() {
 }
 
 require_text 'Contribution Opportunity'
-require_text 'X2.37'
-require_text 'materially shaped'
+require_text 'materially shapes'
 require_text 'equivalent opportunity'
-require_text 'apply the shared X2.37 Contribution Opportunity unless an equivalent opportunity already occurred'
+require_text 'apply the shared Contribution Opportunity behavior when required by the Highway Experience Standard'
 require_text 'remains transient'
 require_text 'Vision, Competitive Path, and Guiding Principles'
 # Superseded behavior: feature 134 locked generic Contribution Opportunity lifecycle sentences.
 # Feature 138 keeps the Profile-specific exception and does not restate that shared lifecycle (D3.5).
 # Superseded behavior: a complete discovered Identity skipped a distinct Contribution Opportunity.
-require_text 'A user-supplied domain-complete Identity that Profile does not materially reshape may proceed directly to its accuracy-oriented validation path'
+require_text 'A person-supplied domain-complete contribution that Profile does not materially reshape may proceed through the shared direct or mature-contribution path'
 require_text '### Where you'
 require_text '### How you'
 require_text '### What will guide'

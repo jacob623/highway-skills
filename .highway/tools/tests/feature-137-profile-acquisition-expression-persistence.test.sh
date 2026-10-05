@@ -39,7 +39,7 @@ if grep -Eq '^## highway-profile$' "$PROFILE"; then
 fi
 
 for required in \
-	'version: 7.0.0' \
+	'version: 7.1.0' \
 	'User-supplied existing organizational material provided for Profile acquisition' \
 	'public organizational website supplied by the person' \
 	'use supported existing organizational material or public-website acquisition when available' \
@@ -61,7 +61,7 @@ for required in \
 	'do not turn an imported organizational description or assistant export into a technology-platform inventory' \
 	'When website evidence, imported organizational material, other discovered evidence, or direct user input establishes' \
 	'When Profile materially assembles Identity from website discovery, imported organizational material, multiple evidence sources, or substantial interpretation' \
-	'A user-supplied domain-complete Identity that Profile does not materially reshape may proceed directly to its accuracy-oriented validation path' \
+	'A person-supplied domain-complete contribution that Profile does not materially reshape may proceed through the shared direct or mature-contribution path' \
 	'Completeness is a coherent answer to the active Profile domain, not coverage of an internal category framework' \
 	'what future the organization is trying to create' \
 	'grounded future direction' \
@@ -116,7 +116,6 @@ done
 
 # Superseded behavior: feature 137 treated profile-record.md as unchanged. Feature 138 owns that template (D3.5).
 for protected in \
-	.highway/governance/experience-standard.md \
 	.highway/governance/constitution.md \
 	.highway/skills/highway-setup/SKILL.md \
 	.highway/skills/highway-objectives/SKILL.md \
