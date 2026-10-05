@@ -8,13 +8,13 @@ HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 REPO_ROOT="$(cd "$HIGHWAY_ROOT/.." && pwd)"
 fail=0
 STANDARD="$HIGHWAY_ROOT/governance/experience-standard.md"
-for token in '8.2.0 (MINOR)' '**Version**: 8.2.0 | **Ratified**: 2026-09-08 | **Last Amended**: 2026-10-03' 'Every user-visible response excludes Implementation details unless requested.' 'X2.7' 'X2.8' 'X2.9' 'X2.10' '| X2.36 | An Interactive Workflow MUST NOT narrate internal workflow progression, persistence, state transitions, or processing unless the person needs that information to act.' '| X2.37 | When Highway materially shaped a Working Idea, the person MUST receive a Contribution Opportunity before convergence unless prior interaction already provided one.' '| X2.38 | After a Substantive Contribution, an Interactive Workflow MUST re-evaluate the active understanding before selecting its next user-relevant behavior.' '| X2.39 | When re-evaluation reveals consequential uncertainty the person can resolve, an Interactive Workflow MUST address that uncertainty before advancing past the affected understanding.' '| X2.40 | An Interactive Workflow MUST NOT ask a clarification question when re-evaluation already supports one responsible interpretation that does not require user-supplied information.' '#### Collaborative Development (Non-Normative Guidance)' '##### Conversational Clarification (Non-Normative Guidance)' '#### Contribution Opportunity (Non-Normative Guidance)' '#### Contextual Re-evaluation (Non-Normative Guidance)' '### Evolution-Aware Guidance (Non-Normative)'; do
+for token in '8.4.0 (MINOR)' '**Version**: 8.4.0 | **Ratified**: 2026-09-08 | **Last Amended**: 2026-10-05' 'Every user-visible response excludes Implementation details unless requested.' 'X2.7' 'X2.8' 'X2.9' 'X2.10' '| X2.36 | An Interactive Workflow MUST NOT narrate internal workflow progression, persistence, state transitions, or processing unless the person needs that information to act.' '| X2.37 | When Highway materially shaped a Working Idea, the person MUST receive a Contribution Opportunity before convergence unless prior interaction already provided one.' '| X2.38 | After a Substantive Contribution, an Interactive Workflow MUST re-evaluate the active understanding before selecting its next user-relevant behavior.' '| X2.39 | When re-evaluation reveals consequential uncertainty the person can resolve, an Interactive Workflow MUST address that uncertainty before advancing past the affected understanding.' '| X2.40 | An Interactive Workflow MUST NOT ask a clarification question when re-evaluation already supports one responsible interpretation that does not require user-supplied information.' '| X2.41 | An Interactive Workflow MUST NOT present a complete candidate as a Converged Proposal when the Working Idea is still changing through useful substantive development.' '#### Collaborative Development (Non-Normative Guidance)' '##### Conversational Clarification (Non-Normative Guidance)' '#### Contribution Opportunity (Non-Normative Guidance)' '#### Contextual Re-evaluation (Non-Normative Guidance)' '### Evolution-Aware Guidance (Non-Normative)'; do
 	grep -Fq "$token" "$STANDARD" || { echo "FAIL: Experience Standard missing $token"; fail=1; }
 done
 
 for token in \
 	'Version change: 8.0.0 → 8.1.0 (MINOR)' \
-	'**Version**: 8.2.0 | **Ratified**: 2026-09-08 | **Last Amended**: 2026-10-03' \
+	'**Version**: 8.4.0 | **Ratified**: 2026-09-08 | **Last Amended**: 2026-10-05' \
 	"Conversational commentary focuses on the person's meaning, situation, choices, implications, or outcomes rather than internal Highway activity." \
 	'Workflow narration' \
 	'#### Conversational Voice (Non-Normative Guidance)' \
@@ -22,8 +22,8 @@ for token in \
 	"| X2.8 | When accepted information changes Highway's understanding, interpretation, recommendation, or next user-relevant action, the next response MUST reflect the changed understanding using the newly accepted information together with relevant accumulated context before advancing. | The next response uses the newly accepted information with relevant accumulated context to provide contextual interpretation, a useful connection, implication, distinction, recommendation, or next action when one exists; it does not merely repeat the person's words or narrate workflow mechanics. A simple acknowledgment or natural conclusion remains acceptable when re-evaluation reveals nothing useful to add and no unresolved information is needed. | [agent-checkable]"; do
 	grep -Fq "$token" "$STANDARD" || { echo "FAIL: Feature 120 missing $token"; fail=1; }
 done
-if [[ "$(grep -c '^| X[0-9]' "$STANDARD")" -ne 44 ]]; then
-	echo 'FAIL: Experience Standard rule inventory must contain 44 rules'
+if [[ "$(grep -c '^| X[0-9]' "$STANDARD")" -ne 45 ]]; then
+	echo 'FAIL: Experience Standard rule inventory must contain 45 rules'
 	fail=1
 fi
 for protected in \
@@ -54,7 +54,7 @@ for token in \
 	'Substantive Contribution' \
 	'Accepted Knowledge' \
 	'When the person supplies new substantive information, conversational continuity means responding from the changed understanding' \
-	'When it is a Substantive Contribution, update the working understanding' \
+	'When it is a Substantive Contribution, update the Working Idea' \
 	'receive a Substantive Contribution' \
 	'Clear substantive contribution' \
 	'Consequential ambiguity' \
@@ -98,7 +98,7 @@ do
 	grep -Fq "$token" "$STANDARD" || { echo "FAIL: Experience Standard missing $token"; fail=1; }
 done
 # X2.13 contribution precedence: evaluate context in order before asking.
-if ! grep -Fq 'Before an unresolved question, the workflow evaluates available relevant context in order: present a Converged Proposal when supported; otherwise contribute a useful Working Idea when supported; otherwise ask the focused unresolved question.' "$STANDARD"; then
+if ! grep -Fq 'Before an unresolved question, the workflow presents a Converged Proposal only when the Working Idea has converged and the owner has a complete candidate; otherwise it contributes a useful Working Idea when further development can improve the result; otherwise it asks the focused unresolved question.' "$STANDARD"; then
 	echo 'FAIL: X2.13 observable does not express contribution precedence'
 	fail=1
 fi

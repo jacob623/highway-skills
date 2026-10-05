@@ -70,7 +70,6 @@ done
 
 # Superseded behavior: feature 136 treated profile-record.md as unchanged. Feature 138 owns that template (D3.5).
 for protected in \
-	.highway/governance/experience-standard.md \
 	.highway/skills/highway-setup/SKILL.md \
 	.highway/skills/highway-clarify/SKILL.md \
 	.highway/governance/constitution.md; do

@@ -63,12 +63,12 @@ require_text "$EXPERIENCE_STANDARD" '2. Reuse existing information when it satis
 require_text "$EXPERIENCE_STANDARD" '3. Discover or import existing authoritative information when supported.'
 require_text "$EXPERIENCE_STANDARD" '4. Treat a new contribution as a Working Idea until the applicable acceptance boundary is crossed.'
 require_text "$EXPERIENCE_STANDARD" '5. Interpret the contribution in relevant context and sharpen useful distinctions, implications,'
-require_text "$EXPERIENCE_STANDARD" "7. Receive the person's response. When it is a Substantive Contribution"
-require_text "$EXPERIENCE_STANDARD" '10. Continue the inner development loop only while further development adds value; a mature contribution'
-require_text "$EXPERIENCE_STANDARD" '12. Ask one clear question only when unresolved information is still needed and useful grounded'
-require_text "$EXPERIENCE_STANDARD" '13. Present the Converged Proposal for the owning workflow'
-require_text "$EXPERIENCE_STANDARD" '14. After acceptance, allow the owner to persist accepted knowledge, update the available context, and'
-require_text "$EXPERIENCE_STANDARD" '15. Continue when required work remains; otherwise allow the conversational response to conclude naturally.'
+require_text "$EXPERIENCE_STANDARD" "8. Receive the person's response. When it is a Substantive Contribution"
+require_text "$EXPERIENCE_STANDARD" '13. Do not continue merely because more information could theoretically be collected'
+require_text "$EXPERIENCE_STANDARD" '16. Ask one clear question only when unresolved information is still needed and useful grounded'
+require_text "$EXPERIENCE_STANDARD" '17. Present the Converged Proposal only after the substantive shape has settled enough'
+require_text "$EXPERIENCE_STANDARD" '18. After acceptance, allow the owner to persist accepted knowledge, update the available context, and'
+require_text "$EXPERIENCE_STANDARD" '19. Continue when required work remains; otherwise allow the conversational response to conclude naturally.'
 require_absent "$EXPERIENCE_STANDARD" '3. Discover or import existing authoritative information when the organization already has it.'
 require_absent "$EXPERIENCE_STANDARD" '7. Present the inferred-content heading only when Highway materially inferred or transformed the input.'
 require_text "$EXPERIENCE_STANDARD" "does not govern the person's strategy, policy, requirements, priorities, or preferred wording."
@@ -115,8 +115,8 @@ require_text "$EXPERIENCE_STANDARD" '| X2.29 | Discovered or extracted informati
 require_text "$EXPERIENCE_STANDARD" '| X2.30 | Evidence that cannot be recommended or inferred MUST stay unknown.'
 require_text "$EXPERIENCE_STANDARD" '| X2.31 | Optional enrichment MUST NOT block continuation unless the owning domain requires it for validity.'
 # X2.13 contribution precedence is checked by its ordered observable.
-require_text "$EXPERIENCE_STANDARD" 'Before an unresolved question, the workflow evaluates available relevant context in order: present a Converged Proposal when supported; otherwise contribute a useful Working Idea when supported; otherwise ask the focused unresolved question.'
-require_text "$EXPERIENCE_STANDARD" 'A grounded recommendation may be presented as a Working Idea when further development could improve it,'
+require_text "$EXPERIENCE_STANDARD" 'Before an unresolved question, the workflow presents a Converged Proposal only when the Working Idea has converged and the owner has a complete candidate; otherwise it contributes a useful Working Idea when further development can improve the result; otherwise it asks the focused unresolved question.'
+require_text "$EXPERIENCE_STANDARD" 'A grounded recommendation may be presented as a Working Idea when further substantive development could'
 require_text "$EXPERIENCE_STANDARD" '| X2.32 | Recommendation choice wording MUST match the number of recommendations shown.'
 require_text "$EXPERIENCE_STANDARD" '| X2.33 | A completed guided Setup domain MUST close with one concise synthesis when accepted context from that domain can be meaningfully summarized.'
 require_text "$EXPERIENCE_STANDARD" '| X2.34 | Machine-consumable owner results MUST NOT appear in normal orchestrated user-visible output.'
