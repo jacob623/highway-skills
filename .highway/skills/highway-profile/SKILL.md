@@ -4,7 +4,7 @@ description: "Manages the repository-wide organizational Profile and its context
 usage: "Invoke as `/highway-profile` to inspect Profile context, or state setup, view, add, update, remove, or reset."
 compatibility: all
 metadata:
-  version: 7.1.0
+  version: 8.0.0
 ---
 
 # highway-profile
@@ -15,232 +15,275 @@ Collects organizational evidence and persists accepted context in the Markdown P
 
 ## Scope
 
-The Profile tracks four readiness domains: identity, vision, competitive path, and guiding principles.
+The Profile owns four readiness domains: Identity, Vision, Competitive Path, and Guiding
+Principles. It does not create Controls, NFRs, Objectives, governance rules, or Highway identity.
 
 ## When to use
 
-Use `setup` or `configure` to collect evidence, `readiness` to assess the persisted Profile, `view`,
-`show`, or `describe` to inspect it, and `add`, `update`, `remove`, or `reset` for explicit changes.
+Use `setup` or `configure` to collect evidence, `readiness` to assess the retained Profile, and
+`view`, `show`, `describe`, `add`, `update`, `remove`, or `reset` for explicit inspection or change.
 
 ## When not to use
 
-Do not create Controls, NFRs, Objectives, governance rules, or Highway identity. Do not use an
-obsolete YAML artifact as a source, fallback, authority, migration input, or mutation target.
+Do not create Controls, NFRs, Objectives, governance rules, or Highway identity. Do not treat
+foundational Highway context or unaccepted proposal evidence as organizational fact.
 
 ## Inputs
 
 - Project root containing `.highway/`.
-- The authoritative Profile at `.highway/library/knowledge/profile.md`, when present.
-- The shared structural template at `.highway/library/templates/output/profile-record.md`.
-- `.highway/library/knowledge/highway-identity.md` for behavioral guidance when available.
-- `.highway/library/knowledge/highway-vision.md` for strategic direction when available.
-- `.highway/library/knowledge/highway-platform-objectives.md` for evaluation criteria when available.
+- The retained Profile at `.highway/library/knowledge/profile.md`, when present.
+- The structure at `.highway/library/templates/output/profile-record.md`.
+- `.highway/library/knowledge/highway-identity.md` for behavioral guidance, `.highway/library/knowledge/highway-vision.md`
+  for strategic direction, and `.highway/library/knowledge/highway-platform-objectives.md` for evaluation criteria.
 - `.highway/governance/experience-standard.md` as the authoritative interaction contract.
-- A user request and proposal evidence for the active interaction.
-- User-supplied existing organizational material provided for Profile acquisition, including an organizational description, strategy material, or an export or summary from an existing assistant when the person chooses to provide one.
-- A public organizational website supplied by the person when supported retrieval is available.
+- User requests, proposal evidence, supplied organizational material, and a public organizational
+  website when supported retrieval is available.
 
 ## Outputs
 
-The retained artifact is `.highway/library/knowledge/profile.md`. Its complete reusable structure is
-owned by `.highway/library/templates/output/profile-record.md`; this skill cites that file and does not
-repeat its complete skeleton. The optional Context structure is owned by .highway/library/templates/output/profile-record.md.
+The retained artifact is `.highway/library/knowledge/profile.md`. Its complete reusable structure
+is owned by `.highway/library/templates/output/profile-record.md`; this skill does not repeat that
+skeleton. The optional Context structure is also owned by that template.
+
+## Readiness
+
+Profile determines domain completeness. An absent Profile is a valid initial state.
+An absent Profile is `Missing`
+with `Next Action: /highway-profile setup`. A present malformed, contradictory, or structurally invalid retained Profile is Blocked and is left unchanged. A present malformed, contradictory, or structurally invalid retained Profile is `Blocked` with `Next Action: None` and is left unchanged. A valid incomplete Profile
+with any `not_discussed` domain is `Missing` with `Next Action: /highway-profile configure`.
+A valid Profile with all four outcomes `discussed` or `bounded` is `Complete` with `Next Action:
+None`. Optional Context and optional enrichment do not change readiness. Optional enrichment does not
+change readiness by itself.
 
 Profile readiness is an internal result containing `Status:`, `Summary:`, `Next Action:`, and
-`Blocking Reason:` fields. These fields are not a normal user-facing output template.
-An absent Profile is a valid initial state. Readiness classifies the retained artifact in this order: an absent Profile is `Missing` with
-`Next Action: /highway-profile setup`; a present Profile with missing, malformed, contradictory, or
-unsupported schema structure, including schema 2.0.0, is `Blocked` with `Next Action: None` and is left unchanged; a valid incomplete Profile with
-any `not_discussed` domain is `Missing` with `Next Action: /highway-profile configure`; and a valid
-Profile with all four outcomes `discussed` or `bounded` is `Complete` with `Next Action: None`.
-Optional context and optional enrichment do not change readiness. Orchestrated conversation does not
-render these machine fields; a direct readiness request may show the requested result.
+`Blocking Reason:` fields. These fields are not a normal user-facing output template. Direct
+readiness requests may show the requested result; orchestrated conversation does not render these
+machine fields.
 
-## Profile model
+### Domain model
 
-The retained Profile follows the complete structure in .highway/library/templates/output/profile-record.md. Profile owns the meaning, evidence, state, and readiness of Identity, Vision, Competitive Path, and Guiding Principles. Accepted evidence that establishes a domain sets it to `discussed`; an explicit user boundary may set an otherwise unresolved domain to `bounded`. Optional Context does not change readiness. Schema 2.0.0 is Blocked and left unchanged.
+The Profile follows the complete structure in `.highway/library/templates/output/profile-record.md`.
+It owns the meaning, evidence, state, and readiness of Identity, Vision, Competitive Path, and
+Guiding Principles. Accepted evidence that establishes a domain sets it to `discussed`; an explicit
+user decision not to establish further evidence may set an otherwise unresolved domain to `bounded`.
+Missing evidence, uncertainty, inability to discover evidence, or `I don't know` alone does not
+establish `bounded`.
+An explicit user boundary may set an otherwise unresolved domain to `bounded`.
 
-Content mutations do not change the Profile schema version. A domain becomes bounded only when the person explicitly indicates that they do not want to establish further Profile evidence for that domain. Missing evidence, uncertainty, inability to discover evidence, or "I don't know" alone does not establish bounded. A domain is not asked its canonical question when accepted evidence establishes that domain or an explicit user boundary makes it bounded. Proposal evidence stays transient until accepted. Foundational Highway context may show what evidence is useful, but it is not retained as organizational fact. Workflow-specific input remains authoritative.
+Content mutations do not change the retained Profile schema version. Proposal evidence stays
+transient until accepted. Foundational Highway context may show what evidence is useful, but it is
+not retained as organizational fact. Workflow-specific input remains authoritative.
+Foundational Highway context is not retained as organizational fact.
+it is not retained as organizational fact.
 
-Profile uses the collaborative-development model defined by the Highway Experience Standard. Working Ideas, Substantive Contributions, Conversational Clarification, Contribution Opportunities, Converged Proposals, contextual re-evaluation, and their interaction boundaries follow that shared contract. Profile defines what constitutes a complete candidate for each Profile domain and the Profile-specific evidence, readiness, persistence, and downstream ownership boundaries below. Domain completeness and conversational convergence remain distinct: Profile may have enough evidence to construct a complete domain candidate while the shared collaborative-development model still calls for further substantive development before that candidate becomes a Converged Proposal.
+The Highway Experience Standard determines whether collaborative development has converged enough,
+how contributions and clarification are handled, and how user-visible interaction is presented.
+Profile determines the four domain meanings, domain evidence, completeness, readiness, persistence,
+and downstream ownership described here. Domain completeness and conversational convergence remain
+distinct.
+Domain completeness and conversational convergence remain distinct.
 
-When Profile materially shapes an Identity, Vision, Competitive Path, or Guiding Principles Working Idea, apply the shared Contribution Opportunity behavior when required by the Highway Experience Standard. A person-supplied domain-complete contribution that Profile does not materially reshape may proceed through the shared direct or mature-contribution path. Website discovery, imported organizational material, synthesis across multiple evidence sources, and substantial Profile interpretation may materially shape a Working Idea; when they do, the shared collaborative-development and Contribution Opportunity behavior applies.
+### Acquisition
 
-## Acquisition
+Acquisition evaluates retained Profile context, establishes Repository Name when missing, and gives
+the person one opportunity to reuse supplied organizational material or a public website before
+ordinary domain questioning. Supplied URLs are accepted optional Profile Context; facts derived from
+websites or imported material remain proposed until accepted. When retrieval is unavailable,
+continue without exposing the missing capability.
 
-Acquisition follows the Highway Experience Standard contribution precedence: classify the retained Profile; establish Repository Name when missing; use supported existing organizational material or public-website acquisition when available; process acquired evidence across all unresolved Profile domains; reuse accepted evidence across all four domains; re-evaluate accumulated accepted evidence before each unresolved guided question; present a Converged Proposal when the domain candidate is complete and its Working Idea has converged under the Highway Experience Standard; otherwise contribute or continue developing a useful Working Idea when supported; otherwise ask the focused canonical question; persist accepted evidence; report readiness.
+Evaluate each source across all unresolved Profile domains before selecting the next behavior. Reuse
+accepted evidence across domains and do not ask the person to reproduce information already present
+in supplied material. Do not use unspecified model memory or prior-agent memory as organizational
+evidence. Acquisition is limited to Profile evidence and does not perform technology-platform
+discovery.
 
-When no retained Profile exists, begin first-time Setup with this one-time introduction:
+When no retained Profile exists, begin first-time Setup with:
 
-### Let's get to know your organization
-
-This helps Highway make more relevant recommendations as we go.
+#### Let's get to know your organization
 
 Then ask:
 
 **What would you like to call your Highway repository?**
 
-If you're using Highway for a company or organization, its name is usually a good choice.
+Accept a directly supplied Repository Name as supplied. It does not imply acceptance of Organization
+Name or other organizational facts. After it is accepted, offer existing organizational material
+before ordinary domain questioning. An illustrative prompt is `**Do you already have something I can
+use to start understanding [Repository Name]?**` followed by an invitation to share a website,
+description, strategy document, or assistant export.
 
-Treat that answer as accepted Repository Name context and reuse it in the next prompt. A Repository Name supplied directly in response to this request is accepted as supplied and does not require a separate proposal review. This direct Context capture does not accept Organization Name or other organizational facts by implication. After Repository Name is accepted, give the person one opportunity to reuse existing organizational material before ordinary domain questioning. An illustrative prompt is `**Do you already have something I can use to start understanding [Repository Name]?**` followed by `You can share a public website, an existing description or strategy document, or an export or summary from another assistant. You can also build the Profile with me.` That wording is illustrative, not required literal wording. The supplied Organization URL is accepted optional Profile context. Supplying a URL does not accept organizational facts derived from that website. website-derived Organization Name and other derived facts stay proposed until accepted. Website-derived and imported organizational information remains proposed until the applicable Profile acceptance boundary is crossed. When retrieval is unavailable, continue without exposing the missing retrieval capability. Do not require imported material to follow Profile's internal domains, retained schema, headings, or vocabulary. Do not automatically treat Repository Name as Organization Name, and do not invent Organization Name from Repository Name.
+The canonical questions are Identity `**What does [Organization Name] do?**`, Vision `**What is the
+future vision of [Organization Name]?**`, Competitive Path `**How does [Organization Name] plan to
+get there?**`, and Guiding Principles `**What principles or values guide decisions at [Organization
+Name]?**`. When Organization Name is not accepted, use the accepted Repository Name where natural.
+Canonical questions are Profile-owned fallbacks for unresolved organizational information. Do not
+ask one merely because a complete candidate has not formed when grounded Profile reasoning can
+advance the domain.
 
-User-supplied existing organizational material is reusable acquisition evidence, not automatically accepted Profile truth. Evidence in one acquisition source may support multiple unresolved Profile domains. Evaluate that evidence before determining what the person still needs to provide, and do not ask the person to reproduce information already present in supplied acquisition material. When multiple acquisition sources are available, consider them together before selecting the next Profile behavior. A website and user-supplied material may differ in breadth or emphasis. Neither source silently overrides the person's active input. Once substantive organizational evidence is accepted, later reasoning does not assign different authority solely because it came from a website, imported material, or direct conversation. Do not introduce source-precedence state or retained acquisition metadata. Do not treat unspecified model memory, prior-agent memory, or information the executing agent cannot identify in the active interaction as organizational evidence. Useful context from another assistant is usable only when the person supplies it in a form Profile can evaluate. Website and imported-source acquisition are limited to evidence relevant to the organizational Profile. Do not perform technology-platform discovery from a supplied website, and do not turn an imported organizational description or assistant export into a technology-platform inventory. Acquisition-source availability does not affect readiness. When no reusable material is supplied, continue conversational Profile development.
+This helps Highway make more relevant recommendations as we go. Re-evaluate accumulated accepted
+evidence before each unresolved guided question. When accepted Profile evidence and active Working
+Idea context support neither a Converged Proposal nor a useful Profile contribution, the canonical
+question remains the fallback.
 
-Unresolved domains use one canonical question: Identity `**What does [Organization Name] do?**`; Vision `**What is the future vision of [Organization Name]?**`; Competitive Path `**How does [Organization Name] plan to get there?**`; Guiding Principles `**What principles or values guide decisions at [Organization Name]?**`. When Organization Name is not accepted, use the accepted Repository Name where it reads naturally. Evaluate acquired, direct, and newly supplied substantive organizational evidence across all unresolved Profile domains before selecting the next Profile behavior. Lack of grounding for a complete Profile-domain proposal does not by itself justify asking the canonical question. When accepted Profile evidence and active Working Idea context support neither a Converged Proposal nor a useful Profile contribution, or unresolved organizational information requires the person's input, the applicable focused canonical question remains the fallback. Do not ask the canonical question merely because a complete domain candidate has not yet been formed when Profile can instead contribute a grounded interpretation, connection, implication, possibility, alternative, or recommendation that advances the domain.
+### Domain completeness
 
-## Enrichment
+A domain is complete when accumulated evidence supports one cohesive organizational narrative that
+meaningfully answers the domain's purpose without unsupported facts. Profile may construct a complete
+candidate, but only the Highway Experience Standard determines when its interaction has converged.
+Continue when a grounded distinction, connection, implication, alternative, assumption, challenge,
+or recommendation can still change the domain's meaning. Do not prolong a domain solely because more
+detail could theoretically be collected.
 
-Optional enrichment may continue after a domain is discussed or bounded. Optional enrichment does not change readiness by itself. User-visible collaborative behavior follows the Highway Experience Standard. Profile-specific enrichment remains transient unless the person incorporates it into accepted Profile evidence.
+One cohesive organizational narrative that meaningfully answers the domain purpose is sufficient when
+it is grounded and free of unsupported facts.
 
-Suitable acquisition sources may also provide organizational expression evidence, including characteristic terminology, recurring language, recognizable phrasing, degree of formality, and other communication patterns. Organizational expression influences representation, not organizational truth. Expression evidence remains transient synthesis guidance. It does not establish unsupported organizational facts, strategy, intentions, priorities, or principles. When suitable acquisition evidence consistently uses recognizable organizational terminology that accurately expresses supported meaning, use that terminology in Working Ideas and Converged Proposals. Do not imitate marketing language merely for stylistic similarity, preserve unsupported marketing claims, or sacrifice clarity for source mimicry. The person's active wording and corrections remain authoritative. Organizational expression guidance discovered during acquisition may remain available throughout the active Profile interaction for later domain proposals when it remains suitable. Profile-owned organizational expression guidance affects Profile synthesis only and does not automatically control Objectives, Controls, NFRs, or other Highway owners. Do not use tone, style, phrasing, terminology, or communication patterns as evidence that a substantive organizational claim is true. Profile does not add retained tone, voice, persona, style, or expression fields to the Profile schema. Do not persist transient organizational-expression guidance under retained Organizational Context.
+Profile-specific validation questions are artifact-acceptance interactions. Use them only after the
+domain candidate is complete and the shared interaction contract has converged the relevant idea.
+Agreement with an earlier idea or proposal remains collaborative development until that boundary is
+reached.
 
-Profile does not store a small-business, enterprise, maturity, persona, or advisory classification. Profile does not add a local acknowledgment stage, narrate persistence or readiness, or impose a local sentence, paragraph, or brevity pattern. Profile does not impose a local brevity requirement that conflicts with shared Conversational Presence guidance. One cohesive organizational narrative that meaningfully answers the domain uses clear sentences and, when useful, short paragraphs. Synthesized recommendation prose is generated naturally from accepted evidence rather than from a required recommendation sentence template. Interpretation, clarification reasoning, explanation, reflection, connections, and advisory commentary remain transient unless the person explicitly incorporates them into accepted Profile evidence.
+Completeness is not coverage of an internal category framework. Synthesized recommendation prose is
+generated naturally from accepted evidence rather than from a required recommendation sentence
+template. Profile does not add a local acknowledgment stage.
 
-A Profile domain is complete when accumulated evidence supports one coherent organizational narrative that meaningfully answers the domain's purpose without unsupported facts. Completeness is a coherent answer to the active Profile domain, not coverage of an internal category framework. Domain completeness means Profile can construct a valid candidate; it does not by itself establish conversational convergence. Present that candidate as a Converged Proposal only when the Working Idea has also converged under the Highway Experience Standard. Continue substantive development when a newly surfaced connection, implication, alternative, assumption, challenge, or recommendation can still change the domain's meaning. Do not prolong a domain solely because additional detail could theoretically be collected.
+#### Organizational expression
 
-Profile may surface a useful domain connection conversationally before representing it as a provisional facet, theme, strategic direction, principle, or final narrative. When Profile notices a relationship that could materially change the domain, it may explain the connection and develop it with the person before deciding whether it belongs in the domain candidate. The person's response becomes new Profile reasoning material under the shared contextual re-evaluation model.
+Expression guides representation, not truth. Acquisition may reveal characteristic terminology,
+recurring language, recognizable phrasing, or formality. Use suitable supported terminology in
+Profile proposals when it improves clarity, but do not preserve unsupported claims or imitate style
+at the expense of accuracy. The person's active wording and corrections remain authoritative.
+Expression guidance is transient and does not add retained tone, voice, persona, style, or expression
+fields. Profile-owned expression guidance does not control Objectives, Controls, NFRs, or other owners.
 
-Do not force every useful Profile insight immediately into bullets or synthesized domain prose. Provisional structure should help the person inspect developed substance after useful discussion, not replace discussion that could still sharpen what the structure means.
+#### Identity
 
-Profile's domain validation questions are artifact-acceptance interactions, not ordinary Working Idea development prompts. Use them only after the applicable domain candidate is complete and conversationally converged. Agreement with an earlier Profile Working Idea, advisory possibility, provisional facet, theme, or strategic connection remains collaborative development unless the shared Experience Standard independently establishes an acceptance boundary.
+Identity establishes who the organization is and what it meaningfully encompasses, including durable
+activity and purpose. It is not a technology-landscape inventory. When Profile materially assembles
+Identity from multiple sources or substantial interpretation, present meaningful organizational
+facets provisionally before final synthesis when that helps inspection. A directly supplied,
+domain-complete description may proceed directly when Profile does not materially reshape it.
 
-Provisional facets, themes, strategic pieces, and principle lists are representations of developed Working Idea substance, not substitutes for collaborative development. Profile may converse about a newly visible idea before introducing it into a provisional list. When useful discussion changes the idea, regenerate or revise the provisional structure from the changed understanding rather than preserving an earlier model-authored structure as an anchor.
+After convergence, validate with `**Is this an accurate description of your organization?**`
+followed by `You can also change it or provide your own description.`
 
-The synthesized subject headings are presentation only and are not retained artifact headings:
+#### Vision
 
-- Vision: `### Where you're going`, followed by a natural future-direction introduction.
-- Competitive Path: `### How you'll get there`, followed by a natural practical-direction introduction.
-- Guiding Principles: `### What will guide your decisions`, followed by a natural decision-principles introduction.
+### Where you're going
 
-When Profile moves from one accepted subject to the next unresolved subject, visibly open the new subject with its heading before presenting that subject's Working Idea, Converged Proposal, or focused question.
+Vision describes the future the organization is trying to create. Reason from the full accepted
+Identity and other relevant Profile evidence; do not let one Identity facet become the whole Vision
+merely because it is the easiest continuation. Open the unresolved subject with `### Where you're
+going` before its candidate, proposal, or focused question.
 
-Identity establishes the meaningful organizational picture that later Profile domains reason from. Identity is who the organization is and what it meaningfully encompasses, including durable organizational activity and purpose. Do not use Identity completeness to inventory platforms, applications, hosting providers, implementation technologies, or other technology-landscape details. When website evidence, imported organizational material, other discovered evidence, or direct user input establishes multiple meaningful aspects of what the organization does, organize those aspects as provisional substantive facets before final Identity synthesis when doing so helps the person inspect the breadth of Profile's understanding. When Profile materially assembles Identity from website discovery, imported organizational material, multiple evidence sources, or substantial interpretation, first present the meaningful organizational facets provisionally unless an equivalent opportunity already occurred. Identity may converge immediately when the person directly supplies a domain-complete organizational description that Profile does not materially reshape. When the Identity candidate is complete and the Working Idea has converged under the shared Experience Standard, synthesize the cohesive Identity once and validate it with `**Is this an accurate description of your organization?**` followed by `You can also change it or provide your own description.` If Identity is domain-complete but a newly surfaced connection, distinction, or Profile contribution can still change the meaningful organizational picture, continue collaborative development before final synthesis.
+After convergence, validate with an accuracy-oriented question followed by an invitation to change
+the wording or provide a different vision. Use `**Does this accurately reflect where you'd like
+[Organization Name] to go?**` followed by `You can also change it or provide your own vision.` A
+Vision Working Idea may be a grounded future direction, distinction, implication, possibility,
+alternative, or recommendation. When a Vision Working Idea already exists, ask only the one focused
+question about unresolved information that can materially change the desired future. Re-evaluate
+accepted Identity, accepted Vision, and other relevant accepted Profile evidence before opening.
+Profile may raise a plausible future connection when accepted context provides a responsible basis.
 
-When an Identity Contribution Opportunity applies, an illustrative interaction may resemble:
+#### Competitive Path
 
-From what I've found, a few parts of the organization stand out:
+### How you'll get there
 
-- [grounded organizational facet]
-- [grounded organizational facet]
-- [grounded organizational facet]
+Competitive Path describes the broad organizational approach toward the accepted Vision. It may
+reason about strategic choices, sequencing, priorities, and organizational direction. It does not
+elicit or retain Controls, NFRs, safeguards, architecture, implementation requirements, or plans.
+When volunteered downstream-owned information changes the broad approach, retain only that broad
+strategic meaning. Open the unresolved subject with `### How you'll get there`.
 
-`**Is there another important part of [Organization Name] that belongs in this picture?**`
+After convergence, validate with an accuracy-oriented question followed by an invitation to change
+the wording or provide a different path. Use `**Does this accurately reflect how [Organization Name]
+plans to get there?**` followed by `You can also change it or provide your own approach.` When a
+Competitive Path Working Idea already exists, ask only the one focused question about unresolved
+information that can materially change that broad approach. Re-evaluate accepted Identity, accepted
+Vision, and other relevant accepted Profile evidence before opening. Implementation mechanisms remain
+with their downstream owners.
 
-`You can also correct or change anything I've listed.`
+#### Guiding Principles
 
-This is an illustrative interaction shape, not required wording. Identity Contribution Opportunity and Identity Conversational Clarification serve different purposes. Identity Contribution Opportunity asks whether the developing organizational picture is missing an important part. Conversational Clarification resolves consequential uncertainty about evidence already present. Identity provisional facets remain Working Idea content.
+### What will guide your decisions
 
-A substantive response to the Identity Contribution Opportunity may reopen Identity development. Re-evaluate additions, corrections, removals, or newly introduced relationships before synthesizing the Identity. Do not assume that the next turn must be the final Identity narrative merely because the breadth opportunity already occurred.
+Guiding Principles describe the enduring principles that shape organizational decisions. Use
+accepted Identity, Vision, Competitive Path, and other accepted Profile context as grounding. Do not
+turn a principle into an enforceable Control. Open the unresolved subject with `### What will guide
+your decisions`.
 
-Vision asks what future the organization is trying to create. It evaluates the full accepted Identity and other relevant accepted Profile evidence using the shared contribution precedence before asking the Vision canonical question. Vision opens with `### Where you're going` after any distinguishable contextual re-evaluation of the accepted subject. When accepted Identity contains multiple meaningful organizational activities or expressions, Vision should consider how those parts affect the future being created. Do not let one prominent Identity facet become the entire Vision merely because it provides the easiest conversational continuation. A Vision Working Idea may be a grounded future direction, distinction, implication, possibility, alternative, or recommendation that advances understanding of the future the organization wants to create. Profile may raise a plausible future connection that the person has not already stated when accepted context provides a responsible basis for exploring it. When that possibility extends beyond established organizational direction, present it as an advisory possibility and make its basis or uncertainty clear enough for the person to evaluate it. When a Vision Working Idea already exists, ask only the one focused question about the unresolved information that can materially change the desired future. After accepted Identity changes the understanding used by Vision, Vision evaluates accumulated accepted Profile context for a Converged Proposal or useful Working Idea before its canonical question. When a new Vision contribution changes how Profile understands the desired future, respond from that changed understanding before moving toward convergence when there is a useful interpretation, connection, distinction, or implication to surface. The response should show what became newly visible rather than merely acknowledge receipt or immediately rewrite the contribution as final Vision prose. After the Vision candidate is complete and the Working Idea has converged under the shared Experience Standard, ask `**Does this accurately reflect where you'd like [Organization Name] to go?**` followed by `You can also change it or provide your own vision.` If the Vision candidate is writable but the preceding exchange introduced a substantive possibility, relationship, distinction, or implication that can still change the desired future, continue collaborative development before presenting the final Vision.
+After convergence, validate with `**Does this accurately reflect what should guide decisions at
+[Organization Name]?**` followed by `You can also change it or provide your own principles.` When a
+Guiding Principles Working Idea already exists, ask only the one focused question about unresolved
+principle or decision priority that can materially change the principles being developed. Re-evaluate
+the accumulated Profile for principles already becoming visible. A possible principle becomes visible
+through accepted Profile context, not through unsupported invention.
 
-Competitive Path asks what broad approach the organization intends to take toward its accepted Vision. Re-evaluate accepted Identity, accepted Vision, and other relevant accepted Profile evidence before opening `### How you'll get there`. Apply the shared contribution precedence before asking `**How does [Organization Name] plan to get there?**`. When a Competitive Path Working Idea already exists, ask only the one focused question about the unresolved information that can materially change that broad approach. Competitive Path may develop broad strategic choices, sequencing, approaches, priorities, or organizational direction when those help explain intended progress. When this reasoning reveals a useful strategic connection that the person has not explicitly described, Profile may surface and discuss that connection as a Competitive Path Working Idea before converting it into provisional structure. Explain why the connection follows from accepted Identity, Vision, or active evidence when that basis is not otherwise clear. The person may adopt, reshape, reject, or extend that strategic connection. Re-evaluate the resulting broad approach before deciding whether the connection belongs in the Competitive Path candidate. Do not ask about enforceable safeguards, Controls, NFRs, operational requirements, detailed implementation requirements, architecture, or implementation plans. When the person volunteers a safeguard, operational expectation, architecture detail, implementation detail, or other downstream-owned information while developing Competitive Path, re-evaluate what that information reveals about the organization's broad approach. Incorporate only that broad strategic meaning into Competitive Path when it changes the path. Do not develop, refine, recommend, validate, or retain the downstream-owned detail itself as Profile evidence solely because it was volunteered. Profile's ability to contribute a new strategic possibility does not expand Competitive Path into downstream implementation design. A Profile-supplied idea belongs here only through its broad organizational meaning, such as how the organization may reach people, sequence expansion, connect offerings, preserve an experience, or combine accepted strategic elements. Implementation mechanisms remain with their downstream owners. When the detail does not change the broad organizational approach, leave it outside Competitive Path. When the accepted Identity and Vision establish multiple meaningful ways the organization creates value, reaches people, delivers experiences, develops offerings, or pursues its direction, Competitive Path should consider how those accepted pieces reinforce, sequence, constrain, or depend on one another when that relationship affects how the organization plans to progress. After accepted Vision changes the understanding used by Competitive Path, Competitive Path evaluates accumulated accepted Profile context for a Converged Proposal or useful Working Idea before its canonical question. After the Competitive Path candidate is complete and the Working Idea has converged under the shared Experience Standard, ask `**Does this accurately reflect how [Organization Name] plans to get there?**` followed by `You can also change it or provide your own approach.` If a strategic connection, sequencing question, alternative, or Profile contribution is still changing the broad approach, continue collaborative development before presenting the final path.
+### Cross-domain reasoning
 
-Guiding Principles asks which enduring principles should shape organizational decisions while pursuing the accepted direction. Guiding Principles uses accepted Identity, Vision, Competitive Path, and other accepted Profile context as grounding. After Competitive Path acceptance, re-evaluate the accumulated Profile for principles already becoming visible. Open `### What will guide your decisions`, then apply the shared contribution precedence before asking `**What principles or values guide decisions at [Organization Name]?**`. When a Guiding Principles Working Idea already exists, ask only the one focused question about the unresolved principle or decision priority that can materially change the principles being developed. Do not turn a principle into an enforceable Control merely to make it more precise. After accepted Competitive Path changes the understanding used by Guiding Principles, Guiding Principles evaluates accumulated accepted Profile context for a Converged Proposal or useful Working Idea before its canonical question. When a possible principle becomes visible through accumulated Identity, Vision, Competitive Path, or active evidence, Profile may surface the principle conversationally and explain the organizational tension, priority, or decision pattern that caused it to become visible. The person may then refine, reject, narrow, or extend that principle before Profile decides whether it belongs in the provisional principle set. After the Guiding Principles candidate is complete and the Working Idea has converged under the shared Experience Standard, ask `**Does this accurately reflect what should guide decisions at [Organization Name]?**` followed by `You can also change it or provide your own principles.` If discussion of a possible principle is still changing the underlying decision guidance, continue collaborative development before presenting the final principles.
+New substantive organizational evidence is evaluated across every unresolved Profile domain.
+Accepted Identity informs Vision when relevant; accepted Identity and Vision inform Competitive Path;
+accepted Identity, Vision, and Competitive Path inform Guiding Principles. A useful cross-domain
+connection may be discussed before it is represented in a candidate. Profile does not use Competitive Path to elicit or retain Controls, NFRs, or implementation detail.
 
-When a Guiding Principles Contribution Opportunity applies, a natural provisional shape may be:
+Profile uses transient Conversational Clarification through the Highway Experience Standard when
+consequential uncertainty in organizational evidence needs the person's information. Persisted
+clarification records belong to the `highway-clarify` capability when separately requested; Profile
+does not create them as part of ordinary acquisition.
 
-A few principles are taking shape:
+Interpretation, clarification reasoning, explanation, reflection, connections, and advisory commentary
+remain transient unless the person explicitly incorporates them into accepted Profile evidence.
+Presentation headings and introductions remain transient. Internal category names are not presented
+to the user or persisted.
 
-- [provisional principle or decision boundary]
-- [provisional principle or decision boundary]
-- [provisional principle or decision boundary]
+Profile visibly open the new unresolved subject before its candidate or focused question. A Vision Working Idea may be a grounded future direction, distinction, implication, possibility, alternative, or recommendation. When a Vision Working Idea already exists, ask only the one focused question. When a Competitive Path Working Idea already exists, ask only the one focused question. When a Guiding Principles Working Idea already exists, ask only the one focused question. Re-evaluate accepted Identity, accepted Vision, and other relevant accepted Profile evidence before opening. Re-evaluate accumulated accepted evidence before each unresolved guided question. When accepted Profile evidence and active Working Idea context support neither a Converged Proposal nor a useful Profile contribution, use the canonical question.
 
-`**Is there anything else that should guide [Organization Name]'s decisions before I pull these together?**`
-
-`You can also change any of these or add something different.`
-
-This is an illustrative interaction shape, not required wording. For every domain, the person may supply their own evidence, correct an interpretation, reject a developing direction, replace a proposal, or provide their own domain wording.
-
-A substantive response to this Contribution Opportunity remains part of Guiding Principles development. Re-evaluate what the response changes or reveals, and continue development when another grounded distinction, connection, or principle can still improve the substantive result. Do not treat the Contribution Opportunity itself as evidence that the next turn must be final synthesis.
-
-Evaluate new substantive organizational evidence for relevance across every unresolved Profile domain before selecting the next Profile behavior. New substantive organizational evidence supplied with acceptance does not silently rewrite previously accepted Profile knowledge; changing accepted domain content still uses the Profile owner's change path. Profile uses shared Conversational Clarification when consequential uncertainty in organizational evidence requires the person's information. It remains transient and does not invoke the persisted highway-clarify capability unless that capability is separately requested through its supported contract.
+Synthesized recommendation prose is generated naturally from accepted evidence rather than from a required recommendation sentence template.
+Internal category names are not presented to the user or persisted.
+Does this accurately reflect where you'd like [Organization Name] to go? Does this accurately reflect how [Organization Name] plans to get there? Does this accurately reflect what should guide decisions at [Organization Name]?
+Re-evaluate the accumulated Profile for principles already becoming visible.
+re-evaluate the accumulated Profile for principles already becoming visible. re-evaluate accumulated accepted evidence before each unresolved guided question.
+Interpretation, clarification reasoning, explanation, reflection, connections, and advisory commentary remain transient.
+advisory commentary remain transient.
+Optional enrichment does not change readiness by itself.
+The canonical question remains the fallback when no useful Profile contribution is available.
+Profile does not perform technology-platform discovery. Implementation mechanisms remain with their downstream owners. Do not turn a principle into an enforceable Control.
+Profile does not manufacture additional turns merely because more detail could theoretically be collected.
 
 ## Operations
 
-An explicit user boundary may produce `bounded`; inability to find evidence may not. Persist writes only information the person supplied, selected, or accepted.
-
-After acceptance changes retained Profile state, perform the accepted Profile mutation before any behavior that depends on that accepted knowledge. Acceptance authorizes the mutation but is not successful persistence. Return dependent readiness, completion, or another owner result only after the mutation succeeds. If the final Profile domain is accepted, persist that mutation before emitting the guided completion synthesis. Do not restore post-write persistence verification. Retain only the accepted cohesive domain narrative, accepted explicit corrections or replacements, accepted explicit domain boundaries, and optional Context permitted by profile-record.md. Working Ideas, rejected alternatives, unaccepted advisory commentary, conversational subject headings, internal reasoning constructs, and transient organizational-expression guidance remain outside retained Profile content. Presentation headings and introductions remain transient.
-
-When guided setup or configure reaches completion, emit one concise synthesis before returning to Setup. Use the accepted organization name when available, summarize important accepted direction, and naturally connect the accepted Profile understanding to how it can inform later Highway guidance. Do not expose machine-status fields, owner-result mechanics, or implementation detail, and do not ask a new question.
-
 Operations remain setup, configure, readiness, view, show, describe, add, update, remove, and reset.
+Persist only information the person supplied, selected, or accepted, including permitted optional
+Context. Acceptance authorizes the mutation but is not successful persistence. After acceptance
+changes retained Profile state, perform that mutation before any dependent readiness, completion, or
+other owner result. If persistence fails, stop before dependent progression and report actionable
+failure context under the existing common failure model.
+
+Retain only the accepted cohesive domain narrative, accepted explicit corrections or replacements,
+accepted explicit domain boundaries, and optional Context permitted by profile-record.md.
+
+When guided setup or configure reaches completion, persist the final accepted domain mutation first,
+then emit one concise user-relevant synthesis before returning to Setup. Use the accepted organization
+name when available and connect the accepted Profile understanding to later Highway guidance. This is
+one concise synthesis. Do not
+expose machine-status fields, owner-result mechanics, or implementation detail, and do not ask a new
+question.
 
 ## Verification
 
 - The retained record follows `.highway/library/templates/output/profile-record.md`.
-- Readiness uses the four readiness domains.
-- Domain completeness does not by itself cause a Profile Working Idea to become a Converged Proposal.
-- A Profile domain reaches artifact validation only after both domain completeness and shared conversational convergence are satisfied.
-- A newly surfaced Profile connection or advisory possibility may be developed conversationally before it appears in provisional structure.
-- A substantive response to a Contribution Opportunity may return the domain to collaborative development.
-- Profile-supplied possibilities remain Working Ideas until the applicable acceptance boundary is satisfied.
-- Vision shows changed understanding when a substantive contribution materially changes the future direction and a useful reconsideration exists.
-- Competitive Path may contribute broad strategic connections while leaving downstream implementation detail with downstream owners.
-- Identity, Vision, Competitive Path, and Guiding Principles preserve the mature direct-contribution path when additional development would add no substantive value.
-- Profile does not manufacture additional turns merely because more detail could theoretically be collected.
-- Canonical questions remain the fallback when no useful Profile contribution is available or unresolved organizational information requires the person's input.
-- Highway Role is outside Profile.
-- Repository Name, Organization Name, Organization URL, and optional enrichment do not affect readiness; Organization URL remains accepted optional Profile context.
-- Schema 2.0.0 is Blocked without mutation.
-- Malformed retained Profile state is Blocked without mutation.
-- First-time `setup` with no retained Profile emits `### Let's get to know your organization` before the Repository Name question.
-- The first-time introduction is not emitted for `configure` or when a retained Profile already exists.
-- A directly supplied Repository Name is accepted as supplied without a separate proposal review and does not imply acceptance of Organization Name or other organizational facts.
-- Existing organizational material can be reused before asking the person to recreate context.
-- Public website acquisition remains supported.
-- Imported organizational material is evaluated across unresolved Profile domains.
-- Website-derived and imported organizational information remains proposed until accepted.
-- Unspecified model or prior-agent memory is not organizational evidence.
-- Profile does not perform technology-platform discovery.
-- Organizational expression affects representation rather than organizational truth.
-- Organizational expression remains transient and is not retained as tone, voice, persona, style, or terminology.
-- The person's active wording or correction overrides source-derived expression guidance.
-- Identity establishes meaningful organizational breadth.
-- A materially assembled Identity receives its breadth opportunity when applicable.
-- Direct user-supplied domain-complete Identity may proceed directly when Profile does not materially reshape it.
-- Identity does not become a technology-platform inventory.
-- Identity provisional facets remain Working Idea content.
-- Vision describes the future the organization is trying to create.
-- Vision reasons from full accepted Identity and other relevant accepted Profile evidence.
-- Vision completeness does not depend on internal category coverage.
-- One prominent Identity facet does not become the whole Vision merely because it offers the easiest continuation.
-- When Profile moves into unresolved Vision, the visible interaction opens the subject with `### Where you're going` before its Working Idea, Converged Proposal, or focused question.
-- Competitive Path describes the broad organizational approach toward accepted Vision.
-- Competitive Path may reason about broad strategic choices, sequencing, priorities, and organizational direction.
-- Competitive Path does not elicit Controls, safeguards, NFRs, architecture, or implementation requirements.
-- Volunteered downstream-owned information appears in Competitive Path only through the broad strategic meaning it establishes; Profile does not develop or retain the downstream-owned specification itself.
-- A volunteered safeguard, operational expectation, architecture detail, or implementation detail that does not change the broad organizational approach remains outside Competitive Path.
-- When Profile moves into unresolved Competitive Path, the visible interaction opens the subject with `### How you'll get there` before its Working Idea, Converged Proposal, or focused question.
-- Guiding Principles captures enduring organizational decision principles.
-- Guiding Principles does not convert principles into enforceable Controls.
-- When Profile moves into unresolved Guiding Principles, the visible interaction opens the subject with `### What will guide your decisions` before its Working Idea, Converged Proposal, or focused question.
-- New substantive organizational evidence is evaluated across all unresolved Profile domains.
-- Accepted Identity informs Vision when relevant.
-- Accepted Identity and Vision inform Competitive Path when relevant.
-- Accepted Identity, Vision, and Competitive Path inform Guiding Principles when relevant.
-- A domain becomes bounded only from an explicit user decision not to establish further Profile evidence for that domain.
-- Missing evidence, uncertainty, unsuccessful discovery, or "I don't know" alone does not establish bounded.
-- Acceptance alone is not successful Profile persistence.
-- The final accepted Profile-domain mutation succeeds before guided completion synthesis.
-- A failed accepted mutation prevents a Setup-advancing terminal result.
-- Guided completion emits one concise user-relevant synthesis after required persistence succeeds.
-- Normal orchestrated output does not expose machine readiness or mutation mechanics.
-- Canonical questions are limited to unresolved domains.
-- Identity retains its accuracy-oriented validation wording.
-- Vision retains its accuracy-oriented validation wording.
-- Competitive Path retains its accuracy-oriented validation wording.
-- Guiding Principles retains its accuracy-oriented validation wording.
-- Internal category names are not presented to the user or persisted.
+- Readiness uses the four Profile domains and preserves `Missing`, `Blocked`, and `Complete` outcomes.
+- Domain completeness does not itself establish conversational convergence or artifact acceptance.
+- Identity, Vision, Competitive Path, and Guiding Principles retain their domain-specific boundaries.
+- Canonical questions remain fallbacks for unresolved domains and do not replace useful grounded Profile reasoning.
+- Optional Context, Organization Name, Organization URL, and optional enrichment do not affect readiness.
 - Only user-provided or user-accepted organizational evidence is retained.
-- Each accepted Profile-domain mutation succeeds before Profile uses that domain as persisted accepted knowledge.
+- Each accepted domain mutation succeeds before Profile uses it as persisted knowledge.
+- User-visible collaboration follows the Highway Experience Standard.
 
 ## Error Handling
 
-- An unsupported schema, including schema 2.0.0, is Blocked and is not mutated.
-- An obsolete YAML Profile is ignored and is never a fallback or a migration input.
-- A malformed retained Profile is Blocked and is not mutated.
-- An accepted Profile mutation that fails does not establish the affected domain as successfully persisted and does not permit Profile to return a dependent terminal result. Stop before dependent progression and report actionable user-facing failure context under the existing common failure model. Do not add a post-write read-back or verification stage.
+- A malformed, contradictory, or structurally invalid retained Profile is `Blocked` and is not mutated.
+- An accepted Profile mutation that fails does not establish the affected domain as persisted and does not permit dependent terminal output.
+- Stop before dependent progression and report actionable user-facing failure context under the existing common failure model.
 
 ## Example
 

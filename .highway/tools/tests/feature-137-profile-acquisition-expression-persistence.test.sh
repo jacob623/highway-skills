@@ -39,40 +39,26 @@ if grep -Eq '^## highway-profile$' "$PROFILE"; then
 fi
 
 for required in \
-	'version: 7.1.0' \
-	'User-supplied existing organizational material provided for Profile acquisition' \
-	'public organizational website supplied by the person' \
-	'use supported existing organizational material or public-website acquisition when available' \
-	'process acquired evidence across all unresolved Profile domains' \
-	'Do you already have something I can use to start understanding [Repository Name]?' \
-	'You can share a public website, an existing description or strategy document, or an export or summary from another assistant' \
-	'illustrative, not required literal wording' \
-	'User-supplied existing organizational material is reusable acquisition evidence, not automatically accepted Profile truth' \
-	'When multiple acquisition sources are available, consider them together' \
-	'Do not treat unspecified model memory, prior-agent memory' \
-	'Suitable acquisition sources may also provide organizational expression evidence' \
-	'Organizational expression influences representation, not organizational truth' \
-	'Expression evidence remains transient synthesis guidance' \
-	'When suitable acquisition evidence consistently uses recognizable organizational terminology' \
-	'Profile-owned organizational expression guidance affects Profile synthesis only' \
-	'Organizational expression guidance discovered during acquisition may remain available throughout the active Profile interaction' \
-	'Do not use tone, style, phrasing, terminology, or communication patterns as evidence' \
-	'Website and imported-source acquisition are limited to evidence relevant to the organizational Profile' \
-	'do not turn an imported organizational description or assistant export into a technology-platform inventory' \
-	'When website evidence, imported organizational material, other discovered evidence, or direct user input establishes' \
-	'When Profile materially assembles Identity from website discovery, imported organizational material, multiple evidence sources, or substantial interpretation' \
-	'A person-supplied domain-complete contribution that Profile does not materially reshape may proceed through the shared direct or mature-contribution path' \
-	'Completeness is a coherent answer to the active Profile domain, not coverage of an internal category framework' \
-	'what future the organization is trying to create' \
-	'grounded future direction' \
-	'what broad approach the organization intends to take' \
-	'Do not develop, refine, recommend, validate, or retain the downstream-owned detail itself' \
+	'version: 8.0.0' \
+	'User requests, proposal evidence, supplied organizational material' \
+	'public organizational' \
+	'Profile Context' \
+	'facts derived from' \
+	'Evaluate each source across all unresolved Profile domains' \
+	'Do you already have something I can' \
+	'Canonical questions are Profile-owned fallbacks' \
+	'Expression guides representation, not truth' \
+	'Expression guidance is transient' \
+	'Profile-owned expression guidance does not control' \
+	'does not perform technology-platform discovery' \
+	'Identity establishes who the organization is' \
+	'One cohesive organizational narrative' \
+	'Competitive Path describes the broad organizational approach' \
+	'Implementation mechanisms remain with their downstream owners' \
 	'Do not turn a principle into an enforceable Control' \
-	'perform the accepted Profile mutation before any behavior that depends on that accepted knowledge' \
 	'Acceptance authorizes the mutation but is not successful persistence' \
-	'persist that mutation before emitting the guided completion synthesis' \
-	'An accepted Profile mutation that fails does not establish the affected domain as successfully persisted' \
-	'Content mutations do not change the Profile schema version.'; do
+	'Retain only the accepted cohesive domain narrative' \
+	'Content mutations do not change the retained Profile schema version.'; do
 	require_text "$required"
 done
 

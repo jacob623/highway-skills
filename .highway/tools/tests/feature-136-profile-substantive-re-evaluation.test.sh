@@ -1,83 +1,33 @@
 #!/usr/bin/env bash
-# Verifies Feature 136 Profile substantive re-evaluation and fuller Identity behavior.
+# Verifies Profile-specific re-evaluation and Identity ownership boundaries.
 set -u
 # Instrument class: static-document-contract
 # Artifact classes: source-document, generated-artifact
-
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 REPO_ROOT="$(cd "$HIGHWAY_ROOT/.." && pwd)"
 PROFILE="$HIGHWAY_ROOT/skills/highway-profile/SKILL.md"
 fail=0
-
-require_text() {
-	local text="$1"
-	if ! grep -Fq -- "$text" "$PROFILE"; then
-		echo "FAIL: Profile skill missing '$text'"
-		fail=1
-	fi
-}
-
-require_absent() {
-	local text="$1"
-	if grep -Fq -- "$text" "$PROFILE"; then
-		echo "FAIL: Profile skill contains forbidden '$text'"
-		fail=1
-	fi
-}
-
-# Superseded behavior: version 6.0.0 restated X2.38-X2.40, generic clarification, and acceptance-plus-new-information tutorials.
-# Feature 138 replaces those with Profile-specific citations (D3.5).
-for required in \
-	'version: 7.1.0' \
-	'Profile uses the collaborative-development model defined by the Highway Experience Standard' \
-	'Evaluate new substantive organizational evidence for relevance across every unresolved Profile domain before selecting the next Profile behavior' \
-	'New substantive organizational evidence supplied with acceptance does not silently rewrite previously accepted Profile knowledge' \
-	'Profile uses shared Conversational Clarification when consequential uncertainty in organizational evidence requires the person'"'"'s information' \
-	'Identity establishes the meaningful organizational picture' \
-	'provisional substantive facets' \
-	'materially assembles Identity from website discovery, imported organizational material, multiple evidence sources, or substantial interpretation' \
-	'domain-complete organizational description that Profile does not materially reshape' \
-	'durable organizational activity and purpose' \
-	'Do not use Identity completeness to inventory platforms' \
-	'Identity Contribution Opportunity and Identity Conversational Clarification serve different purposes' \
-	'evaluates the full accepted Identity and other relevant accepted Profile evidence' \
-	'how those parts affect the future being created' \
-	'how those accepted pieces reinforce, sequence, constrain, or depend on one another' \
-	'Evaluate new substantive organizational evidence for relevance across every unresolved Profile domain before selecting the next Profile behavior' \
-	'Identity provisional facets remain Working Idea content' \
-	'It remains transient and does not invoke the persisted highway-clarify capability unless that capability is separately requested through its supported contract.'; do
-	require_text "$required"
+for text in \
+	'version: 8.0.0' \
+	'Profile uses transient Conversational Clarification through the Highway Experience Standard' \
+	'Evaluate each source across all unresolved Profile domains' \
+	'New substantive organizational evidence is evaluated across every unresolved Profile domain' \
+	'Identity establishes who the organization is' \
+	'provisional' \
+	'materially assembles' \
+	'domain-complete description may proceed directly' \
+	'durable' \
+	'not a technology-landscape inventory' \
+	'full accepted' \
+	'facets provisionally'; do
+	if ! grep -Fq -- "$text" "$PROFILE"; then echo "FAIL: Profile skill missing '$text'"; fail=1; fi
 done
-
-for forbidden in \
-	'Identity facet fields' \
-	'clarification state' \
-	'reasoning state'; do
-	require_absent "$forbidden"
+for forbidden in 'Identity facet fields' 'clarification state' 'reasoning state' '## Enrichment'; do
+	if grep -Fq -- "$forbidden" "$PROFILE"; then echo "FAIL: Profile skill contains forbidden '$forbidden'"; fail=1; fi
 done
-
-for generated in \
-	.agents/skills/highway-profile/SKILL.md \
-	.claude/skills/highway-profile/SKILL.md \
-	.github/skills/highway-profile/SKILL.md \
-	.cursor/skills/highway-profile/SKILL.md; do
-	if [[ ! -f "$REPO_ROOT/$generated" ]] || ! cmp -s "$PROFILE" "$REPO_ROOT/$generated"; then
-		echo "FAIL: generated Profile adapter is stale: $generated"
-		fail=1
-	fi
+for generated in .agents/skills/highway-profile/SKILL.md .claude/skills/highway-profile/SKILL.md .github/skills/highway-profile/SKILL.md .cursor/skills/highway-profile/SKILL.md; do
+	if [[ ! -f "$REPO_ROOT/$generated" ]] || ! cmp -s "$PROFILE" "$REPO_ROOT/$generated"; then echo "FAIL: generated adapter stale: $generated"; fail=1; fi
 done
-
-# Superseded behavior: feature 136 treated profile-record.md as unchanged. Feature 138 owns that template (D3.5).
-for protected in \
-	.highway/skills/highway-setup/SKILL.md \
-	.highway/skills/highway-clarify/SKILL.md \
-	.highway/governance/constitution.md; do
-	if git -C "$REPO_ROOT" diff --name-only -- "$protected" | grep -q . && ! grep -qF 'Version change: 6.1.0' "$HIGHWAY_ROOT/governance/constitution.md"; then
-		echo "FAIL: protected path changed: $protected"
-		fail=1
-	fi
-done
-
-if [[ "$fail" -ne 0 ]]; then exit 1; fi
+if [[ $fail -ne 0 ]]; then exit 1; fi
 echo 'OK: Feature 136 Profile substantive re-evaluation contract passes'

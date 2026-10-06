@@ -37,7 +37,7 @@ if ! grep -Fq 'proposal evidence' "$HIGHWAY_ROOT/skills/highway-profile/SKILL.md
 SKILL="$HIGHWAY_ROOT/skills/highway-profile/SKILL.md"
 # Superseded behavior: version 5.3.0, enrichment-category coverage, and Competitive Path opening from accepted Vision or sufficient accepted evidence.
 for required_text in \
-	       'version: 7.1.0' \
+	       'version: 8.0.0' \
 	"### Let's get to know your organization" \
 	'This helps Highway make more relevant recommendations as we go.' \
 	'A Vision Working Idea may be a grounded future direction, distinction, implication, possibility, alternative, or recommendation' \

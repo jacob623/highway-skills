@@ -46,7 +46,7 @@ for required_text in \
 	'not_discussed' \
 	'discussed' \
 	'bounded' \
-	'version: 7.1.0' \
+	'version: 8.0.0' \
 	'Profile readiness' \
 	'One cohesive organizational narrative that meaningfully answers' \
 	'Retain only the accepted cohesive domain narrative'; do
