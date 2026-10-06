@@ -281,7 +281,7 @@ if ! grep -qF '| X2.2 | An Interactive Workflow MUST use accepted information, a
 	echo "FAIL: X2.2 does not use accepted information before a question"
 	fail=1
 fi
-if ! grep -qF 'Every user-visible response excludes Implementation details unless requested.' "$EXPERIENCE"; then
+if ! grep -qF 'Responses exclude identifiers, catalog mutations, generated versions, internal state, and owner mechanics unless needed.' "$EXPERIENCE"; then
 	echo "FAIL: X2.3 observable sentence is missing"
 	fail=1
 fi
@@ -290,7 +290,7 @@ if ! grep -qF '| X2.4 | An Interactive Workflow MUST ask only one unresolved que
 	fail=1
 fi
 if ! grep -qF '| X2.5 | Progress MUST appear only when remaining work is meaningful to the person.' "$EXPERIENCE" || \
-	! grep -qF '| X2.6 | Progress MUST describe the activity rather than an internal stage, validation step, route, or implementation step.' "$EXPERIENCE"; then
+	! grep -qF '| X2.6 | Progress MUST describe the activity rather than an internal stage, validation, route, or implementation step.' "$EXPERIENCE"; then
 	echo "FAIL: X2.5/X2.6 do not describe meaningful activity"
 	fail=1
 fi

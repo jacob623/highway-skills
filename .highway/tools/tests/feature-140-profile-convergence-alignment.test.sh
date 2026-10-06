@@ -77,7 +77,6 @@ done
 for protected in \
 	.highway/library/templates/output/profile-record.md \
 	.highway/governance/constitution.md \
-	.highway/governance/experience-standard.md \
 	.highway/library/knowledge/highway-identity.md \
 	.highway/skills/highway-setup/SKILL.md \
 	.highway/skills/highway-objectives/SKILL.md \
