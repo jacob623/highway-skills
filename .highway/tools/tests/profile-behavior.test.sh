@@ -37,7 +37,7 @@ if ! grep -Fq 'proposal evidence' "$HIGHWAY_ROOT/skills/highway-profile/SKILL.md
 SKILL="$HIGHWAY_ROOT/skills/highway-profile/SKILL.md"
 # Superseded behavior: version 5.3.0, enrichment-category coverage, and Competitive Path opening from accepted Vision or sufficient accepted evidence.
 for required_text in \
-	       'version: 8.0.0' \
+	       'version: 8.1.0' \
 	"### Let's get to know your organization" \
 	'An absent Profile is a valid initial state' \
 	'Profile determines domain completeness' \

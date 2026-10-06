@@ -1,0 +1,11 @@
+fixture_id: B-relationship-change
+category: relationship_change
+scenario: New evidence changes the relationship among known activities
+starting_context: Accepted software service and advisory practice
+active_context: Identity candidate lists both activities without their operating relationship
+user_stimulus: Advisory work is how we discover the product problems we later solve in the service
+passing_behaviors: Re-evaluate the relationship; state a provisional supported connection; reflect user correction if supplied
+failing_behaviors: Repeat both facts without connection; assert unsupported causality; force the connection into another domain
+rubric_dimensions: contextual_re_evaluation constructive_contribution convergence_timing contribution_opportunity authority_boundary conversational_presence
+governance_references: Profile; Experience Standard; Constitution
+hard_failures: unsupported accepted fact; premature acceptance
