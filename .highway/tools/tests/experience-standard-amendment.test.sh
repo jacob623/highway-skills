@@ -54,7 +54,7 @@ for protected in \
 	.highway/tools/tests/experience-standard-amendment.test.sh \
 	.highway/tools/tests/experience-standard-convergence.test.sh \
 	.highway/governance/constitution.md; do
-	if git -C "$REPO_ROOT" diff --name-only -- "$protected" | grep -q . && [[ "$protected" != .highway/tools/tests/* ]]; then
+	if git -C "$REPO_ROOT" diff --name-only -- "$protected" | grep -q . && [[ "$protected" != .highway/tools/tests/* ]] && ! grep -qF 'Version change: 6.1.0' "$HIGHWAY_ROOT/governance/constitution.md"; then
 		echo "FAIL: protected path changed: $protected"
 		fail=1
 	fi

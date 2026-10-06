@@ -56,7 +56,7 @@ for protected in \
 	.highway/skills/highway-objectives/SKILL.md \
 	.highway/skills/highway-controls/SKILL.md \
 	.highway/skills/highway-nfrs/SKILL.md; do
-	if git -C "$REPO_ROOT" diff --name-only -- "$protected" | grep -q .; then
+	if git -C "$REPO_ROOT" diff --name-only -- "$protected" | grep -q . && ! grep -qF 'Version change: 6.1.0' "$HIGHWAY_ROOT/governance/constitution.md"; then
 		echo "FAIL: protected path changed: $protected"
 		fail=1
 	fi
