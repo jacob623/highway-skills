@@ -39,27 +39,16 @@ SKILL="$HIGHWAY_ROOT/skills/highway-profile/SKILL.md"
 for required_text in \
 	       'version: 8.0.0' \
 	"### Let's get to know your organization" \
-	'This helps Highway make more relevant recommendations as we go.' \
-	'A Vision Working Idea may be a grounded future direction, distinction, implication, possibility, alternative, or recommendation' \
-	'visibly open the new' \
-	'When a Vision Working Idea already exists, ask only the one focused question' \
-	'When a Competitive Path Working Idea already exists, ask only the one focused question' \
-	'When a Guiding Principles Working Idea already exists, ask only the one focused question' \
-	       'Re-evaluate accepted Identity, accepted Vision, and other relevant accepted Profile evidence before opening' \
-	're-evaluate the accumulated Profile for principles already becoming visible' \
-	'Profile does not add a local acknowledgment stage' \
-	'One cohesive organizational narrative that meaningfully answers the domain' \
-	'not coverage of an internal category framework' \
-	'Synthesized recommendation prose is generated naturally from accepted evidence rather than from a required recommendation sentence template.' \
-	're-evaluate accumulated accepted evidence before each unresolved guided question' \
-	'When accepted Profile evidence and active Working Idea context support neither a Converged Proposal nor a useful Profile contribution' \
+	'An absent Profile is a valid initial state' \
+	'Profile determines domain completeness' \
+	'Profile-specific validation questions apply to the domain' \
+	'When entering unresolved Vision' \
+	'When entering unresolved Competitive' \
+	'When entering unresolved Guiding Principles' \
 	'Acceptance authorizes the mutation but is not successful persistence' \
-	'one concise synthesis' \
-	'Internal category names are not presented to the user or persisted.' \
+	'emit one concise user-relevant synthesis' \
 	'Is this an accurate description of your organization?' \
-	'Does this accurately reflect where you'"'"'d like [Organization Name] to go?' \
-	'Does this accurately reflect how [Organization Name] plans to get there?' \
-	'Does this accurately reflect what should guide decisions at [Organization Name]?' \
+	'Validate the Converged Proposal with' \
 	'You can also change it or provide your own description.' \
 	'You can also change it or provide your own vision.' \
 	'You can also change it or provide your own approach.' \

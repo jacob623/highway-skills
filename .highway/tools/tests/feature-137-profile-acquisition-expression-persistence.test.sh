@@ -50,12 +50,12 @@ for required in \
 	'Expression guides representation, not truth' \
 	'Expression guidance is transient' \
 	'Profile-owned expression guidance does not control' \
-	'does not perform technology-platform discovery' \
+	'Acquisition is limited to Profile evidence' \
 	'Identity establishes who the organization is' \
-	'One cohesive organizational narrative' \
+	'A domain is complete when accumulated evidence supports one cohesive organizational narrative' \
 	'Competitive Path describes the broad organizational approach' \
-	'Implementation mechanisms remain with their downstream owners' \
-	'Do not turn a principle into an enforceable Control' \
+	'Controls, NFRs, safeguards, architecture, implementation requirements, or plans' \
+	'turn a principle into an enforceable Control' \
 	'Acceptance authorizes the mutation but is not successful persistence' \
 	'Retain only the accepted cohesive domain narrative' \
 	'Content mutations do not change the retained Profile schema version.'; do

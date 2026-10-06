@@ -11,16 +11,13 @@ TEMPLATE="$HIGHWAY_ROOT/library/templates/output/profile-record.md"
 fail=0
 require() { grep -Fq -- "$1" "$PROFILE" || { echo "FAIL: Profile skill missing '$1'"; fail=1; }; }
 for text in \
-	'Profile does not add a local acknowledgment stage' \
-	'Interpretation, clarification reasoning, explanation, reflection, connections, and advisory commentary remain transient' \
-	'### Where you' \
-	'### How you' \
-	'### What will guide' \
-	'When a Vision Working Idea already exists, ask only the one focused question' \
-	'When a Competitive Path Working Idea already exists, ask only the one focused question' \
-	'When a Guiding Principles Working Idea already exists, ask only the one focused question' \
+	'Profile determines domain completeness' \
+	'#### Domain completeness' \
+	'When entering unresolved Vision' \
+	'When entering unresolved Competitive' \
+	'When entering unresolved Guiding Principles' \
 	'connect the accepted Profile understanding to later Highway guidance' \
-	'One cohesive organizational narrative'; do require "$text"; done
+	'A domain is complete when accumulated evidence supports one cohesive organizational narrative'; do require "$text"; done
 for forbidden in 'Profile does not require fixed recommendation sentence templates.' 'X2.36' '## Enrichment'; do
 	if grep -Fq -- "$forbidden" "$PROFILE"; then echo "FAIL: superseded Profile wording remains '$forbidden'"; fail=1; fi
 done

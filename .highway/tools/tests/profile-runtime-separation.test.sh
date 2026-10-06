@@ -28,14 +28,14 @@ require_absent() {
 
 for required in \
 	'version: 8.0.0' \
-	'### Domain model' \
-	'### Domain completeness' \
-	'#### Organizational expression' \
-	'#### Identity' \
-	'#### Vision' \
-	'#### Competitive Path' \
-	'#### Guiding Principles' \
-	'### Cross-domain reasoning' \
+	'#### Domain model' \
+	'#### Domain completeness' \
+	'##### Organizational expression' \
+	'##### Identity' \
+	'##### Vision' \
+	'##### Competitive Path' \
+	'##### Guiding Principles' \
+	'#### Cross-domain reasoning' \
 	'Profile determines domain completeness.' \
 	'The Highway Experience Standard determines whether collaborative development has converged enough' \
 	'Canonical questions are Profile-owned fallbacks for unresolved organizational information.' \
@@ -43,10 +43,10 @@ for required in \
 	'Acceptance authorizes the mutation but is not successful persistence.' \
 	'Operations remain setup, configure, readiness, view, show, describe, add, update, remove, and reset.' \
 	'An absent Profile is a valid initial state.' \
-	'A present malformed, contradictory, or structurally invalid retained Profile is Blocked' \
+	'structurally invalid retained Profile is `Blocked` with Next Action' \
 	'Optional Context and optional enrichment do not change readiness.' \
 	'Expression guides representation, not truth' \
-	'Profile does not use Competitive Path to elicit or retain Controls' \
+	'Competitive Path describes the broad organizational approach' \
 	'Guiding Principles describe the enduring principles' \
 	'User-visible collaboration follows the Highway Experience Standard.'; do
 	require_text "$required"

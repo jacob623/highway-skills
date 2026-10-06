@@ -48,7 +48,7 @@ for required_text in \
 	'bounded' \
 	'version: 8.0.0' \
 	'Profile readiness' \
-	'One cohesive organizational narrative that meaningfully answers' \
+	'Profile determines domain completeness' \
 	'Retain only the accepted cohesive domain narrative'; do
 # Superseded behavior: version 6.0.0 restated generic acceptance confirmation. Feature 138 removes that tutorial (D3.5).
 	if ! grep -Fq "$required_text" "$SKILL"; then

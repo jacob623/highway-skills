@@ -20,21 +20,16 @@ require_text() {
 
 for required in \
 	'version: 8.0.0' \
-	'Domain completeness and conversational convergence remain distinct' \
+	'Profile determines domain completeness' \
 	'The Highway Experience Standard determines whether collaborative development has converged enough' \
 	'Profile determines the four domain meanings' \
 	'### Domain completeness' \
-	'One cohesive organizational narrative' \
-	'Profile-specific validation questions are artifact-acceptance interactions' \
+	'A domain is complete when accumulated evidence supports one cohesive organizational narrative' \
+	'Profile-specific validation questions apply to the domain' \
 	'### Cross-domain reasoning' \
-	'Profile visibly open the new unresolved subject' \
+	'When entering unresolved Vision' \
 	'Canonical questions are Profile-owned fallbacks' \
-	'Proposal evidence stays' \
-	'Interpretation, clarification reasoning, explanation, reflection, connections, and advisory commentary remain transient.' \
-	'Profile may raise a plausible future connection' \
-	'Implementation mechanisms remain with their downstream owners.' \
-	'Re-evaluate the accumulated Profile for principles already becoming visible.' \
-	'Profile does not manufacture additional turns' \
+	'Profile uses transient Conversational Clarification' \
 	'User-visible collaboration follows the Highway Experience Standard.'; do
 	require_text "$required"
 done

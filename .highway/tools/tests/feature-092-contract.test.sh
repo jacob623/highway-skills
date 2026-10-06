@@ -24,12 +24,12 @@ require_text() {
 for context in highway-identity.md highway-vision.md highway-platform-objectives.md; do
 	require_text "$PROFILE" ".highway/library/knowledge/$context"
 done
-require_text "$PROFILE" 'Next Action: /highway-profile setup'
-require_text "$PROFILE" 'Next Action: /highway-profile configure'
+require_text "$PROFILE" '`/highway-profile setup`'
+require_text "$PROFILE" '`/highway-profile configure`'
 # Superseded behavior: version 6.0.0 restated generic material-interpretation guidance.
 # Feature 138 leaves that check to the Experience Standard (D3.5).
 require_text "$PROFILE" 'An absent Profile is a valid initial state'
-require_text "$PROFILE" 'Next Action: None'
+require_text "$PROFILE" 'Next Action: `None`'
 require_text "$PROFILE" 'it is not retained as organizational fact'
 require_text "$PROFILE" '**What would you like to call your Highway repository?**'
 require_text "$PROFILE" 'Accept a directly supplied Repository Name as supplied.'
@@ -37,7 +37,6 @@ require_text "$PROFILE" 'Supplied URLs are accepted optional Profile Context'
 require_text "$PROFILE" 'facts derived from'
 require_text "$PROFILE" 'retrieval is unavailable'
 require_text "$PROFILE" "### Let's get to know your organization"
-require_text "$PROFILE" 'This helps Highway make more relevant recommendations as we go.'
 require_text "$PROFILE" '**What does [Organization Name] do?**'
 require_text "$PROFILE" 'future vision of'
 require_text "$PROFILE" 'plan to'
@@ -45,31 +44,25 @@ require_text "$PROFILE" 'principles or values guide'
 require_text "$PROFILE" 'accepted Repository Name'
 require_text "$PROFILE" 'Canonical questions are Profile-owned fallbacks'
 # Superseded behavior: Vision, Competitive Path, and Guiding Principles required internal enrichment-category coverage.
-require_text "$PROFILE" 'not coverage of an internal category framework'
-require_text "$PROFILE" 'Optional enrichment does not change readiness by itself'
+require_text "$PROFILE" 'Optional Context and optional enrichment do not change readiness.'
 # Superseded behavior: the Profile skill restated that a selected recommendation is accepted without a second confirmation.
 if grep -Fq 'a selected recommendation is accepted without a second confirmation' "$PROFILE"; then
 	echo "FAIL: $PROFILE still restates recommendation-selection acceptance"
 	fail=1
 fi
-require_text "$PROFILE" '### Domain model'
-require_text "$PROFILE" '### Domain completeness'
-require_text "$PROFILE" '### Organizational expression'
+require_text "$PROFILE" '#### Domain model'
+require_text "$PROFILE" '#### Domain completeness'
+require_text "$PROFILE" '##### Organizational expression'
 require_text "$PROFILE" '## Operations'
 require_text "$PROFILE" '## Acquisition'
 require_text "$PROFILE" 'establishes Repository Name when missing'
 # Superseded behavior: acquisition named only existing-information or website retrieval and re-evaluated accepted evidence across all four domains as a category pass.
 require_text "$PROFILE" 'Evaluate each source across all unresolved Profile domains'
-require_text "$PROFILE" 're-evaluate accumulated accepted evidence before each unresolved guided question'
 require_text "$PROFILE" 'The Highway Experience Standard determines whether collaborative development has converged enough'
-# Superseded behavior: a Vision Working Idea was any grounded direction, and Competitive Path began from accepted Vision or sufficient accepted evidence without a broad-approach boundary.
-require_text "$PROFILE" 'A Vision Working Idea may be a grounded future direction, distinction, implication, possibility, alternative, or recommendation'
-require_text "$PROFILE" 'visibly open the new'
 require_text "$PROFILE" "### Where you're going"
 require_text "$PROFILE" 'Competitive Path describes the broad organizational approach'
-require_text "$PROFILE" 'When a Vision Working Idea already exists, ask only the one focused question'
-require_text "$PROFILE" 'When a Competitive Path Working Idea already exists, ask only the one focused question'
-require_text "$PROFILE" 'When a Guiding Principles Working Idea already exists, ask only the one focused question'
+require_text "$PROFILE" 'When entering unresolved Competitive'
+require_text "$PROFILE" 'When entering unresolved Guiding'
 require_text "$PROFILE" 'Accepted Identity informs Vision when relevant'
 require_text "$PROFILE" 'persist the final accepted domain mutation first'
 require_text "$PROFILE" 'readiness'

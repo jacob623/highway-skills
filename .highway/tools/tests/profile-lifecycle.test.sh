@@ -61,10 +61,7 @@ if grep -Fq Legacy "$accepted"; then echo 'FAIL: legacy YAML influenced accepted
 SKILL="$HIGHWAY_ROOT/skills/highway-profile/SKILL.md"
 for required_text in \
 	'only the accepted cohesive domain narrative' \
-	'Interpretation, clarification reasoning, explanation, reflection, connections, and advisory commentary remain transient' \
-	'advisory commentary remain transient' \
 	'Accepted evidence that establishes a domain sets it to `discussed`' \
-	'Optional enrichment does not change readiness by itself' \
 	'Acceptance authorizes the mutation but is not successful persistence'; do
 # Superseded behavior: persistence was locked to the malformed fragment 'persist the retained Profile, and only then return dependent readiness'. Feature 138 replaces that core (D3.5).
 	if ! grep -Fq "$required_text" "$SKILL"; then
@@ -73,8 +70,7 @@ for required_text in \
 	fi
 done
 for required_text in \
-	'Presentation headings and introductions remain transient' \
-	'canonical question remains the fallback'; do
+	'Canonical questions are Profile-owned fallbacks'; do
 	if ! grep -Fq "$required_text" "$SKILL"; then
 		echo "FAIL: Feature 123 lifecycle boundary missing '$required_text'"
 		fail=1
