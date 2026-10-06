@@ -1,5 +1,25 @@
 <!--
 Sync Impact Report
+Version change: 6.1.0 → 7.0.0 (MAJOR), 2026-10-06
+Bump rationale: The Converged Proposal definition and P12A.2 Observable are redefined so owner
+completeness no longer establishes conversational convergence by itself. The Constitution now
+delegates visible collaborative development and convergence semantics to the Experience Standard
+while retaining authority, transience, accepted repository knowledge, owner mutation, persistence,
+and orchestration boundaries.
+Changed elements:
+- Version footer: 6.1.0 → 7.0.0. Last Amended becomes 2026-10-06.
+- Working Idea and Converged Proposal definitions, Accepted User-Owned Artifact wording, P12A.2,
+  Principle XIII introduction/rationale/lifecycle, and Self-Application review.
+- Experience Standard owns visible collaborative-development and convergence semantics; owner and
+  orchestration rules remain Constitution-owned.
+Unchanged: P12A.1, P12A.3, P12A.4, Principles X, XI, and XII, Principle Precedence, owner mutation,
+persistence, orchestration behavior, and runtime schemas. Downstream review is limited to inconsistent
+Converged Proposal references.
+Self-application review: P1.1-P1.4, P6.4, P6.6, and P7.3 PASS; P12A.1-P12A.4 remain individually
+addressable; P12A.2 delegates convergence without duplicating X2.41; owner and orchestration rules
+remain unchanged.
+
+Sync Impact Report
 Version change: 6.0.0 → 6.1.0 (MINOR), 2026-10-02
 Bump rationale: Principle XII-A and rules P12A.1–P12A.4 add collaborative knowledge boundaries
 without changing existing owner-controlled completion rules or invalidating conforming artifacts.
@@ -207,9 +227,9 @@ document and in every skill governed by it.
 | **Repository Context** | Information from Repository Context Documents or accepted repository artifacts that can alter a recommendation, explanation, decision support, or workflow guidance. |
 | **Accepted Repository Knowledge** | Accepted user-owned or authoritative repository information available to guide later work. |
 | **Active Reasoning Context** | Transient information organized during the active interaction to support reasoning toward the active task. |
-| **Working Idea** | A user contribution, Highway proposal, or evolving synthesis inside Active Reasoning Context that is not authoritative user-owned knowledge. |
-| **Converged Proposal** | A complete candidate artifact or artifact set produced from the active interaction and presented at the applicable acceptance boundary for possible promotion into user-owned authoritative knowledge. |
-| **Accepted User-Owned Artifact** | A candidate accepted through its owning workflow and persisted through the existing owner-controlled mutation path. |
+| **Working Idea** | Transient developing material within Active Reasoning Context that is not authoritative user-owned knowledge. Its user-visible development and interaction semantics are governed by the Experience Standard. |
+| **Converged Proposal** | A complete candidate artifact or artifact set whose Working Idea has satisfied the applicable convergence requirements in the Experience Standard and can be presented at the artifact acceptance boundary. |
+| **Accepted User-Owned Artifact** | A candidate accepted through its owning workflow and persisted through the owner's declared mutation path. |
 | **Behavior** | Recommendations, guidance, decisions, explanations, proposals, generated artifacts, workflow actions, or user-visible outputs produced by a skill. |
 | **Participating Skill** | A skill whose Behavior is influenced by Repository Context. |
 | **Material Influence** | Information that alters a recommendation, Behavior, governance interpretation, prioritization, decision support, or generated artifact outcome. |
@@ -458,36 +478,37 @@ Verification stage or related read-back checks.
 
 ### XIII. Collaborative Knowledge Development
 
-Highway may collaboratively develop ideas before they become authoritative artifacts. Retained
-artifact schema does not dictate conversational question order. Working Ideas remain transient until
-they become a Converged Proposal and cross the applicable acceptance boundary.
+Highway may develop non-authoritative Working Ideas before accepted repository knowledge is created.
+Active Reasoning Context and Working Ideas remain transient until the applicable acceptance boundary
+is satisfied. The Experience Standard governs visible collaborative development and convergence; the
+owning skill governs domain completeness.
 
 | ID | Rule | Observable | Tier |
 |---|---|---|---|
 | P12A.1 | A skill MUST treat Active Reasoning Context as transient until the applicable acceptance boundary is satisfied. | Unaccepted Working Ideas, interpretations, alternatives, implications, and recommendations are not accepted repository knowledge. | [agent-checkable] |
-| P12A.2 | A skill MUST distinguish a Working Idea from a Converged Proposal. | Artifact acceptance occurs only after a complete candidate result exists. | [agent-checkable] |
+| P12A.2 | A skill MUST distinguish a Working Idea from a Converged Proposal. | A Converged Proposal requires a complete owner candidate and satisfaction of the applicable Experience Standard convergence requirements. | [agent-checkable] |
 | P12A.3 | A skill MUST preserve relevant Active Reasoning Context until the active task resolves or the interaction ends. | Active Working Ideas influencing the current task remain available to later reasoning within that interaction. | [agent-checkable] |
 | P12A.4 | A skill MUST re-evaluate relevant context after accepted knowledge changes the active task. | Subsequent behavior uses the accepted knowledge together with other relevant declared context. | [agent-checkable] |
 
-Rationale: Collaborative development supports interpretation, refinement, alternatives, implications,
-tradeoffs, questions, relationships, and recommendations without creating authoritative
-organizational facts before acceptance. The Experience Standard governs how collaboration appears
-to the person, while the owning skill governs what constitutes a complete candidate for its domain.
+Rationale: The Constitution governs the authority boundary between transient reasoning and accepted
+repository knowledge. The Experience Standard governs how Working Ideas develop and converge in
+user-visible interaction, while the owning skill governs domain completeness and retained artifact
+content.
 
 ### Collaborative knowledge lifecycle (Non-Normative)
 
-Accepted context informs an active interaction. Contributions and recommendations become Working
-Ideas within Active Reasoning Context while they are interpreted, refined, compared, connected, or
-challenged. A Working Idea may be discarded, corrected, replaced, split, combined, or abandoned
-without creating a retained artifact. When the owning workflow can present a complete candidate
-artifact or artifact set, it is a Converged Proposal. The applicable user acceptance boundary then
-determines whether the owner performs its existing mutation. Accepted repository knowledge becomes
-available for re-evaluation with other relevant context, which may produce new Working Ideas.
+Accepted context may inform Active Reasoning Context during an interaction. Working Ideas remain
+transient and non-authoritative while they are being developed.
 
-The Experience Standard governs how collaboration appears to the person, and the owning skill
-governs domain completeness. Retained artifact structure and conversational discovery are separate
-concerns; an owning skill may derive retained structure from converged accepted understanding when
-its contract permits. Active Reasoning Context and Working Ideas are not new retained artifact types.
+The Experience Standard determines when collaborative development has converged enough for a complete
+owner candidate to become a Converged Proposal. The owning skill determines domain completeness and
+artifact content.
+
+Crossing the applicable acceptance boundary authorizes the owner's declared mutation; successful
+persistence creates accepted repository knowledge. Accepted knowledge may then inform later reasoning
+with other relevant context.
+
+Active Reasoning Context and Working Ideas are not retained artifact types.
 
 ## Principle Precedence
 
@@ -580,10 +601,10 @@ Reasoning Context remain non-authoritative until that boundary is satisfied.
 
 This constitution is itself subject to P1.1 through P1.4 (clarity), P6.4 and P6.6
 (determinism), and P7.3 (non-duplication). Every amendment MUST record a review against those
-rule IDs. Rules P7.4 and P7.5 state limits on skills and do not apply to this document. The
-P12A.1–P12A.4 amendment review confirms that each new row has one keyword, one obligation, one
-Observable, and the [agent-checkable] tier. Existing P12.5–P12.15 owner mutation and orchestration
-rules remain unchanged.
+rule IDs. Rules P7.4 and P7.5 state limits on skills and do not apply to this document. This
+amendment review confirms P12A.1–P12A.4 remain individually addressable, P12A.2 delegates
+convergence semantics to the Experience Standard without duplicating X2.41, and the owner mutation
+and orchestration rules remain unchanged.
 
 ### Constitution Versioning Policy
 
@@ -605,4 +626,4 @@ every other skill's version. This is the policy referenced by P7.7.
 - **MINOR**: a capability is added while every existing contract element continues to hold.
 - **PATCH**: wording repair with no change to Inputs, Outputs, or Verification.
 
-**Version**: 6.1.0 | **Ratified**: 2026-09-06 | **Last Amended**: 2026-10-02
+**Version**: 7.0.0 | **Ratified**: 2026-09-06 | **Last Amended**: 2026-10-06

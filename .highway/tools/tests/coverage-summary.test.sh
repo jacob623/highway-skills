@@ -115,7 +115,7 @@ fi
 
 # Superseded behavior: X2.5 and X2.6 reported N5 when no long-running activity existed.
 if ! grep -qF '| X2.5 | Progress MUST appear only when remaining work is meaningful to the person.' "$EXPERIENCE" || \
-	! grep -qF '| X2.6 | Progress MUST describe the activity rather than an internal stage, validation step, route, or implementation step.' "$EXPERIENCE"; then
+	! grep -qF '| X2.6 | Progress MUST describe the activity rather than an internal stage, validation, route, or implementation step.' "$EXPERIENCE"; then
 	echo "FAIL: X2.5/X2.6 do not state meaningful, activity-focused progress"
 	fail=1
 fi

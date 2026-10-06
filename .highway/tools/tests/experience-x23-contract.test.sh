@@ -14,7 +14,7 @@ done
 require "$FIXTURES/cross-rule/response.txt" 'Decision Context:'
 require "$FIXTURES/cross-rule/response.txt" 'Relevant Examples:'
 require "$FIXTURES/explicit-details/response.txt" 'implementation details'
-require "$HIGHWAY_ROOT/governance/experience-standard.md" 'Every user-visible response excludes Implementation details unless requested.'
+require "$HIGHWAY_ROOT/governance/experience-standard.md" 'Responses exclude identifiers, catalog mutations, generated versions, internal state, and owner mechanics unless needed.'
 for skill in highway-setup; do
 	if ! grep -Fq 'User-visible interaction follows the Highway Experience Standard.' "$HIGHWAY_ROOT/skills/$skill/SKILL.md"; then
 		echo "FAIL: $skill does not reference the Experience Standard"; fail=1
