@@ -4,7 +4,7 @@ description: "Manages the repository-wide organizational Profile and its context
 usage: "Invoke as `/highway-profile` to inspect Profile context, or state setup, view, add, update, remove, or reset."
 compatibility: all
 metadata:
-  version: 8.0.0
+  version: 8.1.0
 ---
 
 # highway-profile
@@ -122,6 +122,30 @@ Proposal.
 
 Profile-specific validation questions apply to the domain's Converged Proposal.
 
+#### Semantic convergence decision
+
+After substantive evidence changes the active understanding, reconsider the complete active evidence
+with relevant accepted Profile context before deciding whether to propose convergence. This is a
+semantic decision, not a turn count, a mandatory-question rule, a new-noun trigger, or a requirement
+to explore every possible category.
+
+Use this order:
+
+1. Resolve consequential user-owned ambiguity or contradiction through the Experience Standard.
+2. Develop a grounded substantive relationship, implication, distinction, tension, alternative,
+  opportunity, concern, or recommendation when it could materially change the domain's meaning.
+3. Provide the applicable Contribution Opportunity when Highway materially shaped that Working Idea
+  and an equivalent opportunity has not already occurred.
+4. Proceed to the domain-specific Converged Proposal when no consequential ambiguity or useful
+  supported development remains.
+5. Use available evidence or a grounded Working Idea before asking an unresolved-domain question.
+
+Model-originated relationships and implications remain provisional Working Idea material until the
+person accepts them through the existing Profile domain acceptance path. A complete, directly
+supplied contribution may proceed directly when Profile does not materially reshape it. Do not
+manufacture a relationship from unsupported evidence, and preserve supported implications for their
+appropriate unresolved domain rather than forcing them into the active domain.
+
 ##### Organizational expression
 
 Expression guides representation, not truth. Acquisition may reveal characteristic terminology,
@@ -212,6 +236,12 @@ question.
 - Only user-provided or user-accepted organizational evidence is retained.
 - Each accepted domain mutation succeeds before Profile uses it as persisted knowledge.
 - User-visible collaboration follows the Highway Experience Standard.
+- Domain completeness does not independently establish conversational convergence.
+- Substantive evidence changes trigger useful re-evaluation with relevant accepted context.
+- Mature direct contributions retain a short path without ceremonial exploration.
+- Working Ideas remain transient and unretained until accepted through the existing domain path.
+- Supported cross-domain implications are preserved for the appropriate unresolved domain.
+- No retained schema field or readiness dimension is added for convergence or collaboration concepts.
 
 ## Error Handling
 

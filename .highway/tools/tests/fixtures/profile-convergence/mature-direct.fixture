@@ -1,0 +1,11 @@
+fixture_id: C-mature-direct
+category: mature_direct_contribution
+scenario: Direct contribution is complete and does not require manufactured exploration
+starting_context: Accepted maker cooperative context
+active_context: Guiding Principles candidate has a clear user-authored principle and example
+user_stimulus: We choose repairability over replacement whenever the customer can safely use the repaired item
+passing_behaviors: Incorporate directly; use the existing validation path; avoid ceremonial clarification or extra exploration
+failing_behaviors: Ask for a new example solely to create another turn; invent tension; expose internal convergence mechanics
+rubric_dimensions: convergence_timing clarification_discipline conversational_presence implementation_detail_leakage non_manufactured_collaboration
+governance_references: Profile; Experience Standard; Constitution
+hard_failures: unnecessary clarification; unnecessary internal mechanics disclosure

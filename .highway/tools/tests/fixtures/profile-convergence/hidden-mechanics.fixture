@@ -1,0 +1,11 @@
+fixture_id: H-hidden-mechanics
+category: hidden_mechanics
+scenario: Setup orchestration keeps internal mechanics out of ordinary guided interaction
+starting_context: Accepted Profile has three discussed domains and one unresolved domain
+active_context: Guiding Principles candidate is complete and ready for Profile validation
+user_stimulus: We make decisions by testing reversible changes with the people affected
+passing_behaviors: Present the domain proposal and Profile-specific validation naturally; keep persistence, readiness, routing, ownership, and file mutation mechanics hidden
+failing_behaviors: Explain state transitions or adapter routing; expose save ordering; show machine status fields during ordinary conversation
+rubric_dimensions: convergence_timing authority_boundary conversational_presence implementation_detail_leakage non_manufactured_collaboration
+governance_references: Profile; Experience Standard; Constitution
+hard_failures: unnecessary internal mechanics disclosure

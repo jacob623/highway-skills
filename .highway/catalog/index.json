@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-06T13:25:08Z",
+  "generated_at": "2026-10-06T17:04:27Z",
   "entries": [
     {
       "id": "highway-adr",
@@ -88,7 +88,7 @@
       "description": "Manages the repository-wide organizational Profile and its contextual guidance.",
       "usage": "Invoke as `/highway-profile` to inspect Profile context, or state setup, view, add, update, remove, or reset.",
       "compatibility": "all",
-      "version": "8.0.0",
+      "version": "8.1.0",
       "source_path": "skills/highway-profile/SKILL.md"
     },
     {

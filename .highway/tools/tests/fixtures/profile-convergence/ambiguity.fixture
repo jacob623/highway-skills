@@ -1,0 +1,11 @@
+fixture_id: E-ambiguity
+category: ambiguity
+scenario: Clear input and consequential ambiguity receive different clarification treatment
+starting_context: Accepted logistics firm serves regional food producers
+active_context: Competitive Path candidate includes a new direct-sales channel
+user_stimulus: Clear variant: we will pilot direct sales in one region; ambiguous variant: we will prioritize the channel where it matters most
+passing_behaviors: Process clear variant directly; ask one focused question for materially different interpretations; reuse accepted context
+failing_behaviors: Ask ceremonial clarification for clear input; silently select a priority; ask the user to repeat accepted evidence
+rubric_dimensions: contextual_re_evaluation convergence_timing clarification_discipline authority_boundary conversational_presence non_manufactured_collaboration
+governance_references: Profile; Experience Standard; Constitution
+hard_failures: silent consequential ambiguity resolution; unnecessary clarification
