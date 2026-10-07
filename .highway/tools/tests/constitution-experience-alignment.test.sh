@@ -24,35 +24,39 @@ require_absent() {
 	fi
 }
 
-require_text '| **Working Idea** | Transient developing material within Active Reasoning Context that is not authoritative user-owned knowledge. Its user-visible development and interaction semantics are governed by the Experience Standard. |'
-require_text '| **Converged Proposal** | A complete candidate artifact or artifact set whose Working Idea has satisfied the applicable convergence requirements in the Experience Standard and can be presented at the artifact acceptance boundary. |'
-require_text '| **Accepted User-Owned Artifact** | A candidate accepted through its owning workflow and persisted through the owner'"'"'s declared mutation path. |'
-require_text 'Highway may develop non-authoritative Working Ideas before accepted repository knowledge is created.'
-require_text 'The Experience Standard governs visible collaborative development'
-require_text '| P12A.1 | A skill MUST treat Active Reasoning Context as transient until the applicable acceptance boundary is satisfied. | Unaccepted Working Ideas, interpretations, alternatives, implications, and recommendations are not accepted repository knowledge. | [agent-checkable] |'
-require_text '| P12A.2 | A skill MUST distinguish a Working Idea from a Converged Proposal. | A Converged Proposal requires a complete owner candidate and satisfaction of the applicable Experience Standard convergence requirements. | [agent-checkable] |'
-require_text '| P12A.3 | A skill MUST preserve relevant Active Reasoning Context until the active task resolves or the interaction ends. | Active Working Ideas influencing the current task remain available to later reasoning within that interaction. | [agent-checkable] |'
-require_text '| P12A.4 | A skill MUST re-evaluate relevant context after accepted knowledge changes the active task. | Subsequent behavior uses the accepted knowledge together with other relevant declared context. | [agent-checkable] |'
-require_text 'The Constitution governs the authority boundary between transient'
-require_text 'The Experience Standard determines when collaborative development has converged enough'
-require_text "Crossing the applicable acceptance boundary authorizes the owner'"
-require_text '**Version**: 7.0.0 | **Ratified**: 2026-09-06 | **Last Amended**: 2026-10-06'
+require_text '| **Development Validator** | A maintainer, compliance check, or development tool that evaluates a shipped artifact against this constitution. |'
+require_text '| **Runtime Contract** | A skill-owned or shared contract that defines runtime inputs, outputs, state, ownership, persistence, failure behavior, or interaction delegation. |'
+require_text 'This constitution is development-time governance for the design and validity of shipped Highway'
+require_text 'An executing skill MUST NOT need to load or'
+require_text 'consult this document, and this document does not govern runtime interaction'
+require_text 'Experience Standard and each owning skill govern their respective'
+require_text 'runtime contracts.'
+require_text '| P13.2 | A skill MUST assign acceptance and persistence to the owning workflow. | The runtime contract names the owner and its mutation boundary. | [agent-checkable] |'
+require_text 'development-time validation of shipped skills and shared runtime contracts'
+require_text 'The applicable workflow defines proposal acceptance and persistence'
+require_text 'Development validation verifies that required failure behavior exists in the effective'
+require_text 'A correctness-critical contract choice between two or more actions'
+require_text '**Version**: 9.0.0 | **Ratified**: 2026-09-06 | **Last Amended**: 2026-10-06'
 require_text 'P1.1-P1.4, P6.4, P6.6, and P7.3'
-require_text 'P12A.1–P12A.4 remain individually addressable'
+require_text 'P10.1 remains the generic Experience delegation rule'
 
 for token in \
 	'When the owning workflow can present a complete candidate' \
 	'it is a Converged Proposal' \
-	'interpretation, refinement, alternatives, implications, tradeoffs, questions, relationships, and recommendations' \
-	'Contributions and recommendations become Working Ideas within Active Reasoning Context while they are interpreted' \
 	'Contribution Opportunity' \
 	'Conversational Clarification' \
-	'Substantive Contribution'; do
+	'Substantive Contribution' \
+	'Highway may develop non-authoritative Working Ideas before accepted repository knowledge is created' \
+	'Identity provides behavioral guidance'; do
 	require_absent "$token"
 done
 
-if [[ "$(grep -cE '^\| P[0-9]+[A-Z]?\.[0-9]+ ' "$CONSTITUTION")" -ne 77 ]]; then
-	echo 'FAIL: Constitution rule inventory changed unexpectedly'
+for token in 'common failure model' 'this model' '| P13.1 |'; do
+	require_absent "$token"
+done
+
+if [[ "$(grep -cE '^\| P[0-9]+[A-Z]?\.[0-9]+ ' "$CONSTITUTION")" -ne 73 ]]; then
+	echo 'FAIL: Constitution rule inventory does not match the 9.0.0 amendment'
 	fail=1
 fi
 

@@ -1,5 +1,23 @@
 <!--
 Sync Impact Report
+Version change: 8.0.0 → 9.0.0 (MAJOR), 2026-10-06
+Bump rationale: the Constitution's remaining broad decision criteria and failure inheritance wording
+are narrowed to development validation of effective shipped runtime contracts. Experience delegation,
+context roles, and owner persistence are kept with their runtime owners.
+Changed elements:
+- Principles V, VI, XI, and XII are narrowed or redefined for effective shipped runtime contracts.
+- P5.14 and P13.1 are retired. P13.2 is relocated into Principle XII without changing its obligation.
+  P1.7, P6.1-P6.5, P7.3, P11.2, and P11.3 are redefined. Surviving IDs are not renumbered.
+- Principle XIII is removed because its remaining obligation belongs with owner-controlled orchestration.
+- Principle Precedence, Governance, Self-Application, and the dependency direction remain development-only.
+Downstream skills that still reference Constitution-owned failure wording remain later cleanup work;
+this amendment does not edit them.
+Protected artifacts: the Experience Standard, Highway Identity, individual skills, runtime templates,
+and persisted outputs are unchanged.
+Self-application review: P1.1-P1.4, P6.4, P6.6, and P7.3 are rechecked against the amended document;
+the amendment preserves stable IDs, effective-contract ownership, and registered observables and tiers.
+
+Sync Impact Report
 Version change: 6.1.0 → 7.0.0 (MAJOR), 2026-10-06
 Bump rationale: The Converged Proposal definition and P12A.2 Observable are redefined so owner
 completeness no longer establishes conversational convergence by itself. The Constitution now
@@ -196,10 +214,12 @@ Follow-up TODOs: none.
 
 # Highway Skills Constitution
 
-This constitution is runtime governance for a shipped Highway skill. Development constitutions,
-feature specifications, tests, fixtures, merge procedures, compliance tooling, and development-only
-scripts are not runtime skill dependencies. Development governance may validate a skill before
-release without being consumed by the skill at runtime.
+This constitution is development-time governance for the design and validity of shipped Highway
+skills and shared runtime contracts. It is applied by maintainers and compliance tooling while an
+artifact is authored, reviewed, packaged, or validated. An executing skill MUST NOT need to load or
+consult this document, and this document does not govern runtime interaction or domain decisions.
+The Highway Development Constitution governs how this validation system is built and shipped. The
+Experience Standard and each owning skill govern their respective runtime contracts.
 
 ## Definitions
 
@@ -211,7 +231,7 @@ document and in every skill governed by it.
 | **MUST**, **MUST NOT** | An absolute obligation. A conforming artifact satisfies it in every case. Non-satisfaction is a FAIL. |
 | **SHOULD** | An obligation that applies unless the artifact contains a written exception naming the condition that displaces it. Absent that written exception, SHOULD is evaluated as MUST. |
 | **Skill** | A single file, `SKILL.md`, plus its directory, that instructs an agent how to perform one category of task. |
-| **Agent** | Any automated system that reads a skill and acts on it, or that evaluates an artifact against this constitution. |
+| **Development Validator** | A maintainer, compliance check, or development tool that evaluates a shipped artifact against this constitution. |
 | **Normative rule** | A line containing MUST, MUST NOT, or SHOULD that states an obligation. |
 | **MUST-level rule** | A normative rule whose keyword is MUST or MUST NOT. The hyphenated token `MUST-level` names this category and is not itself a keyword occurrence. |
 | **Normative section** | A body section of a skill that contains at least one normative rule. |
@@ -223,17 +243,13 @@ document and in every skill governed by it.
 | **Experience Standard** | The Highway Experience Standard governing user-visible output and interaction behavior, with rule IDs in the `X` namespace. |
 | **Security-affecting** | Guidance that touches any item in the Security Gate trigger list. |
 | **Declared input** | A value, file, or precondition named in a skill's Inputs section. |
-| **Repository Context Document** | An authoritative file under `.highway/library/knowledge/` describing Highway identity, vision, objectives, decision evaluation, or user-owned organizational context. |
-| **Repository Context** | Information from Repository Context Documents or accepted repository artifacts that can alter a recommendation, explanation, decision support, or workflow guidance. |
-| **Accepted Repository Knowledge** | Accepted user-owned or authoritative repository information available to guide later work. |
-| **Active Reasoning Context** | Transient information organized during the active interaction to support reasoning toward the active task. |
-| **Working Idea** | Transient developing material within Active Reasoning Context that is not authoritative user-owned knowledge. Its user-visible development and interaction semantics are governed by the Experience Standard. |
-| **Converged Proposal** | A complete candidate artifact or artifact set whose Working Idea has satisfied the applicable convergence requirements in the Experience Standard and can be presented at the artifact acceptance boundary. |
-| **Accepted User-Owned Artifact** | A candidate accepted through its owning workflow and persisted through the owner's declared mutation path. |
-| **Behavior** | Recommendations, guidance, decisions, explanations, proposals, generated artifacts, workflow actions, or user-visible outputs produced by a skill. |
-| **Participating Skill** | A skill whose Behavior is influenced by Repository Context. |
-| **Material Influence** | Information that alters a recommendation, Behavior, governance interpretation, prioritization, decision support, or generated artifact outcome. |
-| **Completion Claim** | A user-visible or machine-consumable statement that a mutation or workflow completed successfully. |
+| **Repository Context Source** | A declared file or accepted artifact whose content may influence runtime behavior under a skill's declared contract. |
+| **Repository Context** | Information from declared context sources available under a skill's runtime contract. |
+| **Accepted Artifact** | A user-owned artifact persisted through its owning workflow and available to a skill under its declared contract. |
+| **Runtime Contract** | A skill-owned or shared contract that defines runtime inputs, outputs, state, ownership, persistence, failure behavior, or interaction delegation. |
+| **Development Validation** | Review or automated checking performed before release or amendment; it does not execute a runtime contract. |
+| **Correctness-Critical Contract** | A contract whose state, mutation, persistence, ownership, routing, identifiers, structure, output, destructive action, or declared outcome requires repeatable behavior. |
+| **Advisory Content** | Interpretations, connections, implications, alternatives, recommendations, explanations, examples, or phrasing that may vary while honoring the owning contract. |
 | **Verdict** | One of exactly three tokens: PASS, FAIL, N/A. No other token is a verdict. |
 
 ### Prohibited Vagueness List
@@ -299,7 +315,7 @@ never softened. Rule IDs are stable across amendments; a retired ID is never reu
 | P1.4 | A skill MUST NOT use a Prohibited Vagueness List term in a normative rule without an inline parenthetical defining a countable condition. | Each occurrence of a listed term is followed by a parenthetical stating a number, unit, or enumerated set. | [agent-checkable] |
 | P1.5 | A skill MUST name every tool, file, and prior step it depends on. | Each dependency appears by name in the Inputs section. | [agent-checkable] |
 | P1.6 | A skill MUST NOT instruct an agent to request clarification about the meaning of the skill's own steps. | No step directs the agent to ask what a step means. | [agent-checkable] |
-| P1.7 | A skill MUST handle an absent or self-contradictory declared input under the common failure model. | The skill follows P5.7 for that input. | [agent-checkable] |
+| P1.7 | A skill MUST define or reference runtime handling for an absent or self-contradictory declared input. | The effective shipped runtime contract provides handling for that input. | [agent-checkable] |
 
 Rationale: One obligation per addressable line is what allows a rule to be cited, checked, and
 failed on its own.
@@ -346,30 +362,31 @@ accident.
 | ID | Rule | Observable | Tier |
 |---|---|---|---|
 | P5.6 | A skill MUST apply to two or more triggering scenarios. | The "When to use" section lists at least two scenarios. | [agent-checkable] |
-| P5.7 | A skill MUST obtain missing or contradictory required input before continuing. | Continuation waits until that input is present and consistent. | [agent-checkable] |
-| P5.8 | A skill MUST stop without mutation when authoritative state is malformed or unsafe. | No write follows detection of that state. | [agent-checkable] |
-| P5.9 | A skill MUST identify the malformed or unsafe authoritative state that stopped it. | The stop names that state. | [agent-checkable] |
-| P5.10 | A skill MUST stop without unintended mutation when the user declines or exits. | No write follows the decline or exit. | [agent-checkable] |
-| P5.11 | A skill MUST consume a dependent owner's preserved non-success result. | The calling skill keeps that result and uses it. | [agent-checkable] |
-| P5.12 | A skill MUST NOT report a failed mutation as success. | The reported outcome is not a Completion Claim. | [agent-checkable] |
-| P5.13 | A skill MUST stop for an unexpected failure with actionable user-facing context. | The stop states what the user can do next. | [agent-checkable] |
-| P5.14 | A skill MUST document failure handling only where it differs from this model. | Documented handling names the difference. No per-step error table is required. | [agent-checkable] |
-
-Rationale: Ordinary failure behavior is stated once. A skill records only a domain difference.
+| P5.7 | A runtime contract MUST obtain missing or contradictory required input before continuing. | The effective shipped contract waits until that input is present and consistent. | [agent-checkable] |
+| P5.8 | A runtime contract MUST stop without mutation when authoritative state is malformed or unsafe. | No write follows detection of that state. | [agent-checkable] |
+| P5.9 | A runtime contract MUST identify the malformed or unsafe authoritative state that stopped it. | The stop names that state. | [agent-checkable] |
+| P5.10 | A runtime contract MUST stop without unintended mutation when the user declines or exits. | No write follows the decline or exit. | [agent-checkable] |
+| P5.11 | A runtime contract MUST consume a dependent owner's preserved non-success result. | The calling contract keeps that result and uses it. | [agent-checkable] |
+| P5.12 | A runtime contract MUST NOT report a failed mutation as success. | The reported outcome records the failed mutation. | [agent-checkable] |
+| P5.13 | A runtime contract MUST stop for an unexpected failure with actionable user-facing context. | The stop states what the user can do next. | [agent-checkable] |
+Rationale: Development validation verifies that required failure behavior exists in the effective
+shipped runtime contract, whether the behavior is defined by the skill or a separately shipped
+shared runtime contract. The Constitution does not supply omitted runtime behavior.
 
 ### VI. Deterministic, Explicit Decision Criteria
 
 | ID | Rule | Observable | Tier |
 |---|---|---|---|
-| P6.1 | Every choice between two or more actions MUST be governed by an ordered list, a decision table, or a numeric threshold. | The choice point is followed by one of those three structures. | [agent-checkable] |
-| P6.2 | Decision criteria MUST cover every input they can receive. | The structure ends with an explicit default or "otherwise" branch. | [agent-checkable] |
-| P6.3 | A skill MUST NOT leave a choice to agent discretion without naming its bounding constraints. | Each discretionary point lists the constraints that bound it. | [agent-checkable] |
-| P6.4 | A decision criterion MUST NOT reference time, randomness, or agent preference. | No criterion names a clock, a random value, or a preference. | [auto] |
-| P6.5 | Ordered criteria MUST be evaluated in their stated order. | The structure states its evaluation order explicitly. | [agent-checkable] |
-| P6.6 | Applying the criteria to identical inputs MUST select the same action every run. | No branch condition depends on a value outside the declared inputs. | [agent-checkable] |
+| P6.1 | A correctness-critical contract choice between two or more actions MUST use an ordered list, decision table, or numeric threshold. | The contract choice is followed by one of those three structures. | [agent-checkable] |
+| P6.2 | Criteria for a correctness-critical contract result MUST cover every input they can receive. | The structure ends with an explicit default or "otherwise" branch. | [agent-checkable] |
+| P6.3 | A correctness-critical contract MUST NOT leave a result choice to agent discretion without bounding constraints. | Each discretionary result choice lists its bounding constraints. | [agent-checkable] |
+| P6.4 | A correctness-critical decision criterion MUST NOT reference time, randomness, or agent preference. | No correctness-critical criterion names a clock, random value, or preference. | [auto] |
+| P6.5 | Ordered criteria for a correctness-critical contract MUST be evaluated in their stated order. | The contract structure states its evaluation order explicitly. | [agent-checkable] |
+| P6.6 | A correctness-critical contract MUST select the same result for identical declared inputs. | No correctness-critical branch depends on a value outside the declared inputs. | [agent-checkable] |
 
-Rationale: Verdict invariance across evaluators is possible only when the decision path is
-fully written down.
+Rationale: Development validation requires deterministic criteria for correctness-critical contract
+results while allowing multiple grounded Advisory Content contributions within their owning runtime
+contract and the Experience Standard.
 
 ### VII. Long-Term Maintainability
 
@@ -377,7 +394,7 @@ fully written down.
 |---|---|---|---|
 | P7.1 | A skill MUST declare exactly one Purpose. | A section titled `## Purpose` is present and contains exactly one sentence. | [auto] |
 | P7.2 | A skill MUST carry a semantic version. | `metadata.version` matches MAJOR.MINOR.PATCH. | [auto] |
-| P7.3 | A skill MUST NOT restate a requirement owned outside that skill. | A cross-reference names the Skills Constitution, the Experience Standard, a shared contract, or the owning skill. | [agent-checkable] |
+| P7.3 | A skill MUST NOT restate a requirement owned outside that skill. | A cross-reference names the Experience Standard, a shared runtime contract, an owning skill, or a shared output contract. | [agent-checkable] |
 | P7.4 | A skill MUST NOT contain more than 12 MUST-level rules. | Count of MUST and MUST NOT rules is 12 or fewer. | [auto] |
 | P7.5 | A normative section MUST NOT exceed 400 words. | Word count per normative section is 400 or fewer. | [auto] |
 | P7.6 | A skill exceeding P7.4 or P7.5 MUST be reduced until it satisfies those limits. | The resulting skill satisfies P7.4 and P7.5. | [agent-checkable] |
@@ -428,28 +445,23 @@ portability while leaving the Experience Standard as the source of interaction r
 
 ### XI. Repository Context
 
-Repository Context Documents are located under `.highway/library/knowledge/`. The authoritative
-documents are `highway-identity.md`, `highway-vision.md`, `highway-platform-objectives.md`, and
-the user-owned organizational `profile.md` context. Repository Context Documents provide shared repository
-context without replacing workflow-specific inputs, governance artifacts, or user-owned content.
-When context documents overlap, Identity provides behavioral guidance, Vision provides strategic
-direction, Platform Objectives provide evaluation criteria, and Profile provides organizational
-context, in that order. Active workflow and user evidence override conflicting repository context
-for the active interaction. Active Reasoning Context may influence the active interaction, but it
-remains subordinate to accepted user evidence and authoritative repository state. A Working Idea
-does not override accepted repository knowledge merely because Highway is exploring an alternative.
-Missing context is not invented or silently substituted.
+Repository Context Sources are declared inputs considered during development validation. The
+`.highway/library/knowledge/highway-identity.md` source is shared, non-normative context describing
+what Highway is, why it exists, and what it is trying to achieve. The user-owned organizational context
+at `.highway/library/knowledge/profile.md` and accepted repository artifacts remain owned by
+their workflows. This Constitution does not define behavioral guidance, strategic direction,
+evaluation criteria, conversational epistemic status, or runtime context precedence. Missing context
+is not invented or silently substituted; workflow-specific inputs remain authoritative.
 
 | ID | Rule | Observable | Tier |
 |---|---|---|---|
 | P11.1 | A skill MUST declare each context source that can influence its behavior. | Each influencing source is named in Inputs. | [agent-checkable] |
-| P11.2 | A skill MUST use available relevant accepted context before context-dependent behavior. | Context use precedes the behavior it influences. | [agent-checkable] |
-| P11.3 | Active workflow or user evidence MUST override conflicting repository context for that interaction. | The workflow or user evidence is the authority for that interaction. | [agent-checkable] |
+| P11.2 | A skill MUST declare the contract role of each context source that can influence its behavior. | The skill's runtime declaration names each source's contract role. | [agent-checkable] |
+| P11.3 | A skill MUST preserve workflow-specific and user-owned input ownership. | The skill's runtime contract preserves the declared authority boundary. | [agent-checkable] |
 | P11.4 | A skill MUST NOT substitute missing context, including by invention. | Missing context stays missing. No replacement content is written. | [agent-checkable] |
 
-Rationale: Repository Context makes shared identity, direction, and evaluation criteria available to
-skills while preserving workflow ownership and making context use inspectable. The context boundary
-keeps transient collaborative development subordinate to accepted knowledge.
+Rationale: Development validation checks that runtime context dependencies and ownership are declared
+without making validator mechanics part of the shipped skill.
 
 ### XII. Owner-Controlled Completion and Orchestration
 
@@ -466,49 +478,10 @@ keeps transient collaborative development subordinate to accepted knowledge.
 | P12.13 | An owner MUST perform its accepted mutation before returning a dependent result. | The mutation occurs before the dependent result. | [agent-checkable] |
 | P12.14 | An orchestrator MUST wait for the owning skill's declared mutation result after acceptance. | Acceptance is followed by the owning skill's declared result, not treated as that result. | [agent-checkable] |
 | P12.15 | An orchestrator MUST wait for every required owner's terminal result before claiming completion. | The Completion Claim follows every required owner's terminal result. | [agent-checkable] |
+| P13.2 | A skill MUST assign acceptance and persistence to the owning workflow. | The runtime contract names the owner and its mutation boundary. | [agent-checkable] |
 
-Rationale: Owners perform accepted mutations they own. The owner decides its own readiness and state, and the orchestrator advances only from the results the owners declare.
-
-### Acceptance-to-owner-result persistence boundary (Non-Normative)
-
-Acceptance authorizes an applicable owner mutation; it is not the owner result. The owner performs
-the mutation it owns and returns its declared result, after which orchestration may advance when
-all required terminal results are present. This boundary does not add a post-write Persistence
-Verification stage or related read-back checks.
-
-### XIII. Collaborative Knowledge Development
-
-Highway may develop non-authoritative Working Ideas before accepted repository knowledge is created.
-Active Reasoning Context and Working Ideas remain transient until the applicable acceptance boundary
-is satisfied. The Experience Standard governs visible collaborative development and convergence; the
-owning skill governs domain completeness.
-
-| ID | Rule | Observable | Tier |
-|---|---|---|---|
-| P12A.1 | A skill MUST treat Active Reasoning Context as transient until the applicable acceptance boundary is satisfied. | Unaccepted Working Ideas, interpretations, alternatives, implications, and recommendations are not accepted repository knowledge. | [agent-checkable] |
-| P12A.2 | A skill MUST distinguish a Working Idea from a Converged Proposal. | A Converged Proposal requires a complete owner candidate and satisfaction of the applicable Experience Standard convergence requirements. | [agent-checkable] |
-| P12A.3 | A skill MUST preserve relevant Active Reasoning Context until the active task resolves or the interaction ends. | Active Working Ideas influencing the current task remain available to later reasoning within that interaction. | [agent-checkable] |
-| P12A.4 | A skill MUST re-evaluate relevant context after accepted knowledge changes the active task. | Subsequent behavior uses the accepted knowledge together with other relevant declared context. | [agent-checkable] |
-
-Rationale: The Constitution governs the authority boundary between transient reasoning and accepted
-repository knowledge. The Experience Standard governs how Working Ideas develop and converge in
-user-visible interaction, while the owning skill governs domain completeness and retained artifact
-content.
-
-### Collaborative knowledge lifecycle (Non-Normative)
-
-Accepted context may inform Active Reasoning Context during an interaction. Working Ideas remain
-transient and non-authoritative while they are being developed.
-
-The Experience Standard determines when collaborative development has converged enough for a complete
-owner candidate to become a Converged Proposal. The owning skill determines domain completeness and
-artifact content.
-
-Crossing the applicable acceptance boundary authorizes the owner's declared mutation; successful
-persistence creates accepted repository knowledge. Accepted knowledge may then inform later reasoning
-with other relevant context.
-
-Active Reasoning Context and Working Ideas are not retained artifact types.
+Rationale: Development validation checks owner mutation, readiness, declared-result, orchestration,
+acceptance, and persistence boundaries without becoming a runtime authority.
 
 ## Principle Precedence
 
@@ -519,16 +492,15 @@ ordering is total: every pair of principles has a defined winner.
 |---|---|---|
 | 1 | IV. Measurable Quality Gates | Carries the security-affecting rules P4.5 and P4.6. |
 | 2 | I. Unambiguous, Actionable Directives | A rule that cannot be read one way cannot be applied at all. |
-| 3 | VI. Deterministic, Explicit Decision Criteria | Determines which action an agent selects at runtime. |
-| 4 | V. Reusable Patterns and Defined Error Handling | Governs behavior when a step fails. |
-| 5 | XII. Owner-Controlled Completion and Orchestration | Governs owner mutation, readiness, declared results, and orchestrator advancement. |
+| 3 | VI. Deterministic, Explicit Decision Criteria | Determines which correctness-critical contract result is accepted during development validation. |
+| 4 | V. Reusable Patterns and Defined Error Handling | Validates required failure behavior in the effective runtime contract. |
+| 5 | XII. Owner-Controlled Completion and Orchestration | Validates owner mutation, readiness, declared-result, orchestration, acceptance, and persistence boundaries. |
 | 6 | VIII. Reliability and Repeatability | Governs whether the outcome can be confirmed. |
 | 7 | VII. Long-Term Maintainability | Governs cost over time rather than correctness now. |
 | 8 | II. Technology-Agnostic Portability | Governs reach across environments. |
 | 9 | III. Grounding in Approved Authority Sources | Governs provenance of a rule already stated. |
-| 10 | X. Experience Compliance | Governs user-visible behavior after correctness requirements are satisfied. |
-| 11 | XI. Repository Context | Governs the authoritative accepted context that constrains context-dependent behavior. |
-| 12 | XIII. Collaborative Knowledge Development | Governs transient collaborative reasoning within the boundaries established by accepted context and user authority. |
+| 10 | X. Experience Compliance | Validates conformity with the Experience Standard. |
+| 11 | XI. Repository Context | Governs declared context dependencies and ownership during development validation. |
 
 **Security override**: a rule tagged security-affecting outranks every rule in every principle,
 including rank 1 rules that are not security-affecting.
@@ -582,29 +554,30 @@ check that references the prohibited token lists.
 
 | Non-compliant | Compliant |
 |---|---|
-| "Choose the best next action." | "If the owner declares a terminal result, advance only from that result. Otherwise, delegate the action the owner supplied." |
+| "Allocate the next identifier from agent preference." | "If the next identifier is OBJ000007, allocate OBJ000008; otherwise reject malformed state." |
 
 ## Governance
 
-This constitution supersedes every other runtime skill-governance document in this repository
-when a conflict exists. Conflicts between rules inside this document are resolved by Principle
-Precedence.
+This constitution governs development-time validation of shipped skills and shared runtime contracts.
+It does not supersede the Experience Standard at runtime, and an executing skill does not consult it.
+Conflicts between rules inside this document during development validation are resolved by Principle
+Precedence. Domain semantics, artifact ownership, persistence, operational contracts, and generic
+user-visible interaction belong to their applicable runtime owners.
 
-Highway does not invent organizational facts or silently promote inferred or discovered
-information into user-owned authoritative content. Objectives, Controls, Non-Functional
-Requirements, architectures, decisions, implementations, and organizational Profile stay
-user-owned. A skill may classify, recommend, normalize, and propose. A proposal is not
-authoritative until the applicable user-acceptance boundary is satisfied. Working Ideas and Active
-Reasoning Context remain non-authoritative until that boundary is satisfied.
+Development validation does not invent organizational facts or silently promote inferred or
+discovered information into user-owned authoritative content. Objectives, Controls, Non-Functional
+Requirements, architectures, decisions, implementations, and organizational Profile stay user-owned.
+The applicable workflow defines proposal acceptance and persistence; this Constitution checks that
+the owner and boundary are explicit.
 
 ### Self-Application
 
 This constitution is itself subject to P1.1 through P1.4 (clarity), P6.4 and P6.6
-(determinism), and P7.3 (non-duplication). Every amendment MUST record a review against those
-rule IDs. Rules P7.4 and P7.5 state limits on skills and do not apply to this document. This
-amendment review confirms P12A.1–P12A.4 remain individually addressable, P12A.2 delegates
-convergence semantics to the Experience Standard without duplicating X2.41, and the owner mutation
-and orchestration rules remain unchanged.
+(correctness-critical determinism), and P7.3 (non-duplication). Every amendment MUST record a review
+against those rule IDs. Rules P7.4 and P7.5 state limits on skills and do not apply to this document.
+This amendment review confirms P10.1 remains the generic Experience delegation rule, P13.1 is retired,
+P13.2 remains individually addressable within Principle XII, and owner mutation and orchestration
+rules remain development-time contract checks.
 
 ### Constitution Versioning Policy
 
@@ -626,4 +599,4 @@ every other skill's version. This is the policy referenced by P7.7.
 - **MINOR**: a capability is added while every existing contract element continues to hold.
 - **PATCH**: wording repair with no change to Inputs, Outputs, or Verification.
 
-**Version**: 7.0.0 | **Ratified**: 2026-09-06 | **Last Amended**: 2026-10-06
+**Version**: 9.0.0 | **Ratified**: 2026-09-06 | **Last Amended**: 2026-10-06
