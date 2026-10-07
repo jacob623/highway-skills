@@ -71,6 +71,12 @@ if grep -Eq 'profile-convergence|rubric' "$profile_template"; then
   fail "development fixture terminology leaked into retained Profile template"
 fi
 
+if grep -Fq '#### Semantic convergence decision' "$source_skill"; then
+  fail "Profile still owns a separate semantic convergence procedure"
+fi
+grep -Fq 'The Highway Experience Standard determines whether collaborative development has converged enough' "$source_skill" || \
+  fail "Profile does not preserve the Experience convergence boundary"
+
 if [ "$failures" -ne 0 ]; then
   printf '%s Profile convergence fixture checks failed\n' "$failures"
   exit 1

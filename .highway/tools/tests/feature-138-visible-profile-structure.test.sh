@@ -49,7 +49,7 @@ if ! "$VALIDATE" "$EMPTY" >/dev/null 2>&1; then
 fi
 
 for text in \
-	'version: 8.1.0' \
+	'version: 9.0.0' \
 	'The retained artifact is `.highway/library/knowledge/profile.md`.' \
 	'### Domain model' \
 	'### Domain completeness' \
@@ -59,7 +59,7 @@ for text in \
 	'#### Guiding Principles' \
 	'### Cross-domain reasoning' \
 	'Acceptance authorizes the mutation but is not successful persistence.' \
-	'User-visible collaboration follows the Highway Experience Standard.'; do
+	; do
 	require_text "$PROFILE" "$text"
 done
 

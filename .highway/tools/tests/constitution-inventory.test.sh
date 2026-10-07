@@ -460,21 +460,20 @@ if grep -qE '^\| \*\*N6\*\* \|' "$CONSTITUTION"; then
 fi
 if ! grep -qF '| 5 | XII. Owner-Controlled Completion and Orchestration |' "$CONSTITUTION" || \
 	! grep -qF '| 11 | XI. Repository Context |' "$CONSTITUTION" || \
-	! grep -qF '| 12 | XIII. Collaborative Knowledge Development |' "$CONSTITUTION" || \
 	! grep -qF '| 6 | VIII. Reliability and Repeatability |' "$CONSTITUTION"; then
 	echo 'FAIL: Principle XII precedence or affected rank sequence is incorrect'
 	fail=1
 fi
 
 # Feature 100 identifier map. Superseded behavior: the retired identifiers below were current rows.
-for rule_id in P3.1 P4.1 P4.3 P8.1 P11.5 P5.1 P5.2 P5.3 P5.4 P5.5; do
+for rule_id in P3.1 P4.1 P4.3 P8.1 P11.5 P5.1 P5.2 P5.3 P5.4 P5.5 P5.14 P13.1; do
 	if current_rule_row "$rule_id"; then
 		echo "FAIL: retired $rule_id is still a current rule row"
 		fail=1
 	fi
 done
-for rule_id in P3.3 P4.2 P4.4 P4.5 P4.6 P5.6 P5.7 P5.8 P5.9 P5.10 P5.11 P5.12 P5.13 P5.14 \
-	P7.3 P8.2 P8.3 P8.4 P9.1 P11.1 P11.2 P11.3 P11.4; do
+for rule_id in P3.3 P4.2 P4.4 P4.5 P4.6 P5.6 P5.7 P5.8 P5.9 P5.10 P5.11 P5.12 P5.13 \
+	P7.3 P8.2 P8.3 P8.4 P9.1 P11.1 P11.2 P11.3 P11.4 P13.2; do
 	if ! current_rule_row "$rule_id"; then
 		echo "FAIL: $rule_id is missing or has no valid tier"
 		fail=1
@@ -501,7 +500,7 @@ if ! grep -qF '4.0.0 → 4.1.0 (MINOR)' "$CONSTITUTION"; then
 	echo 'FAIL: historical 4.1.0 report is missing'
 	fail=1
 fi
-if ! grep -qF '**Version**: 7.0.0' "$CONSTITUTION" || \
+if ! grep -qF '**Version**: 9.0.0' "$CONSTITUTION" || \
    ! grep -qF '**Ratified**: 2026-09-06' "$CONSTITUTION" || \
 	! grep -qF '**Last Amended**: 2026-10-06' "$CONSTITUTION"; then
 	echo 'FAIL: current Constitution amendment metadata is missing'

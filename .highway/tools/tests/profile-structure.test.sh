@@ -46,7 +46,7 @@ for required_text in \
 	'not_discussed' \
 	'discussed' \
 	'bounded' \
-	'version: 8.1.0' \
+	'version: 9.0.0' \
 	'Profile readiness' \
 	'Profile determines domain completeness' \
 	'Retain only the accepted cohesive domain narrative'; do

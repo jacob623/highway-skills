@@ -8,21 +8,32 @@ STANDARD="$HIGHWAY_ROOT/governance/experience-standard.md"
 fail=0
 
 for token in \
-	'**Converged Proposal**: A complete candidate from the owning workflow whose substantive Working Idea' \
+	'**Converged Proposal**: A complete candidate whose relevant substance is developed enough' \
+	'| X2.4 |' \
 	'| X2.13 |' \
+	'| X2.37 |' \
+	'| X2.38 |' \
 	'| X2.41 |' \
 	'## Interaction Model' \
 	'## Contribution Opportunity' \
 	'## Interaction Boundaries' \
 	'Working Idea material' \
-	'Working Idea development until the substantive shape settles'; do
+	'grounded reasoning materially improves it' \
+	'acceptance boundary as approval of the representation'; do
 	grep -Fq "$token" "$STANDARD" || { echo "FAIL: Experience Standard missing $token"; fail=1; }
 done
 
-if [[ "$(grep -cE '^\| X[0-9]+\.[0-9]+ \|' "$STANDARD")" -ne 45 ]]; then
-	echo 'FAIL: Experience Standard rule inventory must contain 45 rules'
+if [[ "$(grep -cE '^\| X[0-9]+\.[0-9]+ \|' "$STANDARD")" -ne 33 ]]; then
+	echo 'FAIL: Experience Standard rule inventory must contain 33 rules'
 	fail=1
 fi
+
+for retired in X2.8 X2.14 X2.39 X2.40; do
+	if grep -qF "| $retired |" "$STANDARD"; then
+		echo "FAIL: retired rule remains active: $retired"
+		fail=1
+	fi
+done
 
 for forbidden in 'CLAR identifiers' 'persisted clarification history' '## Candidates'; do
 	if grep -Fq "$forbidden" "$STANDARD"; then

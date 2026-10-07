@@ -8,5 +8,5 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 SKILL="$HIGHWAY_ROOT/skills/highway-setup/SKILL.md"
 fail=0
-for token in '## Welcome to Highway' 'Do not emit this welcome on a resumed Setup interaction' 'fresh owner readiness' '---' 'first active interaction' 'Do not emit a' ; do grep -Fq -- "$token" "$SKILL" || { echo "FAIL: missing '$token'"; fail=1; }; done
+for token in '## Welcome to Highway' 'Do not emit this welcome on a resumed Setup interaction' 'fresh owner readiness' '---' 'first active interaction' 'Do not emit a' 'at most one response-demanding question or decision' 'already terminal' 'completed guided owner domain' 'final conclusion is emitted once and only after all four owners permit advancement'; do grep -Fq -- "$token" "$SKILL" || { echo "FAIL: missing '$token'"; fail=1; }; done
 [[ $fail -eq 0 ]] && echo 'OK: Setup resume routing passes' || exit 1

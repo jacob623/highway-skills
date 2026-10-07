@@ -32,7 +32,9 @@ con_experience_file() {
 	fi
 }
 
-# Emits one TAB-delimited record per rule: id, tier, text, observable.
+# Emits one TAB-delimited record per rule: id, classification, text, observable.
+# P rows use their declared development tier. X rows use the internal "runtime" classification
+# because the Experience Standard deliberately carries no development/test metadata column.
 # A row that looks like a rule but does not parse is a hard error, so a table format change
 # fails loudly instead of silently shrinking the inventory.
 # Usage: con_rules <constitution_file>
@@ -43,12 +45,13 @@ con_rules() {
 		function trim(s) { gsub(/^[[:space:]]+|[[:space:]]+$/, "", s); return s }
 		/^\|[[:space:]]*[PX][0-9]+[A-Z]?\.[0-9]+[[:space:]]*\|/ {
 			id = trim($2); text = trim($3); obs = trim($4); tier = trim($5)
-			if (NF < 5 || text == "" || obs == "" || tier !~ /^\[(auto|agent-checkable|human-review)\]$/) {
+			if (NF < 5 || text == "" || obs == "" || (id ~ /^P/ && tier !~ /^\[(auto|agent-checkable|human-review)\]$/)) {
 				printf("ERROR: malformed rule row for %s at line %d\n", id, NR) > "/dev/stderr"
 				bad = 1
 				next
 			}
-			gsub(/^\[|\]$/, "", tier)
+			if (id ~ /^X/) tier = "runtime"
+			else gsub(/^\[|\]$/, "", tier)
 			print id, tier, text, obs
 		}
 		END { if (bad) exit 3 }

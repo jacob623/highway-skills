@@ -19,7 +19,7 @@ require_text() {
 }
 
 for required in \
-	'version: 8.1.0' \
+	'version: 9.0.0' \
 	'Profile determines domain completeness' \
 	'The Highway Experience Standard determines whether collaborative development has converged enough' \
 	'Profile determines the four domain meanings' \
@@ -29,8 +29,7 @@ for required in \
 	'### Cross-domain reasoning' \
 	'When entering unresolved Vision' \
 	'Canonical questions are Profile-owned fallbacks' \
-	'Profile uses transient Conversational Clarification' \
-	'User-visible collaboration follows the Highway Experience Standard.'; do
+	; do
 	require_text "$required"
 done
 

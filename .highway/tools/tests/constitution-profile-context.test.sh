@@ -6,10 +6,10 @@ set -u
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 fail=0
-for token in 'Repository Context' 'highway-identity.md' 'highway-vision.md' 'highway-platform-objectives.md'; do
+for token in 'Repository Context' 'highway-identity.md' 'profile.md'; do
 	grep -Fq "$token" "$HIGHWAY_ROOT/governance/constitution.md" || { echo "FAIL: constitution missing $token"; fail=1; }
 done
-for token in 'behavioral identity' 'Conversational Identity' 'Conversational Presence'; do
+for token in '## Purpose' '## What Highway Is' '## User Experience'; do
 	grep -Fq "$token" "$HIGHWAY_ROOT/library/knowledge/highway-identity.md" || { echo "FAIL: identity knowledge missing $token"; fail=1; }
 done
 if grep -Fq '5. Repository governance artifacts' "$HIGHWAY_ROOT/library/knowledge/highway-identity.md"; then

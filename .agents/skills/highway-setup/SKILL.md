@@ -4,10 +4,10 @@ description: "Orchestrates initial Highway setup through the owning governance s
 usage: "Invoke as `/highway-setup` to assess readiness and complete missing foundational setup in order."
 compatibility: all
 metadata:
-  version: 8.0.0
+  version: 8.1.0
 ---
 
-## Purpose
+# Purpose
 
 Orchestrates Profile, Objectives, Controls, and NFR owners in order while consuming their declared results.
 
@@ -84,7 +84,8 @@ not impose one shared collection-result shape.
 
 Emit each block only when delegating the first active interaction for that domain. Do not emit a
 transition when the owner is already terminal and skipped, repeat it while continuing, or duplicate
-the owner opening.
+the owner opening. A transition is one short outcome-oriented statement and does not preview
+internal routing or readiness mechanics.
 
 ```text
 ---
@@ -110,31 +111,39 @@ These help Highway keep future recommendations aligned with what needs to remain
 These help connect your safeguards to how solutions need to behave in practice.
 ```
 
+When Setup contributes presentation around a delegated owner interaction, keep at most one response-demanding question or decision in the final interaction block. Do not interfere with the owner's own interaction.
+
+Use `---` to separate visible transitions between major Setup domains. When a completed guided owner domain has accepted context that can be meaningfully summarized, provide one concise user-relevant synthesis before moving onward unless the owner already emitted the required user-facing synthesis. Do not add a question merely to close the domain, reinterpret accepted owner content, or show machine readiness/result fields.
+
 ## Experience
 
 User-visible interaction follows the Highway Experience Standard.
 
 ## Resume
 
-A new Setup interaction begins by requesting fresh owner readiness in Setup order. Setup does not
-persist a checkpoint or restore owner conversational state.
+A new Setup interaction begins by requesting fresh owner readiness in Setup order. Setup persists no checkpoint or owner conversational state.
 
 ## Completion
 
-After all four owners permit advancement in Setup order, emit the conclusion in Outputs once.
+After all four owners permit advancement in Setup order, emit the final conclusion once.
 
 ## Error Handling
 
-Rely on the Constitution common failure model. Setup-specific exceptions are:
+Setup's effective runtime failure behavior is:
 
 - malformed or unsupported owner result: stop without invoking a later owner;
 - owner `Blocked`: stop and report the owner-provided reason;
 - owner `Declined` or `Aborted`: stop without advancing;
-- unsupported owner `Next Action`: stop and identify the unsupported action.
+- unsupported owner `Next Action`: stop and identify the unsupported action;
+- unexpected orchestration failure: stop without claiming Setup completion and provide actionable
+  user-facing context.
+
+Setup performs no artifact mutation, so it does not add mutation-recovery mechanics owned by the
+current owner.
 
 ## Verification
 
-- The skill contains exactly one `## Purpose` section with the declared Purpose sentence.
+- The skill contains exactly one `# Purpose` section with the declared Purpose sentence.
 - Owner order is Profile → Objectives → Controls → NFRs.
 - Owner-specific result contracts are consumed without imposing one common result schema.
 - Controls and NFRs use their declared Collection Result contracts.
@@ -142,11 +151,18 @@ Rely on the Constitution common failure model. Setup-specific exceptions are:
 - `Continue` remains with an owner when that owner's contract uses Collection Result.
 - `Finished` triggers fresh readiness when that owner's contract uses Collection Result.
 - Initial Setup emits the Highway welcome once; resumed Setup does not repeat it.
-- Every visible domain transition contains `---` and occurs only when entering an active domain.
+- Setup-added presentation contains at most one response-demanding question or decision in the final interaction block.
+- Each active-domain transition occurs once, remains outcome-oriented, and does not expose routing or readiness mechanics.
+- Visible domain transitions retain `---` separation.
 - Owner openings are not duplicated.
+- A completed guided domain receives at most one Setup synthesis.
+- Setup does not add a synthesis when the owner already supplied the required user-facing synthesis.
+- Domain closure does not add a ceremonial question.
+- Normal orchestration does not expose machine-consumable owner-result fields.
+- Failure does not permit invocation of a later owner or a Setup completion claim.
 - Setup persists no checkpoint or owner artifact.
 - A new interaction starts from fresh readiness.
-- The final conclusion is emitted once after all four owner contracts permit advancement.
+- The final conclusion is emitted once and only after all four owners permit advancement.
 
 ## Example
 

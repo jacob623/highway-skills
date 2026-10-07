@@ -10,28 +10,39 @@ STANDARD="$HIGHWAY_ROOT/governance/experience-standard.md"
 fail=0
 
 for token in \
-	'Version change: 8.4.0 -> 8.4.1 (PATCH)' \
-	'**Version**: 8.4.1 | **Ratified**: 2026-09-08 | **Last Amended**: 2026-10-05' \
+	'**Layer 2 - Experience.** Version `9.1.0`.' \
+	'**Version**: `9.1.0` | **Ratified**: 2026-09-08 | **Last Amended**: 2026-10-06' \
 	'## Interaction Model' \
 	'## Conversational Clarification' \
 	'## Contribution Opportunity' \
 	'## Constructive Advisory' \
-	'## Evolution-Aware Guidance' \
 	'## Recommendation Sets' \
 	'## Interaction Boundaries' \
 	'| X2.36 |' \
 	'| X2.37 |' \
 	'| X2.38 |' \
-	'| X2.39 |' \
-	'| X2.40 |' \
 	'| X2.41 |'; do
 	grep -Fq "$token" "$STANDARD" || { echo "FAIL: Experience Standard missing $token"; fail=1; }
 done
 
-if [[ "$(grep -cE '^\| X[0-9]+\.[0-9]+ \|' "$STANDARD")" -ne 45 ]]; then
-	echo 'FAIL: Experience Standard rule inventory must contain 45 rules'
+if [[ "$(grep -cE '^\| X[0-9]+\.[0-9]+ \|' "$STANDARD")" -ne 33 ]]; then
+	echo 'FAIL: Experience Standard rule inventory must contain 33 rules'
 	fail=1
 fi
+
+for retired in X2.8 X2.14 X2.23 X2.25 X2.26 X2.39 X2.40; do
+	if grep -qF "| $retired |" "$STANDARD"; then
+		echo "FAIL: retired rule remains active: $retired"
+		fail=1
+	fi
+done
+
+for forbidden in 'Highway Skills Constitution' 'P namespace' '## Tier Definitions' '[auto]' '[agent-checkable]' '[human-review]' '## Versioning Policy' '## Self-Application'; do
+	if grep -qF "$forbidden" "$STANDARD"; then
+		echo "FAIL: runtime governance metadata remains: $forbidden"
+		fail=1
+	fi
+done
 
 for forbidden in \
 	'Historical amendment record' \

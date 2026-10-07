@@ -72,7 +72,7 @@ Eight sections, each non-empty:
 | `## Inputs` | P1.5, P2.2 | Every value, file, tool, and precondition the skill depends on. |
 | `## Outputs` | — | What exists after the skill is followed. |
 | `## Verification` | P8.3, P8.4, P4.2 | At least one command, file state, or output string to check. |
-| `## Error Handling` | P5.14 | A difference from the common failure model, when one exists. |
+| `## Error Handling` | P5.13 | Unexpected failures include actionable user-facing context. |
 | `## Example` | — | Exactly one copy-able example: the literal invocation MUST be an inline code span (backtick-wrapped, not solely a fenced block), so it can be selected and copied on its own; a fenced block MAY still show accompanying sample output below it. |
 
 ## Linking out of a skill
@@ -115,7 +115,7 @@ Cited rules, not restated. Read the rule text in the constitution.
 - Cite an external source only for an asserted external requirement, using the Citation Format:
   **P3.2, P3.3, P3.5**
 - Do not use "secure", "performant", or "maintainable" as an acceptance criterion: **P4.2**
-- Record failure handling where the common model does not already cover it: **P5.14**
+- Record unexpected failure handling with actionable user-facing context: **P5.13**
 - Make every choice deterministic, with an explicit default branch: **P6.1, P6.2, P6.4**
 - Stay within 12 MUST-level rules and 400 words per normative section; reduce the skill until
   both limits hold: **P7.4, P7.5, P7.6**

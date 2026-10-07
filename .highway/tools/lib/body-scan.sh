@@ -6,7 +6,8 @@
 # Emits one TAB-delimited record per body line:
 #   line_no  section  in_fence  is_list  is_ordered  ordered_num  text
 # line_no is the real line number in the file, so findings can cite it.
-# section is the nearest preceding '## ' heading, empty before the first one.
+# section is the nearest preceding Markdown heading, empty before the first one. Purpose may use
+# either '# Purpose' or the legacy '## Purpose' form; other sections remain level-two headings.
 # in_fence is 1 for lines inside a fenced block, including the fence markers themselves.
 # ordered_num is the parsed number of an ordered list item, or 0.
 # Usage: bs_scan <file>
@@ -30,9 +31,9 @@ bs_scan() {
 				next
 			}
 
-			if (!in_fence && line ~ /^## /) {
+            if (!in_fence && (line ~ /^## / || line == "# Purpose")) {
 				section = line
-				sub(/^##[[:space:]]+/, "", section)
+				sub(/^##?[[:space:]]+/, "", section)
 				gsub(/[[:space:]]+$/, "", section)
 				print NR, section, 0, 0, 0, 0, line
 				next

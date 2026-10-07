@@ -18,10 +18,14 @@ for text in \
 	'active user input wins'; do
 	require "$CONTROLS" "$text"
 done
-for context in highway-identity.md highway-vision.md highway-platform-objectives.md; do require "$PROFILE" "$context"; done
-require "$PROFILE" 'behavioral guidance'
-require "$PROFILE" 'strategic direction'
-require "$PROFILE" 'evaluation criteria'
+require "$PROFILE" 'highway-identity.md'
+require "$PROFILE" 'shared, non-normative context only'
+for retired_context in highway-vision.md highway-platform-objectives.md; do
+	if grep -Fq "$retired_context" "$PROFILE"; then
+		echo "FAIL: Profile retains retired runtime context $retired_context"
+		fail=1
+	fi
+done
 require "$PROFILE" 'it is not retained as organizational fact'
 require "$PROFILE" 'Accepted evidence that establishes a domain sets it to `discussed`'
 require "$FIXTURES/repository-context/conflicts/workflow-input-authoritative.txt" 'workflow-specific input remains authoritative'

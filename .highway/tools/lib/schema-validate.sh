@@ -239,18 +239,18 @@ sv_validate_body_sections() {
 		tag="${SV_SECTION_RULE_TAGS[$idx]}"
 		idx=$((idx + 1))
 		local content
-		content="$(printf '%s\n' "$body" | awk -v section="## ${section}" '
+		content="$(printf '%s\n' "$body" | awk -v section="$section" '
 			BEGIN { found = 0; capturing = 0 }
 			{
-				if ($0 == section) { found = 1; capturing = 1; next }
-				if (capturing && $0 ~ /^## /) { capturing = 0 }
+				if ($0 == "## " section || ($0 == "# Purpose" && section == "Purpose")) { found = 1; capturing = 1; next }
+				if (capturing && $0 ~ /^# /) { capturing = 0 }
 				if (capturing) print
 			}
 			END { if (!found) exit 2 }
 		')"
 		local awk_status=$?
 		if [[ $awk_status -eq 2 ]]; then
-			echo "ERROR: [${tag}] missing required body section '## ${section}'"
+			echo "ERROR: [${tag}] missing required body section '## ${section}' (or '# Purpose' for Purpose)"
 			ok=1
 			continue
 		fi

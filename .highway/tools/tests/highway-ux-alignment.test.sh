@@ -27,24 +27,23 @@ require_absent() {
 
 for token in \
 	'## Interaction Model' \
-	'## Contextual Guidance' \
+	'## Runtime Authority' \
 	'## Conversational Clarification' \
 	'## Contribution Opportunity' \
 	'## Constructive Advisory' \
-	'## Evolution-Aware Guidance' \
 	'## Interaction Boundaries' \
 	'## Recommendation Sets' \
-	'## X5 — Addressability of emitted messages' \
-	'Clear input is incorporated without ceremonial restatement' \
-	'become more specific as context accumulates' \
+	'### X5 - Addressability of Emitted Messages' \
+	'Incorporates clear input directly' \
+	"Let the person's response reshape the Working Idea" \
 	'non-authoritative until' \
-	'Converged Proposal only when' \
+	'Present a Converged Proposal only after owner completeness and conversational convergence' \
 	'Working Idea development'; do
 	require_text "$EXPERIENCE_STANDARD" "$token"
 done
 
-if [[ "$(grep -cE '^\| X[0-9]+\.[0-9]+ \|' "$EXPERIENCE_STANDARD")" -ne 45 ]]; then
-	echo 'FAIL: Experience Standard rule inventory must contain 45 rules'
+if [[ "$(grep -cE '^\| X[0-9]+\.[0-9]+ \|' "$EXPERIENCE_STANDARD")" -ne 33 ]]; then
+	echo 'FAIL: Experience Standard rule inventory must contain 33 rules'
 	fail=1
 fi
 for old_section in \

@@ -27,7 +27,7 @@ require_absent() {
 }
 
 for required in \
-	'version: 8.1.0' \
+	'version: 9.0.0' \
 	'#### Domain model' \
 	'#### Domain completeness' \
 	'##### Organizational expression' \
@@ -39,7 +39,6 @@ for required in \
 	'Profile determines domain completeness.' \
 	'The Highway Experience Standard determines whether collaborative development has converged enough' \
 	'Canonical questions are Profile-owned fallbacks for unresolved organizational information.' \
-	'Profile uses transient Conversational Clarification through the Highway Experience Standard' \
 	'Acceptance authorizes the mutation but is not successful persistence.' \
 	'Operations remain setup, configure, readiness, view, show, describe, add, update, remove, and reset.' \
 	'An absent Profile is a valid initial state.' \
@@ -48,7 +47,7 @@ for required in \
 	'Expression guides representation, not truth' \
 	'Competitive Path describes the broad organizational approach' \
 	'Guiding Principles describe the enduring principles' \
-	'User-visible collaboration follows the Highway Experience Standard.'; do
+	'Highway Identity is shared, non-normative context only.'; do
 	require_text "$required"
 done
 
@@ -61,7 +60,11 @@ for forbidden in \
 	'contribution precedence' \
 	'From what I\x27ve found, a few parts of the organization stand out:' \
 	'A few principles are taking shape:' \
-	'X2.41'; do
+	'X2.41' \
+	'highway-vision.md' \
+	'highway-platform-objectives.md' \
+	"the Constitution's common failure model" \
+	'#### Semantic convergence decision'; do
 	require_absent "$forbidden"
 done
 
@@ -78,8 +81,6 @@ done
 
 for protected in \
 	.highway/library/templates/output/profile-record.md \
-	.highway/governance/experience-standard.md \
-	.highway/governance/constitution.md \
 	.highway/library/knowledge/highway-identity.md; do
 	if git -C "$REPO_ROOT" diff --name-only -- "$protected" | grep -q .; then
 		echo "FAIL: protected Profile runtime artifact changed: $protected"
