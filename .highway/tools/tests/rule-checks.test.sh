@@ -268,24 +268,25 @@ for rule in $(rc_registered_ids); do
 	fi
 done
 
-# Superseded behavior: X2.2 required a greeting or required question first, and X2.5/X2.6
-# recorded N5 when no long-running activity existed. Rows no longer carry a Sample column.
+# Experience rows intentionally carry no development/test tier column. Their parsed classification
+# is the internal "runtime" category owned by constitution.sh.
 EXPERIENCE="$HIGHWAY_ROOT/governance/experience-standard.md"
+
 for rule in X2.1 X2.3 X2.4 X2.5 X2.6; do
-	if ! grep -qE "^\| $rule \|.*\| \[agent-checkable\] \|" "$EXPERIENCE"; then
-		echo "FAIL: $rule is missing, malformed, or not agent-checkable"
+	if ! grep -qE "^\| $rule \|[^|]+\|[^|]+\|$" "$EXPERIENCE"; then
+		echo "FAIL: $rule is missing or malformed"
 		fail=1
 	fi
 done
-if ! grep -qF '| X2.2 | An Interactive Workflow MUST use accepted information, available evidence, or a grounded recommendation before asking a question.' "$EXPERIENCE"; then
-	echo "FAIL: X2.2 does not use accepted information before a question"
+if ! grep -qF '| X2.13 | An Interactive Workflow MUST reuse relevant accepted information and available evidence, and MUST contribute a grounded interpretation' "$EXPERIENCE"; then
+	echo "FAIL: X2.13 does not reuse accepted information or contribute grounded reasoning before a question"
 	fail=1
 fi
 if ! grep -qF 'Responses exclude identifiers, catalog mutations, generated versions, internal state, and owner mechanics unless needed.' "$EXPERIENCE"; then
 	echo "FAIL: X2.3 observable sentence is missing"
 	fail=1
 fi
-if ! grep -qF '| X2.4 | An Interactive Workflow MUST ask only one unresolved question, and only for information still needed.' "$EXPERIENCE"; then
+if ! grep -qF '| X2.4 | An Interactive Workflow MUST ask only for consequential, result-changing uncertainty that the person owns and that accepted evidence or responsible advisory reasoning cannot resolve.' "$EXPERIENCE"; then
 	echo "FAIL: X2.4 does not limit the question to information still needed"
 	fail=1
 fi

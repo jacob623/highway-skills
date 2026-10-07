@@ -60,10 +60,17 @@ if [[ "$(grep -cE '^\| P[0-9]+[A-Z]?\.[0-9]+ ' "$CONSTITUTION")" -ne 73 ]]; then
 	fail=1
 fi
 
-if [[ "$(grep -cE '^\| X[0-9]+\.[0-9]+ \|' "$STANDARD")" -ne 45 ]]; then
-	echo 'FAIL: Experience Standard rule inventory is not 45'
+if [[ "$(grep -cE '^\| X[0-9]+\.[0-9]+ \|' "$STANDARD")" -ne 33 ]]; then
+	echo 'FAIL: Experience Standard rule inventory is not 33'
 	fail=1
 fi
+
+for token in 'Highway Skills Constitution' 'P namespace' '## Tier Definitions' '[auto]' '[agent-checkable]' '[human-review]' '## Versioning Policy' '## Self-Application'; do
+	if grep -qF "$token" "$STANDARD"; then
+		echo "FAIL: Experience Standard retains development-governance dependency $token"
+		fail=1
+	fi
+done
 
 if [[ "$fail" -ne 0 ]]; then
 	exit 1

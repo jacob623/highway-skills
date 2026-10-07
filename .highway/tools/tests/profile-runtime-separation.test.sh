@@ -78,7 +78,6 @@ done
 
 for protected in \
 	.highway/library/templates/output/profile-record.md \
-	.highway/governance/experience-standard.md \
 	.highway/library/knowledge/highway-identity.md; do
 	if git -C "$REPO_ROOT" diff --name-only -- "$protected" | grep -q .; then
 		echo "FAIL: protected Profile runtime artifact changed: $protected"
