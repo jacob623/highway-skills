@@ -27,7 +27,7 @@ require_absent() {
 }
 
 for required in \
-	'version: 8.1.0' \
+	'version: 9.0.0' \
 	'#### Domain model' \
 	'#### Domain completeness' \
 	'##### Organizational expression' \
@@ -48,7 +48,9 @@ for required in \
 	'Expression guides representation, not truth' \
 	'Competitive Path describes the broad organizational approach' \
 	'Guiding Principles describe the enduring principles' \
-	'User-visible collaboration follows the Highway Experience Standard.'; do
+	'User-visible collaboration follows the Highway Experience Standard.' \
+	'Highway Identity is shared, non-normative context only.' \
+	'Profile defines its effective failure behavior locally.'; do
 	require_text "$required"
 done
 
@@ -61,7 +63,11 @@ for forbidden in \
 	'contribution precedence' \
 	'From what I\x27ve found, a few parts of the organization stand out:' \
 	'A few principles are taking shape:' \
-	'X2.41'; do
+	'X2.41' \
+	'highway-vision.md' \
+	'highway-platform-objectives.md' \
+	"the Constitution's common failure model" \
+	'#### Semantic convergence decision'; do
 	require_absent "$forbidden"
 done
 

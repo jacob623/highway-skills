@@ -9,7 +9,7 @@ REPO_ROOT="$(cd "$HIGHWAY_ROOT/.." && pwd)"
 PROFILE="$HIGHWAY_ROOT/skills/highway-profile/SKILL.md"
 fail=0
 for text in \
-	'version: 8.1.0' \
+	'version: 9.0.0' \
 	'Profile uses transient Conversational Clarification through the Highway Experience Standard' \
 	'Evaluate each source across all unresolved Profile domains' \
 	'New substantive organizational evidence is evaluated across every unresolved Profile domain' \

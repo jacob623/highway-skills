@@ -21,8 +21,12 @@ require_text() {
 	grep -Fq "$text" "$file" || { echo "FAIL: $file missing '$text'"; fail=1; }
 }
 
-for context in highway-identity.md highway-vision.md highway-platform-objectives.md; do
-	require_text "$PROFILE" ".highway/library/knowledge/$context"
+require_text "$PROFILE" '.highway/library/knowledge/highway-identity.md'
+for retired_context in highway-vision.md highway-platform-objectives.md; do
+	if grep -Fq ".highway/library/knowledge/$retired_context" "$PROFILE"; then
+		echo "FAIL: $PROFILE retains retired runtime context $retired_context"
+		fail=1
+	fi
 done
 require_text "$PROFILE" '`/highway-profile setup`'
 require_text "$PROFILE" '`/highway-profile configure`'
@@ -73,7 +77,7 @@ if grep -Fq '### Repository Name' "$PROFILE"; then
 fi
 # Superseded behavior: highway-profile version 5.3.0 locked the narrower domain and acquisition contract.
 # Superseded behavior: highway-profile 6.0.0. Feature 138 is MAJOR 7.0.0 because projection and verification narrowed (D3.5).
-require_text "$PROFILE" 'version: 8.1.0'
+require_text "$PROFILE" 'version: 9.0.0'
 if grep -Fq '.highway/tools/validate-profile.sh' "$PROFILE"; then
 	echo "FAIL: $PROFILE still instructs .highway/tools/validate-profile.sh"
 	fail=1
