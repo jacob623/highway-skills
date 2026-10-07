@@ -74,8 +74,8 @@ fi
 if grep -Fq '#### Semantic convergence decision' "$source_skill"; then
   fail "Profile still owns a separate semantic convergence procedure"
 fi
-grep -Fq 'The Highway Experience Standard owns conversational convergence.' "$source_skill" || \
-  fail "Profile does not explicitly delegate conversational convergence"
+grep -Fq 'The Highway Experience Standard determines whether collaborative development has converged enough' "$source_skill" || \
+  fail "Profile does not preserve the Experience convergence boundary"
 
 if [ "$failures" -ne 0 ]; then
   printf '%s Profile convergence fixture checks failed\n' "$failures"

@@ -12,7 +12,6 @@ for text in \
 	'The Highway Experience Standard determines whether collaborative development has converged enough' \
 	'Profile determines domain completeness' \
 	'Profile-specific validation questions apply to the domain' \
-	'Profile uses transient Conversational Clarification through the Highway Experience Standard' \
 	'transient'; do
 	if ! grep -Fq -- "$text" "$PROFILE"; then echo "FAIL: Profile skill missing '$text'"; fail=1; fi
 done

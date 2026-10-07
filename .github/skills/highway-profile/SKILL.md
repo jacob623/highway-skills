@@ -75,8 +75,7 @@ how contributions and clarification are handled, and how user-visible interactio
 Profile determines the four domain meanings, evidence, completeness, readiness, persistence, and
 downstream ownership described here.
 
-Highway Identity is shared, non-normative context only. Profile defines its effective failure behavior locally.
-The Highway Experience Standard owns conversational convergence.
+Highway Identity is shared, non-normative context only.
 
 ### Acquisition
 
@@ -138,8 +137,7 @@ fields. Profile-owned expression guidance does not control Objectives, Controls,
 Identity establishes who the organization is and what it meaningfully encompasses, including durable
 activity and purpose. It is not a technology-landscape inventory. When Profile materially assembles
 Identity from multiple sources or substantial interpretation, present meaningful organizational
-facets provisionally before final synthesis when that helps inspection. A directly supplied,
-domain-complete description may proceed directly when Profile does not materially reshape it.
+facets provisionally before final synthesis when that helps inspection.
 
 After convergence, validate with `**Is this an accurate description of your organization?**`
 followed by `You can also change it or provide your own description.`
@@ -182,7 +180,6 @@ New substantive organizational evidence is evaluated across every unresolved Pro
 Accepted Identity informs Vision when relevant; accepted Identity and Vision inform Competitive Path;
 accepted Identity, Vision, and Competitive Path inform Guiding Principles.
 
-Profile uses transient Conversational Clarification through the Highway Experience Standard.
 Persisted clarification records belong to `highway-clarify` when separately requested.
 
 ## Operations
@@ -214,11 +211,7 @@ question.
 - Optional Context, Organization Name, Organization URL, and optional enrichment do not affect readiness.
 - Only user-provided or user-accepted organizational evidence is retained.
 - Each accepted domain mutation succeeds before Profile uses it as persisted knowledge.
-- User-visible collaboration follows the Highway Experience Standard.
 - Domain completeness does not independently establish conversational convergence.
-- Substantive evidence changes trigger useful re-evaluation with relevant accepted context.
-- Mature direct contributions retain a short path without ceremonial exploration.
-- Working Ideas remain transient and unretained until accepted through the existing domain path.
 - Supported cross-domain implications are preserved for the appropriate unresolved domain.
 - No retained schema field or readiness dimension is added for convergence or collaboration concepts.
 

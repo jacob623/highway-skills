@@ -39,7 +39,6 @@ for required in \
 	'Profile determines domain completeness.' \
 	'The Highway Experience Standard determines whether collaborative development has converged enough' \
 	'Canonical questions are Profile-owned fallbacks for unresolved organizational information.' \
-	'Profile uses transient Conversational Clarification through the Highway Experience Standard' \
 	'Acceptance authorizes the mutation but is not successful persistence.' \
 	'Operations remain setup, configure, readiness, view, show, describe, add, update, remove, and reset.' \
 	'An absent Profile is a valid initial state.' \
@@ -48,9 +47,7 @@ for required in \
 	'Expression guides representation, not truth' \
 	'Competitive Path describes the broad organizational approach' \
 	'Guiding Principles describe the enduring principles' \
-	'User-visible collaboration follows the Highway Experience Standard.' \
-	'Highway Identity is shared, non-normative context only.' \
-	'Profile defines its effective failure behavior locally.'; do
+	'Highway Identity is shared, non-normative context only.'; do
 	require_text "$required"
 done
 

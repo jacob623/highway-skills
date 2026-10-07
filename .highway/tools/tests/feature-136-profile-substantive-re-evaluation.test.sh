@@ -10,13 +10,11 @@ PROFILE="$HIGHWAY_ROOT/skills/highway-profile/SKILL.md"
 fail=0
 for text in \
 	'version: 9.0.0' \
-	'Profile uses transient Conversational Clarification through the Highway Experience Standard' \
 	'Evaluate each source across all unresolved Profile domains' \
 	'New substantive organizational evidence is evaluated across every unresolved Profile domain' \
 	'Identity establishes who the organization is' \
 	'provisional' \
 	'materially assembles' \
-	'domain-complete description may proceed directly' \
 	'durable' \
 	'not a technology-landscape inventory' \
 	'full accepted' \

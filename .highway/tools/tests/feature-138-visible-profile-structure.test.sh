@@ -59,7 +59,7 @@ for text in \
 	'#### Guiding Principles' \
 	'### Cross-domain reasoning' \
 	'Acceptance authorizes the mutation but is not successful persistence.' \
-	'User-visible collaboration follows the Highway Experience Standard.'; do
+	; do
 	require_text "$PROFILE" "$text"
 done
 

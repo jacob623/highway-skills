@@ -29,8 +29,7 @@ for required in \
 	'### Cross-domain reasoning' \
 	'When entering unresolved Vision' \
 	'Canonical questions are Profile-owned fallbacks' \
-	'Profile uses transient Conversational Clarification' \
-	'User-visible collaboration follows the Highway Experience Standard.'; do
+	; do
 	require_text "$required"
 done
 
