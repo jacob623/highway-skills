@@ -2,7 +2,7 @@
 # Validates one skill directory against the constitution at .highway/governance/constitution.md
 # and against .highway/skills/_authoring-standard.md.
 #
-# Usage: .highway/tools/validate-skill.sh <skill-dir>
+# Usage: .highway/tools/validate-skill.sh [--no-cache] <skill-dir>
 # Output format is a contract: per feature 003 (constitution enforcement).
 # Exit 0: no check failed. Exit 1: at least one check failed.
 # Deferred and unchecked rules never affect exit status; enforcing a subset of the rules is the
@@ -27,6 +27,14 @@ source "$SCRIPT_DIR/lib/body-scan.sh"
 source "$SCRIPT_DIR/lib/rule-checks.sh"
 # shellcheck source=tools/lib/dependency-check.sh
 source "$SCRIPT_DIR/lib/dependency-check.sh"
+# shellcheck source=tools/lib/validation-cache.sh
+source "$SCRIPT_DIR/lib/validation-cache.sh"
+
+use_cache=1
+if [[ ${1:-} == "--no-cache" ]]; then
+	use_cache=0
+	shift
+fi
 
 if [[ $# -ne 1 ]]; then
 	echo "ERROR: [SCHEMA] usage: .highway/tools/validate-skill.sh <skill-dir>" >&2
@@ -63,6 +71,21 @@ gov_rule_field() {
 if [[ ! -f "$skill_file" ]]; then
 	echo "ERROR: [SCHEMA] no SKILL.md found at '$skill_file'" >&2
 	exit 1
+fi
+
+# A recorded verdict for these exact inputs is replayed rather than re-derived. The replay prints
+# the full report because callers parse it; a hit that printed nothing would be observably
+# different from a full run.
+cache_dir=""
+cache_key=""
+if (( use_cache )); then
+	cache_dir="$(vc_dir "$(cd "$HIGHWAY_ROOT/.." && pwd)")"
+	if [[ -n "$cache_dir" ]]; then
+		cache_key="$(vc_key "$skill_file" "$HIGHWAY_ROOT")"
+		if vc_lookup "$cache_dir" "$cache_key"; then
+			exit 0
+		fi
+	fi
 fi
 
 if [[ ! -f "$constitution" ]]; then
@@ -205,19 +228,26 @@ fi
 
 sorted() { printf '%s' "$1" | tr ' ' '\n' | grep -v '^$' | sort -V | tr '\n' ' ' | sed 's/ $//'; }
 
-echo "CHECKED:   $(sorted "$checked")"
-echo "FAILED:    $(sorted "$failed_rules")"
-echo "N/A:       $(sorted "$na")"
-echo "DEFERRED:  $(sorted "$deferred")"
-echo "UNCHECKED: $(sorted "$unchecked")"
+report="CHECKED:   $(sorted "$checked")"$'\n'
+report="${report}FAILED:    $(sorted "$failed_rules")"$'\n'
+report="${report}N/A:       $(sorted "$na")"$'\n'
+report="${report}DEFERRED:  $(sorted "$deferred")"$'\n'
+report="${report}UNCHECKED: $(sorted "$unchecked")"$'\n'
 
 count() { printf '%s' "$1" | tr ' ' '\n' | grep -cv '^$' | tr -d ' '; }
 
 if [[ -n "$errors" ]]; then
 	finding_count="$(printf '%s' "$errors" | grep -c '^ERROR: ' | tr -d ' ')"
-	echo "FAILED: skill '$id' violates $finding_count rule(s)"
+	report="${report}FAILED: skill '$id' violates $finding_count rule(s)"$'\n'
+	printf '%s' "$report"
 	exit 1
 fi
 
-echo "OK: skill '$id' is valid ($(count "$checked") rules checked, $(count "$deferred") deferred, $(count "$unchecked") unchecked)"
+report="${report}OK: skill '$id' is valid ($(count "$checked") rules checked, $(count "$deferred") deferred, $(count "$unchecked") unchecked)"$'\n'
+printf '%s' "$report"
+
+# Recorded only on success, so a defective skill is re-validated and re-reported every time.
+if (( use_cache )) && [[ -n "$cache_dir" && -n "$cache_key" ]]; then
+	vc_record "$cache_dir" "$cache_key" "$report"
+fi
 exit 0
