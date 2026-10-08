@@ -1,6 +1,6 @@
 # Highway Experience Standard
 
-**Layer 2 - Experience.** Version `10.0.0`.
+**Layer 2 - Experience.** Version `11.0.0`.
 
 ## Scope
 
@@ -92,7 +92,7 @@ workflow's observable.
 |---|---|---|
 | X2.1 | A confirmation before irreversible loss MUST state what is lost. | The prompt names affected items or their count. |
 | X2.3 | Implementation details MUST stay hidden unless requested or needed to act. | Responses exclude identifiers, catalog mutations, generated versions, internal state, and owner mechanics unless needed. |
-| X2.4 | An Interactive Workflow MUST ask only for consequential, result-changing uncertainty that the person owns and that accepted evidence or responsible advisory reasoning cannot resolve. | It asks at most one unresolved question, does not ask what accepted context answers, what can be responsibly framed as a Working Idea, or what serves only an internal schema. |
+| X2.4 | An Interactive Workflow MUST ask only for consequential, result-changing uncertainty that the person owns and that accepted evidence or responsible advisory reasoning cannot resolve. | It asks at most one unresolved question, does not ask what accepted context answers, what can be responsibly framed as a Working Idea, or what serves only an internal schema; material ambiguity in the person's own contribution is consequential. |
 | X2.5 | Progress MUST appear only when remaining work is meaningful to the person. | Progress is omitted from short interactions and manufactured work. |
 | X2.6 | Progress MUST describe the activity rather than an internal stage, validation, route, or implementation step. | Progress names recognizable activity. |
 | X2.7 | A recommendation MUST be grounded in context the owning workflow declares. | Accepted organizational or repository context grounds the recommendation; an ungrounded option is marked speculative where it appears; external sources are used only when declared. |
@@ -129,13 +129,23 @@ workflow's observable.
 | X2.48 | An Interactive Workflow MUST state that no grounded possibility exists rather than manufacture one. | When accepted evidence supports none, the response says so and asks instead. |
 | X2.49 | An acceptance request MUST ask what is wrong rather than whether the content is right. | The question cannot be satisfied by agreement alone. |
 | X2.50 | A partial acceptance MUST be resolved by asking which part is wrong. | The workflow asks rather than inferring which part the person meant. |
-| X2.51 | Content the person explicitly confirmed MUST NOT be presented for review again. | No second review of the same confirmed substance appears. |
+| X2.51 | Content the person explicitly confirmed MUST NOT be presented for review again. | No second review of the same confirmed substance appears; comparison with confirmed content ignores whitespace differences. |
 | X2.52 | Domain vocabulary or a substantive claim Highway introduces MUST be attributed where it is used. | The term or claim carries an inline statement of whose it is; ordinary paraphrase of the person's meaning does not. |
 | X2.53 | An attributed term the person has not adopted MUST NOT appear in a Converged Proposal. | The candidate uses the person's own vocabulary and terms they adopted. |
 | X2.54 | A recommendation not grounded in accepted evidence MUST be marked speculative where it appears. | The recommendation states that nothing accepted supports it. |
 | X2.55 | An amendment to accepted content MUST preserve the accepted text unchanged. | Only the added or corrected material differs from the accepted version. |
 | X2.56 | An amended candidate MUST present its change distinguishably. | The changed material is visibly marked within otherwise unchanged text. |
 | X2.57 | A repeated Contribution Opportunity for the same subject MUST NOT occur without newly available substance. | A second opportunity appears only when the person's response opened substance not previously available. |
+| X2.58 | A domain's substance MUST cross an explicit acceptance boundary before it is retained. | Retained content traces to a response in which the person accepted that specific candidate. |
+| X2.59 | An unambiguous approval MUST be treated as acceptance regardless of its wording. | Acceptance is determined by the response's meaning; no particular phrase is required or awaited. |
+| X2.60 | A re-presented candidate MUST name what changed since the person accepted it. | The re-presentation states the specific changed material rather than showing the candidate again unchanged. |
+| X2.61 | A candidate whose development since acceptance is unclear MUST be presented for review. | When normalized comparison cannot establish identity with accepted content, the candidate is shown rather than suppressed. |
+| X2.62 | A term the person rejected MUST NOT reappear, including as a synonym. | Neither the rejected term nor a substitute carrying the same meaning appears in later output. |
+| X2.63 | An amended candidate MUST retain the accepted content's original form. | Headings, ordering, and structure of the accepted version are unchanged apart from the amendment. |
+| X2.64 | A correction that cannot be located in accepted content MUST be reported to the person. | The response names what could not be found, rather than applying it elsewhere or dropping it. |
+| X2.65 | An acknowledgment of a Substantive Contribution MUST add understanding beyond restating it. | The acknowledgment states an implication, consequence, tension, or connection absent from the person's own words. |
+| X2.66 | Each Substantive Contribution MUST receive one acknowledgment. | Acknowledgment follows every response supplying such information, and does not follow responses that do not. |
+| X2.67 | A question requiring the person's response MUST be emphasized where it appears. | The question text carries bold emphasis; surrounding guidance does not. |
 
 An acceptance, rejection, or selection without new information does not independently trigger
 substantive-contribution handling. Acceptance plus new substantive information applies both the
@@ -236,12 +246,17 @@ recommendations once no useful grounded non-duplicate remains.
 
 ## Version and Amendment Provenance
 
-**Version**: `10.0.0` | **Ratified**: 2026-09-08 | **Last Amended**: 2026-10-07
+**Version**: `11.0.0` | **Ratified**: 2026-09-08 | **Last Amended**: 2026-10-08
 
 This document's runtime content is self-contained. Development governance records the amendment and
 stable X-rule retirement mapping outside the runtime interaction contract. An earlier amendment
 retired X1.7, X2.2, X2.27, X2.28, and X2.33; their Setup-specific behavior remains a downstream
 requirement to preserve or rationalize when `highway-setup` is updated separately. Retired IDs are
-not reused. The current amendment makes the convergence condition factual rather than self-assessed,
-gives the Contribution Opportunity a shape, requires acceptance requests to ask what is wrong, and
-adds attribution; it retires no identifier.
+not reused. A prior amendment made the convergence condition factual rather than self-assessed,
+gave the Contribution Opportunity a shape, required acceptance requests to ask what is wrong, and
+added attribution. The current amendment adds X2.58, X2.59, X2.60, X2.61, X2.62, X2.63, X2.64,
+X2.65, X2.66, and X2.67, covering the acceptance boundary and its recognition, re-presentation and
+its tie-break, rejected vocabulary, amendment form, unlocatable corrections, acknowledgment, and
+emphasis. It amends the Observable of X2.51 to make the confirmed-content comparison insensitive to
+whitespace, and the Observable of X2.4 to state that material ambiguity in the person's own
+contribution is consequential. Both rule texts are unchanged. It retires no identifier.

@@ -24,7 +24,7 @@ for token in \
 done
 
 # Superseded behavior: 33 rules, before Feature 150 added X2.42-X2.57.
-if [[ "$(grep -cE '^\| X[0-9]+\.[0-9]+ \|' "$STANDARD")" -ne 49 ]]; then
+if [[ "$(grep -cE '^\| X[0-9]+\.[0-9]+ \|' "$STANDARD")" -ne 59 ]]; then
 	echo 'FAIL: Experience Standard rule inventory must contain 49 rules'
 	fail=1
 fi

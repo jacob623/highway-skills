@@ -4,7 +4,7 @@ description: "Manages the repository-wide organizational Profile and its context
 usage: "Invoke as `/highway-profile` to inspect Profile context, or state setup, view, add, update, remove, or reset."
 compatibility: all
 metadata:
-  version: 10.0.0
+  version: 11.0.0
 ---
 
 # highway-profile
@@ -55,7 +55,12 @@ A valid incomplete Profile with any `not_discussed` domain is `Missing` with Nex
 Profile readiness is an internal result containing `Status:`, `Summary:`, `Next Action:`, and
 `Blocking Reason:` fields. These fields are not a normal user-facing output template. Direct
 readiness requests may show the requested result; orchestrated conversation does not render these
-machine fields.
+machine fields, and does not name readiness statuses, next actions, blocking reasons, domain states,
+or persistence steps.
+
+Domain completeness is obtained by reading the retained Profile record at
+`.highway/library/templates/output/profile-record.md`'s declared location. No command is invoked to
+determine readiness.
 
 #### Domain model
 
@@ -121,8 +126,20 @@ Profile determines domain completeness. The Highway Experience Standard determin
 collaborative development has converged enough for that complete candidate to become a Converged
 Proposal.
 
-Profile-specific validation questions apply to the domain's Converged Proposal. A sharper open
-question drawn from the conversation may replace the default validation sentence for its domain.
+Profile-specific validation questions apply to the domain's Converged Proposal.
+
+Every domain presents its Converged Proposal the same way. Present the candidate under its capture
+heading, `**Here's what I've captured as your [domain]:**`, where `[domain]` is the domain name. Put
+one acceptance request at the bottom: the validation question, which is
+`**What would you add, correct, or remove?**`. A sharper open question drawn from the conversation
+may stand in for it, as long as it stays emphasized and still asks what to add, correct, or remove.
+
+The person's response to that request is the domain's acceptance boundary. Recognize acceptance by
+what the response means, not by whether it matches a particular phrase, and do not wait for a second
+confirmation. Once a domain is accepted, do not present the same substance again; if a later
+revision is needed, name what changed. Compare against accepted content ignoring differences in line
+wrapping and spacing. When it is unclear whether a candidate has developed since acceptance, present
+it.
 
 ##### Organizational expression
 
@@ -138,21 +155,24 @@ fields. Profile-owned expression guidance does not control Objectives, Controls,
 Identity establishes who the organization is and what it meaningfully encompasses, including durable
 activity and purpose. It is not a technology-landscape inventory.
 
-After convergence, validate with `**What's missing or wrong in this description of [Organization Name]?**`
-followed by `You can also change it or provide your own description.`
+After convergence, present the Converged Proposal under
+`**Here's what I've captured as your Identity:**`, validate it with the shared validation question,
+and treat the person's response as the acceptance boundary for Identity.
 
 ##### Vision
 
 Vision describes the future the organization is trying to create. Reason from the full accepted
 Identity and other relevant Profile evidence; do not let one Identity facet become the whole Vision
-merely because it is the easiest continuation.
+merely because it is the easiest continuation. Vision does not elicit or retain the approach,
+sequencing, or organizational method for reaching that future; those belong to Competitive Path.
 
 When entering unresolved Vision, open the user-visible subject with `### Where you're going`. Open
 that subject with grounded possibilities drawn from accepted Profile evidence before asking the
 Vision question.
 
-Validate the Converged Proposal with **What's missing or wrong about where [Organization Name] is
-going?** followed by `You can also change it or provide your own vision.`
+Present the Converged Proposal under `**Here's what I've captured as your Vision:**`, validate it
+with the shared validation question, and treat the person's response as the acceptance boundary for
+Vision.
 
 ##### Competitive Path
 
@@ -164,8 +184,9 @@ strategic meaning. When entering unresolved Competitive
 Path, open the user-visible subject with `### How you'll get there`. Open that subject with grounded
 possibilities drawn from accepted Profile evidence before asking the Competitive Path question.
 
-Validate the Converged Proposal with **What's missing or wrong about how [Organization Name] gets
-there?** followed by `You can also change it or provide your own approach.`
+Present the Converged Proposal under `**Here's what I've captured as your Competitive Path:**`,
+validate it with the shared validation question, and treat the person's response as the acceptance
+boundary for Competitive Path.
 
 ##### Guiding Principles
 
@@ -175,13 +196,17 @@ turn a principle into an enforceable Control. When entering unresolved Guiding P
 user-visible subject with `### What will guide your decisions`. Open that subject with grounded
 possibilities drawn from accepted Profile evidence before asking the Guiding Principles question.
 
-Validate the Converged Proposal with **What's missing or wrong about what guides decisions at [Organization Name]?** followed by `You can also change it or provide your own principles.`
+Present the Converged Proposal under `**Here's what I've captured as your Guiding Principles:**`,
+validate it with the shared validation question, and treat the person's response as the acceptance
+boundary for Guiding Principles.
 
 #### Cross-domain reasoning
 
 New substantive organizational evidence is evaluated across every unresolved Profile domain.
 Accepted Identity informs Vision when relevant; accepted Identity and Vision inform Competitive Path;
-accepted Identity, Vision, and Competitive Path inform Guiding Principles.
+accepted Identity, Vision, and Competitive Path inform Guiding Principles. When evidence offered
+while composing one domain supports another that is still unresolved, carry it forward to the
+appropriate unresolved domain rather than discarding it.
 
 Persisted clarification records belong to `highway-clarify` when separately requested.
 
@@ -189,11 +214,12 @@ Persisted clarification records belong to `highway-clarify` when separately requ
 
 Operations remain setup, configure, readiness, view, show, describe, add, update, remove, and reset.
 Persist only information the person supplied, selected, or accepted, including permitted optional
-Context. Acceptance authorizes the mutation but is not successful persistence. After acceptance
+Context. Acceptance authorizes the mutation but is not successful persistence. The authorized
+mutation is a write to the retained Profile record. After acceptance
 changes retained Profile state, perform that mutation before any dependent readiness, completion, or
 other owner result. If persistence fails, stop before dependent progression and report actionable
 failure context, leave the affected domain unchanged, and do not claim successful readiness or
-completion.
+completion. Describe a failure in terms the person can act on, without naming internal operations.
 
 Retain only the accepted cohesive domain narrative, accepted explicit corrections or replacements,
 accepted explicit domain boundaries, and optional Context permitted by profile-record.md.
@@ -216,7 +242,21 @@ question.
 - Each accepted domain mutation succeeds before Profile uses it as persisted knowledge.
 - Domain completeness does not independently establish conversational convergence.
 - Supported cross-domain implications are preserved for the appropriate unresolved domain.
-- Each domain's validation question asks what is missing or wrong in the candidate.
+- Each domain presents its Converged Proposal under its capture heading.
+- Each domain uses the single defined validation question.
+- Each question requiring a response is emphasized.
+- Each domain crosses one acceptance boundary before its substance is retained.
+- Confirmed substance is not presented again unless the re-presentation names what changed.
+- A candidate whose development since acceptance is unclear is presented rather than suppressed.
+- A term the person rejected does not reappear, including as a synonym.
+- An amendment preserves the accepted content's form.
+- A correction that cannot be located is reported rather than applied elsewhere.
+- Each Substantive Contribution receives one acknowledgment.
+- An acknowledgment adds understanding beyond restating the contribution.
+- Vision retains its boundary against approach, sequencing, and organizational method.
+- Domain completeness is obtained by reading the retained Profile record.
+- Persistence writes the accepted domain mutation to the retained Profile record.
+- Internal readiness vocabulary does not appear in orchestrated conversation.
 - No retained schema field or readiness dimension is added for convergence or collaboration concepts.
 
 ## Error Handling

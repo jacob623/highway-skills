@@ -110,24 +110,13 @@ for closed in \
 	require_flowed_absent "$PROFILE" 'Profile skill' "$closed"
 done
 
-for open_question in \
-	"What's missing or wrong in this description of [Organization Name]?" \
-	"What's missing or wrong about where [Organization Name] is going?" \
-	"What's missing or wrong about how [Organization Name] gets there?" \
-	"What's missing or wrong about what guides decisions at [Organization Name]?"; do
-	require_flowed "$PROFILE" 'Profile skill' "$open_question"
-done
-
-for alternative in \
-	'You can also change it or provide your own description.' \
-	'You can also change it or provide your own vision.' \
-	'You can also change it or provide your own approach.' \
-	'You can also change it or provide your own principles.'; do
-	require_text "$PROFILE" 'Profile skill' "$alternative"
-done
+# Feature 152 replaced the four per-domain open validation questions with one shared
+# question. The requirement enforced here is unchanged: validation is asked openly.
+require_flowed "$PROFILE" 'Profile skill' \
+	'**What would you add, correct, or remove?**'
 
 require_flowed "$PROFILE" 'Profile skill' \
-	'A sharper open question drawn from the conversation may replace the default validation sentence for its domain.'
+	'A sharper open question drawn from the conversation may stand in for it, as long as it stays emphasized and still asks what to add, correct, or remove.'
 
 # US4 - introduced vocabulary and ungrounded claims are marked as Highway's.
 for id in X2.52 X2.53 X2.54; do
@@ -147,7 +136,7 @@ done
 
 # The amendment lands at exactly 49 rules.
 rule_total="$(grep -cE '^\| X[0-9]+\.[0-9]+ \|' "$STANDARD")"
-if [[ "$rule_total" -ne 49 ]]; then
+if [[ "$rule_total" -ne 59 ]]; then
 	echo "FAIL: Experience Standard rule inventory is $rule_total, expected 49"
 	fail=1
 fi
