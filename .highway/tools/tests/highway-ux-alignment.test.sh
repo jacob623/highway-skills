@@ -37,13 +37,16 @@ for token in \
 	'Incorporates clear input directly' \
 	"Let the person's response reshape the Working Idea" \
 	'non-authoritative until' \
-	'Present a Converged Proposal only after owner completeness and conversational convergence' \
+	'Present a Converged Proposal only after owner completeness, conversational convergence, and a' \
 	'Working Idea development'; do
 	require_text "$EXPERIENCE_STANDARD" "$token"
 done
 
-if [[ "$(grep -cE '^\| X[0-9]+\.[0-9]+ \|' "$EXPERIENCE_STANDARD")" -ne 33 ]]; then
-	echo 'FAIL: Experience Standard rule inventory must contain 33 rules'
+# Superseded behavior: 33 rules, before Feature 150 added X2.42-X2.57.
+# Superseded behavior: Interaction Model step 9 converged on owner completeness and conversational
+# convergence alone; Feature 150 adds a Substantive Contribution from the person as a third condition.
+if [[ "$(grep -cE '^\| X[0-9]+\.[0-9]+ \|' "$EXPERIENCE_STANDARD")" -ne 49 ]]; then
+	echo 'FAIL: Experience Standard rule inventory must contain 49 rules'
 	fail=1
 fi
 for old_section in \

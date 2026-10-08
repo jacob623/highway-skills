@@ -38,12 +38,13 @@ for token in \
 	'The standard is an adaptive loop, not a fixed number of turns' \
 	'Domain completeness alone is not' \
 	'owner perform its declared acceptance and persistence behavior' \
-	'**Version**: `9.1.0` | **Ratified**: 2026-09-08 | **Last Amended**: 2026-10-06'; do
+	'**Version**: `10.0.0` | **Ratified**: 2026-09-08 | **Last Amended**: 2026-10-07'; do
 	require_text "$token"
 done
 
-if [[ "$(grep -cE '^\| X[0-9]+\.[0-9]+ \|' "$STANDARD")" -ne 33 ]]; then
-	echo 'FAIL: Experience Standard rule inventory must contain 33 rules'
+# Superseded behavior: 33 rules, before Feature 150 added X2.42-X2.57.
+if [[ "$(grep -cE '^\| X[0-9]+\.[0-9]+ \|' "$STANDARD")" -ne 49 ]]; then
+	echo 'FAIL: Experience Standard rule inventory must contain 49 rules'
 	fail=1
 fi
 

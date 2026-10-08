@@ -4,7 +4,7 @@ description: "Manages the repository-wide organizational Profile and its context
 usage: "Invoke as `/highway-profile` to inspect Profile context, or state setup, view, add, update, remove, or reset."
 compatibility: all
 metadata:
-  version: 9.0.0
+  version: 10.0.0
 ---
 
 # highway-profile
@@ -121,7 +121,8 @@ Profile determines domain completeness. The Highway Experience Standard determin
 collaborative development has converged enough for that complete candidate to become a Converged
 Proposal.
 
-Profile-specific validation questions apply to the domain's Converged Proposal.
+Profile-specific validation questions apply to the domain's Converged Proposal. A sharper open
+question drawn from the conversation may replace the default validation sentence for its domain.
 
 ##### Organizational expression
 
@@ -135,11 +136,9 @@ fields. Profile-owned expression guidance does not control Objectives, Controls,
 ##### Identity
 
 Identity establishes who the organization is and what it meaningfully encompasses, including durable
-activity and purpose. It is not a technology-landscape inventory. When Profile materially assembles
-Identity from multiple sources or substantial interpretation, present meaningful organizational
-facets provisionally before final synthesis when that helps inspection.
+activity and purpose. It is not a technology-landscape inventory.
 
-After convergence, validate with `**Is this an accurate description of your organization?**`
+After convergence, validate with `**What's missing or wrong in this description of [Organization Name]?**`
 followed by `You can also change it or provide your own description.`
 
 ##### Vision
@@ -148,10 +147,12 @@ Vision describes the future the organization is trying to create. Reason from th
 Identity and other relevant Profile evidence; do not let one Identity facet become the whole Vision
 merely because it is the easiest continuation.
 
-When entering unresolved Vision, open the user-visible subject with `### Where you're going`.
+When entering unresolved Vision, open the user-visible subject with `### Where you're going`. Open
+that subject with grounded possibilities drawn from accepted Profile evidence before asking the
+Vision question.
 
-Validate the Converged Proposal with **Does this accurately reflect where you'd like [Organization
-Name] to go?** followed by `You can also change it or provide your own vision.`
+Validate the Converged Proposal with **What's missing or wrong about where [Organization Name] is
+going?** followed by `You can also change it or provide your own vision.`
 
 ##### Competitive Path
 
@@ -160,19 +161,21 @@ reason about strategic choices, sequencing, priorities, and organizational direc
 elicit or retain Controls, NFRs, safeguards, architecture, implementation requirements, or plans.
 When volunteered downstream-owned information changes the broad approach, retain only its broad
 strategic meaning. When entering unresolved Competitive
-Path, open the user-visible subject with `### How you'll get there`.
+Path, open the user-visible subject with `### How you'll get there`. Open that subject with grounded
+possibilities drawn from accepted Profile evidence before asking the Competitive Path question.
 
-Validate the Converged Proposal with **Does this accurately reflect how [Organization Name] plans to
-get there?** followed by `You can also change it or provide your own approach.`
+Validate the Converged Proposal with **What's missing or wrong about how [Organization Name] gets
+there?** followed by `You can also change it or provide your own approach.`
 
 ##### Guiding Principles
 
 Guiding Principles describe the enduring principles that shape organizational decisions. Use
 accepted Identity, Vision, Competitive Path, and other accepted Profile context as grounding. Do not
 turn a principle into an enforceable Control. When entering unresolved Guiding Principles, open the
-user-visible subject with `### What will guide your decisions`.
+user-visible subject with `### What will guide your decisions`. Open that subject with grounded
+possibilities drawn from accepted Profile evidence before asking the Guiding Principles question.
 
-Validate the Converged Proposal with **Does this accurately reflect what should guide decisions at [Organization Name]?** followed by `You can also change it or provide your own principles.`
+Validate the Converged Proposal with **What's missing or wrong about what guides decisions at [Organization Name]?** followed by `You can also change it or provide your own principles.`
 
 #### Cross-domain reasoning
 
@@ -213,6 +216,7 @@ question.
 - Each accepted domain mutation succeeds before Profile uses it as persisted knowledge.
 - Domain completeness does not independently establish conversational convergence.
 - Supported cross-domain implications are preserved for the appropriate unresolved domain.
+- Each domain's validation question asks what is missing or wrong in the candidate.
 - No retained schema field or readiness dimension is added for convergence or collaboration concepts.
 
 ## Error Handling

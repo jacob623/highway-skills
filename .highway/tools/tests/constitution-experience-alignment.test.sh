@@ -60,8 +60,9 @@ if [[ "$(grep -cE '^\| P[0-9]+[A-Z]?\.[0-9]+ ' "$CONSTITUTION")" -ne 73 ]]; then
 	fail=1
 fi
 
-if [[ "$(grep -cE '^\| X[0-9]+\.[0-9]+ \|' "$STANDARD")" -ne 33 ]]; then
-	echo 'FAIL: Experience Standard rule inventory is not 33'
+# Superseded behavior: 33 rules, before Feature 150 added X2.42-X2.57.
+if [[ "$(grep -cE '^\| X[0-9]+\.[0-9]+ \|' "$STANDARD")" -ne 49 ]]; then
+	echo 'FAIL: Experience Standard rule inventory is not 49'
 	fail=1
 fi
 

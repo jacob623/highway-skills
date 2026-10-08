@@ -39,7 +39,7 @@ if grep -Eq '^## highway-profile$' "$PROFILE"; then
 fi
 
 for required in \
-	'version: 9.0.0' \
+	'version: 10.0.0' \
 	'User requests, proposal evidence, supplied organizational material' \
 	'public organizational' \
 	'Profile Context' \

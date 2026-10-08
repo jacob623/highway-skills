@@ -36,8 +36,9 @@ if ! grep -Fq 'proposal evidence' "$HIGHWAY_ROOT/skills/highway-profile/SKILL.md
 
 SKILL="$HIGHWAY_ROOT/skills/highway-profile/SKILL.md"
 # Superseded behavior: version 5.3.0, enrichment-category coverage, and Competitive Path opening from accepted Vision or sufficient accepted evidence.
+# Superseded behavior: version 9.0.0 and the closed Identity acceptance question 'Is this an accurate description of your organization?', replaced by Feature 150 with a question that cannot be answered by agreement alone.
 for required_text in \
-	       'version: 9.0.0' \
+	       'version: 10.0.0' \
 	"### Let's get to know your organization" \
 	'An absent Profile is a valid initial state' \
 	'Profile determines domain completeness' \
@@ -47,7 +48,7 @@ for required_text in \
 	'When entering unresolved Guiding Principles' \
 	'Acceptance authorizes the mutation but is not successful persistence' \
 	'emit one concise user-relevant synthesis' \
-	'Is this an accurate description of your organization?' \
+	"What's missing or wrong in this description of [Organization Name]?" \
 	'Validate the Converged Proposal with' \
 	'You can also change it or provide your own description.' \
 	'You can also change it or provide your own vision.' \

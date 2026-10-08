@@ -77,7 +77,7 @@ if grep -Fq '### Repository Name' "$PROFILE"; then
 fi
 # Superseded behavior: highway-profile version 5.3.0 locked the narrower domain and acquisition contract.
 # Superseded behavior: highway-profile 6.0.0. Feature 138 is MAJOR 7.0.0 because projection and verification narrowed (D3.5).
-require_text "$PROFILE" 'version: 9.0.0'
+require_text "$PROFILE" 'version: 10.0.0'
 if grep -Fq '.highway/tools/validate-profile.sh' "$PROFILE"; then
 	echo "FAIL: $PROFILE still instructs .highway/tools/validate-profile.sh"
 	fail=1
