@@ -45,7 +45,7 @@ done
 # Superseded behavior: 33 rules, before Feature 150 added X2.42-X2.57.
 # Superseded behavior: Interaction Model step 9 converged on owner completeness and conversational
 # convergence alone; Feature 150 adds a Substantive Contribution from the person as a third condition.
-if [[ "$(grep -cE '^\| X[0-9]+\.[0-9]+ \|' "$EXPERIENCE_STANDARD")" -ne 49 ]]; then
+if [[ "$(grep -cE '^\| X[0-9]+\.[0-9]+ \|' "$EXPERIENCE_STANDARD")" -ne 59 ]]; then
 	echo 'FAIL: Experience Standard rule inventory must contain 49 rules'
 	fail=1
 fi
