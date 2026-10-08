@@ -10,8 +10,8 @@ STANDARD="$HIGHWAY_ROOT/governance/experience-standard.md"
 fail=0
 
 for token in \
-	'**Layer 2 - Experience.** Version `9.1.0`.' \
-	'**Version**: `9.1.0` | **Ratified**: 2026-09-08 | **Last Amended**: 2026-10-06' \
+	'**Layer 2 - Experience.** Version `10.0.0`.' \
+	'**Version**: `10.0.0` | **Ratified**: 2026-09-08 | **Last Amended**: 2026-10-07' \
 	'## Interaction Model' \
 	'## Conversational Clarification' \
 	'## Contribution Opportunity' \
@@ -25,8 +25,9 @@ for token in \
 	grep -Fq "$token" "$STANDARD" || { echo "FAIL: Experience Standard missing $token"; fail=1; }
 done
 
-if [[ "$(grep -cE '^\| X[0-9]+\.[0-9]+ \|' "$STANDARD")" -ne 33 ]]; then
-	echo 'FAIL: Experience Standard rule inventory must contain 33 rules'
+# Superseded behavior: 33 rules at version 9.1.0, before Feature 150 added X2.42-X2.57.
+if [[ "$(grep -cE '^\| X[0-9]+\.[0-9]+ \|' "$STANDARD")" -ne 49 ]]; then
+	echo 'FAIL: Experience Standard rule inventory must contain 49 rules'
 	fail=1
 fi
 

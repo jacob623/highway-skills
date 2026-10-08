@@ -23,8 +23,9 @@ for token in \
 	grep -Fq "$token" "$STANDARD" || { echo "FAIL: Experience Standard missing $token"; fail=1; }
 done
 
-if [[ "$(grep -cE '^\| X[0-9]+\.[0-9]+ \|' "$STANDARD")" -ne 33 ]]; then
-	echo 'FAIL: Experience Standard rule inventory must contain 33 rules'
+# Superseded behavior: 33 rules, before Feature 150 added X2.42-X2.57.
+if [[ "$(grep -cE '^\| X[0-9]+\.[0-9]+ \|' "$STANDARD")" -ne 49 ]]; then
+	echo 'FAIL: Experience Standard rule inventory must contain 49 rules'
 	fail=1
 fi
 

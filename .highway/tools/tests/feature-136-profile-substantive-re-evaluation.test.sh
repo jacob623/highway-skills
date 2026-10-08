@@ -8,17 +8,17 @@ HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 REPO_ROOT="$(cd "$HIGHWAY_ROOT/.." && pwd)"
 PROFILE="$HIGHWAY_ROOT/skills/highway-profile/SKILL.md"
 fail=0
+# Superseded behavior: 'provisional', 'materially assembles', and 'facets provisionally' asserted the
+# permissive Identity hook that let Profile decide when to show facets before synthesis. Feature 150
+# deletes it; Experience Standard X2.37 and X2.41 now owe the opportunity on a factual trigger.
 for text in \
-	'version: 9.0.0' \
+	'version: 10.0.0' \
 	'Evaluate each source across all unresolved Profile domains' \
 	'New substantive organizational evidence is evaluated across every unresolved Profile domain' \
 	'Identity establishes who the organization is' \
-	'provisional' \
-	'materially assembles' \
 	'durable' \
 	'not a technology-landscape inventory' \
-	'full accepted' \
-	'facets provisionally'; do
+	'full accepted'; do
 	if ! grep -Fq -- "$text" "$PROFILE"; then echo "FAIL: Profile skill missing '$text'"; fail=1; fi
 done
 for forbidden in 'Identity facet fields' 'clarification state' 'reasoning state' '## Enrichment'; do
