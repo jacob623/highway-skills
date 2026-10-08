@@ -5,7 +5,7 @@ runtime — POSIX shell (`bash`, `awk`, `sed`, `grep`) only.
 
 ## Scripts
 
-### `.highway/tools/validate-skill.sh <skill-dir>`
+### `.highway/tools/validate-skill.sh [--no-cache] <skill-dir>`
 
 Validates one skill directory against the constitution at `.highway/governance/constitution.md` and
 against [skills/_authoring-standard.md](../skills/_authoring-standard.md).
@@ -36,6 +36,32 @@ Also checks every `metadata.dependencies` entry against `.highway/library/` (see
 `.highway/tools/validate-library.sh` below): a missing path or a stale pinned version is
 reported as an `ERROR: [DEPENDENCY] ...` finding, per feature 004 (shared content library).
 
+#### Validation cache
+
+A successful validation is recorded under `${TMPDIR:-/tmp}/highway-validation-cache` and replayed
+when the same skill is validated again against the same validator. Generation re-validates the
+same skills many times in one run, and the cache is what stops that work being repeated — it
+takes validating all twelve skills from roughly 5.4 s to 0.44 s. Pass `--no-cache` to force full
+validation.
+
+The cache key is a hash of the skill's `SKILL.md` combined with a hash of **every validator
+input**: `validate-skill.sh` itself, `.frontmatter-contract`, and every file under `lib/`,
+`.highway/library/` and `.highway/governance/`. Change any of them and the key changes, so a
+recorded verdict can never outlive the thing that decided it. Three properties are deliberate and
+should be preserved by anyone editing this:
+
+- **Only successes are recorded.** A failing skill is re-validated and re-reported every time.
+- **The full report is stored and replayed**, so a cache hit is byte-identical to a full run.
+  Callers parse this output; a hit must not be quieter than a miss.
+- **The cache disables itself** when `CONSTITUTION_FILE`, `EXPERIENCE_FILE`,
+  `FRONTMATTER_CONTRACT_FILE` or `FRONTMATTER_LEXICON_FILE` is set, because those overrides
+  repoint validation at documents the key does not describe. It also disables itself if the cache
+  directory would resolve inside the repository, or is not writable.
+
+The cache is an optimisation and never a source of truth: deleting the directory changes nothing
+but runtime. `tests/validation-cache.test.sh` holds the assertions, including that breaking a
+previously-cached skill still fails with its original error.
+
 ### Libraries
 
 | File | Responsibility |
@@ -48,6 +74,7 @@ reported as an `ERROR: [DEPENDENCY] ...` finding, per feature 004 (shared conten
 | `lib/library-schema.sh` | Minimal frontmatter shape checks (`name`, `description`) for a shared library file. |
 | `lib/dependency-check.sh` | Resolves a skill's `metadata.dependencies` entries against `.highway/library/` and flags a missing path or version mismatch. |
 | `lib/distribution.sh` | Classifies a repository path as included in or excluded from the user-facing distribution, by reading `.distribution-manifest`. |
+| `lib/validation-cache.sh` | Content-addressed record of successful skill validations, keyed on the skill plus every validator input. |
 
 ### `.highway/tools/generate-catalog.sh`
 

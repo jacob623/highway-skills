@@ -11,12 +11,16 @@ reasoning intact, not abandoned.
 
 **Status**: Phases 1–6, 10, 11 and 17 are complete and their detail has been removed from this
 document. Phases 12, 13, 15 and 16 were removed on 2026-09-11: their subject is the `specs/` tree,
-which Feature 044 takes out of governance entirely. Active: Phases 8 and 14. Deferred: Phases 7
+which Feature 044 takes out of governance entirely. Active: Phases 8, 14 and 15. Deferred: Phases 7
 and 9.
 
-**Last reviewed**: 2026-09-11 (Phase 17 complete via feature 045; re-centred on `.highway`
-coverage; completed phase detail and the two appendices that fed completed phases removed; the
-four specification-record phases removed in favour of Feature 044)
+(The Phase 15 removed on 2026-09-11 and the Phase 15 proposed on 2026-09-20 are different phases
+that reused a number. The active one is the per-skill validation cost phase in §4.)
+
+**Last reviewed**: 2026-10-08 (Feature 151 re-measured the suite: 377s regression found and
+largely recovered to 242s; test count 36→75 for ~15.7s; Phases 14 and 15 amended; an unresolved
+conflict between Feature 151's cache and Phase 15's explicit prohibition recorded; a dangling
+`spec-record.test.sh` Enforcement Map row recorded as an unowned defect)
 
 ---
 
@@ -89,7 +93,8 @@ spec directory — features 010–018, 021, 022 and 045.
 | 7 | Build the `nfrs` and `controls` skills | Spec | 2 governs; 3 is the subject | ⏸ Deferred — both skills ship; five FRs unimplemented. The residual work is advice wording and ambiguity branches, which no check decides either way |
 | 8 | Make a skill's help detail answerable for itself | Spec | 1 | ▶ Active — `P7.9` adds a registered `[auto]` check over every shipped `SKILL.md` |
 | 9 | Make artifact versions accountable | Spec | 1, and a cross-layer question | ⏸ Deferred — its own analysis concludes the rule cannot honestly be `[auto]`, so it adds no mechanical coverage |
-| 14 | Recover the probe runtime the integrity work spent | Spec | 0 | ▶ Active — two files hold 135.5s of a ~200s run; runtime pressure is what erodes probe coverage |
+| 14 | Recover the probe runtime the integrity work spent | Spec | 0 | ▶ Active — two files hold 133s of a 240s run; runtime pressure is what erodes probe coverage. Re-measured 2026-10-08: ~23s of the residue is unexplained |
+| 15 | Flatten the per-skill cost of skill validation | Spec | 0 | ▶ Active — unchanged by Feature 151, which avoided repeated validation rather than making one validation cheaper. Carries an unresolved conflict with Feature 151's cache |
 
 Phases 12, 13, 15 and 16 were removed on 2026-09-11. All four governed the `specs/` tree, and all
 four had already been deferred on that ground. Feature `044` removes that tree from governance
@@ -120,6 +125,36 @@ honoured. A skill may cite `nfr-record.md` and describe a wholly different shape
 objecting. That is the same declared-structure design Phase 17 applies to frontmatter, applied to
 body output instead, and it should follow Phase 17 rather than precede it — frontmatter is the
 smaller surface to prove the pattern on.
+
+### An open defect no phase owns
+
+**Found 2026-10-08.** The development constitution's Enforcement Map names seven test files. Six
+resolve. **`spec-record.test.sh`, mapped for `D5.4`, does not exist.** It is almost certainly
+residue from Feature 044's removal of the `specs/` tree from governance, which deleted the test
+and left the row.
+
+This matters beyond tidiness: a mapping to a file that cannot run is a rule that reads as enforced
+and is not. It is the same shape as the defect Phase 8 records and the same shape `D3.7` exists to
+catch — and `constitution-inventory.test.sh`, which executes every mapped test's probe, evidently
+does not fail on a mapped test being absent. Either the row should be removed or `D5.4` should be
+re-tiered honestly; deciding which is small work, but it belongs to whoever next opens the
+Enforcement Map rather than to a runtime phase.
+
+**Also found 2026-10-08.** Running the suite rewrites the tracked file
+`.highway/tools/.adapter-manifest`, and the rewrite is **not byte-stable**: twelve `.mock-agent-4`
+rows come back in a different order each run, with identical paths, versions and hashes. Two
+separate problems sit behind that one observation:
+
+1. **A generated artifact that is committed should be reproducible.** Unstable ordering means
+   every suite run dirties the working tree with a diff carrying no information, which trains a
+   reader to `git checkout` the file without looking — exactly the habit that lets a real change
+   through unnoticed. The manifest is hash-bearing, so it is a poor file to become invisible.
+2. **The committed manifest contains test fixtures.** `.mock-agent-4` is a mock agent and its rows
+   are in the real manifest at `HEAD`. A test is writing fixture state into a shipped artifact
+   rather than into a temporary tree.
+
+Neither is a runtime concern, so neither belongs to Phase 14 or 15. Both are small, and both are
+the kind of thing that stays unfixed precisely because they are small and never written down.
 
 ---
 
@@ -495,6 +530,54 @@ identified above are untouched. What Feature 046 does settle is that the lexicon
 contributor worth measuring — any further work belongs to `constitution-inventory` and
 `rule-checks`.
 
+**Appended 2026-10-08, after Feature 151 measured the suite again.** The suite had regressed to
+**377s** — 137s past Feature 042's 240-second interim ceiling, and nothing recorded it. Feature
+151's validation cache recovered most of it. Measured on an idle machine:
+
+| | 2026-09-12 | 2026-10-08 before | 2026-10-08 after |
+|---|---:|---:|---:|
+| `run-all.sh` wall clock | median 203s | 377s | **242s** |
+
+**Growth was not the cause, and this is the finding worth keeping.** The test file count went from
+**36 to 75** between 2026-09-11 and 2026-10-08 — thirty-nine files added, **none removed** — and
+those thirty-nine cost **~15.7s combined**, thirty-four of them under 600ms each. The suite more
+than doubled what it proves for about sixteen seconds. Against 2026-09-12 the residual is **+39s**,
+of which ~16s is the new files, leaving roughly **23s unexplained**. That residue is this phase's,
+and it is a much smaller question than the 377s figure suggested.
+
+**This phase's framing survives.** Timed in situ inside the runner:
+
+| Test | 2026-09-11 | 2026-10-08 |
+|---|---:|---:|
+| `constitution-inventory.test.sh` | 97.2s | 80s |
+| `distribution-packaging.test.sh` | 38.3s | 53s |
+| **Two files, share of run** | 135.5s of ~200s | **133s of 240s** |
+
+Still two files holding more than half the run, after a cache and a doubling of the test count.
+`distribution-packaging` has now overtaken its 2026-09-11 figure and is the file that got worse.
+
+**A structural limit on caching, established by measurement.** `constitution-inventory` cannot be
+accelerated by any content-addressed cache. It seeds mutations into the governance documents and
+re-executes mapped tests against them; mutating a governance document is precisely what
+invalidates a content-addressed key, so every probe runs cold **by design**. Its cost remains a
+function of the Enforcement Map rather than of its own code, exactly as recorded above. Any future
+reduction there is a question about probe structure, not about avoided work.
+
+**Two measurement traps, both of which produced wrong figures inside Feature 151 before being
+caught.** Recorded because each is cheap to repeat:
+
+1. **Cold versus warm.** A first run after a tree change overstates individual tests by up to 7×
+   — `generate-agent-adapters.test.sh` read 236.1s cold against 33.7s warm. Always discard the
+   first run.
+2. **Aggregate versus apportioned.** Subtracting individually-measured test times from a
+   `run-all.sh` wall clock produces a difference that looks like a finding and is an artifact.
+   Timed in situ, the tests sum to 240s inside a 242s run: **runner overhead is ~2s**. Any claim
+   that time is hiding in the runner should be disbelieved until measured in situ.
+
+**Runtime is now a range, not a sample.** This phase's Done-when asks for five consecutive runs
+reported as a range. Feature 151 did not supply that and its figures are single samples. The
+range requirement stands unmet.
+
 **Done when**:
 
 - The per-class cost of every probed artifact class is measured and recorded, before any change is
@@ -595,6 +678,52 @@ the 170-invocation loop.
 ```text
 /speckit.specify "Adding a skill to this repository currently costs the test suite about six seconds, measured 2026-09-20 at ten skills versus eleven (173s versus 179s). Treat that as a floor, not an estimate: each figure is a single sample and adapter-coverage.test.sh bailed early in the eleven-skill run because the synthetic skill was absent from the distribution manifest, so it did less work than a real skill would. Re-measure the slope properly first, with more than one sample per point and without a failing test truncating the run, and record it as a range. The mechanism is known: one run makes 306 validate-skill.sh invocations across 17 distribution builds, 170 of them from the 17-builds-times-10-skills self-validation loop, at roughly 0.32 seconds each. Do not attempt to batch several skills into one validator invocation. That was implemented and proven output-identical inside feature 056 and measured at 9.63s batched versus 9.71s separate, which is nothing, and it was reverted; process startup, library sourcing and constitution parsing are not where the cost is. The cost is inside lib/frontmatter-lexicon.sh and lib/rule-checks.sh, which together spawn 108 awk processes and execute 11,531 lines per single skill validation, with fl_resolve_skill_id alone running 34 times for one skill. Reduce that process spawning. Prove equivalence the way feature 046 did: validator stdout, stderr and exit status byte-identical across every validated target before and after, with the comparison itself recorded. Do not reduce what any check decides, do not remove or loosen an assertion, and do not introduce a cache that lets one build answer from a previous build's observation -- a regression in the current tree must still fail in the current tree. Do not change the validator's command-line contract, and do not touch Layer 1 or Layer 2."
 ```
+
+**Appended 2026-10-08, after Feature 151 built the thing this phase prohibits.**
+
+Feature 151 implemented a content-addressed validation cache in `validate-skill.sh` and measured
+**5383ms to 444ms** for validating all twelve skills — against the 0.8% that invocation batching
+returned. The warm per-skill slope is effectively flattened, which is this phase's stated goal.
+
+**But the command text above forbids it**: *"do not introduce a cache that lets one build answer
+from a previous build's observation — a regression in the current tree must still fail in the
+current tree."* That instruction was written on 2026-09-20 and Feature 151 was specified without
+reference to it. **This conflict is unresolved and is recorded here rather than settled by the
+party that caused it.**
+
+The argument that the prohibition's *intent* is met:
+
+- The key is the hash of the skill's `SKILL.md` combined with a hash of every validator input —
+  `validate-skill.sh`, every file under `tools/lib/`, `library/` and `governance/`, and
+  `tools/.frontmatter-contract`. A regression changes content, which changes the key, which forces
+  full validation. The regression still fails in the current tree.
+- A failed validation is never recorded, so a defective skill is re-validated and re-reported on
+  every invocation.
+- `.highway/tools/tests/validation-cache.test.sh` asserts this directly: it populates the cache
+  for a skill, then breaks that skill, and requires rejection with the original error text.
+- The cache disables itself entirely when any of `CONSTITUTION_FILE`, `EXPERIENCE_FILE`,
+  `FRONTMATTER_CONTRACT_FILE` or `FRONTMATTER_LEXICON_FILE` is set, because an override repoints
+  validation at documents the key does not describe.
+- Validator stdout is replayed from the record rather than suppressed, so a hit is byte-identical
+  to a full run. Verdicts were confirmed identical across `--no-cache`, cold and warm for all
+  twelve skills, and all generated artifacts were byte-identical except generation timestamps.
+
+The argument that the prohibition still binds:
+
+- It is written as an absolute, not as a conditional on key quality.
+- "Answering from a previous build's observation" is literally what a cache hit does, however the
+  key is derived.
+- The hash's correctness is load-bearing, and two real gaps were found in it during implementation
+  — the first draft excluded `library/knowledge/frontmatter-lexicon.txt` because it filtered to
+  `*.sh` and `*.md`, and ignored the four document overrides entirely. Both would have produced
+  stale verdicts. That two such gaps existed in one short implementation is evidence for the
+  prohibition's caution, not against it.
+
+**This phase's actual goal is untouched either way.** The cache avoids repeated work; it does not
+make a single cold validation cheaper. The 11,531 execution lines, the 108 `awk` spawns and the 34
+`fl_resolve_skill_id` calls per skill are all still there, and `constitution-inventory` pays them
+on every probe because its mutations invalidate every key. **Feature 151 must not be recorded as
+having closed this phase.**
 
 **Done when**:
 
