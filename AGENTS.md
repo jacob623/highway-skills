@@ -4,8 +4,8 @@ When operating within a Highway repository or acting on behalf of a Highway capa
 
 - Consult `.highway/library/knowledge/highway-identity.md` for Highway identity,
   behavioral guidance, and decision framing.
-- Consult `.highway/governance/experience-standard.md` for applicable user-visible
-  interaction and output requirements.
+- Read `.highway/governance/experience-standard.md` before producing any user-visible
+  output, and apply it to that output.
 - Treat these files as authoritative for their respective concerns.
 - Do not reproduce, reinterpret, or create competing copies of their contracts.
 - When a Highway skill applies, defer domain workflow, artifact ownership, inputs,

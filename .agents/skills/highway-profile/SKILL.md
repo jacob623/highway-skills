@@ -4,7 +4,7 @@ description: "Manages the repository-wide organizational Profile and its context
 usage: "Invoke as `/highway-profile` to inspect Profile context, or state setup, view, add, update, remove, or reset."
 compatibility: all
 metadata:
-  version: 11.0.0
+  version: 11.1.0
 ---
 
 # highway-profile
@@ -133,6 +133,8 @@ heading, `**Here's what I've captured as your [domain]:**`, where `[domain]` is 
 one acceptance request at the bottom: the validation question, which is
 `**What would you add, correct, or remove?**`. A sharper open question drawn from the conversation
 may stand in for it, as long as it stays emphasized and still asks what to add, correct, or remove.
+Beneath it, unemphasized, say that `"I don't know" is a complete answer to any of it.` The
+acceptance request stays the only emphasized element in the block.
 
 The person's response to that request is the domain's acceptance boundary. Recognize acceptance by
 what the response means, not by whether it matches a particular phrase, and do not wait for a second
@@ -140,6 +142,57 @@ confirmation. Once a domain is accepted, do not present the same substance again
 revision is needed, name what changed. Compare against accepted content ignoring differences in line
 wrapping and spacing. When it is unclear whether a candidate has developed since acceptance, present
 it.
+
+A domain's substance is kept only after its finished candidate has been presented and accepted.
+Material gathered while composing a domain stays working material until then, in all four domains.
+
+The validation question applies only where a candidate has been presented. Where nothing has been
+captured yet, invite a reaction instead, under the heading the Highway Experience Standard defines
+for that moment, `**Here's a direction worth considering — what's missing from it?**`, and ask for
+no acceptance there.
+
+Where the preceding domain produced no accepted substance, say that nothing has been accepted yet
+rather than inventing a carry-forward.
+
+Say nothing about retaining the answer, about where this sits in the sequence, about a domain's
+state, or about what comes next. This holds for the whole conversation, not only for readiness
+wording: the person reads their own material developing, not an account of the work being done to
+it.
+
+#### Contribution in practice
+
+When the person supplies something substantial, add one thing to it. Attribute the addition to the
+workflow, leave it outside the candidate until they adopt it, and close on a question that invites
+them to push back. Three worked examples, one move each, then one example of what not to do.
+
+*A distinction drawn out of one word.* The person says their work is about getting people into
+housing faster. What the workflow adds: "faster" is carrying two different organizations — one that
+shortens the wait for a decision, one that shortens the wait for keys. The first is a case-handling
+organization; the second is a supply organization, and they would not make the same choices.
+**Which of those two would you be judged on?**
+
+*Latent structure named as an organizing principle.* The person lists training frontline staff,
+publishing the eligibility rules, and letting applicants see their own case. What the workflow adds:
+those are not three activities but one principle — moving knowledge toward the person who needs it
+rather than toward the institution that holds it. **Does that read as the thing you're building, or
+as one strand of it?**
+
+*A stated preference reframed as a decision criterion.* The person says they would rather do one
+thing properly than three things badly. What the workflow adds: as a preference that is a
+temperament, but as a criterion it is sharper — a new commitment has to displace an existing one
+rather than sit alongside it, which makes it a test any proposal can be put through. **What would
+have to be true for you to break it?**
+
+Each of those three works on material the person already supplied. A contribution that reaches past
+that material is not a contribution, however useful it sounds. One worked counter-example.
+
+*A move with nothing underneath it.* The person says: "We are a bakery." The workflow answers: "One
+possibility I see is franchising — you could license the brand to independent operators and grow
+without the capital." That is not a contribution. Nothing in the accepted material supports
+franchising, growth, licensing, or a view about capital; the person said what they are, not what
+they want, and the move invents the rest. The tell is that the addition would read the same if the
+person had said they were a dentist. What the moment actually calls for is the question that opens
+the material up: **What does the bakery do that a person would miss if it closed?**
 
 ##### Organizational expression
 
@@ -157,7 +210,8 @@ activity and purpose. It is not a technology-landscape inventory.
 
 After convergence, present the Converged Proposal under
 `**Here's what I've captured as your Identity:**`, validate it with the shared validation question,
-and treat the person's response as the acceptance boundary for Identity.
+and treat the person's response as the acceptance boundary for Identity. Retain nothing from
+Identity before that candidate is presented and accepted.
 
 ##### Vision
 
@@ -165,14 +219,18 @@ Vision describes the future the organization is trying to create. Reason from th
 Identity and other relevant Profile evidence; do not let one Identity facet become the whole Vision
 merely because it is the easiest continuation. Vision does not elicit or retain the approach,
 sequencing, or organizational method for reaching that future; those belong to Competitive Path.
+When the person offers one of those while composing Vision, say so in their own terms:
+`**That's the approach rather than the destination — it belongs to Competitive Path, so let's hold it
+there.**`
 
 When entering unresolved Vision, open the user-visible subject with `### Where you're going`. Open
-that subject with grounded possibilities drawn from accepted Profile evidence before asking the
-Vision question.
+it by naming accepted Identity substance in the person's own words and connecting it to the question
+being asked. Open that subject with grounded possibilities drawn from accepted Profile evidence
+before asking the Vision question.
 
 Present the Converged Proposal under `**Here's what I've captured as your Vision:**`, validate it
 with the shared validation question, and treat the person's response as the acceptance boundary for
-Vision.
+Vision. Retain nothing from Vision before that candidate is presented and accepted.
 
 ##### Competitive Path
 
@@ -181,24 +239,30 @@ reason about strategic choices, sequencing, priorities, and organizational direc
 elicit or retain Controls, NFRs, safeguards, architecture, implementation requirements, or plans.
 When volunteered downstream-owned information changes the broad approach, retain only its broad
 strategic meaning. When entering unresolved Competitive
-Path, open the user-visible subject with `### How you'll get there`. Open that subject with grounded
-possibilities drawn from accepted Profile evidence before asking the Competitive Path question.
+Path, open the user-visible subject with `### How you'll get there`. Open it by naming accepted
+Vision substance in the person's own words and connecting it to the question being asked. Open that
+subject with grounded possibilities drawn from accepted Profile evidence before asking the
+Competitive Path question.
 
 Present the Converged Proposal under `**Here's what I've captured as your Competitive Path:**`,
 validate it with the shared validation question, and treat the person's response as the acceptance
-boundary for Competitive Path.
+boundary for Competitive Path. Retain nothing from Competitive Path before that candidate is
+presented and accepted.
 
 ##### Guiding Principles
 
 Guiding Principles describe the enduring principles that shape organizational decisions. Use
 accepted Identity, Vision, Competitive Path, and other accepted Profile context as grounding. Do not
 turn a principle into an enforceable Control. When entering unresolved Guiding Principles, open the
-user-visible subject with `### What will guide your decisions`. Open that subject with grounded
-possibilities drawn from accepted Profile evidence before asking the Guiding Principles question.
+user-visible subject with `### What will guide your decisions`. Open it by naming accepted
+Competitive Path substance in the person's own words and connecting it to the question being asked.
+Open that subject with grounded possibilities drawn from accepted Profile evidence before asking the
+Guiding Principles question.
 
 Present the Converged Proposal under `**Here's what I've captured as your Guiding Principles:**`,
 validate it with the shared validation question, and treat the person's response as the acceptance
-boundary for Guiding Principles.
+boundary for Guiding Principles. Retain nothing from Guiding Principles before that candidate is
+presented and accepted.
 
 #### Cross-domain reasoning
 
@@ -246,6 +310,10 @@ question.
 - Each domain uses the single defined validation question.
 - Each question requiring a response is emphasized.
 - Each domain crosses one acceptance boundary before its substance is retained.
+- No domain substance is retained before that domain's candidate has been presented.
+- Each domain opening names accepted substance from the preceding domain.
+- Contribution in practice carries three worked exemplars, each adding one thing.
+- Contribution in practice carries one counter-example of an addition the accepted material does not support.
 - Confirmed substance is not presented again unless the re-presentation names what changed.
 - A candidate whose development since acceptance is unclear is presented rather than suppressed.
 - A term the person rejected does not reappear, including as a synonym.

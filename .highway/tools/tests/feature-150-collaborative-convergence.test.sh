@@ -134,10 +134,10 @@ for id in X2.55 X2.56; do
 	require_text "$STANDARD" 'Experience Standard' "| $id |"
 done
 
-# The amendment lands at exactly 49 rules.
+# The Standard's rule inventory. Raised from 59 by Feature 153, which adds X2.68 through X2.72.
 rule_total="$(grep -cE '^\| X[0-9]+\.[0-9]+ \|' "$STANDARD")"
-if [[ "$rule_total" -ne 59 ]]; then
-	echo "FAIL: Experience Standard rule inventory is $rule_total, expected 49"
+if [[ "$rule_total" -ne 64 ]]; then
+	echo "FAIL: Experience Standard rule inventory is $rule_total, expected 64"
 	fail=1
 fi
 

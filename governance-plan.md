@@ -12,7 +12,7 @@ reasoning intact, not abandoned.
 **Status**: Phases 1–6, 10, 11 and 17 are complete and their detail has been removed from this
 document. Phases 12, 13, 15 and 16 were removed on 2026-09-11: their subject is the `specs/` tree,
 which Feature 044 takes out of governance entirely. Active: Phases 8, 14 and 15. Deferred: Phases 7
-and 9.
+and 9. Proposed: Phase 18.
 
 (The Phase 15 removed on 2026-09-11 and the Phase 15 proposed on 2026-09-20 are different phases
 that reused a number. The active one is the per-skill validation cost phase in §4.)
@@ -95,6 +95,7 @@ spec directory — features 010–018, 021, 022 and 045.
 | 9 | Make artifact versions accountable | Spec | 1, and a cross-layer question | ⏸ Deferred — its own analysis concludes the rule cannot honestly be `[auto]`, so it adds no mechanical coverage |
 | 14 | Recover the probe runtime the integrity work spent | Spec | 0 | ▶ Active — two files hold 133s of a 240s run; runtime pressure is what erodes probe coverage. Re-measured 2026-10-08: ~23s of the residue is unexplained |
 | 15 | Flatten the per-skill cost of skill validation | Spec | 0 | ▶ Active — unchanged by Feature 151, which avoided repeated validation rather than making one validation cheaper. Carries an unresolved conflict with Feature 151's cache |
+| 18 | Make Experience Standard propagation verifiable | Spec | 2 is the subject; the check is Layer 0 | ▶ Proposed — no check anywhere decides whether a Layer 2 rule reaches a delivery site. Sequenced after the conformance defects it would audit |
 
 Phases 12, 13, 15 and 16 were removed on 2026-09-11. All four governed the `specs/` tree, and all
 four had already been deferred on that ground. Feature `044` removes that tree from governance
@@ -843,6 +844,73 @@ reasoning; if it is closed unimplemented, `getconf` stays off the list.
 - The `getconf` amendment is re-made with its Sync Impact Report, or `getconf` stays off the list.
 - Every artifact class still declared, no assertion removed or loosened.
 - `.highway/tools/tests/run-all.sh` exits 0.
+
+---
+
+### Phase 18 — Make Experience Standard propagation verifiable
+
+**Coverage verdict, 2026-10-09**: ▶ **Proposed, and it is the first phase to raise coverage of
+Layer 2 at all.** Every existing check decides something about a `SKILL.md` or the build tree.
+Nothing decides whether a rule in `.highway/governance/experience-standard.md` reaches the skill
+that has to obey it. The share of Layer 2 rules decided by any check is zero.
+
+**Layer**: 2 is the subject; the check is Layer 0 tooling **Type**: Spec (number to be assigned)
+
+**Status**: Proposed 2026-10-09 out of `specs/153-conversation-delivery-hardening/evidence/setup-assessment.md` §6, where it is item 8. Deliberately
+sequenced **after** the conformance work that assessment recommends — see Prerequisite.
+
+**Goal**: a generated report mapping every Experience Standard rule to its delivery site(s) in
+every applicable skill, recording which delivery technique each site uses, and carrying explicit
+`not-applicable` entries so silence is never the same as coverage.
+
+**Why this phase exists.** `P7.3` forbids a skill from restating a requirement owned elsewhere, so
+a rule can only reach a skill as an emitted literal, as skill-owned procedure, or as a Verification
+bullet. That architecture is sound and is not what this phase changes. What is missing is any check
+that the propagation **happened**. The repository cannot answer *which rules have a delivery site in
+which skills*, and the existing suite cannot be made to answer it, because its assertions are of the
+form *this text exists* rather than *this rule is covered*.
+
+**The evidence that this is a real defect, not a tidiness concern.** Measured by hand across six
+recorded setup conversations, 2026-10-08:
+
+| Observation | Consequence |
+|---|---|
+| `X2.36`'s only delivery in `highway-profile` is one Verification bullet scoped to readiness vocabulary | persistence and progression narration are uncovered; the rule failed in 4 of 6 runs across all three hosts |
+| Spec 152 added seven prohibition bullets whose delivery nobody audited | unknown coverage, and no way to find out short of reading every skill |
+| The capture heading, delivered as an emitted literal, held in 22 of 24 presentations | the technique used predicts conformance, and the technique is not recorded anywhere |
+
+A Verification bullet that under-scopes the rule it serves is the same shape of defect as Phase 8's
+— a rule that reads as enforced and is not. The difference is that Phase 8's instance was findable
+because the Enforcement Map names files. Layer 2 has no map.
+
+**Why the report is generated rather than hand-maintained.** Highway already generates a skill
+catalog and a library catalog from the tree; this is the same pattern against a third input. A
+hand-written map would drift on the first rule added, and the Standard is at version `11.0.0` with
+fifty-nine rules after one feature's worth of additions.
+
+**The honest limit, which the spec must state rather than discover.** This phase proves that a
+delivery site **exists** and names the technique used. It cannot prove the site is adequate — the
+`X2.36` bullet above would appear as covered. Nor can it prove any behaviour occurs at runtime;
+every check it adds is a static document contract. It converts an unknown into a reviewable list,
+which is worth doing, and it should not be scoped as though it closed the conformance gap.
+
+**Prerequisite**: the conformance work in `specs/153-conversation-delivery-hardening/evidence/setup-assessment.md` §7 items 1–7, 9–11. Running the
+report first would produce a map of coverage that is about to change, and the items most likely to
+add or move delivery sites are exactly the ones that round found broken. The report is most useful
+as a standing check after the sites settle, not as a survey before.
+
+**Done when**:
+
+- Every rule in `.highway/governance/experience-standard.md` appears in the report exactly once per
+  applicable skill, with either a delivery site or an explicit `not-applicable` entry.
+- Each site records which of the three techniques it uses.
+- A rule added to the Standard with no delivery site and no `not-applicable` entry fails a check,
+  proved by adding one and observing the failure.
+- The report is generated from the tree, with no hand-maintained list of rules or skills.
+- The limit above is recorded in the spec, so a future reader does not mistake a covered row for a
+  conformant behaviour.
+- `.highway/tools/tests/run-all.sh` exits 0, and the added runtime is measured against the phases
+  14 and 15 budget rather than assumed negligible.
 
 ---
 

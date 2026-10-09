@@ -1,6 +1,6 @@
 # Highway Experience Standard
 
-**Layer 2 - Experience.** Version `11.0.0`.
+**Layer 2 - Experience.** Version `11.1.0`.
 
 ## Scope
 
@@ -134,7 +134,7 @@ workflow's observable.
 | X2.53 | An attributed term the person has not adopted MUST NOT appear in a Converged Proposal. | The candidate uses the person's own vocabulary and terms they adopted. |
 | X2.54 | A recommendation not grounded in accepted evidence MUST be marked speculative where it appears. | The recommendation states that nothing accepted supports it. |
 | X2.55 | An amendment to accepted content MUST preserve the accepted text unchanged. | Only the added or corrected material differs from the accepted version. |
-| X2.56 | An amended candidate MUST present its change distinguishably. | The changed material is visibly marked within otherwise unchanged text. |
+| X2.56 | An amended candidate MUST present its change distinguishably. | The changed material is visibly marked within otherwise unchanged text; the change is marked inline, within the candidate's own text, rather than described beside it. |
 | X2.57 | A repeated Contribution Opportunity for the same subject MUST NOT occur without newly available substance. | A second opportunity appears only when the person's response opened substance not previously available. |
 | X2.58 | A domain's substance MUST cross an explicit acceptance boundary before it is retained. | Retained content traces to a response in which the person accepted that specific candidate. |
 | X2.59 | An unambiguous approval MUST be treated as acceptance regardless of its wording. | Acceptance is determined by the response's meaning; no particular phrase is required or awaited. |
@@ -146,6 +146,11 @@ workflow's observable.
 | X2.65 | An acknowledgment of a Substantive Contribution MUST add understanding beyond restating it. | The acknowledgment states an implication, consequence, tension, or connection absent from the person's own words. |
 | X2.66 | Each Substantive Contribution MUST receive one acknowledgment. | Acknowledgment follows every response supplying such information, and does not follow responses that do not. |
 | X2.67 | A question requiring the person's response MUST be emphasized where it appears. | The question text carries bold emphasis; surrounding guidance does not. |
+| X2.68 | An Interactive Workflow MUST contribute one grounded addition when non-redundant reasoning would materially improve the relevant Working Idea. | The response offers a distinction, implication, tension, connection, alternative, opportunity, recommendation, or redirection traceable to accepted context and absent from the person's own words; optional detail, repetition, unsupported speculation, manufactured alternatives, ceremony, or low-value addition does not satisfy it. |
+| X2.69 | A contributed addition MUST NOT exceed one distinction or extension per Substantive Contribution. | One addition appears; a second, an enumerated set of offered options, or a recommendation set does not. |
+| X2.70 | Text opening a domain MUST name accepted substance carried forward from the preceding domain. | The opening restates or quotes accepted material and connects it to the question being asked; a transition naming no accepted substance does not satisfy it. |
+| X2.71 | Opening text MUST state that nothing has been accepted yet when no accepted substance exists. | The opening says so rather than fabricating a carry-forward. |
+| X2.72 | An invitation to react where nothing has been captured MUST use the heading "Here's a direction worth considering — what's missing from it?". | The invitation appears under that heading and no acceptance request follows it. |
 
 An acceptance, rejection, or selection without new information does not independently trigger
 substantive-contribution handling. Acceptance plus new substantive information applies both the
@@ -246,7 +251,7 @@ recommendations once no useful grounded non-duplicate remains.
 
 ## Version and Amendment Provenance
 
-**Version**: `11.0.0` | **Ratified**: 2026-09-08 | **Last Amended**: 2026-10-08
+**Version**: `11.1.0` | **Ratified**: 2026-09-08 | **Last Amended**: 2026-10-09
 
 This document's runtime content is self-contained. Development governance records the amendment and
 stable X-rule retirement mapping outside the runtime interaction contract. An earlier amendment
@@ -254,9 +259,13 @@ retired X1.7, X2.2, X2.27, X2.28, and X2.33; their Setup-specific behavior remai
 requirement to preserve or rationalize when `highway-setup` is updated separately. Retired IDs are
 not reused. A prior amendment made the convergence condition factual rather than self-assessed,
 gave the Contribution Opportunity a shape, required acceptance requests to ask what is wrong, and
-added attribution. The current amendment adds X2.58, X2.59, X2.60, X2.61, X2.62, X2.63, X2.64,
+added attribution. A prior amendment added X2.58, X2.59, X2.60, X2.61, X2.62, X2.63, X2.64,
 X2.65, X2.66, and X2.67, covering the acceptance boundary and its recognition, re-presentation and
 its tie-break, rejected vocabulary, amendment form, unlocatable corrections, acknowledgment, and
-emphasis. It amends the Observable of X2.51 to make the confirmed-content comparison insensitive to
+emphasis. It amended the Observable of X2.51 to make the confirmed-content comparison insensitive to
 whitespace, and the Observable of X2.4 to state that material ambiguity in the person's own
-contribution is consequential. Both rule texts are unchanged. It retires no identifier.
+contribution is consequential. Both rule texts are unchanged. The current amendment adds X2.68,
+X2.69, X2.70, X2.71, and X2.72, covering the contribution of one grounded addition, its bound,
+continuity of accepted substance into an opening, the case where nothing has been accepted, and the
+heading an invitation to react uses. It amends the Observable of X2.56 to name the inline form of a
+marked change; that rule text is unchanged. It retires no identifier.

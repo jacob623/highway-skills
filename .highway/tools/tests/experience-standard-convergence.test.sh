@@ -23,9 +23,10 @@ for token in \
 	grep -Fq "$token" "$STANDARD" || { echo "FAIL: Experience Standard missing $token"; fail=1; }
 done
 
-# Superseded behavior: 33 rules, before Feature 150 added X2.42-X2.57.
-if [[ "$(grep -cE '^\| X[0-9]+\.[0-9]+ \|' "$STANDARD")" -ne 59 ]]; then
-	echo 'FAIL: Experience Standard rule inventory must contain 49 rules'
+# Superseded behavior: 33 rules, before Feature 150 added X2.42-X2.57. Raised from 59 by Feature
+# 153, which adds X2.68 through X2.72.
+if [[ "$(grep -cE '^\| X[0-9]+\.[0-9]+ \|' "$STANDARD")" -ne 64 ]]; then
+	echo 'FAIL: Experience Standard rule inventory must contain 64 rules'
 	fail=1
 fi
 
