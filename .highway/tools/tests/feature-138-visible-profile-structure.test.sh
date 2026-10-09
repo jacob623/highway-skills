@@ -49,7 +49,7 @@ if ! "$VALIDATE" "$EMPTY" >/dev/null 2>&1; then
 fi
 
 for text in \
-	'version: 11.0.0' \
+	'version: 11.1.0' \
 	'The retained artifact is `.highway/library/knowledge/profile.md`.' \
 	'### Domain model' \
 	'### Domain completeness' \

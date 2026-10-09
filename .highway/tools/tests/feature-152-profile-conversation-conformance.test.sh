@@ -130,12 +130,12 @@ require_flowed "$STANDARD" 'Experience Standard' \
 	"material ambiguity in the person's own contribution is consequential"
 
 rule_total="$(grep -cE '^\| X[0-9]+\.[0-9]+ \|' "$STANDARD")"
-if [[ "$rule_total" -ne 59 ]]; then
-	echo "FAIL: Experience Standard declares $rule_total X-rules; expected 59"
+if [[ "$rule_total" -ne 64 ]]; then
+	echo "FAIL: Experience Standard declares $rule_total X-rules; expected 64"
 	fail=1
 fi
 
-require_text "$STANDARD" 'Experience Standard' '**Layer 2 - Experience.** Version `11.0.0`.'
+require_text "$STANDARD" 'Experience Standard' '**Layer 2 - Experience.** Version `11.1.0`.'
 
 # --- US1: a domain is accepted explicitly, and not re-asked ---
 

@@ -12,7 +12,7 @@ fail=0
 # permissive Identity hook that let Profile decide when to show facets before synthesis. Feature 150
 # deletes it; Experience Standard X2.37 and X2.41 now owe the opportunity on a factual trigger.
 for text in \
-	'version: 11.0.0' \
+	'version: 11.1.0' \
 	'Evaluate each source across all unresolved Profile domains' \
 	'New substantive organizational evidence is evaluated across every unresolved Profile domain' \
 	'Identity establishes who the organization is' \

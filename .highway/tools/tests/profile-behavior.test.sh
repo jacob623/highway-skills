@@ -38,7 +38,7 @@ SKILL="$HIGHWAY_ROOT/skills/highway-profile/SKILL.md"
 # Superseded behavior: version 5.3.0, enrichment-category coverage, and Competitive Path opening from accepted Vision or sufficient accepted evidence.
 # Superseded behavior: version 9.0.0 and the closed Identity acceptance question 'Is this an accurate description of your organization?', replaced by Feature 150 with a question that cannot be answered by agreement alone.
 for required_text in \
-	       'version: 11.0.0' \
+	       'version: 11.1.0' \
 	"### Let's get to know your organization" \
 	'An absent Profile is a valid initial state' \
 	'Profile determines domain completeness' \
