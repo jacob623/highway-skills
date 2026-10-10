@@ -49,7 +49,7 @@ for required_text in \
 	'Acceptance authorizes the mutation but is not successful persistence' \
 	'emit one concise user-relevant synthesis' \
 	"**Here's what I've captured as your [domain]:**" \
-	'`**What would you add, correct, or remove?**`'; do
+	'**What would you add, correct, or remove?**'; do
 # Superseded behavior: version 6.0.0 restated generic material-interpretation guidance.
 # Feature 138 leaves that check to the Experience Standard (D3.5).
 	if ! grep -Fq "$required_text" "$SKILL"; then

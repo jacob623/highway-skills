@@ -45,8 +45,9 @@ fi
 require_flowed "$PROFILE" 'Profile skill' 'If this is accurate, just say so.'
 require_flowed "$PROFILE" 'Profile skill' 'If you don'"'"'t know, say "I don'"'"'t know" and we'"'"'ll work through it together.'
 require_absent "$PROFILE" 'Profile skill' '**If this is accurate, just say so.**'
-require_flowed "$PROFILE" 'Profile skill' 'Imported website evidence does not count as a Substantive Contribution.'
-require_flowed "$PROFILE" 'Profile skill' 'After the first Substantive Contribution in that domain, remove the conditional reassurance.'
+require_flowed "$PROFILE" 'Profile skill' 'Imported website evidence does not count as a user Substantive Contribution.'
+require_flowed "$PROFILE" 'Profile skill' 'Do not use the Discovery Reassurance merely because no Substantive Contribution has occurred yet.'
+require_absent "$PROFILE" 'Profile skill' 'After the first Substantive Contribution in that domain, remove the conditional reassurance.'
 
 # US2: X2.72 and domain-boundary delivery.
 require_text "$STANDARD" 'Experience Standard' '| X2.72 |'
