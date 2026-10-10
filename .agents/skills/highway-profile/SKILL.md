@@ -227,6 +227,20 @@ they want, and the move invents the rest. The tell is that the addition would re
 person had said they were a dentist. What the moment actually calls for is the question that opens
 the material up: **What does the bakery do that a person would miss if it closed?**
 
+#### Possibility-list Contribution Opportunities
+
+Before convergence, when accepted Profile evidence supports several distinct grounded possibilities,
+Profile MAY present a concise list as one Contribution Opportunity. The list is pre-convergence
+reaction material, not a recommendation set and not three advisory contributions. Treat the whole
+list together with its closing invitation as one opportunity under the existing Experience Standard;
+this behavior does not modify X2.69.
+
+Each item must remain provisional and traceable to accepted Profile evidence. The person may adopt,
+reject, combine, modify, or ignore items individually; an unaddressed item is not accepted. Use no
+more than three items, and close with the shared emphasized question that asks what to add, correct,
+or remove. Do not present the list as a candidate, acceptance request, or selection among options.
+After convergence, present the singular Converged Proposal path instead.
+
 ##### Organizational expression
 
 Expression guides representation, not truth. Acquisition may reveal characteristic terminology,
