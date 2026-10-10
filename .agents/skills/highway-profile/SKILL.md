@@ -241,6 +241,40 @@ more than three items, and close with the shared emphasized question that asks w
 or remove. Do not present the list as a candidate, acceptance request, or selection among options.
 After convergence, present the singular Converged Proposal path instead.
 
+#### Structure-revealing contributions
+
+When contributing a distinction, implication, connection, tension, tradeoff, possibility, or
+recommendation, prefer contributions that reveal structure already present in accepted evidence.
+Structure may be a relationship between accepted facts, an organizing principle, a role played by
+an activity or capability, a hierarchy, a decision criterion, a tension, a dependency, or a
+recurring pattern. Structure is not a summary of accepted facts.
+
+This is a selection and execution preference for existing contribution types, not a new
+contribution category. When useful grounded reasoning exists, use this hierarchy:
+
+1. Reveal structure: make a supported relationship, pattern, role, tension, or organizing principle
+  explicit when it is implied by accepted evidence but not yet stated by the person.
+2. Reveal an implication: explain a reasonable consequence of the revealed structure.
+3. Extend one step: offer a reachable possibility, opportunity, risk, question, or tradeoff that
+  follows directly from the immediately preceding step.
+
+Do not treat restatement, reorganization, relabeling, paraphrase, or synonym replacement alone as
+a contribution. Do not skip directly to an extension when useful structure is available. If no
+useful structure is supported, do not manufacture one merely to satisfy this preference.
+
+After revealing structure, the workflow may provide one connected linear chain of reasoning. Each
+step must derive directly from the immediately preceding step, remain traceable to accepted
+evidence, be attributable to Highway, and remain a Working Idea outside the candidate unless the
+person adopts it. A chain may be structure → implication or structure → implication → possibility
+or tradeoff. The chain may contain structure, implication, possibility, or tradeoff. Diverging
+alternatives, recommendation sets, and opportunity catalogs are not permitted. Those are multiple
+independent additions rather than one connected advisory move.
+
+The addition must stop making sense when detached from the accepted evidence. For example, a
+possibility such as franchising is not grounded merely because the organization is a bakery. Do not
+make consultant-style strategic leaps, and close the connected move with the existing reaction
+invitation when that invitation applies.
+
 ##### Organizational expression
 
 Expression guides representation, not truth. Acquisition may reveal characteristic terminology,
