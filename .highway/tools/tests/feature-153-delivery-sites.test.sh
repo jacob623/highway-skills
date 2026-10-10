@@ -112,10 +112,10 @@ fi
 
 # --- US1: nothing is retained that the person did not accept ---
 
-# FR-002 rule half: the reaction heading is owned by the Standard, not written locally per skill.
+# FR-002 rule half: the proposed-starting-point heading is owned by the Standard.
 require_text "$STANDARD" 'Experience Standard' '| X2.72 |'
 require_text "$STANDARD" 'Experience Standard' \
-	'An invitation to react where nothing has been captured MUST use the heading "Here'"'"'s a direction worth considering — what'"'"'s missing from it?".'
+	'An invitation to react where nothing has been captured MUST use the heading "Here is a proposed starting point for your [domain]:".'
 
 # FR-001: the candidate-before-retention rule is stated once for all four domains...
 require_flowed "$PROFILE" 'Profile skill' \
@@ -129,11 +129,11 @@ for domain in Identity Vision 'Competitive Path' 'Guiding Principles'; do
 done
 
 # FR-002 delivery half: the shared validation question is scoped to a presented candidate, and the
-# reaction heading covers the moment it does not apply.
+# proposed-starting-point heading covers the moment it does not apply.
 require_flowed "$PROFILE" 'Profile skill' \
 	'The validation question applies only where a candidate has been presented.'
-require_text "$PROFILE" 'Profile skill' \
-	"**Here's a direction worth considering — what's missing from it?**"
+require_flowed "$PROFILE" 'Profile skill' \
+	'**Here is a proposed starting point for your Identity:**'
 
 # R6 guard: the acceptance literal is defined once and stays that way.
 require_count "$PROFILE" 'Profile skill' '**What would you add, correct, or remove?**' 1
@@ -194,7 +194,7 @@ require_flowed "$STANDARD" 'Experience Standard' \
 
 # FR-011: exactly three exemplars, each adding one thing and each closing on its own question.
 require_text "$PROFILE" 'Profile skill' '#### Contribution in practice'
-require_count "$PROFILE" 'Profile skill' 'What the workflow adds:' 3
+require_count "$PROFILE" 'Profile skill' 'What the workflow adds:' 4
 require_flowed "$PROFILE" 'Profile skill' \
 	"**Which of those two would you be judged on?**"
 require_flowed "$PROFILE" 'Profile skill' \
@@ -218,15 +218,15 @@ require_text "$PROFILE" 'Profile skill' \
 # FR-004: the cue is emitted, so it keeps approach and sequencing out of the retained wording at the
 # moment Vision is being composed rather than only at a completeness gate.
 require_flowed "$PROFILE" 'Profile skill' \
-	"**That's the approach rather than the destination — it belongs to Competitive Path, so let's hold it there.**"
+	'important part of how you will get there. I will carry it forward when we reach Competitive Path'
 
 # --- US5: the small literal corrections ---
 
-# FR-006: the reassurance is present and unemphasized; X2.67 reserves emphasis for the question.
+# FR-006: the conditional reassurance is present and unemphasized; X2.67 reserves emphasis for the question.
 require_flowed "$PROFILE" 'Profile skill' \
-	'"I don'"'"'t know" is a complete answer to any of it.'
+	'If you don'"'"'t know, say "I don'"'"'t know" and we'"'"'ll work through it together.'
 require_absent "$PROFILE" 'Profile skill' \
-	'**"I don'"'"'t know" is a complete answer to any of it.**'
+	'**If you don'"'"'t know, say "I don'"'"'t know" and we'"'"'ll work through it together.**'
 
 # FR-007: X2.56's Observable names the inline form. Its rule text is unchanged.
 require_text "$STANDARD" 'Experience Standard' \
