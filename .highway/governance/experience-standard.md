@@ -150,7 +150,7 @@ workflow's observable.
 | X2.69 | A contributed addition MUST NOT exceed one distinction or extension per Substantive Contribution. | One addition appears; a second, an enumerated set of offered options, or a recommendation set does not. |
 | X2.70 | Text opening a domain MUST name accepted substance carried forward from the preceding domain. | The opening restates or quotes accepted material and connects it to the question being asked; a transition naming no accepted substance does not satisfy it. |
 | X2.71 | Opening text MUST state that nothing has been accepted yet when no accepted substance exists. | The opening says so rather than fabricating a carry-forward. |
-| X2.72 | An invitation to react where nothing has been captured MUST use the heading "Here's a direction worth considering — what's missing from it?". | The invitation appears under that heading and no acceptance request follows it. |
+| X2.72 | An invitation to react where nothing has been captured MUST use the heading "Here is a proposed starting point for your [domain]:". | The invitation appears under that heading and no acceptance request follows it. |
 
 An acceptance, rejection, or selection without new information does not independently trigger
 substantive-contribution handling. Acceptance plus new substantive information applies both the

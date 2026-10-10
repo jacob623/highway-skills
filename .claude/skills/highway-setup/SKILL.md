@@ -29,15 +29,19 @@ Do not use this skill to perform owner discovery, recommendations, interpretatio
 - `.highway/governance/experience-standard.md`.
 - active user request.
 
-## Welcome
+### Welcome
 
-When beginning initial Setup, before the first Profile-owned action, emit exactly once:
+When beginning initial Setup, before the first Profile-owned action, emit the Highway welcome as the
+first user-visible output.
+
+Do not emit review, loading, supplied-website, checking, setup-order, readiness, or workflow
+narration before the welcome.
+
+Do not emit this welcome on a resumed Setup interaction.
 
 ```text
 ## Welcome to Highway
-
 *Turn organizational knowledge into connected decisions.*
-
 **Your context stays yours.**
 
 Highway builds on information you choose to accept into your repository. Your repository remains the authoritative source of truth, and you retain ownership of the context and artifacts created through Highway.
@@ -46,8 +50,6 @@ Highway builds on information you choose to accept into your repository. Your re
 
 Let's get started.
 ```
-
-Do not emit this welcome on a resumed Setup interaction.
 
 ## Outputs
 

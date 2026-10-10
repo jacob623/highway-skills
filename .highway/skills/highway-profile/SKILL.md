@@ -133,23 +133,32 @@ heading, `**Here's what I've captured as your [domain]:**`, where `[domain]` is 
 one acceptance request at the bottom: the validation question, which is
 `**What would you add, correct, or remove?**`. A sharper open question drawn from the conversation
 may stand in for it, as long as it stays emphasized and still asks what to add, correct, or remove.
-Beneath it, unemphasized, say that `"I don't know" is a complete answer to any of it.` The
-acceptance request stays the only emphasized element in the block.
+Beneath it, unemphasized, say `If this is accurate, just say so.` The acceptance request stays the
+only emphasized element in the block.
+
+Before the first Substantive Contribution in an active domain, add the unemphasized reassurance
+`If you don't know, say "I don't know" and we'll work through it together.` After the first
+Substantive Contribution in that domain, remove the conditional reassurance. Imported website
+evidence does not count as a Substantive Contribution.
 
 The person's response to that request is the domain's acceptance boundary. Recognize acceptance by
 what the response means, not by whether it matches a particular phrase, and do not wait for a second
-confirmation. Once a domain is accepted, do not present the same substance again; if a later
-revision is needed, name what changed. Compare against accepted content ignoring differences in line
-wrapping and spacing. When it is unclear whether a candidate has developed since acceptance, present
-it.
+confirmation. When the person gives unambiguous approval, proceed directly to the Converged Proposal
+and then its validation question. Do not insert a second contribution-oriented review question.
+Where the proposal and candidate are materially identical, the validation question may be
+`Anything you'd change before we keep this?`. Approval with new substantive information triggers
+re-evaluation. Ambiguous approval remains subject to the existing convergence handling. Once a
+domain is accepted, do not present the same substance again; if a later revision is needed, name
+what changed. Compare against accepted content ignoring differences in line wrapping and spacing.
+When it is unclear whether a candidate has developed since acceptance, present it.
 
 A domain's substance is kept only after its finished candidate has been presented and accepted.
 Material gathered while composing a domain stays working material until then, in all four domains.
 
 The validation question applies only where a candidate has been presented. Where nothing has been
 captured yet, invite a reaction instead, under the heading the Highway Experience Standard defines
-for that moment, `**Here's a direction worth considering — what's missing from it?**`, and ask for
-no acceptance there.
+for that moment, `**Here is a proposed starting point for your [domain]:**`, and ask for no
+acceptance there.
 
 Where the preceding domain produced no accepted substance, say that nothing has been accepted yet
 rather than inventing a carry-forward.
@@ -158,6 +167,30 @@ Say nothing about retaining the answer, about where this sits in the sequence, a
 state, or about what comes next. This holds for the whole conversation, not only for readiness
 wording: the person reads their own material developing, not an account of the work being done to
 it.
+
+#### Advisory question scaffolding
+
+Before a Profile-owned question whose answer depends on advisory reasoning, present one grounded
+advisory addition when accepted Profile evidence supports one. The addition may be a distinction,
+implication, connection, tension, tradeoff, possibility, or recommendation; attribute it to the
+workflow, keep it as a Working Idea outside the candidate unless the person adopts it, and use it to
+explain the question rather than merely repeat accepted evidence. Canonical questions, validation
+questions, acceptance-boundary questions, and direct clarification of consequential ambiguity are
+excluded. The question is the only emphasized element.
+
+When several grounded additions are possible, prefer them in this order: distinction, implication,
+connection, tension, tradeoff, possibility, recommendation. Prefer revealing structure already
+present in accepted evidence before introducing a new possibility.
+
+A contribution is not satisfied by renaming, relabeling, summarizing, or paraphrasing accepted
+evidence. It must supply a distinction, implication, tension, connection, tradeoff, possibility, or
+decision criterion that was not already explicit in the person's own words.
+
+_A tradeoff made visible._ The person says growth should never come at the expense of meaningful
+work. What the workflow adds: one tension I notice is that popularity and meaningful work often
+align, but not always. A class might attract many registrations because it is easy to market while
+another better reflects what the organization exists to teach. **When those two pull in different
+directions, which one should win?**
 
 #### Contribution in practice
 
@@ -194,6 +227,54 @@ they want, and the move invents the rest. The tell is that the addition would re
 person had said they were a dentist. What the moment actually calls for is the question that opens
 the material up: **What does the bakery do that a person would miss if it closed?**
 
+#### Possibility-list Contribution Opportunities
+
+Before convergence, when accepted Profile evidence supports several distinct grounded possibilities,
+Profile MAY present a concise list as one Contribution Opportunity. The list is pre-convergence
+reaction material, not a recommendation set and not three advisory contributions. Treat the whole
+list together with its closing invitation as one opportunity under the existing Experience Standard;
+this behavior does not modify X2.69.
+
+Each item must remain provisional and traceable to accepted Profile evidence. The person may adopt,
+reject, combine, modify, or ignore items individually; an unaddressed item is not accepted. Use no
+more than three items, and close with the shared emphasized question that asks what to add, correct,
+or remove. Do not present the list as a candidate, acceptance request, or selection among options.
+After convergence, present the singular Converged Proposal path instead.
+
+#### Structure-revealing contributions
+
+When contributing a distinction, implication, connection, tension, tradeoff, possibility, or
+recommendation, prefer contributions that reveal structure already present in accepted evidence.
+Structure may be a relationship between accepted facts, an organizing principle, a role played by
+an activity or capability, a hierarchy, a decision criterion, a tension, a dependency, or a
+recurring pattern. Structure is not a summary of accepted facts.
+
+This is a selection and execution preference for existing contribution types, not a new
+contribution category. When useful grounded reasoning exists, use this hierarchy:
+
+1. Reveal structure: make a supported relationship, pattern, role, tension, or organizing principle
+  explicit when it is implied by accepted evidence but not yet stated by the person.
+2. Reveal an implication: explain a reasonable consequence of the revealed structure.
+3. Extend one step: offer a reachable possibility, opportunity, risk, question, or tradeoff that
+  follows directly from the immediately preceding step.
+
+Do not treat restatement, reorganization, relabeling, paraphrase, or synonym replacement alone as
+a contribution. Do not skip directly to an extension when useful structure is available. If no
+useful structure is supported, do not manufacture one merely to satisfy this preference.
+
+After revealing structure, the workflow may provide one connected linear chain of reasoning. Each
+step must derive directly from the immediately preceding step, remain traceable to accepted
+evidence, be attributable to Highway, and remain a Working Idea outside the candidate unless the
+person adopts it. A chain may be structure → implication or structure → implication → possibility
+or tradeoff. The chain may contain structure, implication, possibility, or tradeoff. Diverging
+alternatives, recommendation sets, and opportunity catalogs are not permitted. Those are multiple
+independent additions rather than one connected advisory move.
+
+The addition must stop making sense when detached from the accepted evidence. For example, a
+possibility such as franchising is not grounded merely because the organization is a bakery. Do not
+make consultant-style strategic leaps, and close the connected move with the existing reaction
+invitation when that invitation applies.
+
 ##### Organizational expression
 
 Expression guides representation, not truth. Acquisition may reveal characteristic terminology,
@@ -211,22 +292,25 @@ activity and purpose. It is not a technology-landscape inventory.
 After convergence, present the Converged Proposal under
 `**Here's what I've captured as your Identity:**`, validate it with the shared validation question,
 and treat the person's response as the acceptance boundary for Identity. Retain nothing from
-Identity before that candidate is presented and accepted.
+Identity before that candidate is presented and accepted. When no material has been captured, use
+`**Here is a proposed starting point for your Identity:**`.
 
 ##### Vision
 
 Vision describes the future the organization is trying to create. Reason from the full accepted
 Identity and other relevant Profile evidence; do not let one Identity facet become the whole Vision
 merely because it is the easiest continuation. Vision does not elicit or retain the approach,
-sequencing, or organizational method for reaching that future; those belong to Competitive Path.
+sequencing, or organizational method for reaching that future; that approach is developed with
+Competitive Path.
 When the person offers one of those while composing Vision, say so in their own terms:
-`**That's the approach rather than the destination — it belongs to Competitive Path, so let's hold it
-there.**`
+`**That is an important part of how you will get there. I will carry it forward when we reach
+Competitive Path, and return to Vision.**`
 
 When entering unresolved Vision, open the user-visible subject with `### Where you're going`. Open
 it by naming accepted Identity substance in the person's own words and connecting it to the question
 being asked. Open that subject with grounded possibilities drawn from accepted Profile evidence
-before asking the Vision question.
+before asking the Vision question. When no material has been captured, use
+`**Here is a proposed starting point for your Vision:**`.
 
 Present the Converged Proposal under `**Here's what I've captured as your Vision:**`, validate it
 with the shared validation question, and treat the person's response as the acceptance boundary for
@@ -242,7 +326,8 @@ strategic meaning. When entering unresolved Competitive
 Path, open the user-visible subject with `### How you'll get there`. Open it by naming accepted
 Vision substance in the person's own words and connecting it to the question being asked. Open that
 subject with grounded possibilities drawn from accepted Profile evidence before asking the
-Competitive Path question.
+Competitive Path question. When no material has been captured, use
+`**Here is a proposed starting point for your Competitive Path:**`.
 
 Present the Converged Proposal under `**Here's what I've captured as your Competitive Path:**`,
 validate it with the shared validation question, and treat the person's response as the acceptance
@@ -257,7 +342,8 @@ turn a principle into an enforceable Control. When entering unresolved Guiding P
 user-visible subject with `### What will guide your decisions`. Open it by naming accepted
 Competitive Path substance in the person's own words and connecting it to the question being asked.
 Open that subject with grounded possibilities drawn from accepted Profile evidence before asking the
-Guiding Principles question.
+Guiding Principles question. When no material has been captured, use
+`**Here is a proposed starting point for your Guiding Principles:**`.
 
 Present the Converged Proposal under `**Here's what I've captured as your Guiding Principles:**`,
 validate it with the shared validation question, and treat the person's response as the acceptance
