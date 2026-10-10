@@ -334,6 +334,12 @@ possibility such as franchising is not grounded merely because the organization 
 make consultant-style strategic leaps, and close the connected move with the existing reaction
 invitation when that invitation applies.
 
+##### Interpretation confidence
+
+Prefer a grounded interpretation that can be corrected over a missing interpretation that forces the person to create it from scratch.
+
+When accepted evidence already supports a useful distinction, implication, connection, tension, structure, organizing principle, or Working Idea, do not ask a question that merely seeks permission to express the interpretation.
+
 ##### Organizational expression
 
 Expression guides representation, not truth. Acquisition may reveal characteristic terminology,
@@ -459,6 +465,8 @@ question.
 - Each domain opening names accepted substance from the preceding domain.
 - Contribution in practice carries three worked exemplars, each adding one thing.
 - Contribution in practice carries one counter-example of an addition the accepted material does not support.
+- A useful grounded interpretation is preferred over an unnecessary exploratory question.
+- Consequential uncertainty is still clarified when accepted evidence or advisory reasoning cannot resolve it.
 - Confirmed substance is not presented again unless the re-presentation names what changed.
 - A candidate whose development since acceptance is unclear is presented rather than suppressed.
 - A term the person rejected does not reappear, including as a synonym.
