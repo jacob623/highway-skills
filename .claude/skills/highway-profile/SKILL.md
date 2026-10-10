@@ -128,18 +128,77 @@ Proposal.
 
 Profile-specific validation questions apply to the domain's Converged Proposal.
 
-Every domain presents its Converged Proposal the same way. Present the candidate under its capture
-heading, `**Here's what I've captured as your [domain]:**`, where `[domain]` is the domain name. Put
-one acceptance request at the bottom: the validation question, which is
-`**What would you add, correct, or remove?**`. A sharper open question drawn from the conversation
-may stand in for it, as long as it stays emphasized and still asks what to add, correct, or remove.
-Beneath it, unemphasized, say `If this is accurate, just say so.` The acceptance request stays the
-only emphasized element in the block.
+##### Response Support Text
 
-Before the first Substantive Contribution in an active domain, add the unemphasized reassurance
-`If you don't know, say "I don't know" and we'll work through it together.` After the first
-Substantive Contribution in that domain, remove the conditional reassurance. Imported website
-evidence does not count as a Substantive Contribution.
+Profile uses the following reusable interaction elements.
+
+###### Validation Question
+
+The default validation question is:
+
+**What would you add, correct, or remove?**
+
+A sharper open question drawn from the active discussion may replace it when it still asks what to add, correct, or remove.
+
+The Validation Question remains the only emphasized element in a review block.
+
+###### Acceptance Reassurance
+
+The Acceptance Reassurance is:
+
+If this is accurate, just say so.
+
+Use it beneath a Validation Question when the person is reviewing a candidate or Converged Proposal.
+
+###### Discovery Reassurance
+
+The Discovery Reassurance is:
+
+If you don't know, say "I don't know" and we'll work through it together.
+
+Use it when the person is being asked to originate unresolved organizational information and no grounded starting point, Working Idea, interpretation, possibility, or advisory contribution has yet been supplied for reaction.
+
+###### Combined Reassurance
+
+The Combined Reassurance is:
+
+If this is accurate, just say so. If you don't know, say "I don't know" and we'll work through it together.
+
+Use the Combined Reassurance when both are reasonable outcomes of the interaction.
+
+Use the Acceptance Reassurance alone when the person is reacting to a candidate or Working Idea and "I don't know" would be unnatural.
+
+Use the Discovery Reassurance alone when the person is being asked to originate information and no meaningful starting point has yet been provided.
+
+Every domain presents its Converged Proposal the same way.
+
+Present the candidate under its capture heading:
+
+**Here's what I've captured as your [domain]:**
+
+Place the Validation Question beneath the candidate.
+
+Place the applicable reassurance beneath the Validation Question.
+
+Render:
+
+Validation Question
+
+blank line
+
+applicable reassurance
+
+The Validation Question remains the only emphasized element in the review block.
+
+Use the Discovery Reassurance only when the person is being asked to originate unresolved organizational information and the workflow has not yet supplied a meaningful starting point for reaction.
+
+Do not use the Discovery Reassurance merely because no Substantive Contribution has occurred yet.
+
+A grounded possibility, interpretation, distinction, implication, connection, tension, tradeoff, recommendation, or other Working Idea already gives the person something to react to.
+
+In those cases, use the Acceptance Reassurance or Combined Reassurance as appropriate.
+
+Imported website evidence does not count as a user Substantive Contribution.
 
 The person's response to that request is the domain's acceptance boundary. Recognize acceptance by
 what the response means, not by whether it matches a particular phrase, and do not wait for a second
@@ -275,6 +334,12 @@ possibility such as franchising is not grounded merely because the organization 
 make consultant-style strategic leaps, and close the connected move with the existing reaction
 invitation when that invitation applies.
 
+##### Interpretation confidence
+
+Prefer a grounded interpretation that can be corrected over a missing interpretation that forces the person to create it from scratch.
+
+When accepted evidence already supports a useful distinction, implication, connection, tension, structure, organizing principle, or Working Idea, do not ask a question that merely seeks permission to express the interpretation.
+
 ##### Organizational expression
 
 Expression guides representation, not truth. Acquisition may reveal characteristic terminology,
@@ -400,6 +465,8 @@ question.
 - Each domain opening names accepted substance from the preceding domain.
 - Contribution in practice carries three worked exemplars, each adding one thing.
 - Contribution in practice carries one counter-example of an addition the accepted material does not support.
+- A useful grounded interpretation is preferred over an unnecessary exploratory question.
+- Consequential uncertainty is still clarified when accepted evidence or advisory reasoning cannot resolve it.
 - Confirmed substance is not presented again unless the re-presentation names what changed.
 - A candidate whose development since acceptance is unclear is presented rather than suppressed.
 - A term the person rejected does not reappear, including as a synonym.

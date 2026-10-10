@@ -116,7 +116,7 @@ require_flowed "$PROFILE" 'Profile skill' \
 	'**What would you add, correct, or remove?**'
 
 require_flowed "$PROFILE" 'Profile skill' \
-	'A sharper open question drawn from the conversation may stand in for it, as long as it stays emphasized and still asks what to add, correct, or remove.'
+	'A sharper open question drawn from the active discussion may replace it when it still asks what to add, correct, or remove.'
 
 # US4 - introduced vocabulary and ungrounded claims are marked as Highway's.
 for id in X2.52 X2.53 X2.54; do
