@@ -4,7 +4,7 @@ description: "Manages the repository-wide Business Objective baseline and its st
 usage: "Invoke as `/highway-objectives` and state whether to inspect, add, update, remove, or reset Business Objectives."
 compatibility: all
 metadata:
-  version: 3.0.0
+  version: 4.0.0
 ---
 
 # highway-objectives
@@ -17,6 +17,50 @@ that explain the business direction later Highway artifacts may reference.
 ## Experience
 
 User-visible interaction follows the Highway Experience Standard.
+
+## Response Support Text
+
+Use the support text that matches the active interaction. Keep the Validation Question as the only
+emphasized element in an Objective review.
+
+**Validation Question**
+
+**What would you add, correct, or remove?**
+
+A sharper question may replace it when it still invites correction rather than agreement.
+
+**Acceptance Reassurance**
+
+If this is accurate, just say so.
+
+Use when reviewing an Objective proposal.
+
+**Discovery Reassurance**
+
+If you don't know, say "I don't know" and we'll work through it together.
+
+Use when the person is originating unresolved objective information without a grounded
+recommendation, interpretation, or Working Idea.
+
+**Combined Reassurance**
+
+If this is accurate, just say so. If you don't know, say "I don't know" and we'll work through it together.
+
+Use when either confirming a grounded proposal or not knowing is reasonable.
+
+**Recommendation Reassurance**
+
+If none of these fit, feel free to suggest your own outcome.
+
+Use whenever recommendations are presented. The user-authored path remains available and a
+recommendation never requires adoption.
+
+**Additional Suggestions Reassurance**
+
+If you'd like additional suggestions, just let me know.
+
+Use after recommendations, captured Objectives, portfolio assessments, or other active collection
+steps when future recommendation support remains available.
 
 ## When to use
 
@@ -133,7 +177,7 @@ current version, objective count, and every objective identifier, title, and sta
 identifier order. Do not modify objective files, the catalog, or any other file. The same bytes
 must remain before and after the response.
 
-## Creation and update workflow
+## Creation workflow
 
 For `setup`, `configure`, `add`, and `new`, begin with concise direct-invocation context when Setup
 has not introduced the purpose. Use this opening only when no Objective evidence was supplied and no useful grounded recommendation is available:
@@ -156,18 +200,31 @@ order:
 4. Otherwise, synthesize Rationale and present the Objective review.
 
 Accept ordinary business language, uncertainty, activity descriptions, natural correction,
-replacement, rejection, cancellation, abandonment, and multiple
-dimensions in one answer. When multiple meaningful outcomes are present without explicit grouping,
-ask whether to represent them together or separately. Preserve explicitly grouped outcomes and
-retain explicitly separate outcomes in user-provided order for sequential processing. `I don't know` starts guided discovery and does not manufacture a
-recommendation. When accepted Profile evidence supports a useful Objective, offer a Profile-grounded recommendation before asking an unnecessary question. Do not wait for a suggestion request. Prefer the accepted Organization Name. The user-authored path stays available. A selection of one, several, or all displayed recommendations is captured directly, without a second confirmation. Identity, Highway Vision, and Highway Platform Objectives stay framing sources and are not organizational facts. Existing Objectives are used for duplicate and overlap detection. Asking for more information about a
-suggestion is not adoption. If Profile evidence cannot support a meaningful suggestion, ask `**What's an important outcome you'd like to achieve?**` and do not manufacture a recommendation.
+replacement, rejection, cancellation, abandonment, and multiple dimensions in one answer. When
+multiple meaningful outcomes are present without explicit grouping, ask whether to represent them
+together or separately. Preserve explicitly grouped outcomes and retain explicitly separate outcomes
+in user-provided order for sequential processing. `I don't know` starts guided discovery and does not
+manufacture a recommendation. When accepted Profile evidence supports a useful Objective, offer a
+Profile-grounded recommendation before asking an unnecessary question. Do not wait for a suggestion
+request. Prefer the accepted Organization Name. The user-authored path stays available. Recommendation
+wording supports selecting one, several, or all recommendations, modifying recommendations before
+adoption, or providing a user-authored outcome. Identity, Highway Vision, and Highway Platform
+Objectives stay framing sources and are not organizational facts. Existing Objectives are used for
+duplicate and overlap detection. Explanation requests, comparisons, and requests for more information
+are not adoption. If Profile evidence cannot support a meaningful suggestion, ask
+`**What's an important outcome you'd like to achieve?**` and do not manufacture a recommendation.
 
-Selected recommendations create Statement, Success Measures, and synthesized Rationale only from
-the recommendation and its grounding evidence. Do not ask a separate Rationale question. If a
-selected recommendation lacks enough accepted evidence for a required Success Measure, ask only the
-unresolved Success question. The user-authored alternative remains available.
-After a correction, re-evaluate staged Business Objective, Success, and Highway Relevance evidence and discard staged interpretations that no longer support the revised intent.
+Selecting several recommendations creates an active Objective queue in the selected order. Selection
+remains acceptance of the recommendation itself but does not imply completion of unresolved Success
+Measures or completion of the Objective. Process each queued recommendation sequentially: establish
+the Objective statement, establish required Success Measures, synthesize Rationale, complete review
+when required, capture the Objective, and then continue to the next queue item. The owner must derive
+Success Measures when the recommendation contains sufficient accepted evidence; otherwise ask only
+the unresolved Success question and do not capture the Objective yet. The user-authored alternative
+remains available. A single selected recommendation follows the same Success Measure gate.
+After a correction, re-evaluate staged Business Objective, Success, and Highway Relevance evidence,
+discard staged interpretations that no longer support the revised intent, and re-evaluate the staged
+evidence before continuing.
 
 When Business Objective evidence supports a Statement and Success evidence supports at least one Success Measure, present the Objective review. Ask one Highway Relevance question only when unresolved
 information would improve downstream Highway use. Otherwise synthesize Rationale from accepted evidence
@@ -185,9 +242,11 @@ and proceed to review. Business Objective and Success are sufficient for review.
 **Why it matters:**  
 [Rationale]
 
-**Does this objective look right?**
+**What would you add, correct, or remove?**
 
-Do not use this review for an Objective selected from displayed recommendations.
+A selected recommendation that becomes a complete Objective without further development does not
+receive a redundant review. A selected recommendation that requires additional Success development,
+refinement, or interpretation follows the normal Objective workflow.
 
 Rationale is synthesized from accepted evidence. Specifically, it uses accepted Business Objective,
 Success, Highway Relevance, and applicable accepted Profile evidence without adding unsupported facts.
@@ -197,10 +256,63 @@ Why it matters is not a fourth discovery dimension.
 
 Do not expose an unallocated or newly allocated identifier, catalog change, or version in normal
 pre-persistence review. Natural acceptance authorizes non-destructive creation without a second
-persistence-confirmation question. Natural correction, replacement, rejection, cancellation,
+confirmation or persistence-confirmation question. Natural correction, replacement, rejection, cancellation,
 abandonment, or interruption keeps the proposal transient and writes nothing.
 
-During setup or configure, after a single captured Objective ask **Is there another objective you'd like to capture?** After a selection of several or all displayed recommendations, capture them together and ask that question once after a selection of several. A supplied Objective starts processing immediately. Yes without an Objective asks **What's another important outcome you'd like to achieve?** A suggestion request presents grounded recommendations. An explicit finish ends collection and returns the terminal owner result. Any other reply asks the continuation question again. Readiness becoming Complete does not end setup or configure. Direct add and new capture the selection and do not ask the continuation question.
+During setup or configure, after a single captured Objective ask **Is there another objective you'd like to capture?** After each queued Objective is captured, continue with the next selected recommendation before asking the collection continuation question. A supplied Objective starts processing immediately. Yes without an Objective asks **What's another important outcome you'd like to achieve?** A suggestion request presents grounded recommendations. After recommendations, captured Objectives, or a portfolio assessment while collection remains active, include Additional Suggestions Reassurance so future recommendation support is explicit. Objectives explicitly keep future recommendation support available until the person explicitly finishes collection. A person who says they are satisfied may receive a concise current-coverage synthesis, future suggestion availability, and **Is there another objective you'd like to capture?** An explicit finish ends collection and takes precedence over future suggestion support. Any other reply asks the continuation question again. Readiness becoming Complete does not end setup or configure. Direct add and new capture the selection and do not ask the continuation question.
+
+#### Illustrative Continuation Example
+
+When objective collection remains active and accepted Objectives already provide broad
+coverage, the owner may summarize the portfolio before presenting the continuation question.
+
+Illustrative:
+
+User:
+I think that's enough objectives for now.
+
+Owner:
+Your current Objectives provide strong coverage across curriculum distribution,
+operations, partnerships, and production.
+
+Additional Objectives may begin overlapping with outcomes already represented or divide
+focus across too many priorities.
+
+If you'd like additional suggestions, just let me know.
+
+**Is there another objective you'd like to capture?**
+
+This example is illustrative rather than required wording.
+
+The intent is:
+
+- provide a concise portfolio assessment;
+- explain recommendation exhaustion when applicable;
+- explicitly keep future recommendation support available;
+- continue objective collection until explicit finish;
+- preserve the user's authority to continue, stop, or provide a new outcome.
+
+## Objective Contribution Guidance
+
+When accepted Profile evidence and accepted Objectives support a useful contribution, reveal one
+grounded observation at a time before asking an unnecessary exploratory question. The observation
+may identify relationships, overlap, duplication, strategic coverage, meaningful gaps, tensions,
+reinforcement, implications, focus observations, or portfolio observations. Do not manufacture an
+observation when accepted evidence does not support one. Keep recommendations provisional and keep
+the user-authored path available.
+
+## Objective Portfolio Assessment Guidance
+
+After multiple Objectives are accepted, the owner may provide a concise advisory portfolio
+assessment. It may describe overlap, duplication, strategic concentration, focus fragmentation,
+meaningful coverage, or missing business areas. The assessment does not reject Objectives, force
+completion, block additional Objectives, mutate the baseline, or replace the person's authority.
+
+If no useful grounded non-duplicate recommendation remains, explain current coverage, overlap, or
+focus fragmentation when useful and stop manufacturing recommendations. Leave an explicit choice to
+continue or provide a user-authored outcome.
+
+## Update workflow
 
 For `update`, resolve exactly one existing objective by identifier and title before staging a
 change. Preserve its identifier and every untouched field. Confirm the complete staged record and

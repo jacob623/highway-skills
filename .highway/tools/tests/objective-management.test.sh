@@ -76,11 +76,11 @@ done
 for phrase in \
 	"What's an important outcome you'd like to achieve?" \
 	"How would you measure success in" "What role should technology play in helping" \
-	"Here's what I've captured as your objective:" "Does this objective look right?" "Why it matters:" \
+	"Here's what I've captured as your objective:" "What would you add, correct, or remove?" "Why it matters:" \
 	"[Objective Title]" "[Statement]" "Success looks like:" \
-	"Profile-grounded" "accepted Profile" "without a second confirmation" \
+	"Profile-grounded" "accepted Profile" "without a second" \
 	"Business Objective" "Highway Relevance" "## Statement" "## Success Measures" "## Rationale" \
-	"User-visible interaction follows the Highway Experience Standard." "version: 3.0.0" "successful atomic persistence"; do
+	"User-visible interaction follows the Highway Experience Standard." "version: 4.0.0" "successful atomic persistence"; do
 	require_text "$SKILL" "$phrase" "Feature 093 contract phrase $phrase"
 done
 if grep -Fq 'if Significance is unresolved' "$SKILL" || grep -Fq '## Highway Relevance' "$SKILL" || grep -Fq 'highway_relevance:' "$SKILL"; then
@@ -132,7 +132,7 @@ for phrase in "Repository Context Participating Skill" "Identity" "Highway Visio
 	"Highway Platform Objectives" "Profile" "malformed" "unavailable" \
 	"exact duplicate" "semantic overlap" \
 	"/highway-objectives setup" "direct invocation" "Is there another objective you'd like to capture?" \
-	"once after a selection of several" \
+	"After each queued Objective is captured" \
 	"What's another important outcome you'd like to achieve?" "Status: Missing" \
 	"Status: Complete" "Status: Blocked"; do
 	require_text "$SKILL" "$phrase" "Feature 093 extended contract phrase $phrase"
@@ -173,10 +173,10 @@ for interaction in \
 	"Accept ordinary business language, uncertainty, activity descriptions" \
 	"dimensions in one answer" \
 	"\`I don't know\` starts guided discovery" \
-	"suggestion is not adoption" \
-	"After a correction, re-evaluate staged Business Objective, Success, and Highway Relevance evidence" \
-	"discard staged interpretations that no longer support the revised intent" \
-	"represent them together or separately" \
+	"recommendation never requires adoption" \
+	"After a correction" \
+	"staged interpretations" \
+	"represent them" \
 	"user-provided order" \
 	"Business Objective evidence supports a Statement" \
 	"Rationale is synthesized from accepted evidence" \
