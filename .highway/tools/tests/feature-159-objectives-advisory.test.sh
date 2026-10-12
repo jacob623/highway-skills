@@ -60,8 +60,8 @@ for phrase in \
 	"selected order" \
 	"Selection accepts the recommendation itself" \
 	"does not constitute User Acceptance of the Objective or capture" \
-	"derive proposed Success Measures" \
-	"only the unresolved Success question" \
+	"When multiple recommendations are selected, process them sequentially through the Objective Development Lifecycle" \
+	"If evidence is insufficient for Objective development, continue the evidence question path" \
 	"Explanation requests, comparisons, and requests for more information" \
 	"selecting one, several, or all" \
 	"modifying recommendations before adoption" \
