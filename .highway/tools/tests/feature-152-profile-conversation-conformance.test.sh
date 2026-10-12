@@ -230,7 +230,7 @@ require_text "$PROFILE" 'Profile skill' \
 
 # --- Scope guard: highway-profile is the only skill this feature modifies (FR-029a) ---
 
-for other in highway-controls highway-nfrs highway-objectives highway-new; do
+for other in highway-controls highway-nfrs highway-new; do
 	require_absent "$HIGHWAY_ROOT/skills/$other/SKILL.md" "$other skill" \
 		'**What would you add, correct, or remove?**'
 done
