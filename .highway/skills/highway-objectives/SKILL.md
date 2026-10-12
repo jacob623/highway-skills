@@ -68,8 +68,6 @@ Recommendations are grounded in accepted Profile evidence. When useful accepted 
 recommendation, offer a Profile-grounded recommendation before asking an unnecessary question:
 
 - explain why it is relevant;
-- prefer Objective development over unnecessary discovery;
-- propose a viable Objective rather than interrogating toward one;
 - keep the user-authored path available.
 
 Recommendations remain Working Ideas until accepted.
@@ -78,29 +76,35 @@ Recommendations remain Working Ideas until accepted.
 
 Every Objective follows the same development lifecycle:
 
-Recommendations
+Recommendation Selected or User Provided Objective
 ↓
-User selects an Objective recommendation or provides an Objective
+Present Converged Objective proposal
 ↓
-Converged Objective proposal (with proposed Success Measures)
-↓
-One review
+User Acceptance
 ↓
 Capture
 ↓
 Next Objective
 
-The Objective owner is expected to develop a complete first-pass Objective proposal whenever
-accepted Profile evidence reasonably supports one. The proposal should normally include:
+A Converged Objective proposal contains:
 
 - Objective title;
 - Objective statement;
 - proposed Success Measures;
 - synthesized Rationale.
 
-The person then refines, corrects, approves, replaces, or rejects the proposal. The owner does not
-require the person to create the complete Objective from scratch when accepted evidence already
-supports a responsible proposal.
+The Objective owner is expected to develop a complete first-pass Objective proposal whenever
+accepted Profile evidence reasonably supports one.
+
+The person may:
+
+- approve it;
+- correct it;
+- replace it;
+- reject it.
+
+The owner does not require the person to create the complete Objective from scratch when accepted
+evidence already supports a responsible proposal.
 
 Objective development should normally begin from a proposal rather than a question.
 
@@ -108,11 +112,12 @@ Conversational discovery remains available but is the exception path.
 
 Use discovery when:
 
-- accepted evidence cannot support a responsible Objective proposal;
+- accepted evidence cannot support a responsible Converged Objective proposal;
 - accepted evidence cannot support reasonable Success Measures;
 - consequential ambiguity remains unresolved.
 
-Do not ask a discovery question when a grounded proposal can reasonably be presented first.
+Do not ask a discovery question when a grounded Converged Objective proposal can reasonably be
+presented first.
 
 When accepted evidence reasonably supports likely Success Measures, propose them. The person may:
 
@@ -124,24 +129,34 @@ When accepted evidence reasonably supports likely Success Measures, propose them
 Success Measure development should normally begin with a proposal rather than a request to create
 Success Measures from scratch.
 
-## Objective Queue and Review Boundaries
+When presenting the Converged Objective proposal:
+
+**Here's what I've captured as your objective:**
+
+[Objective Title]
+
+[Statement]
+
+**Success looks like:**
+- [Success Measure]
+
+**Why it matters:**
+[Rationale]
+
+**What would you add, correct, or remove?**
+
+## Objective Queue and Acceptance Boundaries
 
 Selection does not capture an Objective. Selection identifies which Objective should be developed
 next, and a selected recommendation enters the active Objective queue. Queue membership determines development order only; Queue membership is not Objective capture.
 
-An Objective is not captured until a Converged Objective proposal exists, the review step completes,
-and the Objective owner performs capture.
+An Objective is not captured until:
+
+- the Converged Objective proposal defined in the Objective Development Lifecycle has been presented;
+- the person has accepted it;
+- the Objective owner performs capture.
 
 The owner MUST NOT transition directly from recommendation selection to Objective capture.
-
-The owner MUST first create a Converged Objective proposal containing:
-
-- Objective title;
-- Objective statement;
-- proposed Success Measures;
-- synthesized Rationale.
-
-Only after review may the Objective be captured.
 
 Illustrative queue example:
 
@@ -149,39 +164,15 @@ User:
 Capture all four.
 
 Owner:
-The four recommendations become the active Objective queue. The first recommendation is developed
-into a complete Objective proposal. After that Objective is reviewed and captured, the second
-recommendation is developed. Objectives are processed one at a time until the queue is exhausted.
-Selecting several recommendations does not capture them immediately.
-
-A Converged Objective proposal is the review. Do not introduce a second review cycle after the person
-has already reviewed that proposal. The normal path is:
-
-Converged Objective proposal
-↓
-Review
-↓
-Capture
-
-not:
-
-Converged Objective proposal
-↓
-Review
-↓
-Second proposal
-↓
-Second review
-↓
-Capture
+The four recommendations become the active Objective queue in the selected order. Selection does
+not capture them, and the queue is processed one item at a time until it is exhausted.
 
 ## Interpretation Confidence
 
 Prefer a grounded interpretation that can be corrected over a missing interpretation that forces the
 person to create it from scratch. When accepted Profile evidence supports a useful recommendation,
 implication, relationship, distinction, Success Measure, or Working Idea, do not ask a question that
-merely seeks permission to express it. When accepted evidence supports a reasonable Objective
-interpretation, develop the Objective before asking an exploratory question.
+merely seeks permission to express it.
 
 ### Illustrative Objective Development Example
 
@@ -193,12 +184,7 @@ Prefer:
   Expand distribution of studio-tested handwork curriculum to homeschool
   families, co-ops, and schools.
 
-Then develop Success Measures.
-
-The Objective should remain the primary conversational anchor. Success Measures
-refine the Objective rather than replace it.
-
-Do not begin with a chain of Success questions before the Objective itself is visible.
+The Objective should remain the primary conversational anchor.
 
 ## Objective Contribution Guidance
 
@@ -386,39 +372,16 @@ more information are not adoption. If Profile evidence cannot support a meaningf
 `**What's an important outcome you'd like to achieve?**` and do not manufacture a recommendation.
 
 Selecting several recommendations creates an active Objective queue in the selected order. Selection
-remains acceptance of the recommendation itself but does not imply completion of unresolved Success
-Measures or completion of the Objective. Process each queued recommendation sequentially: establish
-the Objective statement, establish required Success Measures, synthesize Rationale, complete review
-when required, capture the Objective, and then continue to the next queue item. The owner must derive
-Success Measures when the recommendation contains sufficient accepted evidence; otherwise ask only
-the unresolved Success question and do not capture the Objective yet. The user-authored alternative
-remains available. A single selected recommendation follows the same Success Measure gate.
+accepts the recommendation itself but does not constitute User Acceptance of the Objective or capture.
+When multiple recommendations are selected, process them sequentially through the Objective Development Lifecycle.
+If evidence is insufficient for Objective development, continue the evidence question path rather than
+creating a parallel lifecycle. The user-authored alternative remains available.
 
 After a correction, re-evaluate staged Business Objective, Success, and Highway Relevance evidence,
 discard staged interpretations that no longer support the revised intent, and re-evaluate the staged
 evidence before continuing.
 
-When Business Objective evidence supports a Statement and Success evidence supports at least one Success Measure, present the Objective review. Ask one Highway Relevance question only when unresolved
-information would improve downstream Highway use. Otherwise synthesize Rationale from accepted evidence
-and proceed to review. Business Objective and Success are sufficient for review. Highway Relevance does not independently block Objective creation.
-
-**Here's what I've captured as your objective:**
-
-[Objective Title]
-
-[Statement]
-
-**Success looks like:**
-- [Success Measure]
-
-**Why it matters:**  
-[Rationale]
-
-**What would you add, correct, or remove?**
-
-A selected recommendation that becomes a complete Objective without further development does not
-receive a redundant review. A selected recommendation that requires additional Success development,
-refinement, or interpretation follows the normal Objective workflow.
+When Business Objective evidence supports a Statement and Success evidence supports at least one Success Measure, evidence evaluation is complete enough to hand off to the Objective Development Lifecycle for review. Business Objective and Success are sufficient for review. Ask one Highway Relevance question only when unresolved information would improve downstream Highway use. Otherwise, hand off the accepted evidence and let the lifecycle synthesize the proposal. Highway Relevance does not independently block Objective creation.
 
 Rationale is synthesized from accepted evidence. Specifically, it uses accepted Business Objective,
 Success, Highway Relevance, and applicable accepted Profile evidence without adding unsupported facts.
