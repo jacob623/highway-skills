@@ -78,29 +78,35 @@ Recommendations remain Working Ideas until accepted.
 
 Every Objective follows the same development lifecycle:
 
-Recommendations
+Recommendation Selected or User Provided Objective
 ↓
-User selects an Objective recommendation or provides an Objective
+Present Converged Objective proposal
 ↓
-Converged Objective proposal (with proposed Success Measures)
-↓
-One review
+User Acceptance
 ↓
 Capture
 ↓
 Next Objective
 
-The Objective owner is expected to develop a complete first-pass Objective proposal whenever
-accepted Profile evidence reasonably supports one. The proposal should normally include:
+A Converged Objective proposal contains:
 
 - Objective title;
 - Objective statement;
 - proposed Success Measures;
 - synthesized Rationale.
 
-The person then refines, corrects, approves, replaces, or rejects the proposal. The owner does not
-require the person to create the complete Objective from scratch when accepted evidence already
-supports a responsible proposal.
+The Objective owner is expected to develop a complete first-pass Objective proposal whenever
+accepted Profile evidence reasonably supports one.
+
+The person may:
+
+- approve it;
+- correct it;
+- replace it;
+- reject it.
+
+The owner does not require the person to create the complete Objective from scratch when accepted
+evidence already supports a responsible proposal.
 
 Objective development should normally begin from a proposal rather than a question.
 
@@ -108,11 +114,12 @@ Conversational discovery remains available but is the exception path.
 
 Use discovery when:
 
-- accepted evidence cannot support a responsible Objective proposal;
+- accepted evidence cannot support a responsible Converged Objective proposal;
 - accepted evidence cannot support reasonable Success Measures;
 - consequential ambiguity remains unresolved.
 
-Do not ask a discovery question when a grounded proposal can reasonably be presented first.
+Do not ask a discovery question when a grounded Converged Objective proposal can reasonably be
+presented first.
 
 When accepted evidence reasonably supports likely Success Measures, propose them. The person may:
 
@@ -124,24 +131,49 @@ When accepted evidence reasonably supports likely Success Measures, propose them
 Success Measure development should normally begin with a proposal rather than a request to create
 Success Measures from scratch.
 
-## Objective Queue and Review Boundaries
+## Objective Queue and Acceptance Boundaries
 
 Selection does not capture an Objective. Selection identifies which Objective should be developed
 next, and a selected recommendation enters the active Objective queue. Queue membership determines development order only; Queue membership is not Objective capture.
 
-An Objective is not captured until a Converged Objective proposal exists, the review step completes,
-and the Objective owner performs capture.
+An Objective is not captured until:
+
+- the Converged Objective proposal defined in the Objective Development Lifecycle has been presented;
+- the person has accepted it;
+- the Objective owner performs capture.
 
 The owner MUST NOT transition directly from recommendation selection to Objective capture.
 
-The owner MUST first create a Converged Objective proposal containing:
+The Converged Objective proposal is presented once.
 
-- Objective title;
-- Objective statement;
-- proposed Success Measures;
-- synthesized Rationale.
+The person accepts, corrects, replaces, or rejects that proposal.
 
-Only after review may the Objective be captured.
+Do not introduce a preliminary Objective and later present a second complete Objective unless the
+person requested changes.
+
+Normal path:
+
+Recommendation Selected or User Provided Objective
+↓
+Present Converged Objective proposal
+↓
+User Acceptance
+↓
+Capture
+
+NOT:
+
+Recommendation Selected or User Provided Objective
+↓
+Preliminary Objective
+↓
+Review
+↓
+Converged Objective proposal
+↓
+User Acceptance
+↓
+Capture
 
 Illustrative queue example:
 
@@ -150,30 +182,17 @@ Capture all four.
 
 Owner:
 The four recommendations become the active Objective queue. The first recommendation is developed
-into a complete Objective proposal. After that Objective is reviewed and captured, the second
-recommendation is developed. Objectives are processed one at a time until the queue is exhausted.
-Selecting several recommendations does not capture them immediately.
+into the Converged Objective proposal defined in the Objective Development Lifecycle. After that
+Objective is accepted and captured, the second recommendation is developed. Objectives are
+processed one at a time until the queue is exhausted. Selecting several recommendations does not
+capture them immediately.
 
-A Converged Objective proposal is the review. Do not introduce a second review cycle after the person
-has already reviewed that proposal. The normal path is:
+Process each queued recommendation sequentially:
 
-Converged Objective proposal
-↓
-Review
-↓
-Capture
-
-not:
-
-Converged Objective proposal
-↓
-Review
-↓
-Second proposal
-↓
-Second review
-↓
-Capture
+- present the Converged Objective proposal defined in the Objective Development Lifecycle;
+- obtain user acceptance;
+- capture the Objective;
+- continue to the next queue item.
 
 ## Interpretation Confidence
 
@@ -386,13 +405,18 @@ more information are not adoption. If Profile evidence cannot support a meaningf
 `**What's an important outcome you'd like to achieve?**` and do not manufacture a recommendation.
 
 Selecting several recommendations creates an active Objective queue in the selected order. Selection
-remains acceptance of the recommendation itself but does not imply completion of unresolved Success
-Measures or completion of the Objective. Process each queued recommendation sequentially: establish
-the Objective statement, establish required Success Measures, synthesize Rationale, complete review
-when required, capture the Objective, and then continue to the next queue item. The owner must derive
-Success Measures when the recommendation contains sufficient accepted evidence; otherwise ask only
-the unresolved Success question and do not capture the Objective yet. The user-authored alternative
-remains available. A single selected recommendation follows the same Success Measure gate.
+accepts the recommendation itself but does not constitute User Acceptance of the Objective or capture.
+Process each queued recommendation sequentially:
+
+- present the Converged Objective proposal defined in the Objective Development Lifecycle;
+- obtain User Acceptance;
+- capture the Objective;
+- continue to the next queue item.
+
+The owner must derive proposed Success Measures when the recommendation contains sufficient accepted
+evidence. Otherwise, ask only the unresolved Success question and do not present the Objective for
+User Acceptance or capture it yet. The user-authored alternative remains available. A single selected
+recommendation follows the same Objective Development Lifecycle.
 
 After a correction, re-evaluate staged Business Objective, Success, and Highway Relevance evidence,
 discard staged interpretations that no longer support the revised intent, and re-evaluate the staged

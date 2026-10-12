@@ -58,9 +58,9 @@ done
 for phrase in \
 	"active Objective queue" \
 	"selected order" \
-	"Selection remains acceptance of the recommendation itself" \
-	"does not imply completion of unresolved Success Measures" \
-	"derive Success Measures" \
+	"Selection accepts the recommendation itself" \
+	"does not constitute User Acceptance of the Objective or capture" \
+	"derive proposed Success Measures" \
 	"only the unresolved Success question" \
 	"Explanation requests, comparisons, and requests for more information" \
 	"selecting one, several, or all" \
