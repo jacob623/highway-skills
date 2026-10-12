@@ -62,6 +62,80 @@ If you'd like additional suggestions, just let me know.
 Use after recommendations, captured Objectives, portfolio assessments, or other active collection
 steps when future recommendation support remains available.
 
+## Recommendation Development
+
+Recommendations are grounded in accepted Profile evidence. When useful accepted context supports a
+recommendation, offer a Profile-grounded recommendation before asking an unnecessary question:
+
+- explain why it is relevant;
+- prefer Objective development over unnecessary discovery;
+- propose a viable Objective rather than interrogating toward one;
+- keep the user-authored path available.
+
+Recommendations remain Working Ideas until accepted.
+
+## Interpretation Confidence
+
+Prefer a grounded interpretation that can be corrected over a missing interpretation that forces the
+person to create it from scratch. When accepted Profile evidence supports a useful recommendation,
+implication, relationship, distinction, Success Measure, or Working Idea, do not ask a question that
+merely seeks permission to express it. When accepted evidence supports a reasonable Objective
+interpretation, develop the Objective before asking an exploratory question.
+
+### Illustrative Objective Development Example
+
+Accepted Profile evidence suggests broader curriculum distribution.
+
+Prefer:
+
+- **Publish and Distribute Handwork Curriculum**
+  Expand distribution of studio-tested handwork curriculum to homeschool
+  families, co-ops, and schools.
+
+Then develop Success Measures.
+
+The Objective should remain the primary conversational anchor. Success Measures
+refine the Objective rather than replace it.
+
+Do not begin with a chain of Success questions before the Objective itself is visible.
+
+## Objective Contribution Guidance
+
+When accepted Profile evidence and accepted Objectives support a useful contribution, reveal one
+grounded observation at a time before asking an unnecessary exploratory question. The observation may
+identify relationships, overlap, duplication, strategic coverage, meaningful gaps, tensions,
+reinforcement, implications, focus observations, or portfolio observations. Do not manufacture one
+when accepted evidence does not support it. Keep recommendations provisional and the user-authored
+path available.
+
+## Objective Portfolio Assessment Guidance
+
+After multiple Objectives are accepted, provide a concise advisory assessment when useful. It may
+describe overlap, duplication, strategic concentration, focus fragmentation, meaningful coverage, or
+missing business areas. It does not reject Objectives, force completion, block additional Objectives,
+mutate the baseline, or replace the person's authority. When no useful grounded non-duplicate
+recommendation remains, explain coverage, overlap, or focus fragmentation when useful and stop
+manufacturing recommendations.
+
+## Objective Recommendation Presentation
+
+Keep the **Objective** as the primary conversational anchor. When multiple recommendations are presented,
+use visually distinct bullets with concise Objective titles, short outcome-oriented descriptions, and
+obvious distinctions rather than a narrative paragraph. Explicitly support selecting one, several, or
+all recommendations, modifying recommendations before adoption, providing a user-authored outcome,
+and requesting additional suggestions.
+
+### Illustrative Recommendation Presentation Example
+
+Based on your accepted Profile, these outcomes appear most relevant:
+
+- **Scale Craft Kit Production and Fulfillment** Establish sustainable assembly and fulfillment operations for studio-tested craft kits.
+- **Publish and Distribute Handwork Curriculum** Transform studio-developed lessons into distributable curriculum packages.
+- **Expand Local Studio Classes and Community Gatherings** Grow participation, workshops, and community-led events at the studio.
+
+Would you like to select one, several, or all of these outcomes, modify any of them, or provide your own outcome? If none fit, feel free to suggest your own outcome. If you'd like additional suggestions,
+just let me know.
+
 ## When to use
 
 Use this skill to set up, configure, inspect, add, create, update, remove, or reset Business
@@ -177,7 +251,7 @@ current version, objective count, and every objective identifier, title, and sta
 identifier order. Do not modify objective files, the catalog, or any other file. The same bytes
 must remain before and after the response.
 
-## Creation workflow
+## Creation Workflow
 
 For `setup`, `configure`, `add`, and `new`, begin with concise direct-invocation context when Setup
 has not introduced the purpose. Use this opening only when no Objective evidence was supplied and no useful grounded recommendation is available:
@@ -204,14 +278,10 @@ replacement, rejection, cancellation, abandonment, and multiple dimensions in on
 multiple meaningful outcomes are present without explicit grouping, ask whether to represent them
 together or separately. Preserve explicitly grouped outcomes and retain explicitly separate outcomes
 in user-provided order for sequential processing. `I don't know` starts guided discovery and does not
-manufacture a recommendation. When accepted Profile evidence supports a useful Objective, offer a
-Profile-grounded recommendation before asking an unnecessary question. Do not wait for a suggestion
-request. Prefer the accepted Organization Name. The user-authored path stays available. Recommendation
-wording supports selecting one, several, or all recommendations, modifying recommendations before
-adoption, or providing a user-authored outcome. Identity, Highway Vision, and Highway Platform
-Objectives stay framing sources and are not organizational facts. Existing Objectives are used for
-duplicate and overlap detection. Explanation requests, comparisons, and requests for more information
-are not adoption. If Profile evidence cannot support a meaningful suggestion, ask
+manufacture a recommendation. Prefer the accepted Organization Name. Identity, Highway Vision, and
+Highway Platform Objectives stay framing sources and are not organizational facts. Existing Objectives
+are used for duplicate and overlap detection. Explanation requests, comparisons, and requests for
+more information are not adoption. If Profile evidence cannot support a meaningful suggestion, ask
 `**What's an important outcome you'd like to achieve?**` and do not manufacture a recommendation.
 
 Selecting several recommendations creates an active Objective queue in the selected order. Selection
@@ -291,26 +361,6 @@ The intent is:
 - explicitly keep future recommendation support available;
 - continue objective collection until explicit finish;
 - preserve the user's authority to continue, stop, or provide a new outcome.
-
-## Objective Contribution Guidance
-
-When accepted Profile evidence and accepted Objectives support a useful contribution, reveal one
-grounded observation at a time before asking an unnecessary exploratory question. The observation
-may identify relationships, overlap, duplication, strategic coverage, meaningful gaps, tensions,
-reinforcement, implications, focus observations, or portfolio observations. Do not manufacture an
-observation when accepted evidence does not support one. Keep recommendations provisional and keep
-the user-authored path available.
-
-## Objective Portfolio Assessment Guidance
-
-After multiple Objectives are accepted, the owner may provide a concise advisory portfolio
-assessment. It may describe overlap, duplication, strategic concentration, focus fragmentation,
-meaningful coverage, or missing business areas. The assessment does not reject Objectives, force
-completion, block additional Objectives, mutate the baseline, or replace the person's authority.
-
-If no useful grounded non-duplicate recommendation remains, explain current coverage, overlap, or
-focus fragmentation when useful and stop manufacturing recommendations. Leave an explicit choice to
-continue or provide a user-authored outcome.
 
 ## Update workflow
 
