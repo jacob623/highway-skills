@@ -19,18 +19,15 @@ require_count() {
 	fi
 }
 
-require_flowed "$PROFILE" 'Profile skill' '#### Possibility-list Contribution Opportunities'
-require_flowed "$PROFILE" 'Profile skill' 'Before convergence, when accepted Profile evidence supports several distinct grounded possibilities'
-require_flowed "$PROFILE" 'Profile skill' 'pre-convergence reaction material, not a recommendation set and not three advisory contributions'
-require_flowed "$PROFILE" 'Profile skill' 'this behavior does not modify X2.69'
-require_flowed "$PROFILE" 'Profile skill' 'Each item must remain provisional and traceable to accepted Profile evidence.'
-require_flowed "$PROFILE" 'Profile skill' 'adopt, reject, combine, modify, or ignore items individually'
-require_flowed "$PROFILE" 'Profile skill' 'an unaddressed item is not accepted'
-require_flowed "$PROFILE" 'Profile skill' 'Use no more than three items'
-require_flowed "$PROFILE" 'Profile skill' 'close with the shared emphasized question that asks what to add, correct, or remove.'
-require_flowed "$PROFILE" 'Profile skill' 'Do not present the list as a candidate, acceptance request, or selection among options.'
-require_flowed "$PROFILE" 'Profile skill' 'After convergence, present the singular Converged Proposal path instead.'
-require_count "$PROFILE" 'Profile skill' '#### Advisory question scaffolding' 1
+if flow "$PROFILE" | grep -Fq -- '#### Possibility-list Contribution Opportunities'; then
+	echo "FAIL: Profile skill retains retired possibility-list guidance"
+	fail=1
+fi
+require_flowed "$PROFILE" 'Profile skill' '### Identity Discovery Contribution Opportunity'
+require_flowed "$PROFILE" 'Profile skill' '###### Vision Discovery Contribution Opportunity'
+require_flowed "$PROFILE" 'Profile skill' '###### Competitive Path Discovery Contribution Opportunity'
+require_flowed "$PROFILE" 'Profile skill' '###### Guiding Principles Discovery Contribution Opportunity'
+require_count "$PROFILE" 'Profile skill' '**What would you add, correct, or remove?**' 5
 require_flowed "$STANDARD" 'Experience Standard' '| X2.69 | A contributed addition MUST NOT exceed one distinction or extension per Substantive Contribution. | One addition appears; a second, an enumerated set of offered options, or a recommendation set does not. |'
 
 if [[ $fail -ne 0 ]]; then exit 1; fi

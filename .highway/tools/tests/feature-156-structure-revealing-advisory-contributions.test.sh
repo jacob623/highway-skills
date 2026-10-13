@@ -21,27 +21,9 @@ require_count() {
 	fi
 }
 
-# Structure preference and non-contribution boundaries.
-require_flowed "$PROFILE" 'Profile skill' '#### Structure-revealing contributions'
-require_flowed "$PROFILE" 'Profile skill' 'prefer contributions that reveal structure already present in accepted evidence'
-require_flowed "$PROFILE" 'Profile skill' 'Structure is not a summary of accepted facts.'
-require_flowed "$PROFILE" 'Profile skill' 'relationship, pattern, role, tension, or organizing principle'
-require_flowed "$PROFILE" 'Profile skill' 'Do not treat restatement, reorganization, relabeling, paraphrase, or synonym replacement alone as a contribution.'
-require_flowed "$PROFILE" 'Profile skill' 'Do not skip directly to an extension when useful structure is available.'
-
-# Connected chain and anti-branching behavior.
-require_flowed "$PROFILE" 'Profile skill' 'one connected linear chain of reasoning'
-require_flowed "$PROFILE" 'Profile skill' 'Each step must derive directly from the immediately preceding step, remain traceable'
-require_flowed "$PROFILE" 'Profile skill' 'structure, implication, possibility, or tradeoff'
-require_flowed "$PROFILE" 'Profile skill' 'Diverging alternatives, recommendation sets, and opportunity catalogs are not permitted.'
-require_flowed "$PROFILE" 'Profile skill' 'The addition must stop making sense when detached from the accepted evidence.'
-require_flowed "$PROFILE" 'Profile skill' 'keep it as a Working Idea outside the candidate unless the person adopts it'
-
-# Existing contracts and protected source boundaries.
-require_flowed "$PROFILE" 'Profile skill' '#### Advisory question scaffolding'
-require_flowed "$PROFILE" 'Profile skill' 'prefer them in this order: distinction, implication, connection, tension, tradeoff, possibility, recommendation'
-require_flowed "$PROFILE" 'Profile skill' 'A contribution is not satisfied by renaming, relabeling, summarizing, or paraphrasing accepted evidence.'
-require_flowed "$PROFILE" 'Profile skill' 'What the moment actually calls for is the question that opens the material up'
+# The structure preference is now owned by each Discovery Contribution Opportunity.
+require_absent "$PROFILE" 'Profile skill' '#### Structure-revealing contributions'
+require_count "$PROFILE" 'Profile skill' 'Use the proposed starting point to reveal relationships, patterns, structure, tensions, tradeoffs, implications, dependencies, and organizing principles already supported by accepted evidence.' 4
 require_count "$PROFILE" 'Profile skill' '**What would you add, correct, or remove?**' 5
 require_flowed "$STANDARD" 'Experience Standard' '| X2.69 | A contributed addition MUST NOT exceed one distinction or extension per Substantive Contribution. | One addition appears; a second, an enumerated set of offered options, or a recommendation set does not. |'
 

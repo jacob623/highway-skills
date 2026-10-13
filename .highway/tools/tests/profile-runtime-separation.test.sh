@@ -30,7 +30,7 @@ for required in \
 	'version: 11.2.0' \
 	'#### Domain model' \
 	'#### Domain completeness' \
-	'##### Organizational expression' \
+	'meaningful organizational expression' \
 	'##### Identity' \
 	'##### Vision' \
 	'##### Competitive Path' \

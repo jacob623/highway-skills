@@ -75,7 +75,7 @@ require_ordered "$PROFILE" 'Profile skill' 'Present the candidate under its capt
 require_ordered "$PROFILE" 'Profile skill' 'Place the Validation Question beneath the candidate.' 'Place the applicable reassurance beneath the Validation Question.'
 require_ordered "$PROFILE" 'Profile skill' '#### Domain completeness' 'A domain is complete when accumulated evidence supports one cohesive organizational narrative'
 require_ordered "$PROFILE" 'Profile skill' 'Profile-specific validation questions apply to the domain' '##### Response Support Text'
-require_ordered "$PROFILE" 'Profile skill' '##### Response Support Text' '#### Advisory question scaffolding'
+require_ordered "$PROFILE" 'Profile skill' '##### Response Support Text' '##### Interpretation confidence'
 require_count "$PROFILE" 'Profile skill' '##### Response Support Text' 1
 
 # US2: reassurance selection follows meaningful starting-point context.
@@ -90,10 +90,7 @@ require_flowed "$PROFILE" 'Profile skill' 'Use the Discovery Reassurance alone w
 # US3: canonical behavioral references preserve literal examples and protected behavior.
 require_flowed "$PROFILE" 'Profile skill' 'The Acceptance Reassurance is:'
 require_flowed "$PROFILE" 'Profile skill' 'The Discovery Reassurance is:'
-require_flowed "$PROFILE" 'Profile skill' '#### Structure-revealing contributions'
-require_flowed "$PROFILE" 'Profile skill' '#### Possibility-list Contribution Opportunities'
-require_flowed "$PROFILE" 'Profile skill' 'one connected linear chain of reasoning'
-require_flowed "$PROFILE" 'Profile skill' 'The addition must stop making sense when detached from the accepted evidence.'
+require_count "$PROFILE" 'Profile skill' 'Use the proposed starting point to reveal relationships, patterns, structure, tensions, tradeoffs, implications, dependencies, and organizing principles already supported by accepted evidence.' 4
 require_count "$PROFILE" 'Profile skill' '**What would you add, correct, or remove?**' 5
 require_flowed "$PROFILE" 'Profile skill' 'If this is accurate, just say so.'
 require_flowed "$PROFILE" 'Profile skill' "If you don't know, say \"I don't know\" and we'll work through it together."
