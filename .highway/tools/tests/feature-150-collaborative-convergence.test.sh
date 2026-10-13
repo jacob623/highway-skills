@@ -88,7 +88,7 @@ require_text "$STANDARD" 'Experience Standard' 'an ungrounded option is marked s
 
 for domain in Vision 'Competitive Path' 'Guiding Principles'; do
 	require_flowed "$PROFILE" 'Profile skill' \
-		"Open that subject with grounded possibilities drawn from accepted Profile evidence before asking the $domain question."
+		'Open that subject with grounded possibilities drawn from accepted Profile evidence before asking the canonical question.'
 done
 
 # Identity opportunities stay conditional; it gains no opening sentence.

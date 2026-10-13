@@ -342,6 +342,12 @@ Prefer a grounded interpretation that can be corrected over a missing interpreta
 
 When accepted evidence already supports a useful distinction, implication, connection, tension, structure, organizing principle, or Working Idea, do not ask a question that merely seeks permission to express the interpretation.
 
+When accepted evidence supports a responsible first-pass interpretation of Vision, Competitive Path, or Guiding Principles, prefer presenting a structured starting point rather than continuing exploratory questioning.
+
+The starting point exists to give the person something meaningful to react to.
+
+Questions remain available when accepted evidence cannot support a responsible starting point.
+
 ##### Organizational expression
 
 Expression guides representation, not truth. Acquisition may reveal characteristic terminology,
@@ -434,8 +440,33 @@ Competitive Path, and return to Vision.**`
 When entering unresolved Vision, open the user-visible subject with `### Where you're going`. Open
 it by naming accepted Identity substance in the person's own words and connecting it to the question
 being asked. Open that subject with grounded possibilities drawn from accepted Profile evidence
-before asking the Vision question. When no material has been captured, use
+before asking the canonical question. When no material has been captured, use
 `**Here is a proposed starting point for your Vision:**`.
+
+###### Vision Discovery Contribution Opportunity
+
+When accepted Identity evidence and other accepted Profile evidence support a cohesive and responsible first-pass Vision interpretation, present a proposed starting point before continuing exploratory questioning.
+
+The person may adopt, redirect, correct, or replace the starting point. Further exploratory questioning becomes the exception path when accepted evidence cannot support a responsible starting point.
+
+Vision starting points should be presented as structured bullets rather than narrative prose. The proposal should reveal the major elements of the Vision in a format that is easy to review, compare, and modify.
+
+**Here is a proposed starting point for your Vision:**
+
+- Future Direction
+  <accepted-evidence-grounded interpretation>
+
+- Desired Impact
+  <accepted-evidence-grounded interpretation>
+
+- Future State
+  <accepted-evidence-grounded interpretation>
+
+**What would you add, correct, or remove?**
+
+The Vision Discovery Contribution Opportunity is a Contribution Opportunity rather than a Converged Proposal. When the person adopts, redirects, corrects, replaces, combines, splits, or otherwise changes findings, treat the response as modifications to proposed Vision evidence. Re-synthesize and re-present the Vision Discovery Contribution Opportunity using the updated understanding. Do not transition immediately to the Vision Converged Proposal merely because the person supplied a correction.
+
+Remain within the Vision Discovery Contribution Opportunity while omissions are being identified, findings are being corrected or expanded, or meaningful discovery-contribution changes continue occurring. Re-evaluate the active understanding with relevant accepted context after each substantive change. Transition to normal Vision convergence only after the person indicates the findings are accurate, or no longer provides substantive additions, corrections, removals, combinations, or splits. The discovery-contribution representation and the final Vision Converged Proposal are separate artifacts; the final proposal is produced from the accepted discovery-contribution understanding. If accepted evidence cannot support this starting point, use the focused Vision question instead.
 
 Present the Converged Proposal under `**Here's what I've captured as your Vision:**`, validate it
 with the shared validation question, and treat the person's response as the acceptance boundary for
@@ -451,8 +482,33 @@ strategic meaning. When entering unresolved Competitive
 Path, open the user-visible subject with `### How you'll get there`. Open it by naming accepted
 Vision substance in the person's own words and connecting it to the question being asked. Open that
 subject with grounded possibilities drawn from accepted Profile evidence before asking the
-Competitive Path question. When no material has been captured, use
+the canonical question. When no material has been captured, use
 `**Here is a proposed starting point for your Competitive Path:**`.
+
+###### Competitive Path Discovery Contribution Opportunity
+
+When accepted Identity, Vision, and other accepted Profile evidence support a cohesive first-pass Competitive Path interpretation, present a proposed starting point before continuing exploratory questioning.
+
+The person may adopt, redirect, correct, or replace the starting point. Further exploratory questioning becomes the exception path when accepted evidence cannot support a responsible starting point.
+
+Competitive Path starting points should be presented as structured bullets rather than narrative prose. The proposal should reveal how the organization intends to advance toward its Vision.
+
+**Here is a proposed starting point for your Competitive Path:**
+
+- Primary Approach
+  <accepted-evidence-grounded interpretation>
+
+- Strategic Advantage
+  <accepted-evidence-grounded interpretation>
+
+- Important Tradeoff
+  <accepted-evidence-grounded interpretation>
+
+**What would you add, correct, or remove?**
+
+The Competitive Path Discovery Contribution Opportunity is a Contribution Opportunity rather than a Converged Proposal. When the person adopts, redirects, corrects, replaces, combines, splits, or otherwise changes findings, treat the response as modifications to proposed Competitive Path evidence. Re-synthesize and re-present the Competitive Path Discovery Contribution Opportunity using the updated understanding. Do not transition immediately to the Competitive Path Converged Proposal merely because the person supplied a correction.
+
+Remain within the Competitive Path Discovery Contribution Opportunity while omissions are being identified, findings are being corrected or expanded, or meaningful discovery-contribution changes continue occurring. Re-evaluate the active understanding with relevant accepted context after each substantive change. Transition to normal Competitive Path convergence only after the person indicates the findings are accurate, or no longer provides substantive additions, corrections, removals, combinations, or splits. The discovery-contribution representation and the final Competitive Path Converged Proposal are separate artifacts; the final proposal is produced from the accepted discovery-contribution understanding. If accepted evidence cannot support this starting point, use the focused Competitive Path question instead.
 
 Present the Converged Proposal under `**Here's what I've captured as your Competitive Path:**`,
 validate it with the shared validation question, and treat the person's response as the acceptance
@@ -467,8 +523,33 @@ turn a principle into an enforceable Control. When entering unresolved Guiding P
 user-visible subject with `### What will guide your decisions`. Open it by naming accepted
 Competitive Path substance in the person's own words and connecting it to the question being asked.
 Open that subject with grounded possibilities drawn from accepted Profile evidence before asking the
-Guiding Principles question. When no material has been captured, use
+the canonical question. When no material has been captured, use
 `**Here is a proposed starting point for your Guiding Principles:**`.
+
+###### Guiding Principles Discovery Contribution Opportunity
+
+When accepted Profile evidence supports a cohesive interpretation of likely decision-making values, present a proposed starting point before continuing exploratory questioning.
+
+The person may adopt, redirect, correct, or replace the starting point. Further exploratory questioning becomes the exception path when accepted evidence cannot support a responsible starting point.
+
+Guiding Principles starting points should be presented as structured bullets rather than narrative prose. The proposal should reveal potential decision-making values individually rather than embedding them inside paragraphs.
+
+**Here is a proposed starting point for your Guiding Principles:**
+
+- Principle
+  <accepted-evidence-grounded decision-making value>
+
+- Principle
+  <accepted-evidence-grounded decision-making value>
+
+- Principle
+  <accepted-evidence-grounded decision-making value>
+
+**What would you add, correct, or remove?**
+
+The Guiding Principles Discovery Contribution Opportunity is a Contribution Opportunity rather than a Converged Proposal. When the person adopts, redirects, corrects, replaces, combines, splits, or otherwise changes findings, treat the response as modifications to proposed Guiding Principles evidence. Re-synthesize and re-present the Guiding Principles Discovery Contribution Opportunity using the updated understanding. Do not transition immediately to the Guiding Principles Converged Proposal merely because the person supplied a correction.
+
+Remain within the Guiding Principles Discovery Contribution Opportunity while omissions are being identified, findings are being corrected or expanded, or meaningful discovery-contribution changes continue occurring. Re-evaluate the active understanding with relevant accepted context after each substantive change. Transition to normal Guiding Principles convergence only after the person indicates the findings are accurate, or no longer provides substantive additions, corrections, removals, combinations, or splits. The discovery-contribution representation and the final Guiding Principles Converged Proposal are separate artifacts; the final proposal is produced from the accepted discovery-contribution understanding. If accepted evidence cannot support this starting point, use the focused Guiding Principles question instead.
 
 Present the Converged Proposal under `**Here's what I've captured as your Guiding Principles:**`,
 validate it with the shared validation question, and treat the person's response as the acceptance
