@@ -94,7 +94,7 @@ require_flowed "$PROFILE" 'Profile skill' '#### Structure-revealing contribution
 require_flowed "$PROFILE" 'Profile skill' '#### Possibility-list Contribution Opportunities'
 require_flowed "$PROFILE" 'Profile skill' 'one connected linear chain of reasoning'
 require_flowed "$PROFILE" 'Profile skill' 'The addition must stop making sense when detached from the accepted evidence.'
-require_count "$PROFILE" 'Profile skill' '**What would you add, correct, or remove?**' 2
+require_count "$PROFILE" 'Profile skill' '**What would you add, correct, or remove?**' 5
 require_flowed "$PROFILE" 'Profile skill' 'If this is accurate, just say so.'
 require_flowed "$PROFILE" 'Profile skill' "If you don't know, say \"I don't know\" and we'll work through it together."
 require_flowed "$STANDARD" 'Experience Standard' '| X2.69 | A contributed addition MUST NOT exceed one distinction or extension per Substantive Contribution. | One addition appears; a second, an enumerated set of offered options, or a recommendation set does not. |'
