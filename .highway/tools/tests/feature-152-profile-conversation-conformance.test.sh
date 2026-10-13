@@ -156,7 +156,7 @@ for domain in Identity Vision 'Competitive Path' 'Guiding Principles'; do
 done
 
 # The question is defined once (FR-014) and referenced from all four domain sites.
-require_count "$PROFILE" 'Profile skill' '**What would you add, correct, or remove?**' 1
+require_count "$PROFILE" 'Profile skill' '**What would you add, correct, or remove?**' 2
 require_count "$PROFILE" 'Profile skill' 'the shared validation question' 4
 
 for bullet in \

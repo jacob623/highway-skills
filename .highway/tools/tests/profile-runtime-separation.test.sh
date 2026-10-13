@@ -27,7 +27,7 @@ require_absent() {
 }
 
 for required in \
-	'version: 11.1.0' \
+	'version: 11.2.0' \
 	'#### Domain model' \
 	'#### Domain completeness' \
 	'##### Organizational expression' \

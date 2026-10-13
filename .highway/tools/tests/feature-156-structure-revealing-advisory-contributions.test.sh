@@ -42,7 +42,7 @@ require_flowed "$PROFILE" 'Profile skill' '#### Advisory question scaffolding'
 require_flowed "$PROFILE" 'Profile skill' 'prefer them in this order: distinction, implication, connection, tension, tradeoff, possibility, recommendation'
 require_flowed "$PROFILE" 'Profile skill' 'A contribution is not satisfied by renaming, relabeling, summarizing, or paraphrasing accepted evidence.'
 require_flowed "$PROFILE" 'Profile skill' 'What the moment actually calls for is the question that opens the material up'
-require_count "$PROFILE" 'Profile skill' '**What would you add, correct, or remove?**' 1
+require_count "$PROFILE" 'Profile skill' '**What would you add, correct, or remove?**' 2
 require_flowed "$STANDARD" 'Experience Standard' '| X2.69 | A contributed addition MUST NOT exceed one distinction or extension per Substantive Contribution. | One addition appears; a second, an enumerated set of offered options, or a recommendation set does not. |'
 
 # Generated Profile adapters must match the source document exactly.

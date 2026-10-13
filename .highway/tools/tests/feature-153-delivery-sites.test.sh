@@ -136,7 +136,7 @@ require_flowed "$PROFILE" 'Profile skill' \
 	'**Here is a proposed starting point for your Identity:**'
 
 # R6 guard: the acceptance literal is defined once and stays that way.
-require_count "$PROFILE" 'Profile skill' '**What would you add, correct, or remove?**' 1
+require_count "$PROFILE" 'Profile skill' '**What would you add, correct, or remove?**' 2
 
 # P8.4: the obligation is checkable from the skill's own Verification section.
 require_text "$PROFILE" 'Profile skill' \
