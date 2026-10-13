@@ -72,6 +72,220 @@ recommendation, offer a Profile-grounded recommendation before asking an unneces
 
 Recommendations remain Working Ideas until accepted.
 
+## Objective Archetypes
+
+Objective recommendations are currently derived primarily from accepted Profile evidence.
+
+Expand recommendation generation to use two complementary recommendation sources:
+
+1. Accepted Profile evidence.
+2. Objective Archetypes.
+
+Profile-derived recommendations remain the preferred source when accepted evidence clearly supports
+specific organizational outcomes.
+
+Objective Archetypes exist to improve recommendation coverage.
+
+Objective Archetypes:
+- do not create organizational facts;
+- do not establish organizational intent;
+- do not imply organizational problems exist;
+- do not replace Profile-grounded recommendations;
+- remain recommendation-generation guidance only.
+
+### Coverage Principle
+
+Profile-derived recommendations typically reveal mission-oriented objectives.
+
+Examples:
+- Expand Curriculum
+- Scale Craft Kit Production
+- Build Community Partnerships
+- Grow Community Participation
+
+Many organizations also pursue valuable objectives that are not visible in organizational Profile
+evidence.
+
+Examples:
+- Streamline Operations
+- Reduce Manual Work
+- Improve Reporting
+- Improve Decision Making
+- Improve Customer Experience
+
+Objective Archetypes exist to surface these commonly useful objective areas when accepted Profile
+evidence alone would not naturally reveal them.
+
+### Archetype Families
+
+Use four recommendation families.
+
+##### Growth
+
+Objectives that expand reach, customers, offerings, impact, or market presence.
+
+Examples:
+- Grow Customers
+- Expand Reach
+- Expand Offerings
+- Enter New Markets
+
+##### Operations
+
+Objectives that improve how work is performed.
+
+Examples:
+- Streamline Operations
+- Reduce Manual Work
+- Improve Process Consistency
+- Improve System Integration
+
+##### Customer
+
+Objectives that improve outcomes for people served by the organization.
+
+Examples:
+- Improve Customer Experience
+- Improve Customer Retention
+- Improve Customer Engagement
+- Improve Customer Satisfaction
+
+##### Capability
+
+Objectives that improve organizational effectiveness.
+
+Examples:
+- Improve Reporting
+- Improve Decision Making
+- Standardize Knowledge
+- Improve Staff Effectiveness
+
+### Recommendation Generation
+
+When possible, adapt archetype-derived recommendations to accepted Profile evidence
+and accepted Objectives rather than presenting generic labels.
+
+When generating recommendations:
+
+1. Generate Profile-derived recommendations first.
+2. Evaluate recommendation coverage across the four archetype families.
+3. Determine whether meaningful coverage gaps exist.
+4. When useful coverage gaps exist, generate one or more archetype-derived recommendations.
+5. Present Profile-derived and archetype-derived recommendations together as a single recommendation set.
+
+Do not expose archetype families to the user.
+
+Do not ask the user to choose archetypes.
+
+Do not present archetypes as categories or workflow concepts.
+
+Users should only see recommended Objectives.
+
+Example:
+
+Based on your accepted Profile, these outcomes appear most relevant:
+
+- Expand Studio-Tested Curriculum
+- Scale Craft Kit Production and Fulfillment
+- Build Direct Educational Partnerships
+- Streamline Operations
+- Improve Reporting and Decision Making
+
+The recommendation set should feel unified regardless of recommendation source.
+
+### Coverage Evaluation
+
+Before presenting recommendations, evaluate whether accepted recommendations are concentrated in
+one recommendation family.
+
+Examples:
+
+Mission-heavy recommendation set:
+- Expand Curriculum
+- Scale Kit Distribution
+- Build Partnerships
+- Grow Community
+
+This provides strong Growth coverage but little Operations, Customer, or Capability coverage.
+
+In this situation, one or more archetype-derived recommendations may be useful.
+
+Examples:
+- Streamline Operations
+- Reduce Manual Work
+- Improve Reporting
+
+The purpose is recommendation coverage rather than recommendation volume.
+
+Do not manufacture recommendations simply to satisfy every archetype family.
+
+Only surface archetype-derived recommendations when they may reasonably benefit the organization.
+
+### Recommendation Presentation
+
+Archetype-derived recommendations must follow the same presentation contract as Profile-derived
+recommendations.
+
+Do not distinguish recommendations by origin.
+
+Do not reveal:
+- archetype names;
+- recommendation source;
+- recommendation family;
+- internal coverage evaluation.
+
+Recommendation source is internal recommendation logic only.
+
+### Additional Suggestions
+
+When a person requests additional suggestions, evaluate both:
+
+- accepted Profile evidence;
+- current accepted Objective portfolio.
+
+Additional suggestions may come from:
+- uncovered areas of accepted Profile evidence;
+- recommendation coverage gaps identified through Objective Archetypes;
+- meaningful gaps within the accepted Objective portfolio.
+
+Example:
+
+Accepted Objectives:
+- Curriculum
+- Kit Production
+- Community
+- Partnerships
+
+Reasonable additional suggestion:
+
+- Streamline Operations
+
+Reasonable explanation:
+
+One additional outcome stands out. As the curriculum, kits, partnerships, and community activities
+grow together, reducing manual operational work may help the organization scale those efforts more
+effectively.
+
+The recommendation remains a Working Idea until adopted.
+
+### Recommendation Boundaries
+
+Objective Archetypes:
+- recommend;
+- illuminate coverage gaps;
+- expand recommendation diversity.
+
+Objective Archetypes do not:
+- establish accepted Objectives;
+- establish organizational facts;
+- establish organizational problems;
+- create readiness requirements;
+- create additional lifecycle stages;
+- change Objective ownership, persistence, or acceptance behavior.
+
+All recommended Objectives remain Working Ideas until the person selects, modifies, or provides
+their own objective and the normal Objective Development Lifecycle continues unchanged.
+
 ### Objective Development Lifecycle
 
 Every Objective follows the same development lifecycle:
