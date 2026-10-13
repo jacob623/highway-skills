@@ -30,8 +30,8 @@ require_count() {
 }
 
 # Interpretation confidence guidance and exact placement.
-require_order "$PROFILE" '#### Structure-revealing contributions' '##### Interpretation confidence' 'Profile skill interpretation subsection placement'
-require_order "$PROFILE" '##### Interpretation confidence' '##### Organizational expression' 'Profile skill interpretation subsection placement'
+require_order "$PROFILE" '##### Response Support Text' '##### Interpretation confidence' 'Profile skill interpretation subsection placement'
+require_order "$PROFILE" '##### Interpretation confidence' '##### Identity' 'Profile skill interpretation subsection placement'
 require_flowed "$PROFILE" 'Profile skill' 'Prefer a grounded interpretation that can be corrected over a missing interpretation that forces the person to create it from scratch.'
 require_flowed "$PROFILE" 'Profile skill' 'When accepted evidence already supports a useful distinction, implication, connection, tension, structure, organizing principle, or Working Idea, do not ask a question that merely seeks permission to express the interpretation.'
 require_count "$PROFILE" 'Profile skill' '##### Interpretation confidence' 1
@@ -41,12 +41,7 @@ require_flowed "$PROFILE" 'Profile skill' 'A useful grounded interpretation is p
 require_flowed "$PROFILE" 'Profile skill' 'Consequential uncertainty is still clarified when accepted evidence or advisory reasoning cannot resolve it.'
 
 # Existing Profile behavior and protected Experience Standard boundaries remain present.
-require_flowed "$PROFILE" 'Profile skill' '#### Advisory question scaffolding'
-require_flowed "$PROFILE" 'Profile skill' '#### Structure-revealing contributions'
-require_flowed "$PROFILE" 'Profile skill' '#### Contribution in practice'
-require_flowed "$PROFILE" 'Profile skill' '#### Possibility-list Contribution Opportunities'
-require_flowed "$PROFILE" 'Profile skill' 'One worked counter-example.'
-require_flowed "$PROFILE" 'Profile skill' 'We are a bakery.'
+require_count "$PROFILE" 'Profile skill' 'Use the proposed starting point to reveal relationships, patterns, structure, tensions, tradeoffs, implications, dependencies, and organizing principles already supported by accepted evidence.' 4
 require_flowed "$STANDARD" 'Experience Standard' '| X2.4 |'
 require_flowed "$STANDARD" 'Experience Standard' '| X2.13 |'
 require_flowed "$STANDARD" 'Experience Standard' '| X2.42 |'

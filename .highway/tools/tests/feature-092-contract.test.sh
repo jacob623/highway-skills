@@ -56,7 +56,7 @@ if grep -Fq 'a selected recommendation is accepted without a second confirmation
 fi
 require_text "$PROFILE" '#### Domain model'
 require_text "$PROFILE" '#### Domain completeness'
-require_text "$PROFILE" '##### Organizational expression'
+require_text "$PROFILE" 'meaningful organizational expression'
 require_text "$PROFILE" '## Operations'
 require_text "$PROFILE" '## Acquisition'
 require_text "$PROFILE" 'establishes Repository Name when missing'

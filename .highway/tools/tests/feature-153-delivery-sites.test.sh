@@ -192,10 +192,8 @@ require_text "$STANDARD" 'Experience Standard' \
 require_flowed "$STANDARD" 'Experience Standard' \
 	'optional detail, repetition, unsupported speculation, manufactured alternatives, ceremony, or low-value addition does not satisfy it'
 
-# Feature 168: the practice section keeps its purpose and counter-example without teaching
-# question-first closures.
-require_text "$PROFILE" 'Profile skill' '#### Contribution in practice'
-require_count "$PROFILE" 'Profile skill' 'What the workflow adds:' 1
+# Feature 169: the retired practice section no longer competes with the domain opportunities.
+require_absent "$PROFILE" 'Profile skill' '#### Contribution in practice'
 require_absent "$PROFILE" 'Profile skill' \
 	'**Which of those two would you be judged on?**'
 require_absent "$PROFILE" 'Profile skill' \
@@ -204,15 +202,7 @@ require_absent "$PROFILE" 'Profile skill' \
 	'**What would have to be true for you to break it?**'
 
 require_flowed "$PROFILE" 'Profile skill' \
-	'inside the active structured starting point so the person can add, correct, remove, or replace it'
-
-# FR-011: one counter-example, so the section shows the failure mode and not only the wins.
-require_flowed "$PROFILE" 'Profile skill' \
-	'*A move with nothing underneath it.* The person says: "We are a bakery."'
-require_flowed "$PROFILE" 'Profile skill' \
-	'That is not a contribution. Nothing in the accepted material supports'
-require_text "$PROFILE" 'Profile skill' \
-	'- Contribution in practice carries one counter-example of an addition the accepted material does not support.'
+	'Use the proposed starting point to reveal relationships, patterns, structure, tensions, tradeoffs, implications, dependencies, and organizing principles already supported by accepted evidence.'
 
 # --- US4: each domain stays on its own subject ---
 

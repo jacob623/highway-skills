@@ -70,6 +70,8 @@ Guiding Principles. Accepted evidence that establishes a domain sets it to `disc
 user decision not to establish further evidence may set an otherwise unresolved domain to `bounded`.
 Missing evidence, uncertainty, inability to discover evidence, or `I don't know` alone does not
 establish `bounded`.
+Expression guides representation, not truth; it may improve clarity without becoming retained
+organizational fact.
 
 Content mutations do not change the retained Profile schema version. Foundational Highway context may
 show what evidence is useful, but it is not retained as organizational fact. Workflow-specific input
@@ -229,111 +231,6 @@ state, or about what comes next. This holds for the whole conversation, not only
 wording: the person reads their own material developing, not an account of the work being done to
 it.
 
-#### Advisory question scaffolding
-
-When a Discovery Contribution Opportunity is active, incorporate one grounded advisory addition into
-its structured starting point when accepted Profile evidence supports one. The addition may be a
-distinction, implication, connection, tension, tradeoff, possibility, or recommendation; attribute it
-to the workflow, keep it as a Working Idea outside the candidate unless the person adopts it, and let
-the person react through the active Discovery Contribution Opportunity. Use an advisory question only
-when accepted evidence cannot support a responsible starting point or consequential ambiguity remains
-unresolved. Canonical questions, validation questions, acceptance-boundary questions, and direct
-clarification of consequential ambiguity are excluded.
-
-When several grounded additions are possible, prefer them in this order: distinction, implication,
-connection, tension, tradeoff, possibility, recommendation. Prefer revealing structure already
-present in accepted evidence before introducing a new possibility.
-
-A contribution is not satisfied by renaming, relabeling, summarizing, or paraphrasing accepted
-evidence. It must supply a distinction, implication, tension, connection, tradeoff, possibility, or
-decision criterion that was not already explicit in the person's own words.
-
-_A tradeoff made visible._ The person says growth should never come at the expense of meaningful
-work.
-
-What the workflow adds:
-
-One tension I notice is that popularity and meaningful work often align, but not always. A class
-might attract many registrations because it is easy to market while another better reflects what
-the organization exists to teach.
-
-When a Discovery Contribution Opportunity is active, that tension belongs inside the proposed
-starting point rather than in a follow-up question.
-
-For example:
-
-- Important Tradeoff
-  Growth is valuable, but not at the expense of the organization's most meaningful work. When
-  popularity and mission pull in different directions, meaningful work remains the priority.
-
-The person reacts to the proposed starting point rather than recreating the tradeoff through
-additional questioning.
-
-#### Contribution in practice
-
-When the person supplies something substantial, add one grounded thing to it. Attribute the addition
-to the workflow, leave it outside the candidate until they adopt it, and present it inside the active
-structured starting point so the person can add, correct, remove, or replace it through the shared
-reaction path. A contribution that reaches past the person's material is not a contribution, however
-useful it sounds. One worked counter-example.
-
-*A move with nothing underneath it.* The person says: "We are a bakery." The workflow answers: "One
-possibility I see is franchising — you could license the brand to independent operators and grow
-without the capital." That is not a contribution. Nothing in the accepted material supports
-franchising, growth, licensing, or a view about capital; the person said what they are, not what
-they want, and the move invents the rest. The tell is that the addition would read the same if the
-person had said they were a dentist. What the moment actually calls for is the question that opens
-the material up: **What does the bakery do that a person would miss if it closed?**
-
-#### Possibility-list Contribution Opportunities
-
-Before convergence, when accepted Profile evidence supports several distinct grounded possibilities,
-Profile MAY present a concise list as one Contribution Opportunity. The list is pre-convergence
-reaction material, not a recommendation set and not three advisory contributions. Treat the whole
-list together with its closing invitation as one opportunity under the existing Experience Standard;
-this behavior does not modify X2.69.
-
-Each item must remain provisional and traceable to accepted Profile evidence. The person may adopt,
-reject, combine, modify, or ignore items individually; an unaddressed item is not accepted. Use no
-more than three items, and close with the shared emphasized question that asks what to add, correct,
-or remove. Do not present the list as a candidate, acceptance request, or selection among options.
-After convergence, present the singular Converged Proposal path instead.
-
-#### Structure-revealing contributions
-
-When contributing a distinction, implication, connection, tension, tradeoff, possibility, or
-recommendation, prefer contributions that reveal structure already present in accepted evidence.
-Structure may be a relationship between accepted facts, an organizing principle, a role played by
-an activity or capability, a hierarchy, a decision criterion, a tension, a dependency, or a
-recurring pattern. Structure is not a summary of accepted facts.
-
-This is a selection and execution preference for existing contribution types, not a new
-contribution category. When useful grounded reasoning exists, use this hierarchy:
-
-1. Reveal structure: make a supported relationship, pattern, role, tension, or organizing principle
-  explicit when it is implied by accepted evidence but not yet stated by the person.
-2. Reveal an implication: explain a reasonable consequence of the revealed structure.
-3. Extend one step: offer a reachable possibility, opportunity, risk, or tradeoff that follows
-  directly from the immediately preceding step.
-
-Do not treat restatement, reorganization, relabeling, paraphrase, or synonym replacement alone as
-a contribution. Do not skip directly to an extension when useful structure is available. If no
-useful structure is supported, do not manufacture one merely to satisfy this preference.
-
-After revealing structure, the workflow may provide one connected linear chain of reasoning. Each
-step must derive directly from the immediately preceding step, remain traceable to accepted
-evidence, be attributable to Highway, and remain a Working Idea outside the candidate unless the
-person adopts it. A chain may be structure → implication or structure → implication → possibility
-or tradeoff. The chain may contain structure, implication, possibility, or tradeoff. Diverging
-alternatives, recommendation sets, and opportunity catalogs are not permitted. Those are multiple
-independent additions rather than one connected advisory move.
-
-The addition must stop making sense when detached from the accepted evidence. For example, a
-possibility such as franchising is not grounded merely because the organization is a bakery. Do not
-make consultant-style strategic leaps. When a Discovery Contribution Opportunity is active, present
-the connected move inside its proposed starting point and let the person react through the existing
-reaction invitation.
-
 ##### Interpretation confidence
 
 Prefer a grounded interpretation that can be corrected over a missing interpretation that forces the person to create it from scratch.
@@ -347,15 +244,6 @@ When a Discovery Contribution Opportunity is active, express that grounded inter
 The starting point exists to give the person something meaningful to react to.
 
 Questions remain available when accepted evidence cannot support a responsible starting point.
-
-##### Organizational expression
-
-Expression guides representation, not truth. Acquisition may reveal characteristic terminology,
-recurring language, recognizable phrasing, or formality. Use suitable supported terminology in
-Profile proposals when it improves clarity, but do not preserve unsupported claims or imitate style
-at the expense of accuracy. The person's active wording and corrections remain authoritative.
-Expression guidance is transient and does not add retained tone, voice, persona, style, or expression
-fields. Profile-owned expression guidance does not control Objectives, Controls, NFRs, or other owners.
 
 ##### Identity
 
@@ -373,6 +261,8 @@ Identity before that candidate is presented and accepted. When no material has b
 When website content, imported material, or discovery evidence materially contributes to Identity
 development, present an optional Identity Discovery Contribution Opportunity before Identity convergence and before the
 existing Identity Converged Proposal. The purpose is omission detection rather than categorization.
+Use the proposed starting point to reveal relationships, patterns, structure, tensions, tradeoffs,
+implications, dependencies, and organizing principles already supported by accepted evidence.
 
 The review remains proposed evidence and is not retained Profile content. Present it as:
 
@@ -449,6 +339,9 @@ When accepted Identity evidence and other accepted Profile evidence support a co
 
 The person may adopt, redirect, correct, or replace the starting point. Further exploratory questioning becomes the exception path when accepted evidence cannot support a responsible starting point.
 
+Use the proposed starting point to reveal relationships, patterns, structure, tensions, tradeoffs,
+implications, dependencies, and organizing principles already supported by accepted evidence.
+
 Vision starting points should be presented as structured bullets rather than narrative prose. The proposal should reveal the major elements of the Vision in a format that is easy to review, compare, and modify.
 
 **Here is a proposed starting point for your Vision:**
@@ -491,6 +384,9 @@ When accepted Identity, Vision, and other accepted Profile evidence support a co
 
 The person may adopt, redirect, correct, or replace the starting point. Further exploratory questioning becomes the exception path when accepted evidence cannot support a responsible starting point.
 
+Use the proposed starting point to reveal relationships, patterns, structure, tensions, tradeoffs,
+implications, dependencies, and organizing principles already supported by accepted evidence.
+
 Competitive Path starting points should be presented as structured bullets rather than narrative prose. The proposal should reveal how the organization intends to advance toward its Vision.
 
 **Here is a proposed starting point for your Competitive Path:**
@@ -531,6 +427,9 @@ the canonical question. When no material has been captured, use
 When accepted Profile evidence supports a cohesive interpretation of likely decision-making values, present a proposed starting point before continuing exploratory questioning.
 
 The person may adopt, redirect, correct, or replace the starting point. Further exploratory questioning becomes the exception path when accepted evidence cannot support a responsible starting point.
+
+Use the proposed starting point to reveal relationships, patterns, structure, tensions, tradeoffs,
+implications, dependencies, and organizing principles already supported by accepted evidence.
 
 Guiding Principles starting points should be presented as structured bullets rather than narrative prose. The proposal should reveal potential decision-making values individually rather than embedding them inside paragraphs.
 
@@ -604,8 +503,6 @@ question.
 - Each domain crosses one acceptance boundary before its substance is retained.
 - No domain substance is retained before that domain's candidate has been presented.
 - Each domain opening names accepted substance from the preceding domain.
-- Contribution in practice carries three worked exemplars, each adding one thing.
-- Contribution in practice carries one counter-example of an addition the accepted material does not support.
 - A useful grounded interpretation is preferred over an unnecessary exploratory question.
 - Consequential uncertainty is still clarified when accepted evidence or advisory reasoning cannot resolve it.
 - Confirmed substance is not presented again unless the re-presentation names what changed.
@@ -613,8 +510,6 @@ question.
 - A term the person rejected does not reappear, including as a synonym.
 - An amendment preserves the accepted content's form.
 - A correction that cannot be located is reported rather than applied elsewhere.
-- Each Substantive Contribution receives one acknowledgment.
-- An acknowledgment adds understanding beyond restating the contribution.
 - Vision retains its boundary against approach, sequencing, and organizational method.
 - Domain completeness is obtained by reading the retained Profile record.
 - Persistence writes the accepted domain mutation to the retained Profile record.

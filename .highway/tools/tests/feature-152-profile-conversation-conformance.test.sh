@@ -189,13 +189,12 @@ for bullet in \
 	require_text "$PROFILE" 'Profile skill' "$bullet"
 done
 
-# --- US4: the conversation adds something ---
+# --- US4: the conversation adds something through the active opportunity ---
 
-for bullet in \
-	'- Each Substantive Contribution receives one acknowledgment.' \
-	'- An acknowledgment adds understanding beyond restating the contribution.'; do
-	require_text "$PROFILE" 'Profile skill' "$bullet"
-done
+require_text "$PROFILE" 'Profile skill' '### Identity Discovery Contribution Opportunity'
+require_text "$PROFILE" 'Profile skill' '###### Vision Discovery Contribution Opportunity'
+require_text "$PROFILE" 'Profile skill' '###### Competitive Path Discovery Contribution Opportunity'
+require_text "$PROFILE" 'Profile skill' '###### Guiding Principles Discovery Contribution Opportunity'
 
 # --- US5: nothing leaks from behind the curtain ---
 
