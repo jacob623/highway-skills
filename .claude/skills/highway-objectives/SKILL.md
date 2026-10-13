@@ -204,6 +204,50 @@ mutate the baseline, or replace the person's authority. When no useful grounded 
 recommendation remains, explain coverage, overlap, or focus fragmentation when useful and stop
 manufacturing recommendations.
 
+After an Objective is captured, the owner may provide a brief synthesis of the accepted Objective
+set. The synthesis should:
+
+- describe the current coverage provided by accepted Objectives;
+- explain how the newly accepted Objective fits within the current Objective portfolio;
+- remain concise;
+- avoid repeating the full contents of accepted Objectives.
+
+When processing an active Objective queue, the synthesis may also identify the next Objective being
+developed.
+
+The synthesis is advisory. It is not:
+
+- a second review;
+- a second proposal;
+- a recommendation set;
+- a detailed portfolio assessment.
+
+The synthesis occurs only after capture. It does not create a new lifecycle state. It does not
+create a durable portfolio artifact, imply acceptance of a transient proposal, or add a required
+discussion step.
+
+#### Illustrative Post-Capture Continuity Examples
+
+Queued transition:
+
+Your accepted Objectives now cover community development and curriculum distribution.
+
+Next we'll develop Scale Craft Kit Production and Fulfillment.
+
+Collection transition:
+
+Your accepted Objectives now cover curriculum distribution, kit fulfillment, and local studio engagement.
+
+If you'd like additional suggestions, just let me know.
+
+Is there another objective you'd like to capture?
+
+Setup transition:
+
+Your accepted Objectives now cover curriculum, production, partnerships, and community development.
+
+Now let's establish the safeguards that should guide future technology decisions.
+
 ## Objective Recommendation Presentation
 
 Keep the **Objective** as the primary conversational anchor. When multiple recommendations are presented,
