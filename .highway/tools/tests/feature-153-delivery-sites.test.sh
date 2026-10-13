@@ -192,18 +192,19 @@ require_text "$STANDARD" 'Experience Standard' \
 require_flowed "$STANDARD" 'Experience Standard' \
 	'optional detail, repetition, unsupported speculation, manufactured alternatives, ceremony, or low-value addition does not satisfy it'
 
-# FR-011: exactly three exemplars, each adding one thing and each closing on its own question.
+# Feature 168: the practice section keeps its purpose and counter-example without teaching
+# question-first closures.
 require_text "$PROFILE" 'Profile skill' '#### Contribution in practice'
-require_count "$PROFILE" 'Profile skill' 'What the workflow adds:' 4
-require_flowed "$PROFILE" 'Profile skill' \
-	"**Which of those two would you be judged on?**"
-require_flowed "$PROFILE" 'Profile skill' \
+require_count "$PROFILE" 'Profile skill' 'What the workflow adds:' 1
+require_absent "$PROFILE" 'Profile skill' \
+	'**Which of those two would you be judged on?**'
+require_absent "$PROFILE" 'Profile skill' \
 	"**Does that read as the thing you're building, or as one strand of it?**"
-require_flowed "$PROFILE" 'Profile skill' \
+require_absent "$PROFILE" 'Profile skill' \
 	'**What would have to be true for you to break it?**'
 
-require_text "$PROFILE" 'Profile skill' \
-	'- Contribution in practice carries three worked exemplars, each adding one thing.'
+require_flowed "$PROFILE" 'Profile skill' \
+	'inside the active structured starting point so the person can add, correct, remove, or replace it'
 
 # FR-011: one counter-example, so the section shows the failure mode and not only the wins.
 require_flowed "$PROFILE" 'Profile skill' \

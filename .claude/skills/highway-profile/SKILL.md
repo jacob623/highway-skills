@@ -231,13 +231,14 @@ it.
 
 #### Advisory question scaffolding
 
-Before a Profile-owned question whose answer depends on advisory reasoning, present one grounded
-advisory addition when accepted Profile evidence supports one. The addition may be a distinction,
-implication, connection, tension, tradeoff, possibility, or recommendation; attribute it to the
-workflow, keep it as a Working Idea outside the candidate unless the person adopts it, and use it to
-explain the question rather than merely repeat accepted evidence. Canonical questions, validation
-questions, acceptance-boundary questions, and direct clarification of consequential ambiguity are
-excluded. The question is the only emphasized element.
+When a Discovery Contribution Opportunity is active, incorporate one grounded advisory addition into
+its structured starting point when accepted Profile evidence supports one. The addition may be a
+distinction, implication, connection, tension, tradeoff, possibility, or recommendation; attribute it
+to the workflow, keep it as a Working Idea outside the candidate unless the person adopts it, and let
+the person react through the active Discovery Contribution Opportunity. Use an advisory question only
+when accepted evidence cannot support a responsible starting point or consequential ambiguity remains
+unresolved. Canonical questions, validation questions, acceptance-boundary questions, and direct
+clarification of consequential ambiguity are excluded.
 
 When several grounded additions are possible, prefer them in this order: distinction, implication,
 connection, tension, tradeoff, possibility, recommendation. Prefer revealing structure already
@@ -248,37 +249,33 @@ evidence. It must supply a distinction, implication, tension, connection, tradeo
 decision criterion that was not already explicit in the person's own words.
 
 _A tradeoff made visible._ The person says growth should never come at the expense of meaningful
-work. What the workflow adds: one tension I notice is that popularity and meaningful work often
-align, but not always. A class might attract many registrations because it is easy to market while
-another better reflects what the organization exists to teach. **When those two pull in different
-directions, which one should win?**
+work.
+
+What the workflow adds:
+
+One tension I notice is that popularity and meaningful work often align, but not always. A class
+might attract many registrations because it is easy to market while another better reflects what
+the organization exists to teach.
+
+When a Discovery Contribution Opportunity is active, that tension belongs inside the proposed
+starting point rather than in a follow-up question.
+
+For example:
+
+- Important Tradeoff
+  Growth is valuable, but not at the expense of the organization's most meaningful work. When
+  popularity and mission pull in different directions, meaningful work remains the priority.
+
+The person reacts to the proposed starting point rather than recreating the tradeoff through
+additional questioning.
 
 #### Contribution in practice
 
-When the person supplies something substantial, add one thing to it. Attribute the addition to the
-workflow, leave it outside the candidate until they adopt it, and close on a question that invites
-them to push back. Three worked examples, one move each, then one example of what not to do.
-
-*A distinction drawn out of one word.* The person says their work is about getting people into
-housing faster. What the workflow adds: "faster" is carrying two different organizations — one that
-shortens the wait for a decision, one that shortens the wait for keys. The first is a case-handling
-organization; the second is a supply organization, and they would not make the same choices.
-**Which of those two would you be judged on?**
-
-*Latent structure named as an organizing principle.* The person lists training frontline staff,
-publishing the eligibility rules, and letting applicants see their own case. What the workflow adds:
-those are not three activities but one principle — moving knowledge toward the person who needs it
-rather than toward the institution that holds it. **Does that read as the thing you're building, or
-as one strand of it?**
-
-*A stated preference reframed as a decision criterion.* The person says they would rather do one
-thing properly than three things badly. What the workflow adds: as a preference that is a
-temperament, but as a criterion it is sharper — a new commitment has to displace an existing one
-rather than sit alongside it, which makes it a test any proposal can be put through. **What would
-have to be true for you to break it?**
-
-Each of those three works on material the person already supplied. A contribution that reaches past
-that material is not a contribution, however useful it sounds. One worked counter-example.
+When the person supplies something substantial, add one grounded thing to it. Attribute the addition
+to the workflow, leave it outside the candidate until they adopt it, and present it inside the active
+structured starting point so the person can add, correct, remove, or replace it through the shared
+reaction path. A contribution that reaches past the person's material is not a contribution, however
+useful it sounds. One worked counter-example.
 
 *A move with nothing underneath it.* The person says: "We are a bakery." The workflow answers: "One
 possibility I see is franchising — you could license the brand to independent operators and grow
@@ -316,8 +313,8 @@ contribution category. When useful grounded reasoning exists, use this hierarchy
 1. Reveal structure: make a supported relationship, pattern, role, tension, or organizing principle
   explicit when it is implied by accepted evidence but not yet stated by the person.
 2. Reveal an implication: explain a reasonable consequence of the revealed structure.
-3. Extend one step: offer a reachable possibility, opportunity, risk, question, or tradeoff that
-  follows directly from the immediately preceding step.
+3. Extend one step: offer a reachable possibility, opportunity, risk, or tradeoff that follows
+  directly from the immediately preceding step.
 
 Do not treat restatement, reorganization, relabeling, paraphrase, or synonym replacement alone as
 a contribution. Do not skip directly to an extension when useful structure is available. If no
@@ -333,8 +330,9 @@ independent additions rather than one connected advisory move.
 
 The addition must stop making sense when detached from the accepted evidence. For example, a
 possibility such as franchising is not grounded merely because the organization is a bakery. Do not
-make consultant-style strategic leaps, and close the connected move with the existing reaction
-invitation when that invitation applies.
+make consultant-style strategic leaps. When a Discovery Contribution Opportunity is active, present
+the connected move inside its proposed starting point and let the person react through the existing
+reaction invitation.
 
 ##### Interpretation confidence
 
@@ -343,6 +341,8 @@ Prefer a grounded interpretation that can be corrected over a missing interpreta
 When accepted evidence already supports a useful distinction, implication, connection, tension, structure, organizing principle, or Working Idea, do not ask a question that merely seeks permission to express the interpretation.
 
 When accepted evidence supports a responsible first-pass interpretation of Vision, Competitive Path, or Guiding Principles, prefer presenting a structured starting point rather than continuing exploratory questioning.
+
+When a Discovery Contribution Opportunity is active, express that grounded interpretation inside its proposed starting point rather than questioning it separately.
 
 The starting point exists to give the person something meaningful to react to.
 
