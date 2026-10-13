@@ -4,7 +4,7 @@ description: "Manages the repository-wide organizational Profile and its context
 usage: "Invoke as `/highway-profile` to inspect Profile context, or state setup, view, add, update, remove, or reset."
 compatibility: all
 metadata:
-  version: 11.1.0
+  version: 11.2.0
 ---
 
 # highway-profile
@@ -103,6 +103,8 @@ When no retained Profile exists, begin first-time Setup with:
 Then ask:
 
 **What would you like to call your Highway repository?**
+
+Using your organization's name is often a good choice.
 
 Accept a directly supplied Repository Name as supplied. It does not imply acceptance of Organization
 Name or other organizational facts. After it is accepted, offer existing organizational material
@@ -359,6 +361,64 @@ After convergence, present the Converged Proposal under
 and treat the person's response as the acceptance boundary for Identity. Retain nothing from
 Identity before that candidate is presented and accepted. When no material has been captured, use
 `**Here is a proposed starting point for your Identity:**`.
+
+### Identity Discovery Contribution Opportunity
+
+When website content, imported material, or discovery evidence materially contributes to Identity
+development, present an optional Identity Discovery Contribution Opportunity before Identity convergence and before the
+existing Identity Converged Proposal. The purpose is omission detection rather than categorization.
+
+The review remains proposed evidence and is not retained Profile content. Present it as:
+
+Here's what Highway believes [Organization Name] does.
+
+When Organization Name has not been accepted, use the accepted Repository Name where natural.
+
+Each finding has a concise, visually distinct title representing a meaningful organizational expression
+and a one-sentence evidence-grounded summary explaining what Highway believes it found. Do not emit
+isolated nouns or labels. A fixed taxonomy is not required. The review may include products, services,
+programs, activities, audiences, communities served, delivery models, revenue-generating offerings,
+or other significant organizational expressions when supported by evidence.
+
+Use evidence-grounded examples such as:
+
+**Retail Craft Kits:**
+Studio-tested craft projects are packaged with materials and instructions so customers can complete the
+creative experience outside the studio.
+
+**Homeschool Curriculum:**
+Lessons proven through real studio instruction are organized into curriculum that homeschool families
+can implement independently.
+
+**Studio Classes:**
+The organization delivers instructor-led classes that serve both as educational offerings and as a
+proving ground for future curriculum and products.
+
+**Community Workshops:**
+Hands-on workshops bring participants together to learn, share skills, and contribute to a growing
+creative community.
+
+End the review with **What would you add, correct, or remove?** The Identity Discovery Contribution Opportunity is a
+Contribution Opportunity rather than a Converged Proposal. When the person adds, corrects, removes,
+combines, splits, or otherwise changes findings, treat the response as modifications to proposed
+Identity evidence. Re-synthesize and re-present the Identity Discovery Contribution Opportunity using the updated
+understanding. Do not transition immediately to the Identity Converged Proposal merely because the
+person supplied a correction.
+
+Remain within the Identity Discovery Contribution Opportunity while omissions are being identified, findings are being
+corrected or expanded, or meaningful discovery-contribution changes continue occurring. Transition to normal
+Identity convergence only after the person indicates the findings are accurate, or no longer provides
+substantive additions, corrections, removals, combinations, or splits. The discovery-contribution representation and the final Identity Converged Proposal
+are separate artifacts; the final proposal is produced from the accepted discovery-contribution understanding.
+
+When evidence is weakly supported, materially ambiguous, or reducible to an isolated label, omit or
+qualify the finding rather than presenting unsupported organizational fact. When no website, imported
+material, or discovery evidence materially contributes, preserve the existing Identity convergence flow
+without requiring a review.
+
+The review does not introduce new Profile fields, does not create new readiness dimensions, does not
+change domain ownership, and does not replace the retained narrative structure. It remains proposed
+evidence until accepted through the existing Identity Converged Proposal and Profile persistence boundary.
 
 ##### Vision
 
