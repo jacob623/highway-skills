@@ -66,16 +66,19 @@ require_flowed "$PROFILE" 'Profile skill' 'When the person gives unambiguous app
 require_flowed "$PROFILE" 'Profile skill' 'Anything you'"'"'d change before we keep this?'
 require_flowed "$PROFILE" 'Profile skill' 'Approval with new substantive information triggers re-evaluation.'
 
-# US4: one grounded advisory addition precedes applicable Profile-owned questions.
+# US4: one grounded advisory addition enters an active structured starting point before any
+# applicable Profile-owned clarification.
 require_text "$PROFILE" 'Profile skill' '#### Advisory question scaffolding'
-require_flowed "$PROFILE" 'Profile skill' 'Before a Profile-owned question whose answer depends on advisory reasoning, present one grounded advisory addition when accepted Profile evidence supports one.'
+require_flowed "$PROFILE" 'Profile skill' 'When a Discovery Contribution Opportunity is active, incorporate one grounded advisory addition into its structured starting point when accepted Profile evidence supports one.'
 require_flowed "$PROFILE" 'Profile skill' 'keep it as a Working Idea outside the candidate unless the person adopts it'
+require_flowed "$PROFILE" 'Profile skill' 'Use an advisory question only when accepted evidence cannot support a responsible starting point or consequential ambiguity remains unresolved.'
 require_flowed "$PROFILE" 'Profile skill' 'Canonical questions, validation questions, acceptance-boundary questions, and direct clarification of consequential ambiguity are excluded.'
-require_count "$PROFILE" 'Profile skill' 'The question is the only emphasized element' 1
 require_flowed "$PROFILE" 'Profile skill' 'prefer them in this order: distinction, implication, connection, tension, tradeoff, possibility, recommendation'
 require_flowed "$PROFILE" 'Profile skill' 'A contribution is not satisfied by renaming, relabeling, summarizing, or paraphrasing accepted evidence.'
 require_flowed "$PROFILE" 'Profile skill' '_A tradeoff made visible._ The person says growth should never come at the expense of meaningful work.'
-require_flowed "$PROFILE" 'Profile skill' '**When those two pull in different directions, which one should win?**'
+require_flowed "$PROFILE" 'Profile skill' 'that tension belongs inside the proposed starting point rather than in a follow-up question.'
+require_flowed "$PROFILE" 'Profile skill' '- Important Tradeoff'
+require_flowed "$PROFILE" 'Profile skill' 'The person reacts to the proposed starting point rather than recreating the tradeoff through additional questioning.'
 
 # US5: fresh Setup welcome ordering.
 require_text "$SETUP" 'Setup skill' '### Welcome'
