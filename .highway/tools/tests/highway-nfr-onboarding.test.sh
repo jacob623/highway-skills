@@ -22,17 +22,69 @@ require_text() {
 for text in \
 	"setup" \
 	"configure" \
+	"## Response Support Text" \
+	"## Recommendation Development" \
+	"### Control-Informed Recommendations" \
+	"## NFR Coverage Areas" \
+	"## Recommendation Generation" \
+	"## Coverage Evaluation" \
+	"## Recommendation Presentation" \
+	"## Recommendation Exploration" \
+	"## Additional Suggestions" \
+	"## Recommendation Boundaries" \
+	"## NFR Development Lifecycle" \
+	"## NFR Queue And Acceptance Boundaries" \
+	"## Interpretation Confidence" \
+	"## NFR Contribution Guidance" \
+	"## NFR Portfolio Assessment Guidance" \
+	"Accepted Controls may strongly influence NFR recommendations." \
+	"Controls do not create NFRs" \
+	"Controls do not transfer ownership" \
+	"Controls do not create candidate state" \
+	"Every accepted Control should be evaluated as a potential source of NFR recommendations." \
+	"Controls participate in recommendation generation." \
+	"Control influence is recommendation-oriented, not lifecycle-oriented." \
+	"Control" \
+	"Automatic NFR" \
+	"Selecting recommendations does not begin queue processing." \
+	"Selection alone does not begin proposal development." \
+	"The queue may continue growing while recommendation exploration remains active." \
+	"Queue processing begins only when:" \
+	"Recommendation exhaustion occurs when:" \
+	"Recommendations currently under evaluation are not queue members." \
+	"Queued recommendations are recommendations the person has selected." \
+	"Only queued recommendations are eligible for queue processing." \
+	"Queue processing has not started." \
+	"unreviewed Working Ideas until queue processing begins." \
+	"Recommendation selection continues queue construction." \
+	"Recommendation Exhaustion or Explicit Queue Start" \
+	"Collection Result: Continue does not require" \
+	"queue processing to have started." \
+	"#### Illustrative Recommendation Presentation Example" \
+	"#### Illustrative Recommendation Exploration Example" \
+	"#### Illustrative Queue Interaction" \
+	"**What would you add, correct, or remove?**" \
+	"If this is accurate, just say so." \
+	"If you're not sure, just say \"I don't know,\" and we'll work through it together." \
+	"If none of these fit, feel free to suggest your own operational expectation." \
+	"If you'd like additional suggestions, just let me know." \
+	"Once queue processing begins, recommendation exploration is closed." \
+	"Queue membership does not allocate identifiers." \
+	"Queue membership does not mutate records." \
 	"independently managed NFRs" \
 	"Are there any qualities or operational expectations you'd like future solutions to meet?" \
 	"Collection Result: Continue|Finished" \
 	"Action Status: Succeeded|Declined|Aborted|Blocked" \
 	"does not include a created-NFR-ID list" \
-	"captured as your NFR" \
 	"Why it matters" \
-	"Would you like to accept this NFR?" \
-	"Direct capture skips the inferred-content review" \
-	"Explicitly selected recommendations" \
-	"direct capture" \
+	"NFR Coverage Areas" \
+	"NFR queue" \
+	"Queue membership is not NFR capture" \
+	"Converged NFR proposal" \
+	"explicitly accepted" \
+	"Explicit queue-processing intent" \
+	"Portfolio assessment is advisory" \
+	"Control context remains recommendation context" \
 	"controls: []" \
 	"Missing" \
 	"Blocked"; do

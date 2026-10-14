@@ -229,7 +229,7 @@ require_text "$PROFILE" 'Profile skill' \
 
 # --- Scope guard: Profile's shared wording must not leak into unrelated skills ---
 
-for other in highway-nfrs highway-new; do
+for other in highway-new; do
 	require_absent "$HIGHWAY_ROOT/skills/$other/SKILL.md" "$other skill" \
 		'**What would you add, correct, or remove?**'
 done
