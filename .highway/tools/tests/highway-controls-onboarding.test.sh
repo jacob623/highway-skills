@@ -56,9 +56,8 @@ for text in \
 	"Revalidate" \
 	"user-override" \
 	"Reuse writes no record" \
-	"deterministic initial" \
-	"candidate derivation" \
-	"NFR owner" \
+	"Control capture has no NFR side effect" \
+	"independently managed NFRs" \
 	"## Recommendation Grounding" \
 	"Ask for missing information, not missing phrasing"; do
 	require_text "$SKILL" "$text"

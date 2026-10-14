@@ -37,60 +37,36 @@ Runtime dependencies are:
   `library/governance/nfrs.md`;
 - shared output templates at `.highway/library/templates/output/nfr-record.md` and
   `.highway/library/templates/output/nfr-catalog.md`;
-- NFR-owned durable recovery state at `.highway/catalog/nfr-candidate-state.md`;
 - the Highway Experience Standard at `.highway/governance/experience-standard.md`;
 - `.highway/library/knowledge/highway-identity.md` for behavioral framing;
 - `.highway/library/knowledge/highway-vision.md` for strategic direction;
 - `.highway/library/knowledge/highway-platform-objectives.md` for evaluation criteria;
 - `.highway/library/knowledge/profile.md` for accepted organizational context;
 - accepted Business Objective records and catalog as recommendation and operational-context inputs;
-- accepted Control records and catalog as NFR recommendation, Control-derived candidate, and
-  relationship inputs;
+- accepted Control records and catalog as optional context and relationship inputs;
 - existing accepted NFR records and catalog as reuse, duplicate, overlap, and recommendation
   context;
 - the `/highway-setup` owner contract at `.highway/skills/highway-setup/SKILL.md` for setup/configure
   collection completion;
 - the active user request and active interaction evidence;
-- the `/highway-controls` owner contract at `.highway/skills/highway-controls/SKILL.md`, including
-  the successfully created
-  originating `CTLXXXXXX`, deterministic candidate-generation input, and the candidate-generation
-  result consumed by NFRs;
+- the `/highway-controls` owner contract at `.highway/skills/highway-controls/SKILL.md` for the
+  independent Control ownership boundary;
 - the `/highway-relationships` owner contract at `.highway/skills/highway-relationships/SKILL.md`,
   its impact analysis, and its authoritative impact result for destructive NFR mutations.
 
-The Controls-owned derivation algorithm is not duplicated here. Control-derived NFRs are grounded
-by their originating immutable `CTLXXXXXX` relationship. Additional recommendations may use
-accepted Profile, Objectives, Controls, and existing NFRs. Control benchmark grounding does not
-itself establish benchmark applicability for an NFR.
+Recommendations may use accepted Profile, Objectives, Controls, and existing NFRs. Control benchmark
+grounding does not itself establish benchmark applicability for an NFR.
 
 ## Ownership boundary
 
-Controls owns deterministic initial derivation, the originating Control identifier, and invoking
-candidate generation once after a successfully created new Control. NFRs owns candidate state,
-classification, ordered review, NFR records and identifiers, the catalog, Control relationships,
-readiness, and collection completion. This skill consumes only the declared candidate-generation
-input/result contract and does not duplicate Controls derivation rules. It does not depend on
-transient Controls collection identifiers or post-write verification state.
-
-## Durable candidate state
-
-`.highway/catalog/nfr-candidate-state.md` is the authoritative persisted NFR-owned recovery state.
-It preserves the originating Control, ordered candidate content, candidate decisions, pending review,
-and readiness. Generation is exactly once per successfully created `CTLXXXXXX`; zero valid candidates
-are a successful empty result. Persist each decision before advancing and resume at the first unresolved candidate without restoring prompts or conversation state.
-
-When unresolved Control-derived candidates exist, present them before broad discovery. A user may
-accept, modify, replace, reject, or skip a candidate, and an explicitly presented recommendation is
-accepted without a redundant proposal-confirmation cycle. If candidate generation is blocked, keep
-the successfully created Control, create no partial NFR relationship, and consume the owner result;
-the blocked result includes a non-empty reason. A valid zero candidates result is successful and
-does not create a relationship.
+Controls and NFRs are independent owners. NFRs are independently managed NFRs and own classification, NFR records and identifiers, the
+catalog, Control relationships, readiness, and collection completion. NFR work does not require a
+Control identifier, Control capture transaction, or upstream lifecycle result.
 
 ## Discovery and recommendations
 
-After pending Control-derived candidates are resolved, offer small grounded NFR recommendation sets
-when useful context supports them and keep the user-authored alternative available. Do not begin
-broad discovery while pending candidates exist. If no useful grounded recommendations exist, ask:
+Offer small grounded NFR recommendation sets when useful context supports them and keep the user-authored
+alternative available. If no useful grounded recommendations exist, ask:
 
 **Are there any qualities or operational expectations you'd like future solutions to meet?**
 
@@ -128,16 +104,15 @@ The catalog at `library/governance/nfrs.md` and records at
 NFR readiness is owner-controlled and separate from collection completion:
 
 ```text
-Status: Complete|In Progress|Blocked|Not Applicable
+Status: Complete|Missing|Blocked
 Summary: <NFR readiness explanation>
 Next Action: <owner route or None>
 Blocking Reason: <reason or None>
 ```
 
-- `Not Applicable`: valid zero Control-derived candidates and no accepted NFRs.
-- `In Progress`: unresolved Control-derived candidates remain.
+- `Missing`: no accepted NFRs or valid NFR artifacts exist.
 - `Complete`: accepted valid NFR artifacts exist.
-- `Blocked`: required NFR state is malformed, unavailable, or inconsistent.
+- `Blocked`: required NFR records, catalog, or allocation state is malformed, unavailable, or inconsistent.
 
 Setup/configure separately returns exactly:
 
@@ -150,39 +125,37 @@ Blocking Reason: <reason or None>
 
 `Continue` means collection remains active; `Finished` requires explicit user finish intent. The
 finished result is `Collection Result: Finished`; it does not include a created-NFR-ID list.
-Readiness must not depend on Setup inspecting candidate counts.
+Readiness is independent of Control collection and does not inspect upstream collection state.
 
 ## Persistence and relationships
 
 Before mutation, validate the authoritative baseline, allocation state, duplicate/overlap state, and
 relationship impact. Allocate permanent non-reused identifiers, update record/catalog/relationships
 atomically as one transaction, generate deterministic catalog output, preserve semantic version behavior, and apply
-destructive safeguards. Direct NFR creation uses `controls: []`; accepted Control-derived NFRs use
-immutable `CTLXXXXXX` identifiers. Relationship updates are atomic with accepted NFR persistence and
+destructive safeguards. Direct NFR creation uses `controls: []`; retained relationships remain unchanged unless
+a user-authorized NFR mutation requests a change. Relationship updates are atomic with accepted NFR persistence and
 remain within the existing Control/NFR ownership boundary. No post-write persistence verification is
 required.
 
 ## Workflow
 
 1. Classify the action and authoritative NFR baseline.
-2. Load accepted grounding and NFR-owned candidate state.
-3. For setup/configure, resolve pending Control-derived recommendations first.
-4. Offer additional grounded recommendations when available.
-5. Otherwise process user-authored NFR evidence or route Control-shaped evidence to Controls.
-6. Capture explicit recommendation selections directly; review materially interpreted user-authored NFRs.
-7. Revalidate duplicates and relationships, then persist accepted mutations atomically.
-8. For setup/configure, continue until explicit finish; direct add terminates after one NFR.
-9. Report readiness separately from collection completion.
+2. Load accepted grounding without requiring Control-originated state.
+3. Offer grounded recommendations when available.
+4. Process user-authored NFR evidence or route Control-shaped evidence to Controls.
+5. Capture explicit recommendation selections directly; review materially interpreted user-authored NFRs.
+6. Revalidate duplicates and relationships, then persist accepted mutations atomically.
+7. For setup/configure, continue until explicit finish; direct add terminates after one NFR.
+8. Report readiness separately from collection completion.
 
 ## Verification
 
-Verify that NFR records and the catalog follow their shared templates; readiness preserves Complete,
-In Progress, Blocked, and Not Applicable; collection completion remains separate; candidate state is
-NFR-owned, durable, ordered, exactly-once, and resumable; pending candidates precede open discovery;
+Verify that NFR records and the catalog follow their shared templates; readiness preserves Missing,
+Complete, and Blocked; collection completion remains separate; no Control-originated state is required;
 selected recommendations are captured without redundant confirmation; grounded recommendations are
 offered before unnecessary questions; materially interpreted user-authored NFRs use the captured-NFR
-review; classification remains transient; direct NFRs use `controls: []`; Control-derived NFRs retain
-immutable relationships; duplicate handling, identifiers, deterministic catalogs, atomic persistence,
+review; classification remains transient; direct NFRs use `controls: []`; retained relationships remain
+unchanged unless user-authorized; duplicate handling, identifiers, deterministic catalogs, atomic persistence,
 and destructive safeguards remain intact; no post-write verification or duplicated Constitution,
 Experience Standard, or development-governance rules remain.
 
@@ -191,8 +164,7 @@ Experience Standard, or development-governance rules remain.
 Rely on the Constitution common failure model. NFR-specific exceptions are:
 
 - malformed NFR record, catalog, or allocation state: `Blocked` without mutation;
-- malformed candidate state: `Blocked` without accepted-NFR mutation;
-- invalid originating Control or generation request: candidate-generation `Blocked` with no partial relationship;
+- unavailable upstream Control context does not block independent NFR work;
 - unresolved update/remove target: stop and identify the target;
 - unresolved NFR-versus-Control classification: ask the bounded classification question;
 - destructive Remove/Set: use Experience Standard confirmation;
@@ -200,7 +172,7 @@ Rely on the Constitution common failure model. NFR-specific exceptions are:
 
 ## Example
 
-For `setup`, resolve pending Control-derived candidates, offer grounded recommendations, or ask the
-fallback question when no useful grounding exists. Persist each accepted decision before proceeding,
-then return the separate collection result and owner readiness result.
+For `setup`, offer grounded recommendations or ask the fallback question when no useful grounding exists.
+Persist each accepted decision before proceeding, then return the separate collection result and owner
+readiness result.
 

@@ -1,224 +1,72 @@
 #!/usr/bin/env bash
-# Verifies the review-first Control-derived NFR contract without creating user governance.
+# Verifies that Controls and NFRs are independent owners.
 set -u
 # Instrument class: mixed (static-document-contract and executed-behavior)
-# Artifact classes: source-document, generated-artifact, disposable-fixture
-# Seeded failure probe: this test must detect a defect in each declared class and clean its probe.
+# Artifact classes: source-document, generated-artifact
+# Seeded failure probe: source ownership markers and retained relationship checks must fail on regressions.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-COMMON="$SCRIPT_DIR/feature-completeness-common.sh"
 CONTROL_SKILL="$HIGHWAY_ROOT/skills/highway-controls/SKILL.md"
-NFR_SKILL="$HIGHWAY_ROOT/skills/highway-nfrs/SKILL.md"
 NFR_SKILL="$HIGHWAY_ROOT/skills/highway-nfrs/SKILL.md"
 CONTROL_TEMPLATE="$HIGHWAY_ROOT/library/templates/output/control-record.md"
 NFR_TEMPLATE="$HIGHWAY_ROOT/library/templates/output/nfr-record.md"
-FIXTURE_DIR="$SCRIPT_DIR/fixtures/control-derived-nfr"
 fail=0
 
-# Execute a deterministic proposal against an isolated baseline. This is intentionally
-# small: it proves the observable review barrier and write set without owning a second
-# governance implementation.
-. "$COMMON"
-
-tmp_root="$(mktemp -d)"
-trap 'rm -rf "$tmp_root"' EXIT
-
 require_text() {
-	file="$1"
-	text="$2"
+	local file="$1" text="$2"
 	if ! grep -Fq "$text" "$file"; then
 		echo "FAIL: '$text' missing from $file"
 		fail=1
 	fi
 }
 
-require_file() {
-	if [[ ! -f "$1" ]]; then
-		echo "FAIL: fixture missing: $1"
+for forbidden in \
+	"candidate-generation" \
+	"nfr-candidate-state" \
+	"Control-Derived NFR" \
+	"pending Control-derived" \
+	'originating `CTLXXXXXX`'; do
+	if grep -Fq "$forbidden" "$CONTROL_SKILL" || grep -Fq "$forbidden" "$NFR_SKILL"; then
+		echo "FAIL: obsolete candidate ownership reference remains: $forbidden"
 		fail=1
 	fi
-}
-
-# --- Fixture and isolation contract ------------------------------------------------------------
-for required in \
-	"$FIXTURE_DIR/README.md" \
-	"$FIXTURE_DIR/candidate-rules.expected" \
-	"$FIXTURE_DIR/controls/derivable.md" \
-	"$FIXTURE_DIR/controls/no-match.md" \
-	"$FIXTURE_DIR/controls/multiple.md" \
-	"$FIXTURE_DIR/nfrs/catalog-safe.md" \
-	"$FIXTURE_DIR/nfrs/catalog-invalid.md" \
-	"$FIXTURE_DIR/nfrs/catalog-unsafe-next-id.md"; do
-	require_file "$required"
 done
 
-mkdir -p "$tmp_root/library/governance/controls" "$tmp_root/library/governance/nfrs"
-cp "$FIXTURE_DIR/controls/derivable.md" "$tmp_root/library/governance/controls/CTL000001.md"
-cp "$FIXTURE_DIR/nfrs/catalog-safe.md" "$tmp_root/library/governance/nfrs.md"
-if [[ -d "$tmp_root/library/governance" ]]; then
-	if find "$tmp_root/library/governance" -type f | grep -q .; then
-		echo "PASS: focused fixture writes stay in a disposable governance tree"
-	else
-		echo "FAIL: fixture governance tree was not created"
-		fail=1
-	fi
-fi
-
-# --- Candidate and review contract -------------------------------------------------------------
 for required in \
-	"successfully created new Control" \
-	"candidate generation" \
-	"NFR owner"; do
+	"Control Development Lifecycle" \
+	"Control Queue and Acceptance Boundaries" \
+	"Selected recommendations enter the active development queue" \
+	"Control capture has no NFR side effect" \
+	"independently managed NFRs"; do
 	require_text "$CONTROL_SKILL" "$required"
 done
 
 for required in \
-	"zero candidates" \
-	"Not Applicable" \
-	"In Progress" \
-	"Blocked" \
-	"non-empty reason" \
-	"no partial NFR relationship"; do
+	"Status: Complete|Missing|Blocked" \
+	"Readiness is independent of Control collection" \
+	"without requiring Control-originated state" \
+	"controls: []"; do
 	require_text "$NFR_SKILL" "$required"
 done
 
-for required in \
-	"Why it matters:" \
-	"authoritative persisted NFR-owned recovery state"; do
-	require_text "$NFR_SKILL" "$required"
-done
-
-for required in "Candidate Entries" "Review Status" "Generation Attempt"; do
-	require_text "$HIGHWAY_ROOT/catalog/nfr-candidate-state.md" "$required"
-done
-
-if grep -Fq "The schema defines \`Generation Attempt\`, \`Candidate Entries\`, and \`Review Status\`" "$NFR_SKILL"; then
-	echo "FAIL: NFR skill repeats candidate-state schema details"
+if [[ -e "$HIGHWAY_ROOT/catalog/nfr-candidate-state.md" ]]; then
+	echo "FAIL: obsolete NFR candidate-state artifact still exists"
 	fail=1
-fi
-if grep -Fq "Recommendation Grounding" "$NFR_TEMPLATE"; then
-	echo "FAIL: NFR record template contains Control recommendation grounding"
-	fail=1
+else
+	echo "PASS: candidate-state artifact is absent"
 fi
 
-for marker in \
-	"ordering=stable" \
-	"unstable-inputs=forbidden" \
-	"duplicate-detection=before-allocation"; do
-	if ! grep -R -Fq "$marker" "$HIGHWAY_ROOT/tools/tests/fixtures/controls-nfr-onboarding"; then
-		echo "FAIL: Feature 078 candidate marker '$marker' missing"
-		fail=1
-	fi
-done
-
-# --- Accepted relationship and direct-authoring contract --------------------------------------
-for required in \
-	"nfrs" \
-	"identifier-only" \
-	"duplicate" \
-	"catalog" \
-	"no partial NFR relationship" \
-	"NFR owner"; do
-	require_text "$CONTROL_SKILL" "$required"
-done
-for required in \
-	"controls: []" \
-	"Control-derived NFRs use" \
-	"immutable"; do
-	require_text "$NFR_SKILL" "$required"
-done
-
-# --- Template and user-ownership contract -----------------------------------------------------
 require_text "$CONTROL_TEMPLATE" "nfrs: []"
 require_text "$NFR_TEMPLATE" "controls: []"
-require_text "$FIXTURE_DIR/README.md" "root-level user-owned governance"
 
-# --- Determinism and forbidden-scope checks ---------------------------------------------------
-require_text "$FIXTURE_DIR/candidate-rules.expected" "rule_order=availability,security,performance"
-require_text "$FIXTURE_DIR/candidate-rules.expected" "inputs=normalized_title_and_statement"
-require_text "$FIXTURE_DIR/candidate-rules.expected" "forbidden=timestamp,randomness,environment,catalog_order"
-require_text "$FIXTURE_DIR/candidate-rules.expected" "no_match=zero_candidates"
-
-for scope_text in \
-	"allocate NFR identifiers" \
-	"mutate the NFR catalog" \
-	"candidate store"; do
-	require_text "$CONTROL_SKILL" "$scope_text"
-done
-
-# --- Behavioral evidence: proposal, review barrier, accepted write, and rollback -------------
-behavior_root="$tmp_root/behavior"
-fc_make_tree "$FIXTURE_DIR" "$behavior_root"
-cp "$FIXTURE_DIR/controls/derivable.md" "$behavior_root/library/governance/controls/CTL000001.md"
-before_snapshot="$tmp_root/before.snapshot"
-after_snapshot="$tmp_root/after.snapshot"
-fc_snapshot "$behavior_root" "$before_snapshot"
-
-title="$(sed -n 's/^title:[[:space:]]*//p' "$behavior_root/library/governance/controls/CTL000001.md")"
-statement="$(sed -n '/^---$/,$p' "$behavior_root/library/governance/controls/CTL000001.md" | tail -n +2 | tr '\n' ' ' | sed 's/[[:space:]][[:space:]]*/ /g')"
-proposal="$(printf '%s %s\n' "$title" "$statement" | tr '[:upper:]' '[:lower:]')"
-if printf '%s' "$proposal" | grep -Fq 'availability'; then
-	printf '%s\n' 'availability' >"$tmp_root/proposal.txt"
-	proposal_count=1
+# Retained relationship semantics remain identifier-only and user-owned.
+if grep -Fq 'nfrs: [NFR000001]' "$SCRIPT_DIR/fixtures/relationship-integrity/valid/controls/CTL000001.md" &&
+	grep -Fq 'controls: [CTL000001]' "$SCRIPT_DIR/fixtures/relationship-integrity/valid/nfrs/NFR000001.md"; then
+	echo "PASS: retained Control/NFR relationship fixtures remain unchanged"
 else
-	: >"$tmp_root/proposal.txt"
-	proposal_count=0
-fi
-if [[ "$proposal_count" -eq 1 ]] && fc_same_snapshot "$before_snapshot" "$before_snapshot"; then
-	echo "PASS: candidate proposal is generated before writes"
-else
-	echo "FAIL: candidate proposal barrier"
-	fail=1
-fi
-fc_snapshot "$behavior_root" "$after_snapshot"
-if fc_same_snapshot "$before_snapshot" "$after_snapshot"; then
-	echo "PASS: proposal generation leaves baseline unchanged"
-else
-	echo "FAIL: proposal generation changed baseline"
-	fail=1
-fi
-
-# Accepted wording writes one NFR and both identifier-only sides; a rejected decision writes none.
-cp "$FIXTURE_DIR/controls/derivable.md" "$behavior_root/library/governance/controls/CTL000001.md"
-cat >"$behavior_root/library/governance/nfrs/NFR000001.md" <<'EOF'
----
-id: NFR000001
-title: Availability and resilience
-status: active
-controls: [CTL000001]
----
-
-Systems must remain available during a single component or zone failure.
-
-Availability expectations are made measurable through a stated failure condition.
-EOF
-if fc_assert_field_contains "$behavior_root/library/governance/controls/CTL000001.md" nfrs '' &&
-	fc_assert_field_contains "$behavior_root/library/governance/nfrs/NFR000001.md" controls CTL000001; then
-	echo "PASS: accepted derived NFR has reciprocal identifier relationship"
-else
-	echo "FAIL: accepted derived NFR relationship write"
-	fail=1
-fi
-
-rejected_snapshot="$tmp_root/rejected.snapshot"
-fc_snapshot "$behavior_root" "$rejected_snapshot"
-fc_snapshot "$behavior_root" "$after_snapshot"
-if fc_same_snapshot "$rejected_snapshot" "$after_snapshot"; then
-	echo "PASS: rejected proposal leaves records unchanged"
-else
-	echo "FAIL: rejected proposal changed records"
-	fail=1
-fi
-
-# Direct NFR and failure-preservation checks use the same isolated tree.
-if grep -Fq 'controls: []' "$NFR_TEMPLATE" && fc_require_clean "$behavior_root"; then
-	echo "PASS: direct NFR empty relationship and cleanup contract"
-else
-	echo "FAIL: direct NFR or cleanup contract"
+	echo "FAIL: retained Control/NFR relationship fixtures changed"
 	fail=1
 fi
 
 exit "$fail"
-
-exit $fail

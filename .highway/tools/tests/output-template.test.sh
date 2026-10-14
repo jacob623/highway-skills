@@ -275,7 +275,7 @@ for behavior_token in "readiness" "relationship" "version" "transaction"; do
 	require_text "$CONTROL_SKILL" "$behavior_token"
 	require_text "$NFR_SKILL" "$behavior_token"
 done
-for control_behavior in "catalog" "derivation" "No timestamp" "unchanged baseline" "identifier" "allocation" "transaction" "readiness" "Control-Derived NFR Candidates"; do
+for control_behavior in "catalog" "recommendation" "No timestamp" "unchanged baseline" "identifier" "allocation" "transaction" "readiness" "Control Development Lifecycle"; do
 	require_text "$CONTROL_SKILL" "$control_behavior"
 done
 for behavior_token in "elimination" "filter" "scor" "recommend" "traceab" "determin"; do
