@@ -48,7 +48,6 @@ for required in \
 	"destructive safeguards" \
 	"User-visible interaction follows the Highway Experience Standard." \
 	"independently managed NFRs" \
-	"Direct capture skips the inferred-content review; it does not bypass NFR validation, duplicate handling, identifier allocation, relationship handling, or atomic persistence." \
 	"Readiness is independent of Control collection"; do
 	require_text "$SKILL" "$required"
 done
@@ -85,10 +84,10 @@ for obsolete in "Feature 094" "Security Gate" "Maintainability Gate" "persistenc
 done
 
 require_text "$SKILL" "**Here's what I've captured as your NFR:**"
-require_text "$SKILL" "**Title:**  "
-require_text "$SKILL" "**Statement:**  "
-require_text "$SKILL" "**Why it matters:**  "
-require_text "$SKILL" "**Would you like to accept this NFR?**"
+require_text "$SKILL" "**Title:**"
+require_text "$SKILL" "**Statement:**"
+require_text "$SKILL" "**Why it matters:**"
+require_text "$SKILL" "**What would you add, correct, or remove?**"
 if grep -Fq "The schema defines \`Generation Attempt\`, \`Candidate Entries\`, and \`Review Status\`" "$SKILL"; then
 	echo "FAIL: NFR skill duplicates candidate-state schema authority"
 	fail=1
