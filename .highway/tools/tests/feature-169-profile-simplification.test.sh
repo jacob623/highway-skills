@@ -24,9 +24,9 @@ require_count() {
 # US1: the four opportunities remain and the five competing standalone sections are removed.
 for heading in \
 	'### Identity Discovery Contribution Opportunity' \
-	'###### Vision Discovery Contribution Opportunity' \
-	'###### Competitive Path Discovery Contribution Opportunity' \
-	'###### Guiding Principles Discovery Contribution Opportunity'; do
+	'#### Vision Discovery Contribution Opportunity' \
+	'#### Competitive Path Discovery Contribution Opportunity' \
+	'#### Guiding Principles Discovery Contribution Opportunity'; do
 	require_text "$PROFILE" "$heading"
 done
 for heading in \

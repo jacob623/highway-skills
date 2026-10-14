@@ -63,14 +63,12 @@ require_absent "$PROFILE" 'Profile skill' 'That is not Vision'
 
 # US3: direct approval reaches candidate presentation.
 require_flowed "$PROFILE" 'Profile skill' 'When the person gives unambiguous approval, proceed directly to the Converged Proposal and then its validation question.'
-require_flowed "$PROFILE" 'Profile skill' 'Anything you'"'"'d change before we keep this?'
-require_flowed "$PROFILE" 'Profile skill' 'Approval with new substantive information triggers re-evaluation.'
 
 # US4: one grounded advisory addition enters an active structured starting point before any
 # applicable Profile-owned clarification.
 require_absent "$PROFILE" 'Profile skill' '#### Advisory question scaffolding'
 require_flowed "$PROFILE" 'Profile skill' 'Use the proposed starting point to reveal relationships, patterns, structure, tensions, tradeoffs, implications, dependencies, and organizing principles already supported by accepted evidence.'
-require_flowed "$PROFILE" 'Profile skill' '##### Interpretation confidence'
+require_flowed "$PROFILE" 'Profile skill' '### Interpretation confidence'
 
 # US5: fresh Setup welcome ordering.
 require_text "$SETUP" 'Setup skill' '### Welcome'

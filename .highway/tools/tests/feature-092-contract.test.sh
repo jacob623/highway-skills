@@ -34,7 +34,6 @@ require_text "$PROFILE" '`/highway-profile configure`'
 # Feature 138 leaves that check to the Experience Standard (D3.5).
 require_text "$PROFILE" 'An absent Profile is a valid initial state'
 require_text "$PROFILE" 'Next Action: `None`'
-require_text "$PROFILE" 'it is not retained as organizational fact'
 require_text "$PROFILE" '**What would you like to call your Highway repository?**'
 require_text "$PROFILE" 'Accept a directly supplied Repository Name as supplied.'
 require_text "$PROFILE" 'Supplied URLs are accepted optional Profile Context'
@@ -54,15 +53,15 @@ if grep -Fq 'a selected recommendation is accepted without a second confirmation
 	echo "FAIL: $PROFILE still restates recommendation-selection acceptance"
 	fail=1
 fi
-require_text "$PROFILE" '#### Domain model'
-require_text "$PROFILE" '#### Domain completeness'
+require_text "$PROFILE" '### Domain model'
+require_text "$PROFILE" '### Domain completeness'
 require_text "$PROFILE" 'meaningful organizational expression'
 require_text "$PROFILE" '## Operations'
 require_text "$PROFILE" '## Acquisition'
 require_text "$PROFILE" 'establishes Repository Name when missing'
 # Superseded behavior: acquisition named only existing-information or website retrieval and re-evaluated accepted evidence across all four domains as a category pass.
 require_text "$PROFILE" 'Evaluate each source across all unresolved Profile domains'
-require_text "$PROFILE" 'The Highway Experience Standard determines whether collaborative development has converged enough'
+require_text "$PROFILE" 'Profile determines domain completeness'
 require_text "$PROFILE" "### Where you're going"
 require_text "$PROFILE" 'Competitive Path describes the broad organizational approach'
 require_text "$PROFILE" 'When entering unresolved Competitive'

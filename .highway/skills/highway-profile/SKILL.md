@@ -62,7 +62,7 @@ Domain completeness is obtained by reading the retained Profile record at
 `.highway/library/templates/output/profile-record.md`'s declared location. No command is invoked to
 determine readiness.
 
-#### Domain model
+### Domain model
 
 The Profile follows the complete structure in `.highway/library/templates/output/profile-record.md`.
 It owns the meaning, evidence, state, and readiness of Identity, Vision, Competitive Path, and
@@ -73,55 +73,7 @@ establish `bounded`.
 Expression guides representation, not truth; it may improve clarity without becoming retained
 organizational fact.
 
-Content mutations do not change the retained Profile schema version. Foundational Highway context may
-show what evidence is useful, but it is not retained as organizational fact. Workflow-specific input
-remains authoritative.
-
-The Highway Experience Standard determines whether collaborative development has converged enough,
-how contributions and clarification are handled, and how user-visible interaction is presented.
-Profile determines the four domain meanings, evidence, completeness, readiness, persistence, and
-downstream ownership described here.
-
-Highway Identity is shared, non-normative context only.
-
-### Acquisition
-
-Acquisition evaluates retained Profile context, establishes Repository Name when missing, and gives
-the person one opportunity to reuse supplied organizational material or a public website before
-ordinary domain questioning. Supplied URLs are accepted optional Profile Context; facts derived from
-websites or imported material remain proposed until accepted. When retrieval is unavailable,
-continue without exposing the missing capability.
-
-Evaluate each source across all unresolved Profile domains before selecting the next behavior. Reuse
-accepted evidence across domains and do not ask the person to reproduce information already present
-in supplied material. Do not use unspecified model memory or prior-agent memory as organizational
-evidence. Acquisition is limited to Profile evidence and does not perform technology-platform
-discovery.
-
-When no retained Profile exists, begin first-time Setup with:
-
-#### Let's get to know your organization
-
-Then ask:
-
-**What would you like to call your Highway repository?**
-
-Using your organization's name is often a good choice.
-
-Accept a directly supplied Repository Name as supplied. It does not imply acceptance of Organization
-Name or other organizational facts. After it is accepted, offer existing organizational material
-before ordinary domain questioning. An illustrative prompt is `**Do you already have something I can
-use to start understanding [Repository Name]?**` followed by an invitation to share a website,
-description, strategy document, or assistant export.
-
-The canonical questions are Identity `**What does [Organization Name] do?**`, Vision `**What is the
-future vision of [Organization Name]?**`, Competitive Path `**How does [Organization Name] plan to
-get there?**`, and Guiding Principles `**What principles or values guide decisions at [Organization
-Name]?**`. When Organization Name is not accepted, use the accepted Repository Name where natural.
-Canonical questions are Profile-owned fallbacks for unresolved organizational information. Evaluate
-available Profile evidence before using them.
-
-#### Domain completeness
+### Domain completeness
 
 A domain is complete when accumulated evidence supports one cohesive organizational narrative that
 meaningfully answers the domain's purpose without unsupported organizational facts.
@@ -132,11 +84,13 @@ Proposal.
 
 Profile-specific validation questions apply to the domain's Converged Proposal.
 
-##### Response Support Text
+## Shared Interaction Elements
+
+### Response Support Text
 
 Profile uses the following reusable interaction elements.
 
-###### Validation Question
+#### Validation Question
 
 The default validation question is:
 
@@ -146,7 +100,7 @@ A sharper open question drawn from the active discussion may replace it when it 
 
 The Validation Question remains the only emphasized element in a review block.
 
-###### Acceptance Reassurance
+#### Acceptance Reassurance
 
 The Acceptance Reassurance is:
 
@@ -154,7 +108,7 @@ If this is accurate, just say so.
 
 Use it beneath a Validation Question when the person is reviewing a candidate or Converged Proposal.
 
-###### Discovery Reassurance
+#### Discovery Reassurance
 
 The Discovery Reassurance is:
 
@@ -162,7 +116,7 @@ If you don't know, say "I don't know" and we'll work through it together.
 
 Use it when the person is being asked to originate unresolved organizational information and no grounded starting point, Working Idea, interpretation, possibility, or advisory contribution has yet been supplied for reaction.
 
-###### Combined Reassurance
+#### Combined Reassurance
 
 The Combined Reassurance is:
 
@@ -207,31 +161,12 @@ Imported website evidence does not count as a user Substantive Contribution.
 The person's response to that request is the domain's acceptance boundary. Recognize acceptance by
 what the response means, not by whether it matches a particular phrase, and do not wait for a second
 confirmation. When the person gives unambiguous approval, proceed directly to the Converged Proposal
-and then its validation question. Do not insert a second contribution-oriented review question.
-Where the proposal and candidate are materially identical, the validation question may be
-`Anything you'd change before we keep this?`. Approval with new substantive information triggers
-re-evaluation. Ambiguous approval remains subject to the existing convergence handling. Once a
-domain is accepted, do not present the same substance again; if a later revision is needed, name
-what changed. Compare against accepted content ignoring differences in line wrapping and spacing.
-When it is unclear whether a candidate has developed since acceptance, present it.
+and then its validation question.
 
 A domain's substance is kept only after its finished candidate has been presented and accepted.
 Material gathered while composing a domain stays working material until then, in all four domains.
 
-The validation question applies only where a candidate has been presented. Where nothing has been
-captured yet, invite a reaction instead, under the heading the Highway Experience Standard defines
-for that moment, `**Here is a proposed starting point for your [domain]:**`, and ask for no
-acceptance there.
-
-Where the preceding domain produced no accepted substance, say that nothing has been accepted yet
-rather than inventing a carry-forward.
-
-Say nothing about retaining the answer, about where this sits in the sequence, about a domain's
-state, or about what comes next. This holds for the whole conversation, not only for readiness
-wording: the person reads their own material developing, not an account of the work being done to
-it.
-
-##### Interpretation confidence
+### Interpretation confidence
 
 Prefer a grounded interpretation that can be corrected over a missing interpretation that forces the person to create it from scratch.
 
@@ -245,7 +180,47 @@ The starting point exists to give the person something meaningful to react to.
 
 Questions remain available when accepted evidence cannot support a responsible starting point.
 
-##### Identity
+## Domain Development
+
+### Acquisition
+
+Acquisition evaluates retained Profile context, establishes Repository Name when missing, and gives
+the person one opportunity to reuse supplied organizational material or a public website before
+ordinary domain questioning. Supplied URLs are accepted optional Profile Context; facts derived from
+websites or imported material remain proposed until accepted. When retrieval is unavailable,
+continue without exposing the missing capability.
+
+Evaluate each source across all unresolved Profile domains before selecting the next behavior. Reuse
+accepted evidence across domains and do not ask the person to reproduce information already present
+in supplied material. Do not use unspecified model memory or prior-agent memory as organizational
+evidence. Acquisition is limited to Profile evidence and does not perform technology-platform
+discovery.
+
+When no retained Profile exists, begin first-time Setup with:
+
+#### Let's get to know your organization
+
+Then ask:
+
+**What would you like to call your Highway repository?**
+
+Using your organization's name is often a good choice.
+
+Accept a directly supplied Repository Name as supplied. It does not imply acceptance of Organization
+Name or other organizational facts. After it is accepted, offer existing organizational material
+before ordinary domain questioning. An illustrative prompt is `**Do you already have something I can
+use to start understanding [Repository Name]?**` followed by an invitation to share a website,
+description, strategy document, or assistant export.
+
+The canonical questions are:
+- Identity: **What does [Organization Name] do?**
+- Vision **What is the future vision of [Organization Name]?**
+- Competitive Path **How does [Organization Name] plan to get there?**
+- Guiding Principles **What principles or values guide decisions at [Organization Name]?**. 
+
+When Organization Name is not accepted, use the accepted Repository Name where natural. Canonical questions are Profile-owned fallbacks for unresolved organizational information. Evaluate available Profile evidence before using them.
+
+### Identity
 
 Identity establishes who the organization is and what it meaningfully encompasses, including durable
 activity and purpose. It is not a technology-landscape inventory.
@@ -256,7 +231,7 @@ and treat the person's response as the acceptance boundary for Identity. Retain 
 Identity before that candidate is presented and accepted. When no material has been captured, use
 `**Here is a proposed starting point for your Identity:**`.
 
-### Identity Discovery Contribution Opportunity
+#### Identity Discovery Contribution Opportunity
 
 When website content, imported material, or discovery evidence materially contributes to Identity
 development, present an optional Identity Discovery Contribution Opportunity before Identity convergence and before the
@@ -316,7 +291,7 @@ The review does not introduce new Profile fields, does not create new readiness 
 change domain ownership, and does not replace the retained narrative structure. It remains proposed
 evidence until accepted through the existing Identity Converged Proposal and Profile persistence boundary.
 
-##### Vision
+### Vision
 
 Vision describes the future the organization is trying to create. Reason from the full accepted
 Identity and other relevant Profile evidence; do not let one Identity facet become the whole Vision
@@ -333,7 +308,7 @@ being asked. Open that subject with grounded possibilities drawn from accepted P
 before asking the canonical question. When no material has been captured, use
 `**Here is a proposed starting point for your Vision:**`.
 
-###### Vision Discovery Contribution Opportunity
+#### Vision Discovery Contribution Opportunity
 
 When accepted Identity evidence and other accepted Profile evidence support a cohesive and responsible first-pass Vision interpretation, present a proposed starting point before continuing exploratory questioning.
 
@@ -365,7 +340,7 @@ Present the Converged Proposal under `**Here's what I've captured as your Vision
 with the shared validation question, and treat the person's response as the acceptance boundary for
 Vision. Retain nothing from Vision before that candidate is presented and accepted.
 
-##### Competitive Path
+### Competitive Path
 
 Competitive Path describes the broad organizational approach toward the accepted Vision. It may
 reason about strategic choices, sequencing, priorities, and organizational direction. It does not
@@ -378,7 +353,7 @@ subject with grounded possibilities drawn from accepted Profile evidence before 
 the canonical question. When no material has been captured, use
 `**Here is a proposed starting point for your Competitive Path:**`.
 
-###### Competitive Path Discovery Contribution Opportunity
+#### Competitive Path Discovery Contribution Opportunity
 
 When accepted Identity, Vision, and other accepted Profile evidence support a cohesive first-pass Competitive Path interpretation, present a proposed starting point before continuing exploratory questioning.
 
@@ -411,7 +386,7 @@ validate it with the shared validation question, and treat the person's response
 boundary for Competitive Path. Retain nothing from Competitive Path before that candidate is
 presented and accepted.
 
-##### Guiding Principles
+### Guiding Principles
 
 Guiding Principles describe the enduring principles that shape organizational decisions. Use
 accepted Identity, Vision, Competitive Path, and other accepted Profile context as grounding. Do not
@@ -422,7 +397,7 @@ Open that subject with grounded possibilities drawn from accepted Profile eviden
 the canonical question. When no material has been captured, use
 `**Here is a proposed starting point for your Guiding Principles:**`.
 
-###### Guiding Principles Discovery Contribution Opportunity
+#### Guiding Principles Discovery Contribution Opportunity
 
 When accepted Profile evidence supports a cohesive interpretation of likely decision-making values, present a proposed starting point before continuing exploratory questioning.
 
@@ -455,7 +430,7 @@ validate it with the shared validation question, and treat the person's response
 boundary for Guiding Principles. Retain nothing from Guiding Principles before that candidate is
 presented and accepted.
 
-#### Cross-domain reasoning
+### Cross-domain reasoning
 
 New substantive organizational evidence is evaluated across every unresolved Profile domain.
 Accepted Identity informs Vision when relevant; accepted Identity and Vision inform Competitive Path;

@@ -60,11 +60,11 @@ if [[ -n "$probe_class" ]]; then
 fi
 
 # US1: one owner and a stable candidate review rendering contract.
-require_flowed "$PROFILE" 'Profile skill' '##### Response Support Text'
-require_flowed "$PROFILE" 'Profile skill' '###### Validation Question'
-require_flowed "$PROFILE" 'Profile skill' '###### Acceptance Reassurance'
-require_flowed "$PROFILE" 'Profile skill' '###### Discovery Reassurance'
-require_flowed "$PROFILE" 'Profile skill' '###### Combined Reassurance'
+require_flowed "$PROFILE" 'Profile skill' '## Shared Interaction Elements'
+require_flowed "$PROFILE" 'Profile skill' '#### Validation Question'
+require_flowed "$PROFILE" 'Profile skill' '#### Acceptance Reassurance'
+require_flowed "$PROFILE" 'Profile skill' '#### Discovery Reassurance'
+require_flowed "$PROFILE" 'Profile skill' '#### Combined Reassurance'
 require_flowed "$PROFILE" 'Profile skill' 'The default validation question is:'
 require_flowed "$PROFILE" 'Profile skill' 'A sharper open question drawn from the active discussion may replace it when it still asks what to add, correct, or remove.'
 require_flowed "$PROFILE" 'Profile skill' 'Present the candidate under its capture heading:'
@@ -73,10 +73,10 @@ require_flowed "$PROFILE" 'Profile skill' 'Place the applicable reassurance bene
 require_flowed "$PROFILE" 'Profile skill' 'The Validation Question remains the only emphasized element in the review block.'
 require_ordered "$PROFILE" 'Profile skill' 'Present the candidate under its capture heading:' 'Place the Validation Question beneath the candidate.'
 require_ordered "$PROFILE" 'Profile skill' 'Place the Validation Question beneath the candidate.' 'Place the applicable reassurance beneath the Validation Question.'
-require_ordered "$PROFILE" 'Profile skill' '#### Domain completeness' 'A domain is complete when accumulated evidence supports one cohesive organizational narrative'
-require_ordered "$PROFILE" 'Profile skill' 'Profile-specific validation questions apply to the domain' '##### Response Support Text'
-require_ordered "$PROFILE" 'Profile skill' '##### Response Support Text' '##### Interpretation confidence'
-require_count "$PROFILE" 'Profile skill' '##### Response Support Text' 1
+require_ordered "$PROFILE" 'Profile skill' '### Domain completeness' 'A domain is complete when accumulated evidence supports one cohesive organizational narrative'
+require_ordered "$PROFILE" 'Profile skill' 'Profile-specific validation questions apply to the domain' '## Shared Interaction Elements'
+require_ordered "$PROFILE" 'Profile skill' '## Shared Interaction Elements' '### Interpretation confidence'
+require_count "$PROFILE" 'Profile skill' '## Shared Interaction Elements' 1
 
 # US2: reassurance selection follows meaningful starting-point context.
 require_flowed "$PROFILE" 'Profile skill' 'Use the Discovery Reassurance only when the person is being asked to originate unresolved organizational information and the workflow has not yet supplied a meaningful starting point for reaction.'

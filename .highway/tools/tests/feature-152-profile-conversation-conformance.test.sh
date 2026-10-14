@@ -192,9 +192,9 @@ done
 # --- US4: the conversation adds something through the active opportunity ---
 
 require_text "$PROFILE" 'Profile skill' '### Identity Discovery Contribution Opportunity'
-require_text "$PROFILE" 'Profile skill' '###### Vision Discovery Contribution Opportunity'
-require_text "$PROFILE" 'Profile skill' '###### Competitive Path Discovery Contribution Opportunity'
-require_text "$PROFILE" 'Profile skill' '###### Guiding Principles Discovery Contribution Opportunity'
+require_text "$PROFILE" 'Profile skill' '#### Vision Discovery Contribution Opportunity'
+require_text "$PROFILE" 'Profile skill' '#### Competitive Path Discovery Contribution Opportunity'
+require_text "$PROFILE" 'Profile skill' '#### Guiding Principles Discovery Contribution Opportunity'
 
 # --- US5: nothing leaks from behind the curtain ---
 

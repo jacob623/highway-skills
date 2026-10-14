@@ -12,7 +12,7 @@ fail=0
 require() { grep -Fq -- "$1" "$PROFILE" || { echo "FAIL: Profile skill missing '$1'"; fail=1; }; }
 for text in \
 	'Profile determines domain completeness' \
-	'#### Domain completeness' \
+	'### Domain completeness' \
 	'When entering unresolved Vision' \
 	'When entering unresolved Competitive' \
 	'When entering unresolved Guiding Principles' \
