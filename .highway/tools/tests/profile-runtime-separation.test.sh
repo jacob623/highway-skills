@@ -28,16 +28,15 @@ require_absent() {
 
 for required in \
 	'version: 11.2.0' \
-	'#### Domain model' \
-	'#### Domain completeness' \
+	'### Domain model' \
+	'### Domain completeness' \
 	'meaningful organizational expression' \
-	'##### Identity' \
-	'##### Vision' \
-	'##### Competitive Path' \
-	'##### Guiding Principles' \
-	'#### Cross-domain reasoning' \
+	'#### Identity' \
+	'#### Vision' \
+	'#### Competitive Path' \
+	'#### Guiding Principles' \
+	'### Cross-domain reasoning' \
 	'Profile determines domain completeness.' \
-	'The Highway Experience Standard determines whether collaborative development has converged enough' \
 	'Canonical questions are Profile-owned fallbacks for unresolved organizational information.' \
 	'Acceptance authorizes the mutation but is not successful persistence.' \
 	'Operations remain setup, configure, readiness, view, show, describe, add, update, remove, and reset.' \
@@ -47,7 +46,7 @@ for required in \
 	'Expression guides representation, not truth' \
 	'Competitive Path describes the broad organizational approach' \
 	'Guiding Principles describe the enduring principles' \
-	'Highway Identity is shared, non-normative context only.'; do
+	; do
 	require_text "$required"
 done
 

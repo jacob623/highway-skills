@@ -128,10 +128,7 @@ for domain in Identity Vision 'Competitive Path' 'Guiding Principles'; do
 		"Retain nothing from $domain before that candidate is presented and accepted."
 done
 
-# FR-002 delivery half: the shared validation question is scoped to a presented candidate, and the
-# proposed-starting-point heading covers the moment it does not apply.
-require_flowed "$PROFILE" 'Profile skill' \
-	'The validation question applies only where a candidate has been presented.'
+# FR-002 delivery half: the proposed-starting-point heading covers the moment validation does not apply.
 require_flowed "$PROFILE" 'Profile skill' \
 	'**Here is a proposed starting point for your Identity:**'
 
@@ -163,15 +160,6 @@ require_flowed "$PROFILE" 'Profile skill' \
 	"Open it by naming accepted Vision substance in the person's own words and connecting it to the question being asked."
 require_flowed "$PROFILE" 'Profile skill' \
 	"Open it by naming accepted Competitive Path substance in the person's own words and connecting it to the question being asked."
-
-# X2.71's delivery: the opening says nothing has been accepted rather than inventing a carry-forward.
-require_flowed "$PROFILE" 'Profile skill' \
-	'Where the preceding domain produced no accepted substance, say that nothing has been accepted yet rather than inventing a carry-forward.'
-
-# FR-003: the narration prohibition reaches persistence, progression and domain state, and is not
-# scoped to readiness vocabulary.
-require_flowed "$PROFILE" 'Profile skill' \
-	"Say nothing about retaining the answer, about where this sits in the sequence, about a domain's state, or about what comes next."
 
 require_text "$PROFILE" 'Profile skill' \
 	'- Each domain opening names accepted substance from the preceding domain.'

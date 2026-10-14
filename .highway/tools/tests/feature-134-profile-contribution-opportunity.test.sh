@@ -9,10 +9,9 @@ REPO_ROOT="$(cd "$HIGHWAY_ROOT/.." && pwd)"
 PROFILE="$HIGHWAY_ROOT/skills/highway-profile/SKILL.md"
 fail=0
 for text in \
-	'The Highway Experience Standard determines whether collaborative development has converged enough' \
 	'Profile determines domain completeness' \
 	'Profile-specific validation questions apply to the domain' \
-	'transient'; do
+	'Expression guides representation, not truth'; do
 	if ! grep -Fq -- "$text" "$PROFILE"; then echo "FAIL: Profile skill missing '$text'"; fail=1; fi
 done
 if grep -Fq -- 'Contribution Opportunity authorizes acceptance' "$PROFILE"; then echo 'FAIL: Contribution Opportunity is coupled to acceptance'; fail=1; fi

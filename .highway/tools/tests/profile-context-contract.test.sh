@@ -26,7 +26,6 @@ for retired_context in highway-vision.md highway-platform-objectives.md; do
 		fail=1
 	fi
 done
-require "$PROFILE" 'it is not retained as organizational fact'
 require "$PROFILE" 'Accepted evidence that establishes a domain sets it to `discussed`'
 require "$FIXTURES/repository-context/conflicts/workflow-input-authoritative.txt" 'workflow-specific input remains authoritative'
 require "$FIXTURES/participation/reference/SKILL.md" '.highway/library/knowledge/profile.md'

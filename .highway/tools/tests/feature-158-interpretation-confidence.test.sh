@@ -30,11 +30,11 @@ require_count() {
 }
 
 # Interpretation confidence guidance and exact placement.
-require_order "$PROFILE" '##### Response Support Text' '##### Interpretation confidence' 'Profile skill interpretation subsection placement'
-require_order "$PROFILE" '##### Interpretation confidence' '##### Identity' 'Profile skill interpretation subsection placement'
+require_order "$PROFILE" '## Shared Interaction Elements' '### Interpretation confidence' 'Profile skill interpretation subsection placement'
+require_order "$PROFILE" '### Interpretation confidence' '### Identity' 'Profile skill interpretation subsection placement'
 require_flowed "$PROFILE" 'Profile skill' 'Prefer a grounded interpretation that can be corrected over a missing interpretation that forces the person to create it from scratch.'
 require_flowed "$PROFILE" 'Profile skill' 'When accepted evidence already supports a useful distinction, implication, connection, tension, structure, organizing principle, or Working Idea, do not ask a question that merely seeks permission to express the interpretation.'
-require_count "$PROFILE" 'Profile skill' '##### Interpretation confidence' 1
+require_count "$PROFILE" 'Profile skill' '### Interpretation confidence' 1
 
 # Verification additions.
 require_flowed "$PROFILE" 'Profile skill' 'A useful grounded interpretation is preferred over an unnecessary exploratory question.'

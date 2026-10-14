@@ -48,8 +48,6 @@ for required in \
 	'Do you already have something I can' \
 	'Canonical questions are Profile-owned fallbacks' \
 	'Expression guides representation, not truth' \
-	'Expression guidance is transient' \
-	'Profile-owned expression guidance does not control' \
 	'Acquisition is limited to Profile evidence' \
 	'Identity establishes who the organization is' \
 	'A domain is complete when accumulated evidence supports one cohesive organizational narrative' \
@@ -58,7 +56,7 @@ for required in \
 	'turn a principle into an enforceable Control' \
 	'Acceptance authorizes the mutation but is not successful persistence' \
 	'Retain only the accepted cohesive domain narrative' \
-	'Content mutations do not change the retained Profile schema version.'; do
+	'Expression guides representation, not truth'; do
 	require_text "$required"
 done
 

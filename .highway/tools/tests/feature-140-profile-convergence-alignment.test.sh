@@ -21,8 +21,7 @@ require_text() {
 for required in \
 	'version: 11.2.0' \
 	'Profile determines domain completeness' \
-	'The Highway Experience Standard determines whether collaborative development has converged enough' \
-	'Profile determines the four domain meanings' \
+	'It owns the meaning, evidence, state, and readiness of Identity, Vision, Competitive Path, and' \
 	'### Domain completeness' \
 	'A domain is complete when accumulated evidence supports one cohesive organizational narrative' \
 	'Profile-specific validation questions apply to the domain' \

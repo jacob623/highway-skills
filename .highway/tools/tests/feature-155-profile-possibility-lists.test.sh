@@ -24,9 +24,9 @@ if flow "$PROFILE" | grep -Fq -- '#### Possibility-list Contribution Opportuniti
 	fail=1
 fi
 require_flowed "$PROFILE" 'Profile skill' '### Identity Discovery Contribution Opportunity'
-require_flowed "$PROFILE" 'Profile skill' '###### Vision Discovery Contribution Opportunity'
-require_flowed "$PROFILE" 'Profile skill' '###### Competitive Path Discovery Contribution Opportunity'
-require_flowed "$PROFILE" 'Profile skill' '###### Guiding Principles Discovery Contribution Opportunity'
+require_flowed "$PROFILE" 'Profile skill' '#### Vision Discovery Contribution Opportunity'
+require_flowed "$PROFILE" 'Profile skill' '#### Competitive Path Discovery Contribution Opportunity'
+require_flowed "$PROFILE" 'Profile skill' '#### Guiding Principles Discovery Contribution Opportunity'
 require_count "$PROFILE" 'Profile skill' '**What would you add, correct, or remove?**' 5
 require_flowed "$STANDARD" 'Experience Standard' '| X2.69 | A contributed addition MUST NOT exceed one distinction or extension per Substantive Contribution. | One addition appears; a second, an enumerated set of offered options, or a recommendation set does not. |'
 
