@@ -69,7 +69,7 @@ for owner in profile objectives controls nfrs; do
 	done < "$case_file"
 done
 controls_skill="$HIGHWAY_ROOT/skills/highway-controls/SKILL.md"
-for token in 'one Add MINOR' 'identifier non-reuse' 'Collection Result: Continue|Finished' 'Revalidate'; do
+for token in 'one Add MINOR' 'Identifier non-reuse is mandatory' 'Collection Result: Continue|Finished' 'Revalidate'; do
 	if ! grep -Fq "$token" "$controls_skill"; then
 		echo "FAIL: Controls persistence contract missing '$token'"; fail=1
 	fi

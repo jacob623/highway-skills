@@ -36,7 +36,7 @@ for text in \
 	"Title" \
 	"Statement" \
 	"Why it matters" \
-	"Would you like to accept this Control?" \
+	"Acceptance Reassurance" \
 	"Response Support Text" \
 	"Interpretation Confidence" \
 	"Recommendation Development" \

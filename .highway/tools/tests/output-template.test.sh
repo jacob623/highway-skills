@@ -48,7 +48,7 @@ for proposal_token in \
 	'Title:' \
 	'Statement:' \
 	'Why it matters:' \
-	'Would you like to accept this Control?'; do
+	'Acceptance Reassurance'; do
 	if ! grep -Fq "$proposal_token" "$CONTROL_SKILL"; then
 		echo "FAIL: Controls proposal framing missing '$proposal_token'"
 		fail=1

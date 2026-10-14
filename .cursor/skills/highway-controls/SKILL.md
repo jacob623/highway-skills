@@ -27,10 +27,6 @@ emphasized element in a Control review.
 
 **What would you add, correct, or remove?**
 
-The person may also respond with **Would you like to accept this Control?** when the complete
-captured-Control review is used. The review contains no allocated identifier, catalog mutation,
-version, or transaction mechanics.
-
 A sharper question may replace it when it still invites correction rather than agreement.
 
 **Acceptance Reassurance**
@@ -163,6 +159,48 @@ Coverage-derived recommendations must follow the same presentation contract as c
 recommendations. Do not distinguish recommendations by origin or reveal recommendation source,
 coverage area, or internal coverage evaluation.
 
+### Additional Suggestions
+
+When a person requests additional suggestions, evaluate both:
+
+- accepted Profile evidence;
+- accepted Objective portfolio;
+- accepted Control portfolio.
+
+Additional suggestions may come from unaddressed accepted context, recommendation coverage gaps
+identified through Control Coverage Areas, or meaningful gaps within the accepted Control portfolio.
+
+Example:
+
+Accepted Controls:
+- Administrative access
+- Sensitive information
+- Audit logging
+
+Reasonable additional suggestion:
+
+- Validate Backups Regularly
+
+The recommendation remains a Working Idea until adopted.
+
+### Recommendation Boundaries
+
+Control Coverage Areas:
+- recommend;
+- illuminate coverage gaps;
+- expand recommendation diversity.
+
+Control Coverage Areas do not:
+- establish accepted Controls;
+- establish organizational facts;
+- establish organizational deficiencies;
+- create readiness requirements;
+- create lifecycle stages;
+- change Control ownership, persistence, or acceptance behavior.
+
+All recommended Controls remain Working Ideas until the person selects, modifies, or provides their
+own Control and the normal Control Development Lifecycle continues unchanged.
+
 ## Control Development Lifecycle
 
 Every Control follows the same development lifecycle:
@@ -204,7 +242,7 @@ Use discovery when:
 
 - accepted evidence cannot support a responsible Converged Control proposal;
 - consequential ambiguity remains unresolved;
-- Control-versus-NFR classification cannot be resolved responsibly.
+- safeguard ambiguity cannot be resolved responsibly.
 
 Do not ask a discovery question when a grounded Converged Control proposal can reasonably be presented first.
 
@@ -241,6 +279,20 @@ Selected recommendations enter the active development queue and are never captur
 membership determines development order only. Material revision invalidates prior acceptance and
 requires a new correction or acceptance opportunity.
 
+Illustrative queue interaction:
+
+```text
+User:
+Capture all four.
+
+Owner:
+The four safeguards become the active Control queue in the selected order.
+
+Selection does not capture them.
+
+Each safeguard proceeds through the Control Development Lifecycle before capture.
+```
+
 ## Interpretation Confidence
 
 Prefer a grounded safeguard interpretation that can be corrected over a missing interpretation that
@@ -273,6 +325,34 @@ The synthesis is advisory. It is not a second review, a second proposal, a recom
 detailed portfolio assessment. It occurs only after capture, creates no lifecycle state or durable
 portfolio artifact, and does not imply acceptance of a transient proposal.
 
+#### Illustrative Post-Capture Continuity Examples
+
+Queue transition:
+
+```text
+Your accepted Controls now provide strong protection for administrative access.
+
+Next we'll develop Protect Sensitive Information.
+```
+
+Collection transition:
+
+```text
+Your accepted Controls now provide coverage across access control, information protection, and accountability.
+
+If you'd like additional suggestions, just let me know.
+
+Is there another safeguard you'd like to establish?
+```
+
+Setup transition:
+
+```text
+Your accepted Controls now provide coverage across access control, information protection, and operational accountability.
+
+Now let's consider the operational expectations future solutions should meet.
+```
+
 ## Control Recommendation Presentation
 
 Keep the **Control** as the primary conversational anchor. When multiple recommendations are presented,
@@ -281,14 +361,27 @@ obvious distinctions rather than a narrative paragraph. Explicitly support selec
 all recommendations, modifying recommendations before adoption, providing a user-authored safeguard,
 and requesting additional suggestions.
 
+### Illustrative Recommendation Presentation Example
+
+Based on your accepted context, these safeguards appear most relevant:
+
+- **Require MFA For Administrative Access** Administrative access requires multi-factor authentication.
+- **Protect Sensitive Information** Sensitive information must be protected from unauthorized access.
+- **Maintain Audit Logging** Administrative and security-sensitive activity must be logged.
+- **Validate Backups Regularly** Backup recovery procedures must be validated periodically.
+
+Would you like to select one, several, or all of these safeguards, modify any of them, or provide your
+own safeguard? If none fit, feel free to suggest your own safeguard. If you'd like additional
+suggestions, just let me know.
+
 ## When to use
 
 Use this skill to set up, configure, inspect, add, create, update, remove, or reset Controls. The
 supported actions are exactly `setup`, `configure`, `view`, `show`, `describe`, `readiness`, `add`,
 `new`, `update`, `remove`, and `reset`.
 
-Use it when a user wants a durable enforceable safeguard, a user-approved Control statement, or a stable
-`CTL` reference for future NFR relationships.
+Use it when a user wants a durable enforceable safeguard or a user-approved Control statement. The
+shared record `nfrs` field remains available for accepted relationships; Controls do not generate NFRs.
 
 Use `readiness` for a read-only assessment of whether the Control baseline is usable. This action owns
 Control completeness and does not start setup or mutation.
@@ -299,7 +392,7 @@ Do not use this skill to author Non-Functional Requirements, Business Objectives
 Highway governance baselines. Route those requests to their owning skill.
 Do not use it to author non-functional requirements; route them to `/highway-nfrs`.
 
-This skill MUST NOT refuse a Control the user still wants. It may explain overlap, classification, or
+This skill MUST NOT refuse a Control the user still wants. It may explain overlap, safeguard ambiguity, or
 quality concerns, but user authority remains the final acceptance boundary.
 
 Do not edit a Control record or `library/governance/controls.md` directly. Direct edits break the permanent
@@ -332,8 +425,7 @@ overlap guidance, not a source of new organizational facts.
 Identity, Vision, and Platform Objectives provide shared, non-normative context only. Use accepted
 Profile, accepted Business Objectives, accepted existing Controls, relevant connections, and active user
 input as available context; active user input wins when context conflicts. Other unavailable optional
-context is excluded. Context can inform interpretation, but cannot choose policy. A complete direct
-obligation remains authoritative for its requested safeguard. The rule is: other unavailable optional context is excluded. Treat a complete direct obligation as authoritative.
+context is excluded. Context can inform interpretation, but cannot choose policy. A complete user-provided safeguard remains authoritative for its requested safeguard.
 
 When a Highway recommendation materially influences an accepted Control, preserve only the sources
 that influenced it in the optional `## Recommendation Grounding` body section governed by
@@ -452,27 +544,23 @@ grounded recommendation is available:
 
 **If you're not sure, just say "I don't know," and we'll work through it together.**
 
-When Obligation evidence is missing, ask **What enforceable safeguard should future technology decisions
-follow?** When the person supplies a concern, condition, or obligation, evaluate it across Control
-meaning, enforceability, and NFR classification before asking another question. When accepted evidence
-supports a complete enforceable safeguard, hand off to the Control Development Lifecycle for review.
+When accepted context supports useful recommendations, present recommendations. When accepted context
+cannot support useful recommendations, begin exploratory discussion. Ask for missing information, not missing phrasing.
 
-Ask for missing information, not missing phrasing. Concern, Condition, and Obligation are transient
-evidence dimensions rather than persisted fields, required discovery stages, or a second lifecycle.
+Evaluate all active evidence supporting the proposed safeguard. Concern, Condition, and Obligation remain
+internal reasoning concepts and are not required conversation stages. When accepted evidence supports a
+responsible Control proposal, hand off to the Control Development Lifecycle. Otherwise resolve the most
+consequential remaining uncertainty.
 
 Control meaning is an enforceable, auditable, or checkable safeguard. The retained record uses the
 Control template's title, statement, rationale, and identifier-only `nfrs` relationships. Do not ask
 why a Control is meaningful or important. Rationale is synthesized from accepted evidence.
 
-Process supplied `/highway-controls add` evidence before choosing a question. Evaluate all active
-evidence across safeguard meaning, enforceability, and classification, then select exactly one next
-action in this order:
+Process supplied `/highway-controls add` evidence before choosing a question. Evaluate whether the
+evidence supports a responsible proposal, and select exactly one next action:
 
-1. If Control-versus-NFR classification is unresolved, ask one bounded classification question.
-2. Otherwise, if the safeguard concern or condition is unresolved and needed for a responsible proposal,
-   ask one conversational question.
-3. Otherwise, if the Obligation is unresolved, ask one question about the enforceable safeguard.
-4. Otherwise, synthesize Rationale and present the Control review.
+1. If a responsible proposal is supported, synthesize Rationale and present the Control review.
+2. Otherwise, resolve the most consequential remaining uncertainty with one bounded question.
 
 Accept ordinary business language, uncertainty, activity descriptions, natural correction, replacement,
 rejection, cancellation, abandonment, and multiple dimensions in one answer. When multiple meaningful
@@ -491,15 +579,14 @@ When multiple recommendations are selected, process them sequentially through th
 Lifecycle. If evidence is insufficient for Control development, continue the evidence question path
 rather than creating a parallel lifecycle. The user-authored alternative remains available.
 
-After a correction, re-evaluate staged safeguard, enforceability, and classification evidence, discard
-staged interpretations that no longer support the revised intent, and re-evaluate the staged evidence
-before continuing.
+After a correction, re-evaluate staged safeguard evidence and accepted context. Discard interpretations
+that no longer support the revised intent. Re-evaluate before continuing.
 
-When safeguard evidence supports a clear enforceable statement and classification is resolved, evidence
-evaluation is complete enough to hand off to the Control Development Lifecycle for review. Rationale is
-synthesized from accepted evidence and applicable accepted context without adding unsupported facts.
-Do not ask a separate Rationale question. The transient `user-override` route preserves the exact approved Statement
-without adding a persisted classification field.
+When accepted evidence supports a clear enforceable statement, evidence evaluation is complete enough to
+hand off to the Control Development Lifecycle for review. Rationale is synthesized from accepted
+evidence and applicable accepted context without adding unsupported facts.
+Do not ask a separate Rationale question. The transient `user-override` route preserves the exact approved
+Statement without adding a persisted routing field.
 
 Do not expose an unallocated or newly allocated identifier, catalog change, or version in normal
 pre-persistence review. Natural acceptance authorizes non-destructive creation without a second
@@ -544,8 +631,8 @@ target, an invalid `next_id`, or a record outside `library/governance/controls/`
 rejected without overwriting user-owned content.
 
 The catalog owns allocation state. `next_id` must be greater than every allocated identifier, including
-identifiers whose records were removed. An identifier is permanent and is never reused. Stable `CTL`
-identifiers are reserved for future NFR relationships.
+identifiers whose records were removed. An identifier is permanent and is never reused. The shared
+record `nfrs` field remains available for accepted relationships; Controls do not generate NFRs.
 
 Stage every mutation as a transaction: read and validate the complete baseline, re-evaluate the final
 proposal and overlap, construct the proposal, obtain natural user validation, revalidate the authoritative
@@ -556,7 +643,7 @@ ordering and no timestamp, random value, or environment value.
 
 If pre-write revalidation discovers a new overlap, name the overlapping Control and return to one user
 decision. The previous creation confirmation is no longer active; if the proposal changes, re-evaluate
-the staged safeguard and classification evidence, present the resulting complete proposal again, and obtain
+the staged safeguard evidence, present the resulting complete proposal again, and obtain
 renewed acceptance before persistence.
 
 Each accepted new Control is one Add MINOR increment. Increment the baseline exactly once per confirmed action: Add/New is MINOR, Update is PATCH, and
@@ -568,15 +655,14 @@ version. A declined or failed report names the reason and the applicable non-wri
 
 - Retained Control records follow `.highway/library/templates/output/control-record.md`.
 - Readiness and mutation outputs preserve their declared contracts.
-- Safeguard meaning, enforceability, and Control-versus-NFR classification are the current discovery dimensions.
+- Recommendation generation and proposal development remain grounded in accepted context and safeguard meaning.
 - Recommendations are grounded primarily in accepted Profile and Objective evidence.
 - Follow-ups are direct and tied to the stated safeguard.
 - Setup and configure continue until explicit finish.
 - Add and new remain single-Control operations.
 - Duplicate and overlap handling, permanent identifiers, catalog allocation, deterministic output, and atomic persistence remain intact.
 - Reuse writes no record, relationship, identifier, or version.
-- Identifier non-reuse is mandatory; allocated identifiers are never reused. The persistence rule is
-  identifier non-reuse.
+- Identifier non-reuse is mandatory; allocated identifiers are never reused.
 - Control capture has no NFR side effect, and independently managed NFRs remain outside Control capture.
 - There is no post-write persistence verification.
 - Generic Experience Standard and Constitution requirements are not restated.
@@ -586,7 +672,7 @@ version. A declined or failed report names the reason and the applicable non-wri
 - A malformed Control record, catalog, or allocation state is Blocked and is not mutated.
 - An unresolved Control target for update or remove stops and identifies the target.
 - Destructive Control removal or reset follows the Highway Experience Standard's destructive-confirmation behavior.
-- An unresolved Control-versus-NFR classification asks the bounded classification question without silently choosing an owner.
+- An unresolved safeguard ambiguity asks a bounded question without silently changing the owner.
 
 ## Example
 
