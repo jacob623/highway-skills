@@ -63,6 +63,25 @@ for text in \
 	require_text "$SKILL" "$text"
 done
 
+for text in \
+	"### Objective-Informed Recommendations" \
+	"Every accepted Objective should be evaluated" \
+	"Objectives do not create Controls" \
+	"Objectives do not transfer ownership" \
+	"Objective influence is recommendation-oriented" \
+	"### Recommendation Exploration" \
+	"Queue processing begins only when:" \
+	"Recommendation exhaustion occurs when:" \
+	"Selecting recommendations expands the active queue." \
+	"Selection does not end recommendation exploration." \
+	"Recommendations currently under evaluation are not queue members." \
+	"Only queued recommendations are eligible for queue processing." \
+	"Once queue processing begins, recommendation exploration is closed." \
+	"Creation Workflow follows the Recommendation Exploration contract" \
+	"Collection Result: Continue does not require queue processing"; do
+	require_text "$SKILL" "$text"
+done
+
 for retired_text in \
 	"Selected recommendations are captured directly" \
 	"capture selected recommendations directly"; do
