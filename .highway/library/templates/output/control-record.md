@@ -43,5 +43,5 @@ certification, compliance, or organizational policy. The template governs the pr
 of the record structure, not the meaning or quality of those values.
 
 The `nfrs` field is an identifier-only relationship list. Direct Control creation starts empty;
-accepted Control-derived NFRs may append immutable `NFRXXXXXX` identifiers without changing this
-record format.
+accepted NFR relationships may append immutable `NFRXXXXXX` identifiers without changing this record
+format.

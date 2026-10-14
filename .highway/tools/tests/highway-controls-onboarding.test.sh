@@ -36,8 +36,19 @@ for text in \
 	"Title" \
 	"Statement" \
 	"Why it matters" \
-	"Would you like to accept this Control?" \
-	"Selected recommendations are captured directly" \
+	"Acceptance Reassurance" \
+	"Response Support Text" \
+	"Interpretation Confidence" \
+	"Recommendation Development" \
+	"Control Coverage Areas" \
+	"Control Recommendation Presentation" \
+	"Control Development Lifecycle" \
+	"Control Queue and Acceptance Boundaries" \
+	"Selected recommendations enter the active development queue" \
+	"never captured directly" \
+	"context-derived recommendations first" \
+	"coverage-aware synthesis" \
+	"explicitly accepted" \
 	"immediately" \
 	"authoritative baseline" \
 	"duplicate" \
@@ -45,12 +56,20 @@ for text in \
 	"Revalidate" \
 	"user-override" \
 	"Reuse writes no record" \
-	"deterministic initial" \
-	"candidate derivation" \
-	"NFR owner" \
+	"Control capture has no NFR side effect" \
+	"independently managed NFRs" \
 	"## Recommendation Grounding" \
 	"Ask for missing information, not missing phrasing"; do
 	require_text "$SKILL" "$text"
+done
+
+for retired_text in \
+	"Selected recommendations are captured directly" \
+	"capture selected recommendations directly"; do
+	if grep -Fq "$retired_text" "$SKILL"; then
+		echo "FAIL: proposal-first Controls contract still permits direct recommendation capture: $retired_text"
+		fail=1
+	fi
 done
 
 for retired_text in \

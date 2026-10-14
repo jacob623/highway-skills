@@ -29,21 +29,16 @@ expect_state controls missing '`Missing`'
 expect_state controls blocked '`Blocked`'
 expect_state controls complete '`Complete`'
 expect_state nfrs blocked '`Blocked`'
-expect_state nfrs not_applicable '`Not Applicable`'
-expect_state nfrs in_progress '`In Progress`'
+expect_state nfrs missing '`Missing`'
 expect_state nfrs complete '`Complete`'
 
 nfr_file="$HIGHWAY_ROOT/skills/highway-nfrs/SKILL.md"
-for rule in 'zero candidates' 'no accepted NFRs' 'unavailable' 'malformed' 'inconsistent'; do
+for rule in 'no accepted NFRs' 'unavailable' 'malformed' 'inconsistent'; do
 	if ! grep -Fqi "$rule" "$nfr_file"; then
 		echo "FAIL: NFR readiness rule '$rule' is not documented"
 		fail=1
 	fi
 done
-if grep -Eq 'NFR[^[:alnum:]]+`?Missing`?|`Missing`[^[:alnum:]]+NFR' "$nfr_file"; then
-	echo "FAIL: NFR owner state matrix exposes Missing"
-	fail=1
-fi
 
 for owner in profile objectives controls nfrs; do
 	file="$HIGHWAY_ROOT/skills/highway-$owner/SKILL.md"
@@ -52,7 +47,7 @@ for owner in profile objectives controls nfrs; do
 		profile) grep -Fq 'not_discussed' "$file" ;;
 		objectives) grep -Fq 'next_id' "$file" ;;
 		controls) grep -Fq 'valid Control' "$file" ;;
-		nfrs) grep -Fq 'In Progress' "$file" ;;
+		nfrs) grep -Fq 'Missing' "$file" ;;
 	esac
 	if [[ $? -ne 0 ]]; then
 		echo "FAIL: $owner readiness state evidence missing"

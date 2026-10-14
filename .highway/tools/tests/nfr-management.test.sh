@@ -47,9 +47,9 @@ for required in \
 	"atomic" \
 	"destructive safeguards" \
 	"User-visible interaction follows the Highway Experience Standard." \
-	"candidate state" \
+	"independently managed NFRs" \
 	"Direct capture skips the inferred-content review; it does not bypass NFR validation, duplicate handling, identifier allocation, relationship handling, or atomic persistence." \
-	"authoritative persisted NFR-owned recovery state"; do
+	"Readiness is independent of Control collection"; do
 	require_text "$SKILL" "$required"
 done
 
@@ -63,7 +63,6 @@ for dependency in \
 	"library/governance/nfrs.md" \
 	".highway/library/templates/output/nfr-record.md" \
 	".highway/library/templates/output/nfr-catalog.md" \
-	".highway/catalog/nfr-candidate-state.md" \
 	".highway/governance/experience-standard.md" \
 	".highway/library/knowledge/highway-identity.md" \
 	".highway/library/knowledge/highway-vision.md" \
@@ -85,10 +84,6 @@ for obsolete in "Feature 094" "Security Gate" "Maintainability Gate" "persistenc
 	fi
 done
 
-for candidate_field in "Originating Control ID" "Generation Attempt" "Candidate Entries" "Review Status"; do
-	require_text "$HIGHWAY_ROOT/catalog/nfr-candidate-state.md" "$candidate_field"
-done
-
 require_text "$SKILL" "**Here's what I've captured as your NFR:**"
 require_text "$SKILL" "**Title:**  "
 require_text "$SKILL" "**Statement:**  "
@@ -98,8 +93,8 @@ if grep -Fq "The schema defines \`Generation Attempt\`, \`Candidate Entries\`, a
 	echo "FAIL: NFR skill duplicates candidate-state schema authority"
 	fail=1
 fi
-if grep -Fq "Created Control IDs" "$HIGHWAY_ROOT/catalog/nfr-candidate-state.md"; then
-	echo "FAIL: candidate state retains obsolete Created Control IDs terminology"
+if [[ -e "$HIGHWAY_ROOT/catalog/nfr-candidate-state.md" ]]; then
+	echo "FAIL: obsolete NFR candidate-state artifact still exists"
 	fail=1
 fi
 

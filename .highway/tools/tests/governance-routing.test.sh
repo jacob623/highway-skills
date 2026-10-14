@@ -34,8 +34,8 @@ require_text "$CONTROL_SKILL" "This skill MUST NOT refuse a Control the user sti
 # Feature 094 onboarding aliases and review boundaries stay owned by their canonical skills.
 require_text "$CONTROL_SKILL" '`setup` and `configure` are aliases'
 require_text "$CONTROL_SKILL" "materially interpreted user-authored proposal"
-require_text "$CONTROL_SKILL" "Selected recommendations are captured directly"
-require_text "$NFR_SKILL" "accept, modify, replace, reject, or skip"
+require_text "$CONTROL_SKILL" "Selected recommendations enter the active development queue"
+require_text "$NFR_SKILL" "Explicitly selected recommendations"
 
 # Feature 078 keeps review output contracts in their canonical owner sections.
 require_text "$CONTROL_SKILL" "### Control Review Output Contract"

@@ -48,7 +48,7 @@ for proposal_token in \
 	'Title:' \
 	'Statement:' \
 	'Why it matters:' \
-	'Would you like to accept this Control?'; do
+	'Acceptance Reassurance'; do
 	if ! grep -Fq "$proposal_token" "$CONTROL_SKILL"; then
 		echo "FAIL: Controls proposal framing missing '$proposal_token'"
 		fail=1
@@ -275,7 +275,7 @@ for behavior_token in "readiness" "relationship" "version" "transaction"; do
 	require_text "$CONTROL_SKILL" "$behavior_token"
 	require_text "$NFR_SKILL" "$behavior_token"
 done
-for control_behavior in "catalog" "derivation" "No timestamp" "unchanged baseline" "identifier" "allocation" "transaction" "readiness" "Control-Derived NFR Candidates"; do
+for control_behavior in "catalog" "recommendation" "No timestamp" "unchanged baseline" "identifier" "allocation" "transaction" "readiness" "Control Development Lifecycle"; do
 	require_text "$CONTROL_SKILL" "$control_behavior"
 done
 for behavior_token in "elimination" "filter" "scor" "recommend" "traceab" "determin"; do

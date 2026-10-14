@@ -48,13 +48,9 @@ for readiness_owner in profile objectives controls; do
 done
 
 nfr_file="$HIGHWAY_ROOT/skills/highway-nfrs/SKILL.md"
-for readiness_status in Complete Blocked 'In Progress' 'Not Applicable'; do
+for readiness_status in Complete Missing Blocked; do
 	expect_text "$nfr_file" "$readiness_status"
 done
-if grep -Eq 'NFR[^[:alnum:]]+`?Missing`?|`Missing`[^[:alnum:]]+NFR' "$nfr_file"; then
-	echo "FAIL: NFR readiness contract exposes Missing"
-	fail=1
-fi
 
 if [[ $fail -ne 0 ]]; then
 	exit 1

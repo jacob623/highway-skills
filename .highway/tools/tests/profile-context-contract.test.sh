@@ -13,8 +13,8 @@ require() { grep -Fq -- "$2" "$1" || { echo "FAIL: $1 missing '$2'"; fail=1; }; 
 for text in \
 	'Profile-owned `Blocked`' \
 	'Action Status: Blocked' \
-	'other unavailable optional context is excluded' \
-	'complete direct obligation' \
+	'Other unavailable optional' \
+	'A complete user-provided safeguard' \
 	'active user input wins'; do
 	require "$CONTROLS" "$text"
 done

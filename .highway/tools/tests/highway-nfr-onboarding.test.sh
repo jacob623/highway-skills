@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Verifies Feature 077 NFR candidate review and readiness contracts.
+# Verifies independent NFR onboarding and readiness contracts.
 set -u
 # Instrument class: mixed (static-document-contract and executed-behavior)
 # Artifact classes: source-document, generated-artifact, disposable-fixture
@@ -22,8 +22,7 @@ require_text() {
 for text in \
 	"setup" \
 	"configure" \
-	"pending Control-derived candidates" \
-	"accept, modify, replace, reject, or skip" \
+	"independently managed NFRs" \
 	"Are there any qualities or operational expectations you'd like future solutions to meet?" \
 	"Collection Result: Continue|Finished" \
 	"Action Status: Succeeded|Declined|Aborted|Blocked" \
@@ -33,21 +32,16 @@ for text in \
 	"Would you like to accept this NFR?" \
 	"Direct capture skips the inferred-content review" \
 	"Explicitly selected recommendations" \
-	"pending Control-derived candidates" \
 	"direct capture" \
 	"controls: []" \
-	"In Progress" \
-	"Not Applicable" \
+	"Missing" \
 	"Blocked"; do
 	require_text "$SKILL" "$text"
 done
 for text in \
-	"candidate state" \
-	"exactly once" \
-	"Collection Result: Finished" \
-	"zero candidates" \
-	"non-empty reason" \
-	"no partial NFR relationship"; do
+	"Readiness is independent of Control collection" \
+	"without requiring Control-originated state" \
+	"Collection Result: Finished"; do
 	require_text "$SKILL" "$text"
 done
 
