@@ -191,34 +191,30 @@ coverage area, or internal coverage evaluation.
 
 ### Recommendation Exploration
 
-Recommendation exploration, queue construction, and queue processing are separate phases.
+Recommendation Exploration, Queue Construction, and review of selected Controls are separate phases.
 
 ```text
 Recommendation Exploration
 ↓
 Queue Construction
 ↓
-Queue Processing
+Review of selected Controls
 ```
 
-Queue processing begins only when:
+Review of selected Controls begins only when:
 
 - recommendation exploration is exhausted; or
-- the user explicitly requests queue processing.
+- the person explicitly requests review of the selected Controls.
 
-Examples of explicit queue-processing requests include:
+Examples of explicit review requests include:
 
 ```text
-Process the queue.
+Review the selected Controls.
 
-Let's start with these.
-
-Review the queue.
-
-Capture the queue.
+Let's review these Controls.
 ```
 
-Recommendation selection alone does not begin queue processing.
+Recommendation selection alone does not begin review.
 
 Selecting recommendations continues recommendation exploration and queue construction.
 
@@ -243,9 +239,9 @@ Recommendation exploration ends when:
 
 - recommendation exhaustion occurs;
 - the user provides their own Control;
-- the user explicitly requests queue processing.
+- the person explicitly requests review of the selected Controls.
 
-A user-provided Control follows the normal proposal and acceptance path. It does not silently process the queue.
+A user-provided Control follows the normal proposal and acceptance path. It does not silently review the selected Controls.
 
 Recommendations currently under evaluation are not queue members.
 
@@ -253,13 +249,13 @@ Queued recommendations are recommendations the person has selected.
 
 Queued recommendations remain
 unreviewed Working Ideas until
-queue processing begins.
+review begins.
 
-Only queued recommendations are eligible for queue processing.
+Only selected recommendations are eligible for review.
 
-Once queue processing begins, recommendation exploration is closed.
+Once review begins, recommendation exploration is closed.
 
-Do not return to recommendation generation until queue processing is complete.
+Do not return to recommendation generation until review of the selected Controls is complete.
 
 #### Illustrative Recommendation Exploration Example
 
@@ -280,7 +276,7 @@ to the active Control queue.
 
 Recommendation exploration remains active.
 
-Queue processing has not started.
+Review of the selected Controls has not started.
 
 Additional Recommendations:
 
@@ -295,7 +291,7 @@ The queue now contains six recommendations.
 
 Recommendation exploration remains active.
 
-Queue processing has not started.
+Review of the selected Controls has not started.
 
 ### Additional Suggestions
 
@@ -679,80 +675,23 @@ same bytes must remain before and after the response.
 
 ## Creation Workflow
 
-For `setup`, `configure`, `add`, and `new`, begin with concise direct-invocation context when Setup has
-not introduced the purpose. Use this opening only when no Control evidence was supplied and no useful
-grounded recommendation is available:
+For `setup` and `configure`, Creation Workflow orchestrates Recommendation Presentation,
+Recommendation Exploration, review of selected Controls, the Control Development Lifecycle,
+continuation, and explicit finish. It uses the canonical no-recommendation question when useful
+grounded recommendations cannot be supported and does not manufacture a recommendation.
 
 **What concerns should future technology decisions take into account?**
 
 **If you're not sure, just say "I don't know," and we'll work through it together.**
 
-When accepted context supports useful recommendations, present recommendations. When accepted context
-cannot support useful recommendations, begin exploratory discussion. Ask for missing information, not missing phrasing.
+Recommendation selection continues queue construction. Recommendation exploration may continue across
+multiple recommendation sets before review begins. Collection Result: Continue does not require review
+to have started.
 
-Evaluate all active evidence supporting the proposed safeguard. Concern, Condition, and Obligation remain
-internal reasoning concepts and are not required conversation stages. When accepted evidence supports a
-responsible Control proposal, hand off to the Control Development Lifecycle. Otherwise resolve the most
-consequential remaining uncertainty.
-
-Control meaning is an enforceable, auditable, or checkable safeguard. The retained record uses the
-Control template's title, statement, rationale, and identifier-only `nfrs` relationships. Do not ask
-why a Control is meaningful or important. Rationale is synthesized from accepted evidence.
-
-Process supplied `/highway-controls add` evidence before choosing a question. Evaluate whether the
-evidence supports a responsible proposal, and select exactly one next action:
-
-1. If a responsible proposal is supported, synthesize Rationale and present the Control review.
-2. Otherwise, resolve the most consequential remaining uncertainty with one bounded question.
-
-Accept ordinary business language, uncertainty, activity descriptions, natural correction, replacement,
-rejection, cancellation, abandonment, and multiple dimensions in one answer. When multiple meaningful
-safeguards are present without explicit grouping, ask whether to represent them together or separately.
-Preserve explicitly grouped safeguards and retain explicitly separate safeguards in user-provided order
-for sequential processing. `I don't know` starts guided discovery and does not manufacture a recommendation.
-Identity, Highway Vision, Highway Platform Objectives, Profile, and accepted Business Objectives remain
-framing or accepted context sources and are not organizational facts. Existing Controls are used for
-duplicate and overlap detection. If accepted context cannot support a meaningful suggestion, ask
-`**What concerns should future technology decisions take into account?**` and do not manufacture a
-recommendation.
-
-Selecting several recommendations creates an active Control queue in the selected order. Selection
-accepts the recommendation itself but does not constitute User Acceptance of the Control or capture.
-When multiple recommendations are selected, process them sequentially through the Control Development
-Lifecycle only after Recommendation Exploration ends under its queue-processing contract. If evidence
-is insufficient for Control development, continue the evidence question path rather than creating a
-parallel lifecycle. The user-authored alternative remains available.
-
-After a correction, re-evaluate staged safeguard evidence and accepted context. Discard interpretations
-that no longer support the revised intent. Re-evaluate before continuing.
-
-When accepted evidence supports a clear enforceable statement, evidence evaluation is complete enough to
-hand off to the Control Development Lifecycle for review. Rationale is synthesized from accepted
-evidence and applicable accepted context without adding unsupported facts.
-Do not ask a separate Rationale question. The transient `user-override` route preserves the exact approved
-Statement without adding a persisted routing field.
-
-Do not expose an unallocated or newly allocated identifier, catalog change, or version in normal
-pre-persistence review. Natural acceptance authorizes non-destructive creation without a second
-confirmation or persistence-confirmation question. Natural correction, replacement, rejection,
-cancellation, abandonment, or interruption keeps the proposal transient and writes nothing.
-
-For setup and configure:
-
-1. Recommendation Exploration
-2. Queue Construction
-3. Recommendation Exhaustion or Explicit Queue Start
-4. Queue Processing
-5. Capture
-6. Completion Evaluation
-
-Creation Workflow follows the Recommendation Exploration contract to determine when queue processing begins.
-
-Recommendation exploration may continue across multiple recommendation sets before queue processing begins.
-
-Collection Result: Continue does not require queue processing to have started.
-
-After each queued Control is captured, continue with the next selected recommendation before asking the collection continuation question. Provide a concise coverage-aware synthesis immediately after capture when useful. A supplied Control follows the normal proposal and acceptance path. Yes without new evidence asks **What other safeguard should future technology decisions follow?** A suggestion request presents grounded recommendations. After recommendations, captured Controls, or a coverage assessment while collection remains active, include Additional Suggestions Reassurance so future recommendation support is explicit. Controls explicitly keep future recommendation support available until the person explicitly finishes collection. An explicit finish ends collection and takes precedence over future suggestion support. Any other reply asks the continuation question again. Readiness becoming Complete does not end setup or configure. Direct add and new capture the selection and do not ask the continuation question.
+Process each selected Control through proposal and acceptance, capture accepted Controls, and continue
+until explicit finish. For `add` or `new`, develop and capture one accepted Control, then terminate. A
+user-provided Control follows the same proposal, acceptance, capture, and relationship validation rules
+as a selected recommendation.
 
 ## Update workflow
 

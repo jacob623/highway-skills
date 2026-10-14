@@ -61,17 +61,14 @@ for phrase in \
 done
 
 for phrase in \
-	"Business Objective is what the organization wants to accomplish." \
-	"Evaluate each answer across Business Objective, Success, and Highway Relevance" \
-	"After a correction, re-evaluate staged Business Objective, Success, and Highway Relevance evidence" \
-	"When multiple recommendations are selected, process them sequentially through the Objective Development Lifecycle."; do
+	"Process each selected Objective through proposal and acceptance"; do
 	require_text "$SOURCE" "$phrase" "Creation Workflow ownership: $phrase"
 done
 
 for phrase in \
 	"Prefer a grounded interpretation that can be corrected" \
 	"Recommendations are grounded in accepted Profile evidence." \
-	"The user-authored alternative remains available." \
+	"The user-authored path remains available and" \
 	"The Objective should remain the primary conversational anchor."; do
 	require_text "$SOURCE" "$phrase" "focused owner or example: $phrase"
 done
@@ -109,8 +106,8 @@ for adapter in \
 	fi
 done
 
-require_text "$SOURCE" "## Statement" "Objective statement record contract preserved"
-require_text "$SOURCE" "## Success Measures" "Success Measures record contract preserved"
+require_text "$SOURCE" "Objective statement;" "Objective statement record contract preserved"
+require_text "$SOURCE" "proposed Success Measures;" "Success Measures record contract preserved"
 require_text "$SOURCE" "successful atomic persistence" "atomic persistence contract preserved"
 require_text "$SOURCE" "library/objectives/" "user-owned Objective path preserved"
 require_text "$SOURCE" "Repository Context Participating Skill" "Repository Context declaration preserved"

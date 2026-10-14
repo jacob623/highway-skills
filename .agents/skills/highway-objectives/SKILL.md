@@ -271,34 +271,30 @@ Recommendation source is internal recommendation logic only.
 
 ### Recommendation Exploration
 
-Recommendation exploration, queue construction, and queue processing are separate phases.
+Recommendation Exploration, Queue Construction, and review of selected Objectives are separate phases.
 
 ```text
 Recommendation Exploration
 ↓
 Queue Construction
 ↓
-Queue Processing
+Review of selected Objectives
 ```
 
-Queue processing begins only when:
+Review of selected Objectives begins only when:
 
 - recommendation exploration is exhausted; or
-- the user explicitly requests queue processing.
+- the person explicitly requests review of the selected Objectives.
 
-Examples of explicit queue-processing requests include:
+Examples of explicit review requests include:
 
 ```text
-Process the queue.
+Review the selected Objectives.
 
-Let's start with these.
-
-Review the queue.
-
-Capture the queue.
+Let's review these Objectives.
 ```
 
-Recommendation selection alone does not begin queue processing.
+Recommendation selection alone does not begin review.
 
 Selecting recommendations continues recommendation exploration and queue construction.
 
@@ -323,9 +319,9 @@ Recommendation exploration ends when:
 
 - recommendation exhaustion occurs;
 - the user provides their own Objective;
-- the user explicitly requests queue processing.
+- the person explicitly requests review of the selected Objectives.
 
-A user-provided Objective follows the normal proposal and acceptance path. It does not silently process the queue.
+A user-provided Objective follows the normal proposal and acceptance path. It does not silently review the selected Objectives.
 
 Recommendations currently under evaluation are not queue members.
 
@@ -333,13 +329,13 @@ Queued recommendations are recommendations the person has selected.
 
 Queued recommendations remain
 unreviewed Working Ideas until
-queue processing begins.
+review begins.
 
-Only queued recommendations are eligible for queue processing.
+Only selected recommendations are eligible for review.
 
-Once queue processing begins, recommendation exploration is closed.
+Once review begins, recommendation exploration is closed.
 
-Do not return to recommendation generation until queue processing is complete.
+Do not return to recommendation generation until review of the selected Objectives is complete.
 
 #### Illustrative Recommendation Exploration Example
 
@@ -360,7 +356,7 @@ to the active Objective queue.
 
 Recommendation exploration remains active.
 
-Queue processing has not started.
+Review of the selected Objectives has not started.
 
 Additional Recommendations:
 
@@ -375,7 +371,7 @@ The queue now contains six recommendations.
 
 Recommendation exploration remains active.
 
-Queue processing has not started.
+Review of the selected Objectives has not started.
 
 ### Additional Suggestions
 
@@ -747,76 +743,23 @@ must remain before and after the response.
 
 ## Creation Workflow
 
-For `setup`, `configure`, `add`, and `new`, begin with concise direct-invocation context when Setup
-has not introduced the purpose. Use this opening only when no Objective evidence was supplied and no useful grounded recommendation is available:
+For `setup` and `configure`, Creation Workflow orchestrates Recommendation Presentation,
+Recommendation Exploration, review of selected Objectives, the Objective Development Lifecycle,
+continuation, and explicit finish. It uses the canonical no-recommendation question when useful
+grounded recommendations cannot be supported and does not manufacture a recommendation.
 
 **What's an important outcome you'd like to achieve?**
 
 **If you're not sure, just say "I don't know," and we'll work through it together.**
 
-When Success evidence is missing, ask **How would you measure success in [stated objective]?** When Highway Relevance is missing and an Organization Name has been accepted, ask **What role should technology play in helping [Organization Name] achieve this objective?** When Organization Name is absent and a Repository Name has been accepted, use that name where it reads naturally. When neither name has been accepted, ask the question without an inserted name. Evaluate each answer across Business Objective, Success, and Highway Relevance before asking another question.
+Recommendation selection continues queue construction. Recommendation exploration may continue across
+multiple recommendation sets before review begins. Collection Result: Continue does not require review
+to have started.
 
-Business Objective is what the organization wants to accomplish. Success is how the organization will know it succeeded. Highway Relevance is the context needed to connect the Objective to technology, governance, architecture, implementation, automation, or operations. Highway Relevance is not stored. The retained record uses ## Statement, ## Success Measures, and ## Rationale. Do not ask why an Objective is meaningful or important. Skip a Highway Relevance question when accepted Profile evidence and the active Objective evidence already establish useful downstream relevance.
-
-Process supplied `/highway-objectives add` evidence before choosing a question. Evaluate all active
-evidence across Business Objective, Success, and Highway Relevance, then select exactly one next action in this
-order:
-
-1. If Business Objective is unresolved, ask one conversational question about what the organization wants to accomplish.
-2. Otherwise, if Success is unresolved, ask one Success question.
-3. Otherwise, if unresolved Highway Relevance would improve downstream Highway use, ask one Highway Relevance question.
-4. Otherwise, synthesize Rationale and present the Objective review.
-
-Accept ordinary business language, uncertainty, activity descriptions, natural correction,
-replacement, rejection, cancellation, abandonment, and multiple dimensions in one answer. When
-multiple meaningful outcomes are present without explicit grouping, ask whether to represent them
-together or separately. Preserve explicitly grouped outcomes and retain explicitly separate outcomes
-in user-provided order for sequential processing. `I don't know` starts guided discovery and does not
-manufacture a recommendation. Prefer the accepted Organization Name. Identity, Highway Vision, and
-Highway Platform Objectives stay framing sources and are not organizational facts. Existing Objectives
-are used for duplicate and overlap detection. Explanation requests, comparisons, and requests for
-more information are not adoption. If Profile evidence cannot support a meaningful suggestion, ask
-`**What's an important outcome you'd like to achieve?**` and do not manufacture a recommendation.
-
-Selecting several recommendations creates an active Objective queue in the selected order. Selection
-accepts the recommendation itself but does not constitute User Acceptance of the Objective or capture.
-When multiple recommendations are selected, process them sequentially through the Objective Development Lifecycle. Queue processing begins only after Recommendation Exploration ends under its queue-processing contract.
-If evidence is insufficient for Objective development, continue the evidence question path rather than
-creating a parallel lifecycle. The user-authored alternative remains available.
-
-After a correction, re-evaluate staged Business Objective, Success, and Highway Relevance evidence,
-discard staged interpretations that no longer support the revised intent, and re-evaluate the staged
-evidence before continuing.
-
-When Business Objective evidence supports a Statement and Success evidence supports at least one Success Measure, evidence evaluation is complete enough to hand off to the Objective Development Lifecycle for review. Business Objective and Success are sufficient for review. Ask one Highway Relevance question only when unresolved information would improve downstream Highway use. Otherwise, hand off the accepted evidence and let the lifecycle synthesize the proposal. Highway Relevance does not independently block Objective creation.
-
-Rationale is synthesized from accepted evidence. Specifically, it uses accepted Business Objective,
-Success, Highway Relevance, and applicable accepted Profile evidence without adding unsupported facts.
-Highway Identity, Highway Vision, and Highway Platform Objectives are not organizational facts. Use a
-concise rationale when that is all accepted evidence supports; do not ask a separate Rationale question.
-Why it matters is not a fourth discovery dimension.
-
-Do not expose an unallocated or newly allocated identifier, catalog change, or version in normal
-pre-persistence review. Natural acceptance authorizes non-destructive creation without a second
-confirmation or persistence-confirmation question. Natural correction, replacement, rejection, cancellation,
-abandonment, or interruption keeps the proposal transient and writes nothing.
-
-For setup and configure:
-
-1. Recommendation Exploration
-2. Queue Construction
-3. Recommendation Exhaustion or Explicit Queue Start
-4. Queue Processing
-5. Capture
-6. Completion Evaluation
-
-Creation Workflow follows the Recommendation Exploration contract to determine when queue processing begins.
-
-Recommendation exploration may continue across multiple recommendation sets before queue processing begins.
-
-Collection Result: Continue does not require queue processing to have started.
-
-After each queued Objective is captured, continue with the next selected recommendation before asking the collection continuation question. A supplied Objective follows the normal proposal and acceptance path. Yes without an Objective asks **What's another important outcome you'd like to achieve?** A suggestion request presents grounded recommendations. After recommendations, captured Objectives, or a portfolio assessment while collection remains active, include Additional Suggestions Reassurance so future recommendation support is explicit. Objectives explicitly keep future recommendation support available until the person explicitly finishes collection. An explicit finish ends collection and takes precedence over future suggestion support. Any other reply asks the continuation question again. Readiness becoming Complete does not end setup or configure. Direct add and new capture the selection and do not ask the continuation question.
+Process each selected Objective through proposal and acceptance, capture accepted Objectives, and
+continue until explicit finish. For `add` or `new`, develop and capture one accepted Objective, then
+terminate. A user-provided Objective follows the same proposal, acceptance, capture, and relationship
+validation rules as a selected recommendation.
 
 #### Illustrative Continuation Example
 
