@@ -72,6 +72,39 @@ recommendation, offer a Profile-grounded recommendation before asking an unneces
 
 Recommendations remain Working Ideas until accepted.
 
+### Profile-Informed Recommendations
+
+Accepted Profile evidence is the primary source of Objective recommendations.
+
+Every accepted Profile should be evaluated as a potential source of Objective recommendations.
+
+Profile evidence participates in recommendation generation.
+
+Profile evidence does not create Objectives.
+
+Profile evidence does not transfer ownership.
+
+Profile evidence improves recommendation quality.
+
+Examples:
+
+```text
+Identity:
+Community Craft Studio
+↓
+Expand Curriculum
+
+Vision:
+Broader Educational Reach
+↓
+Build Educational Partnerships
+
+Competitive Path:
+Scale Physical Product Delivery
+↓
+Scale Craft Kit Production
+```
+
 ## Objective Archetypes
 
 Objective recommendations are currently derived primarily from accepted Profile evidence.
@@ -236,6 +269,114 @@ Do not reveal:
 
 Recommendation source is internal recommendation logic only.
 
+### Recommendation Exploration
+
+Recommendation exploration, queue construction, and queue processing are separate phases.
+
+```text
+Recommendation Exploration
+↓
+Queue Construction
+↓
+Queue Processing
+```
+
+Queue processing begins only when:
+
+- recommendation exploration is exhausted; or
+- the user explicitly requests queue processing.
+
+Examples of explicit queue-processing requests include:
+
+```text
+Process the queue.
+
+Let's start with these.
+
+Review the queue.
+
+Capture the queue.
+```
+
+Recommendation selection alone does not begin queue processing.
+
+Selecting recommendations continues recommendation exploration and queue construction.
+
+Recommendation exploration remains active after recommendation selection.
+
+Selecting recommendations expands the active queue.
+
+Selection does not end recommendation exploration.
+
+Recommendation exhaustion occurs when:
+
+- no useful grounded non-duplicate recommendation remains; or
+- remaining recommendations would primarily repeat existing coverage, overlap accepted Objectives, or restate already queued recommendations.
+
+Recommendation exploration continues while:
+
+- useful grounded recommendations remain;
+- the user requests additional suggestions;
+- the user continues selecting recommendations.
+
+Recommendation exploration ends when:
+
+- recommendation exhaustion occurs;
+- the user provides their own Objective;
+- the user explicitly requests queue processing.
+
+A user-provided Objective follows the normal proposal and acceptance path. It does not silently process the queue.
+
+Recommendations currently under evaluation are not queue members.
+
+Queued recommendations are recommendations the person has selected.
+
+Queued recommendations remain
+unreviewed Working Ideas until
+queue processing begins.
+
+Only queued recommendations are eligible for queue processing.
+
+Once queue processing begins, recommendation exploration is closed.
+
+Do not return to recommendation generation until queue processing is complete.
+
+#### Illustrative Recommendation Exploration Example
+
+```text
+Recommendations:
+
+- Expand Curriculum
+- Scale Craft Kit Production
+- Build Educational Partnerships
+- Improve Reporting
+
+User:
+Select all.
+
+Owner:
+The selected recommendations are added
+to the active Objective queue.
+
+Recommendation exploration remains active.
+
+Queue processing has not started.
+
+Additional Recommendations:
+
+- Improve Customer Experience
+- Streamline Operations
+
+User:
+Select both.
+```
+
+The queue now contains six recommendations.
+
+Recommendation exploration remains active.
+
+Queue processing has not started.
+
 ### Additional Suggestions
 
 When a person requests additional suggestions, evaluate both:
@@ -364,6 +505,10 @@ When presenting the Converged Objective proposal:
 Selection does not capture an Objective. Selection identifies which Objective should be developed
 next, and a selected recommendation enters the active Objective queue. Queue membership determines development order only; Queue membership is not Objective capture.
 
+Queue membership does not begin proposal development.
+
+Queue membership does not imply capture.
+
 An Objective is not captured until:
 
 - the Converged Objective proposal defined in the Objective Development Lifecycle has been presented;
@@ -378,8 +523,12 @@ User:
 Capture all four.
 
 Owner:
-The four recommendations become the active Objective queue in the selected order. Selection does
-not capture them, and the queue is processed one item at a time until it is exhausted.
+The four recommendations are added
+to the active Objective queue.
+
+Recommendation exploration remains active.
+
+Queue processing has not started.
 
 ## Interpretation Confidence
 
@@ -442,13 +591,13 @@ discussion step.
 
 #### Illustrative Post-Capture Continuity Examples
 
-Queued transition:
+Queue Transition:
 
 Your accepted Objectives now cover community development and curriculum distribution.
 
 Next we'll develop Scale Craft Kit Production and Fulfillment.
 
-Collection transition:
+Collection Transition:
 
 Your accepted Objectives now cover curriculum distribution, kit fulfillment, and local studio engagement.
 
@@ -456,7 +605,7 @@ If you'd like additional suggestions, just let me know.
 
 Is there another objective you'd like to capture?
 
-Setup transition:
+Setup Transition:
 
 Your accepted Objectives now cover curriculum, production, partnerships, and community development.
 
@@ -631,7 +780,7 @@ more information are not adoption. If Profile evidence cannot support a meaningf
 
 Selecting several recommendations creates an active Objective queue in the selected order. Selection
 accepts the recommendation itself but does not constitute User Acceptance of the Objective or capture.
-When multiple recommendations are selected, process them sequentially through the Objective Development Lifecycle.
+When multiple recommendations are selected, process them sequentially through the Objective Development Lifecycle. Queue processing begins only after Recommendation Exploration ends under its queue-processing contract.
 If evidence is insufficient for Objective development, continue the evidence question path rather than
 creating a parallel lifecycle. The user-authored alternative remains available.
 
@@ -652,7 +801,22 @@ pre-persistence review. Natural acceptance authorizes non-destructive creation w
 confirmation or persistence-confirmation question. Natural correction, replacement, rejection, cancellation,
 abandonment, or interruption keeps the proposal transient and writes nothing.
 
-During setup or configure, after a single captured Objective ask **Is there another objective you'd like to capture?** After each queued Objective is captured, continue with the next selected recommendation before asking the collection continuation question. A supplied Objective starts processing immediately. Yes without an Objective asks **What's another important outcome you'd like to achieve?** A suggestion request presents grounded recommendations. After recommendations, captured Objectives, or a portfolio assessment while collection remains active, include Additional Suggestions Reassurance so future recommendation support is explicit. Objectives explicitly keep future recommendation support available until the person explicitly finishes collection. A person who says they are satisfied may receive a concise current-coverage synthesis, future suggestion availability, and **Is there another objective you'd like to capture?** An explicit finish ends collection and takes precedence over future suggestion support. Any other reply asks the continuation question again. Readiness becoming Complete does not end setup or configure. Direct add and new capture the selection and do not ask the continuation question.
+For setup and configure:
+
+1. Recommendation Exploration
+2. Queue Construction
+3. Recommendation Exhaustion or Explicit Queue Start
+4. Queue Processing
+5. Capture
+6. Completion Evaluation
+
+Creation Workflow follows the Recommendation Exploration contract to determine when queue processing begins.
+
+Recommendation exploration may continue across multiple recommendation sets before queue processing begins.
+
+Collection Result: Continue does not require queue processing to have started.
+
+After each queued Objective is captured, continue with the next selected recommendation before asking the collection continuation question. A supplied Objective follows the normal proposal and acceptance path. Yes without an Objective asks **What's another important outcome you'd like to achieve?** A suggestion request presents grounded recommendations. After recommendations, captured Objectives, or a portfolio assessment while collection remains active, include Additional Suggestions Reassurance so future recommendation support is explicit. Objectives explicitly keep future recommendation support available until the person explicitly finishes collection. An explicit finish ends collection and takes precedence over future suggestion support. Any other reply asks the continuation question again. Readiness becoming Complete does not end setup or configure. Direct add and new capture the selection and do not ask the continuation question.
 
 #### Illustrative Continuation Example
 

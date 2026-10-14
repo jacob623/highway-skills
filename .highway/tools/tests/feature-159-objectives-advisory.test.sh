@@ -56,6 +56,24 @@ for phrase in \
 done
 
 for phrase in \
+	"### Profile-Informed Recommendations" \
+	"Every accepted Profile should be evaluated" \
+	"Profile evidence does not create Objectives" \
+	"Profile evidence does not transfer ownership" \
+	"## Recommendation Exploration" \
+	"Queue processing begins only when:" \
+	"Recommendation exhaustion occurs when:" \
+	"Selecting recommendations expands the active queue." \
+	"Selection does not end recommendation exploration." \
+	"Recommendations currently under evaluation are not queue members." \
+	"Only queued recommendations are eligible for queue processing." \
+	"Once queue processing begins, recommendation exploration is closed." \
+	"Creation Workflow follows the Recommendation Exploration contract" \
+	"Collection Result: Continue does not require queue processing"; do
+	require_text "$SOURCE" "$phrase" "recommendation exploration contract: $phrase"
+done
+
+for phrase in \
 	"active Objective queue" \
 	"selected order" \
 	"Selection accepts the recommendation itself" \
