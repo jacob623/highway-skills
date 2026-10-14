@@ -61,26 +61,24 @@ for phrase in \
 	"Profile evidence does not create Objectives" \
 	"Profile evidence does not transfer ownership" \
 	"## Recommendation Exploration" \
-	"Queue processing begins only when:" \
+	"Review of selected Objectives begins only when:" \
 	"Recommendation exhaustion occurs when:" \
 	"Selecting recommendations expands the active queue." \
 	"Selection does not end recommendation exploration." \
 	"Recommendations currently under evaluation are not queue members." \
-	"Only queued recommendations are eligible for queue processing." \
-	"Once queue processing begins, recommendation exploration is closed." \
-	"Creation Workflow follows the Recommendation Exploration contract" \
-	"Collection Result: Continue does not require queue processing"; do
+	"Only selected recommendations are eligible for review." \
+	"Once review begins, recommendation exploration is closed." \
+	"Creation Workflow orchestrates Recommendation Presentation" \
+	"Collection Result: Continue does not require review"; do
 	require_text "$SOURCE" "$phrase" "recommendation exploration contract: $phrase"
 done
 
 for phrase in \
 	"active Objective queue" \
-	"selected order" \
-	"Selection accepts the recommendation itself" \
-	"does not constitute User Acceptance of the Objective or capture" \
-	"When multiple recommendations are selected, process them sequentially through the Objective Development Lifecycle" \
-	"If evidence is insufficient for Objective development, continue the evidence question path" \
-	"Explanation requests, comparisons, and requests for more information" \
+	"Recommendation selection continues queue construction" \
+	"Process each selected Objective through proposal and acceptance" \
+	"capture accepted Objectives" \
+	"A user-provided Objective follows the same proposal" \
 	"selecting one, several, or all" \
 	"modifying recommendations before adoption" \
 	"stop manufacturing recommendations" \
@@ -106,8 +104,8 @@ done
 
 require_absent "$SOURCE" "Does this objective look right?" "legacy Objective review prompt removed"
 require_absent "$SOURCE" "capture them together" "legacy combined recommendation capture removed"
-require_text "$SOURCE" "## Statement" "retained Objective statement contract preserved"
-require_text "$SOURCE" "## Success Measures" "retained Success Measures contract preserved"
+require_text "$SOURCE" "Objective statement;" "retained Objective statement contract preserved"
+require_text "$SOURCE" "proposed Success Measures;" "retained Success Measures contract preserved"
 require_text "$SOURCE" "successful atomic persistence" "atomic persistence contract preserved"
 require_text "$SOURCE" "library/objectives/" "user-owned Objective path preserved"
 require_text "$SOURCE" "Repository Context Participating Skill" "Repository Context declaration preserved"

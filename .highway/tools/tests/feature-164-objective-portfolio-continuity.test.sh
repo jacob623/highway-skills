@@ -65,9 +65,9 @@ for phrase in \
 done
 
 for phrase in \
-	"After each queued Objective is captured" \
-	"before asking the collection continuation question" \
-	"Readiness becoming Complete does not end setup or configure" \
+	"Process each selected Objective through proposal and acceptance" \
+	"continue until explicit finish" \
+	"Setup and configure continue until explicit finish." \
 	"Existing Objective records" \
 	"successful atomic persistence" \
 	"Repository Context Participating Skill"; do

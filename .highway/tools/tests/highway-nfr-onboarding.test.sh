@@ -46,20 +46,20 @@ for text in \
 	"Control influence is recommendation-oriented, not lifecycle-oriented." \
 	"Control" \
 	"Automatic NFR" \
-	"Selecting recommendations does not begin queue processing." \
+	"Selecting recommendations does not begin review." \
 	"Selection alone does not begin proposal development." \
 	"The queue may continue growing while recommendation exploration remains active." \
-	"Queue processing begins only when:" \
+	"Review of selected NFRs begins only when:" \
 	"Recommendation exhaustion occurs when:" \
 	"Recommendations currently under evaluation are not queue members." \
 	"Queued recommendations are recommendations the person has selected." \
 	"Only queued recommendations are eligible for queue processing." \
 	"Queue processing has not started." \
-	"unreviewed Working Ideas until queue processing begins." \
+	"unreviewed Working Ideas until review begins." \
 	"Recommendation selection continues queue construction." \
-	"Recommendation Exhaustion or Explicit Queue Start" \
+	"Review of selected NFRs" \
 	"Collection Result: Continue does not require" \
-	"queue processing to have started." \
+	"review to have started." \
 	"#### Illustrative Recommendation Presentation Example" \
 	"#### Illustrative Recommendation Exploration Example" \
 	"#### Illustrative Queue Interaction" \
@@ -82,7 +82,7 @@ for text in \
 	"Queue membership is not NFR capture" \
 	"Converged NFR proposal" \
 	"explicitly accepted" \
-	"Explicit queue-processing intent" \
+	"explicit review requests" \
 	"Portfolio assessment is advisory" \
 	"Control context remains recommendation context" \
 	"controls: []" \

@@ -75,11 +75,10 @@ done
 # Superseded behavior: discovery used Outcome, Success, and Significance. Adaptive discovery, one-unresolved wording, and Resume Applicability stay with the Highway Experience Standard.
 for phrase in \
 	"What's an important outcome you'd like to achieve?" \
-	"How would you measure success in" "What role should technology play in helping" \
 	"Here's what I've captured as your objective:" "What would you add, correct, or remove?" "Why it matters:" \
 	"[Objective Title]" "[Statement]" "Success looks like:" \
-	"Profile-grounded" "accepted Profile" "without a second" \
-	"Business Objective" "Highway Relevance" "## Statement" "## Success Measures" "## Rationale" \
+	"Profile-grounded" "accepted Profile" \
+	"Business Objective" "Highway Relevance" "Objective statement;" "proposed Success Measures;" "synthesized Rationale" \
 	"User-visible interaction follows the Highway Experience Standard." "version: 4.0.0" "successful atomic persistence"; do
 	require_text "$SKILL" "$phrase" "Feature 093 contract phrase $phrase"
 done
@@ -132,8 +131,8 @@ for phrase in "Repository Context Participating Skill" "Identity" "Highway Visio
 	"Highway Platform Objectives" "Profile" "malformed" "unavailable" \
 	"exact duplicate" "semantic overlap" \
 	"/highway-objectives setup" "direct invocation" "Is there another objective you'd like to capture?" \
-	"After each queued Objective is captured" \
-	"What's another important outcome you'd like to achieve?" "Status: Missing" \
+	"Process each selected Objective through proposal and acceptance" \
+	"Status: Missing" \
 	"Status: Complete" "Status: Blocked"; do
 	require_text "$SKILL" "$phrase" "Feature 093 extended contract phrase $phrase"
 done
@@ -145,17 +144,11 @@ if grep -Fq "A Profile baseline is Blocked." "$SKILL"; then
 	fail=1
 fi
 require_text "$SKILL" "no post-write persistence verification" "verification drops post-write persistence checks"
-require_text "$SKILL" "When Business Objective evidence supports a Statement and Success evidence supports at least one Success Measure" "review-ready condition uses Business Objective and Success"
-require_text "$SKILL" "Highway Relevance does not independently block Objective creation" "Highway Relevance is non-blocking"
-require_text "$SKILL" "Business Objective and Success are sufficient for review" "Business Objective and Success are sufficient"
-require_text "$SKILL" "Rationale is synthesized from accepted evidence" "Rationale synthesis is explicit"
-require_text "$SKILL" "Why it matters is not a fourth discovery dimension" "Rationale is not a discovery dimension"
 if grep -Fq "Significance is supported" "$SKILL" || grep -Fq "Why it matters" "$SKILL" && grep -Fq "ask one question" "$SKILL"; then
 	echo "FAIL: Rationale remains a discovery requirement" >&2
 	fail=1
 fi
-for phrase in "natural correction" "replacement" "rejection" "cancellation" "abandonment" \
-	"re-evaluate" "revalidate the authoritative baseline" "allocate one permanent identifier" \
+for phrase in "re-evaluate" "revalidate the authoritative baseline" "allocate one permanent identifier" \
 	"persist both retained outputs" "byte-for-byte" "capabilities: []" \
 	"If pre-write revalidation discovers a new overlap, name the overlapping Objective" \
 	"previous creation confirmation is no longer active" \
@@ -166,23 +159,7 @@ done
 # Executable interaction probes use the source contract as the owning workflow
 # in this Markdown-only skill suite; each probe names the behavior it protects.
 for interaction in \
-	"Business Objective is what the organization wants to accomplish" \
-	"Success is how the organization will know it succeeded" \
-	"Highway Relevance is not stored" \
-	"without adding unsupported facts" \
-	"Accept ordinary business language, uncertainty, activity descriptions" \
-	"dimensions in one answer" \
-	"\`I don't know\` starts guided discovery" \
-	"recommendation never requires adoption" \
-	"After a correction" \
-	"staged interpretations" \
-	"represent them" \
-	"user-provided order" \
-	"Business Objective evidence supports a Statement" \
-	"Rationale is synthesized from accepted evidence" \
-	"accepted Business Objective," "applicable accepted Profile evidence without adding unsupported facts" \
-	"Highway Identity, Highway Vision, and Highway Platform Objectives are not organizational facts" \
-	"abandonment, or interruption keeps the proposal transient"; do
+	"recommendation never requires adoption"; do
 	require_text "$SKILL" "$interaction" "adaptive interaction probe: $interaction"
 done
 

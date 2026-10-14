@@ -274,34 +274,30 @@ just let me know.
 
 ## Recommendation Exploration
 
-Recommendation exploration, queue construction, and queue processing are separate phases. **Explicit queue-processing intent** ends exploration.
+Recommendation Exploration, Queue Construction, and review of selected NFRs are separate phases.
 
 ```text
 Recommendation Exploration
 ↓
 Queue Construction
 ↓
-Queue Processing
+Review of selected NFRs
 ```
 
-Queue processing begins only when:
+Review of selected NFRs begins only when:
 
 - recommendation exploration is exhausted; or
-- the user explicitly requests queue processing.
+- the person explicitly requests review of the selected NFRs.
 
-Examples of explicit queue-processing requests include:
+Examples of explicit review requests include:
 
 ```text
-Process the queue.
+Review the selected NFRs.
 
-Let's start with these.
-
-Review the queue.
-
-Capture the queue.
+Let's review these NFRs.
 ```
 
-Recommendation selection alone does not begin queue processing.
+Recommendation selection alone does not begin review.
 
 Recommendation exhaustion occurs when:
 
@@ -314,7 +310,7 @@ Recommendation exploration continues while:
 - the user requests additional suggestions;
 - the user continues selecting recommendations.
 
-Selecting recommendations does not begin queue processing. Selecting recommendations continues
+Selecting recommendations does not begin review. Selecting recommendations continues
 recommendation exploration and queue construction. Recommendation exploration remains active after
 recommendation selection. Selection alone does not begin proposal development. The queue may continue growing while recommendation exploration remains active.
 
@@ -326,9 +322,9 @@ Recommendation exploration ends when:
 
 - recommendation exhaustion occurs;
 - the user provides an NFR;
-- the user explicitly requests queue processing.
+- the person explicitly requests review of the selected NFRs.
 
-A user-provided NFR follows the same proposal and acceptance path; it does not silently process the queue.
+A user-provided NFR follows the same proposal and acceptance path; it does not silently review the selected NFRs.
 
 Recommendations currently under evaluation are not queue members.
 
@@ -463,7 +459,7 @@ The selected recommendations are added
 to the active NFR queue.
 
 The queued recommendations remain
-unreviewed Working Ideas until queue processing begins.
+unreviewed Working Ideas until review begins.
 
 Queue membership does not:
 
@@ -595,29 +591,11 @@ For `view`, `show`, `describe`, or `readiness`, inspect the authoritative NFR ba
 
 ## Creation Workflow
 
-For `setup` and `configure`:
+For `setup` and `configure`, Creation Workflow orchestrates Recommendation Presentation, Recommendation Exploration, review of selected NFRs, the NFR Development Lifecycle, continuation, and explicit finish. It uses the canonical no-recommendation question when useful grounded recommendations cannot be supported and does not manufacture a recommendation.
 
-1. Recommendation Exploration
-2. Queue Construction
-3. Recommendation Exhaustion or Explicit Queue Start
-4. Queue Processing
-5. Capture
-6. Completion Evaluation
+Recommendation selection continues queue construction. Recommendation exploration may continue across multiple recommendation sets before review begins. Collection Result: Continue does not require review to have started.
 
-Recommendation selection continues queue construction.
-
-Creation Workflow follows the
-Recommendation Exploration contract
-to determine when queue processing begins.
-
-Recommendation exploration may continue
-across multiple recommendation sets before
-queue processing begins.
-
-Collection Result: Continue does not require
-queue processing to have started.
-
-Process each queued item through proposal and acceptance, capture accepted NFRs atomically, and continue until explicit finish. For `add` or `new`, develop and capture one accepted NFR, then terminate. A user-provided NFR follows the same proposal, acceptance, capture, and relationship validation rules as a selected recommendation.
+Process each selected NFR through proposal and acceptance, capture accepted NFRs atomically, and continue until explicit finish. For `add` or `new`, develop and capture one accepted NFR, then terminate. A user-provided NFR follows the same proposal, acceptance, capture, and relationship validation rules as a selected recommendation.
 
 ## Update Workflow
 

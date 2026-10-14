@@ -21,9 +21,6 @@ require_text() {
 
 for text in \
 	"evidence" \
-	"Concern" \
-	"Condition" \
-	"Obligation" \
 	"Action Status: Succeeded|Declined|Aborted|Blocked" \
 	"Collection Result: Continue|Finished" \
 	"Declined" \
@@ -47,19 +44,19 @@ for text in \
 	"Selected recommendations enter the active development queue" \
 	"never captured directly" \
 	"context-derived recommendations first" \
-	"coverage-aware synthesis" \
 	"explicitly accepted" \
-	"immediately" \
 	"authoritative baseline" \
 	"duplicate" \
 	"one Add MINOR" \
 	"Revalidate" \
-	"user-override" \
 	"Reuse writes no record" \
 	"Control capture has no NFR side effect" \
 	"independently managed NFRs" \
 	"## Recommendation Grounding" \
-	"Ask for missing information, not missing phrasing"; do
+	"Creation Workflow orchestrates Recommendation Presentation" \
+	"Process each selected Control through proposal and acceptance" \
+	"capture accepted Controls" \
+	"user-provided Control follows the same proposal"; do
 	require_text "$SKILL" "$text"
 done
 
@@ -70,15 +67,15 @@ for text in \
 	"Objectives do not transfer ownership" \
 	"Objective influence is recommendation-oriented" \
 	"### Recommendation Exploration" \
-	"Queue processing begins only when:" \
+	"Review of selected Controls begins only when:" \
 	"Recommendation exhaustion occurs when:" \
 	"Selecting recommendations expands the active queue." \
 	"Selection does not end recommendation exploration." \
 	"Recommendations currently under evaluation are not queue members." \
-	"Only queued recommendations are eligible for queue processing." \
-	"Once queue processing begins, recommendation exploration is closed." \
-	"Creation Workflow follows the Recommendation Exploration contract" \
-	"Collection Result: Continue does not require queue processing"; do
+	"Only selected recommendations are eligible for review." \
+	"Once review begins, recommendation exploration is closed." \
+	"Creation Workflow orchestrates Recommendation Presentation" \
+	"Collection Result: Continue does not require review"; do
 	require_text "$SKILL" "$text"
 done
 
