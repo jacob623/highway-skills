@@ -31,6 +31,73 @@ Do not use it to edit a Control file or catalog by hand.
 
 User-visible interaction follows the Highway Experience Standard.
 
+## Response Support Text
+
+**Validation Question**
+
+**What would you add, correct, or remove?**
+
+A sharper question may replace it when it still invites correction rather than agreement.
+
+**Acceptance Reassurance**
+
+If this is accurate, just say so.
+
+**Discovery Reassurance**
+
+If you're not sure, just say "I don't know," and we'll work through it together.
+
+**Combined Reassurance**
+
+If this is accurate, just say so. If you're not sure, just say "I don't know," and we'll work through it together.
+
+**Recommendation Reassurance**
+
+If none of these fit, feel free to suggest your own safeguard.
+
+**Additional Suggestions Reassurance**
+
+If you'd like additional suggestions, just let me know.
+
+## Interpretation Confidence
+
+Prefer a grounded safeguard interpretation that can be corrected over a missing safeguard interpretation
+that forces the person to create it from scratch. When accepted context supports a useful safeguard,
+recommendation, implication, relationship, overlap, or Working Idea, do not ask a question that merely
+seeks permission to express it.
+
+## Recommendation Development
+
+Recommendations are grounded primarily in accepted Profile, Objectives, Controls, NFRs, repository
+context, and declared external expertise. Recommendations remain Working Ideas until accepted.
+
+When accepted context supports a useful safeguard recommendation, present it before asking an unnecessary
+question. Context-derived recommendations are preferred when accepted evidence supports a specific safeguard.
+
+## Control Coverage Areas
+
+Coverage Areas improve recommendation coverage without establishing policy, obligations, deficiencies,
+readiness requirements, lifecycle stages, or accepted Controls. They do not replace context-grounded
+recommendations and are never user-facing workflow concepts.
+
+The internal Coverage Areas are Identity & Access, Information Protection, Change & Operations, Resilience,
+and Monitoring & Accountability. Generate context-derived recommendations first, evaluate meaningful gaps
+across these areas, and add only useful context-adapted coverage-derived recommendations to the same set.
+Do not ask the user to choose an area or expose area labels.
+
+When additional suggestions are requested, evaluate accepted repository context and the accepted Control
+portfolio for uncovered context, coverage gaps, and meaningful portfolio gaps. Stop when no useful grounded
+non-duplicate recommendation remains.
+
+## Control Recommendation Presentation
+
+Keep the Control as the primary conversational anchor. Present multiple recommendations as visually
+distinct bullets with concise titles and descriptions. Support selecting one, several, or all; modifying
+recommendations; providing a user-authored safeguard; and requesting additional suggestions.
+
+Selection identifies development order only. It does not capture a Control, allocate an identifier, mutate
+the catalog, or establish accepted knowledge.
+
 ## Inputs
 
 Controls consumes these dependencies:
@@ -115,8 +182,9 @@ Materially interpreted user-authored Controls use this review:
 **Would you like to accept this Control?**
 ```
 
-Selected recommendations are captured directly. The review contains no allocated identifier, catalog
-mutation, version, or transaction mechanics.
+Selected recommendations enter the active development queue and are captured only after a Converged Control
+Proposal has been presented, explicitly accepted, and captured by the Control owner. The review contains no
+allocated identifier, catalog mutation, version, or transaction mechanics.
 
 Read-only inspection with no valid Control baseline emits:
 
@@ -179,6 +247,36 @@ and terminates after its mutation result. `new` is not added by this contract. `
 `describe`, and `inspect` are equivalent read-only inspection requests. Update, Remove, and Set retain
 their existing action contracts and do not enter Concern -> Condition -> Obligation discovery.
 
+## Control Development Lifecycle
+
+Every Control follows this lifecycle:
+
+```text
+Recommendation Selected
+or
+User Provided Control
+↓
+Present Converged Control Proposal
+↓
+User Acceptance
+↓
+Capture
+↓
+Next Control
+```
+
+A Converged Control Proposal contains a Title, Statement, and synthesized Rationale. The person may
+approve, correct, replace, or reject it. Discovery is the exception path when accepted context cannot
+support a responsible proposal, consequential ambiguity remains unresolved, or classification cannot be
+resolved responsibly.
+
+## Control Queue and Acceptance Boundaries
+
+Selection places recommendations in an ordered active queue. The queue is processed one item at a time and
+membership determines development order only. A Control is not captured until its complete proposal has
+been presented and accepted and the owner performs capture. Material revision invalidates prior acceptance
+and requires a new correction or acceptance opportunity.
+
 ## Adaptive Control Discovery
 
 `setup` and `configure` are aliases that open multi-Control conversational collection. Direct `add` creates one Control and returns its existing mutation result. `readiness`, inspection, update, remove, and set use their existing action contracts and do not enter discovery.
@@ -186,7 +284,16 @@ their existing action contracts and do not enter Concern -> Condition -> Obligat
 Ask for missing information, not missing phrasing. Concern, Condition, and Obligation are evidence
 categories rather than questions that must each be asked.
 
-For direct `setup`, `configure`, or bare `add` with no usable Control evidence, emit exactly:
+For direct `setup`, `configure`, or bare `add` with no usable Control evidence, begin with recommendation
+support when accepted context can ground a responsible safeguard:
+
+Based on your accepted context, these safeguards appear most relevant:
+
+- [concise safeguard title and description]
+
+If none of these fit, feel free to suggest your own safeguard.
+
+If accepted context cannot support a responsible recommendation, emit exactly:
 
 Controls helps define enforceable safeguards for future technology decisions.
 
@@ -195,8 +302,7 @@ evidence, evaluate it first. A complete direct Obligation skips both the generic
 generic opening. Direct invocation never claims that Setup introduced the purpose and never repeats the
 Setup-owned transition.
 
-After Setup has introduced the Controls purpose, and when no usable active Control evidence exists, Controls
-opens with exactly:
+When discovery is required after Setup has introduced the Controls purpose, Controls opens with exactly:
 
 **What concerns should future technology decisions take into account?**
 
@@ -210,17 +316,19 @@ transition.
 
 Controls evaluates all active evidence before selecting one next action. Concern, Condition, Obligation, classification, suggestions, proposal wording, continuation, and collection provenance are transient interaction state and are not retained or restored. `Resume Applicability: New interaction`.
 
-Apply this ordered discovery model:
+Apply this ordered model:
 
 1. Resolve unclear grouping of multiple obligations with one grouping decision.
 2. Classify clearly NFR-shaped versus Control-shaped intent.
 3. If classification is genuinely ambiguous, ask one bounded classification question.
 4. Evaluate the entire active response across Concern, Condition, and Obligation.
-5. If an Obligation is already Control-ready, present the normal Control proposal.
-6. Otherwise, if Concern is unresolved, ask one Concern question.
-7. Otherwise, if resolving Condition can establish or narrow the Obligation, ask one Condition question.
-8. Otherwise, ask directly for the Obligation.
-9. After classification or refinement guidance, support explicit retention of vague wording as a transient
+5. If accepted context supports a responsible safeguard, present the recommendation and then the normal
+  Converged Control Proposal.
+6. If an Obligation is already Control-ready, present the normal Control proposal.
+7. Otherwise, if Concern is unresolved, ask one Concern question.
+8. Otherwise, if resolving Condition can establish or narrow the Obligation, ask one Condition question.
+9. Otherwise, ask directly for the Obligation.
+10. After classification or refinement guidance, support explicit retention of vague wording as a transient
   user-override route.
 
 A Control-ready Obligation is one the user states, adopts, or reuses that is clear enough to check whether
@@ -271,7 +379,7 @@ When Profile is owner-Blocked, the active Profile-dependent action returns `Acti
 with the owner-provided reason. Other unavailable optional context is excluded. A complete direct obligation is not blocked by absent optional context. Applying context does not create an additional
 question when active evidence already supports the decision.
 
-After a successfully created Control in setup/configure, ask exactly:
+After a captured Control in setup/configure, provide a concise coverage-aware synthesis and ask exactly:
 
 **Are there any other concerns or safeguards you'd like to establish?**
 
@@ -298,7 +406,8 @@ complete proposal.
 
 Controls presents one complete materially interpreted user-authored proposal using the captured-Control
 review above. Natural acceptance authorizes one existing Add transaction. Selected recommendations are
-captured directly. Rejection, cancellation, abandonment, interruption, malformed input, and failed
+never captured directly; they are first developed through the proposal and acceptance boundary. Rejection,
+cancellation, abandonment, interruption, malformed input, and failed
 validation write nothing. A user override preserves the exact approved Statement without adding a
 classification field.
 
@@ -346,16 +455,17 @@ external expertise before context-dependent output.
 
 ### Step 3: Recommend or reuse
 
-For setup/configure/add, reuse existing Controls and offer grounded recommendations when available.
+For setup/configure/add, reuse existing Controls and offer grounded recommendations when available. Generate
+context-derived recommendations first, then supplement meaningful gaps with hidden Coverage Areas.
 
 ### Step 4: Process user-authored evidence
 
-Evaluate Concern, Condition, and Obligation as transient evidence, classify Control versus NFR, and
-ask only for missing information.
+Evaluate Concern, Condition, and Obligation as transient evidence, classify Control versus NFR, and ask only
+for missing information when a responsible proposal cannot be formed.
 
 ### Step 5: Route or capture
 
-Route NFR-shaped evidence to NFRs, capture selected recommendations directly, and review materially
+Route NFR-shaped evidence to NFRs, develop selected recommendations into proposals, and review materially
 interpreted user-authored Controls.
 
 ### Step 6: Revalidate and persist
@@ -387,8 +497,8 @@ Confirm discovery asks for missing information rather than missing phrasing, sto
 evidence supports a Control, preserves Control-versus-NFR classification, and keeps Concern,
 Condition, and Obligation transient. Confirm recommendations use accepted context or declared
 external expertise, do not imply applicability or compliance, preserve Recommendation Grounding only
-when retained recommendation lineage materially influenced the Control, and selected recommendations
-are captured directly.
+when retained recommendation lineage materially influenced the Control, and selection remains distinct
+from proposal acceptance and capture.
 
 Confirm materially interpreted user-authored Controls use the captured-Control review, Rationale is
 synthesized, setup/configure uses the exact continuation wording, explicit finish ends collection,

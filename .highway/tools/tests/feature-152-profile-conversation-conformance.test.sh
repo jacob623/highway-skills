@@ -227,9 +227,9 @@ require_flowed "$PROFILE" 'Profile skill' \
 require_text "$PROFILE" 'Profile skill' \
 	'- Supported cross-domain implications are preserved for the appropriate unresolved domain.'
 
-# --- Scope guard: highway-profile is the only skill this feature modifies (FR-029a) ---
+# --- Scope guard: Profile's shared wording must not leak into unrelated skills ---
 
-for other in highway-controls highway-nfrs highway-new; do
+for other in highway-nfrs highway-new; do
 	require_absent "$HIGHWAY_ROOT/skills/$other/SKILL.md" "$other skill" \
 		'**What would you add, correct, or remove?**'
 done
