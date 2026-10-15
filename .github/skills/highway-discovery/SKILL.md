@@ -224,6 +224,65 @@ reuse visibility, architecture adoption visibility, and traceability. Excluded a
 creation, scoring, confidence, rationale, ranking except tie-breaking, implementation approval or
 authorization, architecture approval, governance approval, and ADR ownership.
 
+## Option Review and Implementation Exploration
+
+After presenting Candidate Solution Options, the Comparison Matrix, the Recommendation, and the
+Recommendation Rationale, Discovery invites the person to understand the available options before
+making an architectural decision. The recommendation is advisory. The person evaluates options during Discovery; ADR owns explicit option selection, decision rationale, consequences, and architecture commitment.
+
+Supported read-only interactions include:
+
+```text
+Describe `OPT######`
+Review `OPT######`
+Compare `OPT######` and `OPT######`
+Show implementation examples for `OPT######`
+Show implementation costs for `OPT######`
+```
+
+Equivalent natural-language requests are valid only when they resolve to an unambiguous option
+identifier in the active Discovery. `Describe` and `Review` return one Option Review with these
+sections in order: Summary, Request Alignment, Objective Alignment, Control Alignment, NFR Alignment, Benefits, Risks, Assumptions, and Dependencies. Alignment uses accepted Request,
+Objective, Control, and NFR evidence; unavailable evidence is labeled as unavailable or `None` and
+is never inferred.
+
+`Compare` requires exactly two distinct options from the same Discovery. It presents advisory
+comparison context without recalculating or changing candidate scores, recommendation ranking, or
+recommendation tie-breaking. Duplicate, malformed, unavailable, and cross-Discovery references
+abort before any mutation.
+
+When evidence exists, Discovery may present optional `Example Reference Implementations`, an
+`Example Realization Matrix`, and `Example Cost Considerations`. Examples remain advisory and do
+not represent architecture decisions, implementations, commitments, procurement, or acceptance.
+Costs use `Low`, `Medium`, `High`, a bounded range, or `Unknown` when evidence is unavailable,
+incomplete, conflicting, or not reliable enough to state. Examples and costs are informational:
+each example and cost consideration does not change candidate scores, does not change recommendation ranking, does not change recommendation tie-breaking, and does not change ADR selection.
+
+All review, comparison, implementation-example, and cost interactions are read-only. Exploration guarantees no identifier is allocated, no ADR is created, no ADR is modified, and no Discovery or catalog bytes change.
+Implementation evidence may be referenced in Recommendation Rationale when it materially improves
+explainability, but the recommendation remains advisory.
+
+Completion guidance includes:
+
+```text
+Recommended Option:
+OPT######
+
+Why:
+<advisory rationale>
+
+Before continuing to ADR you may wish to:
+
+- Review an option
+- Compare options
+- Review implementation examples
+- Review implementation costs
+```
+
+The guidance encourages evaluation without creating a decision state. Discovery remains responsible
+for candidate generation, comparison, scoring, recommendation, option review, implementation
+example exploration, and cost exploration. ADR remains responsible for selection and commitment.
+
 ## Reference Implementation Traceability
 
 A Reference Implementation match indicates only that a related implementation artifact exists. A

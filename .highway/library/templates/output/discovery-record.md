@@ -136,6 +136,30 @@ Rationale: <deterministic advisory rationale>
 
 Reference Architecture Matches: <RA identifiers, or `None`>
 
+## Example Reference Implementations
+
+<optional advisory examples for Candidate Solution Options, or `None`>
+
+Implementation A: <product, platform, service, vendor, integration, or combination>
+Purpose: <realization purpose>
+Key Capabilities: <relevant capabilities>
+Advisory Status: Example only; not an architecture decision, commitment, procurement approval, or implementation authorization.
+
+## Example Realization Matrix
+
+<optional advisory comparison of available examples, or `None`>
+
+| Product | Purpose | Key Capabilities | Estimated Cost |
+|---------|---------|------------------|----------------|
+| <product> | <purpose> | <capabilities> | <Low, Medium, High, bounded range, or Unknown> |
+
+## Example Cost Considerations
+
+<optional advisory cost considerations, or `Unknown` when evidence is unavailable>
+
+Cost values are informational and do not participate in scoring, ranking, recommendation
+tie-breaking, or ADR option selection.
+
 ## Objective Relationships
 
 <advisory Objective candidates with rationale and confidence, or an explicit empty statement>
