@@ -266,7 +266,7 @@ require_text "$CONTROL_SKILL" ".highway/library/templates/output/control-catalog
 require_text "$NEW_SKILL" "Problem, Actors, Current Process, Desired Change, Success Measure, Business Constraints, Solution Constraints"
 require_text "$NEW_SKILL" "No business constraints"
 require_text "$NEW_SKILL" "one or more non-empty values"
-for discovery_token in "## Request Solution Constraints" "allowed_solution_classes" "existing_platforms_required" "existing_platforms_preferred" "known_systems" "hosting_restrictions" "vendor_restrictions" "procurement_constraints" "regulatory_restrictions" "## Candidate Elimination Log" "Constraint Alignment" "Satisfied Constraints" "Unsatisfied Constraints" "Required Platform Match" "Preferred Platform Match" "Known-System Alignment" "Constraint Compliance"; do
+for discovery_token in "## Request Solution Constraints" "allowed_solution_classes" "existing_platforms_required" "existing_platforms_preferred" "known_systems" "hosting_restrictions" "vendor_restrictions" "procurement_constraints" "regulatory_restrictions" "## Candidate Elimination Log" "Constraint Alignment" "Satisfied Constraints" "Unsatisfied Constraints" "Required Platform Match" "Preferred Platform Match" "Known-System Alignment" "Constraint Compliance" "## Example Reference Implementations" "## Example Realization Matrix" "## Example Cost Considerations" "Estimated Cost" "informational"; do
 	require_text "$DISCOVERY_RECORD_TEMPLATE" "$discovery_token"
 done
 

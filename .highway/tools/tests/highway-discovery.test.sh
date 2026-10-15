@@ -434,6 +434,28 @@ for relationship in Objective Control NFR; do
 done
 require_text "$SKILL" 'REQ -> DISC -> ADR'
 
+# Feature 180 option-review, implementation-evidence, and ADR-boundary contracts.
+for review_token in \
+	'Option Review' 'Describe `OPT######`' 'Review `OPT######`' \
+	'Compare `OPT######` and `OPT######`' 'Show implementation examples for `OPT######`' \
+	'Show implementation costs for `OPT######`' 'Summary' 'Request Alignment' \
+	'Objective Alignment' 'Control Alignment' 'NFR Alignment' 'Benefits' 'Dependencies' \
+	'Example Reference Implementations' 'Example Realization Matrix' \
+	'Example Cost Considerations' 'Unknown' 'read-only' 'recommendation is advisory' \
+	'person evaluates options during Discovery' 'ADR owns explicit option selection' \
+	'no identifier is allocated' 'no ADR is created' 'does not change candidate scores' \
+	'does not change recommendation ranking' 'does not change recommendation tie-breaking' \
+	'Recommended Option:' 'Before continuing to ADR you may wish to:' \
+	'Review an option' 'Compare options' 'Review implementation examples' \
+	'Review implementation costs'; do
+	require_text "$SKILL" "$review_token"
+done
+for template_token in \
+	'## Example Reference Implementations' '## Example Realization Matrix' \
+	'## Example Cost Considerations' 'Estimated Cost' 'informational'; do
+	require_text "$RECORD_TEMPLATE" "$template_token"
+done
+
 if [[ "$fail" -ne 0 ]]; then
 	exit 1
 fi
