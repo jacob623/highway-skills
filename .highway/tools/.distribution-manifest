@@ -29,6 +29,7 @@ include	.claude/skills/highway-new	-
 include	.claude/skills/highway-discovery	-
 include	.claude/skills/highway-clarify	-
 include	.claude/skills/highway-adr	-
+include	.claude/skills/highway-architecture	-
 exclude	.cursor	-
 include	.cursor/rules/highway-agent-context.mdc	-
 include	.cursor/skills/highway-objectives	-
@@ -43,6 +44,7 @@ include	.cursor/skills/highway-new	-
 include	.cursor/skills/highway-discovery	-
 include	.cursor/skills/highway-clarify	-
 include	.cursor/skills/highway-adr	-
+include	.cursor/skills/highway-architecture	-
 exclude	.github	-
 include	.github/copilot-instructions.md	-
 include	.github/skills/highway-objectives	-
@@ -57,6 +59,7 @@ include	.github/skills/highway-new	-
 include	.github/skills/highway-discovery	-
 include	.github/skills/highway-clarify	-
 include	.github/skills/highway-adr	-
+include	.github/skills/highway-architecture	-
 exclude	.agents	-
 include	.agents/skills/highway-objectives	-
 include	.agents/skills/highway-help	-
@@ -70,18 +73,22 @@ include	.agents/skills/highway-new	-
 include	.agents/skills/highway-discovery	-
 include	.agents/skills/highway-clarify	-
 include	.agents/skills/highway-adr	-
+include	.agents/skills/highway-architecture	-
 include	AGENTS.md	-
 
 # --- The framework directory: excluded by default so each child is a deliberate decision ---
 exclude	.highway	-
 include	.highway/skills	-
 include	.highway/skills/highway-objectives	-
+include	.highway/skills/highway-architecture	-
 include	.highway/library	-
 include	.highway/library/templates/output/objective-record.md	-
 include	.highway/library/templates/output/request-record.md	-
 include	.highway/library/templates/output/request-catalog.md	-
 include	.highway/library/templates/output/adr-record.md	-
 include	.highway/library/templates/output/adr-catalog.md	-
+include	.highway/library/templates/output/architecture-record.md	-
+include	.highway/library/templates/output/architecture-catalog.md	-
 include	.highway/library/templates/output/profile-record.md	-
 include	.highway/catalog	-
 include	.highway/governance	-

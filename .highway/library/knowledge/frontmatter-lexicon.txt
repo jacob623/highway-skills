@@ -1,11 +1,14 @@
 a
 about
+accepted
 access
 add
 adding
+adr
 administrative
 all
 and
+architecture
 are
 artifact
 artifacts
@@ -122,6 +125,7 @@ questions
 read
 readiness
 records
+reference
 references
 registered
 registration
