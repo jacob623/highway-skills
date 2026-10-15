@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-14T21:47:32Z",
+  "generated_at": "2026-10-15T12:30:35Z",
   "entries": [
     {
       "library_type": "template",
@@ -14,6 +14,20 @@
       "description": "Complete output skeleton for an accepted architecture decision record.",
       "version": "1.0.0",
       "source_path": "library/templates/output/adr-record.md"
+    },
+    {
+      "library_type": "template",
+      "name": "architecture-catalog",
+      "description": "Complete output skeleton for the Reference Architecture allocation catalog.",
+      "version": "1.0.0",
+      "source_path": "library/templates/output/architecture-catalog.md"
+    },
+    {
+      "library_type": "template",
+      "name": "architecture-record",
+      "description": "Complete output skeleton for a proposed Reference Architecture record.",
+      "version": "1.0.0",
+      "source_path": "library/templates/output/architecture-record.md"
     },
     {
       "library_type": "template",

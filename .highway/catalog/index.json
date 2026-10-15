@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-14T21:47:28Z",
+  "generated_at": "2026-10-15T12:30:28Z",
   "entries": [
     {
       "id": "highway-adr",
@@ -9,6 +9,15 @@
       "compatibility": "all",
       "version": "1.0.0",
       "source_path": "skills/highway-adr/SKILL.md"
+    },
+    {
+      "id": "highway-architecture",
+      "name": "highway-architecture",
+      "description": "Manages the repository-wide Reference Architecture baseline.",
+      "usage": "Invoke as `/highway-architecture` with one ADR ID.",
+      "compatibility": "all",
+      "version": "1.0.0",
+      "source_path": "skills/highway-architecture/SKILL.md"
     },
     {
       "id": "highway-clarify",
