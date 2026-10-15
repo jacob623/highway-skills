@@ -217,10 +217,17 @@ done
 for governance_type in Profile Objective Control NFR; do
 	require_text "$SKILL" "$governance_type"
 done
-for decision_rule in \
-	"Discovery recommendation" "higher Discovery score" \
-	"recorded Reference Architecture matches" "lower numeric \`OPT\` identifier"; do
-	require_text "$SKILL" "$decision_rule"
+for selection_rule in \
+	"exactly one explicit \`DISC######\` identifier and one explicit \`OPT######\` identifier" \
+	"user-provided explicit selection" "selected option must exist within the supplied Discovery" \
+	"Architecture Decision Required" "Which option would you like to select?" \
+	"no ADR identifier" "no ADR or catalog bytes" "recommendation is advisory"; do
+	require_text "$SKILL" "$selection_rule"
+done
+for automatic_rule in \
+	"apply tie-breaks in this order" "higher Discovery score" \
+	"more recorded Reference Architecture matches" "lower numeric \`OPT\` identifier"; do
+	require_absent "$SKILL" "$automatic_rule"
 done
 for contract_rule in \
 	"Evaluated means viable but not selected" "Rejected means invalid" \
