@@ -88,6 +88,26 @@ require_file "$CATALOG_TEMPLATE"
 for fixture in valid-request.md incomplete-request.md invalid-identifier.md privacy-sensitive.md; do
 	require_file "$FIXTURES/$fixture"
 done
+for fixture in proposal-starting-point.md proposal-refinement.md converged-proposal.md incomplete-proposal.md; do
+	require_file "$FIXTURES/$fixture"
+done
+
+if [[ -f "$FIXTURES/proposal-starting-point.md" ]]; then
+	require_fixture_text proposal-starting-point.md 'Here is a proposed starting point for your Request:'
+	require_fixture_text proposal-starting-point.md '**What would you add, correct, or remove?**'
+fi
+if [[ -f "$FIXTURES/proposal-refinement.md" ]]; then
+	require_fixture_text proposal-refinement.md 'Request Proposal Refinement'
+	require_fixture_text proposal-refinement.md 'Unknown'
+fi
+if [[ -f "$FIXTURES/converged-proposal.md" ]]; then
+	require_fixture_text converged-proposal.md "**Here's what I've captured as your request:**"
+	require_fixture_text converged-proposal.md 'Solution Constraints'
+fi
+if [[ -f "$FIXTURES/incomplete-proposal.md" ]]; then
+	require_fixture_text incomplete-proposal.md 'consequential missing-evidence question'
+	require_fixture_text incomplete-proposal.md 'No Request artifact'
+fi
 
 if [[ -f "$SKILL" ]]; then
 	for token in \
@@ -143,6 +163,25 @@ if [[ -f "$SKILL" ]]; then
 		'proposed' \
 		'write nothing' \
 		'preserve the original bytes' \
+		'Response Support Text' \
+		'Here is a proposed starting point for your Request:' \
+		'**What would you add, correct, or remove?**' \
+		'If this is accurate, just say so.' \
+		"If you don't know, say \"I don't know\" and we'll work through it together." \
+		"If you'd like additional suggestions, just let me know." \
+		'The goal is to make sure Highway understands the request correctly before creating the Request.' \
+		'Request Discovery Contribution Opportunity' \
+		'Request Proposal Refinement' \
+		'Converged Request Proposal' \
+		'Working Idea' \
+		'Unknown' \
+		'consequential missing-evidence question' \
+		'no Request artifact' \
+		'no Discovery or ADR artifact' \
+		'## Request Development Lifecycle' \
+		'## Acceptance Boundary' \
+		'## Ownership Boundaries' \
+		'## Converged Request Proposal' \
 		'.highway/library/templates/output/request-record.md' \
 		'.highway/library/templates/output/request-catalog.md'; do
 		require_text "$SKILL" "$token"
