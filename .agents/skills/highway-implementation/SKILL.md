@@ -40,6 +40,28 @@ infrastructure definitions, deployment authorization, or self-service productiza
   modify upstream artifacts, grant deployment authorization, create plans or tasks, generate code or IaC, or
   produce self-service productization artifacts.
 
+## Direct invocation guard
+
+The invocation must contain exactly one explicit uppercase `ARCH######` identifier. When the
+identifier is missing, respond before processing:
+
+```text
+Next Action: Provide the Reference Architecture to implement.
+
+Which Reference Architecture would you like to use?
+
+Examples:
+- ARCH000001
+- ARCH000002
+```
+
+A missing identifier must allocate no identifier, create no implementation artifact, and select no architecture automatically. The guard must not select the newest or only ARCH, must not infer an ARCH from context, and must not use filesystem order, timestamps, recency, environment state, or session memory. It must preserve every pre-operation implementation and catalog byte.
+
+For an explicit identifier, validate exact format, existence, unique resolution, and accepted
+status, then apply the canonical completeness validator and canonical readiness validator before
+processing. Any invalid, missing, duplicate, ambiguous, malformed, incomplete, or not-ready ARCH
+stops without writes and uses the established failure outcome.
+
 ## Inputs
 
 Required inputs are exactly one explicit `ARCH######`, the authoritative architecture catalog and

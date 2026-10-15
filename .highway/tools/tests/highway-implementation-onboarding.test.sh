@@ -1,6 +1,36 @@
 #!/usr/bin/env bash
 # Verifies the Highway Reference Implementation workflow contract for Feature 176.
 set -u
+# Instrument class: mixed (static-document-contract and executed-behavior)
+# Artifact classes: source-document
+# Seeded failure probe: --probe source-document exercises the probe contract; --neutralise restores it.
+
+probe_class=""
+neutralise=0
+while [[ $# -gt 0 ]]; do
+	case "$1" in
+		--probe) probe_class="${2:-}"; shift 2 ;;
+		--neutralise) neutralise=1; shift ;;
+		*) echo "FAIL: unrecognized argument: $1" >&2; exit 2 ;;
+	esac
+done
+DECLARED_CLASSES=" source-document "
+if [[ -n "$probe_class" ]] && [[ "$DECLARED_CLASSES" != *" $probe_class "* ]]; then
+	echo "FAIL: undeclared artifact class: $probe_class" >&2
+	exit 2
+fi
+if [[ -n "$probe_class" ]]; then
+	probe_root="$(mktemp -d "${TMPDIR:-/tmp}/highway-implementation-onboarding.XXXXXX")"
+	probe_path="$probe_root/probe.md"
+	trap 'rm -rf "$probe_root"' EXIT
+	if [[ "$neutralise" -eq 1 ]]; then
+		printf '%s\n' 'implementation contract token' >"$probe_path"
+	else
+		printf '%s\n' 'missing required token' >"$probe_path"
+	fi
+	grep -Fq 'implementation contract token' "$probe_path"
+	exit $?
+fi
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
@@ -38,6 +68,17 @@ if [[ -f "$SKILL" ]]; then
 	require_text "$SKILL" "name: highway-implementation"
 	require_text "$SKILL" "usage: \"Invoke as \`/highway-implementation\` with one Reference Architecture ID.\""
 	require_text "$SKILL" "Exactly one explicit uppercase \`ARCH######\` identifier"
+	require_text "$SKILL" "Next Action: Provide the Reference Architecture to implement."
+	require_text "$SKILL" "Which Reference Architecture would you like to use?"
+	require_text "$SKILL" "ARCH000001"
+	require_text "$SKILL" "ARCH000002"
+	require_text "$SKILL" "must allocate no identifier, create no implementation artifact, and select no architecture automatically"
+	require_text "$SKILL" "canonical completeness validator"
+	require_text "$SKILL" "canonical readiness validator"
+	require_text "$SKILL" "must not select the newest or only ARCH"
+	require_text "$SKILL" "must not infer an ARCH from context"
+	require_text "$SKILL" "must not use filesystem order, timestamps, recency, environment state, or session memory"
+	require_text "$SKILL" "preserve every pre-operation implementation and catalog byte"
 	require_text "$SKILL" "status \`accepted\`"
 	require_text "$SKILL" ".highway/library/templates/output/implementation-record.md"
 	require_text "$SKILL" ".highway/library/templates/output/implementation-catalog.md"
