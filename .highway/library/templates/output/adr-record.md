@@ -50,6 +50,7 @@ None
 ## Decision
 
 Selected Option: OPTXXXXXX
+Selection Source: User-provided explicit selection
 Decision Statement: <ADR-owned decision statement>
 Decision Authority: <ADR decision authority>
 Decision Rationale: <traceable rationale>

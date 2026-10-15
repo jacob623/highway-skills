@@ -1,7 +1,7 @@
 ---
 name: highway-adr
 description: "Manages the repository-wide decision baseline."
-usage: "Invoke as `/highway-adr` with one Discovery ID."
+usage: "Invoke as `/highway-adr` with one Discovery ID and one ID."
 compatibility: all
 metadata:
   version: 1.0.0
@@ -26,7 +26,7 @@ catalogs, or claim its completion.
 
 ## When to use
 
-- One exact uppercase `DISC######` identifier is available.
+- One exact uppercase `DISC######` identifier and one explicit `OPT######` option are available.
 - The Discovery record contains its Request reference, Candidate Solution Options, Comparison Matrix,
   Recommendation, and Reference Architecture Matches.
 - An architecture decision authority is ready to select one option.
@@ -41,7 +41,7 @@ catalogs, or claim its completion.
 
 ## Inputs
 
-- Exactly one explicit `DISC######` identifier and the authoritative Discovery catalog at
+- Exactly one explicit `DISC######` identifier, exactly one explicit `OPT######` identifier, and the authoritative Discovery catalog at
   `discoveries/discoveries.md`.
 - The uniquely resolved Discovery record at `discoveries/DISCXXXXXX.md`.
 - The complete output structures in `.highway/library/templates/output/adr-record.md` and
@@ -82,11 +82,36 @@ render each finding identifier once in Open Clarification Findings.
 
 ## Decision contract
 
-Use Discovery options only. Select exactly one existing `OPT` option and record every non-selected
-option as Rejected or Evaluated. Evaluated means viable but not selected; Rejected means invalid
-or unsuitable. These meanings are part of the contract. When several options remain acceptable, apply tie-breaks in this
-order and stop when one criterion decides: Discovery recommendation, higher Discovery score, more
-recorded Reference Architecture matches, then lower numeric `OPT` identifier.
+Use Discovery options only. The decision authority owns selection. A valid creation invocation
+contains exactly one explicit `DISC######` identifier and one explicit `OPT######` identifier. The
+selected option must exist within the supplied Discovery. The selection source is user-provided explicit selection. Record every non-selected option as Rejected or Evaluated. Evaluated means viable but not selected; Rejected means invalid or unsuitable. These meanings are part of the
+contract.
+
+If the Discovery is valid but no option identifier is supplied, stop before allocation and present:
+
+```text
+Architecture Decision Required
+
+Discovery:
+DISC000001
+
+Available Options
+
+OPT000001
+<summary>
+
+OPT000002
+<summary>
+
+Recommended:
+OPT000001
+
+Which option would you like to select?
+```
+
+The recommendation is advisory. This path allocates no ADR identifier and writes no ADR or catalog bytes. An option that is malformed, unknown, duplicated, ambiguous, or outside the supplied
+Discovery aborts with no allocation and no write. ADR never selects an option from a recommendation,
+score, comparison, architecture match, or identifier ordering.
 
 If selected option differs from the Discovery recommendation, render Recommendation Override
 immediately after Decision with the recommended option, selected option, and override rationale.
@@ -111,17 +136,19 @@ then title. Relationship ordering is presentation-only and never mutates Discove
 
 ## Workflow
 
-1. Validate exactly one uppercase `DISC######` before resolution.
+1. Validate exactly one uppercase `DISC######` and one explicit `OPT######` before resolution.
 2. Resolve exactly one valid Discovery record and reject duplicates or malformed records.
-3. Check the authoritative ADR catalog for an existing ADR with the same Discovery identifier; abort without changing anything when one exists.
-4. Snapshot Clarification and governance evidence in the declared precedence order.
-5. Validate options, comparison evidence, recommendation, recorded matches, and source-byte hashes.
-6. Select one Discovery option using the deterministic tie-break order.
-7. Build the complete ADR and catalog in memory using the shared templates.
-8. Validate all required sections, one selection, alternatives, consequences, relationships, status, handoff, source preservation, and volatile-metadata exclusions.
-9. Read and reserve the exact catalog `Next ID`; allocate only that value and retry an exclusive catalog conflict at most three times.
-10. Commit one ADR and one catalog entry only after all validation succeeds.
-11. Verify unchanged source bytes, exactly one decision, one selected option, rationale, consequences, and complete handoff before reporting success.
+3. When the option is absent, present the decision prompt and stop without allocation or writes.
+4. Reject an option that is malformed, ambiguous, unknown, or not contained by the Discovery without allocation or writes.
+5. Check the authoritative ADR catalog for an existing ADR with the same Discovery identifier; abort without changing anything when one exists.
+6. Snapshot Clarification and governance evidence in the declared precedence order.
+7. Validate options, comparison evidence, recommendation, recorded matches, and source-byte hashes.
+8. Retain the explicit user-provided option as the sole selected option; never infer a selection.
+9. Build the complete ADR and catalog in memory using the shared templates.
+10. Validate all required sections, one selection, alternatives, consequences, relationships, status, handoff, source preservation, and volatile-metadata exclusions.
+11. Read and reserve the exact catalog `Next ID`; allocate only that value and retry an exclusive catalog conflict at most three times.
+12. Commit one ADR and one catalog entry only after all validation succeeds.
+13. Verify unchanged source bytes, exactly one decision, one selected option, rationale, consequences, and complete handoff before reporting success.
 
 ## Determinism and failure handling
 
@@ -154,10 +181,11 @@ after three retries. No partial ADR or catalog is reported as success.
 
 ## Error Handling
 
-Invalid identifiers, missing or ambiguous Discovery, malformed records, invalid options, incomplete
-handoff, duplicate Discovery ADRs, catalog conflicts after three retries, and write failures abort
-without partial output and preserve existing bytes.
+Invalid identifiers, missing or ambiguous Discovery, missing option, malformed or unsupported option,
+incomplete handoff, duplicate Discovery ADRs, catalog conflicts after three retries, and write
+failures abort without partial output and preserve existing bytes. A missing option presents the
+decision prompt instead of creating an ADR.
 
 ## Example
 
-`/highway-adr DISC000001`
+`/highway-adr DISC000001 OPT000001`
