@@ -66,10 +66,53 @@ stops without writes and uses the established failure outcome.
 
 Required inputs are exactly one explicit `ARCH######`, the authoritative architecture catalog and
 resolved accepted architecture record, the implementation catalog, both shared implementation
-output templates, and Highway Identity and Experience Standard context. Optional read-only inputs
-are `CLAR-ARCH######`, Profile, Objectives, Controls, and NFRs. Resolve all inputs by declared
+output templates, and Highway Identity and Experience Standard context. The owner must provide one or more
+explicit Implementation Selections before compatibility assessment. A selection names the
+intended implementation component, technology or mechanism, realization category, and owner
+evidence; missing selections stop before any RI or catalog write. Optional read-only inputs are
+`CLAR-ARCH######`, Profile, Objectives, Controls, and NFRs. Resolve all inputs by declared
 identifiers and catalog entries, never by newest file, filesystem order, timestamps, environment
 state, or session state.
+
+## Architecture Compatibility Assessment
+
+Assess Implementation Selections against the accepted architecture before generating or allocating
+an RI. Extract Logical Components, Interaction Model, Trust Boundaries, Deployment Pattern, Required
+Capabilities, Constraints, Control Relationships, NFR Relationships, and Reference Implementation
+Guidance. The architecture remains authoritative; an implementation selection cannot silently
+redesign it, override an ADR, or invent an omitted responsibility.
+
+The assessment produces exactly one result: `Compatible`, `Incomplete`, or `Incompatible`.
+Evaluate the ordered realization categories Compute, Messaging, Persistence, Identity, Networking,
+Security, Observability, Recovery, Deployment, and Operations. Each category receives exactly one
+coverage status: `Satisfied`, `Unsatisfied`, or `Not Applicable`. Preserve stable architecture and
+selection ordering, and never omit an applicable architecture responsibility. `Not Applicable`
+requires evidence that the category is outside the accepted architecture.
+
+Implementation Selections are user-owned and may include future observed brownfield components,
+but this workflow does not create a separate brownfield discovery or validation engine. Normalize
+equivalent names and ordering deterministically while preserving the original selection evidence.
+
+For `Incomplete`, report an Implementation Gap Analysis for every unsatisfied responsibility with
+Missing Capability, Why It Matters, Suggested Realization, Recommendation Confidence, evidence, and
+an owner resolution action. Recommendations are evidence-backed; when evidence is insufficient,
+record `Unknown` rather than inventing a technology. Do not generate or persist an RI while any gap
+remains unresolved.
+
+For `Incompatible`, report Implementation Conflicts with Architecture Requirement, Implementation
+Selection, Conflict Explanation, evidence, and impact. Do not silently repair the architecture.
+Offer exactly two resolution paths: `Resolve Implementation` or `Revisit Architecture`. Do not
+generate or persist an RI for an incompatible assessment.
+
+For `Compatible`, retain the complete Coverage Summary and produce Technology Realization Rationale
+for every selected technology or mechanism, including architecture intent, reason selected, and
+supporting evidence. Only this outcome permits the existing RI validation, allocation, and atomic
+publication workflow. A failed assessment performs no RI allocation, identifier advancement,
+implementation write, or catalog write; in short, it produces no RI.
+
+Architecture Authority is the accepted Reference Architecture and its ADR decisions. Controls and
+NFRs remain authoritative for their own records; their realization is reported as a read-only
+projection with traceability, never as a source mutation.
 
 ## Ownership and evidence
 
@@ -146,15 +189,18 @@ build, test, deploy, operate, monitor, and improve realization mappings.
    duplicate architecture-to-implementation entries.
 3. Snapshot Clarification and governance evidence in the declared precedence order without mutating
    any source; apply malformed Clarification fallback to architecture evidence.
-4. Project architecture intent, components, interactions, trust boundaries, constraints, risks,
+4. Normalize the owner-provided Implementation Selections and assess compatibility against every
+   applicable architecture responsibility.
+5. Stop with the required gap or conflict report when the result is `Incomplete` or `Incompatible`.
+6. Project architecture intent, components, interactions, trust boundaries, constraints, risks,
    dependencies, governance realization, and available traceability into the implementation model.
-5. Generate the complete record and catalog in memory using the shared implementation templates.
-6. Validate all required sections, references, status, relationships, ordering, technology-choice
+7. Generate the complete record and catalog in memory using the shared implementation templates.
+8. Validate all required sections, references, status, relationships, ordering, technology-choice
    evidence, and scope before persistence. This is validation before persistence.
-7. Read and reserve the exact catalog `Next ID`; retry an allocation conflict no more than three
+9. Read and reserve the exact catalog `Next ID`; retry an allocation conflict no more than three
    times.
-8. Publish the record and catalog atomically, advancing `Next ID` exactly once.
-9. Verify source-byte preservation, one record, one direct catalog entry, proposed status, complete
+10. Publish the record and catalog atomically, advancing `Next ID` exactly once.
+11. Verify source-byte preservation, one record, one direct catalog entry, proposed status, complete
    traceability, all seven lifecycle activities, and absence of deferred artifacts before reporting
    completion.
 

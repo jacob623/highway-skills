@@ -26,6 +26,55 @@ Architecture: ARCHXXXXXX
 Title: <accepted architecture title>
 Status: accepted
 
+## Implementation Selections
+
+- Selection: <owner-provided component, technology, or mechanism>
+  Category: <Compute | Messaging | Persistence | Identity | Networking | Security | Observability | Recovery | Deployment | Operations>
+  Owner Evidence: <declared selection evidence>
+  Normalized Name: <deterministic normalized name>
+
+## Architecture Compatibility Assessment
+
+Result: Compatible | Incomplete | Incompatible
+Architecture Authority: <accepted Reference Architecture and governing ADR decisions>
+Assessment Scope: <architecture responsibilities assessed before RI generation>
+
+## Coverage Summary
+
+| Category | Status | Architecture Responsibility | Implementation Selection | Evidence |
+|---|---|---|---|---|
+| Compute | Satisfied | <responsibility or None> | <selection or None> | <evidence or None> |
+| Messaging | Not Applicable | <responsibility or None> | <selection or None> | <evidence or None> |
+| Persistence | Not Applicable | <responsibility or None> | <selection or None> | <evidence or None> |
+| Identity | Not Applicable | <responsibility or None> | <selection or None> | <evidence or None> |
+| Networking | Not Applicable | <responsibility or None> | <selection or None> | <evidence or None> |
+| Security | Not Applicable | <responsibility or None> | <selection or None> | <evidence or None> |
+| Observability | Not Applicable | <responsibility or None> | <selection or None> | <evidence or None> |
+| Recovery | Not Applicable | <responsibility or None> | <selection or None> | <evidence or None> |
+| Deployment | Not Applicable | <responsibility or None> | <selection or None> | <evidence or None> |
+| Operations | Not Applicable | <responsibility or None> | <selection or None> | <evidence or None> |
+
+## Implementation Gaps
+
+Result: Incomplete
+
+- Missing Capability: <capability or None>
+  Why It Matters: <architecture or governance impact>
+  Suggested Realization: <evidence-backed suggestion or Unknown>
+  Recommendation Confidence: <High | Medium | Low | Unknown>
+  Evidence: <source evidence or None>
+  Owner Resolution Action: <action required before reassessment>
+
+## Implementation Conflicts
+
+Result: Incompatible
+
+- Architecture Requirement: <accepted requirement>
+  Implementation Selection: <conflicting selection>
+  Conflict Explanation: <direct contradiction and impact>
+  Evidence: <source evidence or None>
+  Resolution Paths: Resolve Implementation; Revisit Architecture
+
 ## Context
 
 <architecture context and realization purpose>
@@ -37,6 +86,13 @@ Status: accepted
 ## Technology Realization
 
 - <architecture intent>: <technology or mechanism and deterministic supporting evidence>
+
+## Technology Realization Rationale
+
+- Selection: <implementation selection>
+  Architecture Intent: <preserved architecture responsibility>
+  Reason Selected: <deterministic reason>
+  Supporting Evidence: <architecture, governance, or owner evidence>
 
 ## Runtime Components
 

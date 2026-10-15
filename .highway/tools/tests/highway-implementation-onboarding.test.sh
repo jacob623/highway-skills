@@ -115,6 +115,8 @@ if [[ -f "$RECORD_TEMPLATE" ]]; then
 	require_text "$RECORD_TEMPLATE" "status: proposed"
 	for section in \
 		"## Architecture Reference" "## Context" "## Implementation Summary" "## Technology Realization" \
+		"## Architecture Compatibility Assessment" "## Coverage Summary" "## Implementation Gaps" \
+		"## Implementation Conflicts" "## Implementation Selections" "## Technology Realization Rationale" \
 		"## Runtime Components" "## Deployment Topology" "## Environment Strategy" "## Data Realization" \
 		"## Integration Realization" "## Security Control Realization" "## NFR Realization" \
 		"## Lifecycle Activities" "## Assumptions" "## Risks" "## Constraints" "## Dependencies" "## Traceability"; do
