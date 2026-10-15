@@ -39,6 +39,28 @@ Implementation.
   artifact generation, lifecycle activity, diagram or threat-model production, brownfield onboarding,
   or architecture scoring.
 
+## Direct invocation guard
+
+The invocation must contain exactly one explicit uppercase `ADR######` identifier. When the
+identifier is missing, respond before processing:
+
+```text
+Next Action: Provide the Architecture Decision Record to use.
+
+Which ADR would you like to convert into a Reference Architecture?
+
+Examples:
+- ADR000001
+- ADR000002
+```
+
+A missing identifier must allocate no identifier, create no Reference Architecture, and select no ADR automatically. The guard must not select the newest or only ADR, must not infer an ADR from context, and must not use filesystem order, timestamps, recency, environment state, or session memory. It must preserve every pre-operation architecture and catalog byte.
+
+For an explicit identifier, validate exact format, existence, unique resolution, and accepted
+status, then apply the canonical completeness validator and canonical readiness validator before
+processing. Any invalid, missing, duplicate, ambiguous, malformed, incomplete, or not-ready ADR
+stops without writes and uses the established failure outcome.
+
 ## Inputs
 
 Required inputs are exactly one explicit `ADRXXXXXX`, the authoritative ADR catalog and resolved
