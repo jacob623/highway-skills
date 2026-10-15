@@ -4,8 +4,8 @@ accepted
 access
 add
 adding
-adr
 administrative
+adr
 all
 and
 architecture
@@ -72,6 +72,7 @@ guidance
 highway
 id
 impact
+implementation
 in
 initial
 input

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-15T12:30:35Z",
+  "generated_at": "2026-10-15T12:52:33Z",
   "entries": [
     {
       "library_type": "template",
@@ -70,6 +70,20 @@
       "description": "Complete output skeleton for a retained Discovery analysis record.",
       "version": "1.0.0",
       "source_path": "library/templates/output/discovery-record.md"
+    },
+    {
+      "library_type": "template",
+      "name": "implementation-catalog",
+      "description": "Complete output skeleton for the Reference Implementation allocation catalog.",
+      "version": "1.0.0",
+      "source_path": "library/templates/output/implementation-catalog.md"
+    },
+    {
+      "library_type": "template",
+      "name": "implementation-record",
+      "description": "Complete output skeleton for a proposed Reference Implementation blueprint.",
+      "version": "1.0.0",
+      "source_path": "library/templates/output/implementation-record.md"
     },
     {
       "library_type": "template",

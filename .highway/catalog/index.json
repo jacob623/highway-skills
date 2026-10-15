@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-15T12:30:28Z",
+  "generated_at": "2026-10-15T12:52:26Z",
   "entries": [
     {
       "id": "highway-adr",
@@ -54,6 +54,15 @@
       "compatibility": "all",
       "version": "3.0.4",
       "source_path": "skills/highway-help/SKILL.md"
+    },
+    {
+      "id": "highway-implementation",
+      "name": "highway-implementation",
+      "description": "Manages the repository-wide implementation baseline.",
+      "usage": "Invoke as `/highway-implementation` with one Reference Architecture ID.",
+      "compatibility": "all",
+      "version": "1.0.0",
+      "source_path": "skills/highway-implementation/SKILL.md"
     },
     {
       "id": "highway-inquiry",
