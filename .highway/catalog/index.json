@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-15T20:57:27Z",
+  "generated_at": "2026-10-16T12:32:57Z",
   "entries": [
     {
       "id": "highway-adr",
@@ -99,6 +99,15 @@
       "compatibility": "all",
       "version": "4.0.0",
       "source_path": "skills/highway-objectives/SKILL.md"
+    },
+    {
+      "id": "highway-onboarding",
+      "name": "highway-onboarding",
+      "description": "Manages a repository-wide baseline.",
+      "usage": "Invoke as `/highway-onboarding`.",
+      "compatibility": "all",
+      "version": "1.0.0",
+      "source_path": "skills/highway-onboarding/SKILL.md"
     },
     {
       "id": "highway-profile",

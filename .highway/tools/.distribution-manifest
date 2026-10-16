@@ -29,6 +29,7 @@ include	.claude/skills/highway-new	-
 include	.claude/skills/highway-discovery	-
 include	.claude/skills/highway-clarify	-
 include	.claude/skills/highway-adr	-
+include	.claude/skills/highway-onboarding	-
 include	.claude/skills/highway-architecture	-
 include	.claude/skills/highway-implementation	-
 exclude	.cursor	-
@@ -45,6 +46,7 @@ include	.cursor/skills/highway-new	-
 include	.cursor/skills/highway-discovery	-
 include	.cursor/skills/highway-clarify	-
 include	.cursor/skills/highway-adr	-
+include	.cursor/skills/highway-onboarding	-
 include	.cursor/skills/highway-architecture	-
 include	.cursor/skills/highway-implementation	-
 exclude	.github	-
@@ -61,6 +63,7 @@ include	.github/skills/highway-new	-
 include	.github/skills/highway-discovery	-
 include	.github/skills/highway-clarify	-
 include	.github/skills/highway-adr	-
+include	.github/skills/highway-onboarding	-
 include	.github/skills/highway-architecture	-
 include	.github/skills/highway-implementation	-
 exclude	.agents	-
@@ -76,6 +79,7 @@ include	.agents/skills/highway-new	-
 include	.agents/skills/highway-discovery	-
 include	.agents/skills/highway-clarify	-
 include	.agents/skills/highway-adr	-
+include	.agents/skills/highway-onboarding	-
 include	.agents/skills/highway-architecture	-
 include	.agents/skills/highway-implementation	-
 include	AGENTS.md	-

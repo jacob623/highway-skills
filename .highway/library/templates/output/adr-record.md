@@ -10,8 +10,8 @@ metadata:
 ```yaml
 ---
 id: ADRXXXXXX
-request: REQXXXXXX
-discovery: DISCXXXXXX
+request: REQXXXXXX | onboarding
+discovery: DISCXXXXXX | highway
 status: accepted
 supersedes: None
 superseded_by: None
