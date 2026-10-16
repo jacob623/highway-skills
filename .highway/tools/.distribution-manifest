@@ -32,6 +32,7 @@ include	.claude/skills/highway-adr	-
 include	.claude/skills/highway-onboarding	-
 include	.claude/skills/highway-architecture	-
 include	.claude/skills/highway-implementation	-
+include	.claude/skills/highway-assessment	-
 exclude	.cursor	-
 include	.cursor/rules/highway-agent-context.mdc	-
 include	.cursor/skills/highway-objectives	-
@@ -49,6 +50,7 @@ include	.cursor/skills/highway-adr	-
 include	.cursor/skills/highway-onboarding	-
 include	.cursor/skills/highway-architecture	-
 include	.cursor/skills/highway-implementation	-
+include	.cursor/skills/highway-assessment	-
 exclude	.github	-
 include	.github/copilot-instructions.md	-
 include	.github/skills/highway-objectives	-
@@ -66,6 +68,7 @@ include	.github/skills/highway-adr	-
 include	.github/skills/highway-onboarding	-
 include	.github/skills/highway-architecture	-
 include	.github/skills/highway-implementation	-
+include	.github/skills/highway-assessment	-
 exclude	.agents	-
 include	.agents/skills/highway-objectives	-
 include	.agents/skills/highway-help	-
@@ -82,6 +85,7 @@ include	.agents/skills/highway-adr	-
 include	.agents/skills/highway-onboarding	-
 include	.agents/skills/highway-architecture	-
 include	.agents/skills/highway-implementation	-
+include	.agents/skills/highway-assessment	-
 include	AGENTS.md	-
 
 # --- The framework directory: excluded by default so each child is a deliberate decision ---
@@ -98,6 +102,7 @@ include	.highway/library/templates/output/adr-catalog.md	-
 include	.highway/library/templates/output/architecture-record.md	-
 include	.highway/library/templates/output/architecture-catalog.md	-
 include	.highway/library/templates/output/profile-record.md	-
+include	.highway/library/templates/output/assessment-findings.md	-
 include	.highway/catalog	-
 include	.highway/governance	-
 include	.highway/instructions	-
