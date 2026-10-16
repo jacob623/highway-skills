@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-15T20:57:32Z",
+  "generated_at": "2026-10-16T20:46:35Z",
   "entries": [
     {
       "library_type": "template",
@@ -28,6 +28,13 @@
       "description": "Complete output skeleton for a proposed Reference Architecture record.",
       "version": "1.0.0",
       "source_path": "library/templates/output/architecture-record.md"
+    },
+    {
+      "library_type": "template",
+      "name": "assessment-findings",
+      "description": "Complete output skeleton for retained advisory findings.",
+      "version": "1.0.0",
+      "source_path": "library/templates/output/assessment-findings.md"
     },
     {
       "library_type": "template",
@@ -140,6 +147,13 @@
       "description": "The requirements discovery questions Highway skills ask, ordered as they are asked and maintained through the highway-inquiry skill.",
       "version": "1.0.0",
       "source_path": "library/templates/requirements-inquiry.md"
+    },
+    {
+      "library_type": "knowledge",
+      "name": "assessment-findings",
+      "description": "Retained advisory findings produced by highway-assessment.",
+      "version": "1.0.0",
+      "source_path": "library/knowledge/assessment-findings.md"
     }
   ]
 }
