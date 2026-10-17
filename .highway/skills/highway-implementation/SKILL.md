@@ -27,9 +27,10 @@ infrastructure definitions, deployment authorization, or self-service productiza
 - The identifier resolves uniquely through the authoritative Reference Architecture catalog.
 - The resolved Reference Architecture is accepted and its decisions, components, interactions,
   trust boundaries, constraints, and traceability are readable.
-- The implementation catalog and both shared implementation templates are available:
-  `.highway/library/templates/output/implementation-record.md` and
-  `.highway/library/templates/output/implementation-catalog.md`.
+- The implementation catalog and all three shared implementation templates are available:
+   `.highway/library/templates/output/implementation-record.md`,
+   `.highway/library/templates/output/implementation-catalog.md`, and
+   `.highway/library/templates/output/capability-catalog.md`.
 
 ## When not to use
 
@@ -65,7 +66,7 @@ stops without writes and uses the established failure outcome.
 ## Inputs
 
 Required inputs are exactly one explicit `ARCH######`, the authoritative architecture catalog and
-resolved accepted architecture record, the implementation catalog, both shared implementation
+resolved accepted architecture record, the implementation catalog, all three shared implementation
 output templates, and Highway Identity and Experience Standard context. The owner must provide one or more
 explicit Implementation Selections before compatibility assessment. A selection names the
 intended implementation component, technology or mechanism, realization category, and owner
@@ -123,6 +124,12 @@ implementation workflow owns implementation realization, technology realization,
 deployment realization, lifecycle realization, assumptions, risks, constraints, dependencies, and
 the downstream handoff.
 
+The implementation workflow also owns explicit realized-capability evidence inside the RI record.
+Each capability is a business-recognizable outcome, not an implementation component. The catalog is
+only a generated projection of that evidence.
+
+Realized Capabilities use a business-readable title and explicit realization evidence.
+
 The workflow does not redesign architecture. The workflow will retry an allocation conflict no more than three times before the operation aborts without writes.
 
 Resolve evidence in this exact first-match order: Reference Architecture, `CLAR-ARCH######`,
@@ -150,6 +157,11 @@ The implementation catalog owns `Next ID`, direct record index entries, and arch
 The state transition is `no implementation -> validate -> allocate -> proposed implementation`;
 duplicate or failed operations leave the prior state unchanged.
 
+Each realized capability has a business-readable Title, one or more Realized By values, and
+supporting evidence. Capability identity is the pair `(Parent RI, normalized Title)`. A capability
+may have multiple Realized By values; changing those values does not allocate a new capability
+identifier.
+
 ## Outputs
 
 A successful run produces exactly one `implementations/RIXXXXXX.md` record and one direct entry in
@@ -167,6 +179,12 @@ read-only projections of their source ownership.
 The implementation is a blueprint and clean downstream handoff only. It does not produce plans,
 tasks, executable source code, infrastructure definitions, deployment authorization, or
 self-service productization artifacts.
+
+A successful run additionally produces or replaces `implementations/capabilities.md`. The Capability
+Catalog contains Version, Next ID, and exactly the fields `ID`, `Parent`, `Title`, and `Realized By`
+for each row. Each row has one `CAP######` identifier and one `RI######` Parent. No
+`CAP######.md` record files or capability workflow are created.
+The catalog follows `.highway/library/templates/output/capability-catalog.md`.
 
 ## Realization contract
 
@@ -194,13 +212,18 @@ build, test, deploy, operate, monitor, and improve realization mappings.
 5. Stop with the required gap or conflict report when the result is `Incomplete` or `Incompatible`.
 6. Project architecture intent, components, interactions, trust boundaries, constraints, risks,
    dependencies, governance realization, and available traceability into the implementation model.
-7. Generate the complete record and catalog in memory using the shared implementation templates.
-8. Validate all required sections, references, status, relationships, ordering, technology-choice
-   evidence, and scope before persistence. This is validation before persistence.
-9. Read and reserve the exact catalog `Next ID`; retry an allocation conflict no more than three
-   times.
-10. Publish the record and catalog atomically, advancing `Next ID` exactly once.
-11. Verify source-byte preservation, one record, one direct catalog entry, proposed status, complete
+7. Resolve explicit realized capabilities from the implementation evidence and reject component-only
+   or unsupported capability names rather than inferring business outcomes.
+8. Match existing capability identities by `(Parent RI, normalized Title)`, preserve their CAP IDs,
+   allocate the lowest available sequential CAP ID for new identities, and remove stale derived rows.
+9. Generate the complete RI record, implementation catalog, and Capability Catalog in memory using
+   the shared templates.
+10. Validate all required sections, capability fields, references, status, relationships, ordering,
+   technology-choice evidence, and scope before persistence.
+11. Read and reserve exact catalog Next IDs; retry an allocation conflict no more than three times.
+12. Publish the RI record, implementation catalog, and Capability Catalog atomically, advancing each
+   Next ID exactly once for newly allocated identities.
+13. Verify source-byte preservation, one record, one direct catalog entry, proposed status, complete
    traceability, all seven lifecycle activities, and absence of deferred artifacts before reporting
    completion.
 
@@ -212,22 +235,30 @@ assumptions, risks, dependencies, and sections use stable identifier and declare
 Generated content contains No timestamps, creation dates, modification dates, environment metadata,
 random values, or session identifiers.
 
-Validation happens before persistence. Resolution, malformed or inconsistent evidence, duplicate,
+Capability rows sort by Parent RI identifier, normalized Title, then CAP identifier. Multiple Realized
+By values sort by normalized value. Existing CAP identifiers remain stable when unrelated rows are
+added, removed, or reordered.
+
+Validation happens before persistence. This is validation before persistence. Resolution, malformed or inconsistent evidence, duplicate,
 catalog allocation, validation, or write failure aborts without writes; no partial output is reported
 as success. Allocation conflicts stop after three retries. Existing architecture and all upstream
-records remain byte-identical. Record and catalog publication is atomic.
+records remain byte-identical. Capability Catalog publication is atomic with the RI record and
+implementation catalog.
 
 ## Verification
 
 Confirm exactly one accepted ARCH input, one permanent RI identifier, one record, one direct catalog
 entry, proposed status, complete required sections, stable relationships, unchanged upstream bytes,
-architecture-traceable implementation decisions, realized Controls and NFRs, all seven lifecycle
-activities, complete available traceability, and no deferred artifacts.
+architecture-traceable implementation decisions, realized capability evidence, one valid capability
+catalog row per `(Parent RI, normalized Title)`, unique CAP identifiers, valid parents and providers,
+realized Controls and NFRs, all seven lifecycle activities, complete available traceability, and no
+deferred artifacts.
 
 Confirm the completion response includes Implementation ID, Architecture ID, record path, catalog
 path, and available `REQXXXXXX -> DISCXXXXXX -> ADRXXXXXX -> ARCHXXXXXX -> RIXXXXXX` traceability.
-Confirm no executable code, infrastructure definitions, plans, tasks, deployment authorization, or
-self-service productization artifacts were created.
+Confirm assessment can identify the RI and Realized By values directly from the Capability Catalog,
+no `CAP######.md` files exist, and no executable code, infrastructure definitions, plans, tasks,
+deployment authorization, technology inventory, or self-service productization artifacts were created.
 
 ## Error Handling
 

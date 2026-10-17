@@ -37,6 +37,7 @@ HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 SKILL="$HIGHWAY_ROOT/skills/highway-implementation/SKILL.md"
 RECORD_TEMPLATE="$HIGHWAY_ROOT/library/templates/output/implementation-record.md"
 CATALOG_TEMPLATE="$HIGHWAY_ROOT/library/templates/output/implementation-catalog.md"
+CAPABILITY_CATALOG_TEMPLATE="$HIGHWAY_ROOT/library/templates/output/capability-catalog.md"
 
 fail=0
 require_file() {
@@ -63,6 +64,7 @@ forbidden_text() {
 require_file "$SKILL"
 require_file "$RECORD_TEMPLATE"
 require_file "$CATALOG_TEMPLATE"
+require_file "$CAPABILITY_CATALOG_TEMPLATE"
 
 if [[ -f "$SKILL" ]]; then
 	require_text "$SKILL" "name: highway-implementation"
@@ -82,6 +84,7 @@ if [[ -f "$SKILL" ]]; then
 	require_text "$SKILL" "status \`accepted\`"
 	require_text "$SKILL" ".highway/library/templates/output/implementation-record.md"
 	require_text "$SKILL" ".highway/library/templates/output/implementation-catalog.md"
+	require_text "$SKILL" ".highway/library/templates/output/capability-catalog.md"
 	require_text "$SKILL" "RI######"
 	require_text "$SKILL" "implementations/RIXXXXXX.md"
 	require_text "$SKILL" "implementations/implementations.md"
@@ -114,7 +117,7 @@ if [[ -f "$RECORD_TEMPLATE" ]]; then
 	require_text "$RECORD_TEMPLATE" "architecture: ARCHXXXXXX"
 	require_text "$RECORD_TEMPLATE" "status: proposed"
 	for section in \
-		"## Architecture Reference" "## Context" "## Implementation Summary" "## Technology Realization" \
+		"## Architecture Reference" "## Context" "## Implementation Summary" "## Realized Capabilities" "## Technology Realization" \
 		"## Architecture Compatibility Assessment" "## Coverage Summary" "## Implementation Gaps" \
 		"## Implementation Conflicts" "## Implementation Selections" "## Technology Realization Rationale" \
 		"## Runtime Components" "## Deployment Topology" "## Environment Strategy" "## Data Realization" \
@@ -135,6 +138,15 @@ if [[ -f "$CATALOG_TEMPLATE" ]]; then
 	require_text "$CATALOG_TEMPLATE" "Implementation Path"
 	require_text "$CATALOG_TEMPLATE" "architecture uniqueness"
 	require_text "$CATALOG_TEMPLATE" "appear at most once"
+fi
+
+if [[ -f "$CAPABILITY_CATALOG_TEMPLATE" ]]; then
+	require_text "$CAPABILITY_CATALOG_TEMPLATE" "name: capability-catalog"
+	require_text "$CAPABILITY_CATALOG_TEMPLATE" "# Capability Catalog"
+	require_text "$CAPABILITY_CATALOG_TEMPLATE" "Next ID: CAPXXXXXX"
+	require_text "$CAPABILITY_CATALOG_TEMPLATE" "| ID | Parent | Title | Realized By |"
+	require_text "$CAPABILITY_CATALOG_TEMPLATE" "CAP######"
+	require_text "$CAPABILITY_CATALOG_TEMPLATE" "stale rows are removed"
 fi
 
 if (( fail != 0 )); then

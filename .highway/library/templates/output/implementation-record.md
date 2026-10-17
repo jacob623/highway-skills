@@ -83,6 +83,12 @@ Result: Incompatible
 
 <high-level conceptual-to-realization blueprint>
 
+## Realized Capabilities
+
+- Title: <business-recognizable outcome>
+  Realized By: <provider, platform, product, technology, service, process, or mechanism; one or more>
+  Evidence: <accepted implementation evidence explaining the realization>
+
 ## Technology Realization
 
 - <architecture intent>: <technology or mechanism and deterministic supporting evidence>

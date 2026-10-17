@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-16T20:46:35Z",
+  "generated_at": "2026-10-17T02:41:48Z",
   "entries": [
     {
       "library_type": "template",
@@ -35,6 +35,13 @@
       "description": "Complete output skeleton for retained advisory findings.",
       "version": "1.0.0",
       "source_path": "library/templates/output/assessment-findings.md"
+    },
+    {
+      "library_type": "template",
+      "name": "capability-catalog",
+      "description": "Complete output skeleton for the generated Capability Catalog.",
+      "version": "1.0.0",
+      "source_path": "library/templates/output/capability-catalog.md"
     },
     {
       "library_type": "template",
