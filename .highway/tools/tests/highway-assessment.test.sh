@@ -53,6 +53,13 @@ for token in \
 	require_text "$SKILL" "$token"
 done
 for token in \
+	"adrs/adrs.md" "architectures/architectures.md" "implementations/implementations.md" \
+	"implementations/capabilities.md" "catalog indexes are the starting point for navigation" \
+	"source records are opened selectively for detailed evidence" \
+	"Realized By" "technology inventory" "row order" "read-only"; do
+	require_text "$SKILL" "$token"
+done
+for token in \
 	"name: assessment-findings" "metadata:" "revision: 0" "| ID | Category | Domain | Finding | Fingerprint | Status | Disposition |"; do
 	require_text "$FINDINGS" "$token"
 done

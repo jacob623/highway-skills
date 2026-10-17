@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-17T02:41:57Z",
+  "generated_at": "2026-10-17T13:49:35Z",
   "entries": [
     {
       "id": "highway-adr",
@@ -25,7 +25,7 @@
       "description": "Manages the repository-wide baseline.",
       "usage": "Invoke as `/highway-assessment`.",
       "compatibility": "all",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "source_path": "skills/highway-assessment/SKILL.md"
     },
     {
