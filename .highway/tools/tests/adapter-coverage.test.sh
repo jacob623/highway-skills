@@ -194,7 +194,7 @@ skill_currency_ok() {
 
 # --- Probe mode: a dedicated CLI path for the D3.7 harness, separate from the full scan below ---
 if [[ -n "$probe_class" ]]; then
-	SKILL_ID="highway-inquiry"
+	SKILL_ID="highway-help"
 	case "$probe_class" in
 		generated-artifact)
 			backup_dir="$(mktemp -d)"

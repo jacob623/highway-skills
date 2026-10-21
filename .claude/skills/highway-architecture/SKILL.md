@@ -1,158 +1,244 @@
 ---
 name: highway-architecture
-description: "Manages the repository-wide Reference Architecture baseline."
-usage: "Invoke as `/highway-architecture` with one ADR ID."
+description: "Manages one reference architecture from one accepted adr."
+usage: "Invoke as /highway-architecture with one adr id."
 compatibility: all
 metadata:
-  version: 1.0.0
+  version: 2.0.0
 ---
 
 # highway-architecture
 
 ## Purpose
 
-Create one deterministic, conceptual Reference Architecture from exactly one accepted ADR while
-preserving every upstream decision and governance artifact as immutable evidence.
-
-## Experience
-
-Reference Architecture work follows the Highway Experience Standard. Put `Next Action` first,
-describe architecture decisions and risks in user-relevant terms, and keep the handoff explicit.
-`User Exits` are `pause`, `cancel`, or `stop responding`; `Owner Outcomes` are `declined`,
-`aborted`, or `blocked`. This workflow does not authorize implementation or create a Reference
-Implementation.
+Creates one proposed Reference Architecture from an accepted ADR after the person accepts the proposed architecture.
 
 ## When to use
 
-- Exactly one explicit ADRXXXXXX identifier is available.
-- The identifier resolves uniquely through `architectures/architectures.md`'s ADR source catalog.
-- The resolved ADR status is accepted and its decision, alternatives, consequences, constraints,
-  and traceability are readable.
-- The architecture catalog and both shared architecture templates are available:
-  `.highway/library/templates/output/architecture-record.md` and
-  `.highway/library/templates/output/architecture-catalog.md`.
+- The person invokes `/highway-architecture` with one ADR id.
+- The person invokes `/highway-architecture` without an ADR id.
 
 ## When not to use
 
-- Do not use for a missing, lowercase, ambiguous, duplicated, or implicit ADR identifier.
-- Do not use for a non-accepted ADR, an ADR alternative, implementation generation, capability
-  artifact generation, lifecycle activity, diagram or threat-model production, brownfield onboarding,
-  or architecture scoring.
-
-## Direct invocation guard
-
-The invocation must contain exactly one explicit uppercase `ADR######` identifier. When the
-identifier is missing, respond before processing:
-
-```text
-Next Action: Provide the Architecture Decision Record to use.
-
-Which ADR would you like to convert into a Reference Architecture?
-
-Examples:
-- ADR000001
-- ADR000002
-```
-
-A missing identifier must allocate no identifier, create no Reference Architecture, and select no ADR automatically. The guard must not select the newest or only ADR, must not infer an ADR from context, and must not use filesystem order, timestamps, recency, environment state, or session memory. It must preserve every pre-operation architecture and catalog byte.
-
-For an explicit identifier, validate exact format, existence, unique resolution, and accepted
-status, then apply the canonical completeness validator and canonical readiness validator before
-processing. Any invalid, missing, duplicate, ambiguous, malformed, incomplete, or not-ready ADR
-stops without writes and uses the established failure outcome.
+Do not select an ADR by recency, filename, or batch.
+Do not use an ADR whose status is not `accepted`.
+Do not change the ADR, Discovery, Request, Profile, Objectives, Controls, or NFRs.
+Do not select a different ADR alternative.
+Do not create a Reference Implementation or authorize implementation.
+Do not create capability records or capability ids.
+Do not report Status, Summary, Next Action, Blocking Reason, Missing, Complete, or Blocked.
 
 ## Inputs
 
-Required inputs are exactly one explicit `ADRXXXXXX`, the authoritative ADR catalog and resolved
-ADR record, Highway Identity and Experience Standard context, and the two shared architecture
-output templates. Optional read-only inputs are Profile, Objectives, Controls, and NFRs. Resolve
-all inputs by declared identifiers and catalog entries, never by newest file, filesystem order,
-timestamps, environment state, or session state.
-
-## Ownership and evidence
-
-ADR remains authoritative for its decision, rationale, alternatives, consequences, constraints, and
-authorization to proceed to Reference Architecture. The architecture workflow owns the conceptual
-architecture representation, architecture relationships, assumptions, risks, capability candidates,
-and future implementation guidance. It does not modify ADR, Discovery, Request, Profile, Objective,
-Control, or NFR artifacts; select an ADR alternative; authorize implementation; or create a
-Reference Implementation.
-
-Optional governance is advisory only:
-
-- missing -> continue without fabricated evidence
-- blocked -> continue and record the source condition as an architecture risk
-- valid -> use as advisory context, relationships, constraints, or capability evidence
-- malformed or inconsistent -> abort without writes
-
-## Entities and state
-
-An accepted ADR is one required source and produces at most one architecture. A Reference
-Architecture record has a permanent catalog-owned `ARCHXXXXXX` identifier, the source `ADRXXXXXX`,
-initial status `proposed`, and a deterministic title derived from the accepted ADR title. The
-architecture catalog owns `Next ID`, direct record index entries, and ADR uniqueness. The state
-transition is `no architecture -> validate -> allocate -> proposed architecture`; duplicate or
-failed operations leave the prior state unchanged.
+- One ADR id that matches one row in `adrs/adrs.md`, when the person supplies one.
+- `adrs/adrs.md` and `architectures/architectures.md`.
+- The accepted ADR at `adrs/[ID].md`.
+- Accepted Profile, Objectives, Controls, and NFRs when present.
+- `architectures/architectures.md` and `architectures/RA*.md` when present.
+- `.highway/library/templates/output/architecture-record.md`.
+- `.highway/library/templates/output/architecture-catalog.md`.
+- `.highway/governance/experience-standard.md`.
+- A project root containing `.highway/`.
 
 ## Outputs
 
-A successful run produces exactly one `architectures/ARCHXXXXXX.md` record and one direct entry in
-`architectures/architectures.md`. The record follows `.highway/library/templates/output/architecture-record.md`.
-The catalog follows `.highway/library/templates/output/architecture-catalog.md`. The record includes
-Context, Architecture Summary, Architecture Style, Logical Components, Interaction Model, Trust
-Boundaries, Deployment Pattern, Key Technologies, Inherited ADR Decisions, Constraints, Objective,
-Control, and NFR Relationships, Required Capabilities, Assumptions, Risks, Reference Implementation
-Guidance, and Traceability. Empty optional evidence is explicit `None`.
+The complete structure is `.highway/library/templates/output/architecture-record.md` and `.highway/library/templates/output/architecture-catalog.md`.
 
-Required capabilities are advisory candidates only. No capability artifacts, capability identifiers,
-implementation artifacts, or implementation authorization are produced. The output includes
-Reference Implementation Guidance as a future handoff, and implementation authorization is excluded.
+- One architecture record at `architectures/[ID].md` after the person accepts the proposed architecture.
+- An updated `architectures/architectures.md` written with that record.
+- A closing message that names the architecture and the implementation command.
+- No architecture when the ADR is missing, not accepted, or a write fails.
 
-## Workflow
+## Procedure
 
-1. Validate that invocation contains exactly one explicit uppercase `ADRXXXXXX` identifier.
-2. Resolve exactly one catalog entry and ADR record; require ADR status `accepted` and reject duplicate
-   ADR-to-architecture entries.
-3. Read optional governance in identifier order and apply the missing, blocked, valid, or malformed
-   handling above without mutating any source.
-4. Project the ADR decision, rationale, alternatives, consequences, constraints, relationships,
-   and traceability into the architecture model without changing their meaning or selecting another
-   alternative.
-5. Generate the complete record and catalog in memory from the shared templates.
-6. Validate all required sections, references, status, relationships, ordering, and scope (validation before persistence).
-7. Read and reserve the exact catalog `Next ID`; retry an allocation conflict only within the
-   existing bounded retry limit.
-8. Publish the record and catalog atomically, advancing `Next ID` exactly once.
-9. Verify source-byte preservation, one record, one catalog entry, proposed status, and the complete
-   traceability chain before reporting completion.
+Emit only the active template. Follow this order: `choose` when no ADR id is supplied; otherwise `start`, then `identifier`, `title` when needed, `write`, and `close`. The ADR remains the decision. Inherit its decision, rationale, alternatives, consequences, and constraints without changing their meaning. Describe the architecture in conceptual terms. A platform, product, vendor, or specific technology stays in the inherited decision and is not part of the architecture. A missing Profile, Objective, Control, or NFR continues without invented evidence. A malformed one of those baselines stops the skill and writes nothing.
 
-## Determinism and failure handling
+One accepted ADR produces at most one architecture. When the architecture catalog already has that ADR as Parent, show the recorded architecture and write nothing.
 
-Identical declared inputs and catalog state produce byte-identical content, identifiers, ordering,
-and catalog results. Components, relationships, capabilities, assumptions, risks, and sections use
-stable identifier and declared-source ordering. Generated content contains No timestamps, dates,
-environment identifiers, random values, or session identifiers.
+### Entry
 
-Validation happens before persistence. Resolution, status, malformed or inconsistent governance,
-duplicate, catalog allocation, validation, or write failure aborts without writes; no partial output
-is reported as success. Allocation conflicts stop after the bounded retry limit. Existing ADR and all
-upstream records remain byte-identical.
+1. Read the invocation for one ADR id.
+2. When none is present, go to `choose`.
+3. When an ADR id is present, resolve it. When it matches no ADR, stop. Say the ADR was not found. Write nothing.
+4. When that ADR status is not `accepted`, stop. Say the ADR is not accepted. Write nothing.
+5. When that ADR is already Parent of an architecture, show the recorded architecture. Write nothing.
+6. Otherwise go to `start`.
+
+### choose
+
+Read `adrs/adrs.md` and `architectures/architectures.md`. An ADR is waiting when its Status is `accepted` and its ADR ID does not appear on any architecture catalog row. A removed architecture row still counts as that ADR already having an architecture. Do not open ADR records to build this list.
+
+When none are waiting, say that no ADR is waiting for a Reference Architecture. Write nothing.
+
+Otherwise emit one numbered line per waiting ADR, starting at 1, in ADR catalog order. Show the ADR ID and its title. A stated number selects that ADR.
+
+**1. [ADR ID]:** [ADR Title]
+
+**Which ADR would you like to turn into a Reference Architecture?**
+
+- An ADR id, a listed ADR title, or its number: follow Entry from case 3.
+- `unknown`: re-emit this list. Stay on `choose`.
+- `decline`: stop. Write nothing.
+
+### Classify
+
+Classify the latest reply before any other action.
+
+- `edit`: adds, removes, corrects, or replaces architecture text.
+- `accept`: affirms the proposed architecture and adds no fact.
+- `unknown`: the person says they do not know.
+- `question`: asks for an explanation.
+- `decline`: the person stops or cancels.
+
+On `start`, "looks good" is `accept`.
+
+### start
+
+Build the proposed architecture from the accepted ADR. Keep it conceptual. Do not authorize implementation. Do not name a platform, product, vendor, or specific technology in the summary, style, components, interactions, deployment, or technologies.
+
+**Here is a proposed starting point for your architecture:**
+
+**Summary:** [What this architecture is, in conceptual terms.]
+
+**Style:** [The conceptual style.]
+
+**Components:**
+- **[Component]:** [Its purpose. Not a product or platform.]
+
+**Interactions:** [How the components communicate, without naming a product or platform.]
+
+**Trust boundaries:** [Ownership and responsibility boundaries, or `None`.]
+
+**Deployment:** [The conceptual deployment approach, or `None`.]
+
+**Technologies:** [ADR-supported technology considerations. Remain conceptual, or `None`.]
+
+**Constraints:** [ADR, Control, and NFR constraints, or `None`.]
+
+**Risks:** [Architecture risks, or `None`.]
+
+**Capabilities:** [Advisory capability candidates, or `None`.]
+
+**What would you add, correct, or remove?**
+
+If this is accurate, just say so.
+
+- `edit`: emit one consequence sentence. When the edit names a platform, product, vendor, or specific technology, say that it belongs on the Reference Implementation and leave it out of this architecture. Re-emit this block with the edit applied. Stay on `start`.
+- `accept`: go to `identifier`.
+- `unknown`: re-emit this block. Stay on `start`.
+- `question`: answer, then re-emit this block. Stay on `start`.
+- `decline`: stop. Write nothing.
+
+### identifier
+
+The architecture title is the ADR title unless the person supplied a title.
+
+1. Lowercase the title. Remove hyphens and apostrophes. Split the rest into words.
+2. Take eight letters: the first two of word 1, the first two of word 2, the first two of word 3, and the last two of the last word. When the title has only two words, the third sample is the first two of the last word.
+3. When a word is shorter than two letters, continue into the next word. A one-word title repeats until there are eight letters.
+4. Map each letter. Digits stay as they are.
+
+a 0, b 1, c 2, d 3, e 4, f 5, g 6, h 7, i 8, j 9, k a, l b, m c, n d, o e, p f, q 0, r 1, s 2, t 3, u 4, v 5, w 6, x 7, y 8, z 9.
+
+5. The id is `RA` plus those eight hex digits.
+
+Compare that id with `architectures/architectures.md`, including removed rows.
+
+- The same title already has that id: use the existing record. Do not write a second one. Go to `close`.
+- The id is taken for a different title: go to `title`.
+- The id is free: go to `write`.
+
+### title
+
+Name each conflicting title. Say that a title change is appropriate. Then show the new title for acceptance.
+
+The existing Architecture Title, **[Existing title]** and this new Architecture Title, **[this title]**, are too similar. A title change is appropriate. I would recommend:
+
+**[New title]**
+
+**What would you add, correct, or remove?**
+
+If this is accurate, just say so.
+
+The new title is a small change the person can recognize. Its derived id must be free. Do not mention identifiers, hex, sampling, or the catalog.
+
+- `accept`: replace the held title. Return to `identifier`.
+- `edit`: use the person's title. Return to `identifier`.
+- `question`: answer in one sentence. Re-emit this message.
+- `unknown`: re-emit this message.
+
+Do not write until the id is free or the existing record is reused.
+
+### write
+
+Write `architectures/[ID].md` and `architectures/architectures.md` together. Write neither file until both are valid. A failed write leaves every existing architecture byte unchanged. Say what failed in terms the person can act on. Stay on `write`.
+
+The record follows `.highway/library/templates/output/architecture-record.md`.
+
+- `id` is the derived `RA` id.
+- `adr` is the ADR id.
+- `status` is `accepted`.
+- The title is the accepted architecture title.
+- Include Context, Architecture Summary, Architecture Style, Logical Components, Interaction Model, Trust Boundaries, Deployment Pattern, Key Technologies, Inherited ADR Decisions, Constraints, Objective Relationships, Control Relationships, NFR Relationships, Required Capabilities, Assumptions, Risks, Reference Implementation Guidance, and Traceability.
+- Architecture Summary, Architecture Style, Logical Components, Interaction Model, and Deployment Pattern stay conceptual.
+- Key Technologies are ADR-supported technology considerations and remain conceptual, or `None`. Do not name a platform, product, vendor, or specific technology.
+- Inherited ADR Decisions records the ADR decision without turning that decision into a component or a technology choice.
+- Traceability names the Request, Discovery, ADR, and this architecture.
+- Required Capabilities are advisory text. Do not assign capability ids.
+- Reference Implementation Guidance does not authorize implementation.
+- Empty optional evidence is `None`.
+- Emit no timestamp, random value, or environment value.
+
+The catalog follows `.highway/library/templates/output/architecture-catalog.md`.
+
+- The index columns are Architecture ID, ADR ID, Architecture Title, Architecture Path, and Status.
+- Architecture ID is the `RA` id. ADR ID is the ADR id. Architecture Path is `architectures/<RA id>.md`. Status is `accepted`.
+- Order the index by ID.
+- Do not allocate from `Next ID`.
+- The first catalog version is `1.0.0`.
+- Adding an architecture increments the minor version.
+- One ADR id appears as Parent on at most one row.
+
+On success, go to `close`.
+
+### close
+
+**Reference Architecture accepted**
+
+- **Architecture record:** `architectures/[RA id].md`
+- **Title:** [Title]
+- **Identifier:** `[RA id]`
+- **ADR:** `[ADR id]`
+
+Run `/highway-implementation [RA id]` to create the Reference Implementation.
 
 ## Verification
 
-Confirm exactly one accepted ADR, one permanent architecture identifier, one record, one direct
-catalog entry, proposed status, complete required sections, stable relationships, unchanged source
-bytes, and no deferred artifacts. Confirm the completion response includes Architecture ID, ADR ID,
-record path, catalog path, and available `REQXXXXXX -> DISCXXXXXX -> ADRXXXXXX -> ARCHXXXXXX`
-traceability. Confirm the architecture remains conceptual and implementation authorization is
-excluded.
+- An ADR id for an accepted ADR opens the proposed architecture.
+- An invocation without an ADR id lists the accepted ADRs whose ADR ID is absent from every architecture catalog row. Each line shows the ADR ID and its title. The list is numbered. A stated number selects that ADR. A removed architecture row keeps that ADR off the list.
+- One accepted ADR produces at most one architecture.
+- The proposed architecture is accepted before the record is written.
+- The architecture does not change the ADR decision.
+- The architecture remains conceptual. It names no platform, product, vendor, or specific technology.
+- The record status is `accepted` after the person accepts the architecture.
+- Required capabilities have no capability ids.
+- Implementation is not authorized.
+- Each id is `RA` plus eight hex digits derived from the title.
+- The catalog index columns are Architecture ID, ADR ID, Architecture Title, Architecture Path, and Status.
+- A taken id names the conflicting titles, says a title change is appropriate, and shows a new title. The write waits until the person accepts that title.
+- That message does not mention identifiers, hex, sampling, or the catalog.
+- A failed write leaves existing architecture bytes unchanged.
+- The closing message names `/highway-implementation [RA id]`.
+- The skill creates no Reference Implementation.
 
 ## Error Handling
 
-Invalid, missing, ambiguous, duplicate, malformed, non-accepted, or inconsistently resolved inputs,
-allocation conflicts after the bounded retry limit, validation failures, and write failures return a
-clear failure with no partial architecture or catalog output.
+- A missing or unknown ADR stops the skill and writes nothing.
+- An ADR that is not accepted stops the skill and writes nothing.
+- A second architecture for the same ADR stops the write and shows the existing architecture.
+- A malformed present Profile, Objective, Control, or NFR baseline stops the skill and writes nothing.
+- A failed write leaves existing architecture and catalog bytes unchanged.
 
 ## Example
 
-`/highway-architecture ADR000001`
+`/highway-architecture ADRb7c41e20`

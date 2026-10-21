@@ -1,0 +1,8 @@
+Baseline recorded 2026-10-21.
+
+Sandboxed `.highway/tools/tests/run-all.sh` reported 95 passed and 4 failed:
+adapter-coverage.test.sh, constitution-inventory.test.sh, distribution-packaging.test.sh, validation-cache.test.sh.
+
+Those four failures were sandbox limits (`xargs: sysconf(_SC_ARG_MAX) failed` and stale-adapter checks that did not reproduce). Re-run outside the sandbox, each exited 0.
+
+The pre-promotion suite is green when it is not sandboxed.

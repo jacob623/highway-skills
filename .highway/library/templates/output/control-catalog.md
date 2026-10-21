@@ -2,7 +2,7 @@
 name: control-catalog
 description: "Complete output skeleton for the repository Control baseline catalog."
 metadata:
-  version: 1.0.0
+  version: 2.0.0
 ---
 
 ## Catalog Structure
@@ -12,15 +12,17 @@ metadata:
 
 Version: 1.0.0
 
-Next ID: CTLXXXXXX
-
 ## Control Index
 
 | Control ID | Title | Status |
 |------------|-------|--------|
-| CTLXXXXXX | <deterministic control title> | active |
+| <CTL plus 8 hex digits> | <accepted control title> | <active or removed> |
 ```
 
-The catalog owns the baseline version, next identifier, and Control index. Entries are unique and
-ordered by permanent Control identifier; allocation state remains authoritative in the user-owned
-catalog.
+The catalog owns the baseline version and the Control index. It has no `Next ID` field.
+
+Each Control ID appears once. Rows are ordered by Control ID. The id is `CTL` plus the eight hex digits derived from the title.
+
+`active` has a record at `library/governance/controls/<id>.md`. `removed` has no record file. A removed row stays in the index, keeps the title that last held that id, and leaves the id taken.
+
+An empty baseline contains `Version: 1.0.0` and the index header, with no data rows. Do not write a placeholder id as a row.

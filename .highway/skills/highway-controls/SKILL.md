@@ -1,7 +1,7 @@
 ---
 name: highway-controls
-description: "Manages the repository-wide Control baseline, adding, updating, removing and replacing the Controls that govern the repository."
-usage: "Invoke as `/highway-controls` and state what to change, for example `/highway-controls add a control requiring administrative access to use MFA`."
+description: "Manages the repository-wide control baseline."
+usage: "Invoke as /highway-controls."
 compatibility: all
 metadata:
   version: 5.0.0
@@ -11,381 +11,233 @@ metadata:
 
 ## Purpose
 
-Maintains the repository-wide Control baseline as user-owned, identified Markdown records that define
- enforceable safeguards later Highway artifacts may reference.
+Collects controls when setup delegates this skill.
 
-## Experience
+## When to use
 
-User-visible interaction follows the Highway Experience Standard.
+- `highway-setup` delegates this skill after Objectives returns `Finished`.
+- `highway-setup` delegates this skill when setup runs again.
 
-## Response Support Text
+## When not to use
 
-Use the support text that matches the active interaction. Keep the Validation Question as the only
-emphasized element in a Control review.
+Do not create Objectives, NFRs, Capabilities, or governance rules.
+Do not treat a recommendation or a queued title as a captured Control.
+Do not report Status, Summary, Next Action, Blocking Reason, Missing, Complete, or Blocked.
+Do not emit Setup's safeguard transition. Setup already emitted it.
 
-**Validation Question**
+## Inputs
+
+- Project root containing `.highway/`.
+- `.highway/library/knowledge/profile.md` when present.
+- `library/governance/objectives.md` and `library/objectives/` when present.
+- `library/governance/controls.md` when present.
+- `library/governance/controls/CTL*.md` when present.
+- `.highway/library/templates/output/control-record.md`.
+- `.highway/library/templates/output/control-catalog.md`.
+- `.highway/governance/experience-standard.md`.
+- Delegation from `highway-setup`.
+
+## Outputs
+
+The complete structure is `.highway/library/templates/output/control-record.md` and `.highway/library/templates/output/control-catalog.md`.
+
+- Updated Control records and catalog after a review edit.
+- New Control records and catalog after the guided flow writes them.
+- `Finished` returned to `highway-setup` after review acceptance or a successful guided write.
+- `Finished` is not shown to the person.
+
+## Procedure
+
+User-visible interaction follows the Highway Experience Standard. Repository ownership stays with the person.
+
+Emit only the active template. Follow this order: `review` when the catalog exists; otherwise `recommend`, then `queue` or `ask`, then `capture`, then `identifier`, `title` when needed, and `write`. Follow `.highway/governance/experience-standard.md` for attribution and acceptance wording. Use the accepted Organization Name from the Profile. Use Repository Name when no Organization Name is accepted. Do not ask for Profile or Objective facts already accepted.
+
+A Control is an enforceable safeguard: what must remain true. Do not write an Objective, a metric, or an implementation plan.
+
+### Entry
+
+1. Read `library/governance/controls.md` and each active record it indexes.
+2. If the catalog is present and readable, and every active row has a readable record, go to `review`.
+3. If the catalog is absent, go to `recommend` when `profile.md` and `library/governance/objectives.md` are readable. Otherwise go to `ask`.
+4. If the catalog is unreadable, or an active row has no readable record, stop. Say the Controls could not be read. Leave every file unchanged. Do not return `Finished`.
+
+A removed row has no record file. Do not treat that as unreadable.
+
+### Classify
+
+Classify the latest reply before any other action.
+
+- `select-all`: affirms every recommendation in the current set and adds no separate safeguard.
+- `select`: names one or more recommendations in the current set.
+- `own`: supplies a safeguard that is not a displayed title.
+- `more`: asks for more suggestions.
+- `review-now`: asks to review the queue, or affirms a queue prompt that asks whether to review.
+- `edit`: adds, removes, corrects, splits, combines, or replaces substance.
+- `accept`: affirms the current capture or review body and adds no fact.
+- `unknown`: the person says they do not know.
+- `question`: the person asks for an explanation.
+- `decline`: the person explicitly drops the active Control.
+
+On a recommendation set, "looks good" is `select-all`. On a queue prompt that asks whether to review, "looks good" and "let's review" are `review-now`. On a capture or on `review`, "looks good" is `accept`.
+
+### review
+
+Show every active Control in catalog order. Omit frontmatter, omit the catalog, and omit removed rows. For each Control emit:
+
+**Title:**
+[Title]
+
+**Statement:**
+[Statement]
+
+**Why it matters:**
+[Rationale]
+
+When no active Control is recorded, emit: No controls are recorded yet.
+
+Then emit the validation block.
+
+- `edit`: emit one consequence sentence. Apply the edit to the named Control. Preserve every Control the person left unchanged. An added safeguard becomes a new record. A removed Control deletes that record file and keeps its catalog row with status `removed`, so the id stays taken. Derive the id before writing. When the id is taken for a different title, go to `title` and do not write yet. Otherwise rewrite the affected records and the catalog. Show the updated Controls and emit the validation block. Stay on `review`.
+- `accept`: return `Finished`. Emit nothing else.
+- `unknown`: show the Controls and emit the validation block. Stay on `review`.
+- `question`: answer in one sentence. Show the Controls and emit the validation block. Stay on `review`.
+
+Validation block:
 
 **What would you add, correct, or remove?**
 
-A sharper question may replace it when it still invites correction rather than agreement.
-
-**Acceptance Reassurance**
-
 If this is accurate, just say so.
 
-Use when reviewing a Control proposal.
+### recommend
 
-**Discovery Reassurance**
+Build one set from the accepted Profile and accepted Objectives.
 
-If you're not sure, just say "I don't know," and we'll work through it together.
+1. Derive specific safeguards from the accepted Profile and accepted Objectives first.
+2. Check coverage across Identity and Access, Information Protection, Change and Operations, Resilience, and Monitoring and Accountability. Do not name those areas.
+3. Add a safeguard from an uncovered area only when it would reasonably benefit this organization. Adapt it to the accepted Profile and accepted Objectives.
+4. Do not add a safeguard only to fill an area.
+5. Omit a title already queued, already shown, or already captured.
+6. Emit 3 to 5 recommendations. Emit fewer when fewer are grounded. Go to `ask` when none are grounded.
 
-Use when the person is originating unresolved safeguard information without a grounded recommendation,
-interpretation, or Working Idea.
+Each recommendation is a bold title and one sentence. Do not say which source produced it.
 
-**Combined Reassurance**
+When the queue is empty, emit:
 
-If this is accurate, just say so. If you're not sure, just say "I don't know," and we'll work through it together.
+Based on [Name]'s profile and accepted business objectives, here are recommended safeguards that connect directly to [two or three accepted themes]:
 
-Use when either confirming a grounded proposal or not knowing is reasonable.
-
-**Recommendation Reassurance**
+- **[Title]:** [One sentence.]
 
 If none of these fit, feel free to suggest your own safeguard.
 
-Use whenever recommendations are presented. The user-authored path remains available and a
-recommendation never requires adoption.
+**Which of these safeguards would you like to establish, or what would you like to focus on?**
 
-**Additional Suggestions Reassurance**
+When the queue already has Controls, emit:
 
-If you'd like additional suggestions, just let me know.
+Looking across [the uncovered area, in the person's terms] alongside your accepted profile and objectives, here are additional safeguards tailored to [Name]:
 
-Use after recommendations, captured Controls, portfolio assessments, or other active collection
-steps when future recommendation support remains available.
+- **[Title]:** [One sentence.]
 
-## Recommendation Development
+If none of these fit, feel free to suggest your own safeguard. If you'd like additional suggestions, just let me know.
 
-Recommendations are grounded primarily in accepted Profile evidence, accepted Objectives, existing
-Controls, and declared external expertise. When useful accepted context supports a recommendation,
-offer a grounded safeguard recommendation before asking an unnecessary question:
+**Would you like to select any of these safeguards, modify them, or are you ready to review the selected Controls?**
 
-- explain why it is relevant;
-- keep the user-authored path available.
+- `select-all`: add every title in the set to the queue, in displayed order. Go to `queue`.
+- `select`: add the named titles to the queue. Go to `queue`.
+- `own`: add the person's safeguard to the queue. Go to `queue`.
+- `edit`: emit one consequence sentence. Re-emit this set with the edit applied. Stay on `recommend`.
+- `more`: go to `more`.
+- `review-now`: go to `capture` of the first queued Control. When the queue is empty, stay on `recommend`.
+- `question`: answer in one sentence. Re-emit this set. Stay on `recommend`.
+- `unknown`: re-emit this set. Stay on `recommend`.
 
-Recommendations remain Working Ideas until accepted.
+### more
 
-### Objective-Informed Recommendations
+Build the next set with the `recommend` rules. When at least one grounded recommendation remains, emit that set and stay on `recommend`.
 
-Accepted Objectives are one of the strongest sources of Control recommendations.
+When none remain, emit no bullets. Emit:
 
-Every accepted Objective should be evaluated as a potential source of Control recommendations.
+Additional suggestions at this stage would largely overlap or subdivide these safeguards.
 
-Objectives participate in recommendation generation.
+**Are you ready to review the selected Controls?**
 
-Objectives do not create Controls.
+Stay on `queue` for the reply.
 
-Objectives do not transfer ownership.
+### queue
 
-Objective influence is recommendation-oriented, not lifecycle-oriented.
+Emit the titles just added:
 
-Examples:
+The [count just added] recommendations have been added to the active Control queue:
 
-```text
-Scale Craft Kit Production
-↓
-Validate Backup Recovery
+1. **[Title]**
 
-Improve Reporting
-↓
-Maintain Audit Logging
+Number every title just added.
 
-Expand Educational Partners
-↓
-Protect Sensitive Information
-```
+When the queue already had titles, continue with the full queue:
 
-## Control Coverage Areas
+The queue now contains [total] selected safeguards:
 
-Control recommendations are currently derived primarily from accepted Profile and Objective evidence.
+1. **[Title]**
 
-Expand recommendation generation to use two complementary recommendation sources:
+[One sentence naming the areas the queue covers.]
 
-1. Accepted Profile and Objective evidence.
-2. Control Coverage Areas.
+When grounded non-duplicate recommendations remain, emit them in the same message. Build the set with the `recommend` rules. Emit:
 
-Context-derived recommendations remain the preferred source when accepted evidence clearly supports
-specific safeguards.
+Based on [Name]'s profile and accepted objectives, here are additional recommended safeguards that connect directly to [two or three accepted themes]:
 
-Control Coverage Areas exist to improve recommendation coverage.
+- **[Title]:** [One sentence.]
 
-Control Coverage Areas:
-- do not create organizational facts;
-- do not establish organizational intent;
-- do not imply organizational problems exist;
-- do not replace context-grounded recommendations;
-- remain recommendation-generation guidance only.
+If none of these fit, feel free to suggest your own safeguard.
 
-### Coverage Principle
+**Which of these safeguards would you like to establish, or what would you like to focus on?**
 
-Accepted Profile and Objective evidence may reveal safeguards tied to the organization's mission,
-operations, technology use, or known constraints. Many useful safeguards are not visible in the accepted
-context alone. Control Coverage Areas exist to surface commonly useful safeguard areas when accepted
-evidence would not naturally reveal them.
+Do not ask whether to explore more safeguards.
 
-### Coverage Areas
+- `select-all`: add every title in this new set to the queue. Emit `queue` again.
+- `select`: add the named titles. Emit `queue` again.
+- `own`: add the person's safeguard. Emit `queue` again.
+- `edit`: emit one consequence sentence. Re-emit the queue list and this set with the edit applied. Stay on `queue`.
+- `more`: build another set that omits every title already shown. When one remains, emit it with the additional-recommendation intro above. Stay on `queue`.
+- `review-now`: go to `capture` of the first queued Control. Do not add the unselected set.
+- `question`: answer in one sentence. Re-emit the queue message. Stay on `queue`.
+- `unknown`: re-emit the queue message. Stay on `queue`.
 
-Use five recommendation areas.
+When no grounded non-duplicate recommendation remains, emit no recommendation bullets. After the queue list, emit:
 
-##### Identity & Access
+Additional suggestions at this stage would largely overlap or subdivide these safeguards.
 
-Safeguards governing identity, authentication, authorization, administrative access, and privilege.
+**Are you ready to review the selected Controls?**
 
-##### Information Protection
+- `review-now` or `accept`: go to `capture` of the first queued Control.
+- `own`: append that safeguard and emit `queue` again.
+- `more`: re-emit this message.
+- `question`: answer in one sentence. Re-emit this message.
+- `unknown`: re-emit this message.
 
-Safeguards governing sensitive information, confidentiality, integrity, handling, and disclosure.
+Do not write a file from `queue`. After `review-now`, do not return to `recommend`.
 
-##### Change & Operations
+### ask
 
-Safeguards governing change control, maintenance, deployment, operational procedures, and continuity of work.
+Emit this only when no grounded recommendation is available:
 
-##### Resilience
+**What concerns should future technology decisions take into account?**
 
-Safeguards governing availability, recovery, fault tolerance, and response to disruption.
+If you're not sure, just say "I don't know," and we'll work through it together.
 
-##### Monitoring & Accountability
+- `own` or `edit`: add that safeguard to the queue. Go to `queue`.
+- `unknown`: re-emit this template. Stay on `ask`.
+- `question`: answer in one sentence. Re-emit this template. Stay on `ask`.
+- `decline`: write the empty catalog described in `write`. Return `Finished`. Emit nothing else.
 
-Safeguards governing logging, monitoring, review, evidence, and accountability.
+### capture
 
-### Recommendation Generation
+Develop the first queued Control that is not yet accepted or declined.
 
-When possible, adapt coverage-derived recommendations to accepted Profile evidence, accepted Objectives,
-and accepted Controls rather than presenting generic labels.
-
-When generating recommendations:
-
-1. Generate context-derived recommendations first.
-2. Evaluate recommendation coverage across the five Control Coverage Areas.
-3. Determine whether meaningful coverage gaps exist.
-4. When useful coverage gaps exist, generate one or more coverage-derived recommendations.
-5. Present context-derived and coverage-derived recommendations together as a single recommendation set.
-
-Do not expose Coverage Areas to the user.
-
-Do not ask the user to choose Coverage Areas.
-
-Do not present Coverage Areas as categories or workflow concepts.
-
-Users should only see recommended Controls.
-
-### Coverage Evaluation
-
-Before presenting recommendations, evaluate whether accepted recommendations are concentrated in one
-safeguard area. The purpose is recommendation coverage rather than recommendation volume. Do not
-manufacture recommendations simply to satisfy every area. Only surface coverage-derived recommendations
-when they may reasonably benefit the organization.
-
-### Recommendation Presentation
-
-Coverage-derived recommendations must follow the same presentation contract as context-derived
-recommendations. Do not distinguish recommendations by origin or reveal recommendation source,
-coverage area, or internal coverage evaluation.
-
-### Recommendation Exploration
-
-Recommendation Exploration, Queue Construction, and review of selected Controls are separate phases.
-
-```text
-Recommendation Exploration
-↓
-Queue Construction
-↓
-Review of selected Controls
-```
-
-Review of selected Controls begins only when:
-
-- recommendation exploration is exhausted; or
-- the person explicitly requests review of the selected Controls.
-
-Examples of explicit review requests include:
-
-```text
-Review the selected Controls.
-
-Let's review these Controls.
-```
-
-Recommendation selection alone does not begin review.
-
-Selecting recommendations continues recommendation exploration and queue construction.
-
-Recommendation exploration remains active after recommendation selection.
-
-Selecting recommendations expands the active queue.
-
-Selection does not end recommendation exploration.
-
-Recommendation exhaustion occurs when:
-
-- no useful grounded non-duplicate recommendation remains; or
-- remaining recommendations would primarily repeat existing coverage, overlap accepted Controls, or restate already queued recommendations.
-
-Recommendation exploration continues while:
-
-- useful grounded recommendations remain;
-- the user requests additional suggestions;
-- the user continues selecting recommendations.
-
-Recommendation exploration ends when:
-
-- recommendation exhaustion occurs;
-- the user provides their own Control;
-- the person explicitly requests review of the selected Controls.
-
-A user-provided Control follows the normal proposal and acceptance path. It does not silently review the selected Controls.
-
-Recommendations currently under evaluation are not queue members.
-
-Queued recommendations are recommendations the person has selected.
-
-Queued recommendations remain
-unreviewed Working Ideas until
-review begins.
-
-Only selected recommendations are eligible for review.
-
-Once review begins, recommendation exploration is closed.
-
-Do not return to recommendation generation until review of the selected Controls is complete.
-
-#### Illustrative Recommendation Exploration Example
-
-```text
-Recommendations:
-
-- Require MFA
-- Protect Sensitive Information
-- Maintain Audit Logging
-- Validate Backups
-
-User:
-Select all.
-
-Owner:
-The selected recommendations are added
-to the active Control queue.
-
-Recommendation exploration remains active.
-
-Review of the selected Controls has not started.
-
-Additional Recommendations:
-
-- Review Administrative Access
-- Validate Recovery Procedures
-
-User:
-Select both.
-```
-
-The queue now contains six recommendations.
-
-Recommendation exploration remains active.
-
-Review of the selected Controls has not started.
-
-### Additional Suggestions
-
-When a person requests additional suggestions, evaluate both:
-
-- accepted Profile evidence;
-- accepted Objective portfolio;
-- accepted Control portfolio.
-
-Additional suggestions may come from unaddressed accepted context, recommendation coverage gaps
-identified through Control Coverage Areas, or meaningful gaps within the accepted Control portfolio.
-
-Example:
-
-Accepted Controls:
-- Administrative access
-- Sensitive information
-- Audit logging
-
-Reasonable additional suggestion:
-
-- Validate Backups Regularly
-
-The recommendation remains a Working Idea until adopted.
-
-### Recommendation Boundaries
-
-Control Coverage Areas:
-- recommend;
-- illuminate coverage gaps;
-- expand recommendation diversity.
-
-Control Coverage Areas do not:
-- establish accepted Controls;
-- establish organizational facts;
-- establish organizational deficiencies;
-- create readiness requirements;
-- create lifecycle stages;
-- change Control ownership, persistence, or acceptance behavior.
-
-All recommended Controls remain Working Ideas until the person selects, modifies, or provides their
-own Control and the normal Control Development Lifecycle continues unchanged.
-
-## Control Development Lifecycle
-
-Every Control follows the same development lifecycle:
-
-Recommendation Selected or User Provided Control
-↓
-Present Converged Control proposal
-↓
-User Acceptance
-↓
-Capture
-↓
-Next Control
-
-A Converged Control proposal contains:
-
-- Control title;
-- enforceable safeguard statement;
-- synthesized Rationale.
-
-The Control owner is expected to develop a complete first-pass Control proposal whenever accepted
-Profile or Objective evidence reasonably supports one.
-
-The person may:
-
-- approve it;
-- correct it;
-- replace it;
-- reject it.
-
-The owner does not require the person to create the complete Control from scratch when accepted
-evidence already supports a responsible proposal.
-
-Control development should normally begin from a proposal rather than a question.
-
-Conversational discovery remains available but is the exception path.
-
-Use discovery when:
-
-- accepted evidence cannot support a responsible Converged Control proposal;
-- consequential ambiguity remains unresolved;
-- safeguard ambiguity cannot be resolved responsibly.
-
-Do not ask a discovery question when a grounded Converged Control proposal can reasonably be presented first.
-
-When presenting the Converged Control proposal:
+The title is the queued title unless the person changes it. The statement is one paragraph stating what must remain true. The rationale is one paragraph grounded in the accepted Profile and accepted Objectives.
 
 **Here's what I've captured as your Control:**
 
 **Title:**
-[Control Title]
+[Title]
 
 **Statement:**
 [Statement]
@@ -395,374 +247,118 @@ When presenting the Converged Control proposal:
 
 **What would you add, correct, or remove?**
 
-## Control Queue and Acceptance Boundaries
+If this is accurate, just say so.
 
-Selection does not capture a Control. Selection identifies which Control should be developed next, and a
-selected recommendation enters the active Control queue. Queue membership determines development order
-only; Queue membership is not Control capture.
+- `edit`: emit one consequence sentence. Re-emit this capture with the edit applied. Stay on this Control.
+- `accept`: hold the title, statement, and rationale. When another queued Control remains, emit the bridge below and the next capture in the same message. When none remain, go to `write`.
+- `decline`: drop this Control. Continue to the next queued Control. When none remain, go to `write`.
+- `unknown`: re-emit this capture. Stay on this Control.
+- `question`: answer in one sentence. Re-emit this capture. Stay on this Control.
 
-Queue membership does not begin proposal development.
+Bridge, emitted only between captures:
 
-Queue membership does not imply capture.
+Your accepted Controls now cover [short phrases for the held Controls].
 
-A Control is not captured until:
+Next we'll develop **[next title]**.
 
-- the Converged Control proposal defined in the Control Development Lifecycle has been presented;
-- the person has explicitly accepted it;
-- the Control owner performs capture.
+### identifier
 
-The owner MUST NOT transition directly from recommendation selection to Control capture.
+Derive each id from its title.
 
-Selected recommendations enter the active development queue and are never captured directly. Queue
-membership determines development order only. Material revision invalidates prior acceptance and
-requires a new correction or acceptance opportunity.
+1. Lowercase the title. Remove hyphens and apostrophes. Split the rest into words.
+2. Take eight letters: the first two of word 1, the first two of word 2, the first two of word 3, and the last two of the last word. When the title has only two words, the third sample is the first two of the last word.
+3. When a word is shorter than two letters, continue into the next word. A one-word title repeats until there are eight letters.
+4. Map each letter. Digits stay as they are.
 
-Illustrative queue interaction:
+a 0, b 1, c 2, d 3, e 4, f 5, g 6, h 7, i 8, j 9, k a, l b, m c, n d, o e, p f, q 0, r 1, s 2, t 3, u 4, v 5, w 6, x 7, y 8, z 9.
 
-```text
-User:
-Capture all four.
+5. The id is `CTL` plus those eight hex digits.
 
-Owner:
-The four recommendations are added
-to the active Control queue.
+Compare that id with the catalog, including removed rows, and with the other held titles in this write.
 
-Recommendation exploration remains active.
+- The same title already has that id: use the existing record. Do not write a second one.
+- The id is taken for a different title: go to `title`.
+- The id is free: use it.
 
-Queue processing has not started.
-```
+### title
 
-## Interpretation Confidence
+Name each conflicting title. Say that a title change is appropriate. Then show the new title for acceptance.
 
-Prefer a grounded safeguard interpretation that can be corrected over a missing interpretation that
-forces the person to create it from scratch. When accepted Profile or Objective evidence supports a
-useful recommendation, implication, relationship, distinction, or Working Idea, do not ask a question
-that merely seeks permission to express it.
+The existing Control Title, **[Existing title]** and this new Control Title, **[this title]**, are too similar. A title change is appropriate. I would recommend:
 
-## Control Contribution Guidance
+**[New title]**
 
-When accepted Profile evidence, accepted Objectives, and accepted Controls support a useful contribution,
-reveal one grounded observation at a time before asking an unnecessary exploratory question. The observation
-may identify relationships, overlap, duplication, meaningful gaps, tensions, reinforcement, implications,
-or focus observations. Do not manufacture one when accepted evidence does not support it. Keep
-recommendations provisional and the user-authored path available.
+**What would you add, correct, or remove?**
 
-## Control Portfolio Assessment Guidance
+If this is accurate, just say so.
 
-After multiple Controls are accepted, provide a concise advisory assessment when useful. It may
-describe overlap, duplication, coverage, concentration, meaningful gaps, tensions, or reinforcement.
-It does not reject Controls, force completion, block additional Controls, mutate the baseline, or
-replace the person's authority. When no useful grounded non-duplicate recommendation remains, explain
-coverage or overlap when useful and stop manufacturing recommendations.
+The new title is a small change the person can recognize. Its derived id must be free. Do not mention identifiers, hex, sampling, or the catalog.
 
-After a Control is captured, the owner may provide a brief synthesis of the accepted Control set. The
-synthesis should describe current coverage, explain how the newly accepted Control fits within the
-portfolio, remain concise, and avoid repeating the full contents of accepted Controls. When processing
-an active Control queue, it may also identify the next Control being developed.
+- `accept`: replace the held title with the new title. Return to `identifier` for that Control.
+- `edit`: use the person's title. Return to `identifier` for that Control.
+- `question`: answer in one sentence. Re-emit this message.
+- `unknown`: re-emit this message.
 
-The synthesis is advisory. It is not a second review, a second proposal, a recommendation set, or a
-detailed portfolio assessment. It occurs only after capture, creates no lifecycle state or durable
-portfolio artifact, and does not imply acceptance of a transient proposal.
+Do not write until every held Control has a free id or reuses its existing record.
 
-#### Illustrative Post-Capture Continuity Examples
+### write
 
-Queue Transition:
+Resolve every id in `identifier` before writing. Write the held Controls and the catalog together. Write no record until this step. A failed write leaves the baseline as it was before the step. Say what failed in terms the person can act on. Stay on `write`. Do not return `Finished`.
 
-```text
-Your accepted Controls now provide strong protection for administrative access.
+On success, emit nothing. Return `Finished`.
 
-Next we'll develop Protect Sensitive Information.
-```
+For each held Control, write `library/governance/controls/[ID].md` in the shape required by `.highway/library/templates/output/control-record.md`.
 
-Collection Transition:
+- `id` is the derived `CTL` id.
+- Keep an existing id when the title is unchanged.
+- `title` is the accepted title.
+- `status` is `active`.
+- `nfrs` is `[]`.
+- The statement is the accepted statement.
+- The rationale is the accepted rationale.
+- When the Control came from a recommendation, write `## Recommendation Grounding` with the accepted Profile and the accepted Objective titles that influenced it. Omit that section when the person supplied the Control.
 
-```text
-Your accepted Controls now provide coverage across access control, information protection, and accountability.
+Write `library/governance/controls.md` in the shape required by `.highway/library/templates/output/control-catalog.md`.
 
-If you'd like additional suggestions, just let me know.
+- Order the index by identifier.
+- Do not allocate from `Next ID`.
+- The first catalog version is `1.0.0`.
+- A review that adds a record increments the minor version.
+- A review that changes a record increments the patch version.
+- A review that removes a record increments the major version.
+- Emit no timestamp, random value, or environment value.
+- An empty held set writes the catalog with version `1.0.0` and no index rows.
+- A removed Control keeps its catalog row with status `removed`.
 
-Is there another safeguard you'd like to establish?
-```
-
-Setup Transition:
-
-```text
-Your accepted Controls now provide coverage across access control, information protection, and operational accountability.
-
-Now let's consider the operational expectations future solutions should meet.
-```
-
-## Control Recommendation Presentation
-
-Keep the **Control** as the primary conversational anchor. When multiple recommendations are presented,
-use visually distinct bullets with concise Control titles, short safeguard-oriented descriptions, and
-obvious distinctions rather than a narrative paragraph. Explicitly support selecting one, several, or
-all recommendations, modifying recommendations before adoption, providing a user-authored safeguard,
-and requesting additional suggestions.
-
-### Illustrative Recommendation Presentation Example
-
-Based on your accepted context, these safeguards appear most relevant:
-
-- **Require MFA For Administrative Access** Administrative access requires multi-factor authentication.
-- **Protect Sensitive Information** Sensitive information must be protected from unauthorized access.
-- **Maintain Audit Logging** Administrative and security-sensitive activity must be logged.
-- **Validate Backups Regularly** Backup recovery procedures must be validated periodically.
-
-Would you like to select one, several, or all of these safeguards, modify any of them, or provide your
-own safeguard? If none fit, feel free to suggest your own safeguard. If you'd like additional
-suggestions, just let me know.
-
-## When to use
-
-Use this skill to set up, configure, inspect, add, create, update, remove, or reset Controls. The
-supported actions are exactly `setup`, `configure`, `view`, `show`, `describe`, `readiness`, `add`,
-`new`, `update`, `remove`, and `reset`.
-
-Use it when a user wants a durable enforceable safeguard or a user-approved Control statement. The
-shared record `nfrs` field remains available for accepted relationships; Controls do not generate NFRs.
-
-Use `readiness` for a read-only assessment of whether the Control baseline is usable. This action owns
-Control completeness and does not start setup or mutation.
-
-## When not to use
-
-Do not use this skill to author Non-Functional Requirements, Business Objectives, Capabilities, or other
-Highway governance baselines. Route those requests to their owning skill.
-Do not use it to author non-functional requirements; route them to `/highway-nfrs`.
-
-This skill MUST NOT refuse a Control the user still wants. It may explain overlap, safeguard ambiguity, or
-quality concerns, but user authority remains the final acceptance boundary.
-
-Do not edit a Control record or `library/governance/controls.md` directly. Direct edits break the permanent
-identifier, catalog, and baseline version together.
-
-## Inputs
-
-A plain-language request naming one supported action and, for a mutation, the desired Control change.
-The project root, identified by locating `.highway/`. If `.highway/` cannot be located, the project root
-is unknown and no Control path may be guessed.
-
-The user-owned Control records at `library/governance/controls/CTLXXXXXX.md`, never beneath `.highway`.
-
-The user-owned catalog at `library/governance/controls.md`, when a baseline exists. The catalog is
-authoritative for `next_id` and the semantic baseline version.
-
-The complete retained-record structure in `.highway/library/templates/output/control-record.md`. The
-template defines the required frontmatter and body ordering; its values remain user-owned.
-
-The complete catalog structure in `.highway/library/templates/output/control-catalog.md`.
-
-Controls is a Repository Context Participating Skill. Its declared Repository Context Documents are
-Identity, Highway Vision, Highway Platform Objectives, Profile, and accepted Business Objectives.
-Identity supplies behavioral framing only; Highway Vision supplies downstream traceability framing only;
-Highway Platform Objectives evaluates Highway assistance only; Profile and accepted Business Objectives
-supply accepted organizational context for Control interpretation and recommendations. Accepted Objectives
-also provide operational context. Existing Controls are accepted context for exact duplicate and semantic
-overlap guidance, not a source of new organizational facts.
-
-Identity, Vision, and Platform Objectives provide shared, non-normative context only. Use accepted
-Profile, accepted Business Objectives, accepted existing Controls, relevant connections, and active user
-input as available context; active user input wins when context conflicts. Other unavailable optional
-context is excluded. Context can inform interpretation, but cannot choose policy. A complete user-provided safeguard remains authoritative for its requested safeguard.
-
-When a Highway recommendation materially influences an accepted Control, preserve only the sources
-that influenced it in the optional `## Recommendation Grounding` body section governed by
-`control-record.md`; never place Recommendation Grounding in frontmatter. Directly authored Controls
-omit it when no Highway recommendation materially influenced them.
-
-A Profile-owned `Blocked` result blocks Control behavior that depends on accepted Profile evidence. An
-unavailable Profile remains distinct from a Profile-owned Blocked result and is not a source of
-organizational facts. An exact duplicate names the existing Control and asks whether to change it or
-create a distinct safeguard; semantic overlap is advisory and never silently merges, deletes, or rewrites
-a Control.
-
-## Outputs
-
-A read-only status response, or a mutation report containing exactly these fields. Control ownership
-remains authoritative for identifiers, records, catalogs, and completion claims. Confirmed Control records
-follow the complete structure in `.highway/library/templates/output/control-record.md`.
-
-The `readiness` action emits exactly these four lines in this order:
-
-```text
-Status: <Complete, Missing, or Blocked>
-Summary: <Control baseline explanation>
-Next Action: <owner route or None>
-Blocking Reason: <reason or None>
-```
-
-At least one valid Control with a consistent catalog and `next_id` is `Complete`. No valid records is
-`Missing`; a malformed record, catalog, or allocation state is `Blocked`. A blocked response has a
-non-empty reason; every other response uses `Blocking Reason: None`. Readiness does not write records,
-catalogs, identifiers, relationships, or NFR artifacts.
-
-Mutation reports contain these fields in this order:
-
-```text
-Action: <action>
-File: <changed file>
-Summary: <change summary>
-Affected Entries: <affected identifiers or None>
-Confirmation Status: <Confirmed or non-write state>
-Resulting Version: <version or unchanged>
-```
-
-### Control Review Output Contract
-
-The review is shown before mutation for every materially interpreted user-authored proposal. It uses
-the captured Title, Statement, Why it matters, and explicit acceptance prompt; it never claims that
-review presentation allocated an identifier or changed the baseline.
-
-Readiness state names and mutation fields are Control-specific. They do not expose an unallocated or
-newly allocated identifier, catalog change, or version in normal pre-persistence review.
-
-Controls Readiness Result is the four-field readiness response above. A read-only inspection with no
-valid Control baseline emits:
-
-```text
-Status: Empty
-Summary: No Control baseline exists.
-Next Action: /highway-controls setup
-Blocking Reason: None
-```
-
-Delegated `setup` and `configure` collection returns:
-
-```text
-Action Status: Succeeded|Declined|Aborted|Blocked
-Collection Result: Continue|Finished
-Next Action: <owner route or None>
-Blocking Reason: <reason or None>
-```
-
-`Declined` and `Aborted` perform no Control write and do not permit Setup completion. `Finished`
-requires explicit user finish intent and remains separate from readiness.
-`Action Status: Blocked` is returned when required accepted context or baseline state prevents collection.
-
-Confirmed mutations write Control records beneath `library/governance/controls/` and regenerate the
-catalog at `library/governance/controls.md`. No Control record is ever written beneath `.highway`.
-
-The catalog contains the baseline version, `next_id`, a Control index ordered by permanent identifier,
-each title and status, an ownership statement, and a warning not to edit the catalog directly. No timestamp,
-random identifier, or environment-derived value is emitted. An unchanged baseline produces
-an unchanged catalog.
-
-## Action selection
-
-Accept exactly these actions: `setup`, `configure`, `view`, `show`, `describe`, `readiness`, `add`, `new`,
-`update`, `remove`, and `reset`. `view`, `show`, and `describe` are equivalent read-only actions.
-`setup`, `configure`, `add`, and `new` are the guided creation workflow.
-`setup` and `configure` are aliases for the same guided Control collection behavior.
-
-If the request contains an unsupported or ambiguous action, stop and ask the user to clarify. Do not
-infer an action and do not write any file. If no Control baseline exists during a read-only action,
-report its absence without creating an artifact.
-
-For direct invocation, `/highway-controls setup` and bare `/highway-controls add` provide concise
-direct-invocation context explaining that the interaction identifies an enforceable safeguard worth
-establishing; they do not claim Setup introduced the purpose or emit Setup's transition language.
-`/highway-controls add <evidence>` evaluates supplied evidence before selecting a question and skips the
-opening Control question when Control evidence is already supported.
-
-## Read-only workflow
-
-For `readiness`, read and validate the complete baseline, classify it using the Control rules, and emit
-the exact four-field response without mutation. For `view`, `show`, or `describe`, read and validate the
-complete baseline, then report the current version, Control count, and every Control identifier, title,
-and status in stable identifier order. Do not modify Control files, the catalog, or any other file. The
-same bytes must remain before and after the response.
-
-## Creation Workflow
-
-For `setup` and `configure`, Creation Workflow orchestrates Recommendation Presentation,
-Recommendation Exploration, review of selected Controls, the Control Development Lifecycle,
-continuation, and explicit finish. It uses the canonical no-recommendation question when useful
-grounded recommendations cannot be supported and does not manufacture a recommendation.
-
-**What concerns should future technology decisions take into account?**
-
-**If you're not sure, just say "I don't know," and we'll work through it together.**
-
-Recommendation selection continues queue construction. Recommendation exploration may continue across
-multiple recommendation sets before review begins. Collection Result: Continue does not require review
-to have started.
-
-Process each selected Control through proposal and acceptance, capture accepted Controls, and continue
-until explicit finish. For `add` or `new`, develop and capture one accepted Control, then terminate. A
-user-provided Control follows the same proposal, acceptance, capture, and relationship validation rules
-as a selected recommendation.
-
-## Update workflow
-
-For `update`, resolve exactly one existing Control by identifier and title before staging a change.
-Preserve its identifier and every untouched field. Confirm the complete staged record and catalog before
-writing. An update changes the baseline by exactly one PATCH increment.
-
-## Destructive workflow
-
-For `remove`, resolve the target before staging and show its identifier and title. Request explicit
-confirmation before deleting the record and regenerating the catalog.
-
-For `reset`, list every Control identifier and title that would be removed. Request explicit confirmation
-before replacing the baseline. A count alone is not sufficient review.
-
-A declined, ambiguous, malformed, or aborted remove/reset operation writes nothing. It preserves every
-affected file byte-for-byte and leaves the baseline version and `next_id` unchanged.
-
-## Baseline invariants and transactions
-
-Read and validate the complete authoritative baseline before proposing any mutation. Every Control record must be under
-`library/governance/controls/`, have a unique valid `CTL` identifier, and contain the required fields
-specified by `.highway/library/templates/output/control-record.md`. Every catalog entry must resolve to
-exactly one record. A catalog with Control files but no catalog, duplicate identifiers, a missing catalog
-target, an invalid `next_id`, or a record outside `library/governance/controls/` is malformed and must be
-rejected without overwriting user-owned content.
-
-The catalog owns allocation state. `next_id` must be greater than every allocated identifier, including
-identifiers whose records were removed. An identifier is permanent and is never reused. The shared
-record `nfrs` field remains available for accepted relationships; Controls do not generate NFRs.
-
-Stage every mutation as a transaction: read and validate the complete baseline, re-evaluate the final
-proposal and overlap, construct the proposal, obtain natural user validation, revalidate the authoritative
-baseline and overlap state, allocate one permanent identifier, construct record and catalog mutations,
-and persist both retained outputs as one successful atomic persistence. There is no post-write persistence
-verification. Revalidate the authoritative baseline, catalog, allocation state, and final-proposal overlap before persistence. Regenerate identical catalog bytes from identical Control inputs, with stable identifier
-ordering and no timestamp, random value, or environment value.
-
-If pre-write revalidation discovers a new overlap, name the overlapping Control and return to one user
-decision. The previous creation confirmation is no longer active; if the proposal changes, re-evaluate
-the staged safeguard evidence, present the resulting complete proposal again, and obtain
-renewed acceptance before persistence.
-
-Each accepted new Control is one Add MINOR increment. Increment the baseline exactly once per confirmed action: Add/New is MINOR, Update is PATCH, and
-Remove/Reset is MAJOR. Failed or declined actions do not change the version. A confirmed mutation report
-names the action, changed file, summary, affected entries, `Confirmation Status: Confirmed`, and resulting
-version. A declined or failed report names the reason and the applicable non-write confirmation state.
+No Control record is written beneath `.highway`.
 
 ## Verification
 
-- Retained Control records follow `.highway/library/templates/output/control-record.md`.
-- Readiness and mutation outputs preserve their declared contracts.
-- Recommendation generation and proposal development remain grounded in accepted context and safeguard meaning.
-- Recommendations are grounded primarily in accepted Profile and Objective evidence.
-- Follow-ups are direct and tied to the stated safeguard.
-- Setup and configure continue until explicit finish.
-- Add and new remain single-Control operations.
-- Duplicate and overlap handling, permanent identifiers, catalog allocation, deterministic output, and atomic persistence remain intact.
-- Reuse writes no record, relationship, identifier, or version.
-- Identifier non-reuse is mandatory; allocated identifiers are never reused.
-- Control capture has no NFR side effect, and independently managed NFRs remain outside Control capture.
-- There is no post-write persistence verification.
-- Generic Experience Standard and Constitution requirements are not restated.
+- An existing readable catalog is shown with **What would you add, correct, or remove?**
+- Acceptance of that review returns `Finished` and emits nothing else.
+- A review edit rewrites the affected record and catalog, then shows the updated Controls with the same question.
+- An absent catalog and readable Profile and Objectives begin with a recommendation set.
+- "Looks good" on a recommendation set adds that set to the queue and does not start capture.
+- A queue message lists the titles just added, then includes the next recommendation set when grounded recommendations remain.
+- A queue message does not ask whether to explore more safeguards.
+- Capture starts when the person asks to review the queue.
+- A capture contains a title, one statement, a rationale, and the acceptance reassurance only.
+- Records and the catalog are written once, after every queued Control is accepted or declined.
+- Each id is `CTL` plus eight hex digits derived from the title.
+- A taken id for a different title names the conflicting titles, says a title change is appropriate, and shows a new title. The write waits until the person accepts that title.
+- That message does not mention identifiers, hex, sampling, or the catalog.
+- A successful guided write returns `Finished` and emits nothing else.
+- Written records match `.highway/library/templates/output/control-record.md`.
+- The written catalog matches `.highway/library/templates/output/control-catalog.md`.
+- Setup receives `Finished` and the person does not see that word.
 
 ## Error Handling
 
-- A malformed Control record, catalog, or allocation state is Blocked and is not mutated.
-- An unresolved Control target for update or remove stops and identifies the target.
-- Destructive Control removal or reset follows the Highway Experience Standard's destructive-confirmation behavior.
-- An unresolved safeguard ambiguity asks a bounded question without silently changing the owner.
+- An unreadable catalog or active record stops the skill, leaves every file unchanged, and does not return `Finished`.
+- A failed review rewrite leaves every file unchanged, says what failed in terms the person can act on, and stays on `review`.
+- A failed guided write leaves the baseline unchanged, says what failed in terms the person can act on, and stays on `write`.
+- An absent or unreadable Profile or Objectives catalog uses `ask` and does not invent organizational facts.
 
 ## Example
 
-`/highway-controls readiness`
+`/highway-setup`

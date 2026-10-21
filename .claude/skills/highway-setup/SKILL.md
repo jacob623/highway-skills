@@ -1,46 +1,61 @@
 ---
 name: highway-setup
-description: "Orchestrates initial Highway setup through the owning governance skills."
-usage: "Invoke as `/highway-setup` to assess readiness and complete missing foundational setup in order."
+description: "Orchestrates initial highway setup through the owning governance skills."
+usage: "Invoke as /highway-setup."
 compatibility: all
 metadata:
-  version: 8.1.0
+  version: 9.0.0
 ---
 
-# Purpose
+# highway-setup
 
-Orchestrates Profile, Objectives, Controls, and NFR owners in order while consuming their declared results.
+## Purpose
+
+Orchestrates Profile, Objectives, Controls, and NFRs in order when the person runs setup.
 
 ## When to use
 
-Use this skill to begin setup, continue owner collection, or resume setup from fresh owner readiness.
+- The person invokes `/highway-setup` and `.highway/library/knowledge/profile.md` is absent.
+- The person invokes `/highway-setup` again after a prior setup run.
 
 ## When not to use
 
-Do not use this skill to perform owner discovery, recommendations, interpretation, persistence, or artifact updates.
+Do not collect Profile, Objective, Control, or NFR evidence.
+Do not write those records or catalogs.
+Do not report Status, Summary, Next Action, Blocking Reason, Missing, Complete, or Blocked.
+Do not show `Finished` to the person.
 
 ## Inputs
 
 - Project root containing `.highway/`.
-- `/highway-profile` owner contract.
-- `/highway-objectives` owner contract.
-- `/highway-controls` owner contract.
-- `/highway-nfrs` owner contract.
+- `highway-profile`.
+- `highway-objectives`.
+- `highway-controls`.
+- `highway-nfrs`.
+- `.highway/library/knowledge/profile.md` when present.
 - `.highway/governance/experience-standard.md`.
-- active user request.
+- The person's request to run setup.
+
+## Outputs
+
+- The welcome, once, when Profile has not been written.
+- One domain transition before Objectives, Controls, and NFRs.
+- The closing conclusion, once, after NFRs returns `Finished`.
+- No repository file written by Setup.
+
+## Procedure
+
+User-visible interaction follows the Highway Experience Standard.
+
+Delegate each owner in this order: Profile, Objectives, Controls, NFRs. Stay with the current owner until it returns `Finished`. Render that owner's messages as written. Do not answer its question, restate its recommendations, or add a second question.
+
+`Finished` is the only result that advances. Do not show that word. An owner that stops without `Finished` ends Setup. Do not delegate a later owner, and do not emit the conclusion.
 
 ### Welcome
 
-When beginning initial Setup, before the first Profile-owned action, emit the Highway welcome as the
-first user-visible output.
+When `.highway/library/knowledge/profile.md` is absent, emit this level-2 heading, then the lines under it, before Profile. Do not emit it when that file exists.
 
-Do not emit review, loading, supplied-website, checking, setup-order, readiness, or workflow
-narration before the welcome.
-
-Do not emit this welcome on a resumed Setup interaction.
-
-```text
-## Welcome to Highway
+Welcome to Highway
 *Turn organizational knowledge into connected decisions.*
 **Your context stays yours.**
 
@@ -49,122 +64,82 @@ Highway builds on information you choose to accept into your repository. Your re
 ---
 
 Let's get started.
-```
 
-## Outputs
+Then delegate `highway-profile`.
 
-Setup consumes owner readiness and owner-specific action results, delegates owner-provided actions,
-and emits the following conclusion once after all four owners permit advancement in Setup order:
+### Profile
 
-```text
+Delegate `highway-profile`. Profile opens the organization conversation. Do not add a transition before it.
+
+When Profile returns `Finished`, emit the Objectives transition and delegate `highway-objectives` in that same moment.
+
+### Objectives
+
+---
+
+**Let's identify some outcomes worth pursuing.**
+
+These give Highway something concrete to connect future decisions back to.
+
+When Objectives returns `Finished`, emit the Controls transition and delegate `highway-controls`.
+
+### Controls
+
+---
+
+**Now let's establish the safeguards that should guide future technology decisions.**
+
+These help Highway keep future recommendations aligned with what needs to remain true.
+
+When Controls returns `Finished`, emit the NFR transition and delegate `highway-nfrs`.
+
+### NFRs
+
+---
+
+**Now let's consider the operational expectations future solutions should meet.**
+
+These help connect your safeguards to how solutions need to behave in practice.
+
+When NFRs returns `Finished`, emit the conclusion.
+
+### Conclusion
+
+Emit this once.
+
 **Your foundational Highway context is now in place.**
 
 Highway now has organizational context, business objectives, safeguards, and operational expectations it can build on in future work.
 
 **Where would you like to go next?**
 
+Run `/highway-onboarding` to inform Highway of your current technology landscape. This aids Highway in providing cohesive recommendations.
+
 Run /highway-help to explore what Highway can help you do.
-```
-
-## Workflow
-
-1. Request readiness from the current owner.
-2. If readiness is terminal with `Next Action: None`, advance.
-3. If readiness is `Blocked`, stop with the owner-provided context.
-4. If readiness supplies a supported `Next Action`, emit the applicable domain transition and delegate that action.
-5. Render the owner interaction without reinterpretation and consume the result declared by that owner.
-6. If that result requires additional owner interaction, remain with the owner and continue according to its contract.
-7. If the owner reports its active collection/work finished, request fresh readiness.
-8. Advance only when fresh owner readiness permits advancement.
-9. Otherwise stop on malformed or unsupported owner output.
-
-Owner order is Profile → Objectives → Controls → NFRs. Controls and NFRs use their declared
-Collection Result contracts. Profile and Objectives use their own declared owner results. Setup does
-not impose one shared collection-result shape.
-
-### Domain transitions
-
-Emit each block only when delegating the first active interaction for that domain. Do not emit a
-transition when the owner is already terminal and skipped, repeat it while continuing, or duplicate
-the owner opening. A transition is one short outcome-oriented statement and does not preview
-internal routing or readiness mechanics.
-
-```text
----
-
-**Let's identify some outcomes worth pursuing.**
-
-These give Highway something concrete to connect future decisions back to.
-```
-
-```text
----
-
-**Now let's establish the safeguards that should guide future technology decisions.**
-
-These help Highway keep future recommendations aligned with what needs to remain true.
-```
-
-```text
----
-
-**Now let's consider the operational expectations future solutions should meet.**
-
-These help connect your safeguards to how solutions need to behave in practice.
-```
-
-When Setup contributes presentation around a delegated owner interaction, keep at most one response-demanding question or decision in the final interaction block. Do not interfere with the owner's own interaction.
-
-Use `---` to separate visible transitions between major Setup domains. When a completed guided owner domain has accepted context that can be meaningfully summarized, provide one concise user-relevant synthesis before moving onward unless the owner already emitted the required user-facing synthesis. Do not add a question merely to close the domain, reinterpret accepted owner content, or show machine readiness/result fields.
-
-## Experience
-
-User-visible interaction follows the Highway Experience Standard.
 
 ## Resume
 
-A new Setup interaction begins by requesting fresh owner readiness in Setup order. Setup persists no checkpoint or owner conversational state.
-
-## Completion
-
-After all four owners permit advancement in Setup order, emit the final conclusion once.
-
-## Error Handling
-
-Setup's effective runtime failure behavior is:
-
-- malformed or unsupported owner result: stop without invoking a later owner;
-- owner `Blocked`: stop and report the owner-provided reason;
-- owner `Declined` or `Aborted`: stop without advancing;
-- unsupported owner `Next Action`: stop and identify the unsupported action;
-- unexpected orchestration failure: stop without claiming Setup completion and provide actionable
-  user-facing context.
-
-Setup performs no artifact mutation, so it does not add mutation-recovery mechanics owned by the
-current owner.
+Every `/highway-setup` run starts at Profile. Setup stores no checkpoint. When `profile.md` already exists, skip the welcome and still delegate Profile, then Objectives, Controls, and NFRs. Each owner reviews what it already holds before returning `Finished`.
 
 ## Verification
 
-- The skill contains exactly one `# Purpose` section with the declared Purpose sentence.
-- Owner order is Profile → Objectives → Controls → NFRs.
-- Owner-specific result contracts are consumed without imposing one common result schema.
-- Controls and NFRs use their declared Collection Result contracts.
-- Profile and Objectives use their own declared owner results.
-- `Continue` remains with an owner when that owner's contract uses Collection Result.
-- `Finished` triggers fresh readiness when that owner's contract uses Collection Result.
-- Initial Setup emits the Highway welcome once; resumed Setup does not repeat it.
-- Setup-added presentation contains at most one response-demanding question or decision in the final interaction block.
-- Each active-domain transition occurs once, remains outcome-oriented, and does not expose routing or readiness mechanics.
-- Visible domain transitions retain `---` separation.
-- Owner openings are not duplicated.
-- A completed guided domain receives at most one Setup synthesis.
-- Setup does not add a synthesis when the owner already supplied the required user-facing synthesis.
-- Domain closure does not add a ceremonial question.
-- Normal orchestration does not expose machine-consumable owner-result fields.
-- Failure does not permit invocation of a later owner or a Setup completion claim.
-- Setup persists no checkpoint or owner artifact.
-- A new interaction starts from fresh readiness.
-- The final conclusion is emitted once and only after all four owners permit advancement.
+- Owner order is Profile, Objectives, Controls, NFRs.
+- The welcome is emitted once, and only when `profile.md` is absent.
+- Profile is always delegated.
+- Each later owner is delegated only after the previous owner returns `Finished`.
+- The Objectives, Controls, and NFR transitions are each emitted once, directly before that owner's first message.
+- Setup does not add a question to an owner's message.
+- Setup does not add a synthesis between owners.
+- `Finished` is not shown.
+- An owner that stops without `Finished` ends Setup before the next owner.
+- The conclusion is emitted once, after NFRs returns `Finished`.
+- The conclusion directs the person to `/highway-onboarding` before `/highway-help`.
+- Setup writes no repository file.
+
+## Error Handling
+
+- An owner that stops without `Finished` ends Setup. The owner's message is the person's explanation. Do not delegate a later owner and do not emit the conclusion.
+- An unexpected orchestration failure stops Setup without claiming completion and says what the person can do next.
 
 ## Example
 

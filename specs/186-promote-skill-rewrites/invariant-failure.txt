@@ -1,0 +1,7 @@
+FAIL: /Users/jacoblong/Documents/wayfinder/highway/highway-skills/.highway/skills/highway-architecture/SKILL.md missing 'The id is `RA` plus those eight hex digits.'
+FAIL: /Users/jacoblong/Documents/wayfinder/highway/highway-skills/.highway/skills/highway-architecture/SKILL.md missing 'Do not name a platform, product, vendor, or specific technology'
+FAIL: /Users/jacoblong/Documents/wayfinder/highway/highway-skills/.highway/skills/highway-adr/SKILL.md missing 'One Discovery has one ADR.'
+FAIL: /Users/jacoblong/Documents/wayfinder/highway/highway-skills/.highway/library/templates/output/objective-catalog.md missing 'active or removed'
+FAIL: /Users/jacoblong/Documents/wayfinder/highway/highway-skills/.highway/library/templates/output/request-catalog.md missing 'accepted or removed'
+FAIL: /Users/jacoblong/Documents/wayfinder/highway/highway-skills/.highway/library/templates/output/capability-catalog.md missing 'CAP plus eight hex digits'
+FAIL: /Users/jacoblong/Documents/wayfinder/highway/highway-skills/.highway/library/templates/output/capability-catalog.md still allocates Next ID
