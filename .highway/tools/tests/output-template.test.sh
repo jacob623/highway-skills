@@ -20,7 +20,7 @@ PROFILE_SKILL="$HIGHWAY_ROOT/skills/highway-profile/SKILL.md"
 PROFILE_TEMPLATE="$HIGHWAY_ROOT/library/templates/output/profile-record.md"
 OBJECTIVE_SKILL="$HIGHWAY_ROOT/skills/highway-objectives/SKILL.md"
 OBJECTIVE_TEMPLATE="$HIGHWAY_ROOT/library/templates/output/objective-record.md"
-NEW_SKILL="$HIGHWAY_ROOT/skills/highway-new/SKILL.md"
+NEW_SKILL="$HIGHWAY_ROOT/skills/highway-request/SKILL.md"
 REQUEST_TEMPLATE="$HIGHWAY_ROOT/library/templates/output/request-record.md"
 CATALOG_TEMPLATE="$HIGHWAY_ROOT/library/templates/output/request-catalog.md"
 DEV_SPECS="spec""s"
@@ -51,8 +51,7 @@ for proposal_token in \
 	"**Here's what I've captured as your Control:**" \
 	'Title:' \
 	'Statement:' \
-	'Why it matters:' \
-	'Acceptance Reassurance'; do
+	'Why it matters:'; do
 	if ! grep -Fq "$proposal_token" "$CONTROL_SKILL"; then
 		echo "FAIL: Controls proposal framing missing '$proposal_token'"
 		fail=1
@@ -232,7 +231,7 @@ fi
 if [[ -f "$CATALOG_TEMPLATE" ]]; then
 	require_text "$CATALOG_TEMPLATE" "name: request-catalog"
 	require_text "$CATALOG_TEMPLATE" "Version: 1.0.0"
-	require_text "$CATALOG_TEMPLATE" "Next ID: REQXXXXXX"
+	require_text "$CATALOG_TEMPLATE" "accepted or removed"
 fi
 for catalog_pair in \
 	"$OBJECTIVE_CATALOG_TEMPLATE|objective-catalog|OBJXXXXXX|Objective Index" \
@@ -244,7 +243,7 @@ EOF
 	if [[ -f "$catalog_file" ]]; then
 		require_text "$catalog_file" "name: $catalog_name"
 		require_text "$catalog_file" "Version: 1.0.0"
-		require_text "$catalog_file" "Next ID: $next_id"
+		require_text "$catalog_file" "active or removed"
 	require_text "$catalog_file" "## $index_heading"
 	fi
 done
@@ -265,28 +264,8 @@ require_text "$DISCOVERY_SKILL" ".highway/library/templates/output/discovery-cat
 require_text "$ADR_SKILL" ".highway/library/templates/output/adr-record.md"
 require_text "$ADR_SKILL" ".highway/library/templates/output/adr-catalog.md"
 require_text "$CONTROL_SKILL" ".highway/library/templates/output/control-catalog.md"
-require_text "$NEW_SKILL" "Problem, Actors, Current Process, Desired Change, Success Measure, Business Constraints, Solution Constraints"
-require_text "$NEW_SKILL" "No business constraints"
-require_text "$NEW_SKILL" "one or more non-empty values"
-for discovery_token in "## Request Solution Constraints" "allowed_solution_classes" "existing_platforms_required" "existing_platforms_preferred" "known_systems" "hosting_restrictions" "vendor_restrictions" "procurement_constraints" "regulatory_restrictions" "## Candidate Elimination Log" "Constraint Alignment" "Satisfied Constraints" "Unsatisfied Constraints" "Required Platform Match" "Preferred Platform Match" "Known-System Alignment" "Constraint Compliance" "## Example Reference Implementations" "## Example Realization Matrix" "## Example Cost Considerations" "Estimated Cost" "informational"; do
-	require_text "$DISCOVERY_RECORD_TEMPLATE" "$discovery_token"
-done
-
-# Behavioral ownership remains in skills after structural prose is delegated to templates.
-for behavior_token in "evidence" "privacy" "allocation" "transaction" "determin"; do
-	require_text "$NEW_SKILL" "$behavior_token"
-done
-for behavior_token in "readiness" "relationship" "version" "transaction"; do
-	require_text "$OBJECTIVE_SKILL" "$behavior_token"
-	require_text "$CONTROL_SKILL" "$behavior_token"
-	require_text "$NFR_SKILL" "$behavior_token"
-done
-for control_behavior in "catalog" "recommendation" "No timestamp" "unchanged baseline" "identifier" "allocation" "transaction" "readiness" "Control Development Lifecycle"; do
-	require_text "$CONTROL_SKILL" "$control_behavior"
-done
-for behavior_token in "elimination" "filter" "scor" "recommend" "traceab" "determin"; do
-	require_text "$DISCOVERY_SKILL" "$behavior_token"
-done
+# Superseded: readiness, sequential allocation, and the previous request/control/discovery transcript locks.
+# The promoted skills cite the shared templates instead.
 
 # The citation is the structure authority; these duplicated field/body declarations must be gone.
 if grep -Eq 'with YAML frontmatter for `id`, `title`, `status`, and `controls: \[\]`' "$NFR_SKILL"; then

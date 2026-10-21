@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-10-17T02:41:48Z",
+  "generated_at": "2026-10-21T14:19:39Z",
   "entries": [
     {
       "library_type": "template",
       "name": "adr-catalog",
-      "description": "Complete output skeleton for the ADR allocation catalog.",
-      "version": "1.0.0",
+      "description": "Complete output skeleton for the repository ADR catalog.",
+      "version": "2.0.0",
       "source_path": "library/templates/output/adr-catalog.md"
     },
     {
@@ -18,8 +18,8 @@
     {
       "library_type": "template",
       "name": "architecture-catalog",
-      "description": "Complete output skeleton for the Reference Architecture allocation catalog.",
-      "version": "1.0.0",
+      "description": "Complete output skeleton for the repository Reference Architecture catalog.",
+      "version": "2.0.0",
       "source_path": "library/templates/output/architecture-catalog.md"
     },
     {
@@ -33,14 +33,14 @@
       "library_type": "template",
       "name": "assessment-findings",
       "description": "Complete output skeleton for retained advisory findings.",
-      "version": "1.0.0",
+      "version": "2.0.0",
       "source_path": "library/templates/output/assessment-findings.md"
     },
     {
       "library_type": "template",
       "name": "capability-catalog",
-      "description": "Complete output skeleton for the generated Capability Catalog.",
-      "version": "1.0.0",
+      "description": "Complete output skeleton for the Capability Catalog written with a Reference Implementation.",
+      "version": "2.0.0",
       "source_path": "library/templates/output/capability-catalog.md"
     },
     {
@@ -61,7 +61,7 @@
       "library_type": "template",
       "name": "control-catalog",
       "description": "Complete output skeleton for the repository Control baseline catalog.",
-      "version": "1.0.0",
+      "version": "2.0.0",
       "source_path": "library/templates/output/control-catalog.md"
     },
     {
@@ -74,8 +74,8 @@
     {
       "library_type": "template",
       "name": "discovery-catalog",
-      "description": "Complete output skeleton for the Discovery allocation catalog.",
-      "version": "1.0.0",
+      "description": "Complete output skeleton for the repository Discovery catalog.",
+      "version": "2.0.0",
       "source_path": "library/templates/output/discovery-catalog.md"
     },
     {
@@ -88,8 +88,8 @@
     {
       "library_type": "template",
       "name": "implementation-catalog",
-      "description": "Complete output skeleton for the Reference Implementation allocation catalog.",
-      "version": "1.0.0",
+      "description": "Complete output skeleton for the repository Reference Implementation catalog.",
+      "version": "2.0.0",
       "source_path": "library/templates/output/implementation-catalog.md"
     },
     {
@@ -103,7 +103,7 @@
       "library_type": "template",
       "name": "nfr-catalog",
       "description": "Complete output skeleton for the repository Non-Functional Requirement catalog.",
-      "version": "1.0.0",
+      "version": "2.0.0",
       "source_path": "library/templates/output/nfr-catalog.md"
     },
     {
@@ -117,7 +117,7 @@
       "library_type": "template",
       "name": "objective-catalog",
       "description": "Complete output skeleton for the Business Objective baseline catalog.",
-      "version": "1.0.0",
+      "version": "2.0.0",
       "source_path": "library/templates/output/objective-catalog.md"
     },
     {
@@ -137,8 +137,8 @@
     {
       "library_type": "template",
       "name": "request-catalog",
-      "description": "Complete output skeleton for the repository request allocation catalog.",
-      "version": "1.0.0",
+      "description": "Complete output skeleton for the repository request catalog.",
+      "version": "2.0.0",
       "source_path": "library/templates/output/request-catalog.md"
     },
     {

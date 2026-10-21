@@ -1,191 +1,254 @@
 ---
 name: highway-adr
-description: "Manages the repository-wide decision baseline."
-usage: "Invoke as `/highway-adr` with one Discovery ID and one ID."
+description: "Manages one architecture decision for one discovery."
+usage: "Invoke as /highway-adr with one discovery id."
 compatibility: all
 metadata:
-  version: 1.0.0
+  version: 2.0.0
 ---
 
 # highway-adr
 
 ## Purpose
 
-Create one authoritative, accepted architecture decision from exactly one completed Discovery handoff while preserving Discovery as an advisory, immutable source.
-
-## Experience
-
-ADR decision work follows the Highway Experience Standard for applicable activity output and decisions. Put the `Next Action` first, describe
-user-relevant ADR activity rather than implementation details or orchestration, and preserve the
-interactive decision workflow without artificial collection stages.
-
-`User Exits` are `pause`, `cancel`, or `stop responding`; `Owner Outcomes` are `declined`,
-`aborted`, or `blocked`. `Resume Applicability`: `New interaction`. ADR preserves Discovery and
-decision ownership and does not allocate another workflow's identifiers, write its artifacts or
-catalogs, or claim its completion.
+Records one accepted architecture decision for a Discovery after the person selects an option and accepts the proposed decision.
 
 ## When to use
 
-- One exact uppercase `DISC######` identifier and one explicit `OPT######` option are available.
-- The Discovery record contains its Request reference, Candidate Solution Options, Comparison Matrix,
-  Recommendation, and Reference Architecture Matches.
-- An architecture decision authority is ready to select one option.
+- The person invokes `/highway-adr` with one Discovery id and one option id.
+- The person invokes `/highway-adr` with one Discovery id.
+- The person invokes `/highway-adr` without a Discovery id or an option id.
 
 ## When not to use
 
-- Do not use for missing, lowercase, ambiguous, duplicated, or implicit newest-file identifiers.
-- Do not generate candidates, modify Discovery, recalculate scores, recompute matches, or mutate
-  Request, Clarification, Profile, Objective, Control, or NFR artifacts.
-- Do not consume `CLAR-ADR######`; ADR clarification occurs after generation.
-- Do not authorize implementation; authorization ends at Reference Architecture.
+Do not generate new candidate options or change a Discovery.
+Do not recalculate scores, reorder the comparison, or recompute Reference Architecture matches.
+Do not change Requests, Clarifications, Profile, Objectives, Controls, or NFRs.
+Do not authorize implementation.
+Do not report Status, Summary, Next Action, Blocking Reason, Missing, Complete, or Blocked.
 
 ## Inputs
 
-- Exactly one explicit `DISC######` identifier, exactly one explicit `OPT######` identifier, and the authoritative Discovery catalog at
-  `discoveries/discoveries.md`.
-- The uniquely resolved Discovery record at `discoveries/DISCXXXXXX.md`.
-- The complete output structures in `.highway/library/templates/output/adr-record.md` and
-  `.highway/library/templates/output/adr-catalog.md`.
-- Optional `CLAR-REQ######` and `CLAR-DISC######` records resolved through
-  `clarifications/clarifications.md`.
-- Optional read-only Profile, Objective, Control, and NFR baselines.
-- The ADR catalog at `adrs/adrs.md`, which owns `Next ID` and direct index entries.
-
-## Ownership and evidence precedence
-
-Discovery owns recommendation, rationale, options, comparison scores, Reference Architecture
-matches, confidence, and source relationships. Clarification owns findings, responses, status, and
-resolution history. Governance workflows own their baselines. ADR owns selection and decision
-content.
-
-Resolve evidence in this exact first-match order: Discovery, `CLAR-DISC######`, Request,
-`CLAR-REQ######`, Profile, Objectives, Controls, then NFRs. Never use filesystem order, newest
-file, timestamps, environment state, or session state.
-
-## Clarification Consumption Contract
-
-Clarification is a start-of-run, read-only snapshot. Consume only `CLAR-REQ######` and
-`CLAR-DISC######`; preserve every Clarification byte and never create, update, resolve, or change
-status, findings, responses, or history.
-
-- Missing or `not-started`: continue without Clarification evidence.
-- `in-progress`: consume resolved findings; open findings may inform assumptions, risks, unknowns,
-  and required follow-up work.
-- `complete`: consume resolved findings; do not introduce open-finding uncertainty.
-- `blocked`: record the condition as a risk and continue.
-- Malformed: fall back to Discovery evidence and preserve Clarification bytes.
-
-Resolved findings must identify their contribution to context, rationale, constraints,
-alternatives, or consequences. Open findings never select or reject an option. Conflict guidance appears in Risks
-and Decision Rationale but is not authoritative selection input. When open findings contribute,
-render each finding identifier once in Open Clarification Findings.
-
-## Decision contract
-
-Use Discovery options only. The decision authority owns selection. A valid creation invocation
-contains exactly one explicit `DISC######` identifier and one explicit `OPT######` identifier. The
-selected option must exist within the supplied Discovery. The selection source is user-provided explicit selection. Record every non-selected option as Rejected or Evaluated. Evaluated means viable but not selected; Rejected means invalid or unsuitable. These meanings are part of the
-contract.
-
-If the Discovery is valid but no option identifier is supplied, stop before allocation and present:
-
-```text
-Architecture Decision Required
-
-Discovery:
-DISC000001
-
-Available Options
-
-OPT000001
-<summary>
-
-OPT000002
-<summary>
-
-Recommended:
-OPT000001
-
-Which option would you like to select?
-```
-
-The recommendation is advisory. This path allocates no ADR identifier and writes no ADR or catalog bytes. An option that is malformed, unknown, duplicated, ambiguous, or outside the supplied
-Discovery aborts with no allocation and no write. ADR never selects an option from a recommendation,
-score, comparison, architecture match, or identifier ordering.
-
-If selected option differs from the Discovery recommendation, render Recommendation Override
-immediately after Decision with the recommended option, selected option, and override rationale.
-The ADR consumes Discovery confidence and confidence considerations without rescoring options. The
-Discovery Comparison Matrix is projected verbatim without recalculation, reordering, or semantic
-transformation.
-
-Objective, Control, and NFR relationships are ordered by identifier type, numeric identifier suffix,
-then title. Relationship ordering is presentation-only and never mutates Discovery.
+- One Discovery id that matches one row in `discoveries/discoveries.md`, when the person supplies one.
+- One option id contained in that Discovery, when the person supplies one.
+- The Discovery record at `discoveries/[ID].md`.
+- `clarifications/clarifications.md` when present, for `CLAR-[REQ id]` and `CLAR-[DISC id]` only.
+- Accepted Profile, Objectives, Controls, and NFRs when present.
+- `discoveries/discoveries.md` and `adrs/adrs.md`.
+- `.highway/library/templates/output/adr-record.md`.
+- `.highway/library/templates/output/adr-catalog.md`.
+- `.highway/governance/experience-standard.md`.
+- A project root containing `.highway/`.
 
 ## Outputs
 
-- One `adrs/ADRXXXXXX.md` with status `accepted` and all required sections from the ADR record
-  template `.highway/library/templates/output/adr-record.md`, including Decision Confidence and
-  Reference Architecture Handoff.
-- One direct corresponding entry in `adrs/adrs.md`; catalog `Next ID` advances exactly once.
-- The ADR catalog follows `.highway/library/templates/output/adr-catalog.md`.
-- Initial `Supersedes: None` and `Superseded By: None` placeholders.
-- Reference Architecture Handoff fields for selected option, recorded matches with confidence and
-  reasons, architecture direction, required architecture work, and authorization to proceed. Each
-  field must contain a valid value or explicit `None`.
+The complete structure is `.highway/library/templates/output/adr-record.md` and `.highway/library/templates/output/adr-catalog.md`.
 
-## Workflow
+- One ADR at `adrs/[ID].md` after the person accepts the proposed decision.
+- An updated `adrs/adrs.md` written with that record.
+- A closing message that names the ADR and the architecture command.
+- No ADR when the person has not selected an option or a write fails.
 
-1. Validate exactly one uppercase `DISC######` and one explicit `OPT######` before resolution.
-2. Resolve exactly one valid Discovery record and reject duplicates or malformed records.
-3. When the option is absent, present the decision prompt and stop without allocation or writes.
-4. Reject an option that is malformed, ambiguous, unknown, or not contained by the Discovery without allocation or writes.
-5. Check the authoritative ADR catalog for an existing ADR with the same Discovery identifier; abort without changing anything when one exists.
-6. Snapshot Clarification and governance evidence in the declared precedence order.
-7. Validate options, comparison evidence, recommendation, recorded matches, and source-byte hashes.
-8. Retain the explicit user-provided option as the sole selected option; never infer a selection.
-9. Build the complete ADR and catalog in memory using the shared templates.
-10. Validate all required sections, one selection, alternatives, consequences, relationships, status, handoff, source preservation, and volatile-metadata exclusions.
-11. Read and reserve the exact catalog `Next ID`; allocate only that value and retry an exclusive catalog conflict at most three times.
-12. Commit one ADR and one catalog entry only after all validation succeeds.
-13. Verify unchanged source bytes, exactly one decision, one selected option, rationale, consequences, and complete handoff before reporting success.
+## Procedure
 
-## Determinism and failure handling
+User-visible interaction follows the Highway Experience Standard. Repository ownership stays with the person.
 
-Identical inputs and catalog state produce byte-identical ADR content, option ordering, relationship
-ordering, handoff data, and catalog result. Generated content excludes timestamps, creation dates,
-modification dates, environment identifiers, random values, and user-session identifiers.
+Emit only the active template. Follow this order: `choose-discovery` when no Discovery id is supplied; `choose-option` when no option is supplied; otherwise `start`, then `identifier`, `title` when needed, `write`, and `close`. Discovery owns the options, scores, recommendation, and matches. Copy those values. Do not change them. The person owns the selection. Do not select an option from the recommendation, a score, or alphabetical order.
 
-Any resolution, validation, malformed Discovery, malformed governance baseline, duplicate, catalog
-write, or other failure writes nothing and preserves every pre-operation byte. Catalog conflicts stop
-after three retries. No partial ADR or catalog is reported as success.
+Read evidence in this order: Discovery, Clarification for that Discovery, the Request, Clarification for that Request, Profile, Objectives, Controls, NFRs. A missing Clarification continues without it. An open finding can inform a risk. It cannot select or reject an option. Do not change Clarification.
+
+One Discovery has one ADR. When `adrs/adrs.md` already has an ADR for that Discovery id, show that decision and write nothing.
+
+### Entry
+
+1. Read the invocation for one Discovery id and one option id.
+2. When neither is present, go to `choose-discovery`.
+3. When a Discovery id is present, resolve it. When it matches no Discovery, stop. Say the Discovery was not found. Write nothing.
+4. When that Discovery already has an ADR, show the recorded decision. Write nothing.
+5. When an option id is also present and it is one of that Discovery's options, go to `start` with that option selected.
+6. When the option id is missing, unknown, or not in that Discovery, go to `choose-option`.
+
+### choose-discovery
+
+Read `discoveries/discoveries.md` and `adrs/adrs.md`. A Discovery is waiting when its Status is `accepted` and its Discovery ID does not appear on any ADR catalog row. A removed ADR row still counts as that Discovery already having a decision. Do not open Discovery records to build this list.
+
+When none are waiting, say that no Discovery is waiting for a decision. Write nothing.
+
+Otherwise emit one numbered line per waiting Discovery, starting at 1, in Discovery catalog order. Show the Discovery ID and its title. A stated number selects that Discovery.
+
+**1. [Discovery ID]:** [Discovery Title]
+
+**Which Discovery would you like to decide?**
+
+- A Discovery id, a listed Discovery title, or its number: follow Entry from case 3.
+- `unknown`: re-emit this list. Stay on `choose-discovery`.
+- `decline`: stop. Write nothing.
+
+### choose-option
+
+Emit one numbered line per option from the Discovery, starting at 1, in displayed order. Show the option id and its title. Put `(Recommended)` after the advisory option title. The why is the Discovery's one-sentence rationale for that option. A stated number selects that option.
+
+**1. [Option id]:** [Option title] (Recommended) — [Why this option fits.]
+
+**2. [Option id]:** [Option title] — [Why this option fits.]
+
+**Which option would you like to select?**
+
+- `select`: go to `start` with the named or numbered option. This is the person's selection.
+- `unknown`: re-emit this block. Stay on `choose-option`.
+- `decline`: stop. Write nothing.
+
+### Classify
+
+Classify the latest reply before any other action.
+
+- `select`: names an option, or states its number, to select.
+- `edit`: adds, removes, corrects, or replaces decision text.
+- `accept`: affirms the proposed decision and adds no fact.
+- `unknown`: the person says they do not know.
+- `question`: asks for an explanation.
+- `decline`: the person stops or cancels.
+
+On `start`, "looks good" is `accept`.
+
+### start
+
+Build the proposed decision from the selected option and the Discovery. Copy the comparison and the matches. When the selected option is not the recommended option, include the override.
+
+**Here is a proposed starting point for your decision:**
+
+**Decision:** [Selected option title]
+
+**Why:** [Decision rationale grounded in the Discovery and accepted Objectives, Controls, and NFRs.]
+
+**Alternatives:**
+- **[Other option title]:** [Evaluated when it remains viable. Rejected when the Discovery excluded it.]
+
+**Consequences:**
+- **Positive:** [What improves.]
+- **Negative:** [What is given up.]
+- **Operational:** [How operation changes.]
+- **Governance:** [Which accepted Controls or NFRs this decision carries.]
+
+**What would you add, correct, or remove?**
+
+If this is accurate, just say so.
+
+- `edit`: emit one consequence sentence. Re-emit this block with the edit applied. Stay on `start`. The selected option stays the option the person named.
+- `accept`: go to `identifier`.
+- `unknown`: re-emit this block. Stay on `start`.
+- `question`: answer, then re-emit this block. Stay on `start`.
+- `decline`: stop. Write nothing.
+
+### identifier
+
+The ADR title is the selected option title unless the person supplied a title.
+
+1. Lowercase the title. Remove hyphens and apostrophes. Split the rest into words.
+2. Take eight letters: the first two of word 1, the first two of word 2, the first two of word 3, and the last two of the last word. When the title has only two words, the third sample is the first two of the last word.
+3. When a word is shorter than two letters, continue into the next word. A one-word title repeats until there are eight letters.
+4. Map each letter. Digits stay as they are.
+
+a 0, b 1, c 2, d 3, e 4, f 5, g 6, h 7, i 8, j 9, k a, l b, m c, n d, o e, p f, q 0, r 1, s 2, t 3, u 4, v 5, w 6, x 7, y 8, z 9.
+
+5. The id is `ADR` plus those eight hex digits.
+
+Compare that id with `adrs/adrs.md`, including removed rows.
+
+- The same title already has that id: use the existing record. Do not write a second one. Go to `close`.
+- The id is taken for a different title: go to `title`.
+- The id is free: go to `write`.
+
+### title
+
+Name each conflicting title. Say that a title change is appropriate. Then show the new title for acceptance.
+
+The existing ADR Title, **[Existing title]** and this new ADR Title, **[this title]**, are too similar. A title change is appropriate. I would recommend:
+
+**[New title]**
+
+**What would you add, correct, or remove?**
+
+If this is accurate, just say so.
+
+The new title is a small change the person can recognize. Its derived id must be free. Do not mention identifiers, hex, sampling, or the catalog.
+
+- `accept`: replace the held title. Return to `identifier`.
+- `edit`: use the person's title. Return to `identifier`.
+- `question`: answer in one sentence. Re-emit this message.
+- `unknown`: re-emit this message.
+
+Do not write until the id is free or the existing record is reused.
+
+### write
+
+Write `adrs/[ID].md` and `adrs/adrs.md` together. Write neither file until both are valid. A failed write leaves every existing ADR byte unchanged. Say what failed in terms the person can act on. Stay on `write`.
+
+The record follows `.highway/library/templates/output/adr-record.md`.
+
+- `id` is the derived `ADR` id.
+- `request` is the Discovery's Request id.
+- `discovery` is the Discovery id.
+- `status` is `accepted`.
+- `supersedes` is `None`.
+- `superseded_by` is `None`.
+- The title is the accepted ADR title.
+- Copy the Discovery options, comparison, recommendation, confidence, and Reference Architecture matches without recalculation.
+- `## Decision` records the selected option, `User-provided explicit selection`, the decision statement, the rationale, and this authorization: Proceed to Reference Architecture. Implementation is not authorized.
+- When the selected option differs from the Discovery recommendation, write `## Recommendation Override` with both options and the override rationale. Omit that section when they are the same.
+- Every option other than the selected one is `Evaluated` when it remained viable, or `Rejected` when the Discovery excluded it.
+- `## Reference Architecture Handoff` names the selected option, the copied matches or `None`, the architecture direction or `None`, the required architecture work or `None`, and authorization to proceed to Reference Architecture.
+- Emit no timestamp, random value, or environment value.
+
+The catalog follows `.highway/library/templates/output/adr-catalog.md`.
+
+- Add one index row with the ADR ID, Discovery ID, Request ID, ADR Title, ADR Path, and Status `accepted`.
+- Order the index by ADR id.
+- Do not allocate from `Next ID`.
+- The first catalog version is `1.0.0`.
+- Adding an ADR increments the minor version.
+- One Discovery id appears on at most one row.
+
+On success, go to `close`.
+
+### close
+
+**Architecture decision recorded**
+
+- **ADR record:** `adrs/[ADR id].md`
+- **Title:** [Title]
+- **Identifier:** `[ADR id]`
+- **Discovery:** `[DISC id]`
+- **Selected option:** [Option title]
+
+Run `/highway-architecture [ADR id]` to create the Reference Architecture.
 
 ## Verification
 
-- Confirm complete template order and required sections, including mandatory Decision Confidence with
-  both fields and explicit `None` values when unavailable.
-- Confirm one Discovery identifier, one ADR, one selected option, and every alternative.
-- Confirm ADR-to-Discovery uniqueness against the authoritative catalog before allocation.
-- Confirm allocation used the catalog `Next ID` that existed immediately before the write and that
-  the catalog advanced exactly once with one direct index entry.
-- Confirm Discovery recommendation and scores, Clarification, Request, and governance bytes remain
-  unchanged.
-- Confirm scalar `None` follows `## Clarification Inputs` when no contributing evidence exists.
-- Confirm Recommendation Override is absent when selection equals the recommendation and is complete
-  and immediately after Decision when selection diverges.
-- Confirm Discovery Reference Architecture matches, confidence, and reasons are projected without
-  recomputation.
-- Confirm accepted-only initial status, frontmatter-only supersession metadata, stable ordering, and
-  no volatile metadata.
-- Confirm Reference Architecture authorization excludes implementation authorization.
+- A Discovery id and an option id open the proposed decision for that option.
+- A Discovery id without an option id lists the options with numbers. Each line shows the option id and its title. A stated number selects that option.
+- An invocation with neither id lists the accepted Discoveries whose Discovery ID is absent from every ADR catalog row. Each line shows the Discovery ID and its title. The list is numbered. A stated number selects that Discovery. A removed ADR row keeps that Discovery off the list.
+- The proposed decision is accepted before the ADR is written.
+- One Discovery produces at most one ADR.
+- The selected option is the option the person named or numbered.
+- The comparison and matches are copied from the Discovery.
+- Recommendation Override is written only when the selection differs from the recommendation.
+- Authorization proceeds to Reference Architecture and does not authorize implementation.
+- Each id is `ADR` plus eight hex digits derived from the title.
+- A taken id names the conflicting titles, says a title change is appropriate, and shows a new title. The write waits until the person accepts that title.
+- That message does not mention identifiers, hex, sampling, or the catalog.
+- A failed write leaves existing ADR bytes unchanged.
+- The closing message names `/highway-architecture [ADR id]`.
+- The skill does not change the Discovery.
 
 ## Error Handling
 
-Invalid identifiers, missing or ambiguous Discovery, missing option, malformed or unsupported option,
-incomplete handoff, duplicate Discovery ADRs, catalog conflicts after three retries, and write
-failures abort without partial output and preserve existing bytes. A missing option presents the
-decision prompt instead of creating an ADR.
+- A missing or unknown Discovery stops the skill and writes nothing.
+- An option that is not in the Discovery returns to `choose-option` and writes nothing.
+- A second ADR for the same Discovery stops the write and shows the existing decision.
+- A malformed present Discovery stops the skill and writes nothing.
+- A failed write leaves existing ADR and catalog bytes unchanged.
 
 ## Example
 
-`/highway-adr DISC000001 OPT000001`
+`/highway-adr DISC3f2a9c10 OPTa91c2b04`

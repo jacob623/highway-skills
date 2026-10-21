@@ -1,272 +1,257 @@
 ---
 name: highway-implementation
-description: "Manages the repository-wide implementation baseline."
-usage: "Invoke as `/highway-implementation` with one Reference Architecture ID."
+description: "Manages one reference implementation from one accepted reference architecture."
+usage: "Invoke as /highway-implementation with one architecture id."
 compatibility: all
 metadata:
-  version: 1.0.0
+  version: 2.0.0
 ---
 
 # highway-implementation
 
 ## Purpose
 
-Create one deterministic, conceptual-to-realization Reference Implementation from exactly one accepted Reference Architecture while preserving architecture, governance, and traceability ownership as immutable evidence through the `REQ -> DISC -> ADR -> RA -> RI -> Plan -> Tasks -> Generated Code` workflow.
-
-## Experience
-
-Reference Implementation work follows the Highway Experience Standard. Put `Next Action` first,
-describe realization decisions and risks in user-relevant terms, and keep the downstream handoff
-explicit. `User Exits` are `pause`, `cancel`, or `stop responding`; `Owner Outcomes` are `declined`,
-`aborted`, or `blocked`. This workflow does not create plans, tasks, executable source code,
-infrastructure definitions, deployment authorization, or self-service productization artifacts.
+Creates one proposed Reference Implementation from an accepted Reference Architecture after the person accepts the proposed realization.
 
 ## When to use
 
-- Exactly one explicit uppercase `ARCH######` identifier is available.
-- The identifier resolves uniquely through the authoritative Reference Architecture catalog.
-- The resolved Reference Architecture is accepted and its decisions, components, interactions,
-  trust boundaries, constraints, and traceability are readable.
-- The implementation catalog and all three shared implementation templates are available:
-   `.highway/library/templates/output/implementation-record.md`,
-   `.highway/library/templates/output/implementation-catalog.md`, and
-   `.highway/library/templates/output/capability-catalog.md`.
+- The person invokes `/highway-implementation` with one Reference Architecture id.
+- The person invokes `/highway-implementation` without a Reference Architecture id.
 
 ## When not to use
 
-- Do not use for missing, lowercase, ambiguous, duplicated, malformed, or implicit architecture
-  identifiers.
-- Do not use for a Reference Architecture that is not accepted.
-- Do not redesign architecture, change an architecture decision, select a different ADR option,
-  modify upstream artifacts, grant deployment authorization, create plans or tasks, generate code or IaC, or
-  produce self-service productization artifacts.
-
-## Direct invocation guard
-
-The invocation must contain exactly one explicit uppercase `ARCH######` identifier. When the
-identifier is missing, respond before processing:
-
-```text
-Next Action: Provide the Reference Architecture to implement.
-
-Which Reference Architecture would you like to use?
-
-Examples:
-- ARCH000001
-- ARCH000002
-```
-
-A missing identifier must allocate no identifier, create no implementation artifact, and select no architecture automatically. The guard must not select the newest or only ARCH, must not infer an ARCH from context, and must not use filesystem order, timestamps, recency, environment state, or session memory. It must preserve every pre-operation implementation and catalog byte.
-
-For an explicit identifier, validate exact format, existence, unique resolution, and accepted
-status, then apply the canonical completeness validator and canonical readiness validator before
-processing. Any invalid, missing, duplicate, ambiguous, malformed, incomplete, or not-ready ARCH
-stops without writes and uses the established failure outcome.
+Do not select an architecture by recency, filename, or batch.
+Do not use a Reference Architecture whose status is not `accepted`.
+Do not change the architecture, ADR, Discovery, Request, Profile, Objectives, Controls, or NFRs.
+Do not create plans, tasks, source code, or infrastructure definitions.
+Do not authorize deployment.
+Do not create a capability record file or a capability workflow.
+Do not report Status, Summary, Next Action, Blocking Reason, Missing, Complete, or Blocked.
 
 ## Inputs
 
-Required inputs are exactly one explicit `ARCH######`, the authoritative architecture catalog and
-resolved accepted architecture record, the implementation catalog, all three shared implementation
-output templates, and Highway Identity and Experience Standard context. The owner must provide one or more
-explicit Implementation Selections before compatibility assessment. A selection names the
-intended implementation component, technology or mechanism, realization category, and owner
-evidence; missing selections stop before any RI or catalog write. Optional read-only inputs are
-`CLAR-ARCH######`, Profile, Objectives, Controls, and NFRs. Resolve all inputs by declared
-identifiers and catalog entries, never by newest file, filesystem order, timestamps, environment
-state, or session state.
-
-## Architecture Compatibility Assessment
-
-Assess Implementation Selections against the accepted architecture before generating or allocating
-an RI. Extract Logical Components, Interaction Model, Trust Boundaries, Deployment Pattern, Required
-Capabilities, Constraints, Control Relationships, NFR Relationships, and Reference Implementation
-Guidance. The architecture remains authoritative; an implementation selection cannot silently
-redesign it, override an ADR, or invent an omitted responsibility.
-
-The assessment produces exactly one result: `Compatible`, `Incomplete`, or `Incompatible`.
-Evaluate the ordered realization categories Compute, Messaging, Persistence, Identity, Networking,
-Security, Observability, Recovery, Deployment, and Operations. Each category receives exactly one
-coverage status: `Satisfied`, `Unsatisfied`, or `Not Applicable`. Preserve stable architecture and
-selection ordering, and never omit an applicable architecture responsibility. `Not Applicable`
-requires evidence that the category is outside the accepted architecture.
-
-Implementation Selections are user-owned and may include future observed brownfield components,
-but this workflow does not create a separate brownfield discovery or validation engine. Normalize
-equivalent names and ordering deterministically while preserving the original selection evidence.
-
-For `Incomplete`, report an Implementation Gap Analysis for every unsatisfied responsibility with
-Missing Capability, Why It Matters, Suggested Realization, Recommendation Confidence, evidence, and
-an owner resolution action. Recommendations are evidence-backed; when evidence is insufficient,
-record `Unknown` rather than inventing a technology. Do not generate or persist an RI while any gap
-remains unresolved.
-
-For `Incompatible`, report Implementation Conflicts with Architecture Requirement, Implementation
-Selection, Conflict Explanation, evidence, and impact. Do not silently repair the architecture.
-Offer exactly two resolution paths: `Resolve Implementation` or `Revisit Architecture`. Do not
-generate or persist an RI for an incompatible assessment.
-
-For `Compatible`, retain the complete Coverage Summary and produce Technology Realization Rationale
-for every selected technology or mechanism, including architecture intent, reason selected, and
-supporting evidence. Only this outcome permits the existing RI validation, allocation, and atomic
-publication workflow. A failed assessment performs no RI allocation, identifier advancement,
-implementation write, or catalog write; in short, it produces no RI.
-
-Architecture Authority is the accepted Reference Architecture and its ADR decisions. Controls and
-NFRs remain authoritative for their own records; their realization is reported as a read-only
-projection with traceability, never as a source mutation.
-
-## Ownership and evidence
-
-Reference Architecture remains authoritative for architecture decisions, logical architecture,
-components, interactions, trust boundaries, rationale, constraints, and ownership. Objectives,
-Controls, NFRs, Profile, and Clarification remain authoritative for their own records. The
-implementation workflow owns implementation realization, technology realization, runtime topology,
-deployment realization, lifecycle realization, assumptions, risks, constraints, dependencies, and
-the downstream handoff.
-
-The implementation workflow also owns explicit realized-capability evidence inside the RI record.
-Each capability is a business-recognizable outcome, not an implementation component. The catalog is
-only a generated projection of that evidence.
-
-Realized Capabilities use a business-readable title and explicit realization evidence.
-
-The workflow does not redesign architecture. The workflow will retry an allocation conflict no more than three times before the operation aborts without writes.
-
-Resolve evidence in this exact first-match order: Reference Architecture, `CLAR-ARCH######`,
-Objectives, Controls, NFRs, then Profile.
-
-Optional evidence is advisory only:
-
-- missing -> continue without fabricated evidence
-- blocked -> continue and record the source condition as an implementation risk
-- valid -> use as advisory realization, relationship, constraint, risk, or dependency evidence
-- malformed or inconsistent Profile, Objective, Control, or NFR -> abort without writes
-- malformed Clarification -> preserve bytes, ignore clarification evidence, and fall back to the
-  authoritative architecture evidence
-
-Clarification is read-only. `complete` consumes resolved findings; `in-progress` consumes resolved
-and open findings as advisory context; `not-started` continues without clarification evidence; and
-`blocked` is recorded as an implementation risk. Open findings never block generation.
-
-## Entities and state
-
-One accepted Reference Architecture produces at most one Reference Implementation. A Reference
-Implementation record has a permanent catalog-owned `RI######` identifier, source `ARCH######`,
-initial status `proposed`, and a deterministic title derived from the accepted architecture title.
-The implementation catalog owns `Next ID`, direct record index entries, and architecture uniqueness.
-The state transition is `no implementation -> validate -> allocate -> proposed implementation`;
-duplicate or failed operations leave the prior state unchanged.
-
-Each realized capability has a business-readable Title, one or more Realized By values, and
-supporting evidence. Capability identity is the pair `(Parent RI, normalized Title)`. A capability
-may have multiple Realized By values; changing those values does not allocate a new capability
-identifier.
+- One Reference Architecture id that matches one row in `architectures/architectures.md`, when the person supplies one.
+- The accepted architecture at `architectures/[ID].md`.
+- Accepted Profile, Objectives, Controls, and NFRs when present.
+- `clarifications/clarifications.md` when present, for `CLAR-[RA id]` only.
+- `architectures/architectures.md` and `implementations/implementations.md`.
+- `.highway/library/templates/output/implementation-record.md`.
+- `.highway/library/templates/output/implementation-catalog.md`.
+- `.highway/library/templates/output/capability-catalog.md`.
+- `implementations/capabilities.md` when present.
+- `.highway/governance/experience-standard.md`.
+- A project root containing `.highway/`.
 
 ## Outputs
 
-A successful run produces exactly one `implementations/RIXXXXXX.md` record and one direct entry in
-`implementations/implementations.md`. The record follows
-`.highway/library/templates/output/implementation-record.md`. The catalog follows
-`.highway/library/templates/output/implementation-catalog.md`.
+The complete structure is `.highway/library/templates/output/implementation-record.md`, `.highway/library/templates/output/implementation-catalog.md`, and `.highway/library/templates/output/capability-catalog.md`.
 
-The shared implementation record template owns the complete retained structure for Context,
-Implementation Summary, Technology Realization, Runtime Components, Deployment Topology,
-Environment Strategy, Data Realization, Integration Realization, Security Control Realization, NFR
-Realization, Lifecycle Activities, Assumptions, Risks, Constraints, Dependencies, and Traceability.
-The initial status is always `proposed`. NFR Realization and Security Control Realization remain
-read-only projections of their source ownership.
+- One implementation record at `implementations/[ID].md` after the person accepts the proposed realization.
+- An updated `implementations/implementations.md` written with that record.
+- An updated `implementations/capabilities.md` written with that record.
+- A closing message that names the implementation.
+- No implementation when the architecture is missing, not accepted, incompatible, or a write fails.
 
-The implementation is a blueprint and clean downstream handoff only. It does not produce plans,
-tasks, executable source code, infrastructure definitions, deployment authorization, or
-self-service productization artifacts.
+## Procedure
 
-A successful run additionally produces or replaces `implementations/capabilities.md`. The Capability
-Catalog contains Version, Next ID, and exactly the fields `ID`, `Parent`, `Title`, and `Realized By`
-for each row. Each row has one `CAP######` identifier and one `RI######` Parent. No
-`CAP######.md` record files or capability workflow are created.
-The catalog follows `.highway/library/templates/output/capability-catalog.md`.
+Emit only the active template. Follow this order: `choose` when no architecture id is supplied; otherwise `start`, then `identifier`, `title` when needed, `write`, and `close`. The accepted Reference Architecture remains authoritative. A realization cannot redesign it or override the ADR. A missing Profile, Objective, Control, or NFR continues without invented evidence. A malformed one of those baselines stops the skill and writes nothing. Clarification is read-only. An open finding can inform a risk. It cannot block the proposal.
 
-## Realization contract
+One accepted architecture produces at most one implementation. When the implementation catalog already has that architecture as Parent, show the recorded implementation and write nothing.
 
-Technology Realization translates architecture components into implementation components while
-preserving architecture intent. Technology choices are permitted only when the architecture permits
-multiple realizations and deterministic implementation evidence supports the choice. Every choice
-references the architecture intent and supporting evidence; unsupported choices remain unknown rather
-than invented.
+### Entry
 
-Security Control Realization maps available Controls to implementation mechanisms such as encryption,
-secrets management, MFA, audit logging, or access control without changing Control ownership. NFR
-Realization maps available NFRs to implementation requirements such as scalability, recovery,
-availability, and monitoring without changing NFR ownership. Lifecycle Activities include design,
-build, test, deploy, operate, monitor, and improve realization mappings.
+1. Read the invocation for one Reference Architecture id.
+2. When none is present, go to `choose`.
+3. When an id is present, resolve it. When it matches no architecture, stop. Say the architecture was not found. Write nothing.
+4. When that architecture status is not `accepted`, stop. Say the architecture is not accepted. Write nothing.
+5. When that architecture is already Parent of an implementation, show the recorded implementation. Write nothing.
+6. Otherwise go to `start`.
 
-## Workflow
+### choose
 
-1. Validate that invocation contains exactly one explicit uppercase `ARCH######` identifier.
-2. Resolve exactly one architecture catalog entry and record; require status `accepted` and reject
-   duplicate architecture-to-implementation entries.
-3. Snapshot Clarification and governance evidence in the declared precedence order without mutating
-   any source; apply malformed Clarification fallback to architecture evidence.
-4. Normalize the owner-provided Implementation Selections and assess compatibility against every
-   applicable architecture responsibility.
-5. Stop with the required gap or conflict report when the result is `Incomplete` or `Incompatible`.
-6. Project architecture intent, components, interactions, trust boundaries, constraints, risks,
-   dependencies, governance realization, and available traceability into the implementation model.
-7. Resolve explicit realized capabilities from the implementation evidence and reject component-only
-   or unsupported capability names rather than inferring business outcomes.
-8. Match existing capability identities by `(Parent RI, normalized Title)`, preserve their CAP IDs,
-   allocate the lowest available sequential CAP ID for new identities, and remove stale derived rows.
-9. Generate the complete RI record, implementation catalog, and Capability Catalog in memory using
-   the shared templates.
-10. Validate all required sections, capability fields, references, status, relationships, ordering,
-   technology-choice evidence, and scope before persistence.
-11. Read and reserve exact catalog Next IDs; retry an allocation conflict no more than three times.
-12. Publish the RI record, implementation catalog, and Capability Catalog atomically, advancing each
-   Next ID exactly once for newly allocated identities.
-13. Verify source-byte preservation, one record, one direct catalog entry, proposed status, complete
-   traceability, all seven lifecycle activities, and absence of deferred artifacts before reporting
-   completion.
+Read `architectures/architectures.md` and `implementations/implementations.md`. An architecture is waiting when its Status is `accepted` and its Architecture ID does not appear on any implementation catalog row. A removed implementation row still counts as that architecture already having an implementation. Do not open architecture records to build this list.
 
-## Determinism and failure handling
+When none are waiting, say that no Reference Architecture is waiting for an implementation. Write nothing.
 
-Identical declared inputs and catalog state produce byte-identical content, section ordering,
-traceability, identifier allocation behavior, and catalog results. Components, relationships,
-assumptions, risks, dependencies, and sections use stable identifier and declared-source ordering.
-Generated content contains No timestamps, creation dates, modification dates, environment metadata,
-random values, or session identifiers.
+Otherwise emit one numbered line per waiting architecture, starting at 1, in architecture catalog order. Show the Architecture ID and its title. A stated number selects that architecture.
 
-Capability rows sort by Parent RI identifier, normalized Title, then CAP identifier. Multiple Realized
-By values sort by normalized value. Existing CAP identifiers remain stable when unrelated rows are
-added, removed, or reordered.
+**1. [Architecture ID]:** [Architecture Title]
 
-Validation happens before persistence. This is validation before persistence. Resolution, malformed or inconsistent evidence, duplicate,
-catalog allocation, validation, or write failure aborts without writes; no partial output is reported
-as success. Allocation conflicts stop after three retries. Existing architecture and all upstream
-records remain byte-identical. Capability Catalog publication is atomic with the RI record and
-implementation catalog.
+**Which Reference Architecture would you like to realize?**
+
+- A Reference Architecture id, a listed architecture title, or its number: follow Entry from case 3.
+- `unknown`: re-emit this list. Stay on `choose`.
+- `decline`: stop. Write nothing.
+
+### Classify
+
+Classify the latest reply before any other action.
+
+- `edit`: adds, removes, corrects, or replaces realization text.
+- `accept`: affirms the proposed realization and adds no fact.
+- `unknown`: the person says they do not know.
+- `question`: asks for an explanation.
+- `decline`: the person stops or cancels.
+
+On `start`, "looks good" is `accept`.
+
+### start
+
+Build the proposed realization from the accepted architecture. Cover every responsibility the architecture includes. Use `Not applicable` only when the architecture does not include that responsibility. When evidence does not support a technology, use `Unknown` rather than inventing one.
+
+The responsibilities are Compute, Messaging, Persistence, Identity, Networking, Security, Observability, Recovery, Deployment, and Operations.
+
+When a proposed realization contradicts the architecture, name the requirement, the conflict, and the impact. Offer `Resolve implementation` or `Revisit architecture`. Do not write.
+
+**Here is a proposed starting point for your implementation:**
+
+**Summary:** [What this realization does.]
+
+**Realizations:**
+- **[Component]:** [Technology or mechanism, and the responsibility it covers.]
+
+**Deployment:** [Where and how it runs.]
+
+**Data:** [How data is stored and moved, or `None`.]
+
+**Security:** [How accepted Controls are realized, or `None`.]
+
+**Operations:** [How accepted NFRs are met in operation, or `None`.]
+
+**Capabilities:**
+- **[Business capability]:** Realized by [provider or mechanism]. A capability is a business outcome, not a component name.
+
+**What would you add, correct, or remove?**
+
+If this is accurate, just say so.
+
+- `edit`: emit one consequence sentence. Re-emit this block with the edit applied. Stay on `start`.
+- `accept`: when any included responsibility is still unsatisfied, name it and stay on `start`. Otherwise go to `identifier`.
+- `unknown`: re-emit this block. Stay on `start`.
+- `question`: answer, then re-emit this block. Stay on `start`.
+- `decline`: stop. Write nothing.
+
+### identifier
+
+The implementation title is the architecture title unless the person supplied a title.
+
+1. Lowercase the title. Remove hyphens and apostrophes. Split the rest into words.
+2. Take eight letters: the first two of word 1, the first two of word 2, the first two of word 3, and the last two of the last word. When the title has only two words, the third sample is the first two of the last word.
+3. When a word is shorter than two letters, continue into the next word. A one-word title repeats until there are eight letters.
+4. Map each letter. Digits stay as they are.
+
+a 0, b 1, c 2, d 3, e 4, f 5, g 6, h 7, i 8, j 9, k a, l b, m c, n d, o e, p f, q 0, r 1, s 2, t 3, u 4, v 5, w 6, x 7, y 8, z 9.
+
+5. The id is `RI` plus those eight hex digits.
+
+Compare that id with `implementations/implementations.md`, including removed rows.
+
+- The same title already has that id: use the existing record. Do not write a second one. Go to `close`.
+- The id is taken for a different title: go to `title`.
+- The id is free: go to `write`.
+
+### title
+
+Name each conflicting title. Say that a title change is appropriate. Then show the new title for acceptance.
+
+The existing Implementation Title, **[Existing title]** and this new Implementation Title, **[this title]**, are too similar. A title change is appropriate. I would recommend:
+
+**[New title]**
+
+**What would you add, correct, or remove?**
+
+If this is accurate, just say so.
+
+The new title is a small change the person can recognize. Its derived id must be free. Do not mention identifiers, hex, sampling, or the catalog.
+
+- `accept`: replace the held title. Return to `identifier`.
+- `edit`: use the person's title. Return to `identifier`.
+- `question`: answer in one sentence. Re-emit this message.
+- `unknown`: re-emit this message.
+
+Do not write until the id is free or the existing record is reused.
+
+### write
+
+Write `implementations/[ID].md`, `implementations/implementations.md`, and `implementations/capabilities.md` together. Write none of them until all are valid. A failed write leaves every existing implementation and capability-catalog byte unchanged. Say what failed in terms the person can act on. Stay on `write`.
+
+The record follows `.highway/library/templates/output/implementation-record.md`.
+
+- `id` is the derived `RI` id.
+- `architecture` is the Reference Architecture id.
+- `status` is `accepted`.
+- The title is the accepted implementation title.
+- Include Context, Implementation Summary, Technology Realization, Runtime Components, Deployment Topology, Environment Strategy, Data Realization, Integration Realization, Security Control Realization, NFR Realization, Lifecycle Activities, Assumptions, Risks, Constraints, Dependencies, and Traceability.
+- Lifecycle Activities are design, build, test, deploy, operate, monitor, and improve.
+- Security Control Realization and NFR Realization project the accepted Controls and NFRs. Do not change those records.
+- Traceability names the Request, Discovery, ADR, Reference Architecture, and this implementation.
+- Each realized capability has a business-readable title and one or more Realized By values.
+
+`implementations/capabilities.md` follows `.highway/library/templates/output/capability-catalog.md`.
+
+- The columns are ID, Parent, Title, and Realized By.
+- Parent is this `RI` id. Title is the business capability. Realized By lists the providers or mechanisms, in alphabetical order.
+- Derive each capability id with the same letter steps, using the prefix `CAP` and the capability title. Reuse that id when this Parent and title already have a row.
+- When that id is taken by the same title under a different Parent, derive it again with the Parent id as the last word.
+- When that id is taken by a different title, name both titles, say a wording change is appropriate, and show a small change. Write only after the wording is free.
+- Replace this Parent's rows on each write. Leave other Parents unchanged. Remove a row for this Parent that is no longer in the accepted capabilities.
+- Do not write a `CAP` record file.
+- Do not allocate from `Next ID`.
+- Empty optional evidence is `None`.
+- Emit no timestamp, random value, or environment value.
+- Do not write plans, tasks, source code, or infrastructure definitions.
+
+The catalog follows `.highway/library/templates/output/implementation-catalog.md`.
+
+- The index columns are Implementation ID, Architecture ID, Implementation Title, Implementation Path, and Status.
+- Implementation ID is the `RI` id. Architecture ID is the `RA` id. Implementation Path is `implementations/<RI id>.md`. Status is `accepted`.
+- Order the index by ID.
+- Do not allocate from `Next ID`.
+- The first catalog version is `1.0.0`.
+- Adding an implementation increments the minor version.
+- One Reference Architecture id appears as Parent on at most one row.
+
+On success, go to `close`.
+
+### close
+
+**Reference Implementation recorded**
+
+- **Implementation record:** `implementations/[RI id].md`
+- **Title:** [Title]
+- **Identifier:** `[RI id]`
+- **Architecture:** `[RA id]`
+
+This is a realization blueprint. It does not authorize deployment.
 
 ## Verification
 
-Confirm exactly one accepted ARCH input, one permanent RI identifier, one record, one direct catalog
-entry, proposed status, complete required sections, stable relationships, unchanged upstream bytes,
-architecture-traceable implementation decisions, realized capability evidence, one valid capability
-catalog row per `(Parent RI, normalized Title)`, unique CAP identifiers, valid parents and providers,
-realized Controls and NFRs, all seven lifecycle activities, complete available traceability, and no
-deferred artifacts.
-
-Confirm the completion response includes Implementation ID, Architecture ID, record path, catalog
-path, and available `REQXXXXXX -> DISCXXXXXX -> ADRXXXXXX -> ARCHXXXXXX -> RIXXXXXX` traceability.
-Confirm assessment can identify the RI and Realized By values directly from the Capability Catalog,
-no `CAP######.md` files exist, and no executable code, infrastructure definitions, plans, tasks,
-deployment authorization, technology inventory, or self-service productization artifacts were created.
+- A Reference Architecture id for an accepted architecture opens the proposed realization.
+- An invocation without an id lists the accepted architectures whose Architecture ID is absent from every implementation catalog row. Each line shows the Architecture ID and its title. The list is numbered. A stated number selects that architecture. A removed implementation row keeps that architecture off the list.
+- An architecture that is not accepted writes nothing.
+- One accepted architecture produces at most one implementation.
+- The proposed realization is accepted before the record is written.
+- A contradiction with the architecture writes nothing.
+- The record status is `accepted`.
+- `implementations/capabilities.md` is written in the same step, with ID, Parent, Title, and Realized By.
+- A capability id is `CAP` plus eight hex digits. The same Parent and title reuse that id. No capability record file is written.
+- The record contains no plans, tasks, source code, or infrastructure definitions.
+- Each id is `RI` plus eight hex digits derived from the title.
+- The catalog index columns are Implementation ID, Architecture ID, Implementation Title, Implementation Path, and Status.
+- A taken id names the conflicting titles, says a title change is appropriate, and shows a new title. The write waits until the person accepts that title.
+- That message does not mention identifiers, hex, sampling, or the catalog.
+- A failed write leaves existing implementation, implementation-catalog, and capability-catalog bytes unchanged.
+- The skill does not change the Reference Architecture.
 
 ## Error Handling
 
-Invalid, missing, ambiguous, duplicated, malformed, non-accepted, or inconsistently resolved inputs,
-malformed governance, allocation conflicts after three retries, validation failures, and write
-failures return a clear failure with no partial implementation or catalog output and preserve every
-pre-operation byte.
+- A missing or unknown architecture stops the skill and writes nothing.
+- An architecture that is not accepted stops the skill and writes nothing.
+- A second implementation for the same architecture stops the write and shows the existing implementation.
+- A realization that contradicts the architecture stops the write and names the conflict.
+- A malformed present Profile, Objective, Control, or NFR baseline stops the skill and writes nothing.
+- A failed write leaves existing implementation, implementation-catalog, and capability-catalog bytes unchanged.
 
 ## Example
 
-`/highway-implementation ARCH000001`
+`/highway-implementation RAb7c41e20`

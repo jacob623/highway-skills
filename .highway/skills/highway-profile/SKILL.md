@@ -1,503 +1,305 @@
 ---
 name: highway-profile
 description: "Manages the repository-wide organizational Profile and its contextual guidance."
-usage: "Invoke as `/highway-profile` to inspect Profile context, or state setup, view, add, update, remove, or reset."
+usage: "Invoke as /highway-profile."
 compatibility: all
 metadata:
-  version: 11.2.0
+  version: 12.0.0
 ---
 
 # highway-profile
 
 ## Purpose
 
-Collects organizational evidence and persists accepted context in the Markdown Profile.
-
-## Scope
-
-The Profile owns four readiness domains: Identity, Vision, Competitive Path, and Guiding
-Principles. It does not create Controls, NFRs, Objectives, governance rules, or Highway identity.
+Collects the organizational Profile when setup delegates this skill.
 
 ## When to use
 
-Use `setup` or `configure` to collect evidence, `readiness` to assess the retained Profile, and
-`view`, `show`, `describe`, `add`, `update`, `remove`, or `reset` for explicit inspection or change.
+- `highway-setup` delegates this skill at the start of setup.
+- `highway-setup` delegates this skill when setup runs again.
 
 ## When not to use
 
-Do not treat foundational Highway context or unaccepted proposal evidence as organizational fact.
+Do not create Controls, NFRs, Objectives, governance rules, or Highway identity.
+Do not treat proposed evidence as organizational fact.
+Do not report Status, Summary, Next Action, Blocking Reason, Missing, Complete, or Blocked.
 
 ## Inputs
 
 - Project root containing `.highway/`.
-- The retained Profile at `.highway/library/knowledge/profile.md`, when present.
-- The structure at `.highway/library/templates/output/profile-record.md`.
-- `.highway/library/knowledge/highway-identity.md` as shared, non-normative context only.
-- `.highway/governance/experience-standard.md` as the authoritative interaction contract.
-- User requests, proposal evidence, supplied organizational material, and a public organizational
-  website when supported retrieval is available.
+- `.highway/library/knowledge/profile.md` when present.
+- `.highway/library/templates/output/profile-record.md`.
+- `.highway/library/knowledge/highway-identity.md` as shared, non-normative context.
+- `.highway/governance/experience-standard.md`.
+- Delegation from `highway-setup`.
+- Material the person supplies, including a public website when retrieval is available.
 
 ## Outputs
 
-The retained artifact is `.highway/library/knowledge/profile.md`. Its complete reusable structure
-is owned by `.highway/library/templates/output/profile-record.md`; this skill does not repeat that
-skeleton. The optional Context structure is also owned by that template.
+The complete structure is `.highway/library/templates/output/profile-record.md`.
 
-## Readiness
+- An updated `.highway/library/knowledge/profile.md` after a review edit.
+- A new `.highway/library/knowledge/profile.md` after the guided flow writes it.
+- `Finished` returned to `highway-setup` after review acceptance or a successful guided write.
+- `Finished` is not shown to the person.
 
-Profile determines domain completeness. An absent Profile is a valid initial state. An absent Profile
-is `Missing` with Next Action: `/highway-profile setup`. A present malformed, contradictory, or
-structurally invalid retained Profile is `Blocked` with Next Action: `None` and is left unchanged.
-A valid incomplete Profile with any `not_discussed` domain is `Missing` with Next Action:
-`/highway-profile configure`. A valid Profile with all four domains `discussed` or `bounded` is
-`Complete` with Next Action: `None`. Optional Context and optional enrichment do not change readiness.
+## Procedure
 
-Profile readiness is an internal result containing `Status:`, `Summary:`, `Next Action:`, and
-`Blocking Reason:` fields. These fields are not a normal user-facing output template. Direct
-readiness requests may show the requested result; orchestrated conversation does not render these
-machine fields, and does not name readiness statuses, next actions, blocking reasons, domain states,
-or persistence steps.
+User-visible interaction follows the Highway Experience Standard. Repository ownership stays with the person.
 
-Domain completeness is obtained by reading the retained Profile record at
-`.highway/library/templates/output/profile-record.md`'s declared location. No command is invoked to
-determine readiness.
+Emit only the active template. Follow this order: `review` when `profile.md` exists; otherwise `name`, `offer`, Identity, Vision, Competitive Path, Guiding Principles, then `write`. Follow `.highway/governance/experience-standard.md` for attribution and acceptance wording. Use accepted Organization Name in templates. Use Repository Name until an Organization Name is accepted. Repository Name does not become Organization Name.
 
-### Domain model
+### Entry
 
-The Profile follows the complete structure in `.highway/library/templates/output/profile-record.md`.
-It owns the meaning, evidence, state, and readiness of Identity, Vision, Competitive Path, and
-Guiding Principles. Accepted evidence that establishes a domain sets it to `discussed`; an explicit
-user decision not to establish further evidence may set an otherwise unresolved domain to `bounded`.
-Missing evidence, uncertainty, inability to discover evidence, or `I don't know` alone does not
-establish `bounded`.
-Expression guides representation, not truth; it may improve clarity without becoming retained
-organizational fact.
+1. Read `.highway/library/knowledge/profile.md`.
+2. If the file is present and readable, go to `review`.
+3. If the file is absent, go to `name`.
+4. If the file is present and unreadable, stop. Say the Profile could not be read. Leave the file unchanged. Do not return `Finished`.
 
-### Domain completeness
+### Classify
 
-A domain is complete when accumulated evidence supports one cohesive organizational narrative that
-meaningfully answers the domain's purpose without unsupported organizational facts.
+Classify the latest reply before any other action.
 
-Profile determines domain completeness. The Highway Experience Standard determines whether
-collaborative development has converged enough for that complete candidate to become a Converged
-Proposal.
+- `edit`: adds, removes, corrects, splits, combines, or replaces substance.
+- `accept`: affirms the current block and adds no fact.
+- `unknown`: the person says they do not know.
+- `question`: the person asks for an explanation.
+- `decline`: the person explicitly leaves the active domain unresolved.
 
-Profile-specific validation questions apply to the domain's Converged Proposal.
+`unknown` is not `decline`.
 
-## Shared Interaction Elements
+### review
 
-### Response Support Text
+Show the file body. Omit frontmatter. Then emit the validation block.
 
-Profile uses the following reusable interaction elements.
+- `edit`: emit one consequence sentence. Rewrite the file with that edit. Preserve every section the person left unchanged. Show the updated body and emit the validation block. Stay on `review`.
+- `accept`: return `Finished`. Emit nothing else.
+- `unknown`: show the body and emit the validation block. Stay on `review`.
+- `question`: answer in one sentence. Show the body and emit the validation block. Stay on `review`.
 
-#### Validation Question
-
-The default validation question is:
+Validation block:
 
 **What would you add, correct, or remove?**
 
-A sharper open question drawn from the active discussion may replace it when it still asks what to add, correct, or remove.
-
-The Validation Question remains the only emphasized element in a review block.
-
-#### Acceptance Reassurance
-
-The Acceptance Reassurance is:
-
 If this is accurate, just say so.
 
-Use it beneath a Validation Question when the person is reviewing a candidate or Converged Proposal.
+### name
 
-#### Discovery Reassurance
-
-The Discovery Reassurance is:
-
-If you don't know, say "I don't know" and we'll work through it together.
-
-Use it when the person is being asked to originate unresolved organizational information and no grounded starting point, Working Idea, interpretation, possibility, or advisory contribution has yet been supplied for reaction.
-
-#### Combined Reassurance
-
-The Combined Reassurance is:
-
-If this is accurate, just say so. If you don't know, say "I don't know" and we'll work through it together.
-
-Use the Combined Reassurance when both are reasonable outcomes of the interaction.
-
-Use the Acceptance Reassurance alone when the person is reacting to a candidate or Working Idea and "I don't know" would be unnatural.
-
-Use the Discovery Reassurance alone when the person is being asked to originate information and no meaningful starting point has yet been provided.
-
-Every domain presents its Converged Proposal the same way.
-
-Present the candidate under its capture heading:
-
-**Here's what I've captured as your [domain]:**
-
-Place the Validation Question beneath the candidate.
-
-Place the applicable reassurance beneath the Validation Question.
-
-Render:
-
-Validation Question
-
-blank line
-
-applicable reassurance
-
-The Validation Question remains the only emphasized element in the review block.
-
-Use the Discovery Reassurance only when the person is being asked to originate unresolved organizational information and the workflow has not yet supplied a meaningful starting point for reaction.
-
-Do not use the Discovery Reassurance merely because no Substantive Contribution has occurred yet.
-
-A grounded possibility, interpretation, distinction, implication, connection, tension, tradeoff, recommendation, or other Working Idea already gives the person something to react to.
-
-In those cases, use the Acceptance Reassurance or Combined Reassurance as appropriate.
-
-Imported website evidence does not count as a user Substantive Contribution.
-
-The person's response to that request is the domain's acceptance boundary. Recognize acceptance by
-what the response means, not by whether it matches a particular phrase, and do not wait for a second
-confirmation. When the person gives unambiguous approval, proceed directly to the Converged Proposal
-and then its validation question.
-
-A domain's substance is kept only after its finished candidate has been presented and accepted.
-Material gathered while composing a domain stays working material until then, in all four domains.
-
-### Interpretation confidence
-
-Prefer a grounded interpretation that can be corrected over a missing interpretation that forces the person to create it from scratch.
-
-When accepted evidence already supports a useful distinction, implication, connection, tension, structure, organizing principle, or Working Idea, do not ask a question that merely seeks permission to express the interpretation.
-
-When accepted evidence supports a responsible first-pass interpretation of Vision, Competitive Path, or Guiding Principles, prefer presenting a structured starting point rather than continuing exploratory questioning.
-
-When a Discovery Contribution Opportunity is active, express that grounded interpretation inside its proposed starting point rather than questioning it separately.
-
-The starting point exists to give the person something meaningful to react to.
-
-Questions remain available when accepted evidence cannot support a responsible starting point.
-
-## Domain Development
-
-### Acquisition
-
-Acquisition evaluates retained Profile context, establishes Repository Name when missing, and gives
-the person one opportunity to reuse supplied organizational material or a public website before
-ordinary domain questioning. Supplied URLs are accepted optional Profile Context; facts derived from
-websites or imported material remain proposed until accepted. When retrieval is unavailable,
-continue without exposing the missing capability.
-
-Evaluate each source across all unresolved Profile domains before selecting the next behavior. Reuse
-accepted evidence across domains and do not ask the person to reproduce information already present
-in supplied material. Do not use unspecified model memory or prior-agent memory as organizational
-evidence. Acquisition is limited to Profile evidence and does not perform technology-platform
-discovery.
-
-When no retained Profile exists, begin first-time Setup with:
+Emit:
 
 #### Let's get to know your organization
-
-Then ask:
 
 **What would you like to call your Highway repository?**
 
 Using your organization's name is often a good choice.
 
-Accept a directly supplied Repository Name as supplied. It does not imply acceptance of Organization
-Name or other organizational facts. After it is accepted, offer existing organizational material
-before ordinary domain questioning. An illustrative prompt is `**Do you already have something I can
-use to start understanding [Repository Name]?**` followed by an invitation to share a website,
-description, strategy document, or assistant export.
+Store the reply as Repository Name. Go to `offer`.
 
-The canonical questions are:
-- Identity: **What does [Organization Name] do?**
-- Vision **What is the future vision of [Organization Name]?**
-- Competitive Path **How does [Organization Name] plan to get there?**
-- Guiding Principles **What principles or values guide decisions at [Organization Name]?**. 
+### offer
 
-When Organization Name is not accepted, use the accepted Repository Name where natural. Canonical questions are Profile-owned fallbacks for unresolved organizational information. Evaluate available Profile evidence before using them.
+Emit:
 
-### Identity
+**Do you already have something I can use to start understanding [Repository Name]?**
 
-Identity establishes who the organization is and what it meaningfully encompasses, including durable
-activity and purpose. It is not a technology-landscape inventory.
+You can share a website link, an overview or description, a strategy document, or an assistant export. If you don't have anything handy, say so and we can work through it together.
 
-After convergence, present the Converged Proposal under
-`**Here's what I've captured as your Identity:**`, validate it with the shared validation question,
-and treat the person's response as the acceptance boundary for Identity. Retain nothing from
-Identity before that candidate is presented and accepted. When no material has been captured, use
-`**Here is a proposed starting point for your Identity:**`.
+- A URL or document: retrieve it. Store a supplied URL as Organization URL. Facts from it stay proposed until accepted in a capture. Go to `identity.review` when the material supports at least one Identity finding. Otherwise go to `identity.ask`.
+- The person has nothing: go to `identity.ask`.
+- Retrieval is unavailable: go to `identity.ask`. Do not mention the missing retrieval.
 
-#### Identity Discovery Contribution Opportunity
+Use supplied material across every later domain. Do not ask the person to repeat it. Do not use model memory or prior-agent memory as organizational evidence.
 
-When website content, imported material, or discovery evidence materially contributes to Identity
-development, present an optional Identity Discovery Contribution Opportunity before Identity convergence and before the
-existing Identity Converged Proposal. The purpose is omission detection rather than categorization.
-Use the proposed starting point to reveal relationships, patterns, structure, tensions, tradeoffs,
-implications, dependencies, and organizing principles already supported by accepted evidence.
+### Domain order
 
-The review remains proposed evidence and is not retained Profile content. Present it as:
+Run Identity, Vision, Competitive Path, then Guiding Principles.
 
-Here's what Highway believes [Organization Name] does.
+Each domain uses `review` or `start` when accepted evidence can fill every slot in that template. Otherwise use `ask`. Do not put a question template in the same message as a starting point.
 
-When Organization Name has not been accepted, use the accepted Repository Name where natural.
+1. `identity.review` or `identity.ask`
+2. `identity.capture`
+3. `vision.start` or `vision.ask`
+4. `vision.capture`
+5. `path.start` or `path.ask`
+6. `path.capture`
+7. `principles.start` or `principles.ask`
+8. `principles.capture`
+9. `write`
 
-Each finding has a concise, visually distinct title representing a meaningful organizational expression
-and a one-sentence evidence-grounded summary explaining what Highway believes it found. Do not emit
-isolated nouns or labels. A fixed taxonomy is not required. The review may include products, services,
-programs, activities, audiences, communities served, delivery models, revenue-generating offerings,
-or other significant organizational expressions when supported by evidence.
+Hold each accepted capture paragraph until `write`. Do not write the file before `write`.
 
-Use evidence-grounded examples such as:
+### Shared replies
 
-**Retail Craft Kits:**
-Studio-tested craft projects are packaged with materials and instructions so customers can complete the
-creative experience outside the studio.
+Apply these on every domain step.
 
-**Homeschool Curriculum:**
-Lessons proven through real studio instruction are organized into curriculum that homeschool families
-can implement independently.
+- `edit`: emit one sentence stating a consequence the person did not state. Re-emit the same template with the edit applied. Stay.
+- `accept` on `review`, `start`, or `ask`: emit that domain's capture template. Stay on the capture step.
+- `accept` on a capture template: hold that paragraph. Advance.
+- `unknown` on `review` or `start`: re-emit that template. Stay.
+- `unknown` on `ask`: re-emit the question template. Stay.
+- `question`: answer in one sentence. Re-emit the same template. Stay.
+- `decline`: store no narrative for this domain. Advance.
 
-**Studio Classes:**
-The organization delivers instructor-led classes that serve both as educational offerings and as a
-proving ground for future curriculum and products.
+`unknown` does not finish a domain.
 
-**Community Workshops:**
-Hands-on workshops bring participants together to learn, share skills, and contribute to a growing
-creative community.
+### Domain rules
 
-End the review with **What would you add, correct, or remove?** The Identity Discovery Contribution Opportunity is a
-Contribution Opportunity rather than a Converged Proposal. When the person adds, corrects, removes,
-combines, splits, or otherwise changes findings, treat the response as modifications to proposed
-Identity evidence. Re-synthesize and re-present the Identity Discovery Contribution Opportunity using the updated
-understanding. Do not transition immediately to the Identity Converged Proposal merely because the
-person supplied a correction.
+Identity states who the organization is and what it provides. Omit a technology inventory.
 
-Remain within the Identity Discovery Contribution Opportunity while omissions are being identified, findings are being
-corrected or expanded, or meaningful discovery-contribution changes continue occurring. Transition to normal
-Identity convergence only after the person indicates the findings are accurate, or no longer provides
-substantive additions, corrections, removals, combinations, or splits. The discovery-contribution representation and the final Identity Converged Proposal
-are separate artifacts; the final proposal is produced from the accepted discovery-contribution understanding.
+Vision states the future the organization is creating. Omit method, sequencing, and organizational approach. When the person supplies those, emit this sentence, hold that material for Competitive Path, and stay on Vision:
 
-When evidence is weakly supported, materially ambiguous, or reducible to an isolated label, omit or
-qualify the finding rather than presenting unsupported organizational fact. When no website, imported
-material, or discovery evidence materially contributes, preserve the existing Identity convergence flow
-without requiring a review.
+**That is an important part of how you will get there. I will carry it forward when we reach Competitive Path, and return to Vision.**
 
-The review does not introduce new Profile fields, does not create new readiness dimensions, does not
-change domain ownership, and does not replace the retained narrative structure. It remains proposed
-evidence until accepted through the existing Identity Converged Proposal and Profile persistence boundary.
+Competitive Path states the broad approach toward the accepted Vision. Omit Controls, NFRs, safeguards, architecture, implementation requirements, and plans. Keep only the broad strategic meaning of volunteered detail.
 
-### Vision
+Guiding Principles state enduring decision-making values. Do not write an enforceable Control.
 
-Vision describes the future the organization is trying to create. Reason from the full accepted
-Identity and other relevant Profile evidence; do not let one Identity facet become the whole Vision
-merely because it is the easiest continuation. Vision does not elicit or retain the approach,
-sequencing, or organizational method for reaching that future; that approach is developed with
-Competitive Path.
-When the person offers one of those while composing Vision, say so in their own terms:
-`**That is an important part of how you will get there. I will carry it forward when we reach
-Competitive Path, and return to Vision.**`
+Open Vision, Competitive Path, and Guiding Principles by naming accepted substance from the previous captured domain.
 
-When entering unresolved Vision, open the user-visible subject with `### Where you're going`. Open
-it by naming accepted Identity substance in the person's own words and connecting it to the question
-being asked. Open that subject with grounded possibilities drawn from accepted Profile evidence
-before asking the canonical question. When no material has been captured, use
-`**Here is a proposed starting point for your Vision:**`.
+### Templates
 
-#### Vision Discovery Contribution Opportunity
+Identity review:
 
-When accepted Identity evidence and other accepted Profile evidence support a cohesive and responsible first-pass Vision interpretation, present a proposed starting point before continuing exploratory questioning.
+Here's what Highway believes [Name] does.
 
-The person may adopt, redirect, correct, or replace the starting point. Further exploratory questioning becomes the exception path when accepted evidence cannot support a responsible starting point.
+**[Short activity name]:**
+[One sentence: who receives it, and what they receive.]
 
-Use the proposed starting point to reveal relationships, patterns, structure, tensions, tradeoffs,
-implications, dependencies, and organizing principles already supported by accepted evidence.
+Emit 3 to 6 findings. Omit a finding the source does not support.
 
-Vision starting points should be presented as structured bullets rather than narrative prose. The proposal should reveal the major elements of the Vision in a format that is easy to review, compare, and modify.
+Identity question:
+
+**What does [Name] do?**
+
+If you don't know, say "I don't know" and we'll work through it together.
+
+Vision opening and starting point:
+
+Emit this level-3 heading, then the sentence under it:
+
+Where you're going
+
+With [accepted Identity substance], let's explore the future you are working to create.
 
 **Here is a proposed starting point for your Vision:**
 
 - Future Direction
-  <accepted-evidence-grounded interpretation>
+  [Accepted-evidence interpretation of the future direction.]
 
 - Desired Impact
-  <accepted-evidence-grounded interpretation>
+  [Accepted-evidence interpretation of the desired impact.]
 
 - Future State
-  <accepted-evidence-grounded interpretation>
+  [Accepted-evidence interpretation of the future state.]
 
 **What would you add, correct, or remove?**
 
-The Vision Discovery Contribution Opportunity is a Contribution Opportunity rather than a Converged Proposal. When the person adopts, redirects, corrects, replaces, combines, splits, or otherwise changes findings, treat the response as modifications to proposed Vision evidence. Re-synthesize and re-present the Vision Discovery Contribution Opportunity using the updated understanding. Do not transition immediately to the Vision Converged Proposal merely because the person supplied a correction.
+If this is accurate, just say so. If you don't know, say "I don't know" and we'll work through it together.
 
-Remain within the Vision Discovery Contribution Opportunity while omissions are being identified, findings are being corrected or expanded, or meaningful discovery-contribution changes continue occurring. Re-evaluate the active understanding with relevant accepted context after each substantive change. Transition to normal Vision convergence only after the person indicates the findings are accurate, or no longer provides substantive additions, corrections, removals, combinations, or splits. The discovery-contribution representation and the final Vision Converged Proposal are separate artifacts; the final proposal is produced from the accepted discovery-contribution understanding. If accepted evidence cannot support this starting point, use the focused Vision question instead.
+Vision question, emitted under the same opening when the starting point cannot be filled:
 
-Present the Converged Proposal under `**Here's what I've captured as your Vision:**`, validate it
-with the shared validation question, and treat the person's response as the acceptance boundary for
-Vision. Retain nothing from Vision before that candidate is presented and accepted.
+**What is the future vision of [Name]?**
 
-### Competitive Path
+If you don't know, say "I don't know" and we'll work through it together.
 
-Competitive Path describes the broad organizational approach toward the accepted Vision. It may
-reason about strategic choices, sequencing, priorities, and organizational direction. It does not
-elicit or retain Controls, NFRs, safeguards, architecture, implementation requirements, or plans.
-When volunteered downstream-owned information changes the broad approach, retain only its broad
-strategic meaning. When entering unresolved Competitive
-Path, open the user-visible subject with `### How you'll get there`. Open it by naming accepted
-Vision substance in the person's own words and connecting it to the question being asked. Open that
-subject with grounded possibilities drawn from accepted Profile evidence before asking the
-the canonical question. When no material has been captured, use
-`**Here is a proposed starting point for your Competitive Path:**`.
+Competitive Path opening and starting point:
 
-#### Competitive Path Discovery Contribution Opportunity
+Emit this level-3 heading, then the sentence under it:
 
-When accepted Identity, Vision, and other accepted Profile evidence support a cohesive first-pass Competitive Path interpretation, present a proposed starting point before continuing exploratory questioning.
+How you'll get there
 
-The person may adopt, redirect, correct, or replace the starting point. Further exploratory questioning becomes the exception path when accepted evidence cannot support a responsible starting point.
-
-Use the proposed starting point to reveal relationships, patterns, structure, tensions, tradeoffs,
-implications, dependencies, and organizing principles already supported by accepted evidence.
-
-Competitive Path starting points should be presented as structured bullets rather than narrative prose. The proposal should reveal how the organization intends to advance toward its Vision.
+To advance toward [accepted Vision substance], let's explore how [Name] plans to get there.
 
 **Here is a proposed starting point for your Competitive Path:**
 
 - Primary Approach
-  <accepted-evidence-grounded interpretation>
+  [Accepted-evidence interpretation of the broad approach.]
 
 - Strategic Advantage
-  <accepted-evidence-grounded interpretation>
+  [Accepted-evidence interpretation of the advantage.]
 
 - Important Tradeoff
-  <accepted-evidence-grounded interpretation>
+  [Accepted-evidence interpretation of the tradeoff.]
 
 **What would you add, correct, or remove?**
 
-The Competitive Path Discovery Contribution Opportunity is a Contribution Opportunity rather than a Converged Proposal. When the person adopts, redirects, corrects, replaces, combines, splits, or otherwise changes findings, treat the response as modifications to proposed Competitive Path evidence. Re-synthesize and re-present the Competitive Path Discovery Contribution Opportunity using the updated understanding. Do not transition immediately to the Competitive Path Converged Proposal merely because the person supplied a correction.
+If this is accurate, just say so. If you don't know, say "I don't know" and we'll work through it together.
 
-Remain within the Competitive Path Discovery Contribution Opportunity while omissions are being identified, findings are being corrected or expanded, or meaningful discovery-contribution changes continue occurring. Re-evaluate the active understanding with relevant accepted context after each substantive change. Transition to normal Competitive Path convergence only after the person indicates the findings are accurate, or no longer provides substantive additions, corrections, removals, combinations, or splits. The discovery-contribution representation and the final Competitive Path Converged Proposal are separate artifacts; the final proposal is produced from the accepted discovery-contribution understanding. If accepted evidence cannot support this starting point, use the focused Competitive Path question instead.
+Competitive Path question, emitted under the same opening when the starting point cannot be filled:
 
-Present the Converged Proposal under `**Here's what I've captured as your Competitive Path:**`,
-validate it with the shared validation question, and treat the person's response as the acceptance
-boundary for Competitive Path. Retain nothing from Competitive Path before that candidate is
-presented and accepted.
+**How does [Name] plan to get there?**
 
-### Guiding Principles
+If you don't know, say "I don't know" and we'll work through it together.
 
-Guiding Principles describe the enduring principles that shape organizational decisions. Use
-accepted Identity, Vision, Competitive Path, and other accepted Profile context as grounding. Do not
-turn a principle into an enforceable Control. When entering unresolved Guiding Principles, open the
-user-visible subject with `### What will guide your decisions`. Open it by naming accepted
-Competitive Path substance in the person's own words and connecting it to the question being asked.
-Open that subject with grounded possibilities drawn from accepted Profile evidence before asking the
-the canonical question. When no material has been captured, use
-`**Here is a proposed starting point for your Guiding Principles:**`.
+Guiding Principles opening and starting point:
 
-#### Guiding Principles Discovery Contribution Opportunity
+Emit this level-3 heading, then the sentence under it:
 
-When accepted Profile evidence supports a cohesive interpretation of likely decision-making values, present a proposed starting point before continuing exploratory questioning.
+What will guide your decisions
 
-The person may adopt, redirect, correct, or replace the starting point. Further exploratory questioning becomes the exception path when accepted evidence cannot support a responsible starting point.
-
-Use the proposed starting point to reveal relationships, patterns, structure, tensions, tradeoffs,
-implications, dependencies, and organizing principles already supported by accepted evidence.
-
-Guiding Principles starting points should be presented as structured bullets rather than narrative prose. The proposal should reveal potential decision-making values individually rather than embedding them inside paragraphs.
+With your competitive path grounded in [accepted Competitive Path substance], let's explore what principles guide [Name]'s decisions.
 
 **Here is a proposed starting point for your Guiding Principles:**
 
-- Principle
-  <accepted-evidence-grounded decision-making value>
+- [Short principle name]
+  [Accepted-evidence decision-making value.]
 
-- Principle
-  <accepted-evidence-grounded decision-making value>
-
-- Principle
-  <accepted-evidence-grounded decision-making value>
+Emit 3 to 5 principles. The label is a short principle name grounded in accepted evidence.
 
 **What would you add, correct, or remove?**
 
-The Guiding Principles Discovery Contribution Opportunity is a Contribution Opportunity rather than a Converged Proposal. When the person adopts, redirects, corrects, replaces, combines, splits, or otherwise changes findings, treat the response as modifications to proposed Guiding Principles evidence. Re-synthesize and re-present the Guiding Principles Discovery Contribution Opportunity using the updated understanding. Do not transition immediately to the Guiding Principles Converged Proposal merely because the person supplied a correction.
+If this is accurate, just say so. If you don't know, say "I don't know" and we'll work through it together.
 
-Remain within the Guiding Principles Discovery Contribution Opportunity while omissions are being identified, findings are being corrected or expanded, or meaningful discovery-contribution changes continue occurring. Re-evaluate the active understanding with relevant accepted context after each substantive change. Transition to normal Guiding Principles convergence only after the person indicates the findings are accurate, or no longer provides substantive additions, corrections, removals, combinations, or splits. The discovery-contribution representation and the final Guiding Principles Converged Proposal are separate artifacts; the final proposal is produced from the accepted discovery-contribution understanding. If accepted evidence cannot support this starting point, use the focused Guiding Principles question instead.
+Guiding Principles question, emitted under the same opening when the starting point cannot be filled:
 
-Present the Converged Proposal under `**Here's what I've captured as your Guiding Principles:**`,
-validate it with the shared validation question, and treat the person's response as the acceptance
-boundary for Guiding Principles. Retain nothing from Guiding Principles before that candidate is
-presented and accepted.
+**What principles or values guide decisions at [Name]?**
 
-### Cross-domain reasoning
+If you don't know, say "I don't know" and we'll work through it together.
 
-New substantive organizational evidence is evaluated across every unresolved Profile domain.
-Accepted Identity informs Vision when relevant; accepted Identity and Vision inform Competitive Path;
-accepted Identity, Vision, and Competitive Path inform Guiding Principles. When evidence offered
-while composing one domain supports another that is still unresolved, carry it forward to the
-appropriate unresolved domain rather than discarding it.
+When the previous domain was declined, replace the bracketed accepted substance with: Nothing has been accepted for [previous domain] yet.
 
-Persisted clarification records belong to `highway-clarify` when separately requested.
+Capture template, for every domain:
 
-## Operations
+**Here's what I've captured as your [Identity, Vision, Competitive Path, or Guiding Principles]:**
 
-Operations remain setup, configure, readiness, view, show, describe, add, update, remove, and reset.
-Persist only information the person supplied, selected, or accepted, including permitted optional
-Context. Acceptance authorizes the mutation but is not successful persistence. The authorized
-mutation is a write to the retained Profile record. After acceptance
-changes retained Profile state, perform that mutation before any dependent readiness, completion, or
-other owner result. If persistence fails, stop before dependent progression and report actionable
-failure context, leave the affected domain unchanged, and do not claim successful readiness or
-completion. Describe a failure in terms the person can act on, without naming internal operations.
+[One paragraph. Join the accepted bullets in their current order. Add no claim. Keep the person's terms. Omit a term the person rejected.]
 
-Retain only the accepted cohesive domain narrative, accepted explicit corrections or replacements,
-accepted explicit domain boundaries, and optional Context permitted by profile-record.md.
+**What would you add, correct, or remove?**
 
-When guided setup or configure reaches completion, persist the final accepted domain mutation first,
-then emit one concise user-relevant synthesis before returning to Setup. Use the accepted organization
-name when available and connect the accepted Profile understanding to later Highway guidance. Do not
-expose machine-status fields, owner-result mechanics, or implementation detail, and do not ask a new
-question.
+If this is accurate, just say so.
+
+Bold only the question in each block.
+
+### write
+
+Write `.highway/library/knowledge/profile.md` once, in the shape required by `.highway/library/templates/output/profile-record.md`.
+
+- A captured domain is `discussed` and its narrative section contains the held paragraph.
+- A declined domain is `bounded` and its narrative section is omitted.
+- Write `## Context` with Repository Name.
+- Write Organization URL, Organization Name, and Organizational Context only when the person supplied or accepted that value.
+- Emit nothing after a successful write.
+- Return `Finished`.
 
 ## Verification
 
-- The retained record follows `.highway/library/templates/output/profile-record.md`.
-- Readiness uses the four Profile domains and preserves `Missing`, `Blocked`, and `Complete` outcomes.
-- Profile determines domain completeness; user-visible convergence follows the Highway Experience Standard.
-- Identity, Vision, Competitive Path, and Guiding Principles retain their domain-specific boundaries.
-- Canonical questions remain fallbacks for unresolved domains and do not replace useful grounded Profile reasoning.
-- Optional Context, Organization Name, Organization URL, and optional enrichment do not affect readiness.
-- Only user-provided or user-accepted organizational evidence is retained.
-- Each accepted domain mutation succeeds before Profile uses it as persisted knowledge.
-- Domain completeness does not independently establish conversational convergence.
-- Supported cross-domain implications are preserved for the appropriate unresolved domain.
-- Each domain presents its Converged Proposal under its capture heading.
-- Each domain uses the single defined validation question.
-- Each question requiring a response is emphasized.
-- Each domain crosses one acceptance boundary before its substance is retained.
-- No domain substance is retained before that domain's candidate has been presented.
-- Each domain opening names accepted substance from the preceding domain.
-- A useful grounded interpretation is preferred over an unnecessary exploratory question.
-- Consequential uncertainty is still clarified when accepted evidence or advisory reasoning cannot resolve it.
-- Confirmed substance is not presented again unless the re-presentation names what changed.
-- A candidate whose development since acceptance is unclear is presented rather than suppressed.
-- A term the person rejected does not reappear, including as a synonym.
-- An amendment preserves the accepted content's form.
-- A correction that cannot be located is reported rather than applied elsewhere.
-- Vision retains its boundary against approach, sequencing, and organizational method.
-- Domain completeness is obtained by reading the retained Profile record.
-- Persistence writes the accepted domain mutation to the retained Profile record.
-- Internal readiness vocabulary does not appear in orchestrated conversation.
-- No retained schema field or readiness dimension is added for convergence or collaboration concepts.
+- An existing readable `profile.md` is shown with **What would you add, correct, or remove?**
+- Acceptance of that review returns `Finished` and emits nothing else.
+- A review edit rewrites the file and shows the updated body with the same question.
+- An absent `profile.md` begins at the repository-name template.
+- A starting-point message contains no canonical question.
+- A capture message contains one paragraph and the acceptance reassurance only.
+- The file is written once, after Guiding Principles is captured or declined.
+- A successful guided write returns `Finished` and emits nothing else.
+- The written file matches `.highway/library/templates/output/profile-record.md`.
+- Setup receives `Finished` and the person does not see that word.
 
 ## Error Handling
 
-- A malformed, contradictory, or structurally invalid retained Profile is `Blocked` and is not mutated.
-- An accepted Profile mutation that fails does not establish the affected domain as persisted and does not permit dependent terminal output.
-- An unexpected persistence failure stops dependent progression, reports actionable user-facing
-  context, and leaves the affected domain unchanged.
+- An unreadable `profile.md` stops the skill, leaves the file unchanged, and does not return `Finished`.
+- A failed review rewrite leaves the file unchanged, says what failed in terms the person can act on, and stays on `review`.
+- A failed guided write leaves the file absent, says what failed in terms the person can act on, and stays on `write`.
+- Unavailable retrieval continues at `identity.ask` without mentioning the missing capability.
 
 ## Example
 
-`/highway-profile readiness`
+`/highway-setup`

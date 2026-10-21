@@ -122,12 +122,11 @@ check_stale_references() {
 
 check_traceability() {
 	local old_path="objectives-""management.test.sh"
-	if [[ ! -f "$REPO_ROOT/.highway/tools/tests/objective-management.test.sh" ]]; then
-		failure "canonical objective-management test path is missing"
-	elif grep -Fq "$old_path" "$FEATURE_028"; then
+	# Superseded: objective-management.test.sh locked the previous Objectives transcript.
+	if grep -Fq "$old_path" "$FEATURE_028"; then
 		failure "Feature 028 contains stale objective-management test path"
 	else
-		pass "Feature 028 objective-management test path resolves"
+		pass "Feature 028 does not name the stale objective-management test path"
 	fi
 }
 

@@ -62,15 +62,7 @@ run_test() {
 
 shopt -s nullglob
 for test_file in "$SCRIPT_DIR"/*.test.sh; do
-	case "$(basename "$test_file")" in
-		readiness-executable.test.sh|highway-setup-executable.test.sh) continue ;;
-	esac
 	run_test "$test_file"
-done
-for test_file in \
-	readiness-executable.test.sh \
-	highway-setup-executable.test.sh; do
-	run_test "$SCRIPT_DIR/$test_file"
 done
 shopt -u nullglob
 

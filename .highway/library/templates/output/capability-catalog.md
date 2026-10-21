@@ -1,8 +1,8 @@
 ---
 name: capability-catalog
-description: "Complete output skeleton for the generated Capability Catalog."
+description: "Complete output skeleton for the Capability Catalog written with a Reference Implementation."
 metadata:
-  version: 1.0.0
+  version: 2.0.0
 ---
 
 ## Catalog Structure
@@ -12,19 +12,15 @@ metadata:
 
 Version: 1.0.0
 
-Next ID: CAPXXXXXX
-
 ## Capability Index
 
 | ID | Parent | Title | Realized By |
 |----|--------|-------|-------------|
-| CAPXXXXXX | RIXXXXXX | <business capability title> | <provider; provider> |
+| <CAP plus 8 hex digits> | <RI plus 8 hex digits> | <business capability title> | <provider or mechanism> |
 ```
 
-The Capability Catalog is generated from accepted `Realized Capabilities` evidence in Reference
-Implementations. A row has exactly one `RI######` Parent and at least one Realized By value. The
-catalog-local `CAP######` identifier is stable for the `(Parent RI, normalized Title)` identity and
-does not create a capability record file. Rows are ordered by Parent, Title, then CAP identifier;
-multiple Realized By values are rendered in deterministic normalized order. Capability Catalog
-publication is atomic with its owning Reference Implementation and implementation catalog; stale rows are removed
-during regeneration.
+The catalog is written with its owning Reference Implementation. It has no `Next ID` field. The columns are ID, Parent, Title, and Realized By.
+
+Parent is the implementation id. Title is the business capability. Realized By lists the providers or mechanisms, in alphabetical order. The id is CAP plus eight hex digits derived from the title. The same Parent and title reuse that id. A removed row is not used; rows for one Parent are replaced on each write, and other Parents stay unchanged.
+
+No `CAP` record file is written. An empty baseline contains `Version: 1.0.0` and the index header, with no data rows.

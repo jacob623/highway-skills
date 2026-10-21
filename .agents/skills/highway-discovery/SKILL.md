@@ -1,395 +1,322 @@
 ---
 name: highway-discovery
-description: "Manages a repository-wide Discovery baseline."
-usage: "Invoke as `/highway-discovery` and state the Request."
+description: "Manages one discovery for a complete request."
+usage: "Invoke as /highway-discovery with one request id or one discovery id."
 compatibility: all
 metadata:
-  version: 2.1.0
+  version: 3.0.0
 ---
 
 # highway-discovery
 
 ## Purpose
 
-Creates one deterministic architectural Discovery analysis between a completed Request and later
-ADR work, producing bounded Candidate Solution Options, exact Reference Architecture matches, a
-complete Comparison Matrix, and one advisory Recommendation.
-
-## Experience
-
-Discovery follows the Highway Experience Standard
-for applicable activity output only. It remains analytical and non-wizard: when it emits progress,
-describe user-relevant analysis activity rather than implementation details, routing, validation,
-orchestration, or evaluation mechanics. Put the `Next Action` first when user input is required;
-otherwise do not manufacture progress stages.
-
-`User Exits` are `pause`, `cancel`, or `stop responding`; `Owner Outcomes` are `declined`,
-`aborted`, or `blocked`. `Resume Applicability`: `New interaction`. Discovery preserves ownership
-of its analysis and does not allocate identifiers, write another workflow's artifacts or catalogs,
-or claim another workflow's completion.
+Creates one Discovery for a completed Request, writes every option before the list is shown, and updates that file when the person adds, replaces, or removes an option.
 
 ## When to use
 
-- A requester has supplied exactly one completed Request identifier in `REQ` plus six digits.
-- The repository needs deterministic findings, assumptions, risks, unknowns, Candidate Solution
-  Options, a Comparison Matrix, a Recommendation, and advisory governance context before ADR work.
-- A later `highway-adr` workflow needs one stable Discovery input.
+- The person invokes `/highway-discovery` with one Request id.
+- The person invokes `/highway-discovery` with one Discovery id.
+- The person invokes `/highway-discovery` without a Request id or a Discovery id.
 
 ## When not to use
 
-- Do not select Requests by recency, filename order, or batch listing.
-- Do not analyze an incomplete Request or invent missing business evidence.
-- A successful analysis requires at least two and no more than five viable Candidate Solution Options.
-- Do not approve, create, update, or remove Objectives, Controls, NFRs, Requests, ADRs, or
-  Reference Architectures, Reference Implementations, architecture artifacts, or decisions.
+Do not select a Request by recency, filename, or batch.
+Do not analyze an incomplete Request or invent missing request evidence.
+Do not approve, create, or change Objectives, Controls, NFRs, Requests, ADRs, Architectures, or Implementations.
+Do not record a selected option, a rejected option, or an architecture decision.
+Do not report Status, Summary, Next Action, Blocking Reason, Missing, Complete, or Blocked.
 
 ## Inputs
 
-- Exactly one explicit `REQ` identifier followed by six digits.
-- The uniquely resolved Request at the user-owned `requests/` path, which must expose completion
-  state `Complete`.
-- Request Solution Constraints from the completed Request, loaded in this exact order:
-  `allowed_solution_classes`, `existing_platforms_required`, `existing_platforms_preferred`,
-  `known_systems`, `hosting_restrictions`, `vendor_restrictions`, `procurement_constraints`,
-  `regulatory_restrictions`.
-- Optional closed baselines, loaded only in this order: Profile, Objective, Control, NFR.
-- Optional Clarification Catalog at `clarifications/clarifications.md`, resolved after the
-  completed Request by derived identifier `CLAR-<REQ-ID>`.
-- When the Clarification Catalog contains a unique matching row, its direct Clarification Path
-  identifies the optional read-only clarification artifact. The Clarification Catalog is the
-  authoritative lookup source; Discovery does not select files by timestamp, newest-file status,
-  directory traversal, or filesystem order.
-- Optional Reference Architecture baseline loaded after NFR; Reference Implementation data is
-  consulted only for the advisory tie-break.
-- The complete output structure in `.highway/library/templates/output/discovery-record.md`.
-- The complete catalog structure in `.highway/library/templates/output/discovery-catalog.md`.
-- The Discovery Conversation Contract and Discovery Analysis Contract: invocation, closed-input,
-  deterministic-rule, failure, and ADR handoff boundaries defined by those contracts.
-
-The conversation contract governs invocation and completion responses; the analysis contract
-governs the closed inputs and deterministic rule order. The complete retained record structure,
-including relationship sections, is defined by
-`.highway/library/templates/output/discovery-record.md`.
-
-## Clarification Consumption Contract
-
-Clarification owns finding detection, response capture, lifecycle, status, state, and Clarification ownership. Discovery
-may read catalog-backed status, findings, summaries, responses, and blocking reason as advisory
-evidence only. The producer contract remains authoritative. Discovery MUST NOT create, update,
-repair, resolve, or change Clarification.
-
-### Clarification Status Consumption Rules
-
-Clarification status influences advisory analysis only. `not-started`: no clarification evidence is
-available; proceed normally. `in-progress`: open findings may contribute to Assumptions, Unknowns,
-Risks, and confidence rationale; responses may contribute to Research Findings. `complete`: responses
-may contribute to Research Findings; no open-finding uncertainty is introduced. `blocked`: record
-advisory risk evidence when appropriate; continue normally; do not prevent analysis, recommendation
-generation, or ADR handoff.
-
-Clarification status MUST NOT affect candidate generation, candidate filtering, candidate scores,
-candidate ordering, recommendation selection, or ADR ownership.
-
-### Clarification Evidence Precedence
-
-
-
-Request evidence remains authoritative. Clarification responses may supplement Request evidence,
-explain, or clarify it but MUST NOT overwrite Request evidence, replace, or modify it. Disagreement preserves Request
-authority, contributes advisory risk evidence, and does not modify the Request.
-
-### Finding Consumption Rules
-
-Open findings may contribute to Assumptions, Unknowns, Risks, and confidence rationale. Resolved
-findings may contribute accepted responses to Research Findings, not uncertainty, Unknowns, or
-unresolved-risk evidence. Responses owned by resolved findings may be additional business evidence.
-Finding state does not affect candidate generation, scoring, ranking, recommendation totals, or
-recommendation selection.
-
-Responses precede Profile, Objectives, Controls, NFRs, Reference Architectures, and Reference
-Implementations. Projection uses existing Research Findings, Assumptions, Risks, and Unknowns
-sections and adds no dedicated Clarification section. open findings remain advisory. Clarification evidence MUST NOT change
-candidate generation, candidate scores, ranking, candidate ordering, recommendation totals,
-recommendation selection, Discovery record schema, or ADR ownership. Open findings remain advisory
-and do not require clarification completion. Discovery must not mutate Clarification state.
-
-For identical inputs, clarification resolution, advisory evidence, confidence rationale,
-and Discovery output remain byte-identical. Resolution and consumption preserve source bytes.
-
-### Clarification Determinism
-
-For identical Request, Clarification, Profile, Objective, Control, NFR, Reference Architecture,
-and Reference Implementation inputs, Clarification resolution, Research Findings, Assumptions,
-Risks, Unknowns, and confidence rationale are identical.
-
-Clarification evidence never changes candidate generation, candidate scoring, candidate ranking,
-recommendation totals, recommendation selection, or ADR ownership.
+- One Request id that matches one row in `requests/requests.md`, when the person supplies one.
+- One Discovery id that matches one row in `discoveries/discoveries.md`, when the person supplies one.
+- The completed Request at `requests/[ID].md`.
+- Accepted Profile, Objectives, Controls, and NFRs when present.
+- `clarifications/clarifications.md` and one Clarification at `CLAR-[REQ-ID]` when that row exists.
+- Reference Architectures and Reference Implementations when present, for exact matching and tie-breaks only.
+- `requests/requests.md` and `discoveries/discoveries.md`.
+- `.highway/library/templates/output/discovery-record.md`.
+- `.highway/library/templates/output/discovery-catalog.md`.
+- `.highway/governance/experience-standard.md`.
+- A project root containing `.highway/`.
 
 ## Outputs
 
-- One user-owned Discovery record at `discoveries/DISCXXXXXX.md`.
-- One user-owned Discovery catalog at `discoveries/discoveries.md`.
-- The record follows the complete structure in `.highway/library/templates/output/discovery-record.md`.
-- The catalog follows `.highway/library/templates/output/discovery-catalog.md`.
-- The completion response names the Discovery identifier, Request identifier, Record path, and
-  Catalog path.
-- Source resolution, validation, privacy review, scoring, allocation, or writing failure produces
-  no output and preserves existing bytes.
+The complete structure is `.highway/library/templates/output/discovery-record.md` and `.highway/library/templates/output/discovery-catalog.md`.
 
-## ADR Handoff
+- One Discovery record at `discoveries/[ID].md`, written before the option list is shown.
+- An updated `discoveries/discoveries.md` written with that record.
+- An updated record when the person adds, replaces, or removes an option.
+- No Discovery artifact when fewer than two options remain or a write fails.
 
-The handoff is a read-only projection for the later `highway-adr` workflow.
-- Include data required for one future ADR: the Discovery and Request identifiers, every Candidate
-  Solution Option and `OPT` identifier, the Comparison Matrix, Recommendation, Recommendation
-  rationale, and every Reference Architecture Match.
-- Do NOT include:
-  - selected option
-  - rejected option identifiers
-  - recommendation acceptance
-  - recommendation rejection rationale
-  - decision authority
-  - consequences
-- These values are owned exclusively by ADR. Discovery records no decision and grants no
-  implementation authorization.
+## Procedure
 
-Persist the handoff as `discoveries/DISCXXXXXX.md` and maintain the catalog at `discoveries/discoveries.md`.
+User-visible interaction follows the Highway Experience Standard. Repository ownership stays with the person.
 
-The handoff is eligible for exactly one future ADR analysis input and does not repeat analysis. ADR
-may select any option and owns all decision persistence.
+Emit only the active template. Follow this order: `choose` when neither id is supplied; `analyze` for a Request; `identifier`, `title` when needed, and `write` before `start`; then `explore`. A supplied Discovery id goes to `start` and does not write. The recommendation is advisory. ADR owns the decision. Do not mutate the Request, Clarification, Profile, Objectives, Controls, NFRs, Architectures, or Implementations.
 
-## Reference Implementation Evaluation
+Load evidence in this order: Request, its eight Solution Constraints, Clarification responses, Profile, Objectives, Controls, NFRs, Reference Architectures. Request evidence wins when Clarification disagrees. Clarification changes assumptions, risks, unknowns, and research findings only. It does not change which options exist, their scores, or the recommendation.
 
-Reference Implementations are advisory artifacts identified by the authoritative catalog and
-associated Reference Architecture. Evaluation is read-only and produces traceability evidence,
-matching identifiers, counts, and blocking reasons only.
+Redact secrets and regulated personal data before scoring or writing. Replace each with a stable category marker.
 
-## Reference Implementation Matching
+### Entry
 
-A Reference Implementation matches a Candidate Solution Option only when either condition is true:
+1. Read the invocation for one Request id or one Discovery id.
+2. When both are present, go to `choose`.
+3. When one Request id is present, resolve it. When it matches no request, stop. Say the Request was not found. Write nothing. When its `## Completeness` is not `Complete`, stop. Say the Request is incomplete. Write nothing. Otherwise go to `analyze`.
+4. When one Discovery id is present, resolve it. When it matches no Discovery, stop. Say the Discovery was not found. Write nothing. Otherwise load its options and go to `start`. Do not write.
+5. When neither is present, go to `choose`.
 
-1. The Reference Implementation explicitly references a matching Reference Architecture.
-2. The Reference Implementation explicitly references the identifier of a Reference Architecture
-  matched by that option.
+### choose
 
-No match exists otherwise. Semantic similarity, inference, approximation, or similarity scoring
-MUST NOT create a match.
+When both a Request id and a Discovery id were supplied, ask which one to use.
 
-## Reference Implementation Counting
+**Would you like to analyze the Request, or explore the Discovery?**
 
-Reference Implementation Count equals the number of unique matching Reference Implementations for
-an option. Count each stable Reference Implementation identifier once, even when duplicate
-references or multiple paths identify the same implementation. In other words, duplicate references count once.
+- The Request: follow Entry case 3.
+- The Discovery: follow Entry case 4.
+- `unknown`: re-emit this question. Stay on `choose`.
+- `decline`: stop. Write nothing.
 
-Missing or unreadable Reference Implementations contribute zero. Malformed Reference Implementations,
-including unparseable artifacts, missing stable identity, or missing required
-fields, are excluded from counting and tie-breaking; record the blocking reason and continue.
-An unresolved Reference Architecture reference in an otherwise valid implementation is a valid
-non-match.
+When neither id was supplied, read `requests/requests.md` and `discoveries/discoveries.md`. A Request is ready to analyze when its Status is `accepted`, its record `## Completeness` is `Complete`, and its ID does not appear as Request ID on any Discovery catalog row. A removed Discovery row still counts as that Request already having a Discovery. A Discovery is ready to explore when its Status is `accepted`.
 
-An absent or unreadable catalog produces zero counts. An internally inconsistent catalog, including
-duplicate stable identifiers, excludes affected implementations, records the reason, and continues
-with zero affected counts. When an option matches multiple Reference Architectures, use the highest
-Reference Implementation Count among those matches.
+When none are ready, say that no Request or Discovery is waiting. Write nothing.
 
-## Recommendation Tie-Break Evaluation
+Otherwise emit one numbered list, starting at 1. Requests come first, in Request catalog order, then Discoveries, in Discovery catalog order. Omit an empty group. Show each id and its title. A stated number selects that row.
 
-Reference Implementation data is evaluated only according to the Reference Implementation
-Evaluation rules and is used exclusively for deterministic tie-breaking.
+**Requests ready to analyze**
 
-Apply tie-breaking only after score calculation and Reference Architecture evaluation, when
-multiple options have identical Recommendation scores. Evaluate tied options in this exact order:
+**1. [Request ID]:** [Request Title]
 
-1. Reference Architecture Match
-2. Reference Implementation Count
-3. Lowest Discovery-scoped `OPT` identifier
+**Discoveries ready to explore**
 
-Reference Architecture Match evaluates whether an option has one or more matched Reference
-Architectures. Options with one or more matches outrank options with no matches. For each option,
-use the highest implementation count across its matched architectures. Stop immediately when one
-criterion selects a single option; later criteria MUST NOT be evaluated.
+**2. [Discovery ID]:** [Discovery Title]
 
-Reference Implementation evidence MUST NOT change Recommendation scores, confidence, Recommendation rationale, or ranking except through this defined deterministic tie-break.
+**Which would you like to work on?**
 
-## Reference Implementation Determinism
+- A Request id, a listed Request title, or its number: follow Entry case 3.
+- A Discovery id, a listed Discovery title, or its number: follow Entry case 4.
+- `unknown`: re-emit this list. Stay on `choose`.
+- `decline`: stop. Write nothing.
 
-For identical Requests, Discovery inputs, Profile, Objective, Control, NFR, Reference Architecture,
-and Reference Implementation baselines, matches, counts, tie-break outcomes, and Recommendation
-selection remain identical. Evaluation MUST NOT use timestamps, creation dates, modification dates,
-recency, environment state, randomness, semantic similarity, inference, or similarity scoring.
+### Classify
 
-## Reference Implementation Scope Clarification
+Classify the latest reply before any other action.
 
-Included are advisory matching, deterministic counting, deterministic tie-breaking, implementation
-reuse visibility, architecture adoption visibility, and traceability. Excluded are recommendation
-creation, scoring, confidence, rationale, ranking except tie-breaking, implementation approval or
-authorization, architecture approval, governance approval, and ADR ownership.
+- `select`: names an option, or states its number, to explore.
+- `decide`: says they are ready to decide on an option.
+- `matrix`: asks to see the comparison matrix.
+- `edit`: adds, removes, corrects, splits, combines, or replaces an option or the Discovery title.
+- `accept`: affirms the current block and adds no fact.
+- `unknown`: the person says they do not know.
+- `question`: asks for an explanation, a comparison, examples, or costs.
+- `decline`: the person stops or cancels.
 
-## Option Review and Implementation Exploration
+On `start`, "looks good" stays on `start`. It does not select an option.
 
-After presenting Candidate Solution Options, the Comparison Matrix, the Recommendation, and the
-Recommendation Rationale, Discovery invites the person to understand the available options before
-making an architectural decision. The recommendation is advisory. The person evaluates options during Discovery; ADR owns explicit option selection, decision rationale, consequences, and architecture commitment.
+### analyze
 
-Supported read-only interactions include:
+Generate candidate options from the Request's Desired Change, then from accepted Objectives, Controls, NFRs, and Reference Architectures.
 
-```text
-Describe `OPT######`
-Review `OPT######`
-Compare `OPT######` and `OPT######`
-Show implementation examples for `OPT######`
-Show implementation costs for `OPT######`
-```
+When `allowed_solution_classes` is known, keep only options in those classes. When it is `unknown`, do not filter by class.
 
-Equivalent natural-language requests are valid only when they resolve to an unambiguous option
-identifier in the active Discovery. `Describe` and `Review` return one Option Review with these
-sections in order: Summary, Request Alignment, Objective Alignment, Control Alignment, NFR Alignment, Benefits, Risks, Assumptions, and Dependencies. Alignment uses accepted Request,
-Objective, Control, and NFR evidence; unavailable evidence is labeled as unavailable or `None` and
-is never inferred.
+Exclude an option that violates `existing_platforms_required`, `hosting_restrictions`, `vendor_restrictions`, `procurement_constraints`, or `regulatory_restrictions`. Record each exclusion with the option title, the constraint, and the reason. Preferred platforms and known systems do not exclude an option.
 
-`Compare` requires exactly two distinct options from the same Discovery. It presents advisory
-comparison context without recalculating or changing candidate scores, recommendation ranking, or
-recommendation tie-breaking. Duplicate, malformed, unavailable, and cross-Discovery references
-abort before any mutation.
+Sort the remaining options by Desired Change alignment, Objective alignment, constraint alignment, then title. Keep the first two to five. When more than five remain, keep the first five and record the rest as excluded by that boundary. When fewer than two remain, stop. Say the Request does not support two viable options. Write nothing.
 
-When evidence exists, Discovery may present optional `Example Reference Implementations`, an
-`Example Realization Matrix`, and `Example Cost Considerations`. Examples remain advisory and do
-not represent architecture decisions, implementations, commitments, procurement, or acceptance.
-Costs use `Low`, `Medium`, `High`, a bounded range, or `Unknown` when evidence is unavailable,
-incomplete, conflicting, or not reliable enough to state. Examples and costs are informational:
-each example and cost consideration does not change candidate scores, does not change recommendation ranking, does not change recommendation tie-breaking, and does not change ADR selection.
+Derive each option id with the title rule in `identifier`, using the prefix `OPT`. Then score only the retained options.
 
-All review, comparison, implementation-example, and cost interactions are read-only. Exploration guarantees no identifier is allocated, no ADR is created, no ADR is modified, and no Discovery or catalog bytes change.
-Implementation evidence may be referenced in Recommendation Rationale when it materially improves
-explainability, but the recommendation remains advisory.
+- Required Platform Match is 100.
+- Preferred Platform Match is 100 when a preferred platform is used, and 50 otherwise.
+- Known-System Alignment is 100 when all declared known systems are reused, 75 when some are reused, and 50 when none are reused.
+- Score weights are Objective 25, NFR 25, Control 20, Constraint Alignment 20, and Risk Reduction 10. Use floor rounding. A zero denominator scores 0. The total is 0 through 100.
+- Confidence is High for 90 through 100, Medium for 70 through 89, and Low for 0 through 69.
+- Complexity, Governance Impact, and Operational Overhead do not change the score.
 
-Completion guidance includes:
+Match a Reference Architecture only by explicit identifier, exact title, capability id, Objective id, Control id, or NFR id, in that order. Do not match by similarity.
 
-```text
-Recommended Option:
-OPT######
+Count a Reference Implementation only when it references a matched Reference Architecture, or references that architecture's id. Count each implementation id once. A missing or unreadable implementation counts as zero.
 
-Why:
-<advisory rationale>
+When totals tie, pick the winner in this order, and stop at the first criterion that leaves one option: a Reference Architecture match, then the higher Reference Implementation count, then the lower `OPT` id in alphabetical order. Reference Implementation evidence does not change a score except through this tie-break.
 
-Before continuing to ADR you may wish to:
+Mark exactly one option `Recommended`. Go to `identifier`.
 
-- Review an option
-- Compare options
-- Review implementation examples
-- Review implementation costs
-```
+### identifier
 
-The guidance encourages evaluation without creating a decision state. Discovery remains responsible
-for candidate generation, comparison, scoring, recommendation, option review, implementation
-example exploration, and cost exploration. ADR remains responsible for selection and commitment.
+Derive an id from a title.
 
-## Reference Implementation Traceability
+1. Lowercase the title. Remove hyphens and apostrophes. Split the rest into words.
+2. Take eight letters: the first two of word 1, the first two of word 2, the first two of word 3, and the last two of the last word. When the title has only two words, the third sample is the first two of the last word.
+3. When a word is shorter than two letters, continue into the next word. A one-word title repeats until there are eight letters.
+4. Map each letter. Digits stay as they are.
 
-A Reference Implementation match indicates only that a related implementation artifact exists. A
-match does not indicate recommendation, endorsement, approval, architectural correctness,
-implementation suitability, or implementation authorization. ADR remains responsible for selecting
-a Candidate Solution Option and recording all architecture decisions.
+a 0, b 1, c 2, d 3, e 4, f 5, g 6, h 7, i 8, j 9, k a, l b, m c, n d, o e, p f, q 0, r 1, s 2, t 3, u 4, v 5, w 6, x 7, y 8, z 9.
 
-Reference Implementation evaluation MUST NOT mutate Reference Implementations, Reference
-Architectures, source baselines, Discovery inputs, ADR records, or governance baselines.
+5. Prefix `DISC` for the Discovery title. Prefix `OPT` for an option title.
 
-## Workflow
+Compare the Discovery id with `discoveries/discoveries.md`, including removed rows. Compare option ids with each other.
 
-1. Receive exactly one `REQ` followed by six digits. Reject missing, malformed, ambiguous, nonexistent, non-unique, or incomplete sources before allocation or writes; abort and preserve existing bytes.
-2. Resolve exactly one Request and verify its completion marker is `Complete`. Treat its evidence as authoritative and read-only. Do not scan for an implicit newest or batch source.
-3. Resolve Clarification immediately after Request resolution: derive `CLAR-<REQ-ID>`, read `clarifications/clarifications.md` when present, locate one matching catalog row, and follow its direct Clarification Path. If the catalog is absent or no unique matching row exists, continue normally without clarification evidence. If a referenced artifact is unreadable, malformed, path-mismatched, state-invalid, or count-invalid, the artifact is malformed or unavailable to Discovery; treat the clarification artifact as unavailable. Preserve all bytes, continue normally, and optionally record advisory risk evidence without mutating Clarification.
-4. Load closed inputs in order: Request, Request Solution Constraints, Profile when present, Objective when present, Control when present, NFR when present, and Reference Architecture when present. Read the eight Request Solution Constraints fields in their declared order, preserve `unknown` separately from empty arrays, and treat them as read-only evidence. Reference Implementation data is evaluated only according to the Reference Implementation Evaluation rules and is used exclusively for deterministic tie-breaking. Reference Implementation matching and counting occur only after score calculation and Reference Architecture evaluation. Missing optional Reference Architecture data produces an empty match set; missing and unreadable Reference Implementation data produces zero counts.
-5. Normalize LF line endings and comparison text, then redact secrets and regulated personal data before copying, matching, scoring, or serialization. Replace excluded material with a stable category marker.
-6. Copy Request evidence in fixed order, then place valid Clarification responses after Request evidence and before other advisory baselines. Preserve Research Findings, Assumptions, Risks, Unknowns, and Objective, Control, and NFR relationship extraction and advisory behavior.
-7. Generate distinct Candidate Solution Options from explicit Desired Change strategies first, then strategies implied by Objectives, Controls, NFRs, Research Findings, and available Reference Architectures. When `allowed_solution_classes` is known, generate only candidates in those classes; when it is `unknown`, preserve unconstrained generation. Normalize each candidate, evaluate Solution Constraints, filter invalid candidates, and only then score survivors. Normalize and deduplicate before identifier allocation, aggregate supporting evidence, reject incomplete options, and record any more-than-five truncation boundary. Clarification evidence does not change candidate generation.
-8. Exclude candidates that violate `existing_platforms_required`, `hosting_restrictions`, `vendor_restrictions`, `procurement_constraints`, or `regulatory_restrictions` before scoring, comparison, or recommendation. Record every excluded candidate in the Candidate Elimination Log with candidate identifier and title, status `Excluded`, reason category, constraint identifier or value, and deterministic reason. Order entries by candidate identifier, constraint category, then constraint identifier or value. Preferred platforms and known systems never eliminate candidates. If filtering leaves no viable candidates, abort without writes.
-9. Sort retained options by Desired Change alignment, Objective alignment, constraint alignment, and alphabetical title, in that order. Retain the deterministic first two through five options and assign identifiers such as `OPT000001` only after sorting. Fewer than two retained options aborts without writes.
-10. Evaluate every Reference Architecture candidate independently using exact matching precedence: explicit identifier, exact normalized title, capability identifier, Objective identifier, Control identifier, then NFR identifier. Report every matching candidate with its identifier, confidence, highest-precedence match reason, matched option identifiers, and Reference Implementation count. Semantic, similarity, and inference matching are excluded.
-11. Calculate retained-candidate alignment only after filtering: Required Platform Match is 100 for traceability only; Preferred Platform Match is 100 when a preferred platform is used and 50 otherwise; Known-System Alignment is 100 when all declared known systems are reused, 75 when one or more but not all are reused, and 50 when none are reused. Include Constraint Alignment, Satisfied Constraints, Unsatisfied Constraints, and `Constraint Compliance` (`Fully Compliant`) for every retained candidate.
-12. Calculate Objective, NFR, Control, Constraint Alignment, and Risk Reduction scores with weights Objective 25, NFR 25, Control 20, Constraint Alignment 20, and Risk Reduction 10. Use floor rounding, zero for zero denominators, and totals from 0 through 100. Derive High confidence for 90-100, Medium for 70-89, and Low for 0-69. Informational Complexity, Governance Impact, and Operational Overhead classifications never affect scoring, confidence, ranking, selection, or option ordering. Clarification findings do not affect scores, ranking, candidate ordering, recommendation totals, or recommendation selection.
-13. Render the complete Candidate Solution Comparison Matrix before the Recommendation. Include every retained option in option order, Allowed Solution Class, Constraint Alignment Score, Required Platform Match, Preferred Platform Match, Constraint Compliance, every score component, total, Reference Architecture matches, exactly one `Recommended` status, and all mandatory informational categories. For equal totals, apply the Recommendation Tie-Break Evaluation section.
-14. Build and validate record and catalog in memory before writing. Validate identifiers, option bounds, score identity, advisory-only fields, source-byte preservation, and complete template order. Allocate only from catalog `Next ID`, advance it exactly once, retry an exclusive allocation conflict at most 3 times, then write the record and catalog as one ordered transaction.
-15. On success, report `REQ -> DISC -> ADR` traceability and expose the complete Discovery-to-ADR handoff. ADR creation is the later owning workflow and remains responsible for selected or rejected options, acceptance, rationale, consequences, and decisions.
+- The same Discovery title already has that id: use the existing record. Do not write a second one. Go to `start`.
+- The Discovery id is taken for a different title, or two option titles share an id: go to `title`.
+- The ids are free: go to `write`.
+
+### title
+
+Name each conflicting title. Say that a title change is appropriate. Then show the new title for acceptance.
+
+The existing Discovery Title, **[Existing title]** and this new Discovery Title, **[this title]**, are too similar. A title change is appropriate. I would recommend:
+
+**[New title]**
+
+Use "Option Title" instead of "Discovery Title" when the collision is between options.
+
+**What would you add, correct, or remove?**
+
+If this is accurate, just say so.
+
+The new title is a small change the person can recognize. Its derived id must be free. Do not mention identifiers, hex, sampling, or the catalog.
+
+- `accept`: replace the held title. Return to `identifier`.
+- `edit`: use the person's title. Return to `identifier`.
+- `question`: answer in one sentence. Re-emit this message.
+- `unknown`: re-emit this message.
+
+Do not write until every id is free or the existing Discovery is reused.
+
+### write
+
+Write `discoveries/[ID].md` and `discoveries/discoveries.md` together. Write neither file until both are valid. A failed write leaves every existing Discovery byte unchanged. Say what failed in terms the person can act on. Stay on `write`.
+
+The Discovery title is `Options for [request title]` unless the person supplied a title.
+
+The record follows `.highway/library/templates/output/discovery-record.md`.
+
+- `id` is the derived `DISC` id.
+- `request` is the Request id.
+- `status` is `accepted`.
+- The title is the Discovery title.
+- Copy the Request evidence and the eight Solution Constraints in their source order.
+- Write every retained option, including its why, summary, request alignment, objective alignment, control alignment, NFR alignment, benefits, risks, assumptions, dependencies, and licensing costs.
+- Include Research Findings, Assumptions, Risks, Unknowns, the Candidate Elimination Log, the Comparison Matrix, and one advisory Recommendation.
+- The matrix totals equal the option scores. Exactly one option is `Recommended`.
+- Do not write a selected option, a rejected option, a decision, or an authorization.
+
+The catalog follows `.highway/library/templates/output/discovery-catalog.md`.
+
+- Add one index row with the Discovery ID, Request ID, Discovery Title, and Status `accepted`.
+- Order the index by Discovery id.
+- Do not allocate from `Next ID`.
+- The first catalog version is `1.0.0`.
+- The first write increments the minor version.
+- Adding, replacing, or removing an option updates that record and increments the patch version.
+- Emit no timestamp, random value, or environment value.
+
+On success, return to `start` and emit the option list. Emit nothing else before that list.
+
+### start
+
+When this analysis has not been written, write every retained option through `identifier` and `write` before emitting anything. The person is exploring the options. The write does not select an option.
+
+Emit one numbered line per option, starting at 1, in displayed order. Show the option id and its title. Put `(Recommended)` after the recommended option title. The why is one sentence grounded in the Request, Objectives, Controls, and NFRs. A stated number selects that option.
+
+**Here is a proposed starting point for your discovery:**
+
+**1. [Option id]:** [Option title] (Recommended) — [Why this option fits.]
+
+**2. [Option id]:** [Option title] — [Why this option fits.]
+
+**Which option would you like to explore, or would you like to see a comparison matrix?**
+
+If you are ready to decision on one of these options, just say so.
+
+- `select`: go to `explore` for the named or numbered option.
+- `decide`: continue as `highway-adr` with this Discovery id. When the reply also names an option or its number, pass that option id and continue at `start`. When it does not, continue at `choose-option`. Do not create the ADR in this skill.
+- `matrix`: emit one row per option. The Option column shows the same number used in the list, then the option title, as `1. [Option title]`. That number is part of the Option column and does not count toward the column limit. Use at most 6 columns. Include Operational considerations and Licensing costs. Choose the remaining columns from the differences that matter for this Request. When a dollar estimate is available, show that figure. Otherwise use Low, Medium, High, a bounded range, or Unknown. The matrix does not change scores. Then ask **Which option would you like to explore?** Under that question, in normal text, emit: If you are ready to decision on one of these options, just say so. Do not offer the comparison matrix again. Stay on `start`.
+- `edit`: when the person adds, replaces, or removes an option, update the Discovery file through `write`, then emit one consequence sentence and this block. Stay on `start`.
+- `accept`: re-emit this block. Stay on `start`.
+- `unknown`: re-emit this block. Stay on `start`.
+- `question`: answer without opening an option. For two named options, compare them without changing scores. Re-emit this block after the answer. Stay on `start`.
+- `decline`: stop. Write nothing.
+
+### explore
+
+Emit the named option in this order. Use accepted Request, Objective, Control, and NFR evidence. Label unavailable evidence `None`. Do not change scores.
+
+**[Option title]**
+
+**Summary:** [What the option is and how it addresses the request.]
+
+**Request Alignment:** [How it fits the Request, or `None`.]
+
+**Objective Alignment:** [How it fits accepted Objectives, or `None`.]
+
+**Control Alignment:** [How it fits accepted Controls, or `None`.]
+
+**NFR Alignment:** [How it fits accepted NFRs, or `None`.]
+
+**Benefits:**
+- [Expected value.]
+
+**Risks:**
+- [Material drawback.]
+
+**Assumptions:**
+- [Condition that must hold.]
+
+**Dependencies:**
+- [Required system, decision, or constraint, or `None`.]
+
+**Licensing costs:** [A dollar figure when one is available. Otherwise Low, Medium, High, a bounded range, or Unknown.]
+
+**Are there any additional concerns you would like to explore for this option, or would you like to return to the list of options?**
+
+- `question`: answer the question about this option. When the answer includes a cost, use a dollar figure when one is available. Otherwise use Low, Medium, High, a bounded range, or Unknown. Do not change scores. Then re-emit this question. Stay on `explore`.
+- A request to return to the list: go to `start`.
+- `select`: go to `explore` for the newly named or numbered option.
+- `decide`: continue as `highway-adr` with this Discovery id. When the reply also names an option or its number, pass that option id and continue at `start`. When it does not, continue at `choose-option`. Do not create the ADR in this skill.
+- `accept`: return to `start`.
+- `unknown`: re-emit this question. Stay on `explore`.
+- `decline`: stop. Write nothing.
 
 ## Verification
 
-- Confirm the input is exactly one explicit `REQ` plus six digits and resolves to one completed
-  Request.
-- Confirm the record conforms to the complete structure and ordering in
-  `.highway/library/templates/output/discovery-record.md`.
-- Confirm the record contains two through five unique `OPT` identifiers, complete option fields,
-  a complete matrix in option order, exactly one `Recommended` status, and one Recommendation
-  whose score values equal the matrix values.
-- Confirm every Reference Architecture match is exact, independently evaluated, reported with its
-  highest-precedence reason, and advisory.
-- Confirm the Recommendation is advisory and contains no selected option, rejected option,
-  approval, architecture decision, implementation authorization, or governance mutation.
-- Confirm all eight Request Solution Constraints render in canonical order, mandatory violations
-  are eliminated before scoring, preferred platforms and known systems are scoring-only, retained
-  Required Platform Match is 100 for traceability only, known-system alignment is 100/75/50, and
-  matrix compliance is `Fully Compliant`.
-- Confirm the catalog conforms to the complete structure in
-  `.highway/library/templates/output/discovery-catalog.md`.
-- Confirm every candidate elimination is recorded before scoring and the elimination log is ordered
-  deterministically by candidate and constraint identity.
-- Confirm identical closed inputs and catalog state produce byte-identical output.
-- Confirm secrets and regulated personal data are absent and stable exclusion evidence is present.
-- Confirm Objective, Control, and NFR baselines and the Request remain byte-for-byte unchanged.
-- Confirm allocation advances exactly once, write nothing on failure, and leave no partial record or catalog.
-- Confirm the successful handoff is exactly one future Discovery input for `highway-adr`.
-- Confirm Reference Implementation matching uses only the two explicit matching conditions.
-- Confirm duplicate matches are counted once per stable identifier.
-- Confirm malformed Reference Implementations are excluded and their blocking reasons are recorded.
-- Confirm missing, unreadable, absent, or inconsistent implementation data produces zero affected counts.
-- Confirm Recommendation score and confidence, plus rationale, are unchanged by Reference Implementation evidence.
-- Confirm tie-break order is Reference Architecture Match, Reference Implementation Count, then lowest `OPT` identifier.
-- Confirm evaluation stops immediately after a criterion selects one winner.
-- Confirm repeated executions with identical inputs are deterministic.
-- Confirm ADR ownership is unchanged and no implementation is authorized.
-- Confirm Clarification status affects advisory analysis only.
-- Confirm Clarification status never affects candidate generation.
-- Confirm Clarification status never affects candidate scores.
-- Confirm Clarification status never affects recommendation selection.
-- Confirm Request evidence remains authoritative when Clarification responses disagree.
-- Confirm Clarification responses supplement but do not replace Request evidence.
-- Confirm open findings contribute advisory uncertainty only.
-- Confirm resolved findings contribute accepted-response evidence only.
-- Confirm blocked Clarification status does not block Discovery execution.
-- Confirm Discovery performs no Clarification mutation.
+- A Request id for a completed Request begins at `analyze`, then `start`.
+- A Discovery id shows `start` from the stored options and does not write.
+- An invocation with neither id lists the complete Requests that have no Discovery catalog row, then the accepted Discoveries. Each line shows the id and its title. The list is numbered across both groups. A stated number selects that row. A removed Discovery row keeps that Request off the list.
+- `start` lists each option with a number, the option id, the title, and one why sentence.
+- The recommended option title is followed by `(Recommended)`.
+- A stated number selects that option.
+- `start` asks which option to explore, or whether to see a comparison matrix, then says the person can decide.
+- The comparison matrix has at most 6 columns and includes Operational considerations and Licensing costs. The Option column includes the same number as the list, and that number does not count as a column.
+- After the comparison matrix, the question asks which option to explore, does not offer the matrix again, and says the person can decide.
+- A reply that is ready to decide continues as `highway-adr` with this Discovery id. This skill does not create the ADR.
+- The explored option shows Summary, Request Alignment, Objective Alignment, Control Alignment, NFR Alignment, Benefits, Risks, Assumptions, Dependencies, and Licensing costs.
+- Fewer than two viable options writes nothing.
+- A new analysis writes every retained option before the option list is shown.
+- Adding, replacing, or removing an option updates the Discovery file.
+- The record contains two to five `OPT` ids, one `Recommended` status, and matrix totals that equal the scores.
+- Each Discovery id is `DISC` plus eight hex digits derived from the Discovery title.
+- Each option id is `OPT` plus eight hex digits derived from the option title.
+- A taken id names the conflicting titles, says a title change is appropriate, and shows a new title. The write waits until the person accepts that title.
+- That message does not mention identifiers, hex, sampling, or the catalog.
+- Mandatory constraint violations are excluded before scoring.
+- Tie-break order is Reference Architecture match, Reference Implementation count, then lower `OPT` id.
+- Clarification does not change options, scores, or the recommendation.
+- A failed write leaves existing Discovery bytes unchanged.
+- The skill creates no ADR and records no decision.
 
 ## Error Handling
 
-- A malformed Reference Implementation is excluded from evaluation, its blocking reason is recorded, and Discovery must fall back to the remaining evidence.
-- An unreadable Reference Implementation contributes zero through a fallback to the remaining evidence.
-- Multiple matching paths for one Reference Implementation fall back to counting the stable identifier once.
-- An absent or unreadable Reference Implementation catalog must fall back to zero counts.
-- An internally inconsistent catalog excludes affected implementations, records the reason, and must fall back to zero affected counts.
-- A Reference Implementation matching failure must fall back to zero matching implementations.
-- Any source, validation, privacy, scoring, allocation, or writing failure aborts with no output, preserves existing bytes, and does not create an ADR, record a decision, authorize implementation, or mutate governance.
-- Missing, malformed, ambiguous, nonexistent, non-unique, or incomplete Request: abort and preserve existing bytes.
-- Missing or malformed catalog, fewer than two viable options, failed score calculation, failed privacy redaction, failed validation, or write failure: abort and preserve existing bytes.
-- More than five viable options: fall back by retaining the deterministic first five and record the truncation boundary.
-- Missing or unreadable optional Reference Architecture data: fall back to an empty match set without failing.
-- A malformed or internally inconsistent Reference Architecture: fall back by excluding it, record its blocking reason in findings, and do not mutate the baseline.
-- A Reference Architecture match operation failure: fall back to an empty match set.
-- Catalog allocation conflict: retry the exclusive operation no more than 3 times, then report allocation failure without a write.
-- A missing optional Profile, Objective, Control, or NFR baseline: fall back to an empty relationship section.
-- A malformed present Profile, Objective, Control, or NFR baseline: abort safely.
-- Malformed or contradictory Solution Constraints, an empty invalid `allowed_solution_classes` value, or zero viable candidates: abort safely and preserve existing bytes without a record, catalog update, partial output, or source mutation.
-- Abort; never mutate governance baselines, create an ADR, record a decision, or silently replace user-owned bytes.
+- A missing, ambiguous, or incomplete Request stops the skill and writes nothing.
+- A Discovery id that matches nothing stops the skill and writes nothing.
+- Fewer than two viable options stops the skill and writes nothing.
+- A malformed present Profile, Objective, Control, or NFR baseline stops the skill and writes nothing.
+- A missing optional baseline leaves that relationship empty and continues.
+- A missing or unreadable Reference Architecture yields no match and continues.
+- A malformed or unreadable Reference Implementation counts as zero and continues.
+- A failed write leaves existing Discovery and catalog bytes unchanged.
 
 ## Example
 
-`/highway-discovery REQ000001`
-
-## MVP Option Probes
-
-For each candidate solution option, capture these concise probes before comparison:
-
-- **Summary:** What the option is and how it addresses the objective.
-- **Benefits:** Expected value and strengths.
-- **Risks:** Material drawbacks, failure modes, or trade-offs.
-- **Assumptions:** Conditions that must hold for the option to work.
-- **Dependencies:** People, systems, decisions, or external constraints required.
-
-Use stable option identifiers (`OPTXXXXXX`) and carry these probes into the Candidate Solution Comparison Matrix and Recommendation.
+`/highway-discovery REQ3f2a9c10`

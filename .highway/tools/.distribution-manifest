@@ -26,6 +26,7 @@ include	.claude/skills/highway-profile	-
 include	.claude/skills/highway-relationships	-
 include	.claude/skills/highway-setup	-
 include	.claude/skills/highway-new	-
+include	.claude/skills/highway-request	-
 include	.claude/skills/highway-discovery	-
 include	.claude/skills/highway-clarify	-
 include	.claude/skills/highway-adr	-
@@ -44,6 +45,7 @@ include	.cursor/skills/highway-profile	-
 include	.cursor/skills/highway-relationships	-
 include	.cursor/skills/highway-setup	-
 include	.cursor/skills/highway-new	-
+include	.cursor/skills/highway-request	-
 include	.cursor/skills/highway-discovery	-
 include	.cursor/skills/highway-clarify	-
 include	.cursor/skills/highway-adr	-
@@ -62,6 +64,7 @@ include	.github/skills/highway-profile	-
 include	.github/skills/highway-relationships	-
 include	.github/skills/highway-setup	-
 include	.github/skills/highway-new	-
+include	.github/skills/highway-request	-
 include	.github/skills/highway-discovery	-
 include	.github/skills/highway-clarify	-
 include	.github/skills/highway-adr	-
@@ -79,6 +82,7 @@ include	.agents/skills/highway-profile	-
 include	.agents/skills/highway-relationships	-
 include	.agents/skills/highway-setup	-
 include	.agents/skills/highway-new	-
+include	.agents/skills/highway-request	-
 include	.agents/skills/highway-discovery	-
 include	.agents/skills/highway-clarify	-
 include	.agents/skills/highway-adr	-

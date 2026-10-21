@@ -49,16 +49,11 @@ require_text() {
 }
 
 for text in \
-	"Realized Capabilities" \
-	"business-recognizable outcome" \
 	"one or more Realized By" \
 	"implementations/capabilities.md" \
-	"CAP######" \
-	"(Parent RI, normalized Title)" \
-	"Match existing capability identities" \
-	"remove stale derived rows" \
-	"Capability Catalog publication is atomic" \
-	'no `CAP######.md` files exist'; do
+	"CAP" \
+	'Do not write a `CAP` record file.' \
+	'Do not allocate from `Next ID`.'; do
 	require_text "$SKILL" "$text"
 done
 
@@ -74,11 +69,10 @@ done
 
 for text in \
 	"# Capability Catalog" \
-	"Next ID: CAPXXXXXX" \
+	"CAP plus eight hex digits" \
 	"## Capability Index" \
 	"| ID | Parent | Title | Realized By |" \
-	'exactly one `RI######` Parent' \
-	"stale rows are removed"; do
+	'no `Next ID` field'; do
 	require_text "$CAPABILITY_CATALOG_TEMPLATE" "$text"
 done
 

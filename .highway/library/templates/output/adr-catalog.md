@@ -1,8 +1,8 @@
 ---
 name: adr-catalog
-description: "Complete output skeleton for the ADR allocation catalog."
+description: "Complete output skeleton for the repository ADR catalog."
 metadata:
-  version: 1.0.0
+  version: 2.0.0
 ---
 
 ## Catalog Structure
@@ -12,16 +12,17 @@ metadata:
 
 Version: 1.0.0
 
-Next ID: ADRXXXXXX
-
 ## ADR Index
 
-| ADR ID | Discovery ID | Request ID | ADR Title | ADR Path |
-|--------|--------------|------------|-----------|----------|
-| ADRXXXXXX | DISCXXXXXX | REQXXXXXX | <deterministic ADR title> | adrs/ADRXXXXXX.md |
+| ADR ID | Discovery ID | Request ID | ADR Title | ADR Path | Status |
+|--------|--------------|------------|-----------|----------|--------|
+| <ADR plus 8 hex digits> | <DISC plus 8 hex digits> | <REQ plus 8 hex digits> | <accepted decision title> | adrs/<ADR id>.md | <accepted or removed> |
 ```
 
-The catalog owns the next ADR identifier and one direct index entry per successful ADR. Entries are
-unique and ordered by ADR identifier. Discovery identifier uniqueness is checked against every
-existing entry before allocation. A successful publication consumes the exact pre-write `Next ID`,
-adds one direct index entry, and advances `Next ID` exactly once.
+The catalog owns the baseline version and the ADR index. It has no `Next ID` field. The index columns are ADR ID, Discovery ID, Request ID, ADR Title, ADR Path, and Status.
+
+Each ADR ID appears once. Rows are ordered by ADR ID. The ADR ID is `ADR` plus the eight hex digits derived from the title. Discovery ID is the Discovery this decision records. Each Discovery ID appears on at most one row.
+
+`accepted` has a record at `adrs/<id>.md`. `removed` has no record file. A removed row stays in the index, keeps the title that last held that id, and leaves the id taken.
+
+An empty baseline contains `Version: 1.0.0` and the index header, with no data rows. Do not write a placeholder id as a row.
