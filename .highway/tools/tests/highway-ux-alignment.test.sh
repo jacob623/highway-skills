@@ -59,7 +59,7 @@ for old_section in \
 	require_absent "$EXPERIENCE_STANDARD" "$old_section"
 done
 
-skills='highway-profile highway-objectives highway-controls highway-nfrs highway-new highway-discovery highway-adr highway-clarify'
+skills='highway-profile highway-objectives highway-controls highway-nfrs highway-discovery highway-adr'
 for skill in $skills; do
 	file="$SKILLS_ROOT/$skill/SKILL.md"
 	require_text "$file" 'Highway Experience Standard'

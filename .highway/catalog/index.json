@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-21T14:19:34Z",
+  "generated_at": "2026-10-21T14:55:38Z",
   "entries": [
     {
       "id": "highway-adr",
@@ -27,15 +27,6 @@
       "compatibility": "all",
       "version": "2.0.0",
       "source_path": "skills/highway-assessment/SKILL.md"
-    },
-    {
-      "id": "highway-clarify",
-      "name": "highway-clarify",
-      "description": "Generates, updates, validates, and serves deterministic clarification records for Highway artifacts.",
-      "usage": "Invoke as `/highway-clarify <ARTIFACT-ID>`, `/highway-clarify update <ARTIFACT-ID>`, `/highway-clarify inspect <ARTIFACT-ID>`, `/highway-clarify read <ARTIFACT-ID>`, or `/highway-clarify status <ARTIFACT-ID>`.",
-      "compatibility": "all",
-      "version": "2.0.0",
-      "source_path": "skills/highway-clarify/SKILL.md"
     },
     {
       "id": "highway-controls",
@@ -74,24 +65,6 @@
       "source_path": "skills/highway-implementation/SKILL.md"
     },
     {
-      "id": "highway-inquiry",
-      "name": "highway-inquiry",
-      "description": "Manages the requirements discovery questionnaire that Highway skills ask from, adding, changing, removing and reordering its questions on request.",
-      "usage": "Invoke as `/highway-inquiry` and state what to change, for example `/highway-inquiry add a question about data retention`.",
-      "compatibility": "all",
-      "version": "1.0.2",
-      "source_path": "skills/highway-inquiry/SKILL.md"
-    },
-    {
-      "id": "highway-new",
-      "name": "highway-new",
-      "description": "Does not use a request.",
-      "usage": "Invoke as /highway-new.",
-      "compatibility": "all",
-      "version": "2.0.0",
-      "source_path": "skills/highway-new/SKILL.md"
-    },
-    {
       "id": "highway-nfrs",
       "name": "highway-nfrs",
       "description": "Manages the repository-wide nfr baseline.",
@@ -126,15 +99,6 @@
       "compatibility": "all",
       "version": "12.0.0",
       "source_path": "skills/highway-profile/SKILL.md"
-    },
-    {
-      "id": "highway-relationships",
-      "name": "highway-relationships",
-      "description": "Inspects and repairs repository-wide Control-to-NFR relationship integrity with explicit confirmation.",
-      "usage": "Invoke as `/highway-relationships` and state Inspect, Repair, or Impact followed by the governance relationship scope.",
-      "compatibility": "all",
-      "version": "1.0.0",
-      "source_path": "skills/highway-relationships/SKILL.md"
     },
     {
       "id": "highway-request",

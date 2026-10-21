@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-21T14:19:39Z",
+  "generated_at": "2026-10-21T14:55:42Z",
   "entries": [
     {
       "library_type": "template",
@@ -42,20 +42,6 @@
       "description": "Complete output skeleton for the Capability Catalog written with a Reference Implementation.",
       "version": "2.0.0",
       "source_path": "library/templates/output/capability-catalog.md"
-    },
-    {
-      "library_type": "template",
-      "name": "clarification-catalog",
-      "description": "Complete output skeleton for the Clarification catalog.",
-      "version": "1.1.0",
-      "source_path": "library/templates/output/clarification-catalog.md"
-    },
-    {
-      "library_type": "template",
-      "name": "clarification-record",
-      "description": "Authoritative output structure for a deterministic retained clarification artifact.",
-      "version": "2.0.0",
-      "source_path": "library/templates/output/clarification-record.md"
     },
     {
       "library_type": "template",
@@ -147,13 +133,6 @@
       "description": "Complete output skeleton for a retained business request record.",
       "version": "1.0.0",
       "source_path": "library/templates/output/request-record.md"
-    },
-    {
-      "library_type": "template",
-      "name": "requirements-inquiry",
-      "description": "The requirements discovery questions Highway skills ask, ordered as they are asked and maintained through the highway-inquiry skill.",
-      "version": "1.0.0",
-      "source_path": "library/templates/requirements-inquiry.md"
     },
     {
       "library_type": "knowledge",

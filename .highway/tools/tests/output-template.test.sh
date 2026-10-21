@@ -33,8 +33,6 @@ DISCOVERY_CATALOG_TEMPLATE="$HIGHWAY_ROOT/library/templates/output/discovery-cat
 OBJECTIVE_CATALOG_TEMPLATE="$HIGHWAY_ROOT/library/templates/output/objective-catalog.md"
 CONTROL_CATALOG_TEMPLATE="$HIGHWAY_ROOT/library/templates/output/control-catalog.md"
 NFR_CATALOG_TEMPLATE="$HIGHWAY_ROOT/library/templates/output/nfr-catalog.md"
-CLARIFY_SKILL="$HIGHWAY_ROOT/skills/highway-clarify/SKILL.md"
-CLARIFICATION_CATALOG_TEMPLATE="$HIGHWAY_ROOT/library/templates/output/clarification-catalog.md"
 ADR_SKILL="$HIGHWAY_ROOT/skills/highway-adr/SKILL.md"
 ARCHITECTURE_SKILL="$HIGHWAY_ROOT/skills/highway-architecture/SKILL.md"
 IMPLEMENTATION_SKILL="$HIGHWAY_ROOT/skills/highway-implementation/SKILL.md"
@@ -139,7 +137,6 @@ require_text "$ADR_RECORD_TEMPLATE" "Selection Source: User-provided explicit se
 require_file "$OBJECTIVE_CATALOG_TEMPLATE"
 require_file "$CONTROL_CATALOG_TEMPLATE"
 require_file "$NFR_CATALOG_TEMPLATE"
-require_file "$CLARIFICATION_CATALOG_TEMPLATE"
 require_file "$INTAKE_CONTRACT"
 require_file "$RECORD_CONTRACT"
 if [[ -f "$NFR_TEMPLATE" ]]; then
@@ -256,8 +253,6 @@ require_text "$OBJECTIVE_SKILL" ".highway/library/templates/output/objective-rec
 require_text "$OBJECTIVE_SKILL" ".highway/library/templates/output/objective-catalog.md"
 require_text "$CONTROL_SKILL" ".highway/library/templates/output/control-catalog.md"
 require_text "$NFR_SKILL" ".highway/library/templates/output/nfr-catalog.md"
-require_text "$CLARIFY_SKILL" ".highway/library/templates/output/clarification-catalog.md"
-
 require_text "$NEW_SKILL" ".highway/library/templates/output/request-record.md"
 require_text "$NEW_SKILL" ".highway/library/templates/output/request-catalog.md"
 require_text "$DISCOVERY_SKILL" ".highway/library/templates/output/discovery-catalog.md"
@@ -315,45 +310,7 @@ if [[ -f "$CATALOG_TEMPLATE" ]]; then
 		fail=1
 	fi
 fi
-if [[ -f "$CLARIFICATION_CATALOG_TEMPLATE" ]]; then
-	require_text "$CLARIFICATION_CATALOG_TEMPLATE" "name: clarification-catalog"
-	require_text "$CLARIFICATION_CATALOG_TEMPLATE" "Version: 1.1.0"
-	require_text "$CLARIFICATION_CATALOG_TEMPLATE" "## Clarification Index"
-	require_text "$CLARIFICATION_CATALOG_TEMPLATE" "Clarification ID"
-	require_text "$CLARIFICATION_CATALOG_TEMPLATE" "Artifact ID"
-	require_text "$CLARIFICATION_CATALOG_TEMPLATE" "Artifact Type"
-	require_text "$CLARIFICATION_CATALOG_TEMPLATE" "Status"
-	require_text "$CLARIFICATION_CATALOG_TEMPLATE" "Clarification Path"
-	require_text "$CLARIFICATION_CATALOG_TEMPLATE" "resolves directly to the authoritative clarification artifact"
-fi
-require_text "$HIGHWAY_ROOT/library/templates/output/clarification-record.md" "version: 2.0.0"
-require_text "$HIGHWAY_ROOT/library/templates/output/clarification-record.md" $'metadata:\n  version: 2.0.0\n---'
-require_text "$HIGHWAY_ROOT/library/templates/output/clarification-record.md" "total_findings = open_findings + resolved_findings"
-require_text "$HIGHWAY_ROOT/library/templates/output/clarification-record.md" "State: resolved"
-require_text "$HIGHWAY_ROOT/library/templates/output/clarification-record.md" "- Finding: CLAR-REQ000001-001"
-require_text "$HIGHWAY_ROOT/library/templates/output/clarification-record.md" "- Finding: CLAR-REQ000001-002"
-require_text "$HIGHWAY_ROOT/library/templates/output/clarification-record.md" "Recommendation Basis: authoritative"
-require_text "$HIGHWAY_ROOT/library/templates/output/clarification-record.md" "Recommendation Basis: evidence-gap"
-require_text "$HIGHWAY_ROOT/library/templates/output/clarification-record.md" "Recommendation Basis: conflict"
-require_text "$HIGHWAY_ROOT/library/templates/output/clarification-record.md" "Recommended Option: Unknown"
-require_text "$HIGHWAY_ROOT/library/templates/output/clarification-record.md" "Recommended Option: Escalate for Decision"
-require_text "$HIGHWAY_ROOT/library/templates/output/clarification-record.md" "Evidence Sources: None"
-require_text "$HIGHWAY_ROOT/library/templates/output/clarification-record.md" "- Source Type: <source type>"
-require_text "$HIGHWAY_ROOT/library/templates/output/clarification-record.md" "Source Identifier: <source identifier>"
-require_text "$HIGHWAY_ROOT/library/templates/output/clarification-record.md" "Reason Used: <reason this source was used>"
-if grep -Fq -- "Unknown / Escalate for Decision" "$HIGHWAY_ROOT/library/templates/output/clarification-record.md"; then
-	echo "FAIL: retired combined recommendation state remains in clarification-record.md"
-	fail=1
-fi
-if grep -Fq -- "- Source:" "$HIGHWAY_ROOT/library/templates/output/clarification-record.md"; then
-	echo "FAIL: nested Evidence Sources wrapper remains in clarification-record.md"
-	fail=1
-fi
-if [[ "$(grep -Fc -- 'Explanatory contract text appears outside Findings, Resolution History, Source, and Status' "$HIGHWAY_ROOT/library/templates/output/clarification-record.md")" != "1" ]]; then
-	echo "FAIL: explanatory contract text count is not exactly one"
-	fail=1
-fi
-require_text "$HIGHWAY_ROOT/library/templates/output/clarification-record.md" "## Clarification Contract"
+# Superseded with highway-clarify: clarification-record.md and clarification-catalog.md.
 if ! "$VALIDATE_SKILL" "$HIGHWAY_ROOT/skills/highway-nfrs" >/dev/null 2>&1; then
 	echo "FAIL: highway-nfrs does not pass validate-skill.sh"
 	fail=1
@@ -365,11 +322,11 @@ fi
 
 # The current file-emitting skills are the complete set of citing skills for this feature.
 citing_count="$(grep -RIl 'library/templates/output/' "$HIGHWAY_ROOT/skills" --include='SKILL.md' | wc -l | tr -d ' ')"
-if [[ "$citing_count" != "12" ]]; then
-	echo "FAIL: expected 12 output-template citing skills, found $citing_count"
+if [[ "$citing_count" != "11" ]]; then
+	echo "FAIL: expected 11 output-template citing skills, found $citing_count"
 	fail=1
 fi
-for citing_skill in "$NFR_SKILL" "$CONTROL_SKILL" "$PROFILE_SKILL" "$OBJECTIVE_SKILL" "$NEW_SKILL" "$DISCOVERY_SKILL" "$CLARIFY_SKILL" "$ADR_SKILL" "$ARCHITECTURE_SKILL" "$IMPLEMENTATION_SKILL" "$ONBOARDING_SKILL" "$ASSESSMENT_SKILL"; do
+for citing_skill in "$NFR_SKILL" "$CONTROL_SKILL" "$PROFILE_SKILL" "$OBJECTIVE_SKILL" "$NEW_SKILL" "$DISCOVERY_SKILL" "$ADR_SKILL" "$ARCHITECTURE_SKILL" "$IMPLEMENTATION_SKILL" "$ONBOARDING_SKILL" "$ASSESSMENT_SKILL"; do
 	if ! grep -Fq "library/templates/output/" "$citing_skill"; then
 		echo "FAIL: dependent review omitted citing skill $citing_skill"
 		fail=1
