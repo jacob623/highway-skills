@@ -1,6 +1,7 @@
 # highway-skills
 
-## Skill Authoring Framework
+## Skill Authoring 
+
 
 This repository hosts a portable, multi-agent skill-authoring framework. Skills are authored
 once under `.highway/skills/<id>/SKILL.md` and distributed to each supported agent (GitHub
