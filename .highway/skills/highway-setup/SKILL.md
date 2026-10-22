@@ -4,7 +4,7 @@ description: "Orchestrates initial highway setup through the owning governance s
 usage: "Invoke as /highway-setup."
 compatibility: all
 metadata:
-  version: 9.0.0
+  version: 9.1.0
 ---
 
 # highway-setup
@@ -15,7 +15,7 @@ Orchestrates Profile, Objectives, Controls, and NFRs in order when the person ru
 
 ## When to use
 
-- The person invokes `/highway-setup` and `.highway/library/knowledge/profile.md` is absent.
+- The person invokes `/highway-setup` and `library/knowledge/profile.md` is absent.
 - The person invokes `/highway-setup` again after a prior setup run.
 
 ## When not to use
@@ -32,7 +32,7 @@ Do not show `Finished` to the person.
 - `highway-objectives`.
 - `highway-controls`.
 - `highway-nfrs`.
-- `.highway/library/knowledge/profile.md` when present.
+- `library/knowledge/profile.md` when present.
 - `.highway/governance/experience-standard.md`.
 - The person's request to run setup.
 
@@ -53,7 +53,7 @@ Delegate each owner in this order: Profile, Objectives, Controls, NFRs. Stay wit
 
 ### Welcome
 
-When `.highway/library/knowledge/profile.md` is absent, emit this level-2 heading, then the lines under it, before Profile. Do not emit it when that file exists.
+When `library/knowledge/profile.md` is absent, emit this level-2 heading, then the lines under it, before Profile. Do not emit it when that file exists.
 
 Welcome to Highway
 *Turn organizational knowledge into connected decisions.*

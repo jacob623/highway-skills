@@ -36,7 +36,7 @@ require_text 'development-time validation of shipped skills and shared runtime c
 require_text 'The applicable workflow defines proposal acceptance and persistence'
 require_text 'Development validation verifies that required failure behavior exists in the effective'
 require_text 'A correctness-critical contract choice between two or more actions'
-require_text '**Version**: 9.0.0 | **Ratified**: 2026-09-06 | **Last Amended**: 2026-10-06'
+require_text '**Version**: 9.1.0 | **Ratified**: 2026-09-06 | **Last Amended**: 2026-10-22'
 require_text 'P1.1-P1.4, P6.4, P6.6, and P7.3'
 require_text 'P10.1 remains the generic Experience delegation rule'
 

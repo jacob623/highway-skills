@@ -4,7 +4,7 @@ description: "Manages the repository-wide control baseline."
 usage: "Invoke as /highway-controls."
 compatibility: all
 metadata:
-  version: 5.0.0
+  version: 5.1.0
 ---
 
 # highway-controls
@@ -28,7 +28,7 @@ Do not emit Setup's safeguard transition. Setup already emitted it.
 ## Inputs
 
 - Project root containing `.highway/`.
-- `.highway/library/knowledge/profile.md` when present.
+- `library/knowledge/profile.md` when present.
 - `library/governance/objectives.md` and `library/objectives/` when present.
 - `library/governance/controls.md` when present.
 - `library/governance/controls/CTL*.md` when present.

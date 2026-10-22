@@ -1,5 +1,19 @@
 <!--
 Sync Impact Report
+Version change: 9.0.0 → 9.1.0 (MINOR), 2026-10-22
+Bump rationale: the user-owned profile location in the Principle XI rationale moves from the
+skill framework tree to `library/knowledge/profile.md` at the repository root. P11.1 and P11.2
+are unchanged. Skills that read the profile are updated in the same change.
+Changed elements:
+- Version line: 9.0.0 → 9.1.0
+- Last Amended date: 2026-10-06 → 2026-10-22
+- Principle XI rationale: the user-owned profile path
+Unchanged: P11.1, P11.2, P11.3, and every other rule.
+Self-application review: D1.3 PASS (no Highway Skills Constitution rule sentence is copied);
+D1.4 PASS (this report cites rule IDs); D5.3 PASS (the three changed elements are listed above
+and every unlisted element carries forward).
+
+Sync Impact Report
 Version change: 8.0.0 → 9.0.0 (MAJOR), 2026-10-06
 Bump rationale: the Constitution's remaining broad decision criteria and failure inheritance wording
 are narrowed to development validation of effective shipped runtime contracts. Experience delegation,
@@ -448,7 +462,7 @@ portability while leaving the Experience Standard as the source of interaction r
 Repository Context Sources are declared inputs considered during development validation. The
 `.highway/library/knowledge/highway-identity.md` source is shared, non-normative context describing
 what Highway is, why it exists, and what it is trying to achieve. The user-owned organizational context
-at `.highway/library/knowledge/profile.md` and accepted repository artifacts remain owned by
+at `library/knowledge/profile.md` from the repository root and accepted repository artifacts remain owned by
 their workflows. This Constitution does not define behavioral guidance, strategic direction,
 evaluation criteria, conversational epistemic status, or runtime context precedence. Missing context
 is not invented or silently substituted; workflow-specific inputs remain authoritative.
@@ -599,4 +613,4 @@ every other skill's version. This is the policy referenced by P7.7.
 - **MINOR**: a capability is added while every existing contract element continues to hold.
 - **PATCH**: wording repair with no change to Inputs, Outputs, or Verification.
 
-**Version**: 9.0.0 | **Ratified**: 2026-09-06 | **Last Amended**: 2026-10-06
+**Version**: 9.1.0 | **Ratified**: 2026-09-06 | **Last Amended**: 2026-10-22

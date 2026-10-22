@@ -4,7 +4,7 @@ description: "Manages the repository-wide organizational Profile and its context
 usage: "Invoke as /highway-profile."
 compatibility: all
 metadata:
-  version: 12.0.0
+  version: 13.0.0
 ---
 
 # highway-profile
@@ -27,7 +27,7 @@ Do not report Status, Summary, Next Action, Blocking Reason, Missing, Complete, 
 ## Inputs
 
 - Project root containing `.highway/`.
-- `.highway/library/knowledge/profile.md` when present.
+- `library/knowledge/profile.md` when present.
 - `.highway/library/templates/output/profile-record.md`.
 - `.highway/library/knowledge/highway-identity.md` as shared, non-normative context.
 - `.highway/governance/experience-standard.md`.
@@ -38,8 +38,8 @@ Do not report Status, Summary, Next Action, Blocking Reason, Missing, Complete, 
 
 The complete structure is `.highway/library/templates/output/profile-record.md`.
 
-- An updated `.highway/library/knowledge/profile.md` after a review edit.
-- A new `.highway/library/knowledge/profile.md` after the guided flow writes it.
+- An updated `library/knowledge/profile.md` after a review edit.
+- A new `library/knowledge/profile.md` after the guided flow writes it.
 - `Finished` returned to `highway-setup` after review acceptance or a successful guided write.
 - `Finished` is not shown to the person.
 
@@ -47,14 +47,16 @@ The complete structure is `.highway/library/templates/output/profile-record.md`.
 
 User-visible interaction follows the Highway Experience Standard. Repository ownership stays with the person.
 
+X2.21 does not apply. The accepted proposal bullets are the retained domain, so Profile does not show a second capture heading.
+
 Emit only the active template. Follow this order: `review` when `profile.md` exists; otherwise `name`, `offer`, Identity, Vision, Competitive Path, Guiding Principles, then `write`. Follow `.highway/governance/experience-standard.md` for attribution and acceptance wording. Use accepted Organization Name in templates. Use Repository Name until an Organization Name is accepted. Repository Name does not become Organization Name.
 
 ### Entry
 
-1. Read `.highway/library/knowledge/profile.md`.
-2. If the file is present and readable, go to `review`.
-3. If the file is absent, go to `name`.
-4. If the file is present and unreadable, stop. Say the Profile could not be read. Leave the file unchanged. Do not return `Finished`.
+1. Read `library/knowledge/profile.md` from the repository root. Do not read, copy, or review `.highway/library/knowledge/profile.md`.
+2. If `library/knowledge/profile.md` is present and readable, go to `review`.
+3. If that file is absent, go to `name`.
+4. If that file is present and unreadable, stop. Say the Profile could not be read. Leave the file unchanged. Do not return `Finished`.
 
 ### Classify
 
@@ -103,7 +105,7 @@ Emit:
 
 You can share a website link, an overview or description, a strategy document, or an assistant export. If you don't have anything handy, say so and we can work through it together.
 
-- A URL or document: retrieve it. Store a supplied URL as Organization URL. Facts from it stay proposed until accepted in a capture. Go to `identity.review` when the material supports at least one Identity finding. Otherwise go to `identity.ask`.
+- A URL or document: retrieve it. Store a supplied URL as Organization URL. Facts from it stay proposed until accepted in that domain's proposal. Go to `identity.review` when the material supports at least one Identity finding. Otherwise go to `identity.ask`.
 - The person has nothing: go to `identity.ask`.
 - Retrieval is unavailable: go to `identity.ask`. Do not mention the missing retrieval.
 
@@ -113,29 +115,25 @@ Use supplied material across every later domain. Do not ask the person to repeat
 
 Run Identity, Vision, Competitive Path, then Guiding Principles.
 
-Each domain uses `review` or `start` when accepted evidence can fill every slot in that template. Otherwise use `ask`. Do not put a question template in the same message as a starting point.
+Each domain uses `start` when a proposal can be shown. Identity uses `ask` only when no supported starting point exists. Vision, Competitive Path, and Guiding Principles always use `start`. Do not put a question template in the same message as a starting point.
 
 1. `identity.review` or `identity.ask`
-2. `identity.capture`
-3. `vision.start` or `vision.ask`
-4. `vision.capture`
-5. `path.start` or `path.ask`
-6. `path.capture`
-7. `principles.start` or `principles.ask`
-8. `principles.capture`
-9. `write`
+2. `vision.start`
+3. `path.start`
+4. `principles.start`
+5. `write`
 
-Hold each accepted capture paragraph until `write`. Do not write the file before `write`.
+Hold each accepted bullet list until `write`. Do not write the file before `write`.
 
 ### Shared replies
 
 Apply these on every domain step.
 
 - `edit`: emit one sentence stating a consequence the person did not state. Re-emit the same template with the edit applied. Stay.
-- `accept` on `review`, `start`, or `ask`: emit that domain's capture template. Stay on the capture step.
-- `accept` on a capture template: hold that paragraph. Advance.
+- `accept` on `review` or `start`: hold the current bullets. Advance.
+- `accept` on `identity.ask`: hold the answer as the Identity bullets. Advance. Do not emit a capture paragraph.
 - `unknown` on `review` or `start`: re-emit that template. Stay.
-- `unknown` on `ask`: re-emit the question template. Stay.
+- `unknown` on `identity.ask`: re-emit the question template. Stay.
 - `question`: answer in one sentence. Re-emit the same template. Stay.
 - `decline`: store no narrative for this domain. Advance.
 
@@ -153,7 +151,7 @@ Competitive Path states the broad approach toward the accepted Vision. Omit Cont
 
 Guiding Principles state enduring decision-making values. Do not write an enforceable Control.
 
-Open Vision, Competitive Path, and Guiding Principles by naming accepted substance from the previous captured domain.
+Open Vision, Competitive Path, and Guiding Principles by naming accepted substance from the previous captured domain. Always emit the proposal. Infer a slot, including the Competitive Path tradeoff, from accepted context when the person has not stated it. Do not replace the proposal with a question.
 
 ### Templates
 
@@ -183,23 +181,17 @@ With [accepted Identity substance], let's explore the future you are working to 
 **Here is a proposed starting point for your Vision:**
 
 - Future Direction
-  [Accepted-evidence interpretation of the future direction.]
+  [Inferred from accepted context.]
 
 - Desired Impact
-  [Accepted-evidence interpretation of the desired impact.]
+  [Inferred from accepted context.]
 
 - Future State
-  [Accepted-evidence interpretation of the future state.]
+  [Inferred from accepted context.]
 
 **What would you add, correct, or remove?**
 
 If this is accurate, just say so. If you don't know, say "I don't know" and we'll work through it together.
-
-Vision question, emitted under the same opening when the starting point cannot be filled:
-
-**What is the future vision of [Name]?**
-
-If you don't know, say "I don't know" and we'll work through it together.
 
 Competitive Path opening and starting point:
 
@@ -212,23 +204,17 @@ To advance toward [accepted Vision substance], let's explore how [Name] plans to
 **Here is a proposed starting point for your Competitive Path:**
 
 - Primary Approach
-  [Accepted-evidence interpretation of the broad approach.]
+  [Inferred from accepted context.]
 
 - Strategic Advantage
-  [Accepted-evidence interpretation of the advantage.]
+  [Inferred from accepted context.]
 
 - Important Tradeoff
-  [Accepted-evidence interpretation of the tradeoff.]
+  [Inferred from accepted context.]
 
 **What would you add, correct, or remove?**
 
 If this is accurate, just say so. If you don't know, say "I don't know" and we'll work through it together.
-
-Competitive Path question, emitted under the same opening when the starting point cannot be filled:
-
-**How does [Name] plan to get there?**
-
-If you don't know, say "I don't know" and we'll work through it together.
 
 Guiding Principles opening and starting point:
 
@@ -243,37 +229,21 @@ With your competitive path grounded in [accepted Competitive Path substance], le
 - [Short principle name]
   [Accepted-evidence decision-making value.]
 
-Emit 3 to 5 principles. The label is a short principle name grounded in accepted evidence.
+Emit 3 to 5 principles. Infer each principle from accepted context when the person has not stated it. The label is a short principle name.
 
 **What would you add, correct, or remove?**
 
 If this is accurate, just say so. If you don't know, say "I don't know" and we'll work through it together.
 
-Guiding Principles question, emitted under the same opening when the starting point cannot be filled:
-
-**What principles or values guide decisions at [Name]?**
-
-If you don't know, say "I don't know" and we'll work through it together.
-
 When the previous domain was declined, replace the bracketed accepted substance with: Nothing has been accepted for [previous domain] yet.
-
-Capture template, for every domain:
-
-**Here's what I've captured as your [Identity, Vision, Competitive Path, or Guiding Principles]:**
-
-[One paragraph. Join the accepted bullets in their current order. Add no claim. Keep the person's terms. Omit a term the person rejected.]
-
-**What would you add, correct, or remove?**
-
-If this is accurate, just say so.
 
 Bold only the question in each block.
 
 ### write
 
-Write `.highway/library/knowledge/profile.md` once, in the shape required by `.highway/library/templates/output/profile-record.md`.
+Write `library/knowledge/profile.md` from the repository root once, in the shape required by `.highway/library/templates/output/profile-record.md`. Create `library/knowledge/` when it is absent. Do not write `.highway/library/knowledge/profile.md`.
 
-- A captured domain is `discussed` and its narrative section contains the held paragraph.
+- A captured domain is `discussed` and its narrative section contains the held bullets. Omit a term the person rejected.
 - A declined domain is `bounded` and its narrative section is omitted.
 - Write `## Context` with Repository Name.
 - Write Organization URL, Organization Name, and Organizational Context only when the person supplied or accepted that value.
@@ -287,7 +257,6 @@ Write `.highway/library/knowledge/profile.md` once, in the shape required by `.h
 - A review edit rewrites the file and shows the updated body with the same question.
 - An absent `profile.md` begins at the repository-name template.
 - A starting-point message contains no canonical question.
-- A capture message contains one paragraph and the acceptance reassurance only.
 - The file is written once, after Guiding Principles is captured or declined.
 - A successful guided write returns `Finished` and emits nothing else.
 - The written file matches `.highway/library/templates/output/profile-record.md`.

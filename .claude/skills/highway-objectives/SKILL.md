@@ -4,7 +4,7 @@ description: "Manages the repository-wide business objective baseline and its st
 usage: "Invoke as /highway-objectives."
 compatibility: all
 metadata:
-  version: 5.0.0
+  version: 5.1.0
 ---
 
 # highway-objectives
@@ -28,7 +28,7 @@ Do not emit Setup's outcome transition. Setup already emitted it.
 ## Inputs
 
 - Project root containing `.highway/`.
-- `.highway/library/knowledge/profile.md` when present.
+- `library/knowledge/profile.md` when present.
 - `library/governance/objectives.md` when present.
 - `library/objectives/OBJ*.md` when present.
 - `.highway/library/templates/output/objective-record.md`.

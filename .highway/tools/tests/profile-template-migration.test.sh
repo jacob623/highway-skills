@@ -16,8 +16,12 @@ fail=0
 [[ -f "$TEMPLATE" ]] || { echo 'FAIL: replacement Profile template is missing'; fail=1; }
 [[ ! -e "$HIGHWAY_ROOT/$OBSOLETE_MARKDOWN" ]] || { echo 'FAIL: obsolete Markdown template remains'; fail=1; }
 [[ ! -e "$HIGHWAY_ROOT/$OBSOLETE_YAML" ]] || { echo 'FAIL: obsolete YAML template remains'; fail=1; }
-grep -Fq '.highway/library/knowledge/profile.md' "$HIGHWAY_ROOT/skills/highway-profile/SKILL.md" || {
+grep -Fq 'library/knowledge/profile.md' "$HIGHWAY_ROOT/skills/highway-profile/SKILL.md" || {
 	echo 'FAIL: Profile skill omits the retained user-owned artifact path'
+	fail=1
+}
+grep -Fq 'Do not read, copy, or review `.highway/library/knowledge/profile.md`' "$HIGHWAY_ROOT/skills/highway-profile/SKILL.md" || {
+	echo 'FAIL: Profile skill does not ignore the framework-tree profile'
 	fail=1
 }
 grep -Fq 'library/templates/output/profile-record.md' "$MANIFEST" || {

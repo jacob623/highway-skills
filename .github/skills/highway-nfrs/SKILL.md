@@ -4,7 +4,7 @@ description: "Manages the repository-wide nfr baseline."
 usage: "Invoke as /highway-nfrs."
 compatibility: all
 metadata:
-  version: 5.0.0
+  version: 5.1.0
 ---
 
 # highway-nfrs
@@ -28,7 +28,7 @@ Do not emit Setup's operational-expectation transition. Setup already emitted it
 ## Inputs
 
 - Project root containing `.highway/`.
-- `.highway/library/knowledge/profile.md` when present.
+- `library/knowledge/profile.md` when present.
 - `library/governance/objectives.md` and `library/objectives/` when present.
 - `library/governance/controls.md` and `library/governance/controls/` when present.
 - `library/governance/nfrs.md` when present.

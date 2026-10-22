@@ -1,0 +1,4 @@
+Baseline recorded 2026-10-22.
+
+`.highway/tools/tests/run-all.sh` exited 0.
+Summary: 45 passed, 0 failed.
