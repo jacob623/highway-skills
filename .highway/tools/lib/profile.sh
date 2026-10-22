@@ -2,7 +2,7 @@
 # Shared helpers for the deterministic Markdown Profile contract.
 set -u
 
-profile_path() { printf '%s\n' '.highway/library/knowledge/profile.md'; }
+profile_path() { printf '%s\n' 'library/knowledge/profile.md'; }
 profile_domain_keys() { printf '%s\n' identity vision competitive_path guiding_principles; }
 profile_domain_heading() {
 	case "$1" in

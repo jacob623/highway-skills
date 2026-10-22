@@ -46,10 +46,9 @@ VALIDATE_SKILL="$HIGHWAY_ROOT/tools/validate-skill.sh"
 fail=0
 
 for proposal_token in \
-	"**Here's what I've captured as your Control:**" \
-	'Title:' \
-	'Statement:' \
-	'Why it matters:'; do
+	"**Here's what I've captured as your controls:**" \
+	'**[Title]:** [Statement]' \
+	'**Why it matters:**'; do
 	if ! grep -Fq "$proposal_token" "$CONTROL_SKILL"; then
 		echo "FAIL: Controls proposal framing missing '$proposal_token'"
 		fail=1

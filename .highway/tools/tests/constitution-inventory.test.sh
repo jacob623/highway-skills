@@ -500,9 +500,9 @@ if ! grep -qF '4.0.0 → 4.1.0 (MINOR)' "$CONSTITUTION"; then
 	echo 'FAIL: historical 4.1.0 report is missing'
 	fail=1
 fi
-if ! grep -qF '**Version**: 9.0.0' "$CONSTITUTION" || \
+if ! grep -qF '**Version**: 9.1.0' "$CONSTITUTION" || \
    ! grep -qF '**Ratified**: 2026-09-06' "$CONSTITUTION" || \
-	! grep -qF '**Last Amended**: 2026-10-06' "$CONSTITUTION"; then
+	! grep -qF '**Last Amended**: 2026-10-22' "$CONSTITUTION"; then
 	echo 'FAIL: current Constitution amendment metadata is missing'
 	fail=1
 fi

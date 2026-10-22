@@ -24,16 +24,16 @@ domains:
 # Organizational Profile
 
 ## Who We Are
-<accepted Identity evidence when the identity state permits narrative>
+<accepted Identity bullets when the identity state permits narrative>
 
 ## Where We're Going
-<accepted Vision evidence when the vision state permits narrative>
+<accepted Vision bullets when the vision state permits narrative>
 
 ## How We Plan to Get There
-<accepted Competitive Path evidence when the competitive_path state permits narrative>
+<accepted Competitive Path bullets when the competitive_path state permits narrative>
 
 ## What Guides Our Decisions
-<accepted Guiding Principles evidence when the guiding_principles state permits narrative>
+<accepted Guiding Principles bullets when the guiding_principles state permits narrative>
 
 ## Context
 
@@ -52,7 +52,7 @@ domains:
 
 The domain headings above define the permitted retained narrative sections and their ordering. Render a domain heading only when its domain state permits narrative.
 
-`discussed` renders accepted narrative. `bounded` means the person explicitly bounded the domain, and accepted narrative renders only when accepted evidence exists. `not_discussed` renders no narrative section. A bounded narrative is not required for symmetry. Do not emit an empty domain heading or placeholder.
+`discussed` renders the accepted bullets. `bounded` means the person explicitly bounded the domain, and accepted bullets render only when accepted evidence exists. `not_discussed` renders no narrative section. A bounded narrative is not required for symmetry. Do not emit an empty domain heading or placeholder.
 
 All four domain keys remain in the retained domains mapping whether or not their narrative sections render. For example, `identity: not_discussed`, `vision: not_discussed`, `competitive_path: not_discussed`, and `guiding_principles: not_discussed` still appear in frontmatter even when the body contains no matching narrative section. `# Organizational Profile` is always present. Do not reorder rendered domain headings by acquisition order, conversational order, update order, which domain changed most recently, or narrative size.
 
