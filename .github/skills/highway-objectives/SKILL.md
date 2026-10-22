@@ -4,7 +4,7 @@ description: "Manages the repository-wide business objective baseline and its st
 usage: "Invoke as /highway-objectives."
 compatibility: all
 metadata:
-  version: 5.1.0
+  version: 6.0.0
 ---
 
 # highway-objectives
@@ -71,7 +71,7 @@ Classify the latest reply before any other action.
 - `accept`: affirms the current capture or review body and adds no fact.
 - `unknown`: the person says they do not know.
 - `question`: the person asks for an explanation.
-- `decline`: the person explicitly drops the active Objective.
+- `decline`: the person explicitly drops the active set.
 
 On a recommendation set, "looks good" is `select-all`. On a queue prompt that asks whether to review, "looks good" and "let's review" are `review-now`. On a capture or on `review`, "looks good" is `accept`.
 
@@ -79,17 +79,16 @@ On a recommendation set, "looks good" is `select-all`. On a queue prompt that as
 
 Show every Objective in catalog order. Omit frontmatter and omit the catalog. For each Objective emit:
 
-For each Objective, emit this level-2 heading, then the lines under it:
-
-[Title]
-
-[Statement]
+**[Title]:** [Statement]
 
 **Success looks like:**
 - [Success measure]
 
-**Why it matters:**
-[Rationale]
+**Why it matters:** [Rationale]
+
+---
+
+Put `---` between Objectives. Do not put `---` after the last Objective.
 
 When the catalog has no records, emit: No objectives are recorded yet.
 
@@ -144,7 +143,7 @@ If none of these fit, feel free to suggest your own outcome. If you'd like addit
 - `own`: add the person's outcome to the queue. Go to `queue`.
 - `edit`: emit one consequence sentence. Re-emit this set with the edit applied. Stay on `recommend`.
 - `more`: go to `more`.
-- `review-now`: go to `capture` of the first queued Objective. When the queue is empty, stay on `recommend`.
+- `review-now`: go to `capture` of every queued Objective. When the queue is empty, stay on `recommend`.
 - `question`: answer in one sentence. Re-emit this set. Stay on `recommend`.
 - `unknown`: re-emit this set. Stay on `recommend`.
 
@@ -195,7 +194,7 @@ Do not ask whether to explore more outcomes.
 - `own`: add the person's outcome. Emit `queue` again.
 - `edit`: emit one consequence sentence. Re-emit the queue list and this set with the edit applied. Stay on `queue`.
 - `more`: build another set that omits every title already shown. When one remains, emit it with the additional-recommendation intro above. Stay on `queue`.
-- `review-now`: go to `capture` of the first queued Objective. Do not add the unselected set.
+- `review-now`: go to `capture` of every queued Objective. Do not add the unselected set.
 - `question`: answer in one sentence. Re-emit the queue message. Stay on `queue`.
 - `unknown`: re-emit the queue message. Stay on `queue`.
 
@@ -205,7 +204,7 @@ Additional suggestions at this stage would largely overlap or subdivide these pr
 
 **Are you ready to review the selected objectives?**
 
-- `review-now` or `accept`: go to `capture` of the first queued Objective.
+- `review-now` or `accept`: go to `capture` of every queued Objective.
 - `own`: append that outcome and emit `queue` again.
 - `more`: re-emit this message.
 - `question`: answer in one sentence. Re-emit this message.
@@ -228,38 +227,34 @@ If you're not sure, just say "I don't know," and we'll work through it together.
 
 ### capture
 
-Develop the first queued Objective that is not yet accepted or declined.
+Develop every queued Objective in queue order. Emit them in one message. One queued Objective has no separator.
 
-The title is the queued title unless the person changes it. The statement is one paragraph. Emit two observable success measures when the accepted Profile supports them. The rationale is one paragraph grounded in the accepted Profile.
+The title is the queued title unless the person changes it. The statement is one sentence. Emit one observable success measure. Emit a second when the accepted Profile supports it. The rationale is one line grounded in the accepted Profile.
 
-**Here's what I've captured as your objective:**
+**Here's what I've captured as your objectives:**
 
-[Title]
-
-[Statement]
+**[Title]:** [Statement]
 
 **Success looks like:**
 - [Success measure]
-- [Success measure]
 
-**Why it matters:**
-[Rationale]
+**Why it matters:** [Rationale]
+
+---
+
+Put `---` between Objectives. Do not put `---` after the last Objective.
 
 **What would you add, correct, or remove?**
 
 If this is accurate, just say so.
 
-- `edit`: emit one consequence sentence. Re-emit this capture with the edit applied. Stay on this Objective.
-- `accept`: hold the title, statement, success measures, and rationale. When another queued Objective remains, emit the bridge below and the next capture in the same message. When none remain, go to `write`.
-- `decline`: drop this Objective. Continue to the next queued Objective. When none remain, go to `write`.
-- `unknown`: re-emit this capture. Stay on this Objective.
-- `question`: answer in one sentence. Re-emit this capture. Stay on this Objective.
+- `edit`: emit one consequence sentence. Apply the edit to the named Objective. An added outcome joins the set. A removed outcome leaves the set. Re-emit every Objective that remains. When none remain, go to `write` and do not show an empty review. Stay on `capture` when any remain.
+- `accept`: hold each remaining title, statement, success measures, and rationale. Go to `identifier`, then `write`.
+- `decline`: drop every queued Objective. Go to `write`. Do not show an empty review.
+- `unknown`: re-emit this capture. Stay on `capture`.
+- `question`: answer in one sentence. Re-emit this capture. Stay on `capture`.
 
-Bridge, emitted only between captures:
-
-Your accepted Objectives now cover [short phrases for the held Objectives].
-
-Next we'll develop **[next title]**.
+Do not develop one Objective at a time. Do not emit a bridge.
 
 ### identifier
 
@@ -314,9 +309,10 @@ For each held Objective, write `library/objectives/[ID].md` in the shape require
 - `title` is the accepted title.
 - `status` is `active`.
 - `capabilities` is `[]`.
-- `## Statement` is the accepted statement.
-- `## Success Measures` are the accepted success measures.
-- `## Rationale` is the accepted rationale.
+- `## Statement` is the statement shown with the title.
+- `## Success Measures` are the measures shown under **Success looks like:**.
+- `## Rationale` is the line shown with **Why it matters:**.
+- Do not show the stored records. Do not add a closing line.
 
 Write `library/governance/objectives.md` in the shape required by `.highway/library/templates/output/objective-catalog.md`.
 
@@ -342,12 +338,13 @@ No Objective record is written beneath `.highway`.
 - A queue message lists the titles just added, then includes the next recommendation set when grounded recommendations remain.
 - A queue message does not ask whether to explore more outcomes.
 - Capture starts when the person asks to review the queue.
-- A capture contains a title, one statement, success measures, a rationale, and the acceptance reassurance only.
-- Records and the catalog are written once, after every queued Objective is accepted or declined.
+- A capture shows every queued Objective in one message, with `---` between Objectives and one acceptance question.
+- A capture does not accept Objectives one at a time.
+- Records and the catalog are written once, after the set is accepted or declined.
 - Each id is `OBJ` plus eight hex digits derived from the title.
 - A taken id for a different title names the conflicting titles, says a title change is appropriate, and shows a new title. The write waits until the person accepts that title.
 - That message does not mention identifiers, hex, sampling, or the catalog.
-- A successful guided write returns `Finished` and emits nothing else.
+- A successful guided write returns `Finished`, emits nothing else, and does not show the stored records.
 - Written records match `.highway/library/templates/output/objective-record.md`.
 - The written catalog matches `.highway/library/templates/output/objective-catalog.md`.
 - Setup receives `Finished` and the person does not see that word.
