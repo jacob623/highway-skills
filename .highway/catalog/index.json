@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-22T22:17:00Z",
+  "generated_at": "2026-10-22T22:30:54Z",
   "entries": [
     {
       "id": "highway-adr",
@@ -34,7 +34,7 @@
       "description": "Manages the repository-wide control baseline.",
       "usage": "Invoke as /highway-controls.",
       "compatibility": "all",
-      "version": "5.1.0",
+      "version": "6.0.0",
       "source_path": "skills/highway-controls/SKILL.md"
     },
     {
@@ -70,7 +70,7 @@
       "description": "Manages the repository-wide nfr baseline.",
       "usage": "Invoke as /highway-nfrs.",
       "compatibility": "all",
-      "version": "5.1.0",
+      "version": "6.0.0",
       "source_path": "skills/highway-nfrs/SKILL.md"
     },
     {

@@ -4,7 +4,7 @@ description: "Manages the repository-wide control baseline."
 usage: "Invoke as /highway-controls."
 compatibility: all
 metadata:
-  version: 5.1.0
+  version: 6.0.0
 ---
 
 # highway-controls
@@ -76,7 +76,7 @@ Classify the latest reply before any other action.
 - `accept`: affirms the current capture or review body and adds no fact.
 - `unknown`: the person says they do not know.
 - `question`: the person asks for an explanation.
-- `decline`: the person explicitly drops the active Control.
+- `decline`: the person explicitly drops the active set.
 
 On a recommendation set, "looks good" is `select-all`. On a queue prompt that asks whether to review, "looks good" and "let's review" are `review-now`. On a capture or on `review`, "looks good" is `accept`.
 
@@ -84,14 +84,13 @@ On a recommendation set, "looks good" is `select-all`. On a queue prompt that as
 
 Show every active Control in catalog order. Omit frontmatter, omit the catalog, and omit removed rows. For each Control emit:
 
-**Title:**
-[Title]
+**[Title]:** [Statement]
 
-**Statement:**
-[Statement]
+**Why it matters:** [Rationale]
 
-**Why it matters:**
-[Rationale]
+---
+
+Put `---` between Controls. Do not put `---` after the last Control.
 
 When no active Control is recorded, emit: No controls are recorded yet.
 
@@ -146,7 +145,7 @@ If none of these fit, feel free to suggest your own safeguard. If you'd like add
 - `own`: add the person's safeguard to the queue. Go to `queue`.
 - `edit`: emit one consequence sentence. Re-emit this set with the edit applied. Stay on `recommend`.
 - `more`: go to `more`.
-- `review-now`: go to `capture` of the first queued Control. When the queue is empty, stay on `recommend`.
+- `review-now`: go to `capture` of every queued Control. When the queue is empty, stay on `recommend`.
 - `question`: answer in one sentence. Re-emit this set. Stay on `recommend`.
 - `unknown`: re-emit this set. Stay on `recommend`.
 
@@ -197,7 +196,7 @@ Do not ask whether to explore more safeguards.
 - `own`: add the person's safeguard. Emit `queue` again.
 - `edit`: emit one consequence sentence. Re-emit the queue list and this set with the edit applied. Stay on `queue`.
 - `more`: build another set that omits every title already shown. When one remains, emit it with the additional-recommendation intro above. Stay on `queue`.
-- `review-now`: go to `capture` of the first queued Control. Do not add the unselected set.
+- `review-now`: go to `capture` of every queued Control. Do not add the unselected set.
 - `question`: answer in one sentence. Re-emit the queue message. Stay on `queue`.
 - `unknown`: re-emit the queue message. Stay on `queue`.
 
@@ -207,7 +206,7 @@ Additional suggestions at this stage would largely overlap or subdivide these sa
 
 **Are you ready to review the selected Controls?**
 
-- `review-now` or `accept`: go to `capture` of the first queued Control.
+- `review-now` or `accept`: go to `capture` of every queued Control.
 - `own`: append that safeguard and emit `queue` again.
 - `more`: re-emit this message.
 - `question`: answer in one sentence. Re-emit this message.
@@ -230,36 +229,31 @@ If you're not sure, just say "I don't know," and we'll work through it together.
 
 ### capture
 
-Develop the first queued Control that is not yet accepted or declined.
+Develop every queued Control in queue order. Emit them in one message. One queued Control has no separator.
 
-The title is the queued title unless the person changes it. The statement is one paragraph stating what must remain true. The rationale is one paragraph grounded in the accepted Profile and accepted Objectives.
+The title is the queued title unless the person changes it. The statement is one sentence stating what must remain true. The rationale is one line grounded in the accepted Profile and accepted Objectives.
 
-**Here's what I've captured as your Control:**
+**Here's what I've captured as your controls:**
 
-**Title:**
-[Title]
+**[Title]:** [Statement]
 
-**Statement:**
-[Statement]
+**Why it matters:** [Rationale]
 
-**Why it matters:**
-[Rationale]
+---
+
+Put `---` between Controls. Do not put `---` after the last Control.
 
 **What would you add, correct, or remove?**
 
 If this is accurate, just say so.
 
-- `edit`: emit one consequence sentence. Re-emit this capture with the edit applied. Stay on this Control.
-- `accept`: hold the title, statement, and rationale. When another queued Control remains, emit the bridge below and the next capture in the same message. When none remain, go to `write`.
-- `decline`: drop this Control. Continue to the next queued Control. When none remain, go to `write`.
-- `unknown`: re-emit this capture. Stay on this Control.
-- `question`: answer in one sentence. Re-emit this capture. Stay on this Control.
+- `edit`: emit one consequence sentence. Apply the edit to the named Control. An added Control joins the set. A removed Control leaves the set. Re-emit every Control that remains. When none remain, go to `write` and do not show an empty review. Stay on `capture` when any remain.
+- `accept`: hold each remaining title, statement, and rationale. Go to `identifier`, then `write`.
+- `decline`: drop every queued Control. Go to `write`. Do not show an empty review.
+- `unknown`: re-emit this capture. Stay on `capture`.
+- `question`: answer in one sentence. Re-emit this capture. Stay on `capture`.
 
-Bridge, emitted only between captures:
-
-Your accepted Controls now cover [short phrases for the held Controls].
-
-Next we'll develop **[next title]**.
+Do not develop one Control at a time. Do not emit a bridge.
 
 ### identifier
 
@@ -314,8 +308,9 @@ For each held Control, write `library/governance/controls/[ID].md` in the shape 
 - `title` is the accepted title.
 - `status` is `active`.
 - `nfrs` is `[]`.
-- The statement is the accepted statement.
-- The rationale is the accepted rationale.
+- The statement is the statement shown with the title.
+- The rationale is the line shown with **Why it matters:**.
+- Do not show the stored records. Do not add a closing line.
 - When the Control came from a recommendation, write `## Recommendation Grounding` with the accepted Profile and the accepted Objective titles that influenced it. Omit that section when the person supplied the Control.
 
 Write `library/governance/controls.md` in the shape required by `.highway/library/templates/output/control-catalog.md`.
@@ -342,12 +337,13 @@ No Control record is written beneath `.highway`.
 - A queue message lists the titles just added, then includes the next recommendation set when grounded recommendations remain.
 - A queue message does not ask whether to explore more safeguards.
 - Capture starts when the person asks to review the queue.
-- A capture contains a title, one statement, a rationale, and the acceptance reassurance only.
-- Records and the catalog are written once, after every queued Control is accepted or declined.
+- A capture shows every queued Control in one message, with `---` between Controls and one acceptance question.
+- A capture does not accept Controls one at a time.
+- Records and the catalog are written once, after the set is accepted or declined.
 - Each id is `CTL` plus eight hex digits derived from the title.
 - A taken id for a different title names the conflicting titles, says a title change is appropriate, and shows a new title. The write waits until the person accepts that title.
 - That message does not mention identifiers, hex, sampling, or the catalog.
-- A successful guided write returns `Finished` and emits nothing else.
+- A successful guided write returns `Finished`, emits nothing else, and does not show the stored records.
 - Written records match `.highway/library/templates/output/control-record.md`.
 - The written catalog matches `.highway/library/templates/output/control-catalog.md`.
 - Setup receives `Finished` and the person does not see that word.
