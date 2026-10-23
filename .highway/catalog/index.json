@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-22T22:30:54Z",
+  "generated_at": "2026-10-23T03:08:53Z",
   "entries": [
     {
       "id": "highway-adr",
@@ -70,7 +70,7 @@
       "description": "Manages the repository-wide nfr baseline.",
       "usage": "Invoke as /highway-nfrs.",
       "compatibility": "all",
-      "version": "6.0.0",
+      "version": "7.0.0",
       "source_path": "skills/highway-nfrs/SKILL.md"
     },
     {
@@ -106,7 +106,7 @@
       "description": "Manages one business request and its accepted artifact.",
       "usage": "Invoke as /highway-request with the business change.",
       "compatibility": "all",
-      "version": "2.0.0",
+      "version": "3.0.0",
       "source_path": "skills/highway-request/SKILL.md"
     },
     {
