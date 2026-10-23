@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-23T03:08:53Z",
+  "generated_at": "2026-10-23T03:46:24Z",
   "entries": [
     {
       "id": "highway-adr",
@@ -88,7 +88,7 @@
       "description": "Manages one decision, one reference architecture, and one reference implementation.",
       "usage": "Invoke as `/highway-onboarding`.",
       "compatibility": "all",
-      "version": "2.0.0",
+      "version": "3.0.0",
       "source_path": "skills/highway-onboarding/SKILL.md"
     },
     {

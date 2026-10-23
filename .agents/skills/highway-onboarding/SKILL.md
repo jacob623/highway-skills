@@ -4,7 +4,7 @@ description: "Manages one decision, one reference architecture, and one referenc
 usage: "Invoke as `/highway-onboarding`."
 compatibility: all
 metadata:
-  version: 2.0.0
+  version: 3.0.0
 ---
 
 # highway-onboarding
@@ -25,6 +25,7 @@ Do not create a Request, Discovery, or synthetic `DISC` record.
 Do not use `highway-adr` for this path. That skill requires a Discovery.
 Do not change Profile, Objectives, Controls, or NFRs.
 Do not authorize deployment.
+Do not authorize the agent platform to act on its own.
 Do not report Status, Summary, Next Action, Blocking Reason, Missing, Complete, or Blocked.
 
 ## Inputs
@@ -80,9 +81,13 @@ We'll connect existing capabilities so future recommendations align with [Name]'
 
 **Here are the capabilities Highway believes you have today:**
 
+**Highway:** Connect accepted business goals, decisions, architecture, and implementation work into a single traceable system of knowledge.
+
 **[Capability title]:** [What the organization does.]
 
-Emit one line per capability. Do not include a provider.
+Include the Highway line on the first capability list. Omit it when an accepted ADR already records the Highway capability for the same agent-platform name. The person may correct or remove the line before accept. A removed Highway line is not placed on the capability queue.
+
+Emit one line per other capability. Do not include a provider.
 
 **What would you add, correct, or remove?**
 
@@ -101,6 +106,8 @@ Take the first capability on the capability queue.
 **[Capability title]:** [What the organization does.]
 **Business Purpose:** [Business purpose.]
 **Provider:** [observed platform, or `Unknown`]
+
+When the capability title is Highway and the session identifies the agent platform by name, that name is the provider. Cursor, VS Code, Claude, and Codex are names the session may identify. Do not guess a name. When no name is identified, the provider is `Unknown`. A corrected name replaces the provider. Do not assign this provider to a capability the platform does not operate.
 
 When the provider is `Unknown`, emit this line immediately above the question:
 
@@ -264,6 +271,10 @@ If this is accurate, just say so.
 
 ## Verification
 
+- The capability starting point includes **Highway:** Connect accepted business goals, decisions, architecture, and implementation work into a single traceable system of knowledge.
+- A removed Highway line is not placed on the capability queue.
+- Highway's provider is the agent platform the session identifies by name. An unidentified name uses the unable-to-infer prompt.
+- The agent platform is not assigned to a capability it does not operate.
 - The capability starting point is accepted before any platform question.
 - Each capability is mapped before the provider groups are shown.
 - The provider queue starts only after the mapping is accepted.
