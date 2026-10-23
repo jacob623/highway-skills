@@ -4,7 +4,7 @@ description: "Manages one business request and its accepted artifact."
 usage: "Invoke as /highway-request with the business change."
 compatibility: all
 metadata:
-  version: 2.0.0
+  version: 3.0.0
 ---
 
 # highway-request
@@ -97,6 +97,12 @@ Solution Constraints limit later Discovery. They do not choose an architecture, 
 - `vendor_restrictions`: a non-empty restriction or `unknown`.
 - `procurement_constraints`: a non-empty restriction or `unknown`.
 - `regulatory_restrictions`: a non-empty restriction or `unknown`.
+
+When an active NFR is titled **No system hosting**, set `hosting_restrictions` to its statement. Set `allowed_solution_classes` to `managed service` when that statement says the organization does not host. Set it to `hosted system` when that statement says the organization hosts. Do not leave either field `unknown`.
+
+When an active NFR is titled **Direct purchase**, set `procurement_constraints` and `vendor_restrictions` to its statement. Do not leave either field `unknown`. Copy a corrected statement under the same title.
+
+Do not recreate a removed or retitled limit from another NFR. When the request material states the hosting or buying limit, show that material for the field instead.
 
 **Here is a proposed starting point for your request:**
 

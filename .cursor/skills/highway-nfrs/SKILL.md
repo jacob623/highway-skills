@@ -4,7 +4,7 @@ description: "Manages the repository-wide nfr baseline."
 usage: "Invoke as /highway-nfrs."
 compatibility: all
 metadata:
-  version: 6.0.0
+  version: 7.0.0
 ---
 
 # highway-nfrs
@@ -95,6 +95,8 @@ Put `---` between NFRs. Do not put `---` after the last NFR.
 
 When no active NFR is recorded, emit: No operational expectations are recorded yet.
 
+Do not insert **No system hosting** or **Direct purchase** when that title is absent. A removed limit stays removed.
+
 Then emit the validation block.
 
 - `edit`: emit one consequence sentence. Apply the edit to the named NFR. Preserve every NFR the person left unchanged. An added expectation becomes a new record. A removed NFR deletes that record file and keeps its catalog row with status `removed`, so the id stays taken. Derive the id before writing. When the id is taken for a different title, go to `title` and do not write yet. Otherwise rewrite the affected records and the catalog. Show the updated NFRs and emit the validation block. Stay on `review`.
@@ -118,6 +120,20 @@ Build one set from the accepted Profile, accepted Objectives, and accepted Contr
 4. Do not add an expectation only to fill an area.
 5. Omit a title already queued, already shown, or already captured.
 6. Emit 3 to 5 recommendations. Emit fewer when fewer are grounded. Go to `ask` when none are grounded.
+
+Include **No system hosting** and **Direct purchase** in the first recommendation set. Omit one already queued, already shown, or already captured. They count toward the 3 to 5. Do not include them again in a later set. Do not ask a question in place of either limit.
+
+When accepted material states who hosts the systems, or that the organization will not host them, use that material for **No system hosting**. Otherwise use the default below. When accepted material describes a buying process or a vendor requirement, use that material for **Direct purchase**. Otherwise use the default below.
+
+**No system hosting:** Solutions are delivered as managed services the organization does not host or operate.
+
+**Why it matters:** The owner runs the business and its technology.
+
+**Direct purchase:** The owner buys the service directly from the vendor that operates it.
+
+**Why it matters:** No proposal, approval board, or mandated vendor stands between the owner and the service.
+
+A limit the person does not select is not queued and does not apply.
 
 Each recommendation is a bold title and one sentence. Do not say which source produced it. Include a measurable bound in the sentence only when accepted evidence supports that bound.
 
@@ -338,6 +354,7 @@ No NFR record is written beneath `.highway`.
 - A queue message does not ask whether to explore more operational expectations.
 - Capture starts when the person asks to review the queue.
 - A capture shows every queued NFR in one message, with `---` between NFRs and one acceptance question.
+- **No system hosting** and **Direct purchase** are recommendations. A limit the person does not select is not captured.
 - A capture does not accept NFRs one at a time.
 - Records and the catalog are written once, after the set is accepted or declined.
 - Each id is `NFR` plus eight hex digits derived from the title.
