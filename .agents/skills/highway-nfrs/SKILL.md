@@ -4,7 +4,7 @@ description: "Manages the repository-wide nfr baseline."
 usage: "Invoke as /highway-nfrs."
 compatibility: all
 metadata:
-  version: 7.0.0
+  version: 8.0.0
 ---
 
 # highway-nfrs
@@ -69,7 +69,7 @@ A removed row has no record file. Do not treat that as unreadable.
 Classify the latest reply before any other action.
 
 - `select-all`: affirms every recommendation in the current set and adds no separate expectation.
-- `select`: names one or more recommendations in the current set.
+- `select`: names one or more recommendations in the current set, by title or by number.
 - `own`: supplies an expectation that is not a displayed title.
 - `more`: asks for more suggestions.
 - `review-now`: asks to review the queue, or affirms a queue prompt that asks whether to review.
@@ -114,9 +114,9 @@ If this is accurate, just say so.
 
 Build one set from the accepted Profile, accepted Objectives, and accepted Controls.
 
-1. Derive specific operational expectations from the accepted Profile, accepted Objectives, and accepted Controls first.
-2. Check coverage across Reliability, Availability, Performance, Scalability, Security, Compliance, Maintainability, and Operability. Do not name those areas.
-3. Add an expectation from an uncovered area only when it would reasonably benefit this organization. Adapt it to the accepted Profile, accepted Objectives, and accepted Controls.
+1. Derive each recommendation from an accepted Control that no queued, shown, or captured NFR reflects yet. Use the accepted Profile and accepted Objectives to refine its scope, priority, and wording. One NFR may reflect more than one Control.
+2. While any accepted Control is unreflected, the set contains only recommendations derived from Controls, plus **No system hosting** and **Direct purchase** in the first set. An unreflected Control is a remaining grounded recommendation.
+3. After every accepted Control is reflected, check coverage across Reliability, Availability, Performance, Scalability, Security, Compliance, Maintainability, and Operability. Do not name those areas. Add an expectation grounded in the accepted Profile or accepted Objectives, or from an uncovered area, only when it would reasonably benefit this organization.
 4. Do not add an expectation only to fill an area.
 5. Omit a title already queued, already shown, or already captured.
 6. Emit 3 to 5 recommendations. Emit fewer when fewer are grounded. Go to `ask` when none are grounded.
@@ -135,27 +135,31 @@ When accepted material states who hosts the systems, or that the organization wi
 
 A limit the person does not select is not queued and does not apply.
 
-Each recommendation is a bold title and one sentence. Do not say which source produced it. Include a measurable bound in the sentence only when accepted evidence supports that bound.
+Each recommendation is a bold title and one sentence. Number every recommendation in the set, starting at 1. In the set, **No system hosting** and **Direct purchase** each show their title and statement. Do not say which source produced it. Include a measurable bound in the sentence only when accepted evidence supports that bound.
 
 When the queue is empty, emit:
 
 Based on [Name]'s profile, accepted objectives, and accepted controls, here are recommended operational expectations that connect directly to [two or three accepted themes]:
 
-- **[Title]:** [One sentence.]
-
-If none of these fit, feel free to suggest your own operational expectation.
+1. **[Title]:** [One sentence.]
 
 **Which of these operational expectations would you like to establish, or what would you like to focus on?**
+
+You can select some, all or provide your own operational expectation.
+
+If you'd like additional suggestions, just say so.
 
 When the queue already has NFRs, emit:
 
 Looking across [the uncovered area, in the person's terms] alongside your accepted profile, objectives, and controls, here are additional operational expectations tailored to [Name]:
 
-- **[Title]:** [One sentence.]
-
-If none of these fit, feel free to suggest your own operational expectation. If you'd like additional suggestions, just let me know.
+1. **[Title]:** [One sentence.]
 
 **Would you like to select any of these operational expectations, modify them, or are you ready to review the selected NFRs?**
+
+You can select some, all or provide your own operational expectation.
+
+If you'd like additional suggestions, just say so.
 
 - `select-all`: add every title in the set to the queue, in displayed order. Go to `queue`.
 - `select`: add the named titles to the queue. Go to `queue`.
@@ -175,6 +179,8 @@ When none remain, emit no bullets. Emit:
 Additional suggestions at this stage would largely overlap or subdivide these operational expectations.
 
 **Are you ready to review the selected NFRs?**
+
+If you'd like to add another operational expectation first, just say so.
 
 Stay on `queue` for the reply.
 
@@ -200,13 +206,15 @@ When grounded non-duplicate recommendations remain, emit them in the same messag
 
 Based on [Name]'s profile, accepted objectives, and accepted controls, here are additional recommended operational expectations that connect directly to [two or three accepted themes]:
 
-- **[Title]:** [One sentence.]
-
-If none of these fit, feel free to suggest your own operational expectation.
+1. **[Title]:** [One sentence.]
 
 **Which of these operational expectations would you like to establish, or what would you like to focus on?**
 
-Do not ask whether to explore more operational expectations.
+You can select some, all or provide your own operational expectation.
+
+If you'd like additional suggestions, just say so.
+
+Do not ask whether to explore more operational expectations. A number in the reply refers to the recommendation set, not the queue list.
 
 - `select-all`: add every title in this new set to the queue. Emit `queue` again.
 - `select`: add the named titles. Emit `queue` again.
@@ -222,6 +230,8 @@ When no grounded non-duplicate recommendation remains, emit no recommendation bu
 Additional suggestions at this stage would largely overlap or subdivide these operational expectations.
 
 **Are you ready to review the selected NFRs?**
+
+If you'd like to add another operational expectation first, just say so.
 
 - `review-now` or `accept`: go to `capture` of every queued NFR.
 - `own`: append that expectation and emit `queue` again.
