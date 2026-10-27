@@ -4,7 +4,7 @@ description: "Manages one decision, one reference architecture, and one referenc
 usage: "Invoke as `/highway-onboarding`."
 compatibility: all
 metadata:
-  version: 3.0.0
+  version: 4.0.0
 ---
 
 # highway-onboarding
@@ -51,7 +51,7 @@ The complete structure is `.highway/library/templates/output/adr-record.md`, `.h
 
 ## Procedure
 
-Emit only the active template. Follow the steps in this order: `capabilities`, `map`, `mapping`, `orchestrate`, `lineage`, then `summary`. Review happens only when the person asks for it from the summary.
+Emit only the active template. Follow the steps in this order: `overview`, `capabilities`, `map`, `mapping`, `orchestrate`, `lineage`, then `summary`. Review happens only when the person asks for it from the summary.
 
 Onboarding keeps two queues. The capability queue holds accepted capabilities that still need a platform. The provider queue holds accepted providers that still need a decision. Neither queue is written. Queue membership is not an ADR, an architecture, or an implementation.
 
@@ -69,25 +69,50 @@ Classify the latest reply before any other action.
 
 On a starting point, "looks good" is `accept`.
 
+### overview
+
+Emit the lines below once, before the first capability list. Emit "What we'll do together" as a level-3 heading. Emit every other line as written. [Name] is the accepted Organization Name. Use the Repository Name when no Organization Name has been accepted.
+
+What we'll do together
+
+This is where Highway helps you navigate your technology landscape.
+
+We'll connect existing capabilities so future recommendations align with [Name]'s target direction.
+
+During onboarding we'll:
+
+- **Identify important business capabilities** your organization relies on.
+- **Understand the platforms and processes** that support those capabilities today.
+- **Validate Highway's understanding** before any architecture knowledge is created.
+- **Capture accepted knowledge** as connected architecture and implementation context.
+
+You don't need to have everything documented in advance. We'll build that understanding together, one capability at a time.
+
+Now, let's get started.
+
+---
+
+Then go to `capabilities`.
+
 ### capabilities
 
 Build a starting point from accepted repository context. Include a capability when that context supports it. Do not ask the person to invent the list.
 
-On the first visit, emit this level-3 heading, then the sentence under it, then the starting point. On an edit, re-emit only the starting point. [Name] is the accepted Organization Name. Use the Repository Name when no Organization Name has been accepted.
-
-This is where Highway helps you navigate your technology landscape
-
-We'll connect existing capabilities so future recommendations align with [Name]'s target direction.
+On an edit, re-emit only the starting point.
 
 **Here are the capabilities Highway believes you have today:**
 
-**Highway:** Connect accepted business goals, decisions, architecture, and implementation work into a single traceable system of knowledge.
+1. **AI-Assisted Engineering and Planning:**
 
-**[Capability title]:** [What the organization does.]
+   Using AI systems to assist with research, architecture, planning, governance, or implementation activities.
 
-Include the Highway line on the first capability list. Omit it when an accepted ADR already records the Highway capability for the same agent-platform name. The person may correct or remove the line before accept. A removed Highway line is not placed on the capability queue.
+2. **[Capability title]:**
 
-Emit one line per other capability. Do not include a provider.
+   [What the organization does.]
+
+Include the AI-Assisted Engineering and Planning line on the first capability list. Omit it when an accepted ADR already records this capability for the same agent-platform name. The person may correct or remove the line before accept. A removed AI-Assisted Engineering and Planning line is not placed on the capability queue.
+
+Emit one numbered item per other capability, numbered in order. Each item names one capability. When context joins two activities in one capability, propose each as its own item. Keep the person's own wording when they add or correct a capability. Do not include a provider.
 
 **What would you add, correct, or remove?**
 
@@ -103,11 +128,27 @@ If this is accurate, just say so. If you don't know, say "I don't know" and we'l
 
 Take the first capability on the capability queue.
 
-**[Capability title]:** [What the organization does.]
-**Business Purpose:** [Business purpose.]
-**Provider:** [observed platform, or `Unknown`]
+On the first capability, emit this before the block. Do not emit it again.
 
-When the capability title is Highway and the session identifies the agent platform by name, that name is the provider. Cursor, VS Code, Claude, and Codex are names the session may identify. Do not guess a name. When no name is identified, the provider is `Unknown`. A corrected name replaces the provider. Do not assign this provider to a capability the platform does not operate.
+**We've identified the capabilities that matter to your organization. Now let's look at how those capabilities are provided today.**
+
+For each capability, we'll identify the platforms, services, processes, or people that help deliver it.
+
+---
+
+**[Capability title]:**
+
+[What the organization does.]
+
+**Business Purpose:**
+
+[Business purpose.]
+
+**Provider:**
+
+[observed platform, or `Unknown`]
+
+When the capability title is AI-Assisted Engineering and Planning and the session identifies the agent platform by name, that name is the provider. Cursor, VS Code, Claude, and Codex are names the session may identify. Do not guess a name. When no name is identified, the provider is `Unknown`. A corrected name replaces the provider. Do not assign this provider to a capability the platform does not operate.
 
 When the provider is `Unknown`, emit this line immediately above the question:
 
@@ -271,9 +312,13 @@ If this is accurate, just say so.
 
 ## Verification
 
-- The capability starting point includes **Highway:** Connect accepted business goals, decisions, architecture, and implementation work into a single traceable system of knowledge.
-- A removed Highway line is not placed on the capability queue.
-- Highway's provider is the agent platform the session identifies by name. An unidentified name uses the unable-to-infer prompt.
+- The overview is shown once, before the first capability list, and opens with the level-3 heading "What we'll do together".
+- Each capability is its own numbered item, with its bold title, a blank line, then its description.
+- The capability starting point includes **AI-Assisted Engineering and Planning:** Using AI systems to assist with research, architecture, planning, governance, or implementation activities.
+- A removed AI-Assisted Engineering and Planning line is not placed on the capability queue.
+- The AI-Assisted Engineering and Planning provider is the agent platform the session identifies by name. An unidentified name uses the unable-to-infer prompt.
+- The mapping transition is shown once, before the first capability mapping.
+- Each mapping label is bold, followed by a blank line and its value.
 - The agent platform is not assigned to a capability it does not operate.
 - The capability starting point is accepted before any platform question.
 - Each capability is mapped before the provider groups are shown.

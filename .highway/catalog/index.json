@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-24T23:13:22Z",
+  "generated_at": "2026-10-27T11:45:00Z",
   "entries": [
     {
       "id": "highway-adr",
@@ -25,7 +25,7 @@
       "description": "Assess accepted repository context.",
       "usage": "Invoke as /highway-assessment.",
       "compatibility": "all",
-      "version": "2.0.0",
+      "version": "3.0.0",
       "source_path": "skills/highway-assessment/SKILL.md"
     },
     {
@@ -88,7 +88,7 @@
       "description": "Manages one decision, one reference architecture, and one reference implementation.",
       "usage": "Invoke as `/highway-onboarding`.",
       "compatibility": "all",
-      "version": "3.0.0",
+      "version": "4.0.0",
       "source_path": "skills/highway-onboarding/SKILL.md"
     },
     {
