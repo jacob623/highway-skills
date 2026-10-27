@@ -4,7 +4,7 @@ description: "Orchestrates initial highway setup through the owning governance s
 usage: "Invoke as /highway-setup."
 compatibility: all
 metadata:
-  version: 9.1.0
+  version: 10.0.0
 ---
 
 # highway-setup
@@ -53,7 +53,7 @@ Delegate each owner in this order: Profile, Objectives, Controls, NFRs. Stay wit
 
 ### Welcome
 
-When `library/knowledge/profile.md` is absent, emit this level-2 heading, then the lines under it, before Profile. Do not emit it when that file exists.
+When `library/knowledge/profile.md` is absent, emit the lines below before Profile. Emit "Welcome to Highway" as a level-2 heading and "During setup we'll:" as a level-3 heading. Emit every other line as written. Do not emit the welcome when that file exists.
 
 Welcome to Highway
 *Turn organizational knowledge into connected decisions.*
@@ -63,7 +63,18 @@ Highway builds on information you choose to accept into your repository. Your re
 
 ---
 
-Let's get started.
+During setup we'll:
+
+- **Learn about your organization**, where you'd like to go, how you plan to get there, and what principles guide decisions.
+- **Identify important business outcomes** worth pursuing.
+- **Establish safeguards** that future technology decisions should respect.
+- **Define operational expectations** for how future solutions should behave.
+
+You don't need to have everything figured out in advance. We'll build this foundation together, and you can refine it over time as your organization evolves.
+
+Now, let's get started.
+
+---
 
 Then delegate `highway-profile`.
 

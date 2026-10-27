@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-23T03:46:24Z",
+  "generated_at": "2026-10-27T11:45:00Z",
   "entries": [
     {
       "id": "highway-adr",
@@ -25,7 +25,7 @@
       "description": "Assess accepted repository context.",
       "usage": "Invoke as /highway-assessment.",
       "compatibility": "all",
-      "version": "2.0.0",
+      "version": "3.0.0",
       "source_path": "skills/highway-assessment/SKILL.md"
     },
     {
@@ -34,7 +34,7 @@
       "description": "Manages the repository-wide control baseline.",
       "usage": "Invoke as /highway-controls.",
       "compatibility": "all",
-      "version": "6.0.0",
+      "version": "7.0.0",
       "source_path": "skills/highway-controls/SKILL.md"
     },
     {
@@ -70,7 +70,7 @@
       "description": "Manages the repository-wide nfr baseline.",
       "usage": "Invoke as /highway-nfrs.",
       "compatibility": "all",
-      "version": "7.0.0",
+      "version": "8.0.0",
       "source_path": "skills/highway-nfrs/SKILL.md"
     },
     {
@@ -79,7 +79,7 @@
       "description": "Manages the repository-wide business objective baseline and its stable traceability references.",
       "usage": "Invoke as /highway-objectives.",
       "compatibility": "all",
-      "version": "6.0.0",
+      "version": "7.0.0",
       "source_path": "skills/highway-objectives/SKILL.md"
     },
     {
@@ -88,7 +88,7 @@
       "description": "Manages one decision, one reference architecture, and one reference implementation.",
       "usage": "Invoke as `/highway-onboarding`.",
       "compatibility": "all",
-      "version": "3.0.0",
+      "version": "4.0.0",
       "source_path": "skills/highway-onboarding/SKILL.md"
     },
     {
@@ -97,7 +97,7 @@
       "description": "Manages the repository-wide organizational Profile and its contextual guidance.",
       "usage": "Invoke as /highway-profile.",
       "compatibility": "all",
-      "version": "13.0.0",
+      "version": "14.0.0",
       "source_path": "skills/highway-profile/SKILL.md"
     },
     {
@@ -115,7 +115,7 @@
       "description": "Orchestrates initial highway setup through the owning governance skills.",
       "usage": "Invoke as /highway-setup.",
       "compatibility": "all",
-      "version": "9.1.0",
+      "version": "10.0.0",
       "source_path": "skills/highway-setup/SKILL.md"
     }
   ],

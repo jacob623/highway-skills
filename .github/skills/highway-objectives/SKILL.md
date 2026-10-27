@@ -4,7 +4,7 @@ description: "Manages the repository-wide business objective baseline and its st
 usage: "Invoke as /highway-objectives."
 compatibility: all
 metadata:
-  version: 6.0.0
+  version: 7.0.0
 ---
 
 # highway-objectives
@@ -63,7 +63,7 @@ Emit only the active template. Follow this order: `review` when the catalog exis
 Classify the latest reply before any other action.
 
 - `select-all`: affirms every recommendation in the current set and adds no separate outcome.
-- `select`: names one or more recommendations in the current set.
+- `select`: names one or more recommendations in the current set, by title or by number.
 - `own`: supplies an outcome that is not a displayed title.
 - `more`: asks for more suggestions.
 - `review-now`: asks to review the queue, or affirms a queue prompt that asks whether to review.
@@ -116,27 +116,31 @@ Build one set from the accepted Profile.
 5. Omit a title already queued, already shown, or already captured.
 6. Emit 3 to 5 recommendations. Emit fewer when fewer are grounded. Go to `ask` when none are grounded.
 
-Each recommendation is a bold title and one sentence. Do not say which source produced it.
+Each recommendation is a bold title and one sentence. Number every recommendation in the set, starting at 1. Do not say which source produced it.
 
 When the queue is empty, emit:
 
 Based on [Name]'s profile, here are recommended business outcomes that connect directly to [two or three accepted Profile themes]:
 
-- **[Title]:** [One sentence.]
-
-If none of these fit, feel free to suggest your own outcome.
+1. **[Title]:** [One sentence.]
 
 **Which of these outcomes would you like to pursue, or what would you like to focus on?**
+
+You can select some, all or provide your own outcome.
+
+If you'd like additional suggestions, just say so.
 
 When the queue already has Objectives, emit:
 
 Looking across [the uncovered area, in the person's terms] alongside your accepted profile, here are additional outcomes tailored to [Name]:
 
-- **[Title]:** [One sentence.]
-
-If none of these fit, feel free to suggest your own outcome. If you'd like additional suggestions, just let me know.
+1. **[Title]:** [One sentence.]
 
 **Would you like to select any of these outcomes, modify them, or are you ready to review the selected objectives?**
+
+You can select some, all or provide your own outcome.
+
+If you'd like additional suggestions, just say so.
 
 - `select-all`: add every title in the set to the queue, in displayed order. Go to `queue`.
 - `select`: add the named titles to the queue. Go to `queue`.
@@ -156,6 +160,8 @@ When none remain, emit no bullets. Emit:
 Additional suggestions at this stage would largely overlap or subdivide these priorities.
 
 **Are you ready to review the selected objectives?**
+
+If you'd like to add another outcome first, just say so.
 
 Stay on `queue` for the reply.
 
@@ -181,13 +187,15 @@ When grounded non-duplicate recommendations remain, emit them in the same messag
 
 Based on [Name]'s profile, here are additional recommended business outcomes that connect directly to [two or three accepted Profile themes]:
 
-- **[Title]:** [One sentence.]
-
-If none of these fit, feel free to suggest your own outcome.
+1. **[Title]:** [One sentence.]
 
 **Which of these outcomes would you like to pursue, or what would you like to focus on?**
 
-Do not ask whether to explore more outcomes.
+You can select some, all or provide your own outcome.
+
+If you'd like additional suggestions, just say so.
+
+Do not ask whether to explore more outcomes. A number in the reply refers to the recommendation set, not the queue list.
 
 - `select-all`: add every title in this new set to the queue. Emit `queue` again.
 - `select`: add the named titles. Emit `queue` again.
@@ -203,6 +211,8 @@ When no grounded non-duplicate recommendation remains, emit no recommendation bu
 Additional suggestions at this stage would largely overlap or subdivide these priorities.
 
 **Are you ready to review the selected objectives?**
+
+If you'd like to add another outcome first, just say so.
 
 - `review-now` or `accept`: go to `capture` of every queued Objective.
 - `own`: append that outcome and emit `queue` again.

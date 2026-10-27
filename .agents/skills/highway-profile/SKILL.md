@@ -4,7 +4,7 @@ description: "Manages the repository-wide organizational Profile and its context
 usage: "Invoke as /highway-profile."
 compatibility: all
 metadata:
-  version: 13.0.0
+  version: 14.0.0
 ---
 
 # highway-profile
@@ -180,13 +180,16 @@ With [accepted Identity substance], let's explore the future you are working to 
 
 **Here is a proposed starting point for your Vision:**
 
-- Future Direction
+- **Future Direction**
+
   [Inferred from accepted context.]
 
-- Desired Impact
+- **Desired Impact**
+
   [Inferred from accepted context.]
 
-- Future State
+- **Future State**
+
   [Inferred from accepted context.]
 
 **What would you add, correct, or remove?**
@@ -203,13 +206,16 @@ To advance toward [accepted Vision substance], let's explore how [Name] plans to
 
 **Here is a proposed starting point for your Competitive Path:**
 
-- Primary Approach
+- **Primary Approach**
+
   [Inferred from accepted context.]
 
-- Strategic Advantage
+- **Strategic Advantage**
+
   [Inferred from accepted context.]
 
-- Important Tradeoff
+- **Important Tradeoff**
+
   [Inferred from accepted context.]
 
 **What would you add, correct, or remove?**
@@ -226,7 +232,8 @@ With your competitive path grounded in [accepted Competitive Path substance], le
 
 **Here is a proposed starting point for your Guiding Principles:**
 
-- [Short principle name]
+- **[Short principle name]**
+
   [Accepted-evidence decision-making value.]
 
 Emit 3 to 5 principles. Infer each principle from accepted context when the person has not stated it. The label is a short principle name.
