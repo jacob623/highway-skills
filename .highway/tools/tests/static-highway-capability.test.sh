@@ -19,7 +19,7 @@ require() {
 }
 
 require '1. **AI-Assisted Engineering and Planning:**'
-require 'Using AI systems to assist with research, architecture, planning, governance, or implementation activities.'
+require 'Using AI systems to assist with research, planning, and implementation of technology solutions.'
 require 'A removed AI-Assisted Engineering and Planning line is not placed on the capability queue.'
 require 'When the capability title is AI-Assisted Engineering and Planning and the session identifies the agent platform by name, that name is the provider.'
 require 'Do not assign this provider to a capability the platform does not operate.'
