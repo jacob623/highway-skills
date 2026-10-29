@@ -61,22 +61,28 @@ require "$ASSESSMENT" '### list of findings'
 require "$ASSESSMENT" "Emit \"Let's see what your repository may be telling us.\" as a level-3 heading."
 require "$ASSESSMENT" 'Highway will review accepted knowledge, surface observations that may be worth your attention, and suggest opportunities, improvements, or next steps where they may create value.'
 require "$ASSESSMENT" '**Based on what Highway knows, these may be worth visiting:**'
-require "$ASSESSMENT" '1. **Finding:**'
-require "$ASSESSMENT" '**Complexity:**'
+require "$ASSESSMENT" '1. **[Finding title]:**'
+require "$ASSESSMENT" '**Solution Complexity:**'
+require "$ASSESSMENT" 'Do not write the title to the findings file.'
 require "$ASSESSMENT" 'Show at most 5 findings.'
 require "$ASSESSMENT" 'Put findings whose Status is `Open` first.'
 require "$ASSESSMENT" 'Write each new finding through `write` with Status `Open` before emitting the list.'
 require "$ASSESSMENT" '**Would you like to explore any of these findings in more detail?**'
-require "$ASSESSMENT" "If you'd like to see additional findings, just say so."
+require "$ASSESSMENT" "If you'd like to dismiss any of these, just say so."
+require "$ASSESSMENT" "If you'd like to dismiss any of these or see additional findings, just say so."
+require "$ASSESSMENT" '- `dismiss`: update the row of each named finding to Status `Dismissed` through `write`.'
 require "$ASSESSMENT" '- `select`: chooses a listed finding, by number or by its summary.'
 require "$ASSESSMENT" '- `more`: asks to see additional findings.'
 require "$ASSESSMENT" '- `back`: asks to go back to the list of findings.'
-require "$ASSESSMENT" "If you'd like to go back to the list of findings, just say so."
+require "$ASSESSMENT" "If you'd like to dismiss this finding or go back to the list of findings, just say so."
 require "$ASSESSMENT" '- `accept`: update the written row to Status `Accepted` through `write`. Then go to `list of findings`.'
 require "$ASSESSMENT" '- `dismiss`: update the written row to Status `Dismissed` through `write`. Then go to `list of findings`.'
 reject "$ASSESSMENT" 'If you want to save this for later, or discard it entirely, just say so.'
 reject "$ASSESSMENT" '### open'
 reject "$ASSESSMENT" 'list the retained findings'
+reject "$ASSESSMENT" '1. **Finding:**'
+reject "$ASSESSMENT" "If you'd like to see additional findings, just say so."
+reject "$ASSESSMENT" "If you'd like to go back to the list of findings, just say so."
 
 list_line=$(grep -n '^### list of findings$' "$ASSESSMENT" | cut -d: -f1)
 finding_line=$(grep -n '^### finding$' "$ASSESSMENT" | cut -d: -f1)

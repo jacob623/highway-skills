@@ -4,7 +4,7 @@ description: "Manages the repository-wide nfr baseline."
 usage: "Invoke as /highway-nfrs."
 compatibility: all
 metadata:
-  version: 8.0.0
+  version: 9.0.0
 ---
 
 # highway-nfrs
@@ -262,13 +262,13 @@ The title is the queued title unless the person changes it. The statement is one
 
 **Here's what I've captured as your NFRs:**
 
-**[Title]:** [Statement]
+1. **[Title]:** [Statement]
 
-**Why it matters:** [Rationale]
+   **Why it matters:** [Rationale]
 
 ---
 
-Put `---` between NFRs. Do not put `---` after the last NFR.
+Number every NFR in the review, starting at 1, in queue order. Indent each NFR's rationale under its number. Put `---` between NFRs. Do not put `---` after the last NFR. A number in the reply refers to the NFR with that number in the review just shown.
 
 **What would you add, correct, or remove?**
 

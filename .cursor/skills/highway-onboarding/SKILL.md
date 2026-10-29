@@ -4,7 +4,7 @@ description: "Manages one decision, one reference architecture, and one referenc
 usage: "Invoke as `/highway-onboarding`."
 compatibility: all
 metadata:
-  version: 4.0.0
+  version: 5.0.0
 ---
 
 # highway-onboarding
@@ -104,7 +104,7 @@ On an edit, re-emit only the starting point.
 
 1. **AI-Assisted Engineering and Planning:**
 
-   Using AI systems to assist with research, architecture, planning, governance, or implementation activities.
+   Using AI systems to assist with research, planning, and implementation of technology solutions.
 
 2. **[Capability title]:**
 
@@ -314,7 +314,7 @@ If this is accurate, just say so.
 
 - The overview is shown once, before the first capability list, and opens with the level-3 heading "What we'll do together".
 - Each capability is its own numbered item, with its bold title, a blank line, then its description.
-- The capability starting point includes **AI-Assisted Engineering and Planning:** Using AI systems to assist with research, architecture, planning, governance, or implementation activities.
+- The capability starting point includes **AI-Assisted Engineering and Planning:** Using AI systems to assist with research, planning, and implementation of technology solutions.
 - A removed AI-Assisted Engineering and Planning line is not placed on the capability queue.
 - The AI-Assisted Engineering and Planning provider is the agent platform the session identifies by name. An unidentified name uses the unable-to-infer prompt.
 - The mapping transition is shown once, before the first capability mapping.

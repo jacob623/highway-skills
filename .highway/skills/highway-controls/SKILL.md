@@ -4,7 +4,7 @@ description: "Manages the repository-wide control baseline."
 usage: "Invoke as /highway-controls."
 compatibility: all
 metadata:
-  version: 7.0.0
+  version: 8.0.0
 ---
 
 # highway-controls
@@ -245,13 +245,13 @@ The title is the queued title unless the person changes it. The statement is one
 
 **Here's what I've captured as your controls:**
 
-**[Title]:** [Statement]
+1. **[Title]:** [Statement]
 
-**Why it matters:** [Rationale]
+   **Why it matters:** [Rationale]
 
 ---
 
-Put `---` between Controls. Do not put `---` after the last Control.
+Number every Control in the review, starting at 1, in queue order. Indent each Control's rationale under its number. Put `---` between Controls. Do not put `---` after the last Control. A number in the reply refers to the Control with that number in the review just shown.
 
 **What would you add, correct, or remove?**
 

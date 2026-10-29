@@ -4,7 +4,7 @@ description: "Manages one business request and its accepted artifact."
 usage: "Invoke as /highway-request with the business change."
 compatibility: all
 metadata:
-  version: 3.0.0
+  version: 4.0.0
 ---
 
 # highway-request
@@ -47,7 +47,7 @@ The complete structure is `.highway/library/templates/output/request-record.md` 
 
 ## Procedure
 
-Emit only the active template. Follow this order: `intake` when the invocation has no description; otherwise `start`, then `capture`, then `identifier`, `title` when needed, `write`, and `close`. Follow `.highway/governance/experience-standard.md` for attribution and acceptance wording. Use accepted Profile, Objectives, Controls, and NFRs as grounding. Do not ask for facts those records already answer. Do not treat an example as the person's evidence.
+Emit only the active template. Follow this order: `intake` when the invocation has no description; otherwise `start`, then `identifier`, `title` when needed, `write`, and `close`. Follow `.highway/governance/experience-standard.md` for attribution and acceptance wording. Use accepted Profile, Objectives, Controls, and NFRs as grounding. Do not ask for facts those records already answer. Do not treat an example as the person's evidence.
 
 Collect seven domains in this order: Problem, Actors, Current Process, Desired Change, Success Measure, Business Constraints, Solution Constraints. Record `Unknown` when the person says they do not know. Do not invent a value.
 
@@ -70,7 +70,7 @@ Classify the latest reply before any other action.
 - `question`: the person asks for an explanation.
 - `decline`: the person stops, cancels, or pauses the request.
 
-On `start` and `capture`, "looks good" is `accept`.
+On `start`, "looks good" is `accept`.
 
 ### intake
 
@@ -104,77 +104,57 @@ When an active NFR is titled **Direct purchase**, set `procurement_constraints` 
 
 Do not recreate a removed or retitled limit from another NFR. When the request material states the hosting or buying limit, show that material for the field instead.
 
+Derive a short title from the Problem. Use a title the person already supplied when they supplied one.
+
+Show each Solution Constraints field by its readable name, in the field order above. Show `None` when a value is `unknown` or an empty list. When the person says "none" for a field, hold an empty list for `existing_platforms_required`, `existing_platforms_preferred`, and `known_systems`. Hold `unknown` for `allowed_solution_classes`, `hosting_restrictions`, `vendor_restrictions`, `procurement_constraints`, and `regulatory_restrictions`. The record keeps the field names and values above.
+
 **Here is a proposed starting point for your request:**
 
-- **Problem:** [What is going wrong or missing.]
-- **Actors:** [Who is involved.]
-- **Current Process:** [How the work happens today.]
-- **Desired Change:** [What should be different.]
-- **Success Measure:** [What will show the change worked.]
-- **Business Constraints:** [Limits on the business change, or `No business constraints`.]
-- **allowed_solution_classes:** [One or more classes, or `unknown`.]
-- **existing_platforms_required:** [Platforms, an empty list, or `unknown`.]
-- **existing_platforms_preferred:** [Platforms, an empty list, or `unknown`.]
-- **known_systems:** [Systems, an empty list, or `unknown`.]
-- **hosting_restrictions:** [Restriction or `unknown`.]
-- **vendor_restrictions:** [Restriction or `unknown`.]
-- **procurement_constraints:** [Restriction or `unknown`.]
-- **regulatory_restrictions:** [Restriction or `unknown`.]
+Emit this level-1 heading:
+
+[Title]
+
+Emit these level-2 headings, in this order, with the text under each:
+
+Problem
+[What is going wrong or missing.]
+
+Actors
+[Who is involved.]
+
+Current Process
+[How the work happens today.]
+
+Desired Change
+[What should be different.]
+
+Success Measure
+[What will show the change worked.]
+
+Business Constraints
+[Limits on the business change, or `No business constraints`.]
+
+Solution Constraints
+- **Allowed Solution Classes:** [One or more classes, or None.]
+- **Existing Platforms Required:** [Platforms, or None.]
+- **Existing Platforms Preferred:** [Platforms, or None.]
+- **Known Systems:** [Systems, or None.]
+- **Hosting Restrictions:** [Restriction, or None.]
+- **Vendor Restrictions:** [Restriction, or None.]
+- **Procurement Constraints:** [Restriction, or None.]
+- **Regulatory Restrictions:** [Restriction, or None.]
 
 **What would you add, correct, or remove?**
 
 If this is accurate, just say so. If you don't know, say "I don't know" and we'll work through it together.
 
 - `edit`: emit one consequence sentence. Re-emit this block with the edit applied. Stay on `start`.
-- `accept`: hold all seven domains. When `allowed_solution_classes` is empty, restore one or more grounded classes or `unknown` and re-emit this block. Otherwise go to `capture`.
+- `accept`: hold the title and all seven domains. When `allowed_solution_classes` is empty, restore one or more grounded classes or `unknown` and re-emit this block. Otherwise go to `identifier`.
 - `unknown`: re-emit this block. Stay on `start`.
 - `question`: answer in one sentence. Re-emit this block. Stay on `start`.
 - `decline`: stop. Write nothing.
 
-A malformed Solution Constraints field names that field, its accepted shape, and one valid example, then re-emits this block with that field corrected. Update only that field.
-
-### capture
-
-Derive a short title from the held Problem. Use a title the person already supplied when they supplied one.
-
-**Here's what I've captured as your request:**
-
-Emit this level-1 heading:
-
-[Title]
-
-Emit these level-2 headings, in this order, with the held text under each:
-
-Problem
-[Held problem.]
-
-Actors
-[Held actors.]
-
-Current Process
-[Held current process.]
-
-Desired Change
-[Held desired change.]
-
-Success Measure
-[Held success measure.]
-
-Business Constraints
-[Held business constraints.]
-
-Solution Constraints
-[Held solution constraints, in the field order above.]
-
-**What would you add, correct, or remove?**
-
-If this is accurate, just say so.
-
-- `edit`: emit one consequence sentence. Re-emit this capture with the edit applied. Stay on `capture`.
-- `accept`: go to `identifier`.
-- `unknown`: re-emit this capture. Stay on `capture`.
-- `question`: answer in one sentence. Re-emit this capture. Stay on `capture`.
-- `decline`: stop. Write nothing.
+A malformed Solution Constraints field names that field by its readable name, its accepted shape, and one valid example, then re-emits this block with that field corrected. Update only that field.
 
 ### identifier
 
@@ -255,8 +235,9 @@ Run `/highway-discovery [ID]` to evaluate candidate solutions against your objec
 
 - An invocation with a business description begins at the request starting point.
 - The starting point includes Solution Constraints.
-- The capture contains the title and all seven domains, and the acceptance reassurance only.
-- "Looks good" on the capture writes the record and catalog.
+- The starting point shows the title as a level-1 heading and each of the seven domains as a level-2 heading.
+- Solution Constraints are shown by readable name, with `None` for a value that is `unknown` or an empty list. The record keeps its field names and values.
+- "Looks good" on the starting point writes the record and catalog. The person accepts the request once.
 - No record is written while a domain is missing.
 - `allowed_solution_classes` contains one or more values or `unknown`.
 - Each id is `REQ` plus eight hex digits derived from the title.

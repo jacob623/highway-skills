@@ -4,7 +4,7 @@ description: "Manages the repository-wide business objective baseline and its st
 usage: "Invoke as /highway-objectives."
 compatibility: all
 metadata:
-  version: 7.0.0
+  version: 8.0.0
 ---
 
 # highway-objectives
@@ -243,16 +243,16 @@ The title is the queued title unless the person changes it. The statement is one
 
 **Here's what I've captured as your objectives:**
 
-**[Title]:** [Statement]
+1. **[Title]:** [Statement]
 
-**Success looks like:**
-- [Success measure]
+   **Success looks like:**
+   - [Success measure]
 
-**Why it matters:** [Rationale]
+   **Why it matters:** [Rationale]
 
 ---
 
-Put `---` between Objectives. Do not put `---` after the last Objective.
+Number every Objective in the review, starting at 1, in queue order. Indent each Objective's other lines under its number. Put `---` between Objectives. Do not put `---` after the last Objective. A number in the reply refers to the Objective with that number in the review just shown.
 
 **What would you add, correct, or remove?**
 

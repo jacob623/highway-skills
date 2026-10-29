@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-27T11:45:00Z",
+  "generated_at": "2026-10-29T10:06:47Z",
   "entries": [
     {
       "id": "highway-adr",
@@ -25,7 +25,7 @@
       "description": "Assess accepted repository context.",
       "usage": "Invoke as /highway-assessment.",
       "compatibility": "all",
-      "version": "3.0.0",
+      "version": "4.0.0",
       "source_path": "skills/highway-assessment/SKILL.md"
     },
     {
@@ -34,7 +34,7 @@
       "description": "Manages the repository-wide control baseline.",
       "usage": "Invoke as /highway-controls.",
       "compatibility": "all",
-      "version": "7.0.0",
+      "version": "8.0.0",
       "source_path": "skills/highway-controls/SKILL.md"
     },
     {
@@ -70,7 +70,7 @@
       "description": "Manages the repository-wide nfr baseline.",
       "usage": "Invoke as /highway-nfrs.",
       "compatibility": "all",
-      "version": "8.0.0",
+      "version": "9.0.0",
       "source_path": "skills/highway-nfrs/SKILL.md"
     },
     {
@@ -79,7 +79,7 @@
       "description": "Manages the repository-wide business objective baseline and its stable traceability references.",
       "usage": "Invoke as /highway-objectives.",
       "compatibility": "all",
-      "version": "7.0.0",
+      "version": "8.0.0",
       "source_path": "skills/highway-objectives/SKILL.md"
     },
     {
@@ -88,7 +88,7 @@
       "description": "Manages one decision, one reference architecture, and one reference implementation.",
       "usage": "Invoke as `/highway-onboarding`.",
       "compatibility": "all",
-      "version": "4.0.0",
+      "version": "5.0.0",
       "source_path": "skills/highway-onboarding/SKILL.md"
     },
     {
@@ -106,7 +106,7 @@
       "description": "Manages one business request and its accepted artifact.",
       "usage": "Invoke as /highway-request with the business change.",
       "compatibility": "all",
-      "version": "3.0.0",
+      "version": "4.0.0",
       "source_path": "skills/highway-request/SKILL.md"
     },
     {

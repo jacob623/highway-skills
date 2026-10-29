@@ -4,7 +4,7 @@ description: "Assess accepted repository context."
 usage: "Invoke as /highway-assessment."
 compatibility: all
 metadata:
-  version: 3.0.0
+  version: 4.0.0
 ---
 
 # highway-assessment
@@ -72,7 +72,7 @@ Classify the latest reply before any other action.
 - `back`: asks to go back to the list of findings.
 - `edit`: adds, removes, corrects, or replaces the proposed finding.
 - `accept`: asks to save the finding for later.
-- `dismiss`: asks to discard the finding.
+- `dismiss`: asks to dismiss or discard one or more findings.
 - `explore`: asks to explore a solution now.
 - `unknown`: the person says they do not know.
 - `question`: asks for an explanation or a recommendation about the current finding.
@@ -119,23 +119,28 @@ Write each new finding through `write` with Status `Open` before emitting the li
 
 **Based on what Highway knows, these may be worth visiting:**
 
-1. **Finding:**
+1. **[Finding title]:**
 
    [One-sentence summary of the finding.]
 
-   **Complexity:**
+   **Solution Complexity:**
 
    [Low, Medium, or High.]
 
-Number every finding in the list, starting at 1. Derive each complexity from accepted evidence.
+Number every finding in the list, starting at 1. The finding title is a short title based on that finding's Finding text in the findings file. Do not write the title to the findings file. Derive each complexity from accepted evidence.
 
 **Would you like to explore any of these findings in more detail?**
 
-When more findings remain than are shown, emit this line after the question:
+When no more findings remain than are shown, emit this line after the question:
 
-If you'd like to see additional findings, just say so.
+If you'd like to dismiss any of these, just say so.
+
+When more findings remain than are shown, emit this line after the question instead:
+
+If you'd like to dismiss any of these or see additional findings, just say so.
 
 - `select`: go to `finding` for that finding. A number refers to the list just shown.
+- `dismiss`: update the row of each named finding to Status `Dismissed` through `write`. A number refers to the list just shown. Then re-emit the list without them, filled back to at most 5 with the same rules. Stay on `list of findings`.
 - `more`: show the next set of up to 5 findings, after the findings already listed, with the same rules. Stay on `list of findings`.
 - `question`: answer from accepted evidence. Then re-emit the list and this question. Stay on `list of findings`.
 - `unknown`: re-emit the list and this question. Stay on `list of findings`.
@@ -160,7 +165,7 @@ Offer at least two possible solutions. They are a rough idea, not a selection. D
 
 **Would you like to explore a solution now?**
 
-If you'd like to go back to the list of findings, just say so.
+If you'd like to dismiss this finding or go back to the list of findings, just say so.
 
 - `back`: go to `list of findings`. Do not change the written row.
 - `edit`: emit one consequence sentence. Update the written row through `write`. Then re-emit this finding. Stay on `finding`.
@@ -190,12 +195,13 @@ Run `/highway-help` to explore what Highway can help you do.
 - Catalogs are read before source records.
 - Findings about providers, reuse, coverage, and dependencies use `implementations/capabilities.md` and its Parent chain.
 - The opening heading "Let's see what your repository may be telling us." is shown once, before the first list.
-- The list opens with **Based on what Highway knows, these may be worth visiting:** and shows at most 5 numbered findings, each with its summary and complexity.
+- The list opens with **Based on what Highway knows, these may be worth visiting:** and shows at most 5 numbered findings, each with a title based on its Finding text, its summary, and its **Solution Complexity:**. The title is not written to the findings file.
 - Open findings from earlier runs come before new findings in the list.
 - A new finding is written with Status `Open` before it is shown.
-- The list asks **Would you like to explore any of these findings in more detail?** and offers additional findings only when more remain.
+- The list asks **Would you like to explore any of these findings in more detail?** and says the person can dismiss any of them. It offers additional findings only when more remain.
+- Dismissing from the list sets each named finding to Status `Dismissed` and shows the list again without them.
 - A finding chosen by number or summary opens with **Based on what Highway knows, this may be something worth visiting:**, then the observation, then several possible solutions, an overall complexity, and a dollar cost range when one is available.
-- The finding asks **Would you like to explore a solution now?** and says the person can go back to the list of findings.
+- The finding asks **Would you like to explore a solution now?** and says the person can dismiss it or go back to the list of findings.
 - Going back, save for later, and discard each return to the list. A saved or discarded finding leaves the list.
 - A question about that finding is answered, then the same finding is shown again.
 - Save for later updates the written row to Status `Accepted`.
