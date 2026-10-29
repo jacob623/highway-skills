@@ -2,7 +2,7 @@
 name: adr-record
 description: "Complete output skeleton for an accepted architecture decision record."
 metadata:
-  version: 1.0.0
+  version: 2.0.0
 ---
 
 ## File Frontmatter
@@ -12,7 +12,7 @@ metadata:
 id: ADRXXXXXX
 request: REQXXXXXX | onboarding
 discovery: DISCXXXXXX | highway
-status: accepted
+status: accepted | superseded
 supersedes: None
 superseded_by: None
 ---
@@ -30,9 +30,6 @@ Request: REQXXXXXX
 Recommendation: OPTXXXXXX
 Recommendation Rationale: <Discovery rationale>
 
-Candidate Solution Options:
-- OPTXXXXXX: <Discovery option definition>
-
 Comparison Matrix:
 <Discovery comparison matrix copied without recalculation>
 
@@ -45,7 +42,9 @@ None
 
 ## Context
 
-<ADR-owned context and evidence-resolution record>
+Problem: <the problem this decision responds to>
+Forces: <the forces that make the decision necessary>
+Evidence: <evidence-resolution record, or `None`>
 
 ## Decision
 
@@ -55,6 +54,15 @@ Decision Statement: <ADR-owned decision statement>
 Decision Authority: <ADR decision authority>
 Decision Rationale: <traceable rationale>
 Authorization: Proceed to Reference Architecture; implementation authorization is excluded.
+
+## Decision Scope
+
+Covers: <what this decision decides>
+Leaves Open: <what this decision does not decide, or `None`>
+
+## Revisit When
+
+<the condition that should cause this decision to be reopened, or `None`>
 
 ## Recommendation Override
 
@@ -71,8 +79,8 @@ Confidence Considerations: <ADR-owned considerations without rescoring>
 
 ### OPTXXXXXX
 
+Definition: <what this option is>
 Outcome: <Selected, Rejected, or Evaluated>
-Selection Status: Selected or Rejected or Evaluated
 Reason: <ADR-owned reason>
 
 ## Assumptions
@@ -100,28 +108,46 @@ Governance: <governance consequences>
 
 ## Objective Relationships
 
-<stable typed relationship list, or `None`>
+- OBJXXXXXX: advances
 
 ## Control Relationships
 
-<stable typed relationship list, or `None`>
+- CTLXXXXXX: bound by
 
 ## NFR Relationships
 
-<stable typed relationship list, or `None`>
+- NFRXXXXXX: satisfies
 
 ## Reference Architecture Handoff
 
-Selected Option: OPTXXXXXX
-Reference Architecture Matches: <Discovery matches with confidence and reasons, or `None`>
 Architecture Direction: <direction, or `None`>
 Required Architecture Work: <work list, or `None`>
+Reference Architecture: <RA id, or `None`>
+Reference Implementation: <RI id, or `None`>
 Authorization to Proceed: Proceed to Reference Architecture; do not implement.
 ```
 
 The body is rendered in this order. Recommendation Override is present only when the selected
-option differs from the Discovery recommendation. Open Clarification Findings is present only when
-an open finding contributes. Every Reference Architecture Handoff field remains present and uses a
-valid value or explicit `None`. Alternative outcomes are exactly `Selected`, `Rejected`, or
-`Evaluated`; `Evaluated` means viable but not selected, while `Rejected` means invalid or
-unsuitable. Supersession metadata is authoritative only in frontmatter.
+option differs from the Discovery recommendation, and is omitted when there is no Discovery
+recommendation. Open Clarification Findings is present only when an open finding contributes.
+Every Reference Architecture Handoff field remains present and uses a valid value or explicit
+`None`. The handoff does not repeat the selected option or the Reference Architecture Matches.
+Reference Architecture and Reference Implementation are `None` until that record exists and the ADR
+is updated to name it. Updating them changes no other ADR field.
+
+Alternatives Considered lists every option, including the selected one. Alternative outcomes are
+exactly `Selected`, `Rejected`, or `Evaluated`; `Evaluated` means viable but not selected, while
+`Rejected` means invalid or unsuitable. A Discovery-backed alternative is headed by its option id.
+
+Each relationship line is one identifier and the one type for its section: Objectives use
+`advances`, Controls use `bound by`, and NFRs use `satisfies`. A section with no relationship is
+`None`.
+
+`status` is `superseded` exactly when `superseded_by` names an ADR, and `accepted` otherwise. A
+superseded record keeps its file. Supersession metadata is authoritative only in frontmatter.
+
+An onboarding ADR uses `request: onboarding` and `discovery: highway`. Discovery, Request,
+Recommendation, Recommendation Rationale, Comparison Matrix, Reference Architecture Matches, and
+Discovery Confidence are `None`. Selected Option is the adopted provider name, and Selection Source
+is `Accepted onboarding mapping`. Each alternative is headed by its name. The record contains no
+option id.

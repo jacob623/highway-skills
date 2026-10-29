@@ -4,7 +4,7 @@ description: "Manages one reference architecture from one accepted adr."
 usage: "Invoke as /highway-architecture with one adr id."
 compatibility: all
 metadata:
-  version: 2.0.0
+  version: 3.0.0
 ---
 
 # highway-architecture
@@ -22,7 +22,8 @@ Creates one proposed Reference Architecture from an accepted ADR after the perso
 
 Do not select an ADR by recency, filename, or batch.
 Do not use an ADR whose status is not `accepted`.
-Do not change the ADR, Discovery, Request, Profile, Objectives, Controls, or NFRs.
+Do not change the Discovery, Request, Profile, Objectives, Controls, or NFRs.
+Do not change the ADR, except its Reference Architecture field.
 Do not select a different ADR alternative.
 Do not create a Reference Implementation or authorize implementation.
 Do not create capability records or capability ids.
@@ -33,6 +34,7 @@ Do not report Status, Summary, Next Action, Blocking Reason, Missing, Complete, 
 - One ADR id that matches one row in `adrs/adrs.md`, when the person supplies one.
 - `adrs/adrs.md` and `architectures/architectures.md`.
 - The accepted ADR at `adrs/[ID].md`.
+- `.highway/library/templates/output/adr-record.md`.
 - Accepted Profile, Objectives, Controls, and NFRs when present.
 - `architectures/architectures.md` and `architectures/RA*.md` when present.
 - `.highway/library/templates/output/architecture-record.md`.
@@ -46,14 +48,15 @@ The complete structure is `.highway/library/templates/output/architecture-record
 
 - One architecture record at `architectures/[ID].md` after the person accepts the proposed architecture.
 - An updated `architectures/architectures.md` written with that record.
+- The ADR's Reference Architecture field set to that architecture id.
 - A closing message that names the architecture and the implementation command.
 - No architecture when the ADR is missing, not accepted, or a write fails.
 
 ## Procedure
 
-Emit only the active template. Follow this order: `choose` when no ADR id is supplied; otherwise `start`, then `identifier`, `title` when needed, `write`, and `close`. The ADR remains the decision. Inherit its decision, rationale, alternatives, consequences, and constraints without changing their meaning. Describe the architecture in conceptual terms. A platform, product, vendor, or specific technology stays in the inherited decision and is not part of the architecture. A missing Profile, Objective, Control, or NFR continues without invented evidence. A malformed one of those baselines stops the skill and writes nothing.
+Emit only the active template. Follow this order: `choose` when no ADR id is supplied; otherwise `start`, then `identifier`, `title` when needed, `write`, `name`, and `close`. The ADR remains the decision. Inherit its decision, rationale, alternatives, consequences, and constraints without changing their meaning. Describe the architecture in conceptual terms. A platform, product, vendor, or specific technology stays in the inherited decision and is not part of the architecture. A missing Profile, Objective, Control, or NFR continues without invented evidence. A malformed one of those baselines stops the skill and writes nothing.
 
-One accepted ADR produces at most one architecture. When the architecture catalog already has that ADR as Parent, show the recorded architecture and write nothing.
+One accepted ADR produces at most one architecture. When the architecture catalog already has that ADR as Parent, show the recorded architecture and write no second one.
 
 ### Entry
 
@@ -61,7 +64,7 @@ One accepted ADR produces at most one architecture. When the architecture catalo
 2. When none is present, go to `choose`.
 3. When an ADR id is present, resolve it. When it matches no ADR, stop. Say the ADR was not found. Write nothing.
 4. When that ADR status is not `accepted`, stop. Say the ADR is not accepted. Write nothing.
-5. When that ADR is already Parent of an architecture, show the recorded architecture. Write nothing.
+5. When that ADR is already Parent of an architecture, show the recorded architecture. When the ADR's Reference Architecture field is still `None`, go to `name`. Otherwise write nothing.
 6. Otherwise go to `start`.
 
 ### choose
@@ -144,7 +147,7 @@ a 0, b 1, c 2, d 3, e 4, f 5, g 6, h 7, i 8, j 9, k a, l b, m c, n d, o e, p f, 
 
 Compare that id with `architectures/architectures.md`, including removed rows.
 
-- The same title already has that id: use the existing record. Do not write a second one. Go to `close`.
+- The same title already has that id: use the existing record. Do not write a second one. Go to `name`.
 - The id is taken for a different title: go to `title`.
 - The id is free: go to `write`.
 
@@ -199,7 +202,15 @@ The catalog follows `.highway/library/templates/output/architecture-catalog.md`.
 - Adding an architecture increments the minor version.
 - One ADR id appears as Parent on at most one row.
 
-On success, go to `close`.
+On success, go to `name`.
+
+### name
+
+Set the ADR's `Reference Architecture` field to this `RA` id. Change no other ADR byte. The decision statement, rationale, selected option, and status stay as they were.
+
+When the ADR cannot be updated, keep the architecture record and catalog. Say the ADR could not be updated to name this architecture, and that running `/highway-architecture [ADR id]` again will name it. Do not call the decision, architecture, and implementation chain complete.
+
+Then go to `close`.
 
 ### close
 
@@ -219,6 +230,8 @@ Run `/highway-implementation [RA id]` to create the Reference Implementation.
 - One accepted ADR produces at most one architecture.
 - The proposed architecture is accepted before the record is written.
 - The architecture does not change the ADR decision.
+- After the architecture is written, the ADR's Reference Architecture field names it. No other ADR field changes.
+- When that ADR update fails, the architecture remains and the chain is not called complete. A later invocation for the same ADR names it.
 - The architecture remains conceptual. It names no platform, product, vendor, or specific technology.
 - The record status is `accepted` after the person accepts the architecture.
 - Required capabilities have no capability ids.
@@ -238,6 +251,7 @@ Run `/highway-implementation [RA id]` to create the Reference Implementation.
 - A second architecture for the same ADR stops the write and shows the existing architecture.
 - A malformed present Profile, Objective, Control, or NFR baseline stops the skill and writes nothing.
 - A failed write leaves existing architecture and catalog bytes unchanged.
+- A failed ADR update keeps the architecture, says the ADR could not be updated, and does not call the chain complete.
 
 ## Example
 

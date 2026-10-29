@@ -1,18 +1,18 @@
 {
-  "generated_at": "2026-10-22T21:36:22Z",
+  "generated_at": "2026-10-29T17:50:12Z",
   "entries": [
     {
       "library_type": "template",
       "name": "adr-catalog",
       "description": "Complete output skeleton for the repository ADR catalog.",
-      "version": "2.0.0",
+      "version": "3.0.0",
       "source_path": "library/templates/output/adr-catalog.md"
     },
     {
       "library_type": "template",
       "name": "adr-record",
       "description": "Complete output skeleton for an accepted architecture decision record.",
-      "version": "1.0.0",
+      "version": "2.0.0",
       "source_path": "library/templates/output/adr-record.md"
     },
     {

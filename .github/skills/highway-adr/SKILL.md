@@ -4,7 +4,7 @@ description: "Manages one architecture decision for one discovery."
 usage: "Invoke as /highway-adr with one discovery id."
 compatibility: all
 metadata:
-  version: 2.0.0
+  version: 3.0.0
 ---
 
 # highway-adr
@@ -193,12 +193,18 @@ The record follows `.highway/library/templates/output/adr-record.md`.
 - `supersedes` is `None`.
 - `superseded_by` is `None`.
 - The title is the accepted ADR title.
-- Copy the Discovery options, comparison, recommendation, confidence, and Reference Architecture matches without recalculation.
+- Copy the Discovery comparison, recommendation, confidence, and Reference Architecture matches into `## Discovery Reference` and `## Decision Confidence` without recalculation.
+- `## Context` states the problem this decision responds to and the forces that make it necessary, in prose, and the evidence-resolution record or `None`.
 - `## Decision` records the selected option, `User-provided explicit selection`, the decision statement, the rationale, and this authorization: Proceed to Reference Architecture. Implementation is not authorized.
+- `## Decision Scope` states what the decision covers and what it leaves open, or `None` for what it leaves open.
+- `## Revisit When` states the condition that should cause the decision to be reopened, or `None` when no condition is known.
 - When the selected option differs from the Discovery recommendation, write `## Recommendation Override` with both options and the override rationale. Omit that section when they are the same.
-- Every option other than the selected one is `Evaluated` when it remained viable, or `Rejected` when the Discovery excluded it.
-- `## Reference Architecture Handoff` names the selected option, the copied matches or `None`, the architecture direction or `None`, the required architecture work or `None`, and authorization to proceed to Reference Architecture.
+- `## Alternatives Considered` lists every Discovery option, headed by its option id, with its definition, one outcome, and a reason. The selected option is `Selected`. Every other option is `Evaluated` when it remained viable, or `Rejected` when the Discovery excluded it.
+- Each Objective relationship is the Objective id and `advances`. Each Control relationship is the Control id and `bound by`. Each NFR relationship is the NFR id and `satisfies`. A section with no relationship is `None`.
+- `## Reference Architecture Handoff` names the architecture direction or `None`, the required architecture work or `None`, Reference Architecture `None`, Reference Implementation `None`, and authorization to proceed to Reference Architecture. Do not repeat the selected option or the matches there.
 - Emit no timestamp, random value, or environment value.
+
+Status is `superseded` in the record and in the catalog exactly when `superseded_by` names an ADR. Otherwise it is `accepted`. A superseded record keeps its file and its id. Do not treat it as removed.
 
 The catalog follows `.highway/library/templates/output/adr-catalog.md`.
 
@@ -233,6 +239,11 @@ Run `/highway-architecture [ADR id]` to create the Reference Architecture.
 - The selected option is the option the person named or numbered.
 - The comparison and matches are copied from the Discovery.
 - Recommendation Override is written only when the selection differs from the recommendation.
+- Context states the problem and the forces. The record states what the decision covers, what it leaves open, and when to revisit it, or `None`.
+- Alternatives Considered includes the selected option as `Selected`, and each alternative has a definition, one outcome, and a reason.
+- The handoff does not repeat the selected option or the matches. Reference Architecture and Reference Implementation are `None` when the ADR is written.
+- Relationship lines use `advances`, `bound by`, and `satisfies`, or `None`.
+- Status is `superseded` in the record and catalog exactly when `superseded_by` names an ADR, and the record file remains.
 - Authorization proceeds to Reference Architecture and does not authorize implementation.
 - Each id is `ADR` plus eight hex digits derived from the title.
 - A taken id names the conflicting titles, says a title change is appropriate, and shows a new title. The write waits until the person accepts that title.

@@ -4,7 +4,7 @@ description: "Manages one decision, one reference architecture, and one referenc
 usage: "Invoke as `/highway-onboarding`."
 compatibility: all
 metadata:
-  version: 5.0.0
+  version: 6.0.0
 ---
 
 # highway-onboarding
@@ -230,13 +230,23 @@ Write `adrs/[ID].md` and `adrs/adrs.md` together. A failed write leaves every ex
 - `status` is `accepted`.
 - `supersedes` is `None`.
 - `superseded_by` is `None`.
+- The record follows `.highway/library/templates/output/adr-record.md` and uses every section a Discovery-backed ADR uses.
+- Discovery, Request, Recommendation, Recommendation Rationale, Comparison Matrix, Reference Architecture Matches, and Discovery Confidence are `None`. Omit Recommendation Override.
+- `## Context` states the problem and the forces in prose, from the capabilities this provider serves and the accepted evidence.
+- `## Decision` records Selected Option as the provider name, Selection Source as `Accepted onboarding mapping`, the decision, and the rationale.
+- `## Decision Scope` covers those capabilities and leaves open the Limitations, or `None`. `## Revisit When` is the condition that should reopen this decision, or `None`.
+- `## Alternatives Considered` lists the provider as `Selected`, then each alternative as `Evaluated` or `Rejected`. Head each alternative by its name, with its definition and reason. Do not write an option id.
+- Each Objective relationship is the Objective id and `advances`. Each Control relationship is the Control id and `bound by`. Each NFR relationship is the NFR id and `satisfies`. A section with no relationship is `None`.
+- `## Reference Architecture Handoff` has Reference Architecture `None` and Reference Implementation `None`.
 - The catalog columns are ADR ID, Discovery ID, Request ID, ADR Title, ADR Path, and Status. Discovery ID is `highway`. Request ID is `onboarding`. ADR Path is `adrs/<ADR id>.md`. Status is `accepted`.
 - Do not allocate from `Next ID`.
 - Do not create a Discovery record.
 
 When the ADR exists, create the Reference Architecture, then the Reference Implementation. Follow `highway-architecture` and `highway-implementation` for the record shape, identifiers, and catalogs. Do not emit their questions, starting points, or acceptance requests. Write both records with status `accepted`.
 
-When either of those records cannot be written, try that record once more. When it still cannot be written, keep the ADR and any earlier provider results. Say which record could not be written. Do not claim onboarding is complete.
+After each of those records is written, set the ADR's `Reference Architecture` or `Reference Implementation` field to its id. Change no other ADR byte.
+
+When either of those records cannot be written, or the ADR cannot be updated to name it, try that step once more. When it still fails, keep the ADR and any earlier provider results. Say which record could not be written or named. Do not claim onboarding is complete. When the implementation cannot be written, the ADR names the architecture and its Reference Implementation stays `None`.
 
 When the ADR, Reference Architecture, and Reference Implementation exist, remove this provider from the provider queue. When another provider remains, repeat `orchestrate` for that provider. When the queue is empty, go to `lineage`.
 
@@ -331,6 +341,8 @@ If this is accurate, just say so.
 - A later provider is introduced with "Review the [provider] records Highway has prepared for you."
 - A shown record asks **What would you add, correct, or remove?**
 - An onboarding ADR uses `request: onboarding`, `discovery: highway`, and Discovery ID `highway`.
+- An onboarding ADR uses the shared ADR sections. Discovery-only values are `None`, alternatives are headed by name, and the record contains no option id.
+- After the architecture and the implementation are written, the ADR names both. A failed ADR update is tried once more and is named when it still fails.
 - No Request or Discovery record is created.
 - The Reference Implementation is written only after that architecture record exists.
 - A failed architecture or implementation does not claim onboarding is complete.
