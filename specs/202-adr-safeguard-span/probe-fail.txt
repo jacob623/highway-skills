@@ -1,0 +1,32 @@
+FAIL: highway-adr/SKILL.md omits: version: 5.0.0
+FAIL: highway-adr/SKILL.md omits: ### span
+FAIL: highway-adr/SKILL.md omits: This decision runs beside the current decision of each of these architectures. None of those decisions is replaced, and no new architecture will follow.
+FAIL: highway-adr/SKILL.md omits: If you'd like to leave out any of these architectures, just say so.
+FAIL: highway-adr/SKILL.md omits: An architecture that did not match is not added.
+FAIL: highway-adr/SKILL.md omits: in id order, separated by a comma and a space
+FAIL: highway-adr/SKILL.md omits: **Which implementation would you like to codify first?**
+FAIL: highway-adr/SKILL.md omits: Run `/highway-codify` for **[Implementation title]** to **[Decision title]**.
+FAIL: highway-assessment/SKILL.md omits: version: 5.0.0
+FAIL: highway-assessment/SKILL.md omits: ### review
+FAIL: highway-assessment/SKILL.md omits: **What would you like to review?**
+FAIL: highway-assessment/SKILL.md omits: 1. Observed gaps against accepted architectures.
+FAIL: highway-assessment/SKILL.md omits: 2. Accepted artifacts ready for progression to the next stage (requests, discoveries, decisions, architectures, and implementations).
+FAIL: highway-assessment/SKILL.md omits: ### ready records
+FAIL: highway-assessment/SKILL.md omits: **1. Requests**
+FAIL: highway-assessment/SKILL.md omits: **a. [Record title]:** Ready for [stage].
+FAIL: highway-assessment/SKILL.md omits: **Which record would you like to advance?**
+FAIL: highway-assessment/SKILL.md omits: If you'd like to see more records, just say so.
+FAIL: highway-assessment/SKILL.md omits: If you'd like to return to the main menu, just say so.
+FAIL: highway-assessment/SKILL.md omits: continue as `highway-codify`
+FAIL: highway-assessment/SKILL.md omits: Do not write a ready record to the findings file.
+FAIL: highway-discovery/SKILL.md omits: version: 5.0.0
+FAIL: highway-discovery/SKILL.md omits: If you'd like to select this option for the Decision record, just say so.
+FAIL: highway-discovery/SKILL.md omits: - `adopt`: selects the option being explored for the Decision record.
+FAIL: highway-discovery/SKILL.md omits: ### check
+FAIL: highway-discovery/SKILL.md omits: deprecated, retired, or no longer offered
+FAIL: highway-discovery/SKILL.md omits: `inconclusive`
+FAIL: highway-discovery/SKILL.md omits: Vendor documentation does not count as that support.
+FAIL: highway-discovery/SKILL.md omits: was left out.
+FAIL: highway-discovery/SKILL.md omits: Do not run the check
+FAIL: highway-assessment review does not come before list of findings
+EXIT:1
