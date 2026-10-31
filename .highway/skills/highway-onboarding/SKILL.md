@@ -4,7 +4,7 @@ description: "Manages one decision, one reference architecture, and one referenc
 usage: "Invoke as `/highway-onboarding`."
 compatibility: all
 metadata:
-  version: 6.0.0
+  version: 7.0.0
 ---
 
 # highway-onboarding
@@ -237,16 +237,20 @@ Write `adrs/[ID].md` and `adrs/adrs.md` together. A failed write leaves every ex
 - `## Decision Scope` covers those capabilities and leaves open the Limitations, or `None`. `## Revisit When` is the condition that should reopen this decision, or `None`.
 - `## Alternatives Considered` lists the provider as `Selected`, then each alternative as `Evaluated` or `Rejected`. Head each alternative by its name, with its definition and reason. Do not write an option id.
 - Each Objective relationship is the Objective id and `advances`. Each Control relationship is the Control id and `bound by`. Each NFR relationship is the NFR id and `satisfies`. A section with no relationship is `None`.
-- `## Reference Architecture Handoff` has Reference Architecture `None` and Reference Implementation `None`.
-- The catalog columns are ADR ID, Discovery ID, Request ID, ADR Title, ADR Path, and Status. Discovery ID is `highway`. Request ID is `onboarding`. ADR Path is `adrs/<ADR id>.md`. Status is `accepted`.
+- `## Reference Architecture Handoff` has Reference Architecture `None` and no implementation entry.
+- The catalog columns are ADR ID, Discovery ID, Request ID, ADR Title, ADR Path, Architecture ID, and Status. Discovery ID is `highway`. Request ID is `onboarding`. ADR Path is `adrs/<ADR id>.md`. Architecture ID is `None` until the architecture is written. Status is `accepted`.
 - Do not allocate from `Next ID`.
 - Do not create a Discovery record.
 
-When the ADR exists, create the Reference Architecture, then the Reference Implementation. Follow `highway-architecture` and `highway-implementation` for the record shape, identifiers, and catalogs. Do not emit their questions, starting points, or acceptance requests. Write both records with status `accepted`.
+When the ADR exists, create the Reference Architecture, then the Reference Implementation. Follow `highway-architecture` and `highway-implementation` for the record shape, identifiers, and catalogs. Do not emit their questions, starting points, or acceptance requests. Do not ask whether a decision replaces or runs beside another. Write both records with status `accepted`.
 
-After each of those records is written, set the ADR's `Reference Architecture` or `Reference Implementation` field to its id. Change no other ADR byte.
+The architecture uses an `RA` id. Its Current Decisions list is this ADR. Context states when it applies and what it leaves open. The style states why it was chosen. Each component has its responsibility and its interface, or `None`. Information, Variation, and Responsibilities are written. Relationship lines use `advances`, `bound by`, and `satisfies`, or `None`. Each required capability names its component and has no capability id. Do not write Key Technologies. Do not copy the decision statement. The architecture catalog ADR ID cell is this ADR id.
 
-When either of those records cannot be written, or the ADR cannot be updated to name it, try that step once more. When it still fails, keep the ADR and any earlier provider results. Say which record could not be written or named. Do not claim onboarding is complete. When the implementation cannot be written, the ADR names the architecture and its Reference Implementation stays `None`.
+The implementation uses an `RI` id and that `RA` parent. It states the variation choice, or `None`. Coverage rows are the architecture's responsibilities, each covered or not applicable. Conformance agrees with those rows. A compatible record has no gap section and no conflict section. It states the realized interface, how conformance was shown, and the limitations, each or `None`. A technology choice is stated once. The architecture is named once.
+
+After the architecture is written, set the ADR's `Reference Architecture` field to its id and the decision catalog Architecture ID to that same id. Change no other ADR byte. Do not set an implementation id.
+
+When either of those records cannot be written, or the ADR cannot be updated to name the architecture, try that step once more. When it still fails, keep the ADR and any earlier provider results. Say which record could not be written or named. Do not claim onboarding is complete. When the implementation cannot be written, the ADR names the architecture and no implementation exists.
 
 When the ADR, Reference Architecture, and Reference Implementation exist, remove this provider from the provider queue. When another provider remains, repeat `orchestrate` for that provider. When the queue is empty, go to `lineage`.
 
@@ -342,7 +346,9 @@ If this is accurate, just say so.
 - A shown record asks **What would you add, correct, or remove?**
 - An onboarding ADR uses `request: onboarding`, `discovery: highway`, and Discovery ID `highway`.
 - An onboarding ADR uses the shared ADR sections. Discovery-only values are `None`, alternatives are headed by name, and the record contains no option id.
-- After the architecture and the implementation are written, the ADR names both. A failed ADR update is tried once more and is named when it still fails.
+- After the architecture is written, the ADR names the architecture and does not name an implementation. A failed ADR update is tried once more and is named when it still fails.
+- Onboarding does not ask whether a decision replaces or runs beside another.
+- The architecture and the implementation use the same sections as any other architecture and implementation.
 - No Request or Discovery record is created.
 - The Reference Implementation is written only after that architecture record exists.
 - A failed architecture or implementation does not claim onboarding is complete.

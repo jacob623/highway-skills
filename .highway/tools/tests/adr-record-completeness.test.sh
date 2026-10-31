@@ -47,7 +47,6 @@ for text in \
 	'- CTLXXXXXX: bound by' \
 	'- NFRXXXXXX: satisfies' \
 	'Reference Architecture: <RA id, or `None`>' \
-	'Reference Implementation: <RI id, or `None`>' \
 	'Authorization to Proceed: Proceed to Reference Architecture; do not implement.' \
 	'is `Accepted onboarding mapping`' \
 	'The record contains no' \
@@ -57,7 +56,7 @@ done
 reject "$RECORD" 'Selection Status'
 reject "$RECORD" 'Candidate Solution Options'
 handoff="$(sed -n '/^## Reference Architecture Handoff$/,/^```$/p' "$RECORD")"
-for text in 'Selected Option:' 'Reference Architecture Matches:'; do
+for text in 'Selected Option:' 'Reference Architecture Matches:' 'Reference Implementation:'; do
 	if printf '%s\n' "$handoff" | grep -Fq -- "$text"; then
 		echo "FAIL: adr-record.md handoff still contains: $text"
 		fail=1
@@ -74,7 +73,7 @@ for text in \
 	'`## Revisit When` states the condition that should cause the decision to be reopened' \
 	'The selected option is `Selected`.' \
 	'Do not repeat the selected option or the matches there.' \
-	'Reference Architecture `None`, Reference Implementation `None`' \
+	'Do not write an implementation entry.' \
 	'Status is `superseded` in the record and in the catalog exactly when `superseded_by` names an ADR.'; do
 	require "$ADR" "$text"
 done
@@ -84,24 +83,20 @@ for text in \
 	'Selection Source as `Accepted onboarding mapping`' \
 	'Head each alternative by its name' \
 	'Do not write an option id.' \
-	'set the ADR'"'"'s `Reference Architecture` or `Reference Implementation` field to its id.' \
-	'the ADR names the architecture and its Reference Implementation stays `None`.'; do
+	'set the ADR'"'"'s `Reference Architecture` field to its id' \
+	'does not name an implementation'; do
 	require "$ONBOARDING" "$text"
 done
 
-for pair in "$ARCHITECTURE:Reference Architecture:/highway-architecture [ADR id]" "$IMPLEMENTATION:Reference Implementation:/highway-implementation [RA id]"; do
-	skill="${pair%%:*}"
-	rest="${pair#*:}"
-	field="${rest%%:*}"
-	command="${rest#*:}"
-	require "$skill" "Do not change the ADR, except its $field field."
-	require "$skill" '.highway/library/templates/output/adr-record.md'
-	require "$skill" '### name'
-	require "$skill" "running \`$command\` again will name it."
-	require "$skill" 'Do not call the decision, architecture, and implementation chain complete.'
-	require "$skill" 'is still `None`, go to `name`.'
-done
+require "$ARCHITECTURE" "Do not change the ADR, except its Reference Architecture field."
+require "$ARCHITECTURE" '.highway/library/templates/output/adr-record.md'
+require "$ARCHITECTURE" '### name'
+require "$ARCHITECTURE" 'running `/highway-architecture [ADR id]` again will name it.'
+require "$ARCHITECTURE" 'Do not call the decision, architecture, and implementation chain complete.'
+require "$ARCHITECTURE" 'is still `None`, go to `name`.'
 reject "$ARCHITECTURE" 'Do not change the ADR, Discovery'
+require "$IMPLEMENTATION" 'Do not change the ADR.'
+reject "$IMPLEMENTATION" 'Reference Implementation field'
 reject "$IMPLEMENTATION" 'Do not change the architecture, ADR,'
 
 if [[ "$fail" -ne 0 ]]; then

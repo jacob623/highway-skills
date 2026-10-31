@@ -2,7 +2,7 @@
 name: adr-record
 description: "Complete output skeleton for an accepted architecture decision record."
 metadata:
-  version: 2.0.0
+  version: 3.0.0
 ---
 
 ## File Frontmatter
@@ -123,7 +123,6 @@ Governance: <governance consequences>
 Architecture Direction: <direction, or `None`>
 Required Architecture Work: <work list, or `None`>
 Reference Architecture: <RA id, or `None`>
-Reference Implementation: <RI id, or `None`>
 Authorization to Proceed: Proceed to Reference Architecture; do not implement.
 ```
 
@@ -132,8 +131,9 @@ option differs from the Discovery recommendation, and is omitted when there is n
 recommendation. Open Clarification Findings is present only when an open finding contributes.
 Every Reference Architecture Handoff field remains present and uses a valid value or explicit
 `None`. The handoff does not repeat the selected option or the Reference Architecture Matches.
-Reference Architecture and Reference Implementation are `None` until that record exists and the ADR
-is updated to name it. Updating them changes no other ADR field.
+The handoff contains no implementation entry. Reference Architecture is `None` until an architecture
+exists. A reused architecture is named there when the decision is accepted. Updating that field
+changes no other ADR field.
 
 Alternatives Considered lists every option, including the selected one. Alternative outcomes are
 exactly `Selected`, `Rejected`, or `Evaluated`; `Evaluated` means viable but not selected, while

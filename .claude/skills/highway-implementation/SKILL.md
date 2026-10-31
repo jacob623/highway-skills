@@ -4,7 +4,7 @@ description: "Manages one reference implementation from one accepted reference a
 usage: "Invoke as /highway-implementation with one architecture id."
 compatibility: all
 metadata:
-  version: 3.0.0
+  version: 4.0.0
 ---
 
 # highway-implementation
@@ -23,7 +23,7 @@ Creates one proposed Reference Implementation from an accepted Reference Archite
 Do not select an architecture by recency, filename, or batch.
 Do not use a Reference Architecture whose status is not `accepted`.
 Do not change the architecture, Discovery, Request, Profile, Objectives, Controls, or NFRs.
-Do not change the ADR, except its Reference Implementation field.
+Do not change the ADR.
 Do not create plans, tasks, source code, or infrastructure definitions.
 Do not authorize deployment.
 Do not create a capability record file or a capability workflow.
@@ -33,8 +33,6 @@ Do not report Status, Summary, Next Action, Blocking Reason, Missing, Complete, 
 
 - One Reference Architecture id that matches one row in `architectures/architectures.md`, when the person supplies one.
 - The accepted architecture at `architectures/[ID].md`.
-- The ADR that architecture names, at `adrs/[ID].md`.
-- `.highway/library/templates/output/adr-record.md`.
 - Accepted Profile, Objectives, Controls, and NFRs when present.
 - `clarifications/clarifications.md` when present, for `CLAR-[RA id]` only.
 - `architectures/architectures.md` and `implementations/implementations.md`.
@@ -52,15 +50,14 @@ The complete structure is `.highway/library/templates/output/implementation-reco
 - One implementation record at `implementations/[ID].md` after the person accepts the proposed realization.
 - An updated `implementations/implementations.md` written with that record.
 - An updated `implementations/capabilities.md` written with that record.
-- The ADR's Reference Implementation field set to that implementation id.
 - A closing message that names the implementation.
 - No implementation when the architecture is missing, not accepted, incompatible, or a write fails.
 
 ## Procedure
 
-Emit only the active template. Follow this order: `choose` when no architecture id is supplied; otherwise `start`, then `identifier`, `title` when needed, `write`, `name`, and `close`. The accepted Reference Architecture remains authoritative. A realization cannot redesign it or override the ADR. A missing Profile, Objective, Control, or NFR continues without invented evidence. A malformed one of those baselines stops the skill and writes nothing. Clarification is read-only. An open finding can inform a risk. It cannot block the proposal.
+Emit only the active template. Follow this order: `choose` when no architecture id is supplied; otherwise `start`, then `identifier`, `title` when needed, `write`, and `close`. The accepted Reference Architecture remains authoritative. A realization cannot redesign it or override the ADR. A missing Profile, Objective, Control, or NFR continues without invented evidence. A malformed one of those baselines stops the skill and writes nothing. Clarification is read-only. An open finding can inform a risk. It cannot block the proposal.
 
-One accepted architecture produces at most one implementation. When the implementation catalog already has that architecture as Parent, show the recorded implementation and write no second one.
+One accepted architecture can have more than one current implementation. A current implementation is an accepted implementation-catalog row for that architecture. A removed row does not count and does not block a new one. Creating another leaves every existing implementation in place and does not change the decision or the architecture.
 
 ### Entry
 
@@ -68,18 +65,18 @@ One accepted architecture produces at most one implementation. When the implemen
 2. When none is present, go to `choose`.
 3. When an id is present, resolve it. When it matches no architecture, stop. Say the architecture was not found. Write nothing.
 4. When that architecture status is not `accepted`, stop. Say the architecture is not accepted. Write nothing.
-5. When that architecture is already Parent of an implementation, show the recorded implementation. When the ADR's Reference Implementation field is still `None`, go to `name`. Otherwise write nothing.
+5. When that architecture already has current implementations, show each current implementation, then go to `start`. A new implementation can still be proposed.
 6. Otherwise go to `start`.
 
 ### choose
 
-Read `architectures/architectures.md` and `implementations/implementations.md`. An architecture is waiting when its Status is `accepted` and its Architecture ID does not appear on any implementation catalog row. A removed implementation row still counts as that architecture already having an implementation. Do not open architecture records to build this list.
+Read `architectures/architectures.md` and `implementations/implementations.md`. Every architecture whose Status is `accepted` can be chosen, including one that already has current implementations. Count current implementations from accepted rows for that Architecture ID. A removed row does not count. Do not open architecture records to build this list.
 
-When none are waiting, say that no Reference Architecture is waiting for an implementation. Write nothing.
+When none are accepted, say that no accepted Reference Architecture is available. Write nothing.
 
-Otherwise emit one numbered line per waiting architecture, starting at 1, in architecture catalog order. Show the Architecture ID and its title. A stated number selects that architecture.
+Otherwise emit one numbered line per accepted architecture, starting at 1, in architecture catalog order. Show the Architecture ID, its title, and how many current implementations it has. A stated number selects that architecture.
 
-**1. [Architecture ID]:** [Architecture Title]
+**1. [Architecture ID]:** [Architecture Title] — [count] current implementations
 
 **Which Reference Architecture would you like to realize?**
 
@@ -101,9 +98,7 @@ On `start`, "looks good" is `accept`.
 
 ### start
 
-Build the proposed realization from the accepted architecture. Cover every responsibility the architecture includes. Use `Not applicable` only when the architecture does not include that responsibility. When evidence does not support a technology, use `Unknown` rather than inventing one.
-
-The responsibilities are Compute, Messaging, Persistence, Identity, Networking, Security, Observability, Recovery, Deployment, and Operations.
+Build the proposed realization from the accepted architecture. Cover every responsibility the architecture states. Mark a row `not applicable` only when that stated responsibility does not apply to this realization. Do not add a responsibility the architecture does not state. For each thing the architecture left free, state the choice this realization made, or `None` when nothing may vary. State the realized interface for each architecture interface, how conformance was shown, and the limitations of this realization, each or `None`. State one technology choice, with its intent, its reason, and its evidence. When evidence does not support a technology, use `Unknown` rather than inventing one.
 
 When a proposed realization contradicts the architecture, name the requirement, the conflict, and the impact. Offer `Resolve implementation` or `Revisit architecture`. Do not write.
 
@@ -130,7 +125,7 @@ When a proposed realization contradicts the architecture, name the requirement, 
 If this is accurate, just say so.
 
 - `edit`: emit one consequence sentence. Re-emit this block with the edit applied. Stay on `start`.
-- `accept`: when any included responsibility is still unsatisfied, name it and stay on `start`. Otherwise go to `identifier`.
+- `accept`: when a stated responsibility is neither covered nor marked not applicable, name it and stay on `start`. Otherwise go to `identifier`.
 - `unknown`: re-emit this block. Stay on `start`.
 - `question`: answer, then re-emit this block. Stay on `start`.
 - `decline`: stop. Write nothing.
@@ -150,7 +145,7 @@ a 0, b 1, c 2, d 3, e 4, f 5, g 6, h 7, i 8, j 9, k a, l b, m c, n d, o e, p f, 
 
 Compare that id with `implementations/implementations.md`, including removed rows.
 
-- The same title already has that id: use the existing record. Do not write a second one. Go to `name`.
+- The same title already has that id: use the existing record. Do not write a second one. Go to `close`.
 - The id is taken for a different title: go to `title`.
 - The id is free: go to `write`.
 
@@ -185,10 +180,14 @@ The record follows `.highway/library/templates/output/implementation-record.md`.
 - `architecture` is the Reference Architecture id.
 - `status` is `accepted`.
 - The title is the accepted implementation title.
-- Include Context, Implementation Summary, Technology Realization, Runtime Components, Deployment Topology, Environment Strategy, Data Realization, Integration Realization, Security Control Realization, NFR Realization, Lifecycle Activities, Assumptions, Risks, Constraints, Dependencies, and Traceability.
-- Lifecycle Activities are design, build, test, deploy, operate, monitor, and improve.
+- Include Variation Choices, Coverage, Realized Interfaces, Conformance Evidence, Limitations, Technology Choice, Context, Implementation Summary, Realized Capabilities, Runtime Components, Data Realization, Integration Realization, Security Control Realization, NFR Realization, Assumptions, Risks, Constraints, Dependencies, and Traceability.
+- Coverage has one row per responsibility the architecture states. Status is covered or not applicable.
+- When every row is covered or not applicable, Conformance is `compatible`. Do not write a gap section or a conflict section.
+- When a stated responsibility is uncovered, Conformance is `incomplete` and the gap is stated.
+- A technology choice is stated once, with its intent, its reason, and its evidence.
+- The architecture is named once, in Architecture Reference.
 - Security Control Realization and NFR Realization project the accepted Controls and NFRs. Do not change those records.
-- Traceability names the Request, Discovery, ADR, Reference Architecture, and this implementation.
+- Traceability names the Request, Discovery, the decision this realization came from, and this implementation. Do not name the architecture again.
 - Each realized capability has a business-readable title and one or more Realized By values.
 
 `implementations/capabilities.md` follows `.highway/library/templates/output/capability-catalog.md`.
@@ -213,17 +212,9 @@ The catalog follows `.highway/library/templates/output/implementation-catalog.md
 - Do not allocate from `Next ID`.
 - The first catalog version is `1.0.0`.
 - Adding an implementation increments the minor version.
-- One Reference Architecture id appears as Parent on at most one row.
+- More than one row may name the same Architecture ID.
 
-On success, go to `name`.
-
-### name
-
-Find the ADR named by the architecture's `adr` field. Set that ADR's `Reference Implementation` field to this `RI` id. Change no other ADR byte. The decision statement, rationale, selected option, and status stay as they were.
-
-When the ADR cannot be updated, keep the implementation records. Say the ADR could not be updated to name this implementation, and that running `/highway-implementation [RA id]` again will name it. Do not call the decision, architecture, and implementation chain complete.
-
-Then go to `close`.
+On success, go to `close`.
 
 ### close
 
@@ -239,12 +230,16 @@ This is a realization blueprint. It does not authorize deployment.
 ## Verification
 
 - A Reference Architecture id for an accepted architecture opens the proposed realization.
-- An invocation without an id lists the accepted architectures whose Architecture ID is absent from every implementation catalog row. Each line shows the Architecture ID and its title. The list is numbered. A stated number selects that architecture. A removed implementation row keeps that architecture off the list.
+- An invocation without an id lists every accepted architecture. Each line shows the Architecture ID, its title, and how many current implementations it has. The list is numbered. A stated number selects that architecture. A removed implementation row does not count as current.
+- When an architecture already has current implementations, those implementations are shown and a new one can still be proposed.
+- Declining a proposal writes nothing, and existing implementations stay as they were.
 - An architecture that is not accepted writes nothing.
-- One accepted architecture produces at most one implementation.
+- One accepted architecture can have more than one current implementation. Creating another leaves the existing ones in place.
 - The proposed realization is accepted before the record is written.
 - A contradiction with the architecture writes nothing.
-- The record status is `accepted`.
+- Coverage rows are the architecture's stated responsibilities. Conformance is `compatible` when every row is covered or not applicable, and that record has no gap section and no conflict section. An uncovered responsibility is `incomplete` and states the gap.
+- The architecture is named once. A technology choice is stated once.
+- The record status is `accepted`. The parent is an `RA` id.
 - `implementations/capabilities.md` is written in the same step, with ID, Parent, Title, and Realized By.
 - A capability id is `CAP` plus eight hex digits. The same Parent and title reuse that id. No capability record file is written.
 - The record contains no plans, tasks, source code, or infrastructure definitions.
@@ -253,19 +248,17 @@ This is a realization blueprint. It does not authorize deployment.
 - A taken id names the conflicting titles, says a title change is appropriate, and shows a new title. The write waits until the person accepts that title.
 - That message does not mention identifiers, hex, sampling, or the catalog.
 - A failed write leaves existing implementation, implementation-catalog, and capability-catalog bytes unchanged.
-- The skill does not change the Reference Architecture.
-- After the implementation is written, the ADR's Reference Implementation field names it. No other ADR field changes.
-- When that ADR update fails, the implementation remains and the chain is not called complete. A later invocation for the same architecture names it.
+- The skill does not change the Reference Architecture, the decision statement, the rationale, the selected option, or the decision status.
+- The skill does not write an implementation id onto the ADR.
 
 ## Error Handling
 
 - A missing or unknown architecture stops the skill and writes nothing.
 - An architecture that is not accepted stops the skill and writes nothing.
-- A second implementation for the same architecture stops the write and shows the existing implementation.
 - A realization that contradicts the architecture stops the write and names the conflict.
 - A malformed present Profile, Objective, Control, or NFR baseline stops the skill and writes nothing.
-- A failed write leaves existing implementation, implementation-catalog, and capability-catalog bytes unchanged.
-- A failed ADR update keeps the implementation, says the ADR could not be updated, and does not call the chain complete.
+- A failed write leaves the architecture and every other implementation unchanged, and leaves existing implementation, implementation-catalog, and capability-catalog bytes unchanged.
+- Declining a proposal writes nothing.
 
 ## Example
 

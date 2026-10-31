@@ -1,8 +1,8 @@
 ---
 name: implementation-record
-description: "Complete output skeleton for a proposed Reference Implementation blueprint."
+description: "Complete output skeleton for an accepted Reference Implementation record."
 metadata:
-  version: 1.0.0
+  version: 2.0.0
 ---
 
 ## File Frontmatter
@@ -10,8 +10,8 @@ metadata:
 ```yaml
 ---
 id: RIXXXXXX
-architecture: ARCHXXXXXX
-status: proposed
+architecture: RAXXXXXX
+status: accepted
 ---
 ```
 
@@ -22,58 +22,38 @@ status: proposed
 
 ## Architecture Reference
 
-Architecture: ARCHXXXXXX
+Architecture: RAXXXXXX
 Title: <accepted architecture title>
 Status: accepted
 
-## Implementation Selections
+## Variation Choices
 
-- Selection: <owner-provided component, technology, or mechanism>
-  Category: <Compute | Messaging | Persistence | Identity | Networking | Security | Observability | Recovery | Deployment | Operations>
-  Owner Evidence: <declared selection evidence>
-  Normalized Name: <deterministic normalized name>
+- <what the architecture left free>: <the choice this implementation made>
 
-## Architecture Compatibility Assessment
+## Coverage
 
-Result: Compatible | Incomplete | Incompatible
-Architecture Authority: <accepted Reference Architecture and governing ADR decisions>
-Assessment Scope: <architecture responsibilities assessed before RI generation>
+| Responsibility | Status |
+|---|---|
+| <architecture responsibility> | covered or not applicable |
 
-## Coverage Summary
+Conformance: compatible or incomplete
 
-| Category | Status | Architecture Responsibility | Implementation Selection | Evidence |
-|---|---|---|---|---|
-| Compute | Satisfied | <responsibility or None> | <selection or None> | <evidence or None> |
-| Messaging | Not Applicable | <responsibility or None> | <selection or None> | <evidence or None> |
-| Persistence | Not Applicable | <responsibility or None> | <selection or None> | <evidence or None> |
-| Identity | Not Applicable | <responsibility or None> | <selection or None> | <evidence or None> |
-| Networking | Not Applicable | <responsibility or None> | <selection or None> | <evidence or None> |
-| Security | Not Applicable | <responsibility or None> | <selection or None> | <evidence or None> |
-| Observability | Not Applicable | <responsibility or None> | <selection or None> | <evidence or None> |
-| Recovery | Not Applicable | <responsibility or None> | <selection or None> | <evidence or None> |
-| Deployment | Not Applicable | <responsibility or None> | <selection or None> | <evidence or None> |
-| Operations | Not Applicable | <responsibility or None> | <selection or None> | <evidence or None> |
+## Realized Interfaces
 
-## Implementation Gaps
+- <architecture interface>: <realized interface>
 
-Result: Incomplete
+Conformance Evidence: <how conformance was shown, or `None`>
 
-- Missing Capability: <capability or None>
-  Why It Matters: <architecture or governance impact>
-  Suggested Realization: <evidence-backed suggestion or Unknown>
-  Recommendation Confidence: <High | Medium | Low | Unknown>
-  Evidence: <source evidence or None>
-  Owner Resolution Action: <action required before reassessment>
+## Limitations
 
-## Implementation Conflicts
+<limitations of this accepted realization, or `None`>
 
-Result: Incompatible
+## Technology Choice
 
-- Architecture Requirement: <accepted requirement>
-  Implementation Selection: <conflicting selection>
-  Conflict Explanation: <direct contradiction and impact>
-  Evidence: <source evidence or None>
-  Resolution Paths: Resolve Implementation; Revisit Architecture
+Intent: <architecture intent>
+Choice: <technology or mechanism>
+Reason: <why this choice>
+Evidence: <deterministic supporting evidence>
 
 ## Context
 
@@ -89,28 +69,9 @@ Result: Incompatible
   Realized By: <provider, platform, product, technology, service, process, or mechanism; one or more>
   Evidence: <accepted implementation evidence explaining the realization>
 
-## Technology Realization
-
-- <architecture intent>: <technology or mechanism and deterministic supporting evidence>
-
-## Technology Realization Rationale
-
-- Selection: <implementation selection>
-  Architecture Intent: <preserved architecture responsibility>
-  Reason Selected: <deterministic reason>
-  Supporting Evidence: <architecture, governance, or owner evidence>
-
 ## Runtime Components
 
 - <runtime component>: <realized purpose and architecture relationship>
-
-## Deployment Topology
-
-<realized deployment arrangement, or `None`>
-
-## Environment Strategy
-
-<development, test, staging, and production realization, or `None`>
 
 ## Data Realization
 
@@ -127,36 +88,6 @@ Result: Incompatible
 ## NFR Realization
 
 <NFR-to-implementation requirement mappings without changing NFR ownership, or `None`>
-
-## Lifecycle Activities
-
-### Design
-
-<design realization mapping, or `None`>
-
-### Build
-
-<build realization mapping, or `None`>
-
-### Test
-
-<test realization mapping, or `None`>
-
-### Deploy
-
-<deploy realization mapping, or `None`>
-
-### Operate
-
-<operate realization mapping, or `None`>
-
-### Monitor
-
-<monitor realization mapping, or `None`>
-
-### Improve
-
-<improve realization mapping, or `None`>
 
 ## Assumptions
 
@@ -179,10 +110,14 @@ Result: Incompatible
 Request: REQXXXXXX
 Discovery: DISCXXXXXX
 ADR: ADRXXXXXX
-Architecture: ARCHXXXXXX
 Implementation: RIXXXXXX
 ```
 
-The body is rendered in this order. The initial status is always `proposed`; the source Reference
-Architecture and governance records remain immutable. Empty optional evidence uses explicit `None`.
-Technology choices must include architecture intent and deterministic evidence.
+The body is rendered in this order. The identifier is `RI` plus eight hex digits. The parent is an
+`RA` id. Status is `accepted`. The record does not use an `ARCH` parent or status `proposed`. The
+architecture is named once, in Architecture Reference. Coverage rows are the architecture's stated
+responsibilities. Each row is covered or not applicable. Conformance is `compatible` when every row
+is one of those two, and that record has no gap section and no conflict section. Conformance is
+`incomplete` when a stated responsibility is uncovered, and the gap is stated. A technology choice
+is stated once, with its intent, reason, and evidence. Empty optional evidence uses explicit
+`None`. Technology choices must include architecture intent and deterministic evidence.
