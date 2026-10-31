@@ -2,7 +2,7 @@
 name: discovery-record
 description: "Complete output skeleton for a retained Discovery analysis record."
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## File Frontmatter
@@ -29,6 +29,11 @@ Request: REQXXXXXX
 ## Research Findings
 
 <deterministic findings from the closed Request evidence>
+
+Product Claim Checks:
+- Claim: <named product or feature>
+  Source: <vendor documentation, or `None`>
+  Result: <contradicted, confirmed, or inconclusive>
 
 ## Assumptions
 
@@ -181,3 +186,13 @@ statement>
 
 The skill owns generated analysis text and relationship observations. The Request and governance
 baselines remain read-only inputs, and relationship sections never approve or mutate a baseline.
+
+Product Claim Checks lists one entry per option that names a product or feature, or `None`. Source
+is the vendor's current public documentation, product page, or release notes. A result of
+`contradicted` removes the option. A result of `inconclusive` leaves the option and is not
+confirmation. A product claim check is not accepted repository evidence.
+
+The Candidate Elimination Log also records an option removed by a product claim check, with
+Constraint Category `product currency` and the source as the value, and an option held out
+because accepted evidence does not confirm a required platform supports it, with Constraint
+Category `required platform` and the platform name as the value.

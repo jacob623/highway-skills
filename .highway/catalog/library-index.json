@@ -1,25 +1,25 @@
 {
-  "generated_at": "2026-10-31T14:56:29Z",
+  "generated_at": "2026-10-31T20:53:19Z",
   "entries": [
     {
       "library_type": "template",
       "name": "adr-catalog",
       "description": "Complete output skeleton for the repository ADR catalog.",
-      "version": "4.0.0",
+      "version": "4.1.0",
       "source_path": "library/templates/output/adr-catalog.md"
     },
     {
       "library_type": "template",
       "name": "adr-record",
       "description": "Complete output skeleton for an accepted architecture decision record.",
-      "version": "3.0.0",
+      "version": "3.1.0",
       "source_path": "library/templates/output/adr-record.md"
     },
     {
       "library_type": "template",
       "name": "architecture-catalog",
       "description": "Complete output skeleton for the repository Reference Architecture catalog.",
-      "version": "3.0.0",
+      "version": "3.1.0",
       "source_path": "library/templates/output/architecture-catalog.md"
     },
     {
@@ -89,7 +89,7 @@
       "library_type": "template",
       "name": "discovery-record",
       "description": "Complete output skeleton for a retained Discovery analysis record.",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "source_path": "library/templates/output/discovery-record.md"
     },
     {

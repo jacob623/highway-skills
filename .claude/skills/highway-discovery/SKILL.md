@@ -4,14 +4,14 @@ description: "Manages one discovery for a complete request."
 usage: "Invoke as /highway-discovery with one request id or one discovery id."
 compatibility: all
 metadata:
-  version: 4.0.0
+  version: 5.0.0
 ---
 
 # highway-discovery
 
 ## Purpose
 
-Creates one Discovery for a completed Request, writes every option before the list is shown, and updates that file when the person adds, replaces, or removes an option.
+Creates one Discovery for a completed Request, checks each named product claim before writing, writes every option before the list is shown, and updates that file when the person adds, replaces, or removes an option.
 
 ## When to use
 
@@ -35,6 +35,7 @@ Do not report Status, Summary, Next Action, Blocking Reason, Missing, Complete, 
 - Accepted Profile, Objectives, Controls, and NFRs when present.
 - `clarifications/clarifications.md` and one Clarification at `CLAR-[REQ-ID]` when that row exists.
 - Reference Architectures and Reference Implementations when present, for exact matching and tie-breaks only.
+- The vendor's current public documentation for each product or feature a generated option names.
 - `requests/requests.md` and `discoveries/discoveries.md`.
 - `.highway/library/templates/output/discovery-record.md`.
 - `.highway/library/templates/output/discovery-catalog.md`.
@@ -54,7 +55,7 @@ The complete structure is `.highway/library/templates/output/discovery-record.md
 
 User-visible interaction follows the Highway Experience Standard. Repository ownership stays with the person.
 
-Emit only the active template. Follow this order: `choose` when neither id is supplied; `analyze` for a Request; `identifier`, `title` when needed, and `write` before `start`; then `explore`. A supplied Discovery id goes to `start` and does not write. The recommendation is advisory. ADR owns the decision. Do not mutate the Request, Clarification, Profile, Objectives, Controls, NFRs, Architectures, or Implementations.
+Emit only the active template. Follow this order: `choose` when neither id is supplied; `analyze` and `check` for a Request; `identifier`, `title` when needed, and `write` before `start`; then `explore`. A supplied Discovery id goes to `start` and does not write. The recommendation is advisory. ADR owns the decision. Do not mutate the Request, Clarification, Profile, Objectives, Controls, NFRs, Architectures, or Implementations.
 
 Load evidence in this order: Request, its eight Solution Constraints, Clarification responses, Profile, Objectives, Controls, NFRs, Reference Architectures. Request evidence wins when Clarification disagrees. Clarification changes assumptions, risks, unknowns, and research findings only. It does not change which options exist, their scores, or the recommendation.
 
@@ -65,7 +66,7 @@ Redact secrets and regulated personal data before scoring or writing. Replace ea
 1. Read the invocation for one Request id or one Discovery id.
 2. When both are present, go to `choose`.
 3. When one Request id is present, resolve it. When it matches no request, stop. Say the Request was not found. Write nothing. When its `## Completeness` is not `Complete`, stop. Say the Request is incomplete. Write nothing. Otherwise go to `analyze`.
-4. When one Discovery id is present, resolve it. When it matches no Discovery, stop. Say the Discovery was not found. Write nothing. Otherwise load its options and go to `start`. Do not write.
+4. When one Discovery id is present, resolve it. When it matches no Discovery, stop. Say the Discovery was not found. Write nothing. Otherwise load its options and go to `start`. Do not write. Do not run the check.
 5. When neither is present, go to `choose`.
 
 ### choose
@@ -106,6 +107,7 @@ Classify the latest reply before any other action.
 
 - `select`: names an option, or states its number, to explore.
 - `decide`: says they are ready to decide on an option.
+- `adopt`: selects the option being explored for the Decision record.
 - `matrix`: asks to see the comparison matrix.
 - `edit`: adds, removes, corrects, splits, combines, or replaces an option or the Discovery title.
 - `accept`: affirms the current block and adds no fact.
@@ -123,7 +125,7 @@ When `allowed_solution_classes` is known, keep only options in those classes. Wh
 
 Exclude an option that violates `existing_platforms_required`, `hosting_restrictions`, `vendor_restrictions`, `procurement_constraints`, or `regulatory_restrictions`. Record each exclusion with the option title, the constraint, and the reason. Preferred platforms and known systems do not exclude an option.
 
-Sort the remaining options by Desired Change alignment, Objective alignment, constraint alignment, then title. Keep the first two to five. When more than five remain, keep the first five and record the rest as excluded by that boundary. When fewer than two remain, stop. Say the Request does not support two viable options. Write nothing.
+Sort the remaining options by Desired Change alignment, Objective alignment, constraint alignment, then title. Run `check` on them. Then keep the first two to five of the options that remain. When more than five remain, keep the first five and record the rest as excluded by that boundary. When fewer than two remain, stop. Say the Request does not support two viable options. Name each option `check` removed or held. Write nothing.
 
 Derive each option id with the title rule in `identifier`, using the prefix `OPT`. Then score only the retained options.
 
@@ -141,6 +143,20 @@ Count a Reference Implementation only when it references a matched Reference Arc
 When totals tie, pick the winner in this order, and stop at the first criterion that leaves one option: a Reference Architecture match, then the higher Reference Implementation count, then the lower `OPT` id in alphabetical order. Reference Implementation evidence does not change a score except through this tie-break.
 
 Mark exactly one option `Recommended`. Go to `identifier`.
+
+### check
+
+Run this on the options that remain after constraint exclusions, before the two-to-five boundary and before scoring. Do not run it on an option the person adds or replaces, or when a Discovery id is opened.
+
+For each option that relies on a named product or feature, read that vendor's current public documentation, product pages, and release notes. Send only the product or feature name and the vendor name. An option that names no product or feature is not checked.
+
+- The vendor says the product or feature is deprecated, retired, or no longer offered: the result is `contradicted`. Remove the option. Record every vendor page used, including one that still describes it.
+- The vendor describes it, and no vendor page says it is no longer offered: the result is `confirmed`. Keep the option. Do not change its score.
+- No vendor documentation, only a blog, forum, or comparison, or the check cannot be completed: the result is `inconclusive`. Keep the option. Do not treat it as confirmed.
+
+When `existing_platforms_required` names a platform the option depends on, hold the option out of the scored options unless the Request, its Clarification, Profile, Objectives, Controls, NFRs, or Reference Architectures say that platform supports it. Vendor documentation does not count as that support. When required platforms are `unknown`, hold nothing.
+
+Derive an `OPT` id for each removed or held option. Do not score it. A check does not change the score of an option that remains and does not override an accepted Control, NFR, or constraint.
 
 ### identifier
 
@@ -199,6 +215,8 @@ The record follows `.highway/library/templates/output/discovery-record.md`.
 - Copy the Request evidence and the eight Solution Constraints in their source order.
 - Write every retained option, including its why, summary, request alignment, objective alignment, control alignment, NFR alignment, benefits, risks, assumptions, dependencies, and licensing costs.
 - Include Research Findings, Assumptions, Risks, Unknowns, the Candidate Elimination Log, the Comparison Matrix, and one advisory Recommendation.
+- Research Findings lists each product claim check with its claim, source or `None`, and result. A check result is not accepted repository evidence.
+- The Candidate Elimination Log records each option `check` removed, with Constraint Category `product currency` and the source, and each option it held, with `required platform` and the platform name. Each row has Status `Excluded`.
 - The matrix totals equal the option scores. Exactly one option is `Recommended`.
 - Do not write a selected option, a rejected option, a decision, or an authorization.
 
@@ -222,6 +240,12 @@ When a matched architecture has a current implementation, emit one notice before
 
 **[Implementation]** is a current implementation of **[Architecture]**, from **[Decision]**.
 
+After a new analysis, emit one sentence for each option `check` removed or held, after that notice and before the numbered options.
+
+**[Option title]** was left out. [Vendor] says [product or feature] is no longer offered. Source: [source].
+
+**[Option title]** was left out. Accepted evidence does not say [platform] supports it.
+
 Emit one numbered line per option, starting at 1, in displayed order. Show the option id and its title. Put `(Recommended)` after the recommended option title. The why is one sentence grounded in the Request, Objectives, Controls, and NFRs. A stated number selects that option.
 
 **Here is a proposed starting point for your discovery:**
@@ -237,7 +261,7 @@ If you are ready to decision on one of these options, just say so.
 - `select`: go to `explore` for the named or numbered option.
 - `decide`: continue as `highway-adr` with this Discovery id. When the reply also names an option or its number, pass that option id and continue at `start`. When it does not, continue at `choose-option`. Do not create the ADR in this skill.
 - `matrix`: emit one row per option. The Option column shows the same number used in the list, then the option title, as `1. [Option title]`. That number is part of the Option column and does not count toward the column limit. Use at most 6 columns. Include Operational considerations and Licensing costs. Choose the remaining columns from the differences that matter for this Request. When a dollar estimate is available, show that figure. Otherwise use Low, Medium, High, a bounded range, or Unknown. The matrix does not change scores. Then ask **Which option would you like to explore?** Under that question, in normal text, emit: If you are ready to decision on one of these options, just say so. Do not offer the comparison matrix again. Stay on `start`.
-- `edit`: when the person adds, replaces, or removes an option, update the Discovery file through `write`, then emit one consequence sentence and this block. Stay on `start`.
+- `edit`: when the person adds, replaces, or removes an option, update the Discovery file through `write`, then emit one consequence sentence and this block. Do not run `check` on an option the person adds or replaces. Stay on `start`.
 - `accept`: re-emit this block. Stay on `start`.
 - `unknown`: re-emit this block. Stay on `start`.
 - `question`: answer without opening an option. For two named options, compare them without changing scores. Re-emit this block after the answer. Stay on `start`.
@@ -275,6 +299,9 @@ Emit the named option in this order. Use accepted Request, Objective, Control, a
 
 **Are there any additional concerns you would like to explore for this option, or would you like to return to the list of options?**
 
+If you'd like to select this option for the Decision record, just say so.
+
+- `adopt`: continue as `highway-adr` with this Discovery id and this option id, at `start`. Do not create the ADR in this skill.
 - `question`: answer the question about this option. When the answer includes a cost, use a dollar figure when one is available. Otherwise use Low, Medium, High, a bounded range, or Unknown. Do not change scores. Then re-emit this question. Stay on `explore`.
 - A request to return to the list: go to `start`.
 - `select`: go to `explore` for the newly named or numbered option.
@@ -297,6 +324,10 @@ Emit the named option in this order. Use accepted Request, Objective, Control, a
 - After the comparison matrix, the question asks which option to explore, does not offer the matrix again, and says the person can decide.
 - A reply that is ready to decide continues as `highway-adr` with this Discovery id. This skill does not create the ADR.
 - The explored option shows Summary, Request Alignment, Objective Alignment, Control Alignment, NFR Alignment, Benefits, Risks, Assumptions, Dependencies, and Licensing costs.
+- The explored option ends with its question, then says the person can select this option for the Decision record. Selecting it continues as `highway-adr` with this Discovery id and this option id.
+- A named product or feature the vendor no longer offers is removed before scoring and named with its source before the options. An inconclusive check keeps the option and is not confirmation.
+- An option that depends on a required platform is held out when accepted evidence does not say that platform supports it. Vendor documentation does not put it back.
+- Opening a Discovery id, or adding an option, does not run the check.
 - Fewer than two viable options writes nothing.
 - A new analysis writes every retained option before the option list is shown.
 - Adding, replacing, or removing an option updates the Discovery file.

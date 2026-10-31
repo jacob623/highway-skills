@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-31T14:56:35Z",
+  "generated_at": "2026-10-31T20:53:22Z",
   "entries": [
     {
       "id": "highway-adr",
@@ -7,7 +7,7 @@
       "description": "Manages one architecture decision for one discovery.",
       "usage": "Invoke as /highway-adr with one discovery id.",
       "compatibility": "all",
-      "version": "4.0.0",
+      "version": "5.0.0",
       "source_path": "skills/highway-adr/SKILL.md"
     },
     {
@@ -25,7 +25,7 @@
       "description": "Assess accepted repository context.",
       "usage": "Invoke as /highway-assessment.",
       "compatibility": "all",
-      "version": "4.0.0",
+      "version": "5.0.0",
       "source_path": "skills/highway-assessment/SKILL.md"
     },
     {
@@ -52,7 +52,7 @@
       "description": "Manages one discovery for a complete request.",
       "usage": "Invoke as /highway-discovery with one request id or one discovery id.",
       "compatibility": "all",
-      "version": "4.0.0",
+      "version": "5.0.0",
       "source_path": "skills/highway-discovery/SKILL.md"
     },
     {

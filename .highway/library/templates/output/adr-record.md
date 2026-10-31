@@ -2,7 +2,7 @@
 name: adr-record
 description: "Complete output skeleton for an accepted architecture decision record."
 metadata:
-  version: 3.0.0
+  version: 3.1.0
 ---
 
 ## File Frontmatter
@@ -133,7 +133,9 @@ Every Reference Architecture Handoff field remains present and uses a valid valu
 `None`. The handoff does not repeat the selected option or the Reference Architecture Matches.
 The handoff contains no implementation entry. Reference Architecture is `None` until an architecture
 exists. A reused architecture is named there when the decision is accepted. Updating that field
-changes no other ADR field.
+changes no other ADR field. A decision that runs beside the current decision of several
+architectures lists every architecture it names there, in id order, separated by a comma and a
+space, the same as its catalog Architecture ID cell. Its Required Architecture Work is `None`.
 
 Alternatives Considered lists every option, including the selected one. Alternative outcomes are
 exactly `Selected`, `Rejected`, or `Evaluated`; `Evaluated` means viable but not selected, while
