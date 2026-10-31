@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-31T14:02:26Z",
+  "generated_at": "2026-10-31T14:56:29Z",
   "entries": [
     {
       "library_type": "template",
@@ -56,6 +56,13 @@
       "description": "Complete output skeleton for one accepted automation proposal.",
       "version": "2.0.0",
       "source_path": "library/templates/output/codify-record.md"
+    },
+    {
+      "library_type": "template",
+      "name": "codify-tasks",
+      "description": "Complete output skeleton for the ordered task list of one accepted automation.",
+      "version": "1.0.0",
+      "source_path": "library/templates/output/codify-tasks.md"
     },
     {
       "library_type": "template",

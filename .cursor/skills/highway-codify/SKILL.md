@@ -4,14 +4,14 @@ description: "Manages one functional artifact for one accepted implementation."
 usage: "Invoke as /highway-codify with one implementation name."
 compatibility: all
 metadata:
-  version: 2.0.0
+  version: 3.0.0
 ---
 
 # highway-codify
 
 ## Purpose
 
-Suggests self-service automations for one accepted implementation and writes the one automation the person accepts.
+Suggests self-service automations for one accepted implementation, writes the one automation the person accepts, and codes it from a task list that follows the organization's coding standards.
 
 ## When to use
 
@@ -25,6 +25,7 @@ Do not change the implementation, its architecture, its decision, the request, t
 Do not invent a means that no accepted architecture describes.
 Do not create a skill for a particular means.
 Do not put lifecycle activities on the implementation record.
+Do not create, edit, or remove a coding standard or a row of `library/coding-standards/coding-standards.md`.
 Do not report Status, Summary, Next Action, Blocking Reason, Missing, Complete, or Blocked.
 
 ## Inputs
@@ -32,38 +33,42 @@ Do not report Status, Summary, Next Action, Blocking Reason, Missing, Complete, 
 - An implementation title, a description, or an implementation id, and one optional action, when the person supplies them.
 - `implementations/implementations.md` and the accepted implementation records.
 - `architectures/architectures.md` and the accepted architecture records.
-- `code/code.md` when present.
+- `code/code.md` and `code/[ID]/codify-tasks.md` when present.
+- `library/coding-standards/coding-standards.md` and the standards it names, when present.
 - `.highway/library/templates/output/codify-record.md`.
 - `.highway/library/templates/output/codify-catalog.md`.
+- `.highway/library/templates/output/codify-tasks.md`.
 - `.highway/governance/experience-standard.md`.
 - A project root containing `.highway/`.
 
 ## Outputs
 
-The complete structure is `.highway/library/templates/output/codify-record.md` and `.highway/library/templates/output/codify-catalog.md`.
+The complete structure is `.highway/library/templates/output/codify-record.md`, `.highway/library/templates/output/codify-catalog.md`, and `.highway/library/templates/output/codify-tasks.md`.
 
 - One saved proposal at `code/[ID]/codify.md` after the person accepts the proposal.
-- One `code/[ID]/README.md` with two parts.
-- One subfolder for each component the accepted proposal names.
+- One task list at `code/[ID]/codify-tasks.md` written with that proposal.
 - An updated `code/code.md` written with that proposal.
-- A closing message that names the automation and says it was not run.
+- One subfolder for each component the accepted proposal names, holding the files its tasks produce.
+- One `code/[ID]/README.md` with two parts, produced by the last task.
+- A closing message that names the automation and the task list, says whether every task is done, and says it was not run.
 - No automation when the implementation is missing, not accepted, the proposal is declined, or a write fails.
 
 ## Procedure
 
-Emit only the active template. Follow this order: `choose` when no implementation is named; `suggest` when no action is named; then `start`, `identifier`, `title` when needed, `write`, and `close`. Follow `.highway/governance/experience-standard.md` for attribution and acceptance wording. A current implementation is an accepted row in `implementations/implementations.md`. A removed row does not match and does not block a new automation.
+Emit only the active template. Follow this order: `choose` when no implementation is named; `suggest` when no action is named; then `start`, `identifier`, `title` when needed, `write`, `code`, and `close`. Follow `.highway/governance/experience-standard.md` for attribution and acceptance wording. A current implementation is an accepted row in `implementations/implementations.md`. A removed row does not match and does not block a new automation.
 
 ### Entry
 
 1. When `.highway/` cannot be found, stop. Say the project root cannot be located. Write nothing.
 2. Read the invocation for an implementation title, a description, an implementation id, and one optional action.
-3. When an implementation id matches one accepted implementation, select it and show its title.
-4. When an exact title matches one accepted implementation, select it. Compare without regard to case.
-5. After a selection, go to `start` when the invocation named one action. Otherwise go to `suggest`.
-6. When a description is present, go to `choose` and suggest at most five matches.
-7. When nothing is named and one to five accepted implementations exist, go to `choose` and list each one.
-8. When nothing is named and more than five accepted implementations exist, go to `choose` and list none.
-9. When no accepted implementation exists, say so. Write nothing.
+3. When the invocation names an automation in `code/code.md` by title or `CDY` id and its task list has an open task, go to `code` at the first open task.
+4. When an implementation id matches one accepted implementation, select it and show its title.
+5. When an exact title matches one accepted implementation, select it. Compare without regard to case.
+6. After a selection, go to `start` when the invocation named one action. Otherwise go to `suggest`.
+7. When a description is present, go to `choose` and suggest at most five matches.
+8. When nothing is named and one to five accepted implementations exist, go to `choose` and list each one.
+9. When nothing is named and more than five accepted implementations exist, go to `choose` and list none.
+10. When no accepted implementation exists, say so. Write nothing.
 
 ### choose
 
@@ -188,7 +193,7 @@ a 0, b 1, c 2, d 3, e 4, f 5, g 6, h 7, i 8, j 9, k a, l b, m c, n d, o e, p f, 
 
 Compare that id with `code/code.md`, including removed rows.
 
-- The same title already has that id: use the existing record. Do not write a second one. Go to `close`.
+- The same title already has that id: use the existing record. Do not write a second one. Go to `code` at the first open task, or to `close` when every task is done.
 - The id is taken for a different title: go to `title`.
 - The id is free: go to `write`.
 
@@ -215,7 +220,7 @@ Do not write until the id is free or the existing record is reused.
 
 ### write
 
-Write `code/[ID]/codify.md`, `code/[ID]/README.md`, the component folders, and `code/code.md` together. Write none of them until all are valid. A failed write leaves every existing automation byte unchanged and leaves no partial folder. Say what failed in terms the person can act on. Stay on `write`.
+Write `code/[ID]/codify.md`, `code/[ID]/codify-tasks.md`, and `code/code.md` together. Write none of them until all are valid. A failed write leaves every existing automation byte unchanged and leaves no partial folder. Say what failed in terms the person can act on. Stay on `write`. Do not write the README or any component file here.
 
 The record follows `.highway/library/templates/output/codify-record.md`.
 
@@ -230,9 +235,14 @@ The record follows `.highway/library/templates/output/codify-record.md`.
 - Day is `Day 1` or `Day 2`.
 - Means is the architecture title.
 
-`README.md` has two parts, in this order. Head the first part `## Implement` and the second part `## Use`. Implement says what is put in place, where it goes, and how to enable it, including the preparation this automation needs. Use says how a non-technical person starts this one automation, what they provide, and what they receive, using the interface of the accepted means. Use does not ask that person to edit the generated files or read the implementation record.
+The task list follows `.highway/library/templates/output/codify-tasks.md`. Read `library/coding-standards/coding-standards.md` when present.
 
-Each component the accepted proposal names has one subfolder. Lowercase the component name and write spaces as hyphens. Write the files that perform that component's part of this one action inside that subfolder. Write no subfolder the proposal does not name. Do not run those files.
+- Each task produces one file for one component the accepted proposal names, or the README.
+- Every named component has at least one task. No task names another component.
+- A file uses the first catalog row whose File Patterns match its name. A row whose standard file is absent is unavailable. A second row for the same technology is a duplicate, and the first row applies.
+- A file with an available standard names that Standard Path. Any other file says `Standard: No coding standard applies.`
+- When that standard's Tests section says `Tests: required`, add one test task directly after the file's task, naming the same standard. Add no other test task.
+- The README task is last.
 
 The catalog follows `.highway/library/templates/output/codify-catalog.md`. The catalog path is `code/code.md`.
 
@@ -247,17 +257,39 @@ The catalog follows `.highway/library/templates/output/codify-catalog.md`. The c
 - Emit no timestamp, random value, or environment value.
 - Do not change the implementation, its architecture, its decision, the request, the assessment finding, Controls, or NFRs.
 
-On success, go to `close`.
+On success, go to `code` without asking a question.
+
+### code
+
+Open `code/[ID]/codify-tasks.md`. Start at the first open task. For each open task, in list order:
+
+1. Read the standard the task names, when it names one.
+2. Write the task's file so it follows that standard. The accepted architecture and implementation decide what is built. The standard decides how it is written.
+3. Mark the task `[X]`.
+4. Go to the next open task.
+
+Component files go in that component's subfolder. Lowercase the component name and write spaces as hyphens. Write no subfolder the proposal does not name. Do not run any file.
+
+The README task writes two parts, in this order. Head the first part `## Implement` and the second part `## Use`. Implement says what is put in place, where it goes, and how to enable it, including the preparation this automation needs. Use says how a non-technical person starts this one automation, what they provide, and what they receive, using the interface of the accepted means. Use does not ask that person to edit the generated files or read the implementation record.
+
+When a task cannot be finished, stop at that task. Leave it and every later task open. Start no later task. Keep the files that finished tasks wrote. Go to `close`.
+
+When every task is done, go to `close`.
 
 ### close
 
 **Automation recorded**
 
 - **Automation record:** `code/[ID]/codify.md`
+- **Task list:** `code/[ID]/codify-tasks.md`
 - **Title:** [Title]
 - **Implementation:** [Implementation title]
 
-The files are written. The automation was not run.
+[Every task is done. Or: Task [T###] could not be finished because [reason]. The next run starts there.]
+
+[No coding standards catalog was found. A standard named by the catalog was not found at [path]. [Technology] has more than one catalog row, and the first row was used. Include only the sentences that apply.]
+
+The automation was not run.
 
 ## Verification
 
@@ -274,8 +306,13 @@ The files are written. The automation was not run.
 - An instance is running only when Context or Implementation Summary contains `instance is running` or `instances are running`.
 - A second action waits for another run. Declining writes nothing. Accepting is the only confirmation.
 - The saved record contains the summary, description, diagram, acceptance criteria, and component responsibilities and boundaries.
-- The folder contains `codify.md`, `README.md`, and one subfolder per named component.
-- Acceptance runs the automation zero times and leaves the implementation, architecture, decision, request, and finding unchanged.
+- Acceptance writes `codify.md`, `codify-tasks.md`, and the catalog row together, before any component file or the README.
+- Each task produces one file and names a Standard Path or says `No coding standard applies.` A test task follows a file only when its standard says `Tests: required`. The README task is last.
+- Coding starts with no question after acceptance. Each task's standard is read before its file is written, and each task is marked `[X]` before the next begins.
+- A task that cannot be finished stops the run with that task and every later task open. The next run starts at the first open task and redoes no finished task.
+- After coding, the folder contains `codify.md`, `codify-tasks.md`, `README.md`, and one subfolder per named component.
+- Codify creates, edits, and removes no coding standard and no row of the coding standards catalog.
+- Acceptance and coding run the automation zero times and leave the implementation, architecture, decision, request, and finding unchanged.
 - Each id is `CDY` plus eight hex digits derived from the title.
 - A taken id names the conflicting titles, says a title change is appropriate, and shows a new title. The write waits until the person accepts that title.
 - That message does not mention identifiers, hex, sampling, or the catalog.
@@ -284,7 +321,9 @@ The files are written. The automation was not run.
 ## Error Handling
 
 - A missing `.highway/` root stops the skill and writes nothing.
-- A missing record or catalog template stops the skill, names the template path, and writes nothing.
+- A missing record, catalog, or task list template stops the skill, names the template path, and writes nothing.
+- A missing coding standards catalog leaves every task with `Standard: No coding standard applies.` The close says no catalog was found.
+- A task that cannot be finished stops coding at that task, leaves it open, and keeps the files finished tasks wrote.
 - An implementation that is not accepted stops the skill and writes nothing.
 - No accepted architecture for the means stops the write and says so.
 - A failed write leaves no partial folder and leaves existing catalog bytes unchanged.

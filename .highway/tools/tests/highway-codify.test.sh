@@ -32,6 +32,10 @@ REQUEST="$SKILLS/highway-request/SKILL.md"
 ASSESSMENT="$SKILLS/highway-assessment/SKILL.md"
 RECORD="$OUTPUT/codify-record.md"
 CATALOG="$OUTPUT/codify-catalog.md"
+TASKS="$OUTPUT/codify-tasks.md"
+STANDARDS_CATALOG="$HIGHWAY_ROOT/../library/coding-standards/coding-standards.md"
+SAMPLE_STANDARD="$HIGHWAY_ROOT/../library/coding-standards/terraform.md"
+MANIFEST="$HIGHWAY_ROOT/tools/.distribution-manifest"
 
 for text in \
 	'Here is a proposed starting point for your automation:' \
@@ -48,9 +52,22 @@ for text in \
 	'You can also provide your own.' \
 	'```flowchart' \
 	'Responsibility:' \
-	'Boundary:'; do
+	'Boundary:' \
+	'codify-tasks.md' \
+	'library/coding-standards/coding-standards.md' \
+	'No coding standard applies.' \
+	'Tests: required' \
+	'first open task'; do
 	require "$CODIFY" "$text"
 done
+
+require "$TASKS" 'automation: CDYXXXXXX'
+require "$TASKS" '- [ ] T001'
+require "$STANDARDS_CATALOG" 'Standard Path'
+require "$STANDARDS_CATALOG" 'library/coding-standards/terraform.md'
+require "$SAMPLE_STANDARD" '## Tests'
+require "$SAMPLE_STANDARD" 'Tests: required'
+require "$MANIFEST" 'include	library/coding-standards	-'
 
 reject "$CODIFY" '**1. [Implementation ID]:**'
 
