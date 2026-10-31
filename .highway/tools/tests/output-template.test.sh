@@ -38,6 +38,7 @@ ARCHITECTURE_SKILL="$HIGHWAY_ROOT/skills/highway-architecture/SKILL.md"
 IMPLEMENTATION_SKILL="$HIGHWAY_ROOT/skills/highway-implementation/SKILL.md"
 ONBOARDING_SKILL="$HIGHWAY_ROOT/skills/highway-onboarding/SKILL.md"
 ASSESSMENT_SKILL="$HIGHWAY_ROOT/skills/highway-assessment/SKILL.md"
+CODIFY_SKILL="$HIGHWAY_ROOT/skills/highway-codify/SKILL.md"
 ADR_RECORD_TEMPLATE="$HIGHWAY_ROOT/library/templates/output/adr-record.md"
 ADR_CATALOG_TEMPLATE="$HIGHWAY_ROOT/library/templates/output/adr-catalog.md"
 VALIDATE_LIBRARY="$HIGHWAY_ROOT/tools/validate-library.sh"
@@ -321,11 +322,11 @@ fi
 
 # The current file-emitting skills are the complete set of citing skills for this feature.
 citing_count="$(grep -RIl 'library/templates/output/' "$HIGHWAY_ROOT/skills" --include='SKILL.md' | wc -l | tr -d ' ')"
-if [[ "$citing_count" != "11" ]]; then
-	echo "FAIL: expected 11 output-template citing skills, found $citing_count"
+if [[ "$citing_count" != "12" ]]; then
+	echo "FAIL: expected 12 output-template citing skills, found $citing_count"
 	fail=1
 fi
-for citing_skill in "$NFR_SKILL" "$CONTROL_SKILL" "$PROFILE_SKILL" "$OBJECTIVE_SKILL" "$NEW_SKILL" "$DISCOVERY_SKILL" "$ADR_SKILL" "$ARCHITECTURE_SKILL" "$IMPLEMENTATION_SKILL" "$ONBOARDING_SKILL" "$ASSESSMENT_SKILL"; do
+for citing_skill in "$NFR_SKILL" "$CONTROL_SKILL" "$PROFILE_SKILL" "$OBJECTIVE_SKILL" "$NEW_SKILL" "$DISCOVERY_SKILL" "$ADR_SKILL" "$ARCHITECTURE_SKILL" "$IMPLEMENTATION_SKILL" "$ONBOARDING_SKILL" "$ASSESSMENT_SKILL" "$CODIFY_SKILL"; do
 	if ! grep -Fq "library/templates/output/" "$citing_skill"; then
 		echo "FAIL: dependent review omitted citing skill $citing_skill"
 		fail=1

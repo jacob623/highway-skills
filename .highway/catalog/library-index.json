@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-29T22:51:26Z",
+  "generated_at": "2026-10-31T12:43:03Z",
   "entries": [
     {
       "library_type": "template",
@@ -42,6 +42,20 @@
       "description": "Complete output skeleton for the Capability Catalog written with a Reference Implementation.",
       "version": "2.0.0",
       "source_path": "library/templates/output/capability-catalog.md"
+    },
+    {
+      "library_type": "template",
+      "name": "codify-catalog",
+      "description": "Complete output skeleton for the repository automation catalog.",
+      "version": "1.0.0",
+      "source_path": "library/templates/output/codify-catalog.md"
+    },
+    {
+      "library_type": "template",
+      "name": "codify-record",
+      "description": "Complete output skeleton for one accepted automation proposal.",
+      "version": "1.0.0",
+      "source_path": "library/templates/output/codify-record.md"
     },
     {
       "library_type": "template",

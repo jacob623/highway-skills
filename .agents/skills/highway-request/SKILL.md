@@ -4,7 +4,7 @@ description: "Manages one business request and its accepted artifact."
 usage: "Invoke as /highway-request with the business change."
 compatibility: all
 metadata:
-  version: 4.0.0
+  version: 5.0.0
 ---
 
 # highway-request
@@ -22,7 +22,7 @@ Collects one business request from the invocation.
 
 Do not create Discovery, ADR, Architecture, Implementation, Control, NFR, or Objective records.
 Do not change the status of an existing request.
-Do not choose a solution, architecture, or implementation.
+Do not choose a solution or an architecture while shaping the request. The close may name an accepted implementation. Do not write an implementation.
 Do not report Status, Summary, Next Action, Blocking Reason, Missing, Complete, or Blocked.
 Do not show Current Domain, Completed Domains, or Remaining Domains.
 
@@ -42,7 +42,7 @@ The complete structure is `.highway/library/templates/output/request-record.md` 
 
 - One request record at `requests/[ID].md` after the complete proposal is accepted.
 - An updated `requests/requests.md` written with that record.
-- A closing message that names the record and the Discovery command.
+- A closing message that names the record and exactly one next step.
 - No request artifact when the proposal is not accepted or a write fails.
 
 ## Procedure
@@ -56,7 +56,7 @@ Exclude a secret or regulated personal data. Ask for a business-relevant replace
 ### Entry
 
 1. Read the invocation. A handoff from `highway-assessment` is invocation context.
-2. When it names a business problem, idea, desired change, or a seeded assessment finding, go to `start`. Do not carry assessment solution examples into the request. Options are explored later by `highway-discovery`.
+2. When it names a business problem, idea, desired change, or a seeded assessment finding, go to `start`. Do not carry assessment solution examples into the request. The close names the next skill after the request is accepted.
 3. When it does not, go to `intake`.
 4. When `.highway/` cannot be found, stop. Say the project root cannot be located. Write nothing.
 
@@ -229,7 +229,27 @@ On success, go to `close`.
 - **Identifier:** `[ID]`
 - **Status:** accepted
 
+Read `implementations/implementations.md`. A match is an accepted row. A removed row does not match. Open an accepted implementation record to read its summary and its realized capability titles.
+
+When Entry recorded a handoff from `highway-assessment`, the match set is the accepted implementations named by that finding's accepted evidence. Do not add other matches.
+
+Otherwise compare the accepted request title and Desired Change, without regard to case. An exact implementation title selects that one implementation. Otherwise a realized capability title that appears in full in that text is a match. Otherwise an implementation title that appears in full in that text, or that text appearing in full in the summary, is a match. Put exact titles first, then capability titles, then summary matches. Within each group, keep catalog order.
+
+The action is Desired Change. When it states a second action, keep the first and say the other waits for another run.
+
+When one implementation matches, name it by title. Do not mention discovery. Do not state the day. Emit:
+
+Run `/highway-codify` for **[Implementation title]** to **[action]**.
+
+When two to five match, list them by title and short description. Do not use an id as the label. After the person picks one, emit the one-match line and say the others wait for another run.
+
+When more than five match, list none. Say the person can give a title or a description. Then suggest at most five by the same order.
+
+When no accepted implementation matches, emit:
+
 Run `/highway-discovery [ID]` to evaluate candidate solutions against your objectives, safeguards, and operational expectations.
+
+Do not continue into codify in the same message. Do not rewrite the request.
 
 ## Verification
 
@@ -245,7 +265,7 @@ Run `/highway-discovery [ID]` to evaluate candidate solutions against your objec
 - That message does not mention identifiers, hex, sampling, or the catalog.
 - A secret or regulated personal value is not written.
 - A failed write leaves existing request and catalog bytes unchanged.
-- The closing message names the record and `/highway-discovery [ID]`.
+- The closing message names the record and exactly one next step. One match names `/highway-codify` for that title and the one action, and does not state the day. No match names `/highway-discovery [ID]`.
 - The skill creates no Discovery or ADR artifact.
 
 ## Error Handling
