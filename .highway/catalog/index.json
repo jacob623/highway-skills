@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-29T22:51:31Z",
+  "generated_at": "2026-10-31T14:56:35Z",
   "entries": [
     {
       "id": "highway-adr",
@@ -27,6 +27,15 @@
       "compatibility": "all",
       "version": "4.0.0",
       "source_path": "skills/highway-assessment/SKILL.md"
+    },
+    {
+      "id": "highway-codify",
+      "name": "highway-codify",
+      "description": "Manages one functional artifact for one accepted implementation.",
+      "usage": "Invoke as /highway-codify with one implementation name.",
+      "compatibility": "all",
+      "version": "3.0.0",
+      "source_path": "skills/highway-codify/SKILL.md"
     },
     {
       "id": "highway-controls",
@@ -106,7 +115,7 @@
       "description": "Manages one business request and its accepted artifact.",
       "usage": "Invoke as /highway-request with the business change.",
       "compatibility": "all",
-      "version": "4.0.0",
+      "version": "5.0.0",
       "source_path": "skills/highway-request/SKILL.md"
     },
     {
