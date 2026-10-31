@@ -1,17 +1,16 @@
 ---
 name: architecture-record
-description: "Complete output skeleton for a proposed Reference Architecture record."
+description: "Complete output skeleton for an accepted Reference Architecture record."
 metadata:
-  version: 1.0.0
+  version: 2.0.0
 ---
 
 ## File Frontmatter
 
 ```yaml
 ---
-id: ARCHXXXXXX
-adr: ADRXXXXXX
-status: proposed
+id: RAXXXXXX
+status: accepted
 ---
 ```
 
@@ -20,15 +19,16 @@ status: proposed
 ```markdown
 # <deterministic architecture title>
 
-## ADR Reference
+## Current Decisions
 
-ADR: ADRXXXXXX
-Title: <accepted ADR title>
-Status: accepted
+- ADRXXXXXX
+
+Carries: <what this architecture carries from these decisions, without copying a decision statement>
 
 ## Context
 
-<why the architecture exists and the evidence used>
+Applies: <when this architecture applies>
+Leaves Open: <what this architecture leaves open>
 
 ## Architecture Summary
 
@@ -36,11 +36,27 @@ Status: accepted
 
 ## Architecture Style
 
-<conceptual style classification; implementation authorization is excluded>
+Style: <conceptual style classification>
+Why: <why this style was chosen>
 
 ## Logical Components
 
-- <component>: <purpose>
+- Component: <component>
+  Responsibility: <what this component is responsible for>
+  Interface: <the interface other components rely on, or `None`>
+
+## Information
+
+<what this architecture handles, who owns it, and what crosses a trust boundary, or `None`>
+
+## Variation
+
+Must Keep: <what every implementation must keep>
+May Choose: <what an implementation may choose, or `None`>
+
+## Responsibilities
+
+- <a responsibility a realization covers or marks not applicable>
 
 ## Interaction Model
 
@@ -54,33 +70,26 @@ Status: accepted
 
 <conceptual deployment approach, or `None`>
 
-## Key Technologies
-
-<ADR-supported technology considerations; remain conceptual, or `None`>
-
-## Inherited ADR Decisions
-
-- ADRXXXXXX: <decision inherited without alteration>
-
 ## Constraints
 
 <ADR, Control, and NFR constraints with source references, or `None`>
 
 ## Objective Relationships
 
-<stable OBJXXXXXX relationship list, or `None`>
+- OBJXXXXXX: advances
 
 ## Control Relationships
 
-<stable CTLXXXXXX relationship list, or `None`>
+- CTLXXXXXX: bound by
 
 ## NFR Relationships
 
-<stable NFRXXXXXX relationship list, or `None`>
+- NFRXXXXXX: satisfies
 
 ## Required Capabilities
 
-<advisory capability candidates without capability identifiers or artifacts, or `None`>
+- Component: <component that offers it>
+  Capability: <advisory capability text without a capability identifier>
 
 ## Assumptions
 
@@ -98,10 +107,15 @@ Status: accepted
 
 Request: REQXXXXXX
 Discovery: DISCXXXXXX
-ADR: ADRXXXXXX
-Architecture: ARCHXXXXXX
+Current Decisions: <the ids listed above>
+Architecture: RAXXXXXX
 ```
 
-The body is rendered in this order. The initial status is always `proposed`; the source ADR is
-accepted and immutable. Empty optional evidence uses explicit `None`. Capability candidates are
-advisory text only and never receive capability identifiers or artifacts.
+The body is rendered in this order. The identifier is `RA` plus eight hex digits. Status is
+`accepted`. The record does not use an `ARCH` identifier or status `proposed`. Current Decisions
+lists every current decision that names this architecture. A superseded or removed decision is not
+in that list. The list does not copy a decision statement. A variation names no product, platform,
+or vendor. Empty optional evidence uses explicit `None`. A relationship section with no link is
+`None`. Each relationship line is one identifier and the one type for its section. Required
+capabilities name the component that offers them and never receive capability identifiers. When no
+capability applies, Required Capabilities is `None`. A removed catalog row has no record file.

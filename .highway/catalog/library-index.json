@@ -1,32 +1,32 @@
 {
-  "generated_at": "2026-10-22T21:36:22Z",
+  "generated_at": "2026-10-29T22:51:26Z",
   "entries": [
     {
       "library_type": "template",
       "name": "adr-catalog",
       "description": "Complete output skeleton for the repository ADR catalog.",
-      "version": "2.0.0",
+      "version": "4.0.0",
       "source_path": "library/templates/output/adr-catalog.md"
     },
     {
       "library_type": "template",
       "name": "adr-record",
       "description": "Complete output skeleton for an accepted architecture decision record.",
-      "version": "1.0.0",
+      "version": "3.0.0",
       "source_path": "library/templates/output/adr-record.md"
     },
     {
       "library_type": "template",
       "name": "architecture-catalog",
       "description": "Complete output skeleton for the repository Reference Architecture catalog.",
-      "version": "2.0.0",
+      "version": "3.0.0",
       "source_path": "library/templates/output/architecture-catalog.md"
     },
     {
       "library_type": "template",
       "name": "architecture-record",
-      "description": "Complete output skeleton for a proposed Reference Architecture record.",
-      "version": "1.0.0",
+      "description": "Complete output skeleton for an accepted Reference Architecture record.",
+      "version": "2.0.0",
       "source_path": "library/templates/output/architecture-record.md"
     },
     {
@@ -75,14 +75,14 @@
       "library_type": "template",
       "name": "implementation-catalog",
       "description": "Complete output skeleton for the repository Reference Implementation catalog.",
-      "version": "2.0.0",
+      "version": "3.0.0",
       "source_path": "library/templates/output/implementation-catalog.md"
     },
     {
       "library_type": "template",
       "name": "implementation-record",
-      "description": "Complete output skeleton for a proposed Reference Implementation blueprint.",
-      "version": "1.0.0",
+      "description": "Complete output skeleton for an accepted Reference Implementation record.",
+      "version": "2.0.0",
       "source_path": "library/templates/output/implementation-record.md"
     },
     {

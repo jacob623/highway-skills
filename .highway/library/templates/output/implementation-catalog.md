@@ -2,7 +2,7 @@
 name: implementation-catalog
 description: "Complete output skeleton for the repository Reference Implementation catalog."
 metadata:
-  version: 2.0.0
+  version: 3.0.0
 ---
 
 ## Catalog Structure
@@ -21,7 +21,7 @@ Version: 1.0.0
 
 The catalog owns the baseline version and the implementation index. It has no `Next ID` field. The index columns are Implementation ID, Architecture ID, Implementation Title, Implementation Path, and Status.
 
-Each Implementation ID appears once. Rows are ordered by Implementation ID. The Implementation ID is `RI` plus the eight hex digits derived from the title. Architecture ID is the accepted Reference Architecture this implementation realizes. Each Architecture ID appears on at most one row.
+Each Implementation ID appears once. Rows are ordered by Implementation ID. The Implementation ID is `RI` plus the eight hex digits derived from the title. Architecture ID is the accepted Reference Architecture this implementation realizes. More than one row may name the same Architecture ID. A removed row does not count as a current implementation.
 
 `accepted` has a record at `implementations/<id>.md`. `removed` has no record file. A removed row stays in the index, keeps the title that last held that id, and leaves the id taken.
 

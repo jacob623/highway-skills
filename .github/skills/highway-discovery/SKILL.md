@@ -4,7 +4,7 @@ description: "Manages one discovery for a complete request."
 usage: "Invoke as /highway-discovery with one request id or one discovery id."
 compatibility: all
 metadata:
-  version: 3.0.0
+  version: 4.0.0
 ---
 
 # highway-discovery
@@ -218,6 +218,10 @@ On success, return to `start` and emit the option list. Emit nothing else before
 
 When this analysis has not been written, write every retained option through `identifier` and `write` before emitting anything. The person is exploring the options. The write does not select an option.
 
+When a matched architecture has a current implementation, emit one notice before the numbered options. Name the implementation, the architecture, and the decision that implementation records. Use the exact match already defined: identifier, exact title, capability id, Objective id, Control id, or NFR id. A wording resemblance does not produce this notice. The notice does not ask for confirmation. The person can still explore every option.
+
+**[Implementation]** is a current implementation of **[Architecture]**, from **[Decision]**.
+
 Emit one numbered line per option, starting at 1, in displayed order. Show the option id and its title. Put `(Recommended)` after the recommended option title. The why is one sentence grounded in the Request, Objectives, Controls, and NFRs. A stated number selects that option.
 
 **Here is a proposed starting point for your discovery:**
@@ -285,6 +289,7 @@ Emit the named option in this order. Use accepted Request, Objective, Control, a
 - A Discovery id shows `start` from the stored options and does not write.
 - An invocation with neither id lists the complete Requests that have no Discovery catalog row, then the accepted Discoveries. Each line shows the id and its title. The list is numbered across both groups. A stated number selects that row. A removed Discovery row keeps that Request off the list.
 - `start` lists each option with a number, the option id, the title, and one why sentence.
+- When a matched architecture has a current implementation, that notice names the implementation, the architecture, and the decision it came from before the options. A wording resemblance does not. The notice does not ask for confirmation.
 - The recommended option title is followed by `(Recommended)`.
 - A stated number selects that option.
 - `start` asks which option to explore, or whether to see a comparison matrix, then says the person can decide.

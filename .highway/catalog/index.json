@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-29T10:06:47Z",
+  "generated_at": "2026-10-29T22:51:31Z",
   "entries": [
     {
       "id": "highway-adr",
@@ -7,7 +7,7 @@
       "description": "Manages one architecture decision for one discovery.",
       "usage": "Invoke as /highway-adr with one discovery id.",
       "compatibility": "all",
-      "version": "2.0.0",
+      "version": "4.0.0",
       "source_path": "skills/highway-adr/SKILL.md"
     },
     {
@@ -16,7 +16,7 @@
       "description": "Manages one reference architecture from one accepted adr.",
       "usage": "Invoke as /highway-architecture with one adr id.",
       "compatibility": "all",
-      "version": "2.0.0",
+      "version": "4.0.0",
       "source_path": "skills/highway-architecture/SKILL.md"
     },
     {
@@ -43,7 +43,7 @@
       "description": "Manages one discovery for a complete request.",
       "usage": "Invoke as /highway-discovery with one request id or one discovery id.",
       "compatibility": "all",
-      "version": "3.0.0",
+      "version": "4.0.0",
       "source_path": "skills/highway-discovery/SKILL.md"
     },
     {
@@ -61,7 +61,7 @@
       "description": "Manages one reference implementation from one accepted reference architecture.",
       "usage": "Invoke as /highway-implementation with one architecture id.",
       "compatibility": "all",
-      "version": "2.0.0",
+      "version": "4.0.0",
       "source_path": "skills/highway-implementation/SKILL.md"
     },
     {
@@ -88,7 +88,7 @@
       "description": "Manages one decision, one reference architecture, and one reference implementation.",
       "usage": "Invoke as `/highway-onboarding`.",
       "compatibility": "all",
-      "version": "5.0.0",
+      "version": "7.0.0",
       "source_path": "skills/highway-onboarding/SKILL.md"
     },
     {

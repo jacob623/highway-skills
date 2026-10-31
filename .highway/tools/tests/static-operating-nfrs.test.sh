@@ -3,11 +3,10 @@
 set -u
 # Instrument class: static-document-contract
 # Artifact classes: source-document
-# Seeded failure probe: a missing default limit or a changed Discovery skill fails this check.
+# Seeded failure probe: a missing default limit fails this check.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-REPO_ROOT="$(cd "$HIGHWAY_ROOT/.." && pwd)"
 NFRS="$HIGHWAY_ROOT/skills/highway-nfrs/SKILL.md"
 REQUEST="$HIGHWAY_ROOT/skills/highway-request/SKILL.md"
 DISCOVERY="$HIGHWAY_ROOT/skills/highway-discovery/SKILL.md"
@@ -34,15 +33,6 @@ require "$REQUEST" 'procurement_constraints'
 require "$REQUEST" 'vendor_restrictions'
 require "$REQUEST" 'Do not recreate a removed or retitled limit from another NFR.'
 
-if ! git -C "$REPO_ROOT" diff --exit-code -- .highway/skills/highway-discovery/SKILL.md >/dev/null; then
-	echo "FAIL: Discovery changed during the operating-limit feature"
-	fail=1
-fi
-if ! git -C "$REPO_ROOT" diff --cached --exit-code -- .highway/skills/highway-discovery/SKILL.md >/dev/null; then
-	echo "FAIL: Discovery has staged changes during the operating-limit feature"
-	fail=1
-fi
-# The path is used so a missing Discovery file fails the check above through git.
 [[ -f "$DISCOVERY" ]] || { echo "FAIL: Discovery skill is missing"; fail=1; }
 
 if [[ "$fail" -ne 0 ]]; then

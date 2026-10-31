@@ -4,7 +4,7 @@ description: "Manages one architecture decision for one discovery."
 usage: "Invoke as /highway-adr with one discovery id."
 compatibility: all
 metadata:
-  version: 2.0.0
+  version: 4.0.0
 ---
 
 # highway-adr
@@ -25,6 +25,7 @@ Do not generate new candidate options or change a Discovery.
 Do not recalculate scores, reorder the comparison, or recompute Reference Architecture matches.
 Do not change Requests, Clarifications, Profile, Objectives, Controls, or NFRs.
 Do not authorize implementation.
+Do not change the conceptual body of a reference architecture.
 Do not report Status, Summary, Next Action, Blocking Reason, Missing, Complete, or Blocked.
 
 ## Inputs
@@ -35,8 +36,10 @@ Do not report Status, Summary, Next Action, Blocking Reason, Missing, Complete, 
 - `clarifications/clarifications.md` when present, for `CLAR-[REQ id]` and `CLAR-[DISC id]` only.
 - Accepted Profile, Objectives, Controls, and NFRs when present.
 - `discoveries/discoveries.md` and `adrs/adrs.md`.
+- `architectures/architectures.md`, `implementations/implementations.md`, and the accepted architecture and implementation records they name.
 - `.highway/library/templates/output/adr-record.md`.
 - `.highway/library/templates/output/adr-catalog.md`.
+- `.highway/library/templates/output/architecture-record.md` and `.highway/library/templates/output/architecture-catalog.md` when this decision reuses or replaces an architecture.
 - `.highway/governance/experience-standard.md`.
 - A project root containing `.highway/`.
 
@@ -46,7 +49,8 @@ The complete structure is `.highway/library/templates/output/adr-record.md` and 
 
 - One ADR at `adrs/[ID].md` after the person accepts the proposed decision.
 - An updated `adrs/adrs.md` written with that record.
-- A closing message that names the ADR and the architecture command.
+- A closing message that names the ADR and exactly one next step.
+- The architecture record's current-decision list and the architecture catalog, updated in the same write when this decision reuses or replaces an architecture.
 - No ADR when the person has not selected an option or a write fails.
 
 ## Procedure
@@ -103,6 +107,8 @@ Emit one numbered line per option from the Discovery, starting at 1, in displaye
 Classify the latest reply before any other action.
 
 - `select`: names an option, or states its number, to select.
+- `replace`: this decision replaces the matched decision.
+- `beside`: this decision runs beside the matched decision.
 - `edit`: adds, removes, corrects, or replaces decision text.
 - `accept`: affirms the proposed decision and adds no fact.
 - `unknown`: the person says they do not know.
@@ -115,11 +121,23 @@ On `start`, "looks good" is `accept`.
 
 Build the proposed decision from the selected option and the Discovery. Copy the comparison and the matches. When the selected option is not the recommended option, include the override.
 
+Match an architecture only by explicit identifier, exact title, capability id, Objective id, Control id, or NFR id. Do not match by wording resemblance. A current decision is accepted, not superseded, and not removed. A current implementation is an accepted implementation of that architecture.
+
+An option already has an implementation only when a current decision for the matched architecture selected an option with the same title, character for character, and that architecture has a current implementation. Say this uses that implementation and that architecture. Do not ask whether the decision replaces or runs beside another. A different option title is not yet implemented.
+
+When the selected option title is different, and exactly one matched architecture already has a current decision, ask once, inside this proposal, whether this decision replaces that decision or runs beside it. When more than one architecture matches, list only those architectures. After one is picked, show this proposal again with that architecture named and one consequence sentence. When nothing matches, say this decision stands on its own and a new architecture will follow.
+
+A change to the relationship or the architecture shows this proposal again with one consequence sentence. Accepting the decision is the only confirmation.
+
 **Here is a proposed starting point for your decision:**
 
 **Decision:** [Selected option title]
 
 **Why:** [Decision rationale grounded in the Discovery and accepted Objectives, Controls, and NFRs.]
+
+**Architecture:** [This uses [implementation] and [architecture]. | This decision stands on its own and a new architecture will follow. | This decision replaces [decision]. [decision] will be marked superseded when this one is accepted. Its architecture [architecture] is kept, and this decision will use it. | This decision runs beside [decision]. Both decisions stay in force. This decision will use [architecture].]
+
+When more than one architecture matches and none is picked yet, list only those architectures and ask **Which architecture should this decision use?** When the replace-or-beside choice is still open, ask **Does this decision replace [decision], or run beside it?** Do not ask that question in any other case.
 
 **Alternatives:**
 - **[Other option title]:** [Evaluated when it remains viable. Rejected when the Discovery excluded it.]
@@ -135,7 +153,9 @@ Build the proposed decision from the selected option and the Discovery. Copy the
 If this is accurate, just say so.
 
 - `edit`: emit one consequence sentence. Re-emit this block with the edit applied. Stay on `start`. The selected option stays the option the person named.
-- `accept`: go to `identifier`.
+- `replace` or `beside`: emit one consequence sentence. Re-emit this block with that relationship. Stay on `start`.
+- A picked architecture: emit one consequence sentence. Re-emit this block with that architecture named. Stay on `start`.
+- `accept`: when a required architecture pick or replace-or-beside choice is still open, stay on `start` and ask that one question. Otherwise go to `identifier`.
 - `unknown`: re-emit this block. Stay on `start`.
 - `question`: answer, then re-emit this block. Stay on `start`.
 - `decline`: stop. Write nothing.
@@ -190,24 +210,38 @@ The record follows `.highway/library/templates/output/adr-record.md`.
 - `request` is the Discovery's Request id.
 - `discovery` is the Discovery id.
 - `status` is `accepted`.
-- `supersedes` is `None`.
+- `supersedes` is the replaced ADR id, or `None`.
 - `superseded_by` is `None`.
 - The title is the accepted ADR title.
-- Copy the Discovery options, comparison, recommendation, confidence, and Reference Architecture matches without recalculation.
+- Copy the Discovery comparison, recommendation, confidence, and Reference Architecture matches into `## Discovery Reference` and `## Decision Confidence` without recalculation.
+- `## Context` states the problem this decision responds to and the forces that make it necessary, in prose, and the evidence-resolution record or `None`.
 - `## Decision` records the selected option, `User-provided explicit selection`, the decision statement, the rationale, and this authorization: Proceed to Reference Architecture. Implementation is not authorized.
+- `## Decision Scope` states what the decision covers and what it leaves open, or `None` for what it leaves open.
+- `## Revisit When` states the condition that should cause the decision to be reopened, or `None` when no condition is known.
 - When the selected option differs from the Discovery recommendation, write `## Recommendation Override` with both options and the override rationale. Omit that section when they are the same.
-- Every option other than the selected one is `Evaluated` when it remained viable, or `Rejected` when the Discovery excluded it.
-- `## Reference Architecture Handoff` names the selected option, the copied matches or `None`, the architecture direction or `None`, the required architecture work or `None`, and authorization to proceed to Reference Architecture.
+- `## Alternatives Considered` lists every Discovery option, headed by its option id, with its definition, one outcome, and a reason. The selected option is `Selected`. Every other option is `Evaluated` when it remained viable, or `Rejected` when the Discovery excluded it.
+- Each Objective relationship is the Objective id and `advances`. Each Control relationship is the Control id and `bound by`. Each NFR relationship is the NFR id and `satisfies`. A section with no relationship is `None`.
+- `## Reference Architecture Handoff` names the architecture direction or `None`, the required architecture work or `None`, Reference Architecture as the reused RA id or `None`, and authorization to proceed to Reference Architecture. Do not write an implementation entry. Do not repeat the selected option or the matches there.
 - Emit no timestamp, random value, or environment value.
+
+Status is `superseded` in the record and in the catalog exactly when `superseded_by` names an ADR. Otherwise it is `accepted`. A superseded record keeps its file and its id. Do not treat it as removed.
 
 The catalog follows `.highway/library/templates/output/adr-catalog.md`.
 
-- Add one index row with the ADR ID, Discovery ID, Request ID, ADR Title, ADR Path, and Status `accepted`.
+- Add one index row with the ADR ID, Discovery ID, Request ID, ADR Title, ADR Path, Architecture ID, and Status `accepted`. Architecture ID is the reused RA id, or `None` when a new architecture will follow.
 - Order the index by ADR id.
 - Do not allocate from `Next ID`.
 - The first catalog version is `1.0.0`.
 - Adding an ADR increments the minor version.
 - One Discovery id appears on at most one row.
+
+When this decision replaces a matched decision, set that decision's `superseded_by` to this ADR id and its status to `superseded` in the record and the catalog. Keep its file. Remove it from the architecture's Current Decisions and from that architecture's catalog ADR ID cell. Add this ADR id to that list and that cell, in id order. Do not change the architecture's conceptual body. Do not create an architecture.
+
+When this decision runs beside a matched decision, add this ADR id to that architecture's Current Decisions and catalog ADR ID cell. Leave the earlier decision on the list. Do not change the architecture's conceptual body. Do not create an architecture.
+
+When the selected option already has a current implementation, name that architecture in the handoff and add this ADR id to its Current Decisions and catalog ADR ID cell when it is not already there. Do not create an architecture.
+
+When an architecture is reused, replaced, or already implemented for this option, the decision record, the decision catalog, the architecture's Current Decisions, and the architecture catalog ADR ID cell are updated in the same write. When nothing matches, do not change an architecture record or an architecture catalog. A failed write leaves every existing byte unchanged.
 
 On success, go to `close`.
 
@@ -221,7 +255,13 @@ On success, go to `close`.
 - **Discovery:** `[DISC id]`
 - **Selected option:** [Option title]
 
-Run `/highway-architecture [ADR id]` to create the Reference Architecture.
+Suggest exactly one next step.
+
+When no architecture is reused, run `/highway-architecture [ADR id]` to create the Reference Architecture for this decision.
+
+When an architecture is reused and the selected option has no current decision with the same exact title and a current implementation, run `/highway-implementation [RA id]` to create the Reference Implementation for that architecture. A new architecture is not required.
+
+When that exact-title decision and its current implementation exist, name that implementation. Do not suggest creating an architecture or another implementation.
 
 ## Verification
 
@@ -233,12 +273,19 @@ Run `/highway-architecture [ADR id]` to create the Reference Architecture.
 - The selected option is the option the person named or numbered.
 - The comparison and matches are copied from the Discovery.
 - Recommendation Override is written only when the selection differs from the recommendation.
+- Context states the problem and the forces. The record states what the decision covers, what it leaves open, and when to revisit it, or `None`.
+- Alternatives Considered includes the selected option as `Selected`, and each alternative has a definition, one outcome, and a reason.
+- The handoff does not repeat the selected option or the matches. The handoff contains no implementation entry. Reference Architecture is `None` when no architecture is reused, and the RA id when one is.
+- Relationship lines use `advances`, `bound by`, and `satisfies`, or `None`.
+- Status is `superseded` in the record and catalog exactly when `superseded_by` names an ADR, and the record file remains.
 - Authorization proceeds to Reference Architecture and does not authorize implementation.
 - Each id is `ADR` plus eight hex digits derived from the title.
 - A taken id names the conflicting titles, says a title change is appropriate, and shows a new title. The write waits until the person accepts that title.
 - That message does not mention identifiers, hex, sampling, or the catalog.
 - A failed write leaves existing ADR bytes unchanged.
-- The closing message names `/highway-architecture [ADR id]`.
+- The same exact option title uses the existing implementation and does not ask replace or beside. A different option title that matches one architecture asks that question once, inside the proposal.
+- Replacing a decision sets it to `superseded`, keeps its file, and removes it from the architecture's current decisions. Running beside adds this decision and leaves the earlier one. The architecture record and the architecture catalog show the same current decisions.
+- The closing message suggests exactly one next step: create the reference architecture, create the reference implementation, or the name of the implementation that already exists.
 - The skill does not change the Discovery.
 
 ## Error Handling
