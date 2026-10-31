@@ -43,7 +43,12 @@ for text in \
 	'Establish' \
 	'## Implement' \
 	'## Use' \
-	'code/code.md'; do
+	'code/code.md' \
+	'Would you like to explore any of these options?' \
+	'You can also provide your own.' \
+	'```flowchart' \
+	'Responsibility:' \
+	'Boundary:'; do
 	require "$CODIFY" "$text"
 done
 
@@ -53,6 +58,13 @@ require "$CATALOG" 'More than one row may name the same Implementation ID.'
 require "$CATALOG" 'A removed row keeps its id and has no folder.'
 require "$RECORD" 'id: CDYXXXXXX'
 require "$RECORD" 'Day 1 or Day 2'
+for text in \
+	'## Summary' \
+	'## Description' \
+	'## Diagram' \
+	'## Acceptance Criteria'; do
+	require "$RECORD" "$text"
+done
 
 require "$REQUEST" 'Run `/highway-codify` for **[Implementation title]** to **[action]**.'
 require "$REQUEST" 'Run `/highway-discovery [ID]` to evaluate candidate solutions against your objectives, safeguards, and operational expectations.'

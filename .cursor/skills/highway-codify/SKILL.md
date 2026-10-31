@@ -4,14 +4,14 @@ description: "Manages one functional artifact for one accepted implementation."
 usage: "Invoke as /highway-codify with one implementation name."
 compatibility: all
 metadata:
-  version: 1.0.0
+  version: 2.0.0
 ---
 
 # highway-codify
 
 ## Purpose
 
-Writes one self-service automation for one accepted implementation after the person accepts the proposal.
+Suggests self-service automations for one accepted implementation and writes the one automation the person accepts.
 
 ## When to use
 
@@ -51,18 +51,19 @@ The complete structure is `.highway/library/templates/output/codify-record.md` a
 
 ## Procedure
 
-Emit only the active template. Follow this order: `choose` when no implementation is named; otherwise `start`, then `identifier`, `title` when needed, `write`, and `close`. Follow `.highway/governance/experience-standard.md` for attribution and acceptance wording. A current implementation is an accepted row in `implementations/implementations.md`. A removed row does not match and does not block a new automation.
+Emit only the active template. Follow this order: `choose` when no implementation is named; `suggest` when no action is named; then `start`, `identifier`, `title` when needed, `write`, and `close`. Follow `.highway/governance/experience-standard.md` for attribution and acceptance wording. A current implementation is an accepted row in `implementations/implementations.md`. A removed row does not match and does not block a new automation.
 
 ### Entry
 
 1. When `.highway/` cannot be found, stop. Say the project root cannot be located. Write nothing.
 2. Read the invocation for an implementation title, a description, an implementation id, and one optional action.
-3. When an implementation id matches one accepted implementation, select it, show its title, and go to `start` with the action when one was supplied.
-4. When an exact title matches one accepted implementation, select it and go to `start`. Compare without regard to case.
-5. When a description is present, go to `choose` and suggest at most five matches.
-6. When nothing is named and one to five accepted implementations exist, go to `choose` and list each one.
-7. When nothing is named and more than five accepted implementations exist, go to `choose` and list none.
-8. When no accepted implementation exists, say so. Write nothing.
+3. When an implementation id matches one accepted implementation, select it and show its title.
+4. When an exact title matches one accepted implementation, select it. Compare without regard to case.
+5. After a selection, go to `start` when the invocation named one action. Otherwise go to `suggest`.
+6. When a description is present, go to `choose` and suggest at most five matches.
+7. When nothing is named and one to five accepted implementations exist, go to `choose` and list each one.
+8. When nothing is named and more than five accepted implementations exist, go to `choose` and list none.
+9. When no accepted implementation exists, say so. Write nothing.
 
 ### choose
 
@@ -78,7 +79,7 @@ When the person named nothing and more than five accepted implementations exist,
 
 When a description is present, keep at most five. Put exact titles first, then a realized capability title that appears in full in the person's words, then a title that appears in full in those words or words that appear in full in the summary. Within each group, keep catalog order. Compare without regard to case.
 
-A number, a title, or a description selects one. Show the title. Go to `start`.
+A number, a title, or a description selects one. Show the title. Go to `start` when the invocation named one action. Otherwise go to `suggest`.
 
 - `unknown`: re-emit this list. Stay on `choose`.
 - `decline`: stop. Write nothing.
@@ -88,6 +89,7 @@ A number, a title, or a description selects one. Show the title. Go to `start`.
 
 Classify the latest reply before any other action.
 
+- `select`: names a listed suggestion by number, title, or summary, or names the person's own automation.
 - `edit`: adds, removes, corrects, or replaces proposal text.
 - `accept`: affirms the proposal and adds no fact.
 - `unknown`: the person says they do not know.
@@ -96,15 +98,62 @@ Classify the latest reply before any other action.
 
 On `start`, "looks good" is `accept`.
 
+### suggest
+
+Read the selected implementation record. Use the current state and day that `start` defines. Each suggestion is one realized capability title. Its summary is the first sentence of that capability's evidence, or `None`.
+
+A title containing `establish`, compared without regard to case, is establishing. Every other title runs, changes, or recovers. When no instance is running, establishing comes first. When an instance is running, the other kind comes first. Within a kind, keep Realized Capabilities order. When the leading kind has no title, put `Establish [implementation title]` or `Run [implementation title]` first. Its summary is the first sentence of the Implementation Summary, or `None`. Keep at most five. Drop items from the end. Do not use an id as a label. Write nothing.
+
+**Based on the current state of this implementation, these may be worth visiting:**
+
+1. **[Title]:**
+
+   [One-sentence summary.]
+
+**Would you like to explore any of these options?**
+
+You can also provide your own.
+
+When the list is empty, say no suggestion is grounded in this implementation and that they can provide their own.
+
+- `select`: a listed number, title, or summary selects that suggestion. The person's own automation selects that automation, even when they also name a listed item. Its title is the person's words, and its summary is one sentence for it. When the reply names two actions, keep one and say the other waits for another run. Go to `start`.
+- A number that is not on the list: say so. Re-emit this list. Write nothing. Stay on `suggest`.
+- `unknown`: re-emit this list. Stay on `suggest`.
+- `question`: answer, then re-emit this list. Stay on `suggest`.
+- `decline`: stop. Write nothing.
+
 ### start
 
 Read the selected implementation record. An instance is running when Context or Implementation Summary contains `instance is running` or `instances are running`, compared without regard to case. The current state is that sentence, or `None` when neither phrase is present. Day 2 when an instance is running. Day 1 when it is not.
 
-When the invocation or the accepted request carried one action, that action is the proposal. When no action was carried and no instance is running, the action is `Establish [implementation title]`. When no action was carried and an instance is running, the action is the first realized capability title, or `Run [implementation title]` when the record has no realized capability.
+The title and summary are the ones selected on `suggest`. When the invocation or the accepted request named one action, the title is that action and the summary is one sentence for it. The action is that same automation.
 
 The means is the accepted architecture named by the implementation. Show that architecture's title. When that architecture is missing or not accepted, say that no accepted architecture describes a means. Do not name a tool the architecture does not describe.
 
+The diagram has one node per component, in the order of Components. Each arrow goes to the next component and is labeled with the action. When components are `None`, the diagram has one node, the action title, and no arrow. State at least one acceptance criterion.
+
 **Here is a proposed starting point for your automation:**
+
+**Title:** [Selected title.]
+
+**Summary:** [Selected summary.]
+
+**Description:** [What this one automation does, for whom, and what it returns.]
+
+**Diagram:**
+
+```flowchart
+flowchart LR
+  C1["[First component]"] -->|[Action]| C2["[Next component]"]
+```
+
+**Acceptance criteria:**
+
+- [One observable result of this automation.]
+
+**Components:**
+
+- **[Component]:** Responsibility: [Its part of this automation.] Boundary: [Where that part starts and stops.]
 
 **Current state:** [Sentence, or None.]
 
@@ -114,14 +163,12 @@ The means is the accepted architecture named by the implementation. Show that ar
 
 **Means:** [Architecture title.]
 
-**Components:** [The parts this one action needs, or None.]
-
 **What would you add, correct, or remove?**
 
 If this is accurate, just say so.
 
-- `edit`: emit one consequence sentence. Re-emit this block with the edit applied. A second action is removed. Say it waits for another run. A means that is not an accepted architecture is not added. The person can switch the means to another accepted architecture by title. A preparation-only request stays one self-service action. Stay on `start`.
-- `accept`: when the proposal still contains two actions, keep one and stay on `start`. When no accepted architecture is the means, stay on `start`. Otherwise go to `identifier`.
+- `edit`: emit one consequence sentence. Re-emit this block with the edit applied. A second action is removed. Say it waits for another run. A means that is not an accepted architecture is not added. The person can switch the means to another accepted architecture by title. A preparation-only request stays one self-service action. Removing the last acceptance criterion says at least one is needed. Stay on `start`.
+- `accept`: when the proposal still contains two actions, keep one and stay on `start`. When no acceptance criterion remains, stay on `start`. When no accepted architecture is the means, stay on `start`. Otherwise go to `identifier`.
 - `unknown`: re-emit this block. Stay on `start`.
 - `question`: answer, then re-emit this block. Stay on `start`.
 - `decline`: stop. Write nothing.
@@ -177,10 +224,11 @@ The record follows `.highway/library/templates/output/codify-record.md`.
 - `architecture` is the accepted architecture used as the means.
 - `status` is `accepted`.
 - The title is the one action.
+- Summary, Description, Diagram, and Acceptance Criteria are the accepted proposal text.
+- Components state Responsibility and Boundary for each component, or `None`.
 - Current state is the sentence used for the day, or `None`.
 - Day is `Day 1` or `Day 2`.
 - Means is the architecture title.
-- Components are the parts this one action needs, or `None`.
 
 `README.md` has two parts, in this order. Head the first part `## Implement` and the second part `## Use`. Implement says what is put in place, where it goes, and how to enable it, including the preparation this automation needs. Use says how a non-technical person starts this one automation, what they provide, and what they receive, using the interface of the accepted means. Use does not ask that person to edit the generated files or read the implementation record.
 
@@ -218,9 +266,14 @@ The files are written. The automation was not run.
 - A list shows a title and the implementation summary. It does not use an id as the label.
 - One to five accepted implementations are listed when the person names nothing. More than five lists none until the person gives a title or a description, then at most five.
 - No accepted implementation writes nothing.
-- The proposal states the current state, one action, Day 1 or Day 2, and one architecture title.
+- With no named action, the suggestion list appears once before any proposal. It holds at most five items, each a title and one summary sentence, and uses no id as a label.
+- Suggestions of the kind that fits the current state come first, then the other kind, each in Realized Capabilities order.
+- A named action skips the suggestion list and opens the proposal for that action.
+- A listed number, title, or summary, or the person's own automation, selects one automation. A number that is not on the list asks again.
+- The proposal keeps the selected title and summary and states a description, one flowchart, at least one acceptance criterion, each component's Responsibility and Boundary, the current state, one action, Day 1 or Day 2, and one architecture title.
 - An instance is running only when Context or Implementation Summary contains `instance is running` or `instances are running`.
 - A second action waits for another run. Declining writes nothing. Accepting is the only confirmation.
+- The saved record contains the summary, description, diagram, acceptance criteria, and component responsibilities and boundaries.
 - The folder contains `codify.md`, `README.md`, and one subfolder per named component.
 - Acceptance runs the automation zero times and leaves the implementation, architecture, decision, request, and finding unchanged.
 - Each id is `CDY` plus eight hex digits derived from the title.
@@ -236,6 +289,7 @@ The files are written. The automation was not run.
 - No accepted architecture for the means stops the write and says so.
 - A failed write leaves no partial folder and leaves existing catalog bytes unchanged.
 - Declining a proposal writes nothing.
+- Removing the last acceptance criterion keeps the proposal open and writes nothing.
 
 ## Example
 

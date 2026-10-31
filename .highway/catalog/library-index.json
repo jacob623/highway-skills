@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-31T12:43:03Z",
+  "generated_at": "2026-10-31T14:02:26Z",
   "entries": [
     {
       "library_type": "template",
@@ -54,7 +54,7 @@
       "library_type": "template",
       "name": "codify-record",
       "description": "Complete output skeleton for one accepted automation proposal.",
-      "version": "1.0.0",
+      "version": "2.0.0",
       "source_path": "library/templates/output/codify-record.md"
     },
     {
