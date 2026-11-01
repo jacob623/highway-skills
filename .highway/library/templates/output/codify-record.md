@@ -2,7 +2,7 @@
 name: codify-record
 description: "Complete output skeleton for one accepted automation proposal."
 metadata:
-  version: 2.0.0
+  version: 3.0.0
 ---
 
 ## File Frontmatter
@@ -23,54 +23,45 @@ status: accepted
 
 ## Summary
 
-<one sentence for this automation>
+<one sentence that expands on the action>
 
 ## Description
 
 <what this one automation does, for whom, and what it returns>
 
-## Diagram
-
-<one fenced flowchart block, shaped as the Diagram Block below>
-
 ## Acceptance Criteria
 
 - <one observable result of this automation; at least one>
 
-## Components
+## Diagram
 
-- **<component name>:** Responsibility: <its part of this automation>. Boundary: <where that part starts and stops>.
-- or `None`
+<one fenced flowchart block, shaped as the Diagram Block below>
 
-## Current State
+## Tasks
 
-<the sentence used to decide the instance, or `None`>
-
-## Action
-
-<the one automation>
-
-## Day
-
-<Day 1 or Day 2>
-
-## Means
-
-<title of the accepted architecture>
+1. **<action>:**
+   - **Scope:** <what the task does>
+   - **Provider:** <who or what completes the task>
+   - **Method:** <how it is done, naming the plugins, modules, libraries, MCP servers, or APIs it uses>
+   - **Assumptions:**
+     - <what the task relies on that is not an earlier task, or `None`>
 ```
 
-The id is `CDY` plus eight hex digits derived from the automation title. `implementation` is the accepted implementation this automation serves. `architecture` is the accepted architecture used as the means. `status` is `accepted`.
+The id is `CDY` plus eight hex digits derived from the automation title. `implementation` is the accepted implementation this automation serves. `architecture` is the accepted architecture this automation follows. `status` is `accepted`.
 
-The body is the accepted proposal. It states one action. The title and summary are the ones the person selected. It does not copy the implementation, the architecture, or the decision. It does not contain a plan, tasks, or an instruction to run the automation.
+The body is the accepted proposal. It states one action, and the title is that action. The title and summary are the ones the person selected. It does not copy the implementation, the architecture, or the decision. It contains no instruction to run the automation.
+
+Each task is one action against one platform, object, or API, in the order the diagram shows. At least one task is present.
 
 ## Diagram Block
 
 ```flowchart
-flowchart LR
-  C1["<first component>"] -->|<action>| C2["<next component>"]
+flowchart TB
+  E["<executor>"] -->|<first action>| T1["<first target>"]
+  T1 -->|<next action>| T2["<next target>"]
 ```
 
-One node per component, in the order of `## Components`. Each arrow goes to the next component and is labeled with the action. When components are `None`, the block has one node, the action title, and no arrow.
+The first node is the executor: who or what starts the automation. It is not a task. Each task adds one arrow and one new node for its target, in task order. Each arrow label is its task's action and starts with a verb. Every target has its own node, even when two targets share a name.
 
 ## Readme
 
@@ -86,4 +77,4 @@ The same folder contains `README.md` with two parts, in this order.
 <how a non-technical person starts this one automation, what they provide, and what comes back>
 ```
 
-Implement is for the person who accepted the proposal. Use follows the interface of the accepted means. Use does not ask that person to edit the generated files or read the implementation record.
+Implement is for the person who accepted the proposal. Use follows the interface of the accepted architecture. Use does not ask that person to edit the generated files or read the implementation record.

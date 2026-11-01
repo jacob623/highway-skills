@@ -1,0 +1,19 @@
+FAIL: highway-architecture/SKILL.md still contains: The architecture title is the ADR title unless
+FAIL: highway-architecture/SKILL.md omits: **Title:** [Purpose title.]
+FAIL: highway-architecture/SKILL.md omits: The architecture title is the purpose in the ADR title
+FAIL: highway-architecture/SKILL.md omits: the first " for "
+FAIL: highway-architecture/SKILL.md omits: ask for a purpose title
+FAIL: highway-architecture/SKILL.md omits: for a different ADR: go to
+FAIL: highway-architecture/SKILL.md omits: version: 5.0.0
+FAIL: highway-implementation/SKILL.md still contains: The implementation title is the architecture title unless
+FAIL: highway-implementation/SKILL.md omits: **Title:** [Product title.]
+FAIL: highway-implementation/SKILL.md omits: The implementation title is the product in the title of the decision this realization came from
+FAIL: highway-implementation/SKILL.md omits: the first " for "
+FAIL: highway-implementation/SKILL.md omits: under a different architecture: the title becomes "[Product] for [purpose]"
+FAIL: highway-implementation/SKILL.md omits: under this architecture: use the existing record
+FAIL: highway-implementation/SKILL.md omits: version: 5.0.0
+FAIL: output/architecture-record.md omits: # <purpose title>
+FAIL: output/architecture-record.md omits: version: 2.1.0
+FAIL: output/implementation-record.md omits: # <product title>
+FAIL: output/implementation-record.md omits: version: 2.1.0
+EXIT:1

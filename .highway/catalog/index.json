@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-31T20:53:22Z",
+  "generated_at": "2026-11-01T12:55:45Z",
   "entries": [
     {
       "id": "highway-adr",
@@ -7,7 +7,7 @@
       "description": "Manages one architecture decision for one discovery.",
       "usage": "Invoke as /highway-adr with one discovery id.",
       "compatibility": "all",
-      "version": "5.0.0",
+      "version": "5.0.1",
       "source_path": "skills/highway-adr/SKILL.md"
     },
     {
@@ -16,7 +16,7 @@
       "description": "Manages one reference architecture from one accepted adr.",
       "usage": "Invoke as /highway-architecture with one adr id.",
       "compatibility": "all",
-      "version": "4.0.0",
+      "version": "5.0.0",
       "source_path": "skills/highway-architecture/SKILL.md"
     },
     {
@@ -34,7 +34,7 @@
       "description": "Manages one functional artifact for one accepted implementation.",
       "usage": "Invoke as /highway-codify with one implementation name.",
       "compatibility": "all",
-      "version": "3.0.0",
+      "version": "4.0.0",
       "source_path": "skills/highway-codify/SKILL.md"
     },
     {
@@ -70,7 +70,7 @@
       "description": "Manages one reference implementation from one accepted reference architecture.",
       "usage": "Invoke as /highway-implementation with one architecture id.",
       "compatibility": "all",
-      "version": "4.0.0",
+      "version": "5.0.0",
       "source_path": "skills/highway-implementation/SKILL.md"
     },
     {

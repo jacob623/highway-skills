@@ -1,0 +1,21 @@
+FAIL: highway-codify/SKILL.md omits: automating these tasks may be worth visiting:**
+FAIL: highway-codify/SKILL.md omits: If you have another idea, provide a brief description and we'll work through it together.
+FAIL: highway-codify/SKILL.md omits: ### align
+FAIL: highway-codify/SKILL.md omits: ### propose
+FAIL: highway-codify/SKILL.md omits: flowchart TB
+FAIL: highway-codify/SKILL.md omits: **Tasks:**
+FAIL: highway-codify/SKILL.md omits: **Scope:**
+FAIL: highway-codify/SKILL.md omits: **Provider:**
+FAIL: highway-codify/SKILL.md omits: **Method:**
+FAIL: highway-codify/SKILL.md omits: **Assumptions:**
+FAIL: highway-codify/SKILL.md omits: cannot be met for
+FAIL: highway-codify/SKILL.md still contains: this implementation, these may be worth visiting
+FAIL: highway-codify/SKILL.md still contains: **Components:**
+FAIL: highway-codify/SKILL.md still contains: **Current state:**
+FAIL: highway-codify/SKILL.md still contains: **Day:**
+FAIL: highway-codify/SKILL.md still contains: **Means:**
+FAIL: highway-codify/SKILL.md still contains: flowchart LR
+FAIL: highway-adr/SKILL.md omits: that automation's title is this decision's title
+FAIL: highway-adr/SKILL.md still contains: that automation's `## Action`
+FAIL: highway-codify align does not come before propose
+EXIT:1

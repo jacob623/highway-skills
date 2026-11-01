@@ -2,7 +2,7 @@
 name: architecture-record
 description: "Complete output skeleton for an accepted Reference Architecture record."
 metadata:
-  version: 2.0.0
+  version: 2.1.0
 ---
 
 ## File Frontmatter
@@ -17,7 +17,7 @@ status: accepted
 ## Body
 
 ```markdown
-# <deterministic architecture title>
+# <purpose title>
 
 ## Current Decisions
 
@@ -111,7 +111,8 @@ Current Decisions: <the ids listed above>
 Architecture: RAXXXXXX
 ```
 
-The body is rendered in this order. The identifier is `RA` plus eight hex digits. Status is
+The body is rendered in this order. The title is the decision's purpose and names no product. The
+identifier is `RA` plus eight hex digits. Status is
 `accepted`. The record does not use an `ARCH` identifier or status `proposed`. Current Decisions
 lists every current decision that names this architecture. A superseded or removed decision is not
 in that list. The list does not copy a decision statement. A variation names no product, platform,

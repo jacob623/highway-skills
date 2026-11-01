@@ -46,7 +46,7 @@ require "$DISCOVERY_RECORD" '`product currency`'
 require "$DISCOVERY_RECORD" '`required platform`'
 require "$DISCOVERY_RECORD" 'A product claim check is not accepted repository evidence.'
 
-require "$ADR" 'version: 5.0.0'
+require "$ADR" 'version: 5.0.1'
 require "$ADR" '### span'
 require "$ADR" 'This decision runs beside the current decision of each of these architectures. None of those decisions is replaced, and no new architecture will follow.'
 require "$ADR" "If you'd like to leave out any of these architectures, just say so."

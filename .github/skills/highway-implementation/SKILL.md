@@ -4,7 +4,7 @@ description: "Manages one reference implementation from one accepted reference a
 usage: "Invoke as /highway-implementation with one architecture id."
 compatibility: all
 metadata:
-  version: 4.0.0
+  version: 5.0.0
 ---
 
 # highway-implementation
@@ -98,11 +98,13 @@ On `start`, "looks good" is `accept`.
 
 ### start
 
-Build the proposed realization from the accepted architecture. Cover every responsibility the architecture states. Mark a row `not applicable` only when that stated responsibility does not apply to this realization. Do not add a responsibility the architecture does not state. For each thing the architecture left free, state the choice this realization made, or `None` when nothing may vary. State the realized interface for each architecture interface, how conformance was shown, and the limitations of this realization, each or `None`. State one technology choice, with its intent, its reason, and its evidence. When evidence does not support a technology, use `Unknown` rather than inventing one.
+Build the proposed realization from the accepted architecture. Cover every responsibility the architecture states. Mark a row `not applicable` only when that stated responsibility does not apply to this realization. Do not add a responsibility the architecture does not state. For each thing the architecture left free, state the choice this realization made, or `None` when nothing may vary. State the realized interface for each architecture interface, how conformance was shown, and the limitations of this realization, each or `None`. State one technology choice, with its intent, its reason, and its evidence. When evidence does not support a technology, use `Unknown` rather than inventing one. Derive the title with the rules in `identifier`.
 
 When a proposed realization contradicts the architecture, name the requirement, the conflict, and the impact. Offer `Resolve implementation` or `Revisit architecture`. Do not write.
 
 **Here is a proposed starting point for your implementation:**
+
+**Title:** [Product title.]
 
 **Summary:** [What this realization does.]
 
@@ -124,7 +126,7 @@ When a proposed realization contradicts the architecture, name the requirement, 
 
 If this is accurate, just say so.
 
-- `edit`: emit one consequence sentence. Re-emit this block with the edit applied. Stay on `start`.
+- `edit`: emit one consequence sentence. A new title is a supplied title. Re-emit this block with the edit applied. Stay on `start`.
 - `accept`: when a stated responsibility is neither covered nor marked not applicable, name it and stay on `start`. Otherwise go to `identifier`.
 - `unknown`: re-emit this block. Stay on `start`.
 - `question`: answer, then re-emit this block. Stay on `start`.
@@ -132,7 +134,12 @@ If this is accurate, just say so.
 
 ### identifier
 
-The implementation title is the architecture title unless the person supplied a title.
+The implementation title is the product in the title of the decision this realization came from, unless the person supplied a title.
+
+- Remove a leading "Adopt", without regard to case. The product is the text before the first " for ", without regard to case. Capitalize its first letter. Keep every other word as written, so joined products and a named mechanism stay whole.
+- When the decision title has no " for ", use the decision's Selected Option when it is a name that appears in the title. Otherwise use the rest of the title.
+
+Deriving the id from that title:
 
 1. Lowercase the title. Remove hyphens and apostrophes. Split the rest into words.
 2. Take eight letters: the first two of word 1, the first two of word 2, the first two of word 3, and the last two of the last word. When the title has only two words, the third sample is the first two of the last word.
@@ -145,7 +152,8 @@ a 0, b 1, c 2, d 3, e 4, f 5, g 6, h 7, i 8, j 9, k a, l b, m c, n d, o e, p f, 
 
 Compare that id with `implementations/implementations.md`, including removed rows.
 
-- The same title already has that id: use the existing record. Do not write a second one. Go to `close`.
+- The same title already has that id under this architecture: use the existing record. Do not write a second one. Go to `close`.
+- The same title already has that id under a different architecture: the title becomes "[Product] for [purpose]". The purpose is the text after the first " for ", as written. Derive the id again. When the decision title has no purpose, go to `title`.
 - The id is taken for a different title: go to `title`.
 - The id is free: go to `write`.
 
@@ -244,6 +252,7 @@ This is a realization blueprint. It does not authorize deployment.
 - A capability id is `CAP` plus eight hex digits. The same Parent and title reuse that id. No capability record file is written.
 - The record contains no plans, tasks, source code, or infrastructure definitions.
 - Each id is `RI` plus eight hex digits derived from the title.
+- The implementation title is the decision's product or named mechanism, without "Adopt". The proposal shows it before acceptance. It gains "for" and the purpose only when that title belongs to an implementation of a different architecture.
 - The catalog index columns are Implementation ID, Architecture ID, Implementation Title, Implementation Path, and Status.
 - A taken id names the conflicting titles, says a title change is appropriate, and shows a new title. The write waits until the person accepts that title.
 - That message does not mention identifiers, hex, sampling, or the catalog.
