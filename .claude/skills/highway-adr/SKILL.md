@@ -4,7 +4,7 @@ description: "Manages one architecture decision for one discovery."
 usage: "Invoke as /highway-adr with one discovery id."
 compatibility: all
 metadata:
-  version: 5.0.0
+  version: 5.0.1
 ---
 
 # highway-adr
@@ -306,7 +306,7 @@ When an architecture is reused and the selected option has no current decision w
 
 When that exact-title decision and its current implementation exist, name that implementation. Do not suggest creating an architecture or another implementation.
 
-When the decision is a span, use these lines instead. A current implementation is an accepted row in `implementations/implementations.md` whose Architecture ID is in the set. It is covered when an accepted row in `code/code.md` names it and that automation's `## Action` is this decision's title, without regard to case.
+When the decision is a span, use these lines instead. A current implementation is an accepted row in `implementations/implementations.md` whose Architecture ID is in the set. It is covered when an accepted row in `code/code.md` names it and that automation's title is this decision's title, without regard to case.
 
 Name each architecture in the set with no current implementation: **[Architecture title]** is not yet implemented.
 

@@ -4,14 +4,14 @@ description: "Manages one functional artifact for one accepted implementation."
 usage: "Invoke as /highway-codify with one implementation name."
 compatibility: all
 metadata:
-  version: 3.0.0
+  version: 4.0.0
 ---
 
 # highway-codify
 
 ## Purpose
 
-Suggests self-service automations for one accepted implementation, writes the one automation the person accepts, and codes it from a task list that follows the organization's coding standards.
+Suggests actions worth automating for one accepted implementation, checks the chosen action against the organization's coding standards and current vendor documentation, writes the task-by-task proposal the person accepts, and codes it from a task list that follows those standards.
 
 ## When to use
 
@@ -35,6 +35,7 @@ Do not report Status, Summary, Next Action, Blocking Reason, Missing, Complete, 
 - `architectures/architectures.md` and the accepted architecture records.
 - `code/code.md` and `code/[ID]/codify-tasks.md` when present.
 - `library/coding-standards/coding-standards.md` and the standards it names, when present.
+- The vendor's current public documentation for each product, API, plugin, module, or library a draft proposal names.
 - `.highway/library/templates/output/codify-record.md`.
 - `.highway/library/templates/output/codify-catalog.md`.
 - `.highway/library/templates/output/codify-tasks.md`.
@@ -48,14 +49,14 @@ The complete structure is `.highway/library/templates/output/codify-record.md`, 
 - One saved proposal at `code/[ID]/codify.md` after the person accepts the proposal.
 - One task list at `code/[ID]/codify-tasks.md` written with that proposal.
 - An updated `code/code.md` written with that proposal.
-- One subfolder for each component the accepted proposal names, holding the files its tasks produce.
+- The executor's files in `code/[ID]/executor/`, and each proposal task's own files in `code/[ID]/task-N/`, produced by the task list.
 - One `code/[ID]/README.md` with two parts, produced by the last task.
 - A closing message that names the automation and the task list, says whether every task is done, and says it was not run.
 - No automation when the implementation is missing, not accepted, the proposal is declined, or a write fails.
 
 ## Procedure
 
-Emit only the active template. Follow this order: `choose` when no implementation is named; `suggest` when no action is named; then `start`, `identifier`, `title` when needed, `write`, `code`, and `close`. Follow `.highway/governance/experience-standard.md` for attribution and acceptance wording. A current implementation is an accepted row in `implementations/implementations.md`. A removed row does not match and does not block a new automation.
+Emit only the active template. Follow this order: `choose` when no implementation is named; `suggest` when no action is named; then `start`, `align`, `propose`, `identifier`, `title` when needed, `write`, `code`, and `close`. Follow `.highway/governance/experience-standard.md` for attribution and acceptance wording. A current implementation is an accepted row in `implementations/implementations.md`. A removed row does not match and does not block a new automation.
 
 ### Entry
 
@@ -101,27 +102,31 @@ Classify the latest reply before any other action.
 - `question`: asks for an explanation.
 - `decline`: the person stops or cancels.
 
-On `start`, "looks good" is `accept`.
+On `propose`, "looks good" is `accept`.
 
 ### suggest
 
-Read the selected implementation record. Use the current state and day that `start` defines. Each suggestion is one realized capability title. Its summary is the first sentence of that capability's evidence, or `None`.
+Read the selected implementation record. An instance is running when Context or Implementation Summary contains `instance is running` or `instances are running`, compared without regard to case.
 
-A title containing `establish`, compared without regard to case, is establishing. Every other title runs, changes, or recovers. When no instance is running, establishing comes first. When an instance is running, the other kind comes first. Within a kind, keep Realized Capabilities order. When the leading kind has no title, put `Establish [implementation title]` or `Run [implementation title]` first. Its summary is the first sentence of the Implementation Summary, or `None`. Keep at most five. Drop items from the end. Do not use an id as a label. Write nothing.
+Each suggestion comes from one realized capability. A capability title containing `establish`, compared without regard to case, is establishing. Every other title runs, changes, or recovers. When no instance is running, establishing comes first. When an instance is running, the other kind comes first. Within a kind, keep Realized Capabilities order. When the leading kind has no title, put `Establish [implementation title]` or `Run [implementation title]` first, drawn from the Implementation Summary. Keep at most five. Drop items from the end.
 
-**Based on the current state of this implementation, these may be worth visiting:**
+Write each title as the action the automation will take. It starts with a verb and names its target. An establishing title starts with `Establish`. The summary is one sentence that expands on that action, grounded in the capability's Realized By and the first sentence of its evidence. Do not use an id as a label. Write nothing.
 
-1. **[Title]:**
+The name is the `Choice:` of the record's one Technology Choice. When the record has none or several, the name is the implementation title.
 
-   [One-sentence summary.]
+**Based on the current state of [Name], automating these tasks may be worth visiting:**
+
+1. **[Action title]:**
+
+   [One sentence that expands on the action.]
 
 **Would you like to explore any of these options?**
 
-You can also provide your own.
+If you have another idea, provide a brief description and we'll work through it together.
 
-When the list is empty, say no suggestion is grounded in this implementation and that they can provide their own.
+When the list is empty, say no suggestion is grounded in this implementation. Then emit the last line above.
 
-- `select`: a listed number, title, or summary selects that suggestion. The person's own automation selects that automation, even when they also name a listed item. Its title is the person's words, and its summary is one sentence for it. When the reply names two actions, keep one and say the other waits for another run. Go to `start`.
+- `select`: a listed number, title, or summary selects that suggestion. The person's own idea selects that automation, even when they also name a listed item. Its title is the person's action, starting with a verb, and its summary is one sentence that expands on it. When the reply names two actions, keep one and say the other waits for another run. Go to `start`.
 - A number that is not on the list: say so. Re-emit this list. Write nothing. Stay on `suggest`.
 - `unknown`: re-emit this list. Stay on `suggest`.
 - `question`: answer, then re-emit this list. Stay on `suggest`.
@@ -129,13 +134,44 @@ When the list is empty, say no suggestion is grounded in this implementation and
 
 ### start
 
-Read the selected implementation record. An instance is running when Context or Implementation Summary contains `instance is running` or `instances are running`, compared without regard to case. The current state is that sentence, or `None` when neither phrase is present. Day 2 when an instance is running. Day 1 when it is not.
+Read the selected implementation record and the accepted architecture it names. When that architecture is missing or not accepted, say before the proposal that no accepted architecture describes this automation.
 
-The title and summary are the ones selected on `suggest`. When the invocation or the accepted request named one action, the title is that action and the summary is one sentence for it. The action is that same automation.
+The title and summary are the ones selected on `suggest`. When the invocation or the accepted request named one action, the title is that action and the summary is one sentence that expands on it.
 
-The means is the accepted architecture named by the implementation. Show that architecture's title. When that architecture is missing or not accepted, say that no accepted architecture describes a means. Do not name a tool the architecture does not describe.
+Draft the proposal. Emit nothing.
 
-The diagram has one node per component, in the order of Components. Each arrow goes to the next component and is labeled with the action. When components are `None`, the diagram has one node, the action title, and no arrow. State at least one acceptance criterion.
+- Description: what this one automation does, for whom, and what it returns.
+- At least one acceptance criterion.
+- The executor: who or what starts the automation, such as a pipeline, a flow, an agent instruction, a service, or the person.
+- The tasks, in order. Each task is one action against one platform, object, or API, and its action starts with a verb. A step with two targets is two tasks.
+- Scope says what the task does. Provider names the specific thing that completes it. Method says how, naming the plugins, modules, libraries, MCP servers, or APIs it uses. Assumptions list what the task relies on that is not an earlier task, such as network access, an access level, an authentication method, or a credential source, or `None`.
+- The executor and each provider are the person, or something the accepted architecture or the implementation names in Realized By, Technology Choice, or Runtime Components.
+
+Go to `align`.
+
+### align
+
+Check the draft before the person sees it: coding standards first, then current vendor documentation. Write nothing. Save no check result.
+
+Read `library/coding-standards/coding-standards.md` when present. For the executor and each task, use the first row whose Technology names its provider or method, or whose File Patterns match a file its method names. A row whose standard file is absent is unavailable. Read the whole standard. Correct the provider, method, library, module, or pattern so the draft fits the standard's provider boundaries, accepted libraries or modules, and required patterns. Keep the action.
+
+Then, for each product, API, plugin, module, or library the corrected draft names, read the vendor's current public documentation, product pages, or release notes. Send only that name and the vendor name. When the vendor says it is deprecated, retired, or no longer offered, correct the draft and cite the source. When vendor pages conflict, correct the draft and cite both. A blog, forum, or comparison, no source, or a check that cannot be completed is inconclusive. It changes nothing and is not confirmation.
+
+Before the proposal, emit one line for each result that applies.
+
+- [Standard title] applies to [executor or task action]. [What changed.]
+- No coding standard applies to this automation.
+- A standard named by the catalog was not found at [path].
+- [Vendor] says [name] is no longer offered. [What changed.] Source: [source].
+- [Name] could not be confirmed from [vendor]'s documentation.
+
+When no correction keeps the action, emit `[Standard title] cannot be met for **[Action title]**.` Do not show the proposal. Return to `suggest`. When the invocation named the action, ask for a different action.
+
+Do not run `align` when continuing an automation that already has a task list. Otherwise go to `propose`.
+
+### propose
+
+The diagram starts at the executor. Each task adds one arrow, labeled with its action, to a new node for its target, in task order. The executor is not a task. Every target has its own node. Arrow labels and task actions are the same text.
 
 **Here is a proposed starting point for your automation:**
 
@@ -145,37 +181,35 @@ The diagram has one node per component, in the order of Components. Each arrow g
 
 **Description:** [What this one automation does, for whom, and what it returns.]
 
-**Diagram:**
-
-```flowchart
-flowchart LR
-  C1["[First component]"] -->|[Action]| C2["[Next component]"]
-```
-
 **Acceptance criteria:**
 
 - [One observable result of this automation.]
 
-**Components:**
+**Diagram:**
 
-- **[Component]:** Responsibility: [Its part of this automation.] Boundary: [Where that part starts and stops.]
+```flowchart
+flowchart TB
+  E["[Executor]"] -->|[First action]| T1["[First target]"]
+  T1 -->|[Next action]| T2["[Next target]"]
+```
 
-**Current state:** [Sentence, or None.]
+**Tasks:**
 
-**Action:** [One action.]
-
-**Day:** [Day 1 or Day 2.]
-
-**Means:** [Architecture title.]
+1. **[First action]:**
+   - **Scope:** [What the task does.]
+   - **Provider:** [Who or what completes it.]
+   - **Method:** [How it is done.]
+   - **Assumptions:**
+     - [What it relies on that is not an earlier task, or None.]
 
 **What would you add, correct, or remove?**
 
 If this is accurate, just say so.
 
-- `edit`: emit one consequence sentence. Re-emit this block with the edit applied. A second action is removed. Say it waits for another run. A means that is not an accepted architecture is not added. The person can switch the means to another accepted architecture by title. A preparation-only request stays one self-service action. Removing the last acceptance criterion says at least one is needed. Stay on `start`.
-- `accept`: when the proposal still contains two actions, keep one and stay on `start`. When no acceptance criterion remains, stay on `start`. When no accepted architecture is the means, stay on `start`. Otherwise go to `identifier`.
-- `unknown`: re-emit this block. Stay on `start`.
-- `question`: answer, then re-emit this block. Stay on `start`.
+- `edit`: emit one consequence sentence. An edit that changes a provider or method goes to `align` for that task. Re-emit this block with the diagram and tasks still matching. A second action is removed. Say it waits for another run. The person can switch to another accepted architecture by title. An architecture that is not accepted is not added. A preparation-only request stays one self-service action. Removing the last task or the last acceptance criterion says at least one is needed. Stay on `propose`.
+- `accept`: go to `identifier` when the proposal has one action, at least one task, at least one acceptance criterion, and an accepted architecture. Otherwise stay on `propose`.
+- `unknown`: re-emit this block. Stay on `propose`.
+- `question`: answer, then re-emit this block. Stay on `propose`.
 - `decline`: stop. Write nothing.
 
 ### identifier
@@ -220,26 +254,22 @@ Do not write until the id is free or the existing record is reused.
 
 ### write
 
-Write `code/[ID]/codify.md`, `code/[ID]/codify-tasks.md`, and `code/code.md` together. Write none of them until all are valid. A failed write leaves every existing automation byte unchanged and leaves no partial folder. Say what failed in terms the person can act on. Stay on `write`. Do not write the README or any component file here.
+Write `code/[ID]/codify.md`, `code/[ID]/codify-tasks.md`, and `code/code.md` together. Write none of them until all are valid. A failed write leaves every existing automation byte unchanged and leaves no partial folder. Say what failed in terms the person can act on. Stay on `write`. Do not write the README or any executor or task file here.
 
 The record follows `.highway/library/templates/output/codify-record.md`.
 
 - `id` is the derived `CDY` id.
 - `implementation` is the accepted implementation id.
-- `architecture` is the accepted architecture used as the means.
+- `architecture` is the accepted architecture this automation follows.
 - `status` is `accepted`.
 - The title is the one action.
-- Summary, Description, Diagram, and Acceptance Criteria are the accepted proposal text.
-- Components state Responsibility and Boundary for each component, or `None`.
-- Current state is the sentence used for the day, or `None`.
-- Day is `Day 1` or `Day 2`.
-- Means is the architecture title.
+- Summary, Description, Acceptance Criteria, Diagram, and Tasks are the accepted proposal text, in that order.
 
 The task list follows `.highway/library/templates/output/codify-tasks.md`. Read `library/coding-standards/coding-standards.md` when present.
 
-- Each task produces one file for one component the accepted proposal names, or the README.
-- Every named component has at least one task. No task names another component.
-- A file uses the first catalog row whose File Patterns match its name. A row whose standard file is absent is unavailable. A second row for the same technology is a duplicate, and the first row applies.
+- The executor's files come first, tagged `[Executor]`. They are written once.
+- A proposal task adds files, tagged `[Task N]`, only when its method needs an artifact of its own. A task carried entirely by the executor adds none. A task never gets another task's file. Lines follow proposal task order.
+- Each line produces one file. A file uses the first catalog row whose File Patterns match its name. A row whose standard file is absent is unavailable. A second row for the same technology is a duplicate, and the first row applies.
 - A file with an available standard names that Standard Path. Any other file says `Standard: No coding standard applies.`
 - When that standard's Tests section says `Tests: required`, add one test task directly after the file's task, naming the same standard. Add no other test task.
 - The README task is last.
@@ -264,13 +294,13 @@ On success, go to `code` without asking a question.
 Open `code/[ID]/codify-tasks.md`. Start at the first open task. For each open task, in list order:
 
 1. Read the standard the task names, when it names one.
-2. Write the task's file so it follows that standard. The accepted architecture and implementation decide what is built. The standard decides how it is written.
+2. Write the task's file so it follows that standard. The accepted proposal, architecture, and implementation decide what is built. The standard decides how it is written.
 3. Mark the task `[X]`.
 4. Go to the next open task.
 
-Component files go in that component's subfolder. Lowercase the component name and write spaces as hyphens. Write no subfolder the proposal does not name. Do not run any file.
+Executor files go in `executor/`. A proposal task's own files go in `task-N/`, where N is its task number. Write no other subfolder. Do not run any file.
 
-The README task writes two parts, in this order. Head the first part `## Implement` and the second part `## Use`. Implement says what is put in place, where it goes, and how to enable it, including the preparation this automation needs. Use says how a non-technical person starts this one automation, what they provide, and what they receive, using the interface of the accepted means. Use does not ask that person to edit the generated files or read the implementation record.
+The README task writes two parts, in this order. Head the first part `## Implement` and the second part `## Use`. Implement says what is put in place, where it goes, and how to enable it, including the preparation this automation needs. Use says how a non-technical person starts this one automation, what they provide, and what they receive, using the interface of the executor. Use does not ask that person to edit the generated files or read the implementation record.
 
 When a task cannot be finished, stop at that task. Leave it and every later task open. Start no later task. Keep the files that finished tasks wrote. Go to `close`.
 
@@ -298,19 +328,20 @@ The automation was not run.
 - A list shows a title and the implementation summary. It does not use an id as the label.
 - One to five accepted implementations are listed when the person names nothing. More than five lists none until the person gives a title or a description, then at most five.
 - No accepted implementation writes nothing.
-- With no named action, the suggestion list appears once before any proposal. It holds at most five items, each a title and one summary sentence, and uses no id as a label.
-- Suggestions of the kind that fits the current state come first, then the other kind, each in Realized Capabilities order.
+- With no named action, the suggestion list appears once before any proposal. It opens with the one Technology Choice, or the implementation title, and says automating these tasks may be worth visiting.
+- Each suggestion title is an action that starts with a verb, and its one summary sentence expands on it. The list holds at most five items, uses no id as a label, and ends with the invitation to describe another idea.
+- Suggestions of the kind that fits whether an instance is running come first, then the other kind, each in Realized Capabilities order.
 - A named action skips the suggestion list and opens the proposal for that action.
-- A listed number, title, or summary, or the person's own automation, selects one automation. A number that is not on the list asks again.
-- The proposal keeps the selected title and summary and states a description, one flowchart, at least one acceptance criterion, each component's Responsibility and Boundary, the current state, one action, Day 1 or Day 2, and one architecture title.
-- An instance is running only when Context or Implementation Summary contains `instance is running` or `instances are running`.
+- Before any proposal, coding standards are checked first and vendor documentation second. Corrections and inconclusive results are named before the proposal and are not saved. The checks keep the selected action.
+- A standard that cannot be met for the selected action shows no proposal and returns to suggestions.
+- The proposal shows Title, Summary, Description, Acceptance criteria, Diagram, and Tasks, in that order. It shows no components, current state, separate action, day, or means.
+- The diagram runs top to bottom from the executor. Each arrow is one task's action, starts with a verb, and points to that task's target, in task order.
+- Each task is one action against one target and shows Scope, Provider, Method, and Assumptions.
 - A second action waits for another run. Declining writes nothing. Accepting is the only confirmation.
-- The saved record contains the summary, description, diagram, acceptance criteria, and component responsibilities and boundaries.
-- Acceptance writes `codify.md`, `codify-tasks.md`, and the catalog row together, before any component file or the README.
-- Each task produces one file and names a Standard Path or says `No coding standard applies.` A test task follows a file only when its standard says `Tests: required`. The README task is last.
+- Acceptance writes `codify.md`, `codify-tasks.md`, and the catalog row together, before any executor or task file or the README.
+- The task list starts with the executor's files, adds files for a proposal task only when it has its own artifact, and ends with the README. Each line names a Standard Path or says `No coding standard applies.` A test task follows a file only when its standard says `Tests: required`.
 - Coding starts with no question after acceptance. Each task's standard is read before its file is written, and each task is marked `[X]` before the next begins.
-- A task that cannot be finished stops the run with that task and every later task open. The next run starts at the first open task and redoes no finished task.
-- After coding, the folder contains `codify.md`, `codify-tasks.md`, `README.md`, and one subfolder per named component.
+- A task that cannot be finished stops the run with that task and every later task open. The next run starts at the first open task, redoes no finished task, and runs no check.
 - Codify creates, edits, and removes no coding standard and no row of the coding standards catalog.
 - Acceptance and coding run the automation zero times and leave the implementation, architecture, decision, request, and finding unchanged.
 - Each id is `CDY` plus eight hex digits derived from the title.
@@ -323,12 +354,13 @@ The automation was not run.
 - A missing `.highway/` root stops the skill and writes nothing.
 - A missing record, catalog, or task list template stops the skill, names the template path, and writes nothing.
 - A missing coding standards catalog leaves every task with `Standard: No coding standard applies.` The close says no catalog was found.
+- A standard that cannot be met for the selected action returns to `suggest` and writes nothing.
 - A task that cannot be finished stops coding at that task, leaves it open, and keeps the files finished tasks wrote.
 - An implementation that is not accepted stops the skill and writes nothing.
-- No accepted architecture for the means stops the write and says so.
+- No accepted architecture for this automation keeps the proposal open and says so.
 - A failed write leaves no partial folder and leaves existing catalog bytes unchanged.
 - Declining a proposal writes nothing.
-- Removing the last acceptance criterion keeps the proposal open and writes nothing.
+- Removing the last task or the last acceptance criterion keeps the proposal open and writes nothing.
 
 ## Example
 

@@ -49,10 +49,12 @@ for text in \
 	'## Use' \
 	'code/code.md' \
 	'Would you like to explore any of these options?' \
-	'You can also provide your own.' \
+	"If you have another idea, provide a brief description and we'll work through it together." \
 	'```flowchart' \
-	'Responsibility:' \
-	'Boundary:' \
+	'**Scope:**' \
+	'**Provider:**' \
+	'**Method:**' \
+	'**Assumptions:**' \
 	'codify-tasks.md' \
 	'library/coding-standards/coding-standards.md' \
 	'No coding standard applies.' \
@@ -70,16 +72,18 @@ require "$SAMPLE_STANDARD" 'Tests: required'
 require "$MANIFEST" 'include	library/coding-standards	-'
 
 reject "$CODIFY" '**1. [Implementation ID]:**'
+reject "$CODIFY" 'You can also provide your own.'
 
 require "$CATALOG" 'More than one row may name the same Implementation ID.'
 require "$CATALOG" 'A removed row keeps its id and has no folder.'
 require "$RECORD" 'id: CDYXXXXXX'
-require "$RECORD" 'Day 1 or Day 2'
+reject "$RECORD" '## Day'
 for text in \
 	'## Summary' \
 	'## Description' \
 	'## Diagram' \
-	'## Acceptance Criteria'; do
+	'## Acceptance Criteria' \
+	'## Tasks'; do
 	require "$RECORD" "$text"
 done
 
