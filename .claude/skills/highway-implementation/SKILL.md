@@ -4,7 +4,7 @@ description: "Manages one reference implementation from one accepted reference a
 usage: "Invoke as /highway-implementation with one architecture id."
 compatibility: all
 metadata:
-  version: 5.0.0
+  version: 6.0.0
 ---
 
 # highway-implementation
@@ -40,6 +40,8 @@ Do not report Status, Summary, Next Action, Blocking Reason, Missing, Complete, 
 - `.highway/library/templates/output/implementation-catalog.md`.
 - `.highway/library/templates/output/capability-catalog.md`.
 - `implementations/capabilities.md` when present.
+- `library/knowledge/codify-platforms.md` when present.
+- `.highway/library/templates/output/codify-platforms.md`.
 - `.highway/governance/experience-standard.md`.
 - A project root containing `.highway/`.
 
@@ -50,12 +52,13 @@ The complete structure is `.highway/library/templates/output/implementation-reco
 - One implementation record at `implementations/[ID].md` after the person accepts the proposed realization.
 - An updated `implementations/implementations.md` written with that record.
 - An updated `implementations/capabilities.md` written with that record.
+- One row in `library/knowledge/codify-platforms.md` when the accepted implementation can start automation.
 - A closing message that names the implementation.
 - No implementation when the architecture is missing, not accepted, incompatible, or a write fails.
 
 ## Procedure
 
-Emit only the active template. Follow this order: `choose` when no architecture id is supplied; otherwise `start`, then `identifier`, `title` when needed, `write`, and `close`. The accepted Reference Architecture remains authoritative. A realization cannot redesign it or override the ADR. A missing Profile, Objective, Control, or NFR continues without invented evidence. A malformed one of those baselines stops the skill and writes nothing. Clarification is read-only. An open finding can inform a risk. It cannot block the proposal.
+Emit only the active template. Follow this order: `choose` when no architecture id is supplied; otherwise `start`, then `identifier`, `title` when needed, `write`, `platforms`, and `close`. The accepted Reference Architecture remains authoritative. A realization cannot redesign it or override the ADR. A missing Profile, Objective, Control, or NFR continues without invented evidence. A malformed one of those baselines stops the skill and writes nothing. Clarification is read-only. An open finding can inform a risk. It cannot block the proposal.
 
 One accepted architecture can have more than one current implementation. A current implementation is an accepted implementation-catalog row for that architecture. A removed row does not count and does not block a new one. Creating another leaves every existing implementation in place and does not change the decision or the architecture.
 
@@ -152,7 +155,7 @@ a 0, b 1, c 2, d 3, e 4, f 5, g 6, h 7, i 8, j 9, k a, l b, m c, n d, o e, p f, 
 
 Compare that id with `implementations/implementations.md`, including removed rows.
 
-- The same title already has that id under this architecture: use the existing record. Do not write a second one. Go to `close`.
+- The same title already has that id under this architecture: use the existing record. Do not write a second one. Go to `platforms`.
 - The same title already has that id under a different architecture: the title becomes "[Product] for [purpose]". The purpose is the text after the first " for ", as written. Derive the id again. When the decision title has no purpose, go to `title`.
 - The id is taken for a different title: go to `title`.
 - The id is free: go to `write`.
@@ -222,7 +225,21 @@ The catalog follows `.highway/library/templates/output/implementation-catalog.md
 - Adding an implementation increments the minor version.
 - More than one row may name the same Architecture ID.
 
-On success, go to `close`.
+On success, go to `platforms`.
+
+### platforms
+
+Read the accepted implementation's Technology Choice, Runtime Components, and Realized By. It can start automation when they describe a pipeline, an orchestrator, a self-service platform, a desired-state or GitOps tool, or an agent that starts the work. A store, a newsletter, a records product, or a backup cannot. When it cannot, write nothing, say nothing, and go to `close`.
+
+Otherwise write `library/knowledge/codify-platforms.md` from `.highway/library/templates/output/codify-platforms.md`. Create `library/knowledge/` when it is absent. Platform is the implementation title. Implementation ID is its `RI` id. Source is `implementation`. Keep one row for this Implementation ID: replace it when present, and append it otherwise. Leave every other row unchanged. A failed write leaves the existing file unchanged. Say what failed, then go to `close`.
+
+On success, emit:
+
+**[Platform] is included as a platform that can start automation. To remove it, run /highway-codify configure.**
+
+Do not ask a question. Go to `close`.
+
+Opening, listing, or declining does not enter `platforms`.
 
 ### close
 
@@ -259,6 +276,8 @@ This is a realization blueprint. It does not authorize deployment.
 - A failed write leaves existing implementation, implementation-catalog, and capability-catalog bytes unchanged.
 - The skill does not change the Reference Architecture, the decision statement, the rationale, the selected option, or the decision status.
 - The skill does not write an implementation id onto the ADR.
+- An accepted implementation that can start automation, such as an agent that starts the work, gets one row in `library/knowledge/codify-platforms.md`, and the person is told it is included and that `/highway-codify configure` removes it. No question is asked.
+- A store, a newsletter, a records product, or a backup gets no row and no message. Opening, listing, or declining writes no row.
 
 ## Error Handling
 

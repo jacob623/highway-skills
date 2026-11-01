@@ -1,0 +1,26 @@
+FAIL: output/codify-platforms.md is missing
+FAIL: output/codify-platforms.md is missing
+FAIL: highway-implementation/SKILL.md omits: ### platforms
+FAIL: highway-implementation/SKILL.md omits: is included as a platform that can start automation. To remove it, run /highway-codify configure.
+FAIL: highway-implementation/SKILL.md omits: library/knowledge/codify-platforms.md
+FAIL: highway-implementation/SKILL.md omits: an agent that starts the work
+FAIL: highway-implementation/SKILL.md omits: version: 6.0.0
+FAIL: highway-onboarding/SKILL.md omits: follow `platforms` in `highway-implementation`
+FAIL: highway-onboarding/SKILL.md omits: version: 8.0.0
+FAIL: highway-codify/SKILL.md omits: ### configure
+FAIL: highway-codify/SKILL.md omits: When the invocation is the word `configure`
+FAIL: highway-codify/SKILL.md omits: is not included as a platform that can start automation. To add it, run /highway-codify configure.
+FAIL: highway-codify/SKILL.md omits: A platform that can start automation is needed. Run /highway-codify configure.
+FAIL: highway-codify/SKILL.md omits: Every task names that same Provider
+FAIL: highway-codify/SKILL.md omits: Do not replace the Provider
+FAIL: highway-codify/SKILL.md omits: P -->|[Next action]|
+FAIL: highway-codify/SKILL.md omits: version: 5.0.0
+FAIL: highway-codify/SKILL.md still contains: The executor and each provider are the person
+FAIL: highway-codify/SKILL.md still contains: Do not invent a means that no accepted architecture describes.
+FAIL: highway-codify/SKILL.md still contains: T1 -->|[Next action]|
+FAIL: output/codify-record.md omits: P -->|<next action>|
+FAIL: output/codify-record.md omits: version: 4.0.0
+FAIL: output/codify-record.md still contains: T1 -->|<next action>|
+FAIL: output/codify-tasks.md omits: The Provider is the first node
+FAIL: output/codify-tasks.md omits: version: 2.0.1
+EXIT:1

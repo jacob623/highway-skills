@@ -2,7 +2,7 @@
 name: codify-tasks
 description: "Complete output skeleton for the ordered task list of one accepted automation."
 metadata:
-  version: 2.0.0
+  version: 2.0.1
 ---
 
 ## File Frontmatter
@@ -28,6 +28,6 @@ automation: CDYXXXXXX
 
 Each task produces one file. `[ ]` is open and `[X]` is done. Tasks are numbered from `T001` with no gaps.
 
-The executor is the first node of the accepted diagram. Its files come first, are written once, and go in `executor/`. `[Task N]` names proposal task N. A proposal task adds lines in `task-N/` only when its method needs an artifact of its own. A task carried entirely by the executor adds none. Lines follow proposal task order. Within one tag, a file comes before any file that relies on it. A test task directly follows the file it tests, and only when that file's standard says `Tests: required`. A file with no available standard says `Standard: No coding standard applies.` The README task is last.
+The Provider is the first node of the accepted diagram, and its files are the executor's files. Its files come first, are written once, and go in `executor/`. `[Task N]` names proposal task N. A proposal task adds lines in `task-N/` only when its method needs an artifact of its own. A task carried entirely by the executor adds none. Lines follow proposal task order. Within one tag, a file comes before any file that relies on it. A test task directly follows the file it tests, and only when that file's standard says `Tests: required`. A file with no available standard says `Standard: No coding standard applies.` The README task is last.
 
 Every line names the executor, one proposal task, or the README. No line names a task the proposal does not list.

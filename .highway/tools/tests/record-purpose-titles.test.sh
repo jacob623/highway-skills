@@ -49,7 +49,7 @@ for text in \
 	'the first " for "' \
 	'under a different architecture: the title becomes "[Product] for [purpose]"' \
 	'under this architecture: use the existing record' \
-	'version: 5.0.0'; do
+	'version: 6.0.0'; do
 	require "$IMPL" "$text"
 done
 

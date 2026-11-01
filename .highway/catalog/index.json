@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-01T12:55:45Z",
+  "generated_at": "2026-11-01T22:02:59Z",
   "entries": [
     {
       "id": "highway-adr",
@@ -34,7 +34,7 @@
       "description": "Manages one functional artifact for one accepted implementation.",
       "usage": "Invoke as /highway-codify with one implementation name.",
       "compatibility": "all",
-      "version": "4.0.0",
+      "version": "5.0.0",
       "source_path": "skills/highway-codify/SKILL.md"
     },
     {
@@ -70,7 +70,7 @@
       "description": "Manages one reference implementation from one accepted reference architecture.",
       "usage": "Invoke as /highway-implementation with one architecture id.",
       "compatibility": "all",
-      "version": "5.0.0",
+      "version": "6.0.0",
       "source_path": "skills/highway-implementation/SKILL.md"
     },
     {
@@ -97,7 +97,7 @@
       "description": "Manages one decision, one reference architecture, and one reference implementation.",
       "usage": "Invoke as `/highway-onboarding`.",
       "compatibility": "all",
-      "version": "7.0.0",
+      "version": "8.0.0",
       "source_path": "skills/highway-onboarding/SKILL.md"
     },
     {
