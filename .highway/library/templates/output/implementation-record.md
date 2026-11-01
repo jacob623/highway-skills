@@ -2,7 +2,7 @@
 name: implementation-record
 description: "Complete output skeleton for an accepted Reference Implementation record."
 metadata:
-  version: 2.0.0
+  version: 2.1.0
 ---
 
 ## File Frontmatter
@@ -18,7 +18,7 @@ status: accepted
 ## Body
 
 ```markdown
-# <deterministic implementation title>
+# <product title>
 
 ## Architecture Reference
 
@@ -113,7 +113,9 @@ ADR: ADRXXXXXX
 Implementation: RIXXXXXX
 ```
 
-The body is rendered in this order. The identifier is `RI` plus eight hex digits. The parent is an
+The body is rendered in this order. The title is the product or named mechanism, followed by "for"
+and the purpose only when that product title is taken. The identifier is `RI` plus eight hex
+digits. The parent is an
 `RA` id. Status is `accepted`. The record does not use an `ARCH` parent or status `proposed`. The
 architecture is named once, in Architecture Reference. Coverage rows are the architecture's stated
 responsibilities. Each row is covered or not applicable. Conformance is `compatible` when every row

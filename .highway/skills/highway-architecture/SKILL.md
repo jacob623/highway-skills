@@ -4,7 +4,7 @@ description: "Manages one reference architecture from one accepted adr."
 usage: "Invoke as /highway-architecture with one adr id."
 compatibility: all
 metadata:
-  version: 4.0.0
+  version: 5.0.0
 ---
 
 # highway-architecture
@@ -98,9 +98,11 @@ On `start`, "looks good" is `accept`.
 
 ### start
 
-Build the proposed architecture from the accepted ADR. Keep it conceptual. Do not authorize implementation. Do not name a platform, product, vendor, or specific technology.
+Build the proposed architecture from the accepted ADR. Keep it conceptual. Do not authorize implementation. Do not name a platform, product, vendor, or specific technology. Derive the title with the rules in `identifier`.
 
 **Here is a proposed starting point for your architecture:**
+
+**Title:** [Purpose title.]
 
 **Summary:** [What this architecture is, in conceptual terms.]
 
@@ -140,7 +142,7 @@ Build the proposed architecture from the accepted ADR. Keep it conceptual. Do no
 
 If this is accurate, just say so.
 
-- `edit`: emit one consequence sentence. When the edit names a platform, product, vendor, or specific technology, say that it belongs on the Reference Implementation and leave it out of this architecture. Re-emit this block with the edit applied. Stay on `start`.
+- `edit`: emit one consequence sentence. When the edit names a platform, product, vendor, or specific technology, say that it belongs on the Reference Implementation and leave it out of this architecture. A new title is a supplied title. Re-emit this block with the edit applied. Stay on `start`.
 - `accept`: go to `identifier`.
 - `unknown`: re-emit this block. Stay on `start`.
 - `question`: answer, then re-emit this block. Stay on `start`.
@@ -148,7 +150,17 @@ If this is accurate, just say so.
 
 ### identifier
 
-The architecture title is the ADR title unless the person supplied a title.
+The architecture title is the purpose in the ADR title, unless the person supplied a title that names no product. Hold it before deriving the id.
+
+- Remove a leading "Adopt", without regard to case. The purpose is the text after the first " for ", without regard to case. Capitalize its first letter. Keep every other word as written.
+- When the ADR title has no " for ", use the rest of the title. When the decision's Selected Option is a name that appears in it, remove that name.
+- When the title would be empty or would name a product, ask for a purpose title. Write nothing until the person gives one.
+
+**What should this architecture be called? Describe what it is for, without naming a product.**
+
+The reply is the held title. When it names a product, ask again.
+
+Deriving the id from the held title:
 
 1. Lowercase the title. Remove hyphens and apostrophes. Split the rest into words.
 2. Take eight letters: the first two of word 1, the first two of word 2, the first two of word 3, and the last two of the last word. When the title has only two words, the third sample is the first two of the last word.
@@ -161,7 +173,8 @@ a 0, b 1, c 2, d 3, e 4, f 5, g 6, h 7, i 8, j 9, k a, l b, m c, n d, o e, p f, 
 
 Compare that id with `architectures/architectures.md`, including removed rows.
 
-- The same title already has that id: use the existing record. Do not write a second one. Go to `name`.
+- The same title already has that id and its row lists this ADR: use the existing record. Do not write a second one. Go to `name`.
+- The same title already has that id for a different ADR: go to `title`.
 - The id is taken for a different title: go to `title`.
 - The id is free: go to `write`.
 
@@ -248,6 +261,7 @@ Run `/highway-implementation [RA id]` to create the Reference Implementation.
 - An ADR id for an accepted ADR opens the proposed architecture.
 - An invocation without an ADR id lists the accepted ADRs whose ADR ID is absent from every architecture catalog row. Each line shows the ADR ID and its title. The list is numbered. A stated number selects that ADR. A removed architecture row keeps that ADR off the list.
 - One accepted ADR produces at most one architecture.
+- The architecture title is the decision's purpose, without "Adopt" and without a product. The proposal shows it before acceptance. An empty purpose asks for a title and writes nothing.
 - The proposed architecture is accepted before the record is written.
 - The architecture does not change the ADR decision.
 - After the architecture is written, the ADR's Reference Architecture field names it. No other ADR field changes.

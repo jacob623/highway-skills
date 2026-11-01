@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-01T12:16:15Z",
+  "generated_at": "2026-11-01T12:55:15Z",
   "entries": [
     {
       "library_type": "template",
@@ -26,7 +26,7 @@
       "library_type": "template",
       "name": "architecture-record",
       "description": "Complete output skeleton for an accepted Reference Architecture record.",
-      "version": "2.0.0",
+      "version": "2.1.0",
       "source_path": "library/templates/output/architecture-record.md"
     },
     {
@@ -103,7 +103,7 @@
       "library_type": "template",
       "name": "implementation-record",
       "description": "Complete output skeleton for an accepted Reference Implementation record.",
-      "version": "2.0.0",
+      "version": "2.1.0",
       "source_path": "library/templates/output/implementation-record.md"
     },
     {
