@@ -45,8 +45,8 @@ for text in \
 	'instance is running' \
 	'instances are running' \
 	'Establish' \
-	'## Implement' \
-	'## Use' \
+	'## Setup Instructions' \
+	'## User Guide' \
 	'code/code.md' \
 	'Would you like to explore any of these options?' \
 	"If you have another idea, provide a brief description and we'll work through it together." \

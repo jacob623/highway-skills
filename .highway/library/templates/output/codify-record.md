@@ -2,7 +2,7 @@
 name: codify-record
 description: "Complete output skeleton for one accepted automation proposal."
 metadata:
-  version: 4.0.0
+  version: 5.0.0
 ---
 
 ## File Frontmatter
@@ -68,13 +68,13 @@ The diagram is one logical flow. The first node is the Provider: the platform ex
 The same folder contains `README.md` with two parts, in this order.
 
 ```markdown
-## Implement
+## Setup Instructions
 
 <what is put in place, where it goes, and how to enable it, including preparation>
 
-## Use
+## User Guide
 
 <how a non-technical person starts this one automation, what they provide, and what comes back>
 ```
 
-Implement is for the person who accepted the proposal. Use follows the interface of the accepted architecture. Use does not ask that person to edit the generated files or read the implementation record.
+Setup Instructions is for the person who accepted the proposal. User Guide follows the interface of the Provider. User Guide does not ask that person to edit the generated files or read the implementation record.

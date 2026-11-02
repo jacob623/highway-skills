@@ -1,0 +1,34 @@
+FAIL: SKILL.md omits: Head the first part `## Setup Instructions` and the second part `## User Guide`.
+FAIL: SKILL.md omits: ### The codify stage is complete.
+FAIL: SKILL.md omits: This code is now part of your Highway knowledge base.
+FAIL: SKILL.md omits: **The files can be found here:**
+FAIL: SKILL.md omits: If you'd like to review the files together, just say so.
+FAIL: SKILL.md omits: **Setup and Usage Instructions** can be found here:
+FAIL: SKILL.md omits: If you'd like to review the instructions together, just say so.
+FAIL: SKILL.md omits: just ask highway to show your code catalog
+FAIL: SKILL.md omits: Run /highway-help to explore what Highway can help you do.
+FAIL: SKILL.md omits: ### catalog
+FAIL: SKILL.md omits: When the invocation is the word `catalog`
+FAIL: SKILL.md omits: **Which automation would you like to discuss?**
+FAIL: SKILL.md omits: more automations are not shown.
+FAIL: SKILL.md omits: 1 more automation is not shown.
+FAIL: SKILL.md omits: You can name or describe any automation.
+FAIL: SKILL.md omits: No automation has been created yet.
+FAIL: SKILL.md omits: The instructions are not written yet.
+FAIL: SKILL.md omits: Append the new row as the last row.
+FAIL: SKILL.md omits: version: 6.0.0
+FAIL: SKILL.md still contains: `## Implement`
+FAIL: SKILL.md still contains: `## Use`
+FAIL: SKILL.md still contains: Order the index by Automation ID.
+FAIL: SKILL.md still contains: [Every task is done. Or: Task
+FAIL: codify-record.md omits: ## Setup Instructions
+FAIL: codify-record.md omits: ## User Guide
+FAIL: codify-record.md omits: User Guide follows the interface of the Provider.
+FAIL: codify-record.md omits: version: 5.0.0
+FAIL: codify-record.md still contains the line: ## Implement
+FAIL: codify-record.md still contains the line: ## Use
+FAIL: codify-catalog.md omits: Rows are in acceptance order.
+FAIL: codify-catalog.md omits: A new row is appended as the last row.
+FAIL: codify-catalog.md omits: version: 2.0.0
+FAIL: codify-catalog.md still contains: Rows are ordered by Automation ID.
+EXIT:1
