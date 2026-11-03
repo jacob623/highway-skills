@@ -4,7 +4,7 @@ description: "Manages one decision, one reference architecture, and one referenc
 usage: "Invoke as `/highway-onboarding`."
 compatibility: all
 metadata:
-  version: 8.0.0
+  version: 9.0.0
 ---
 
 # highway-onboarding
@@ -20,7 +20,7 @@ Brings existing platforms into Highway by validating capabilities, mapping them 
 
 ## When not to use
 
-Do not create a technology, platform, provider, or application inventory. `library/knowledge/codify-platforms.md` lists only platforms that can start automation and is not that inventory.
+Do not create a technology, platform, provider, or application inventory. `library/coding-standards/codify-platforms.md` lists only platforms that can start automation and is not that inventory.
 Do not create a Request, Discovery, or synthetic `DISC` record.
 Do not use `highway-adr` for this path. That skill requires a Discovery.
 Do not change Profile, Objectives, Controls, or NFRs.
@@ -37,7 +37,7 @@ Do not report Status, Summary, Next Action, Blocking Reason, Missing, Complete, 
 - `.highway/library/templates/output/adr-catalog.md`.
 - `highway-architecture`.
 - `highway-implementation`.
-- `library/knowledge/codify-platforms.md` when present.
+- `library/coding-standards/codify-platforms.md` when present.
 - `.highway/library/templates/output/codify-platforms.md`.
 - `.highway/governance/experience-standard.md`.
 - A project root containing `.highway/`.
@@ -49,7 +49,7 @@ The complete structure is `.highway/library/templates/output/adr-record.md`, `.h
 - One accepted ADR per provider group, at `adrs/[ID].md`, with Parent `highway`.
 - One Reference Architecture and one Reference Implementation for that ADR, produced by their owning skills.
 - One lineage that lists every completed provider, then one summary.
-- One row in `library/knowledge/codify-platforms.md` for each implementation that can start automation.
+- One row in `library/coding-standards/codify-platforms.md`, with blank When to use and When not to use, for each implementation that can start automation.
 - No inventory file. The capability queue and the provider queue are not written.
 
 ## Procedure
@@ -255,7 +255,13 @@ After the architecture is written, set the ADR's `Reference Architecture` field 
 
 When either of those records cannot be written, or the ADR cannot be updated to name the architecture, try that step once more. When it still fails, keep the ADR and any earlier provider results. Say which record could not be written or named. Do not claim onboarding is complete. When the implementation cannot be written, the ADR names the architecture and no implementation exists.
 
-After the implementation exists, follow `platforms` in `highway-implementation`. When it includes the platform, emit its two sentences. Do not ask a question.
+After the implementation exists, follow `platforms` in `highway-implementation` to write the row. When it includes the platform, emit:
+
+**[Platform] is included as a platform that can start automation.**
+
+**Would you like to configure [Platform] for automation?**
+
+A yes adds [Platform] to the platforms to configure, which are kept in the conversation and not written. Any answer continues onboarding. Do not emit the configure pointer here. Do not ask this for a platform that cannot start automation.
 
 When the ADR, Reference Architecture, and Reference Implementation exist, remove this provider from the provider queue. When another provider remains, repeat `orchestrate` for that provider. When the queue is empty, go to `lineage`.
 
@@ -286,6 +292,10 @@ If you'd like to review your Decision, Reference Architecture or Reference Imple
 `/highway-assessment` is a good choice. Highway can perform an assessment of your current business context and provide recommendations you can act on today.
 
 Run /highway-help to explore what Highway can help you do.
+
+[For each platform the person chose to configure, in the order asked: Run `/highway-codify-config [Platform]` to configure it for automation.]
+
+[When `highway-codify-config` handed off this onboarding for a platform: Run `/highway-codify-config [Platform]` to finish adding [Platform].]
 
 When the person asks to review a record, go to `review`. When they choose a next step, follow that step. Do not start another record.
 
@@ -359,7 +369,8 @@ If this is accurate, just say so.
 - A failed architecture or implementation does not claim onboarding is complete.
 - Lineage is shown only after every provider on the queue has an ADR, Reference Architecture, and Reference Implementation, and it lists each of those providers.
 - No inventory file is written.
-- An implementation that can start automation is included in `library/knowledge/codify-platforms.md` by `platforms` in `highway-implementation`, with the same two sentences and no question.
+- An implementation that can start automation is included in `library/coding-standards/codify-platforms.md` by `platforms` in `highway-implementation`, with blank guidance. The person is asked whether to configure it for automation, and any answer continues onboarding. No platform that cannot start automation is asked about.
+- The summary gives one `/highway-codify-config [Platform]` pointer for each yes. An onboarding handed off by `highway-codify-config` also ends with the line to finish adding that platform.
 - The summary recommends `/highway-assessment`, then `/highway-help`.
 
 ## Error Handling

@@ -2,7 +2,7 @@
 name: codify-record
 description: "Complete output skeleton for one accepted automation proposal."
 metadata:
-  version: 5.0.0
+  version: 6.0.0
 ---
 
 ## File Frontmatter
@@ -43,6 +43,8 @@ status: accepted
    - **Scope:** <what the task does>
    - **Provider:** <the platform executing this automation>
    - **Method:** <how it is done, naming the plugins, modules, libraries, MCP servers, or APIs it uses>
+   - **Standards:**
+     1. <Standard Title from `library/coding-standards/coding-standards.md`; or the field reads `No coding standard applies.`>
    - **Assumptions:**
      - <what the task relies on that is not an earlier task, or `None`>
 ```
@@ -52,6 +54,8 @@ The id is `CDY` plus eight hex digits derived from the automation title. `implem
 The body is the accepted proposal. It states one action, and the title is that action. The title and summary are the ones the person selected. It does not copy the implementation, the architecture, or the decision. It contains no instruction to run the automation.
 
 Each task is one action against one platform, object, or API, in the order the diagram shows. At least one task is present. Every task names the same Provider. The implementation this automation serves is a target, not the Provider.
+
+Standards is the ordered list of coding standards the person accepted for that task. An earlier standard wins a disagreement with a later one. Each inherited standard appears once, after the standard that inherits it. A task with no standard says `No coding standard applies.`
 
 ## Diagram Block
 

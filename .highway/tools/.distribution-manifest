@@ -31,6 +31,7 @@ include	.claude/skills/highway-architecture	-
 include	.claude/skills/highway-implementation	-
 include	.claude/skills/highway-assessment	-
 include	.claude/skills/highway-codify	-
+include	.claude/skills/highway-codify-config	-
 exclude	.cursor	-
 include	.cursor/rules/highway-agent-context.mdc	-
 include	.cursor/skills/highway-objectives	-
@@ -47,6 +48,7 @@ include	.cursor/skills/highway-architecture	-
 include	.cursor/skills/highway-implementation	-
 include	.cursor/skills/highway-assessment	-
 include	.cursor/skills/highway-codify	-
+include	.cursor/skills/highway-codify-config	-
 exclude	.github	-
 include	.github/copilot-instructions.md	-
 include	.github/skills/highway-objectives	-
@@ -63,6 +65,7 @@ include	.github/skills/highway-architecture	-
 include	.github/skills/highway-implementation	-
 include	.github/skills/highway-assessment	-
 include	.github/skills/highway-codify	-
+include	.github/skills/highway-codify-config	-
 exclude	.agents	-
 include	.agents/skills/highway-objectives	-
 include	.agents/skills/highway-help	-
@@ -78,6 +81,7 @@ include	.agents/skills/highway-architecture	-
 include	.agents/skills/highway-implementation	-
 include	.agents/skills/highway-assessment	-
 include	.agents/skills/highway-codify	-
+include	.agents/skills/highway-codify-config	-
 include	AGENTS.md	-
 
 # --- The framework directory: excluded by default so each child is a deliberate decision ---

@@ -1,0 +1,63 @@
+FAIL: highway-codify-config/SKILL.md is missing
+FAIL: highway-codify-config/SKILL.md is missing
+FAIL: highway-codify-config/SKILL.md is missing
+FAIL: highway-codify-config/SKILL.md is missing
+FAIL: highway-codify-config/SKILL.md is missing
+FAIL: highway-codify-config/SKILL.md is missing
+FAIL: highway-codify-config/SKILL.md is missing
+FAIL: highway-codify-config/SKILL.md is missing
+FAIL: highway-codify-config/SKILL.md is missing
+FAIL: highway-codify-config/SKILL.md is missing
+FAIL: highway-codify-config/SKILL.md is missing
+FAIL: highway-codify-config/SKILL.md is missing
+FAIL: highway-codify-config/SKILL.md is missing
+FAIL: highway-codify-config/SKILL.md is missing
+FAIL: highway-codify-config/SKILL.md is missing
+FAIL: highway-codify-config/SKILL.md is missing
+FAIL: highway-codify-config/SKILL.md is missing
+FAIL: highway-codify-config/SKILL.md is missing
+FAIL: highway-codify-config/SKILL.md is missing
+FAIL: highway-codify-config/SKILL.md is missing
+FAIL: highway-codify-config/SKILL.md is missing
+FAIL: highway-codify-config/SKILL.md is missing
+FAIL: highway-codify-config/SKILL.md is missing
+FAIL: highway-codify-config/SKILL.md is missing
+FAIL: highway-codify-config/SKILL.md is missing
+FAIL: output/codify-platforms.md omits: | Platform | Implementation ID | When to use | When not to use |
+FAIL: output/codify-platforms.md omits: library/coding-standards/codify-platforms.md
+FAIL: output/codify-platforms.md omits: version: 2.0.0
+FAIL: output/codify-platforms.md still contains: | Source |
+FAIL: output/coding-standards-catalog.md is missing
+FAIL: coding-standards/coding-standards.md omits: | Standard Title | Technology | File Patterns | Summary | When to use | When not to use | Inherits From | Standard Path |
+FAIL: output/coding-standard.md is missing
+FAIL: output/coding-standard.md is missing
+FAIL: output/codify-record.md omits: **Standards:**
+FAIL: output/codify-record.md omits: version: 6.0.0
+FAIL: output/codify-tasks.md omits: Standards: `library/coding-standards/
+FAIL: output/codify-tasks.md omits: version: 3.0.0
+FAIL: output/codify-tasks.md still contains: Implement and Use
+FAIL: highway-codify/SKILL.md omits: ### standards
+FAIL: highway-codify/SKILL.md omits: **Standards:**
+FAIL: highway-codify/SKILL.md omits: /highway-codify-config
+FAIL: highway-codify/SKILL.md omits: library/coding-standards/codify-platforms.md
+FAIL: highway-codify/SKILL.md omits: version: 7.0.0
+FAIL: highway-codify/SKILL.md still contains: ### configure
+FAIL: highway-codify/SKILL.md still contains: /highway-codify configure
+FAIL: highway-codify/SKILL.md still contains: library/knowledge/codify-platforms.md
+FAIL: highway-codify/SKILL.md still contains: the first row was used
+FAIL: highway-implementation/SKILL.md omits: **Would you like to configure [Platform] for automation?**
+FAIL: highway-implementation/SKILL.md omits: library/coding-standards/codify-platforms.md
+FAIL: highway-implementation/SKILL.md still contains: library/knowledge/codify-platforms.md
+FAIL: highway-implementation/SKILL.md still contains: /highway-codify configure
+FAIL: highway-onboarding/SKILL.md omits: **Would you like to configure [Platform] for automation?**
+FAIL: highway-onboarding/SKILL.md omits: library/coding-standards/codify-platforms.md
+FAIL: highway-onboarding/SKILL.md still contains: library/knowledge/codify-platforms.md
+FAIL: highway-implementation/SKILL.md omits: Run `/highway-codify-config [Platform]` to configure it.
+FAIL: highway-onboarding/SKILL.md omits: Run `/highway-codify-config [Platform]` to configure it for automation.
+FAIL: highway-onboarding/SKILL.md omits: to finish adding [Platform].
+FAIL: highway-onboarding/SKILL.md still contains: emit its two sentences. Do not ask a question.
+FAIL: tools/.distribution-manifest omits: include	.claude/skills/highway-codify-config	-
+FAIL: tools/.distribution-manifest omits: include	.cursor/skills/highway-codify-config	-
+FAIL: tools/.distribution-manifest omits: include	.github/skills/highway-codify-config	-
+FAIL: tools/.distribution-manifest omits: include	.agents/skills/highway-codify-config	-
+EXIT:1

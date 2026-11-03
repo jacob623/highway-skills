@@ -4,7 +4,7 @@ description: "Manages one functional artifact for one accepted implementation."
 usage: "Invoke as /highway-codify with one implementation name."
 compatibility: all
 metadata:
-  version: 6.0.0
+  version: 7.0.0
 ---
 
 # highway-codify
@@ -17,17 +17,16 @@ Suggests actions worth automating for one accepted implementation, checks the ch
 
 - The person invokes `/highway-codify` with an implementation title.
 - The person invokes `/highway-codify` without an implementation title.
-- The person invokes `/highway-codify configure` to add, correct, or remove a platform that can start automation.
 - The person invokes `/highway-codify catalog`, or asks to show the code catalog, to see recent automations and discuss one.
 
 ## When not to use
 
 Do not run the automation.
 Do not change the implementation, its architecture, its decision, the request, the assessment finding, Controls, or NFRs.
-Do not change `library/knowledge/codify-platforms.md` except in `configure`.
+Do not change `library/coding-standards/codify-platforms.md`. `/highway-codify-config` changes it.
 Do not create a skill for a particular means.
 Do not put lifecycle activities on the implementation record.
-Do not create, edit, or remove a coding standard or a row of `library/coding-standards/coding-standards.md`.
+Do not create, edit, or remove a coding standard or a row of `library/coding-standards/coding-standards.md`. `/highway-codify-config` changes them.
 Do not report Status, Summary, Next Action, Blocking Reason, Missing, Complete, or Blocked.
 
 ## Inputs
@@ -37,8 +36,7 @@ Do not report Status, Summary, Next Action, Blocking Reason, Missing, Complete, 
 - `architectures/architectures.md` and the accepted architecture records.
 - `code/code.md` and `code/[ID]/codify-tasks.md` when present.
 - `library/coding-standards/coding-standards.md` and the standards it names, when present.
-- `library/knowledge/codify-platforms.md` when present.
-- `.highway/library/templates/output/codify-platforms.md`.
+- `library/coding-standards/codify-platforms.md` when present.
 - The vendor's current public documentation for each product, API, plugin, module, or library a draft proposal names.
 - `.highway/library/templates/output/codify-record.md`.
 - `.highway/library/templates/output/codify-catalog.md`.
@@ -58,16 +56,15 @@ The complete structure is `.highway/library/templates/output/codify-record.md`, 
 - When every task is done, a completion message that names the files path `code/[ID]/` and the README path `code/[ID]/README.md`. When a task could not be finished, a close that names the automation, the task list, and that task. Both say the automation was not run.
 - A read-only code catalog view after `/highway-codify catalog`.
 - No automation when the implementation is missing, not accepted, the proposal is declined, or a write fails.
-- An updated `library/knowledge/codify-platforms.md` after a `configure` change.
 
 ## Procedure
 
-Emit only the active template. `configure` runs alone, and so does `catalog`. Otherwise follow this order: `choose` when no implementation is named; `suggest` when no action is named; then `start`, `align`, `propose`, `identifier`, `title` when needed, `write`, `code`, and `close`. Follow `.highway/governance/experience-standard.md` for attribution and acceptance wording. A current implementation is an accepted row in `implementations/implementations.md`. A removed row does not match and does not block a new automation.
+Emit only the active template. `catalog` runs alone. Otherwise follow this order: `choose` when no implementation is named; `suggest` when no action is named; then `start`, `standards`, `align`, `propose`, `identifier`, `title` when needed, `write`, `code`, and `close`. Follow `.highway/governance/experience-standard.md` for attribution and acceptance wording. A current implementation is an accepted row in `implementations/implementations.md`. A removed row does not match and does not block a new automation.
 
 ### Entry
 
 1. When `.highway/` cannot be found, stop. Say the project root cannot be located. Write nothing.
-2. When the invocation is the word `configure`, go to `configure`. Do not resume a task list or select an implementation.
+2. When the invocation is the word `configure`, or asks to change platforms or coding standards, say: To configure platforms and coding standards, run /highway-codify-config. Write nothing.
 3. When the invocation is the word `catalog`, or asks to show the code catalog, go to `catalog`. Do not resume a task list or select an implementation.
 4. Read the invocation for an implementation title, a description, an implementation id, and one optional action.
 5. When the invocation names an automation in `code/code.md` by title or `CDY` id and its task list has an open task, go to `code` at the first open task.
@@ -78,28 +75,6 @@ Emit only the active template. `configure` runs alone, and so does `catalog`. Ot
 10. When nothing is named and one to five accepted implementations exist, go to `choose` and list each one.
 11. When nothing is named and more than five accepted implementations exist, go to `choose` and list none.
 12. When no accepted implementation exists, say so. Write nothing.
-
-### configure
-
-Read `library/knowledge/codify-platforms.md` when it exists. Emit one numbered line per row, starting at 1, in file order. Do not use an id as the label.
-
-**1. [Platform]:** [From an implementation, or Added by you]
-
-When the file is absent or has no rows, say no platform is included yet.
-
-**What would you add, correct, or remove?**
-
-- A name to add that has no row: append it with Implementation ID `None` and Source `own`.
-- A name to add that already has a row: say it is already included. Write nothing.
-- A listed platform to remove: drop that row.
-- A name to remove or correct that has no row: say it is not included. Write nothing.
-- A listed row to correct: replace its Platform. Keep its Implementation ID and Source.
-- `unknown`: re-emit the list. Stay on `configure`.
-- `decline`: stop. Write nothing.
-
-Write the whole file from `.highway/library/templates/output/codify-platforms.md`, or write nothing. Create `library/knowledge/` when it is absent. A failed write leaves the existing file unchanged. After a write, re-emit the list and the question. Stay on `configure`.
-
-Do not enter `choose`, `suggest`, `start`, or `code`. Do not change an automation, an implementation, an architecture, or a decision.
 
 ### catalog
 
@@ -128,7 +103,7 @@ A selection emits:
 
 **What would you like to know about it?**
 
-Write nothing. Do not enter `choose`, `suggest`, `start`, `code`, or `configure`. Do not resume a task list.
+Write nothing. Do not enter `choose`, `suggest`, `start`, or `code`. Do not resume a task list.
 
 ### choose
 
@@ -205,15 +180,30 @@ Draft the proposal. Emit nothing except the Provider lines below.
 - The tasks, in order. Each task is one action against one platform, object, or API, and its action starts with a verb. A step with two targets is two tasks.
 - Scope says what the task does. Provider is the Provider. Method says how, naming the plugins, modules, libraries, MCP servers, or APIs it uses. Assumptions list what the task relies on that is not an earlier task, such as network access, an access level, an authentication method, or a credential source, or `None`.
 
-Read `library/knowledge/codify-platforms.md` when present. The Provider is the platform the person named. Otherwise it is this implementation, when it has a row. Otherwise it is the first row. When the catalog has no rows and the person named none, leave the Provider unset.
+Read `library/coding-standards/codify-platforms.md` when present. Its When to use and When not to use cells hold entries separated by `; `. The Provider is the platform the person named. Otherwise it is the earliest row whose When to use fits this action and whose When not to use does not. A row with both cells blank is not chosen by fit. Otherwise it is this implementation, when it has a row. Otherwise it is the first row. When the catalog has no rows and the person named none, leave the Provider unset.
 
 When the named platform has no row, emit before the proposal:
 
-[Platform] is not included as a platform that can start automation. To add it, run /highway-codify configure.
+[Platform] is not included as a platform that can start automation. To add it, run /highway-codify-config.
 
 When the Provider is unset, emit before the proposal:
 
-A platform that can start automation is needed. Run /highway-codify configure.
+A platform that can start automation is needed. Run /highway-codify-config.
+
+Go to `standards`.
+
+### standards
+
+Read `library/coding-standards/coding-standards.md` when present. Its When to use, When not to use, and Inherits From cells hold entries separated by `; `. A row whose standard file is absent is unavailable.
+
+For each task, propose an ordered list of Standard Titles:
+
+1. Take each available row whose File Patterns match a file the task's method names, or whose Technology names the method or the Provider, and whose When to use fits the task.
+2. Drop a row whose When not to use matches the task.
+3. Put a standard before every standard it inherits from, and a platform standard before the language standards it builds on.
+4. Add each inherited standard once, after the standard that inherits it. Stop at a title already listed, so a cycle adds nothing twice.
+
+A task with no row says `No coding standard applies.` An earlier standard wins a disagreement with a later one. The person can add, remove, or reorder the list on `propose`.
 
 Go to `align`.
 
@@ -221,7 +211,7 @@ Go to `align`.
 
 Check the draft before the person sees it: coding standards first, then current vendor documentation. Write nothing. Save no check result.
 
-Read `library/coding-standards/coding-standards.md` when present. For the Provider and each task, use the first row whose Technology names the Provider or the task's method, or whose File Patterns match a file its method names. A row whose standard file is absent is unavailable. Read the whole standard. Correct the method, library, module, or pattern so the draft fits the standard's provider boundaries, accepted libraries or modules, and required patterns. Keep the action. Do not replace the Provider.
+For each task, read every standard on its Standards list, in order. When two disagree, the earlier one wins. Correct the method, library, module, or pattern so the draft fits the standard's provider boundaries, accepted libraries or modules, and required patterns. Keep the action. Do not replace the Provider.
 
 Then, for each product, API, plugin, module, or library the corrected draft names, read the vendor's current public documentation, product pages, or release notes. Send only that name and the vendor name. When the vendor says it is deprecated, retired, or no longer offered, correct the draft and cite the source. When vendor pages conflict, correct the draft and cite both. A blog, forum, or comparison, no source, or a check that cannot be completed is inconclusive. It changes nothing and is not confirmation.
 
@@ -267,6 +257,8 @@ flowchart TB
    - **Scope:** [What the task does.]
    - **Provider:** [The platform executing this automation.]
    - **Method:** [How it is done.]
+   - **Standards:**
+     1. [Standard Title. Or, when none applies: No coding standard applies.]
    - **Assumptions:**
      - [What it relies on that is not an earlier task, or None.]
 
@@ -274,7 +266,7 @@ flowchart TB
 
 If this is accurate, just say so.
 
-- `edit`: emit one consequence sentence. An edit that names a different Provider sets it on every task and in the diagram, then goes to `align`. An edit that changes a method goes to `align` for that task. Re-emit this block with the diagram and tasks still matching. A second action is removed. Say it waits for another run. The person can switch to another accepted architecture by title. An architecture that is not accepted is not added. A preparation-only request stays one self-service action. Removing the last task or the last acceptance criterion says at least one is needed. Stay on `propose`.
+- `edit`: emit one consequence sentence. An edit that names a different Provider sets it on every task and in the diagram, then goes to `standards`. An edit that changes a method goes to `standards`, then `align`, for that task. An edit that adds, removes, or reorders a task's Standards changes only that list, then goes to `align` for that task. A title not in the coding standards catalog is left out, and the rest of the list is kept. Say: [Title] is not a listed coding standard. To add it, run /highway-codify-config. Re-emit this block with the diagram and tasks still matching. A second action is removed. Say it waits for another run. The person can switch to another accepted architecture by title. An architecture that is not accepted is not added. A preparation-only request stays one self-service action. Removing the last task or the last acceptance criterion says at least one is needed. Stay on `propose`.
 - `accept`: go to `identifier` when the proposal has one action, a Provider, at least one task, at least one acceptance criterion, and an accepted architecture. Otherwise stay on `propose`.
 - `unknown`: re-emit this block. Stay on `propose`.
 - `question`: answer, then re-emit this block. Stay on `propose`.
@@ -333,13 +325,12 @@ The record follows `.highway/library/templates/output/codify-record.md`.
 - The title is the one action.
 - Summary, Description, Acceptance Criteria, Diagram, and Tasks are the accepted proposal text, in that order.
 
-The task list follows `.highway/library/templates/output/codify-tasks.md`. Read `library/coding-standards/coding-standards.md` when present.
+The task list follows `.highway/library/templates/output/codify-tasks.md`.
 
 - The Provider's files come first, tagged `[Executor]`. They are written once.
 - A proposal task adds files, tagged `[Task N]`, only when its method needs an artifact of its own. A task carried entirely by the Provider adds none. A task never gets another task's file. Lines follow proposal task order.
-- Each line produces one file. A file uses the first catalog row whose File Patterns match its name. A row whose standard file is absent is unavailable. A second row for the same technology is a duplicate, and the first row applies.
-- A file with an available standard names that Standard Path. Any other file says `Standard: No coding standard applies.`
-- When that standard's Tests section says `Tests: required`, add one test task directly after the file's task, naming the same standard. Add no other test task.
+- Each line produces one file and names the Standard Paths of the accepted Standards list, in order, or says `Standards: No coding standard applies.` A `[Task N]` line uses task N's list. An `[Executor]` line uses the list of the first task with a standard whose File Patterns match the file.
+- When the first standard on a line says `Tests: required`, add one test task directly after it, naming the same standards. Add no other test task.
 - The README task is last.
 
 The catalog follows `.highway/library/templates/output/codify-catalog.md`. The catalog path is `code/code.md`.
@@ -361,8 +352,8 @@ On success, go to `code` without asking a question.
 
 Open `code/[ID]/codify-tasks.md`. Start at the first open task. For each open task, in list order:
 
-1. Read the standard the task names, when it names one.
-2. Write the task's file so it follows that standard. The accepted proposal, architecture, and implementation decide what is built. The standard decides how it is written.
+1. Read every standard the task names, in order.
+2. Write the task's file so it follows every one of them. When two disagree, the earlier one wins. The accepted proposal, architecture, and implementation decide what is built. The standards decide how it is written.
 3. Mark the task `[X]`.
 4. Go to the next open task.
 
@@ -378,7 +369,7 @@ When every task is done, go to `close`.
 
 First emit the coding standards notices that apply, then one close.
 
-[No coding standards catalog was found. A standard named by the catalog was not found at [path]. [Technology] has more than one catalog row, and the first row was used. Include only the sentences that apply.]
+[No coding standards catalog was found. A standard named by the catalog was not found at [path]. Include only the sentences that apply.]
 
 When every task is done, emit this message exactly, as rendered markdown, with the automation id in place of `[ID]`:
 
@@ -439,18 +430,21 @@ The automation was not run.
 - The proposal shows Title, Summary, Description, Acceptance criteria, Diagram, and Tasks, in that order. It shows no components, current state, separate action, day, or means.
 - The diagram is one logical flow, top to bottom, from the Provider. Each arrow leaves the Provider, is one task's action, starts with a verb, and points to that task's target, in task order. No arrow leaves a target.
 - Every task names the same Provider, the platform executing the automation. The implementation being automated is a target. A Shopify proposal can use Cursor when Cursor is included, even though the Shopify records do not name it.
-- A named platform with no catalog row stays the Provider and the proposal says `/highway-codify configure` can add it. With no row and no named platform, the proposal says a platform is needed and accept stays on `propose`.
-- `align` corrects the method, library, module, or pattern and keeps the Provider.
-- `/highway-codify configure` shows the catalog, asks what to add, correct, or remove, and writes only `library/knowledge/codify-platforms.md`. It starts no automation.
+- A named platform with no catalog row stays the Provider and the proposal says `/highway-codify-config` can add it. With no row and no named platform, the proposal says a platform is needed and accept stays on `propose`.
+- With no named platform, the Provider is the earliest row whose When to use fits the action and whose When not to use does not. A row with blank guidance is not chosen by fit. Otherwise this implementation's row, then the first row.
+- Each task shows Standards as an ordered list, or `No coding standard applies.` A standard whose When not to use matches is dropped. A standard comes before the standards it inherits from, and each inherited standard appears once.
+- A Standards edit re-emits the proposal with one consequence sentence. A title not in the catalog is left out and points to `/highway-codify-config`.
+- `align` corrects the method, library, module, or pattern against every standard on the task's list and keeps the Provider.
+- An invocation of the word `configure` points to `/highway-codify-config` and writes nothing.
 - `/highway-codify catalog` lists at most five accepted automations, newest first, with each implementation title and progress, says how many more exist, and writes nothing. A selection shows the files path and the README path.
 - A new row in `code/code.md` is appended as the last row.
 - The README is headed `## Setup Instructions`, then `## User Guide`.
 - A finished run closes with the completion message, both paths, and the sentence that the automation was not run. A stopped run names the stopped task and does not say the codify stage is complete.
-- Each task is one action against one target and shows Scope, Provider, Method, and Assumptions.
+- Each task is one action against one target and shows Scope, Provider, Method, Standards, and Assumptions.
 - A second action waits for another run. Declining writes nothing. Accepting is the only confirmation.
 - Acceptance writes `codify.md`, `codify-tasks.md`, and the catalog row together, before any executor or task file or the README.
-- The task list starts with the Provider's files, adds files for a proposal task only when it has its own artifact, and ends with the README. Each line names a Standard Path or says `No coding standard applies.` A test task follows a file only when its standard says `Tests: required`.
-- Coding starts with no question after acceptance. Each task's standard is read before its file is written, and each task is marked `[X]` before the next begins.
+- The task list starts with the Provider's files, adds files for a proposal task only when it has its own artifact, and ends with the README. Each line names its Standard Paths in order or says `No coding standard applies.` A test task follows a file only when its first standard says `Tests: required`.
+- Coding starts with no question after acceptance. Every standard a task names is read before its file is written, the earlier one winning a disagreement, and each task is marked `[X]` before the next begins.
 - A task that cannot be finished stops the run with that task and every later task open. The next run starts at the first open task, redoes no finished task, and runs no check.
 - Codify creates, edits, and removes no coding standard and no row of the coding standards catalog.
 - Acceptance and coding run the automation zero times and leave the implementation, architecture, decision, request, and finding unchanged.
@@ -463,7 +457,7 @@ The automation was not run.
 
 - A missing `.highway/` root stops the skill and writes nothing.
 - A missing record, catalog, or task list template stops the skill, names the template path, and writes nothing.
-- A missing coding standards catalog leaves every task with `Standard: No coding standard applies.` The close says no catalog was found.
+- A missing coding standards catalog leaves every task with `No coding standard applies.` The close says no catalog was found.
 - A standard that cannot be met for the selected action returns to `suggest` and writes nothing.
 - A task that cannot be finished stops coding at that task, leaves it open, and keeps the files finished tasks wrote.
 - An implementation that is not accepted stops the skill and writes nothing.

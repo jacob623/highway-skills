@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-02T13:52:32Z",
+  "generated_at": "2026-11-03T13:29:10Z",
   "entries": [
     {
       "library_type": "template",
@@ -54,22 +54,36 @@
       "library_type": "template",
       "name": "codify-platforms",
       "description": "Complete output skeleton for the platforms that can start automation.",
-      "version": "1.0.0",
+      "version": "2.0.0",
       "source_path": "library/templates/output/codify-platforms.md"
     },
     {
       "library_type": "template",
       "name": "codify-record",
       "description": "Complete output skeleton for one accepted automation proposal.",
-      "version": "5.0.0",
+      "version": "6.0.0",
       "source_path": "library/templates/output/codify-record.md"
     },
     {
       "library_type": "template",
       "name": "codify-tasks",
       "description": "Complete output skeleton for the ordered task list of one accepted automation.",
-      "version": "2.0.1",
+      "version": "3.0.0",
       "source_path": "library/templates/output/codify-tasks.md"
+    },
+    {
+      "library_type": "template",
+      "name": "coding-standard",
+      "description": "Complete output skeleton for one coding standard.",
+      "version": "1.0.0",
+      "source_path": "library/templates/output/coding-standard.md"
+    },
+    {
+      "library_type": "template",
+      "name": "coding-standards-catalog",
+      "description": "Complete output skeleton for the coding standards catalog.",
+      "version": "1.0.0",
+      "source_path": "library/templates/output/coding-standards-catalog.md"
     },
     {
       "library_type": "template",
