@@ -4,7 +4,7 @@ description: "Manages one functional artifact for one accepted implementation."
 usage: "Invoke as /highway-codify with one implementation name."
 compatibility: all
 metadata:
-  version: 5.0.0
+  version: 6.0.0
 ---
 
 # highway-codify
@@ -18,6 +18,7 @@ Suggests actions worth automating for one accepted implementation, checks the ch
 - The person invokes `/highway-codify` with an implementation title.
 - The person invokes `/highway-codify` without an implementation title.
 - The person invokes `/highway-codify configure` to add, correct, or remove a platform that can start automation.
+- The person invokes `/highway-codify catalog`, or asks to show the code catalog, to see recent automations and discuss one.
 
 ## When not to use
 
@@ -54,27 +55,29 @@ The complete structure is `.highway/library/templates/output/codify-record.md`, 
 - An updated `code/code.md` written with that proposal.
 - The Provider's files in `code/[ID]/executor/`, and each proposal task's own files in `code/[ID]/task-N/`, produced by the task list.
 - One `code/[ID]/README.md` with two parts, produced by the last task.
-- A closing message that names the automation and the task list, says whether every task is done, and says it was not run.
+- When every task is done, a completion message that names the files path `code/[ID]/` and the README path `code/[ID]/README.md`. When a task could not be finished, a close that names the automation, the task list, and that task. Both say the automation was not run.
+- A read-only code catalog view after `/highway-codify catalog`.
 - No automation when the implementation is missing, not accepted, the proposal is declined, or a write fails.
 - An updated `library/knowledge/codify-platforms.md` after a `configure` change.
 
 ## Procedure
 
-Emit only the active template. `configure` runs alone. Otherwise follow this order: `choose` when no implementation is named; `suggest` when no action is named; then `start`, `align`, `propose`, `identifier`, `title` when needed, `write`, `code`, and `close`. Follow `.highway/governance/experience-standard.md` for attribution and acceptance wording. A current implementation is an accepted row in `implementations/implementations.md`. A removed row does not match and does not block a new automation.
+Emit only the active template. `configure` runs alone, and so does `catalog`. Otherwise follow this order: `choose` when no implementation is named; `suggest` when no action is named; then `start`, `align`, `propose`, `identifier`, `title` when needed, `write`, `code`, and `close`. Follow `.highway/governance/experience-standard.md` for attribution and acceptance wording. A current implementation is an accepted row in `implementations/implementations.md`. A removed row does not match and does not block a new automation.
 
 ### Entry
 
 1. When `.highway/` cannot be found, stop. Say the project root cannot be located. Write nothing.
 2. When the invocation is the word `configure`, go to `configure`. Do not resume a task list or select an implementation.
-3. Read the invocation for an implementation title, a description, an implementation id, and one optional action.
-4. When the invocation names an automation in `code/code.md` by title or `CDY` id and its task list has an open task, go to `code` at the first open task.
-5. When an implementation id matches one accepted implementation, select it and show its title.
-6. When an exact title matches one accepted implementation, select it. Compare without regard to case.
-7. After a selection, go to `start` when the invocation named one action. Otherwise go to `suggest`.
-8. When a description is present, go to `choose` and suggest at most five matches.
-9. When nothing is named and one to five accepted implementations exist, go to `choose` and list each one.
-10. When nothing is named and more than five accepted implementations exist, go to `choose` and list none.
-11. When no accepted implementation exists, say so. Write nothing.
+3. When the invocation is the word `catalog`, or asks to show the code catalog, go to `catalog`. Do not resume a task list or select an implementation.
+4. Read the invocation for an implementation title, a description, an implementation id, and one optional action.
+5. When the invocation names an automation in `code/code.md` by title or `CDY` id and its task list has an open task, go to `code` at the first open task.
+6. When an implementation id matches one accepted implementation, select it and show its title.
+7. When an exact title matches one accepted implementation, select it. Compare without regard to case.
+8. After a selection, go to `start` when the invocation named one action. Otherwise go to `suggest`.
+9. When a description is present, go to `choose` and suggest at most five matches.
+10. When nothing is named and one to five accepted implementations exist, go to `choose` and list each one.
+11. When nothing is named and more than five accepted implementations exist, go to `choose` and list none.
+12. When no accepted implementation exists, say so. Write nothing.
 
 ### configure
 
@@ -97,6 +100,35 @@ When the file is absent or has no rows, say no platform is included yet.
 Write the whole file from `.highway/library/templates/output/codify-platforms.md`, or write nothing. Create `library/knowledge/` when it is absent. A failed write leaves the existing file unchanged. After a write, re-emit the list and the question. Stay on `configure`.
 
 Do not enter `choose`, `suggest`, `start`, or `code`. Do not change an automation, an implementation, an architecture, or a decision.
+
+### catalog
+
+Read the accepted rows of `code/code.md`. Rows are in acceptance order, so the last rows are the most recent. Take the last five accepted rows. Emit one numbered line per row, starting at 1, newest first. Read the implementation title from `implementations/implementations.md` and the progress from `code/[ID]/codify-tasks.md`. Do not use an id as the label. Do not list or count a removed row.
+
+**1. [Automation title]:** [Implementation title]. [Task [T###] is next. Or, when no task is open: Every task is done.]
+
+When more than five accepted rows exist, add `[N] more automations are not shown.`, or `1 more automation is not shown.` when one is not shown.
+
+**Which automation would you like to discuss?** [When some are not shown: You can name or describe any automation.]
+
+When no accepted row exists, say `No automation has been created yet.` Ask nothing.
+
+- A listed number, or an accepted title compared without regard to case, shown or not: select that automation.
+- A description that matches one accepted automation: select it.
+- A description that matches several: list those matches the same way, newest first, at most five. Ask again.
+- A description that matches none: say no automation matches. Ask again.
+- `decline`: stop. Write nothing.
+
+A selection emits:
+
+**[Automation title]**
+
+- **Files:** `code/[ID]/`
+- **Setup and Usage Instructions:** `code/[ID]/README.md` [Or, when the README task is open: The instructions are not written yet.]
+
+**What would you like to know about it?**
+
+Write nothing. Do not enter `choose`, `suggest`, `start`, `code`, or `configure`. Do not resume a task list.
 
 ### choose
 
@@ -314,7 +346,7 @@ The catalog follows `.highway/library/templates/output/codify-catalog.md`. The c
 
 - The index columns are Automation ID, Implementation ID, Automation Title, Automation Path, and Status.
 - Automation Path is `code/<id>/codify.md`. Status is `accepted`.
-- Order the index by Automation ID.
+- Keep rows in acceptance order. Append the new row as the last row. A row whose status changes keeps its position.
 - Do not allocate from `Next ID`.
 - The first catalog version is `1.0.0`.
 - Adding an automation increments the minor version.
@@ -336,13 +368,49 @@ Open `code/[ID]/codify-tasks.md`. Start at the first open task. For each open ta
 
 The Provider's files go in `executor/`. A proposal task's own files go in `task-N/`, where N is its task number. Write no other subfolder. Do not run any file.
 
-The README task writes two parts, in this order. Head the first part `## Implement` and the second part `## Use`. Implement says what is put in place, where it goes, and how to enable it, including the preparation this automation needs. Use says how a non-technical person starts this one automation, what they provide, and what they receive, using the interface of the Provider. Use does not ask that person to edit the generated files or read the implementation record.
+The README task writes two parts, in this order. Head the first part `## Setup Instructions` and the second part `## User Guide`. Setup Instructions says what is put in place, where it goes, and how to enable it, including the preparation this automation needs. User Guide says how a non-technical person starts this one automation, what they provide, and what they receive, using the interface of the Provider. User Guide does not ask that person to edit the generated files or read the implementation record.
 
 When a task cannot be finished, stop at that task. Leave it and every later task open. Start no later task. Keep the files that finished tasks wrote. Go to `close`.
 
 When every task is done, go to `close`.
 
 ### close
+
+First emit the coding standards notices that apply, then one close.
+
+[No coding standards catalog was found. A standard named by the catalog was not found at [path]. [Technology] has more than one catalog row, and the first row was used. Include only the sentences that apply.]
+
+When every task is done, emit this message exactly, as rendered markdown, with the automation id in place of `[ID]`:
+
+```markdown
+### The codify stage is complete.
+
+This code is now part of your Highway knowledge base. Like your architectures, implementations, and other accepted knowledge, it remains available for future context. Highway can help you understand, configure, extend, troubleshoot, and use any code it has helped you create.
+
+The automation was not run.
+
+**The files can be found here:**
+
+`code/[ID]/`
+
+If you'd like to review the files together, just say so.
+
+**Setup and Usage Instructions** can be found here:
+
+`code/[ID]/README.md`
+
+If you'd like to review the instructions together, just say so.
+
+**Questions?**
+
+If you have questions in the future, just ask highway to show your code catalog. You can always discuss any of the code highway helps you build.
+
+**Where would you like to go next?**
+
+Run /highway-help to explore what Highway can help you do.
+```
+
+When a task could not be finished, emit:
 
 **Automation recorded**
 
@@ -351,9 +419,7 @@ When every task is done, go to `close`.
 - **Title:** [Title]
 - **Implementation:** [Implementation title]
 
-[Every task is done. Or: Task [T###] could not be finished because [reason]. The next run starts there.]
-
-[No coding standards catalog was found. A standard named by the catalog was not found at [path]. [Technology] has more than one catalog row, and the first row was used. Include only the sentences that apply.]
+Task [T###] could not be finished because [reason]. The next run starts there.
 
 The automation was not run.
 
@@ -376,6 +442,10 @@ The automation was not run.
 - A named platform with no catalog row stays the Provider and the proposal says `/highway-codify configure` can add it. With no row and no named platform, the proposal says a platform is needed and accept stays on `propose`.
 - `align` corrects the method, library, module, or pattern and keeps the Provider.
 - `/highway-codify configure` shows the catalog, asks what to add, correct, or remove, and writes only `library/knowledge/codify-platforms.md`. It starts no automation.
+- `/highway-codify catalog` lists at most five accepted automations, newest first, with each implementation title and progress, says how many more exist, and writes nothing. A selection shows the files path and the README path.
+- A new row in `code/code.md` is appended as the last row.
+- The README is headed `## Setup Instructions`, then `## User Guide`.
+- A finished run closes with the completion message, both paths, and the sentence that the automation was not run. A stopped run names the stopped task and does not say the codify stage is complete.
 - Each task is one action against one target and shows Scope, Provider, Method, and Assumptions.
 - A second action waits for another run. Declining writes nothing. Accepting is the only confirmation.
 - Acceptance writes `codify.md`, `codify-tasks.md`, and the catalog row together, before any executor or task file or the README.

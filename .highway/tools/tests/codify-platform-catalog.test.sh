@@ -61,7 +61,7 @@ for text in \
 	'Every task names that same Provider' \
 	'Do not replace the Provider' \
 	'P -->|[Next action]|' \
-	'version: 5.0.0'; do
+	'version: 6.0.0'; do
 	require "$CODIFY" "$text"
 done
 for text in \
@@ -72,7 +72,7 @@ for text in \
 done
 
 require "$RECORD" 'P -->|<next action>|'
-require "$RECORD" 'version: 4.0.0'
+require "$RECORD" 'version: 5.0.0'
 reject "$RECORD" 'T1 -->|<next action>|'
 
 require "$TASKS" 'The Provider is the first node'

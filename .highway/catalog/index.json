@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-01T22:02:59Z",
+  "generated_at": "2026-11-02T13:52:38Z",
   "entries": [
     {
       "id": "highway-adr",
@@ -34,7 +34,7 @@
       "description": "Manages one functional artifact for one accepted implementation.",
       "usage": "Invoke as /highway-codify with one implementation name.",
       "compatibility": "all",
-      "version": "5.0.0",
+      "version": "6.0.0",
       "source_path": "skills/highway-codify/SKILL.md"
     },
     {
