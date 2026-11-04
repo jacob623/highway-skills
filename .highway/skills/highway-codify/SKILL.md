@@ -4,7 +4,7 @@ description: "Manages one functional artifact for one accepted implementation."
 usage: "Invoke as /highway-codify with one implementation name."
 compatibility: all
 metadata:
-  version: 8.0.0
+  version: 9.0.1
 ---
 
 # highway-codify
@@ -59,7 +59,7 @@ The complete structure is `.highway/library/templates/output/codify-record.md`, 
 
 ## Procedure
 
-Emit only the active template. `catalog` runs alone. Otherwise follow this order: `choose` when no implementation is named; `suggest` when no action is named; then `start`, `standards`, `align`, `layout`, `propose`, `identifier`, `title` when needed, `write`, `code`, and `close`. Follow `.highway/governance/experience-standard.md` for attribution and acceptance wording. A current implementation is an accepted row in `implementations/implementations.md`. A removed row does not match and does not block a new automation.
+Emit only the active template. `catalog` runs alone. Otherwise follow this order: `choose` when no implementation is named; `suggest`, with `codified`, when no action is named; then `start`, `standards`, `align`, `layout`, `propose`, `identifier`, `title` when needed, `write`, `code`, and `close`. Follow `.highway/governance/experience-standard.md` for attribution and acceptance wording. A current implementation is an accepted row in `implementations/implementations.md`. A removed row does not match and does not block a new automation.
 
 ### Entry
 
@@ -142,7 +142,7 @@ On `propose`, "looks good" is `accept`.
 
 Read the selected implementation record. An instance is running when Context or Implementation Summary contains `instance is running` or `instances are running`, compared without regard to case.
 
-Each suggestion comes from one realized capability. A capability title containing `establish`, compared without regard to case, is establishing. Every other title runs, changes, or recovers. When no instance is running, establishing comes first. When an instance is running, the other kind comes first. Within a kind, keep Realized Capabilities order. When the leading kind has no title, put `Establish [implementation title]` or `Run [implementation title]` first, drawn from the Implementation Summary. Keep at most five. Drop items from the end.
+Each suggestion comes from one realized capability. A capability title containing `establish`, compared without regard to case, is establishing. Every other title runs, changes, or recovers. When no instance is running, establishing comes first. When an instance is running, the other kind comes first. Within a kind, keep Realized Capabilities order. When the leading kind has no title, put `Establish [implementation title]` or `Run [implementation title]` first, drawn from the Implementation Summary. Leave out each suggestion `codified` removes, then keep at most five. Drop items from the end.
 
 Write each title as the action the automation will take. It starts with a verb and names its target. An establishing title starts with `Establish`. The summary is one sentence that expands on that action, grounded in the capability's Realized By and the first sentence of its evidence. Do not use an id as a label. Write nothing.
 
@@ -158,13 +158,25 @@ The name is the `Choice:` of the record's one Technology Choice. When the record
 
 If you have another idea, provide a brief description and we'll work through it together.
 
-When the list is empty, say no suggestion is grounded in this implementation. Then emit the last line above.
+When the list is empty, say no suggestion is grounded in this implementation. When `codified` removed every grounded suggestion, say `Each action grounded in this implementation is already codified.` instead. Then emit the last line above.
 
 - `select`: a listed number, title, or summary selects that suggestion. The person's own idea selects that automation, even when they also name a listed item. Its title is the person's action, starting with a verb, and its summary is one sentence that expands on it. When the reply names two actions, keep one and say the other waits for another run. Go to `start`.
 - A number that is not on the list: say so. Re-emit this list. Write nothing. Stay on `suggest`.
 - `unknown`: re-emit this list. Stay on `suggest`.
 - `question`: answer, then re-emit this list. Stay on `suggest`.
 - `decline`: stop. Write nothing.
+
+### codified
+
+Read the accepted rows of `code/code.md` whose Implementation ID is the selected implementation. Skip removed rows and rows for other implementations. With no catalog, leave nothing out. Write nothing.
+
+For each suggestion, in order:
+
+1. When its title is the same words, in the same order, as an Automation Title, compared without regard to case, leave it out. Do not open that record.
+2. Otherwise, when an Automation Title means this suggestion may already be implemented, read `codify.md` at that row's Automation Path. Leave the suggestion out when the record's title, Summary, or Description is that action. Keep it when the record is a different action or the file is absent.
+3. Keep every other suggestion.
+
+This check does not refuse a named action or the person's own idea. Return to `suggest`.
 
 ### start
 
@@ -287,7 +299,16 @@ flowchart TB
 
 If this is accurate, just say so.
 
-- `edit`: emit one consequence sentence. An edit that names a different Provider sets it on every task and in the diagram, then goes to `standards`. An edit that changes a method goes to `standards`, then `align`, for that task. An edit that adds, removes, or reorders a task's Standards changes only that list, then goes to `align` for that task. A Files edit changes only this automation and leaves out a path that is not relative. A title not in the coding standards catalog is left out, and the rest of the list is kept. Say: [Title] is not a listed coding standard. To add it, run /highway-codify-config. Re-emit this block with the diagram and tasks still matching. A second action is removed. Say it waits for another run. The person can switch to another accepted architecture by title. An architecture that is not accepted is not added. A preparation-only request stays one self-service action. Removing the last task or the last acceptance criterion says at least one is needed. Stay on `propose`.
+- `edit`: emit one consequence sentence. Re-emit this block with the diagram and tasks still matching. Stay on `propose`.
+An edit that names a different Provider sets it on every task and in the diagram, then goes to `standards`.
+An edit that changes a method goes to `standards`, then `align`, for that task.
+An edit that adds, removes, or reorders a task's Standards changes only that list, then goes to `align` for that task.
+A Files edit changes only this automation and leaves out a path that is not relative.
+A title not in the coding standards catalog is left out, and the rest of the list is kept. Say: [Title] is not a listed coding standard. To add it, run /highway-codify-config.
+A second action is removed. Say it waits for another run.
+The person can switch to another accepted architecture by title. An architecture that is not accepted is not added.
+A preparation-only request stays one self-service action.
+Removing the last task or the last acceptance criterion says at least one is needed.
 - `accept`: go to `identifier` when the proposal has one action, a Provider, at least one task, at least one acceptance criterion, and an accepted architecture. Otherwise stay on `propose`.
 - `unknown`: re-emit this block. Stay on `propose`.
 - `question`: answer, then re-emit this block. Stay on `propose`.
@@ -347,12 +368,6 @@ The record follows `.highway/library/templates/output/codify-record.md`.
 - Summary, Description, Acceptance Criteria, Diagram, and Tasks are the accepted proposal text, in that order.
 
 The task list follows `.highway/library/templates/output/codify-tasks.md`.
-
-- Each proposal task is one feature, tagged `[Task N]`, in proposal task order. Its lines sit together and name only files from its accepted Files.
-- A file the Provider needs that no task's Files includes is an `[Executor]` line before every feature.
-- Each line names its files by relative path and the Standard Paths of the accepted Standards list, in order, or says `Standards: No coding standard applies.` A `[Task N]` line uses task N's list. An `[Executor]` line uses the list of the first task with a standard whose File Patterns match the file.
-- When a feature's first standard says `Tests: required`, the feature's first line is its test, at that standard's test path. A later feature that does not change the tested behavior adds no test.
-- A structure path that no feature delivers has no line. The README task is last.
 
 The catalog follows `.highway/library/templates/output/codify-catalog.md`. The catalog path is `code/code.md`.
 
@@ -445,6 +460,7 @@ The automation was not run.
 - With no named action, the suggestion list appears once before any proposal. It opens with the one Technology Choice, or the implementation title, and says automating these tasks may be worth visiting.
 - Each suggestion title is an action that starts with a verb, and its one summary sentence expands on it. The list holds at most five items, uses no id as a label, and ends with the invitation to describe another idea.
 - Suggestions of the kind that fits whether an instance is running come first, then the other kind, each in Realized Capabilities order.
+- A suggestion this implementation already accepted is left out before the list keeps five: by a title with the same words, ignoring case, without opening its record, or by its `codify.md` when only the meaning is close. Removed rows and other implementations' rows leave nothing out.
 - A named action skips the suggestion list and opens the proposal for that action.
 - Before any proposal, coding standards are checked first and vendor documentation second. Corrections and inconclusive results are named before the proposal and are not saved. The checks keep the selected action.
 - A standard that cannot be met for the selected action shows no proposal and returns to suggestions.
@@ -465,7 +481,7 @@ The automation was not run.
 - Files lists relative paths placed from the File and Folder Structure of the task's standards. A listed standard with no structure is named before the proposal with a pointer to `/highway-codify-config`. A Files edit changes only this automation. An unfilled placeholder keeps the proposal open.
 - A second action waits for another run. Declining writes nothing. Accepting is the only confirmation.
 - Acceptance writes `codify.md`, `codify-tasks.md`, and the catalog row together, before any file the task list names or the README.
-- The task list holds one group of lines per proposal task, in proposal order, after any `[Executor]` lines and before the README. Each line names its files by relative path and its Standard Paths in order, or says `No coding standard applies.` A feature's test line comes first, only when its first standard says `Tests: required`.
+- The task list follows `codify-tasks.md`. A feature's test line comes first only when its first standard says `Tests: required`.
 - Coding starts with no question after acceptance. Every standard a task names, and each existing file it names, is read before its files are written, and no other automation file is read, the earlier one winning a disagreement, and each task is marked `[X]` before the next begins.
 - A task that cannot be finished stops the run with that task and every later task open. The next run starts at the first open task, redoes no finished task, and runs no check.
 - Codify creates, edits, and removes no coding standard and no row of the coding standards catalog.

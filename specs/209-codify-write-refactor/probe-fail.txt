@@ -1,0 +1,14 @@
+FAIL: highway-codify write still contains: [Executor]
+FAIL: highway-codify write still contains: Tests: required
+FAIL: highway-codify write still contains: The README task is last.
+FAIL: highway-codify write still contains: Each proposal task is one feature
+FAIL: highway-codify write still contains: Each line names its files
+FAIL: highway-codify write has 395 words; the limit is 250
+FAIL: highway-codify codified omits: same words, in the same order
+FAIL: highway-codify codified omits: Automation Path
+FAIL: highway-codify codified omits: Do not open that record.
+FAIL: highway-codify skill omits: Each action grounded in this implementation is already codified.
+FAIL: highway-codify skill omits: version: 9.0.0
+FAIL: highway-codify codified does not follow suggest
+FAIL: highway-codify Verification still contains: The task list holds one group of lines per proposal task
+EXIT:1
