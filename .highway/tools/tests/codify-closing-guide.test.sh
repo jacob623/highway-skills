@@ -59,7 +59,7 @@ for text in \
 	'No automation has been created yet.' \
 	'The instructions are not written yet.' \
 	'Append the new row as the last row.' \
-	'version: 6.0.0'; do
+	'version: 9.0.1'; do
 	require "$CODIFY" "$text"
 done
 for text in \
@@ -73,7 +73,7 @@ done
 require "$RECORD" '## Setup Instructions'
 require "$RECORD" '## User Guide'
 require "$RECORD" 'User Guide follows the interface of the Provider.'
-require "$RECORD" 'version: 5.0.0'
+require "$RECORD" 'version: 7.0.0'
 reject_line "$RECORD" '## Implement'
 reject_line "$RECORD" '## Use'
 

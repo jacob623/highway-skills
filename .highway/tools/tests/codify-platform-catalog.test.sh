@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Implementation includes platforms that can start automation, codify configures them, and one Provider executes every task.
+# Implementation includes platforms that can start automation, codify config configures them, and one Provider executes every task.
 set -u
 # Instrument class: static-document-contract
 # Artifact classes: source-document
@@ -38,30 +38,30 @@ reject() {
 	fi
 }
 
-require "$PLATFORMS" '| Platform | Implementation ID | Source |'
-require "$PLATFORMS" 'version: 1.0.0'
+require "$PLATFORMS" '| Platform | Implementation ID | When to use | When not to use |'
+require "$PLATFORMS" 'version: 2.0.0'
 
 for text in \
 	'### platforms' \
-	'is included as a platform that can start automation. To remove it, run /highway-codify configure.' \
-	'library/knowledge/codify-platforms.md' \
+	'is included as a platform that can start automation.**' \
+	'**Would you like to configure [Platform] for automation?**' \
+	'library/coding-standards/codify-platforms.md' \
 	'an agent that starts the work' \
-	'version: 6.0.0'; do
+	'version: 7.0.0'; do
 	require "$IMPL" "$text"
 done
 
 require "$ONBOARD" 'follow `platforms` in `highway-implementation`'
-require "$ONBOARD" 'version: 8.0.0'
+require "$ONBOARD" 'version: 9.0.0'
 
 for text in \
-	'### configure' \
 	'When the invocation is the word `configure`' \
-	'is not included as a platform that can start automation. To add it, run /highway-codify configure.' \
-	'A platform that can start automation is needed. Run /highway-codify configure.' \
+	'is not included as a platform that can start automation. To add it, run /highway-codify-config.' \
+	'A platform that can start automation is needed. Run /highway-codify-config.' \
 	'Every task names that same Provider' \
 	'Do not replace the Provider' \
 	'P -->|[Next action]|' \
-	'version: 6.0.0'; do
+	'version: 9.0.1'; do
 	require "$CODIFY" "$text"
 done
 for text in \
@@ -72,11 +72,11 @@ for text in \
 done
 
 require "$RECORD" 'P -->|<next action>|'
-require "$RECORD" 'version: 5.0.0'
+require "$RECORD" 'version: 7.0.0'
 reject "$RECORD" 'T1 -->|<next action>|'
 
 require "$TASKS" 'The Provider is the first node'
-require "$TASKS" 'version: 2.0.1'
+require "$TASKS" 'version: 4.0.0'
 
 if [[ "$fail" -ne 0 ]]; then
 	exit 1

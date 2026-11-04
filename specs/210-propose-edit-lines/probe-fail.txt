@@ -1,0 +1,13 @@
+FAIL: highway-codify propose edit line has 1007 characters: - `edit`: emit one consequence sentence. An edit that names 
+FAIL: highway-codify propose lacks the line: - `edit`: emit one consequence sentence. Re-emit this block with the diagram and tasks still matching. Stay on `propose`.
+FAIL: highway-codify propose lacks the line:   - An edit that names a different Provider sets it on every task and in the diagram, then goes to `standards`.
+FAIL: highway-codify propose lacks the line:   - An edit that changes a method goes to `standards`, then `align`, for that task.
+FAIL: highway-codify propose lacks the line:   - An edit that adds, removes, or reorders a task's Standards changes only that list, then goes to `align` for that task.
+FAIL: highway-codify propose lacks the line:   - A Files edit changes only this automation and leaves out a path that is not relative.
+FAIL: highway-codify propose lacks the line:   - A title not in the coding standards catalog is left out, and the rest of the list is kept. Say: [Title] is not a listed coding standard. To add it, run /highway-codify-config.
+FAIL: highway-codify propose lacks the line:   - A second action is removed. Say it waits for another run.
+FAIL: highway-codify propose lacks the line:   - The person can switch to another accepted architecture by title. An architecture that is not accepted is not added.
+FAIL: highway-codify propose lacks the line:   - A preparation-only request stays one self-service action.
+FAIL: highway-codify propose lacks the line:   - Removing the last task or the last acceptance criterion says at least one is needed.
+FAIL: highway-codify omits: version: 9.0.1
+EXIT:1
