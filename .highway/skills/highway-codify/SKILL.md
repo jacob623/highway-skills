@@ -4,7 +4,7 @@ description: "Manages one functional artifact for one accepted implementation."
 usage: "Invoke as /highway-codify with one implementation name."
 compatibility: all
 metadata:
-  version: 7.0.0
+  version: 8.0.0
 ---
 
 # highway-codify
@@ -51,7 +51,7 @@ The complete structure is `.highway/library/templates/output/codify-record.md`, 
 - One saved proposal at `code/[ID]/codify.md` after the person accepts the proposal.
 - One task list at `code/[ID]/codify-tasks.md` written with that proposal.
 - An updated `code/code.md` written with that proposal.
-- The Provider's files in `code/[ID]/executor/`, and each proposal task's own files in `code/[ID]/task-N/`, produced by the task list.
+- The files each task list line names, at their relative paths in `code/[ID]/`.
 - One `code/[ID]/README.md` with two parts, produced by the last task.
 - When every task is done, a completion message that names the files path `code/[ID]/` and the README path `code/[ID]/README.md`. When a task could not be finished, a close that names the automation, the task list, and that task. Both say the automation was not run.
 - A read-only code catalog view after `/highway-codify catalog`.
@@ -59,7 +59,7 @@ The complete structure is `.highway/library/templates/output/codify-record.md`, 
 
 ## Procedure
 
-Emit only the active template. `catalog` runs alone. Otherwise follow this order: `choose` when no implementation is named; `suggest` when no action is named; then `start`, `standards`, `align`, `propose`, `identifier`, `title` when needed, `write`, `code`, and `close`. Follow `.highway/governance/experience-standard.md` for attribution and acceptance wording. A current implementation is an accepted row in `implementations/implementations.md`. A removed row does not match and does not block a new automation.
+Emit only the active template. `catalog` runs alone. Otherwise follow this order: `choose` when no implementation is named; `suggest` when no action is named; then `start`, `standards`, `align`, `layout`, `propose`, `identifier`, `title` when needed, `write`, `code`, and `close`. Follow `.highway/governance/experience-standard.md` for attribution and acceptance wording. A current implementation is an accepted row in `implementations/implementations.md`. A removed row does not match and does not block a new automation.
 
 ### Entry
 
@@ -225,11 +225,30 @@ Before the proposal, emit one line for each result that applies.
 
 When no correction keeps the action, emit `[Standard title] cannot be met for **[Action title]**.` Do not show the proposal. Return to `suggest`. When the invocation named the action, ask for a different action.
 
-Do not run `align` when continuing an automation that already has a task list. Otherwise go to `propose`.
+Do not run `align` when continuing an automation that already has a task list. Otherwise go to `layout`.
+
+### layout
+
+For each task, place the files it creates or changes. Read the File and Folder Structure of each standard on its Standards list. Write nothing.
+
+1. Place each file at a path from the first standard on the list whose structure has a path for that kind of file.
+2. Fill each placeholder in angle brackets from the task, such as the module or resource it names. While a placeholder is unfilled, `accept` stays on `propose`.
+3. The platform standard decides the folders. An inherited language standard's file names apply only where the platform standard names none.
+4. A component the task calls, such as a module, is placed from its own standard on the list.
+5. A file no structure places, or a task with no standard, goes at the root of the automation folder, named from the task.
+6. A later task that changes a file an earlier task placed names that same path.
+
+Every path is relative to the automation folder and does not begin with `/` or `code/`.
+
+When a listed standard has no File and Folder Structure, emit before the proposal:
+
+[Standard Title] has no file and folder structure. To add one, run /highway-codify-config.
+
+Place that standard's files as if it were absent. Go to `propose`.
 
 ### propose
 
-The diagram is one logical flow that starts at the Provider. Each task adds one arrow from the Provider, labeled with its action, to a new node for its target, in task order. No arrow leaves a target. The Provider is not a task. Every target has its own node. Arrow labels and task actions are the same text.
+The diagram is one logical flow that starts at the Provider. Each task adds one arrow from the Provider, labeled with its action, to a new node for its target, in task order. No arrow leaves a target. Every target has its own node.
 
 **Here is a proposed starting point for your automation:**
 
@@ -259,6 +278,8 @@ flowchart TB
    - **Method:** [How it is done.]
    - **Standards:**
      1. [Standard Title. Or, when none applies: No coding standard applies.]
+   - **Files:**
+     1. `[relative path]`
    - **Assumptions:**
      - [What it relies on that is not an earlier task, or None.]
 
@@ -266,7 +287,7 @@ flowchart TB
 
 If this is accurate, just say so.
 
-- `edit`: emit one consequence sentence. An edit that names a different Provider sets it on every task and in the diagram, then goes to `standards`. An edit that changes a method goes to `standards`, then `align`, for that task. An edit that adds, removes, or reorders a task's Standards changes only that list, then goes to `align` for that task. A title not in the coding standards catalog is left out, and the rest of the list is kept. Say: [Title] is not a listed coding standard. To add it, run /highway-codify-config. Re-emit this block with the diagram and tasks still matching. A second action is removed. Say it waits for another run. The person can switch to another accepted architecture by title. An architecture that is not accepted is not added. A preparation-only request stays one self-service action. Removing the last task or the last acceptance criterion says at least one is needed. Stay on `propose`.
+- `edit`: emit one consequence sentence. An edit that names a different Provider sets it on every task and in the diagram, then goes to `standards`. An edit that changes a method goes to `standards`, then `align`, for that task. An edit that adds, removes, or reorders a task's Standards changes only that list, then goes to `align` for that task. A Files edit changes only this automation and leaves out a path that is not relative. A title not in the coding standards catalog is left out, and the rest of the list is kept. Say: [Title] is not a listed coding standard. To add it, run /highway-codify-config. Re-emit this block with the diagram and tasks still matching. A second action is removed. Say it waits for another run. The person can switch to another accepted architecture by title. An architecture that is not accepted is not added. A preparation-only request stays one self-service action. Removing the last task or the last acceptance criterion says at least one is needed. Stay on `propose`.
 - `accept`: go to `identifier` when the proposal has one action, a Provider, at least one task, at least one acceptance criterion, and an accepted architecture. Otherwise stay on `propose`.
 - `unknown`: re-emit this block. Stay on `propose`.
 - `question`: answer, then re-emit this block. Stay on `propose`.
@@ -314,7 +335,7 @@ Do not write until the id is free or the existing record is reused.
 
 ### write
 
-Write `code/[ID]/codify.md`, `code/[ID]/codify-tasks.md`, and `code/code.md` together. Write none of them until all are valid. A failed write leaves every existing automation byte unchanged and leaves no partial folder. Say what failed in terms the person can act on. Stay on `write`. Do not write the README or any executor or task file here.
+Write `code/[ID]/codify.md`, `code/[ID]/codify-tasks.md`, and `code/code.md` together. Write none of them until all are valid. A failed write leaves every existing automation byte unchanged and leaves no partial folder. Say what failed in terms the person can act on. Stay on `write`. Do not write the README or any file the task list names here.
 
 The record follows `.highway/library/templates/output/codify-record.md`.
 
@@ -327,11 +348,11 @@ The record follows `.highway/library/templates/output/codify-record.md`.
 
 The task list follows `.highway/library/templates/output/codify-tasks.md`.
 
-- The Provider's files come first, tagged `[Executor]`. They are written once.
-- A proposal task adds files, tagged `[Task N]`, only when its method needs an artifact of its own. A task carried entirely by the Provider adds none. A task never gets another task's file. Lines follow proposal task order.
-- Each line produces one file and names the Standard Paths of the accepted Standards list, in order, or says `Standards: No coding standard applies.` A `[Task N]` line uses task N's list. An `[Executor]` line uses the list of the first task with a standard whose File Patterns match the file.
-- When the first standard on a line says `Tests: required`, add one test task directly after it, naming the same standards. Add no other test task.
-- The README task is last.
+- Each proposal task is one feature, tagged `[Task N]`, in proposal task order. Its lines sit together and name only files from its accepted Files.
+- A file the Provider needs that no task's Files includes is an `[Executor]` line before every feature.
+- Each line names its files by relative path and the Standard Paths of the accepted Standards list, in order, or says `Standards: No coding standard applies.` A `[Task N]` line uses task N's list. An `[Executor]` line uses the list of the first task with a standard whose File Patterns match the file.
+- When a feature's first standard says `Tests: required`, the feature's first line is its test, at that standard's test path. A later feature that does not change the tested behavior adds no test.
+- A structure path that no feature delivers has no line. The README task is last.
 
 The catalog follows `.highway/library/templates/output/codify-catalog.md`. The catalog path is `code/code.md`.
 
@@ -352,12 +373,12 @@ On success, go to `code` without asking a question.
 
 Open `code/[ID]/codify-tasks.md`. Start at the first open task. For each open task, in list order:
 
-1. Read every standard the task names, in order.
-2. Write the task's file so it follows every one of them. When two disagree, the earlier one wins. The accepted proposal, architecture, and implementation decide what is built. The standards decide how it is written.
+1. Read every standard the task names, in order, including its File and Folder Structure, and each file the task names that already exists. Read no other file in the automation folder.
+2. Write the task's files at their relative paths in `code/[ID]/` so they follow every one of them. When two disagree, the earlier one wins. The accepted proposal, architecture, and implementation decide what is built. The standards decide how it is written.
 3. Mark the task `[X]`.
 4. Go to the next open task.
 
-The Provider's files go in `executor/`. A proposal task's own files go in `task-N/`, where N is its task number. Write no other subfolder. Do not run any file.
+Write only the paths the task names. Do not run any file.
 
 The README task writes two parts, in this order. Head the first part `## Setup Instructions` and the second part `## User Guide`. Setup Instructions says what is put in place, where it goes, and how to enable it, including the preparation this automation needs. User Guide says how a non-technical person starts this one automation, what they provide, and what they receive, using the interface of the Provider. User Guide does not ask that person to edit the generated files or read the implementation record.
 
@@ -440,11 +461,12 @@ The automation was not run.
 - A new row in `code/code.md` is appended as the last row.
 - The README is headed `## Setup Instructions`, then `## User Guide`.
 - A finished run closes with the completion message, both paths, and the sentence that the automation was not run. A stopped run names the stopped task and does not say the codify stage is complete.
-- Each task is one action against one target and shows Scope, Provider, Method, Standards, and Assumptions.
+- Each task is one action against one target and shows Scope, Provider, Method, Standards, Files, and Assumptions.
+- Files lists relative paths placed from the File and Folder Structure of the task's standards. A listed standard with no structure is named before the proposal with a pointer to `/highway-codify-config`. A Files edit changes only this automation. An unfilled placeholder keeps the proposal open.
 - A second action waits for another run. Declining writes nothing. Accepting is the only confirmation.
-- Acceptance writes `codify.md`, `codify-tasks.md`, and the catalog row together, before any executor or task file or the README.
-- The task list starts with the Provider's files, adds files for a proposal task only when it has its own artifact, and ends with the README. Each line names its Standard Paths in order or says `No coding standard applies.` A test task follows a file only when its first standard says `Tests: required`.
-- Coding starts with no question after acceptance. Every standard a task names is read before its file is written, the earlier one winning a disagreement, and each task is marked `[X]` before the next begins.
+- Acceptance writes `codify.md`, `codify-tasks.md`, and the catalog row together, before any file the task list names or the README.
+- The task list holds one group of lines per proposal task, in proposal order, after any `[Executor]` lines and before the README. Each line names its files by relative path and its Standard Paths in order, or says `No coding standard applies.` A feature's test line comes first, only when its first standard says `Tests: required`.
+- Coding starts with no question after acceptance. Every standard a task names, and each existing file it names, is read before its files are written, and no other automation file is read, the earlier one winning a disagreement, and each task is marked `[X]` before the next begins.
 - A task that cannot be finished stops the run with that task and every later task open. The next run starts at the first open task, redoes no finished task, and runs no check.
 - Codify creates, edits, and removes no coding standard and no row of the coding standards catalog.
 - Acceptance and coding run the automation zero times and leave the implementation, architecture, decision, request, and finding unchanged.

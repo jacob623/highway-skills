@@ -69,7 +69,7 @@ for text in \
 	'### platforms' \
 	'### standards' \
 	'### conflicts' \
-	'version: 1.0.0'; do
+	'version: 2.0.0'; do
 	require "$CONFIG" "$text"
 done
 
@@ -78,13 +78,16 @@ require "$PLATFORMS" 'library/coding-standards/codify-platforms.md'
 require "$PLATFORMS" 'version: 2.0.0'
 reject "$PLATFORMS" '| Source |'
 require "$STANDARDS_TEMPLATE" "$STANDARDS_HEADER"
-require "$STANDARDS_CATALOG" "$STANDARDS_HEADER"
+if [[ -e "$STANDARDS_CATALOG" ]]; then
+	echo "FAIL: library/coding-standards/coding-standards.md is still seeded"
+	fail=1
+fi
 require "$STANDARD_TEMPLATE" '## Rules'
 require "$STANDARD_TEMPLATE" 'Tests: not required'
 require "$RECORD" '**Standards:**'
-require "$RECORD" 'version: 6.0.0'
+require "$RECORD" 'version: 7.0.0'
 require "$TASKS" 'Standards: `library/coding-standards/'
-require "$TASKS" 'version: 3.0.0'
+require "$TASKS" 'version: 4.0.0'
 reject "$TASKS" 'Implement and Use'
 
 for text in \
@@ -92,7 +95,7 @@ for text in \
 	'**Standards:**' \
 	'/highway-codify-config' \
 	'library/coding-standards/codify-platforms.md' \
-	'version: 7.0.0'; do
+	'version: 8.0.0'; do
 	require "$CODIFY" "$text"
 done
 for text in \

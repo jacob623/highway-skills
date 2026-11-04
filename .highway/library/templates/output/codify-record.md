@@ -2,7 +2,7 @@
 name: codify-record
 description: "Complete output skeleton for one accepted automation proposal."
 metadata:
-  version: 6.0.0
+  version: 7.0.0
 ---
 
 ## File Frontmatter
@@ -45,6 +45,8 @@ status: accepted
    - **Method:** <how it is done, naming the plugins, modules, libraries, MCP servers, or APIs it uses>
    - **Standards:**
      1. <Standard Title from `library/coding-standards/coding-standards.md`; or the field reads `No coding standard applies.`>
+   - **Files:**
+     1. `<path relative to the automation folder>`
    - **Assumptions:**
      - <what the task relies on that is not an earlier task, or `None`>
 ```
@@ -56,6 +58,8 @@ The body is the accepted proposal. It states one action, and the title is that a
 Each task is one action against one platform, object, or API, in the order the diagram shows. At least one task is present. Every task names the same Provider. The implementation this automation serves is a target, not the Provider.
 
 Standards is the ordered list of coding standards the person accepted for that task. An earlier standard wins a disagreement with a later one. Each inherited standard appears once, after the standard that inherits it. A task with no standard says `No coding standard applies.`
+
+Files is the ordered list of files the task creates or changes, by paths relative to the automation folder, placed from its standards' File and Folder Structure. A path has no unfilled placeholder.
 
 ## Diagram Block
 

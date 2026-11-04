@@ -65,11 +65,13 @@ done
 
 require "$TASKS" 'automation: CDYXXXXXX'
 require "$TASKS" '- [ ] T001'
-require "$STANDARDS_CATALOG" 'Standard Path'
-require "$STANDARDS_CATALOG" 'library/coding-standards/terraform.md'
-require "$SAMPLE_STANDARD" '## Tests'
-require "$SAMPLE_STANDARD" 'Tests: required'
-require "$MANIFEST" 'include	library/coding-standards	-'
+for seeded in "$STANDARDS_CATALOG" "$SAMPLE_STANDARD"; do
+	if [[ -e "$seeded" ]]; then
+		echo "FAIL: $(basename "$seeded") is still seeded"
+		fail=1
+	fi
+done
+reject "$MANIFEST" 'include	library/coding-standards	-'
 
 reject "$CODIFY" '**1. [Implementation ID]:**'
 reject "$CODIFY" 'You can also provide your own.'

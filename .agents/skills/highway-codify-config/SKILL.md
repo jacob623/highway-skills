@@ -4,7 +4,7 @@ description: "Manages the repository-wide guidance used by highway-codify."
 usage: "Invoke as /highway-codify-config, or with one implementation name."
 compatibility: all
 metadata:
-  version: 1.0.0
+  version: 2.0.0
 ---
 
 # highway-codify-config
@@ -44,7 +44,7 @@ Do not report Status, Summary, Next Action, Blocking Reason, Missing, Complete, 
 The complete structure is `.highway/library/templates/output/codify-platforms.md`, `.highway/library/templates/output/coding-standards-catalog.md`, and `.highway/library/templates/output/coding-standard.md`.
 
 - An updated `library/coding-standards/codify-platforms.md` after an accepted platform change.
-- A standard file in `library/coding-standards/`, then an updated `library/coding-standards/coding-standards.md`, after an accepted standard change.
+- A standard file in `library/coding-standards/`, then an updated `library/coding-standards/coding-standards.md`, after an accepted standard change. The first accepted standard creates the catalog.
 - Only the accepted changes after an accepted conflict resolution.
 - Nothing after a cancel.
 
@@ -189,7 +189,9 @@ If you'd like to cancel, just say so.
 
 ### standard proposal
 
-When no standard file exists for this language or platform, propose at most ten rules from current best practices, each an imperative a reviewer can check. Otherwise start from the standard file's rules and Tests, including a standard re-added after removal. A platform standard inherits from the language standards its files use. A remove shows the current values.
+When no standard file exists for this language or platform, propose at most ten rules from current best practices, each an imperative a reviewer can check, and the file and folder structure the platform's current documentation recommends. Otherwise start from the standard file's structure, rules, and Tests, including a standard re-added after removal. A platform standard inherits from the language standards its files use. A remove shows the current values.
+
+Every structure path is relative to the automation folder. A placeholder in angle brackets, such as `<module>`, is filled for each automation. The structure covers only this standard's own files. A component the platform calls, such as a module, keeps its own standard.
 
 [One sentence stating the consequence of this change.]
 
@@ -199,10 +201,13 @@ When no standard file exists for this language or platform, propose at most ten 
 
 **File Patterns:** [`*.ext`, `*.ext`]
 
+**File and Folder Structure:**
+1. `[relative path]`
+
 **Coding Standards:**
 1. [Rule]
 
-**Tests:** [required. One sentence on how tests are written. Or: not required.]
+**Tests:** [required. One sentence on how tests are written. Test path: `[relative path]`. Or: not required.]
 
 **When to use:**
 1. [Entry]
@@ -224,12 +229,20 @@ Assess conflicts as `platform proposal` does. A remove's Consequences say `[Stan
 Then emit the closing question and the cancel line.
 
 - `edit`: emit one consequence sentence. Re-emit this proposal with the change. Stay on `standard proposal`.
-- `accept` on an add or update: write the standard file from `.highway/library/templates/output/coding-standard.md` at its Standard Path, then write `library/coding-standards/coding-standards.md` from `.highway/library/templates/output/coding-standards-catalog.md`, changing only this row. A new Standard Path is `library/coding-standards/[technology in lowercase, with hyphens].md`. When the standard file write fails, write no catalog. Say what failed and stay.
-- `accept` on a remove: write the catalog without this row. Keep the standard file.
-- After a write, when the proposal listed conflicts, ask **Would you like help resolving these conflicts?** `accept` goes to `conflicts`. Otherwise go to `standards`.
+- `accept` on an add or update: go to `standard write`.
+- `accept` on a remove: write the catalog without this row. Keep the standard file. Then go to `standard write` step 3.
 - `question`: answer, then re-emit this proposal.
 - `unknown`: re-emit this proposal.
 - `decline`: go to `menu`.
+
+### standard write
+
+1. Check the accepted proposal. When a check fails, say its sentence, write nothing, and return to `standard proposal`.
+   - The structure has no path: `A file and folder structure is needed.`
+   - A path begins with `/` or `code/`: `Paths are relative to the automation folder.`
+   - Tests are required and the test path is not in the structure: `The test path must be part of the file and folder structure.`
+2. Write the standard file from `.highway/library/templates/output/coding-standard.md` at its Standard Path, creating `library/coding-standards/` when it is absent. A new Standard Path is `library/coding-standards/[technology in lowercase, with hyphens].md`. Then write `library/coding-standards/coding-standards.md` from `.highway/library/templates/output/coding-standards-catalog.md`, changing only this row. When the catalog is absent, create it with this row only. When the standard file write fails, write no catalog. Say what failed and return to `standard proposal`.
+3. When the proposal listed conflicts, ask **Would you like help resolving these conflicts?** `accept` goes to `conflicts`. Otherwise go to `standards`.
 
 ### conflicts
 
@@ -238,6 +251,7 @@ Read both catalogs. Judge overlap by meaning, not exact wording. Assess platform
 - Two platforms whose When to use entries overlap.
 - One platform or standard with a When to use entry whose meaning also appears in its When not to use.
 - Two standards whose File Patterns overlap and whose When to use entries overlap, when neither inherits from the other.
+- Two standards whose structures name the same relative path, when neither inherits from the other.
 - An Inherits From title that no row lists.
 - A standard that inherits from itself through any chain.
 
@@ -282,6 +296,8 @@ Then emit the closing question and the cancel line.
 - Every proposal shows its fields as bold labels, list fields as ordered lists, then Consequences and Conflicts, and ends with **What would you add or correct?** and the cancel line.
 - A platform is added only from an accepted implementation. Any other name offers onboarding, which ends by pointing back here.
 - Accepting a platform writes only its row. Accepting a standard writes its file, then its row. Removing a standard keeps its file.
+- A standard proposal shows its File and Folder Structure as relative paths. Accepting one with no path, a path beginning with `/` or `code/`, or a required test path outside the structure writes nothing and says what is needed.
+- No coding standard is seeded. The first accepted standard creates the catalog with its row.
 - Conflicts quote both entries and name both records. With none, the person is asked what inconsistencies they noticed.
 - A resolution lists each record in bold with lettered changes, writes only those changes, and returns to the reassessed list.
 - A cancel writes nothing and returns to the menu.
@@ -292,6 +308,7 @@ Then emit the closing question and the cancel line.
 - A missing template stops the change, names the template path, and writes nothing.
 - A failed write leaves the existing file unchanged and keeps the proposal open.
 - A failed standard file write writes no catalog row.
+- A standard with no structure path, a path that is not relative, or a required test path outside the structure writes nothing and keeps the proposal open.
 - A name that is not an accepted implementation is not added and offers onboarding.
 
 ## Example

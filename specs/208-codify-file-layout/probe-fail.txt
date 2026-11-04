@@ -1,0 +1,30 @@
+FAIL: output/coding-standard.md omits: ## File and Folder Structure
+FAIL: output/coding-standard.md omits: Test path:
+FAIL: output/coding-standard.md omits: version: 2.0.0
+FAIL: highway-codify-config/SKILL.md omits: **File and Folder Structure:**
+FAIL: highway-codify-config/SKILL.md omits: Test path:
+FAIL: highway-codify-config/SKILL.md omits: A file and folder structure is needed.
+FAIL: highway-codify-config/SKILL.md omits: Paths are relative to the automation folder.
+FAIL: highway-codify-config/SKILL.md omits: The test path must be part of the file and folder structure.
+FAIL: highway-codify-config/SKILL.md omits: When the catalog is absent, create it
+FAIL: highway-codify-config/SKILL.md omits: name the same relative path
+FAIL: highway-codify-config/SKILL.md omits: version: 2.0.0
+FAIL: highway-codify/SKILL.md omits: ### layout
+FAIL: highway-codify/SKILL.md omits: has no file and folder structure. To add one, run /highway-codify-config.
+FAIL: highway-codify/SKILL.md omits: version: 8.0.0
+FAIL: output/codify-record.md omits: **Files:**
+FAIL: output/codify-record.md omits: version: 7.0.0
+FAIL: output/codify-tasks.md omits: Files: `README.md`
+FAIL: output/codify-tasks.md omits: The Provider is the first node of the accepted diagram.
+FAIL: output/codify-tasks.md omits: version: 4.0.0
+FAIL: highway-codify/SKILL.md still contains: executor/
+FAIL: highway-codify/SKILL.md still contains: task-N/
+FAIL: highway-codify/SKILL.md still contains: code/<id>/
+FAIL: output/codify-tasks.md still contains: executor/
+FAIL: output/codify-tasks.md still contains: task-N/
+FAIL: output/codify-tasks.md still contains: code/<id>/
+FAIL: output/codify-tasks.md still contains: Each task produces one file
+FAIL: library/coding-standards/coding-standards.md is still seeded
+FAIL: library/coding-standards/terraform.md is still seeded
+FAIL: tools/.distribution-manifest still contains: include	library/coding-standards	-
+EXIT:1

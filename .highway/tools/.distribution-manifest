@@ -104,9 +104,8 @@ include	.highway/governance	-
 include	.highway/instructions	-
 include	.highway/tools	-
 
-# --- Organization library: only the coding standards Highway seeds ship ---
+# --- Organization library: Highway seeds none, so no organization file ships ---
 exclude	library	-
-include	library/coding-standards	-
 
 # --- Toolchain carve-outs ---
 # Fixtures are deliberately non-conformant; they exist to make checks fail.
