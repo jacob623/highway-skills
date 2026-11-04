@@ -4,7 +4,7 @@ description: "Manages the repository-wide guidance used by highway-codify."
 usage: "Invoke as /highway-codify-config, or with one implementation name."
 compatibility: all
 metadata:
-  version: 2.0.0
+  version: 3.0.0
 ---
 
 # highway-codify-config
@@ -53,6 +53,8 @@ The complete structure is `.highway/library/templates/output/codify-platforms.md
 Emit only the active template. Start at `Entry`. Follow `.highway/governance/experience-standard.md` for attribution and acceptance wording. Write only after `accept`.
 
 A list field is stored in one table cell, with entries separated by `; `. A blank cell is an empty list. Every proposal and every catalog view presents When to use, When not to use, Inherits From, and Coding Standards as an ordered list under its bold label, one entry per item. An empty list shows `None`. Writing joins the accepted items with `; `.
+
+On a platform proposal and a standard proposal, each When to use entry and each When not to use entry is one sentence that names a condition and the required outcome. The next line is **Why it matters:** and one sentence. The entry does not say should, consider, prefer, usually, or where appropriate. The catalog view, a conflict quote, and the saved cell keep the rule only.
 
 Picking a menu option, and every `edit`, begins with one sentence that states its consequence. Every proposal ends with:
 
@@ -116,7 +118,7 @@ When the file is absent or has no rows, say no platform is included yet.
 
 If you'd like to cancel, just say so.
 
-- A name to add or correct that is an accepted implementation title, compared without regard to case: go to `platform proposal`, as an update when it has a row and as an add otherwise.
+- A name to add or correct that is an accepted implementation title, compared without regard to case: go to `current`, then `platform proposal`, as an update when it has a row and as an add otherwise.
 - A name to add that is not an accepted implementation: emit `[Platform] is not in the implementation catalog. Highway adds a platform from an accepted implementation.` Then ask **Would you like to onboard [Platform]?**
   - `accept`: follow `highway-onboarding` from `overview`, for [Platform]. Its summary ends with: Run `/highway-codify-config [Platform]` to finish adding [Platform].
   - `decline`: re-emit this list and question.
@@ -126,9 +128,19 @@ If you'd like to cancel, just say so.
 - `unknown`: re-emit this list and question.
 - `decline`: go to `menu`.
 
+### current
+
+Read the technology's current public documentation. Write nothing.
+
+A capability the documentation describes is captured. A capability it no longer describes is not proposed. For a platform, a documented capability is proposed only when the accepted implementation realizes it.
+
+When the documentation cannot be read, say: The current documentation could not be read. Add no capability as current. Continue from the accepted implementation and the catalogs already present.
+
+Then go to the proposal named with this step.
+
 ### platform proposal
 
-Ground When to use and When not to use in the implementation's Technology Choice, Runtime Components, and Realized Capabilities, and in the other platform rows, so the entries say what this platform is for and where another platform fits better. An update starts from the current values. A remove shows the current values.
+Ground When to use and When not to use in `current`, the implementation's Technology Choice, Runtime Components, and Realized Capabilities, and the other platform rows. An update starts from the current values after `current`. A remove shows the current values and does not run `current`.
 
 [One sentence stating the consequence of this change.]
 
@@ -180,7 +192,7 @@ When the file is absent or has no rows, say no coding standard is listed yet.
 
 If you'd like to cancel, just say so.
 
-- A language or platform to add, or a listed standard to correct: go to `standard proposal`, as an update when it has a row and as an add otherwise.
+- A language or platform to add, or a listed standard to correct: go to `current`, then `standard proposal`, as an update when it has a row and as an add otherwise.
 - A listed standard to remove: go to `standard proposal` as a remove.
 - A standard to correct or remove that has no row: say it is not listed. Re-emit this list and question.
 - `question`: answer, then re-emit this list and question.
@@ -189,7 +201,7 @@ If you'd like to cancel, just say so.
 
 ### standard proposal
 
-When no standard file exists for this language or platform, propose at most ten rules from current best practices, each an imperative a reviewer can check, and the file and folder structure the platform's current documentation recommends. Otherwise start from the standard file's structure, rules, and Tests, including a standard re-added after removal. A platform standard inherits from the language standards its files use. A remove shows the current values.
+When no standard file exists, propose at most ten rules from the documentation `current` read. Each rule contains the word must and names a condition and the required outcome. Use the file and folder structure that documentation recommends. Otherwise start from the standard file after `current`, including a standard re-added after removal. A platform standard inherits from the language standards its files use. A remove shows the current values and does not run `current`. One rule keeps encoded or encrypted credentials outside this standard's files. When the documentation names a supported way to encrypt or store them, the rule requires that way. When it names none, the rule names no product. Include it once. When ten current rules lack it, leave out the last rule the documentation no longer describes, or the last rule when all are still described, and name it in Consequences.
 
 Every structure path is relative to the automation folder. A placeholder in angle brackets, such as `<module>`, is filled for each automation. The structure covers only this standard's own files. A component the platform calls, such as a module, keeps its own standard.
 
@@ -242,7 +254,7 @@ Then emit the closing question and the cancel line.
    - A path begins with `/` or `code/`: `Paths are relative to the automation folder.`
    - Tests are required and the test path is not in the structure: `The test path must be part of the file and folder structure.`
 2. Write the standard file from `.highway/library/templates/output/coding-standard.md` at its Standard Path, creating `library/coding-standards/` when it is absent. A new Standard Path is `library/coding-standards/[technology in lowercase, with hyphens].md`. Then write `library/coding-standards/coding-standards.md` from `.highway/library/templates/output/coding-standards-catalog.md`, changing only this row. When the catalog is absent, create it with this row only. When the standard file write fails, write no catalog. Say what failed and return to `standard proposal`.
-3. When the proposal listed conflicts, ask **Would you like help resolving these conflicts?** `accept` goes to `conflicts`. Otherwise go to `standards`.
+3. When the proposal listed conflicts, ask **Would you like help resolving these conflicts?** `accept` goes to `conflicts`. Otherwise state the consequence of the accepted change in one sentence and go to `menu`.
 
 ### conflicts
 
@@ -301,6 +313,10 @@ Then emit the closing question and the cancel line.
 - Conflicts quote both entries and name both records. With none, the person is asked what inconsistencies they noticed.
 - A resolution lists each record in bold with lettered changes, writes only those changes, and returns to the reassessed list.
 - A cancel writes nothing and returns to the menu.
+- `current` is read before an add or update, and a removal does not run it.
+- A proposal use entry is one sentence, with **Why it matters:** on the next line, and the saved catalog does not keep that line.
+- Each coding rule contains the word must, and one rule keeps encoded or encrypted credentials outside the files.
+- A standard write with no conflicts states one consequence sentence and returns to the menu.
 
 ## Error Handling
 

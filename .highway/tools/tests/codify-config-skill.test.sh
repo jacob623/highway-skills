@@ -69,7 +69,7 @@ for text in \
 	'### platforms' \
 	'### standards' \
 	'### conflicts' \
-	'version: 2.0.0'; do
+	'version: 3.0.0'; do
 	require "$CONFIG" "$text"
 done
 

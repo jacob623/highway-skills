@@ -1,0 +1,20 @@
+FAIL: ### current does not stand before ### platform proposal
+FAIL: SKILL.md omits: ### current
+FAIL: SKILL.md omits: The current documentation could not be read.
+FAIL: SKILL.md omits: Then go to the proposal named with this step.
+FAIL: SKILL.md omits: go to `current`, then `platform proposal`
+FAIL: SKILL.md omits: go to `current`, then `standard proposal`
+FAIL: SKILL.md omits: does not run `current`
+FAIL: SKILL.md omits: **Why it matters:**
+FAIL: SKILL.md omits: The catalog view, a conflict quote, and the saved cell keep the rule only.
+FAIL: SKILL.md omits: the word must
+FAIL: SKILL.md omits: encoded or encrypted credentials
+FAIL: SKILL.md omits: Otherwise state the consequence of the accepted change in one sentence and go to `menu`.
+FAIL: SKILL.md omits: version: 3.0.0
+FAIL: SKILL.md still contains: each an imperative a reviewer can check
+FAIL: SKILL.md still contains: Otherwise go to `standards`.
+FAIL: coding-standard.md omits: version: 3.0.0
+FAIL: coding-standard.md omits: one rule containing the word must; at most ten rules
+FAIL: coding-standard.md omits: One rule keeps encoded or encrypted credentials outside the files this standard covers.
+FAIL: coding-standard.md omits: This file does not contain a Why it matters line.
+EXIT:1
