@@ -63,7 +63,7 @@ for text in \
 	require "$CODIFY" "$text"
 done
 
-require "$TASKS" 'automation: CDYXXXXXX'
+require "$TASKS" 'product: CDYXXXXXX'
 require "$TASKS" '- [ ] T001'
 for seeded in "$STANDARDS_CATALOG" "$SAMPLE_STANDARD"; do
 	if [[ -e "$seeded" ]]; then

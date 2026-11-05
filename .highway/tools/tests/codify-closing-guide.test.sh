@@ -59,13 +59,13 @@ for text in \
 	'No automation has been created yet.' \
 	'The instructions are not written yet.' \
 	'Append the new row as the last row.' \
-	'version: 9.0.1'; do
+	'version: 10.0.0'; do
 	require "$CODIFY" "$text"
 done
 for text in \
 	'`## Implement`' \
 	'`## Use`' \
-	'Order the index by Automation ID.' \
+	'Order the index by ID.' \
 	'[Every task is done. Or: Task'; do
 	reject "$CODIFY" "$text"
 done
@@ -73,13 +73,13 @@ done
 require "$RECORD" '## Setup Instructions'
 require "$RECORD" '## User Guide'
 require "$RECORD" 'User Guide follows the interface of the Provider.'
-require "$RECORD" 'version: 7.0.0'
+require "$RECORD" 'version: 8.0.0'
 reject_line "$RECORD" '## Implement'
 reject_line "$RECORD" '## Use'
 
 require "$CATALOG" 'Rows are in acceptance order.'
 require "$CATALOG" 'A new row is appended as the last row.'
-require "$CATALOG" 'version: 2.0.0'
+require "$CATALOG" 'version: 3.0.0'
 reject "$CATALOG" 'Rows are ordered by Automation ID.'
 
 if [[ "$fail" -ne 0 ]]; then

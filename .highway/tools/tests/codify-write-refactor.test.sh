@@ -53,10 +53,10 @@ if [[ "$write_words" -gt 250 ]]; then
 fi
 
 require_in codified "$codified_body" 'same words, in the same order'
-require_in codified "$codified_body" 'Automation Path'
+require_in codified "$codified_body" 'Do not open a product folder.'
 require_in codified "$codified_body" 'Do not open that record.'
 require_in skill "$skill_body" 'Each action grounded in this implementation is already codified.'
-require_in skill "$skill_body" 'version: 9.0.1'
+require_in skill "$skill_body" 'version: 10.0.0'
 
 suggest_line=$(grep -n '^### suggest$' "$CODIFY" | cut -d: -f1)
 codified_line=$(grep -n '^### codified$' "$CODIFY" | cut -d: -f1)

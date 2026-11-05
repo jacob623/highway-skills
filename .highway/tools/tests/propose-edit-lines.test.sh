@@ -1,21 +1,21 @@
 #!/usr/bin/env bash
-# Each kind of edit in propose is its own line, and every current consequence remains.
+# Each kind of edit in revise is its own line, and every current consequence remains.
 set -u
 # Instrument class: static-document-contract
 # Artifact classes: source-document
-# Seeded failure probe: joining the edit lines in propose back into one line fails this check.
+# Seeded failure probe: joining the edit lines in revise back into one line fails this check.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 CODIFY="$HIGHWAY_ROOT/skills/highway-codify/SKILL.md"
 fail=0
 
-propose="$(awk '$0 == "### propose" {p=1; next} $0 == "### identifier" {p=0} p' "$CODIFY")"
+propose="$(awk '$0 == "### revise" {p=1; next} $0 == "### identifier" {p=0} p' "$CODIFY")"
 
 require_line() {
 	local text="$1"
 	if ! printf '%s\n' "$propose" | grep -Fxq -- "$text"; then
-		echo "FAIL: highway-codify propose lacks the line: $text"
+		echo "FAIL: highway-codify revise lacks the line: $text"
 		fail=1
 	fi
 }
@@ -27,13 +27,13 @@ printf '%s\n' "$propose" | while IFS= read -r line; do
 		'- `'*) editing=0 ;;
 	esac
 	if [[ "$editing" -eq 1 && ${#line} -gt 240 ]]; then
-		echo "FAIL: highway-codify propose edit line has ${#line} characters: ${line:0:60}"
+		echo "FAIL: highway-codify revise edit line has ${#line} characters: ${line:0:60}"
 		exit 1
 	fi
 done || fail=1
 
 for text in \
-	'- `edit`: emit one consequence sentence. Re-emit this block with the diagram and tasks still matching. Stay on `propose`.' \
+	'- `edit`: emit one consequence sentence. Re-emit the proposal with the diagram and tasks still matching. Stay on `revise`.' \
 	'An edit that names a different Provider sets it on every task and in the diagram, then goes to `standards`.' \
 	'An edit that changes a method goes to `standards`, then `align`, for that task.' \
 	'An edit that adds, removes, or reorders a task'"'"'s Standards changes only that list, then goes to `align` for that task.' \
@@ -48,16 +48,16 @@ done
 
 words=$(printf '%s\n' "$propose" | wc -w | tr -d ' ')
 if [[ "$words" -gt 400 ]]; then
-	echo "FAIL: highway-codify propose has $words words; the limit is 400"
+	echo "FAIL: highway-codify revise has $words words; the limit is 400"
 	fail=1
 fi
 
-if ! grep -Fq 'version: 9.0.1' "$CODIFY"; then
-	echo "FAIL: highway-codify omits: version: 9.0.1"
+if ! grep -Fq 'version: 10.0.0' "$CODIFY"; then
+	echo "FAIL: highway-codify omits: version: 10.0.0"
 	fail=1
 fi
 
 if [[ "$fail" -ne 0 ]]; then
 	exit 1
 fi
-echo 'PASS: propose states each edit on its own line'
+echo 'PASS: revise states each edit on its own line'

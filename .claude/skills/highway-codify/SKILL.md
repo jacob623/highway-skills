@@ -4,7 +4,7 @@ description: "Manages one functional artifact for one accepted implementation."
 usage: "Invoke as /highway-codify with one implementation name."
 compatibility: all
 metadata:
-  version: 9.0.1
+  version: 10.0.0
 ---
 
 # highway-codify
@@ -34,32 +34,36 @@ Do not report Status, Summary, Next Action, Blocking Reason, Missing, Complete, 
 - An implementation title, a description, or an implementation id, and one optional action, when the person supplies them.
 - `implementations/implementations.md` and the accepted implementation records.
 - `architectures/architectures.md` and the accepted architecture records.
-- `code/code.md` and `code/[ID]/codify-tasks.md` when present.
+- `code/code.md` and `code/integrations.md` when present.
+- The open feature's `codify-tasks.md` under `code/<folder>/.highway/features/` when present.
 - `library/coding-standards/coding-standards.md` and the standards it names, when present.
 - `library/coding-standards/codify-platforms.md` when present.
 - The vendor's current public documentation for each product, API, plugin, module, or library a draft proposal names.
 - `.highway/library/templates/output/codify-record.md`.
 - `.highway/library/templates/output/codify-catalog.md`.
 - `.highway/library/templates/output/codify-tasks.md`.
+- `.highway/library/templates/output/codify-metadata.md`.
+- `.highway/library/templates/output/codify-integrations.md`.
 - `.highway/governance/experience-standard.md`.
 - A project root containing `.highway/`.
 
 ## Outputs
 
-The complete structure is `.highway/library/templates/output/codify-record.md`, `.highway/library/templates/output/codify-catalog.md`, and `.highway/library/templates/output/codify-tasks.md`.
+The complete structure is `.highway/library/templates/output/codify-record.md`, `.highway/library/templates/output/codify-catalog.md`, `.highway/library/templates/output/codify-tasks.md`, `.highway/library/templates/output/codify-metadata.md`, and `.highway/library/templates/output/codify-integrations.md`.
 
-- One saved proposal at `code/[ID]/codify.md` after the person accepts the proposal.
-- One task list at `code/[ID]/codify-tasks.md` written with that proposal.
-- An updated `code/code.md` written with that proposal.
-- The files each task list line names, at their relative paths in `code/[ID]/`.
-- One `code/[ID]/README.md` with two parts, produced by the last task.
-- When every task is done, a completion message that names the files path `code/[ID]/` and the README path `code/[ID]/README.md`. When a task could not be finished, a close that names the automation, the task list, and that task. Both say the automation was not run.
+- One product folder `code/<folder>/`, with `.highway/metadata.md` written once when the product is new.
+- One saved proposal at `code/<folder>/.highway/features/<number>-<action>/codify.md` after the person accepts the proposal.
+- One task list, `codify-tasks.md`, beside that proposal, written with it.
+- An updated `code/code.md`, and `code/integrations.md` when the accepted proposal includes a new integration, written with that proposal.
+- The files each task list line names, at their relative paths in `code/<folder>/`.
+- One `code/<folder>/README.md` with two parts, produced by the last task.
+- When every task is done, a completion message that names the files path `code/<folder>/` and the README path `code/<folder>/README.md`. When a task could not be finished, a close that names the automation, the task list, and that task. Both say the automation was not run.
 - A read-only code catalog view after `/highway-codify catalog`.
 - No automation when the implementation is missing, not accepted, the proposal is declined, or a write fails.
 
 ## Procedure
 
-Emit only the active template. `catalog` runs alone. Otherwise follow this order: `choose` when no implementation is named; `suggest`, with `codified`, when no action is named; then `start`, `standards`, `align`, `layout`, `propose`, `identifier`, `title` when needed, `write`, `code`, and `close`. Follow `.highway/governance/experience-standard.md` for attribution and acceptance wording. A current implementation is an accepted row in `implementations/implementations.md`. A removed row does not match and does not block a new automation.
+Emit only the active template. `catalog` runs alone. Otherwise follow this order: `choose` when no implementation is named; `suggest`, with `codified`, when no action is named; then `start`, `standards`, `align`, `project`, `layout`, `propose`, `revise`, `identifier`, `title` when needed, `write`, `index`, `code`, and `close`. Follow `.highway/governance/experience-standard.md` for attribution and acceptance wording. A current implementation is an accepted row in `implementations/implementations.md`. A removed row does not match and does not block a new automation.
 
 ### Entry
 
@@ -67,7 +71,7 @@ Emit only the active template. `catalog` runs alone. Otherwise follow this order
 2. When the invocation is the word `configure`, or asks to change platforms or coding standards, say: To configure platforms and coding standards, run /highway-codify-config. Write nothing.
 3. When the invocation is the word `catalog`, or asks to show the code catalog, go to `catalog`. Do not resume a task list or select an implementation.
 4. Read the invocation for an implementation title, a description, an implementation id, and one optional action.
-5. When the invocation names an automation in `code/code.md` by title or `CDY` id and its task list has an open task, go to `code` at the first open task.
+5. When the invocation names a product in `code/code.md` by title, folder, or `CDY` id and its open feature has an open task, go to `code` at the first open task.
 6. When an implementation id matches one accepted implementation, select it and show its title.
 7. When an exact title matches one accepted implementation, select it. Compare without regard to case.
 8. After a selection, go to `start` when the invocation named one action. Otherwise go to `suggest`.
@@ -78,9 +82,9 @@ Emit only the active template. `catalog` runs alone. Otherwise follow this order
 
 ### catalog
 
-Read the accepted rows of `code/code.md`. Rows are in acceptance order, so the last rows are the most recent. Take the last five accepted rows. Emit one numbered line per row, starting at 1, newest first. Read the implementation title from `implementations/implementations.md` and the progress from `code/[ID]/codify-tasks.md`. Do not use an id as the label. Do not list or count a removed row.
+Read the accepted rows of `code/code.md`. Rows are in acceptance order, so the last rows are the most recent. Take the last five accepted rows. Emit one numbered line per row, starting at 1, newest first. Read each implementation title from `implementations/implementations.md` and the progress from the `codify-tasks.md` of the open feature its Features cell names. Do not use an id as the label. Do not list or count a removed row.
 
-**1. [Automation title]:** [Implementation title]. [Task [T###] is next. Or, when no task is open: Every task is done.]
+**1. [Product title]:** [Implementation titles]. [Task [T###] is next. Or, when no feature is open: Every task is done.]
 
 When more than five accepted rows exist, add `[N] more automations are not shown.`, or `1 more automation is not shown.` when one is not shown.
 
@@ -96,10 +100,10 @@ When no accepted row exists, say `No automation has been created yet.` Ask nothi
 
 A selection emits:
 
-**[Automation title]**
+**[Product title]**
 
-- **Files:** `code/[ID]/`
-- **Setup and Usage Instructions:** `code/[ID]/README.md` [Or, when the README task is open: The instructions are not written yet.]
+- **Files:** `code/<folder>/`
+- **Setup and Usage Instructions:** `code/<folder>/README.md` [Or, when the README task is open: The instructions are not written yet.]
 
 **What would you like to know about it?**
 
@@ -136,7 +140,7 @@ Classify the latest reply before any other action.
 - `question`: asks for an explanation.
 - `decline`: the person stops or cancels.
 
-On `propose`, "looks good" is `accept`.
+On `revise`, "looks good" is `accept`.
 
 ### suggest
 
@@ -168,13 +172,13 @@ When the list is empty, say no suggestion is grounded in this implementation. Wh
 
 ### codified
 
-Read the accepted rows of `code/code.md` whose Implementation ID is the selected implementation. Skip removed rows and rows for other implementations. With no catalog, leave nothing out. Write nothing.
+Read the accepted rows of `code/code.md` whose Implementations include the selected implementation. Skip removed rows. With no catalog, leave nothing out. Do not open a product folder. Write nothing.
 
 For each suggestion, in order:
 
-1. When its title is the same words, in the same order, as an Automation Title, compared without regard to case, leave it out. Do not open that record.
-2. Otherwise, when an Automation Title means this suggestion may already be implemented, read `codify.md` at that row's Automation Path. Leave the suggestion out when the record's title, Summary, or Description is that action. Keep it when the record is a different action or the file is absent.
-3. Keep every other suggestion.
+1. When a recorded feature's `<action>` is the same words, in the same order, as its title, compared without regard to case or hyphens, leave it out. Do not open that record.
+2. Otherwise, when a feature sentence or the product Summary means this suggestion, leave it out.
+3. Keep every other suggestion. An integration row does not leave a suggestion out.
 
 This check does not refuse a named action or the person's own idea. Return to `suggest`.
 
@@ -215,7 +219,7 @@ For each task, propose an ordered list of Standard Titles:
 3. Put a standard before every standard it inherits from, and a platform standard before the language standards it builds on.
 4. Add each inherited standard once, after the standard that inherits it. Stop at a title already listed, so a cycle adds nothing twice.
 
-A task with no row says `No coding standard applies.` An earlier standard wins a disagreement with a later one. The person can add, remove, or reorder the list on `propose`.
+A task with no row says `No coding standard applies.` An earlier standard wins a disagreement with a later one. The person can add, remove, or reorder the list on `revise`.
 
 Go to `align`.
 
@@ -237,20 +241,44 @@ Before the proposal, emit one line for each result that applies.
 
 When no correction keeps the action, emit `[Standard title] cannot be met for **[Action title]**.` Do not show the proposal. Return to `suggest`. When the invocation named the action, ask for a different action.
 
-Do not run `align` when continuing an automation that already has a task list. Otherwise go to `layout`.
+Do not run `align` when continuing a feature that already has a task list. Otherwise go to `project`.
+
+### project
+
+Read the accepted rows of `code/code.md` and `code/integrations.md`. Skip removed rows. Do not open a product folder. Write nothing.
+
+1. When the person named a folder, use it.
+2. When a recorded feature's `<action>` is this action's title, compared without regard to case or hyphens, resume that feature. Go to `code` when it has an open task, or to `close` when every task is done.
+3. When a feature sentence or a product Summary means this same action, join that product.
+4. Read the matching coding standard. When one of its rules names where this action lives, that rule replaces the decision below.
+5. For a composition row, when only one side has a product, join that folder and list both implementations.
+6. For a composition row, when both sides have products, join the folder of the implementation being codified. Leave the other folder in place. List both implementations on the joined product.
+7. For a composition row, when neither side has a product, start one folder and list both implementations.
+8. For a capability row whose From is the selected implementation, join the product that lists From. Add To to its implementations.
+9. When a product Summary means the same consumer and outcome and this action is new, join that folder.
+10. Otherwise start a folder from the product title: lowercase words, hyphens.
+11. When that folder is already a catalog path, say it is taken and ask for another name.
+
+Stop at the first of steps 1 to 3 that applies. Otherwise use the first of steps 5 to 10 that fits, unless a rule read in step 4 replaced it. Step 11 applies to every new folder.
+
+A new product's title names what it serves in at most four words, such as Worker. Its Summary is one sentence that says who it is for and what it returns. A joined product keeps its title and Summary.
+
+When this action connects the selected implementation to another accepted implementation and no accepted row holds that pair, hold From, To, Kind, and one summary sentence. Accepting the proposal records it.
+
+Hold **Proposed project:** `New <folder>` or `Existing <folder>`, then **Rationale:**. The first sentence says in plain words why this folder is the right home. When a standard or integration replaced the decision, cite it after that sentence. Name a pair held here. Go to `layout`.
 
 ### layout
 
 For each task, place the files it creates or changes. Read the File and Folder Structure of each standard on its Standards list. Write nothing.
 
 1. Place each file at a path from the first standard on the list whose structure has a path for that kind of file.
-2. Fill each placeholder in angle brackets from the task, such as the module or resource it names. While a placeholder is unfilled, `accept` stays on `propose`.
+2. Fill each placeholder in angle brackets from the task, such as the module or resource it names. While a placeholder is unfilled, `accept` stays on `revise`.
 3. The platform standard decides the folders. An inherited language standard's file names apply only where the platform standard names none.
 4. A component the task calls, such as a module, is placed from its own standard on the list.
-5. A file no structure places, or a task with no standard, goes at the root of the automation folder, named from the task.
+5. A file no structure places, or a task with no standard, goes at the root of the product folder, named from the task.
 6. A later task that changes a file an earlier task placed names that same path.
 
-Every path is relative to the automation folder and does not begin with `/` or `code/`.
+Every path is relative to the product folder and does not begin with `/`, `code/`, or `.highway/`.
 
 When a listed standard has no File and Folder Structure, emit before the proposal:
 
@@ -295,11 +323,21 @@ flowchart TB
    - **Assumptions:**
      - [What it relies on that is not an earlier task, or None.]
 
+**Proposed project:** [From `project`.]
+
+**Rationale:** [From `project`.]
+
 **What would you add, correct, or remove?**
 
 If this is accurate, just say so.
 
-- `edit`: emit one consequence sentence. Re-emit this block with the diagram and tasks still matching. Stay on `propose`.
+Go to `revise`.
+
+### revise
+
+Classify the reply to the proposal.
+
+- `edit`: emit one consequence sentence. Re-emit the proposal with the diagram and tasks still matching. Stay on `revise`.
 An edit that names a different Provider sets it on every task and in the diagram, then goes to `standards`.
 An edit that changes a method goes to `standards`, then `align`, for that task.
 An edit that adds, removes, or reorders a task's Standards changes only that list, then goes to `align` for that task.
@@ -309,14 +347,15 @@ A second action is removed. Say it waits for another run.
 The person can switch to another accepted architecture by title. An architecture that is not accepted is not added.
 A preparation-only request stays one self-service action.
 Removing the last task or the last acceptance criterion says at least one is needed.
-- `accept`: go to `identifier` when the proposal has one action, a Provider, at least one task, at least one acceptance criterion, and an accepted architecture. Otherwise stay on `propose`.
-- `unknown`: re-emit this block. Stay on `propose`.
-- `question`: answer, then re-emit this block. Stay on `propose`.
+An edit that changes the proposed project uses that folder. Say a removed product's folder is taken.
+- `accept`: go to `identifier` when the proposal has one action, a Provider, at least one task, at least one acceptance criterion, and an accepted architecture. Otherwise stay on `revise`.
+- `unknown`: re-emit the proposal. Stay on `revise`.
+- `question`: answer, then re-emit the proposal. Stay on `revise`.
 - `decline`: stop. Write nothing.
 
 ### identifier
 
-The automation title is the one action.
+When `project` joined a product, keep its `CDY` id and go to `write`. Otherwise derive the id from the new product's title.
 
 1. Lowercase the title. Remove hyphens and apostrophes. Split the rest into words.
 2. Take eight letters: the first two of word 1, the first two of word 2, the first two of word 3, and the last two of the last word. When the title has only two words, the third sample is the first two of the last word.
@@ -329,15 +368,15 @@ a 0, b 1, c 2, d 3, e 4, f 5, g 6, h 7, i 8, j 9, k a, l b, m c, n d, o e, p f, 
 
 Compare that id with `code/code.md`, including removed rows.
 
-- The same title already has that id: use the existing record. Do not write a second one. Go to `code` at the first open task, or to `close` when every task is done.
-- The id is taken for a different title: go to `title`.
+- An accepted row with the same product title has that id: join that product. Go to `write`.
+- The id is taken for a different title, or by a removed row: go to `title`.
 - The id is free: go to `write`.
 
 ### title
 
 Name each conflicting title. Say that a title change is appropriate. Then show the new title for acceptance.
 
-The existing Automation Title, **[Existing title]** and this new Automation Title, **[this title]**, are too similar. A title change is appropriate. I would recommend:
+The existing product title, **[Existing title]** and this new product title, **[this title]**, are too similar. A title change is appropriate. I would recommend:
 
 **[New title]**
 
@@ -347,49 +386,55 @@ If this is accurate, just say so.
 
 The new title is a small change the person can recognize. Its derived id must be free. Do not mention identifiers, hex, sampling, or the catalog.
 
-- `accept`: replace the held title. Return to `identifier`.
+- `accept`: replace the held product title. Return to `identifier`.
 - `edit`: use the person's title. Return to `identifier`.
+
+A new title does not rename the folder. The person can name another folder on `revise`.
 - `question`: answer in one sentence. Re-emit this message.
 - `unknown`: re-emit this message.
 
-Do not write until the id is free or the existing record is reused.
+Do not write until the id is free or an accepted product is joined.
 
 ### write
 
-Write `code/[ID]/codify.md`, `code/[ID]/codify-tasks.md`, and `code/code.md` together. Write none of them until all are valid. A failed write leaves every existing automation byte unchanged and leaves no partial folder. Say what failed in terms the person can act on. Stay on `write`. Do not write the README or any file the task list names here.
+Write the files below and the rows in `index` together. Write none of them until all are valid. A failed write leaves every existing product byte unchanged and leaves no partial folder. Say what failed in terms the person can act on. Stay on `write`. Do not write the README or any file the task list names here.
 
-The record follows `.highway/library/templates/output/codify-record.md`.
+The folder is `code/<folder>/` from the accepted proposal. `<number>` is `001` for a new product. For a joined product, it is the next integer after the highest directory in `code/<folder>/.highway/features/`. `<action>` is the title in lowercase words separated by hyphens.
 
-- `id` is the derived `CDY` id.
+For a new product, write `code/<folder>/.highway/metadata.md` from `.highway/library/templates/output/codify-metadata.md`. A joined product keeps its file.
+
+The record is `code/<folder>/.highway/features/<number>-<action>/codify.md` and follows `.highway/library/templates/output/codify-record.md`.
+
+- `id` is the product's `CDY` id.
 - `implementation` is the accepted implementation id.
 - `architecture` is the accepted architecture this automation follows.
 - `status` is `accepted`.
 - The title is the one action.
-- Summary, Description, Acceptance Criteria, Diagram, and Tasks are the accepted proposal text, in that order.
+- Summary, Description, Acceptance Criteria, Diagram, Tasks, Proposed project, and Rationale are the accepted proposal text, in that order.
 
-The task list follows `.highway/library/templates/output/codify-tasks.md`.
+The task list is `codify-tasks.md` beside the record and follows `.highway/library/templates/output/codify-tasks.md`.
 
-The catalog follows `.highway/library/templates/output/codify-catalog.md`. The catalog path is `code/code.md`.
+Go to `index`.
 
-- The index columns are Automation ID, Implementation ID, Automation Title, Automation Path, and Status.
-- Automation Path is `code/<id>/codify.md`. Status is `accepted`.
-- Keep rows in acceptance order. Append the new row as the last row. A row whose status changes keeps its position.
-- Do not allocate from `Next ID`.
-- The first catalog version is `1.0.0`.
-- Adding an automation increments the minor version.
-- More than one row may name the same Implementation ID.
-- A removed row keeps its id and has no folder.
-- Emit no timestamp, random value, or environment value.
-- Do not change the implementation, its architecture, its decision, the request, the assessment finding, Controls, or NFRs.
+### index
+
+Write these rows with the files in `write`. The catalog follows `.highway/library/templates/output/codify-catalog.md` at `code/code.md`. The first catalog version is `1.0.0`. Each change increments the minor version.
+
+1. For a new product, write one row. Append the new row as the last row. ID is the `CDY` id. Folder is `code/<folder>`. Title and Summary come from `project`. Status is `accepted`.
+2. For a joined product, update its row in place. Add each implementation the proposal lists that Implementations lacks.
+3. In Features, add `<number>-<action> | one sentence` when this feature starts the product, adds an implementation, records an integration, changes the summary, or is open. A feature is open while its task list has an open task. When a finished feature did none of those, remove its entry and keep its directory.
+4. When the accepted proposal includes an integration, write it to `code/integrations.md` from `.highway/library/templates/output/codify-integrations.md`. When an accepted row already has that From, To, and Kind, write no second row. Ask nothing more.
+
+A row whose status changes keeps its position. Do not allocate from `Next ID`. More than one row may name the same Implementation ID. A removed row keeps its id and has no folder. Emit no timestamp, random value, or environment value. Do not change the implementation, its architecture, its decision, the request, the assessment finding, Controls, or NFRs.
 
 On success, go to `code` without asking a question.
 
 ### code
 
-Open `code/[ID]/codify-tasks.md`. Start at the first open task. For each open task, in list order:
+Open the feature's `codify-tasks.md`. Start at the first open task. For each open task, in list order:
 
-1. Read every standard the task names, in order, including its File and Folder Structure, and each file the task names that already exists. Read no other file in the automation folder.
-2. Write the task's files at their relative paths in `code/[ID]/` so they follow every one of them. When two disagree, the earlier one wins. The accepted proposal, architecture, and implementation decide what is built. The standards decide how it is written.
+1. Read every standard the task names, in order, including its File and Folder Structure, and each file the task names that already exists. Read no other file in the product folder.
+2. Write the task's files at their relative paths in `code/<folder>/` so they follow every one of them. When two disagree, the earlier one wins. The accepted proposal, architecture, and implementation decide what is built. The standards decide how it is written.
 3. Mark the task `[X]`.
 4. Go to the next open task.
 
@@ -399,7 +444,7 @@ The README task writes two parts, in this order. Head the first part `## Setup I
 
 When a task cannot be finished, stop at that task. Leave it and every later task open. Start no later task. Keep the files that finished tasks wrote. Go to `close`.
 
-When every task is done, go to `close`.
+When every task is done, apply step 3 of `index` to this feature's entry, then go to `close`.
 
 ### close
 
@@ -407,7 +452,7 @@ First emit the coding standards notices that apply, then one close.
 
 [No coding standards catalog was found. A standard named by the catalog was not found at [path]. Include only the sentences that apply.]
 
-When every task is done, emit this message exactly, as rendered markdown, with the automation id in place of `[ID]`:
+When every task is done, emit this message exactly, as rendered markdown, with the product folder in place of `<folder>`:
 
 ```markdown
 ### The codify stage is complete.
@@ -418,13 +463,13 @@ The automation was not run.
 
 **The files can be found here:**
 
-`code/[ID]/`
+`code/<folder>/`
 
 If you'd like to review the files together, just say so.
 
 **Setup and Usage Instructions** can be found here:
 
-`code/[ID]/README.md`
+`code/<folder>/README.md`
 
 If you'd like to review the instructions together, just say so.
 
@@ -441,8 +486,8 @@ When a task could not be finished, emit:
 
 **Automation recorded**
 
-- **Automation record:** `code/[ID]/codify.md`
-- **Task list:** `code/[ID]/codify-tasks.md`
+- **Automation record:** `code/<folder>/.highway/features/<number>-<action>/codify.md`
+- **Task list:** `code/<folder>/.highway/features/<number>-<action>/codify-tasks.md`
 - **Title:** [Title]
 - **Implementation:** [Implementation title]
 
@@ -460,14 +505,21 @@ The automation was not run.
 - With no named action, the suggestion list appears once before any proposal. It opens with the one Technology Choice, or the implementation title, and says automating these tasks may be worth visiting.
 - Each suggestion title is an action that starts with a verb, and its one summary sentence expands on it. The list holds at most five items, uses no id as a label, and ends with the invitation to describe another idea.
 - Suggestions of the kind that fits whether an instance is running come first, then the other kind, each in Realized Capabilities order.
-- A suggestion this implementation already accepted is left out before the list keeps five: by a title with the same words, ignoring case, without opening its record, or by its `codify.md` when only the meaning is close. Removed rows and other implementations' rows leave nothing out.
+- A suggestion already in a product that lists this implementation is left out before the list keeps five: by a recorded feature with the same words, ignoring case, or by a feature sentence or product Summary with that meaning. No product folder is opened. Removed rows and integration rows leave nothing out.
+- `project` decides join or start from `code/code.md` and `code/integrations.md` without opening a product folder. A rule in the matching coding standard replaces the decision it speaks to.
+- A composition joins the only side with a product, starts one folder when neither has one, and joins the folder of the implementation being codified when both do. A capability joins the product that lists From and adds To.
+- The proposal shows **Proposed project:** as `New <folder>` or `Existing <folder>`, then **Rationale:**. Its first sentence is plain language. A standard or integration is cited only when it replaced the decision.
+- The person's project edit is written. The folder stays unique, including removed rows, the `CDY` id is in `.highway/metadata.md`, the feature is under `.highway/features/`, and paths are relative to the folder.
+- Each accepted action is the next numbered feature directory in its product. Earlier directories stay.
+- Features keeps an entry only when that feature starts the product, adds an implementation, records an integration, changes the summary, or is open.
+- Accepting a proposal that includes an integration writes one row to `code/integrations.md`, and a pair already accepted writes none.
 - A named action skips the suggestion list and opens the proposal for that action.
 - Before any proposal, coding standards are checked first and vendor documentation second. Corrections and inconclusive results are named before the proposal and are not saved. The checks keep the selected action.
 - A standard that cannot be met for the selected action shows no proposal and returns to suggestions.
 - The proposal shows Title, Summary, Description, Acceptance criteria, Diagram, and Tasks, in that order. It shows no components, current state, separate action, day, or means.
 - The diagram is one logical flow, top to bottom, from the Provider. Each arrow leaves the Provider, is one task's action, starts with a verb, and points to that task's target, in task order. No arrow leaves a target.
 - Every task names the same Provider, the platform executing the automation. The implementation being automated is a target. A Shopify proposal can use Cursor when Cursor is included, even though the Shopify records do not name it.
-- A named platform with no catalog row stays the Provider and the proposal says `/highway-codify-config` can add it. With no row and no named platform, the proposal says a platform is needed and accept stays on `propose`.
+- A named platform with no catalog row stays the Provider and the proposal says `/highway-codify-config` can add it. With no row and no named platform, the proposal says a platform is needed and accept stays on `revise`.
 - With no named platform, the Provider is the earliest row whose When to use fits the action and whose When not to use does not. A row with blank guidance is not chosen by fit. Otherwise this implementation's row, then the first row.
 - Each task shows Standards as an ordered list, or `No coding standard applies.` A standard whose When not to use matches is dropped. A standard comes before the standards it inherits from, and each inherited standard appears once.
 - A Standards edit re-emits the proposal with one consequence sentence. A title not in the catalog is left out and points to `/highway-codify-config`.
@@ -480,13 +532,13 @@ The automation was not run.
 - Each task is one action against one target and shows Scope, Provider, Method, Standards, Files, and Assumptions.
 - Files lists relative paths placed from the File and Folder Structure of the task's standards. A listed standard with no structure is named before the proposal with a pointer to `/highway-codify-config`. A Files edit changes only this automation. An unfilled placeholder keeps the proposal open.
 - A second action waits for another run. Declining writes nothing. Accepting is the only confirmation.
-- Acceptance writes `codify.md`, `codify-tasks.md`, and the catalog row together, before any file the task list names or the README.
+- Acceptance writes `codify.md`, `codify-tasks.md`, the new product's `metadata.md`, the catalog row, and any new integrations row together, before any file the task list names or the README.
 - The task list follows `codify-tasks.md`. A feature's test line comes first only when its first standard says `Tests: required`.
 - Coding starts with no question after acceptance. Every standard a task names, and each existing file it names, is read before its files are written, and no other automation file is read, the earlier one winning a disagreement, and each task is marked `[X]` before the next begins.
 - A task that cannot be finished stops the run with that task and every later task open. The next run starts at the first open task, redoes no finished task, and runs no check.
 - Codify creates, edits, and removes no coding standard and no row of the coding standards catalog.
 - Acceptance and coding run the automation zero times and leave the implementation, architecture, decision, request, and finding unchanged.
-- Each id is `CDY` plus eight hex digits derived from the title.
+- Each id is `CDY` plus eight hex digits derived from the product title. A joined product keeps its id.
 - A taken id names the conflicting titles, says a title change is appropriate, and shows a new title. The write waits until the person accepts that title.
 - That message does not mention identifiers, hex, sampling, or the catalog.
 - A failed write leaves no partial folder and leaves existing catalog bytes unchanged.
@@ -502,6 +554,7 @@ The automation was not run.
 - No accepted architecture for this automation keeps the proposal open and says so.
 - A failed write leaves no partial folder and leaves existing catalog bytes unchanged.
 - Declining a proposal writes nothing.
+- A folder already in the catalog, including a removed row, is not started. The person names another.
 - Removing the last task or the last acceptance criterion keeps the proposal open and writes nothing.
 
 ## Example

@@ -4,7 +4,7 @@ description: "Manages one architecture decision for one discovery."
 usage: "Invoke as /highway-adr with one discovery id."
 compatibility: all
 metadata:
-  version: 5.0.1
+  version: 6.0.0
 ---
 
 # highway-adr
@@ -37,7 +37,7 @@ Do not report Status, Summary, Next Action, Blocking Reason, Missing, Complete, 
 - Accepted Profile, Objectives, Controls, and NFRs when present.
 - `discoveries/discoveries.md` and `adrs/adrs.md`.
 - `architectures/architectures.md`, `implementations/implementations.md`, and the accepted architecture and implementation records they name.
-- `code/code.md` and the accepted `code/[ID]/codify.md` records it names, when closing a span.
+- `code/code.md` and the accepted `code/<folder>/.highway/features/<number>-<action>/codify.md` records it names, when closing a span.
 - `.highway/library/templates/output/adr-record.md`.
 - `.highway/library/templates/output/adr-catalog.md`.
 - `.highway/library/templates/output/architecture-record.md` and `.highway/library/templates/output/architecture-catalog.md` when this decision reuses or replaces an architecture.
@@ -306,7 +306,7 @@ When an architecture is reused and the selected option has no current decision w
 
 When that exact-title decision and its current implementation exist, name that implementation. Do not suggest creating an architecture or another implementation.
 
-When the decision is a span, use these lines instead. A current implementation is an accepted row in `implementations/implementations.md` whose Architecture ID is in the set. It is covered when an accepted row in `code/code.md` names it and that automation's title is this decision's title, without regard to case.
+When the decision is a span, use these lines instead. A current implementation is an accepted row in `implementations/implementations.md` whose Architecture ID is in the set. It is covered when an accepted row in `code/code.md` lists it in Implementations and a recorded feature's action is this decision's title, in lowercase words separated by hyphens.
 
 Name each architecture in the set with no current implementation: **[Architecture title]** is not yet implemented.
 
