@@ -2,7 +2,7 @@
 name: codify-plan
 description: "Complete output skeleton for the plan of one accepted feature."
 metadata:
-  version: 1.0.0
+  version: 2.0.0
 ---
 
 ## File Frontmatter
@@ -47,9 +47,9 @@ Done when: <the condition that shows this outcome is reached>
 
 `product` is the `CDY` id of the product this feature belongs to. The file is `plan.md` beside `codify.md` in `code/<folder>/.highway/features/<number>-<action>/`.
 
-The plan does not copy the accepted proposal. It does not repeat a task's scope, method, standards, or files.
+The plan holds one story per proposal task. It does not include a task's scope, method, standards, or files.
 
-Stories are numbered from 1 in the order they are delivered. A story states one outcome a person can see and the condition that shows it is done. Each proposal task's outcome is a story, including when that outcome is the task.
+Stories follow proposal task order. The title is that task's action. When an acceptance criterion contains that action, ignoring case, Done when is the earliest such criterion. Otherwise Done when is the task's Scope sentence.
 
 Each functional requirement comes from the accepted proposal, an applied Control or NFR, or a coding standard on a task. It names that source and the story that carries it. Each applied Control or NFR is the source of at least one requirement.
 

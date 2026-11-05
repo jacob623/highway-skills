@@ -61,7 +61,7 @@ for text in \
 	'Every task names that same Provider' \
 	'Do not replace the Provider' \
 	'P -->|[Next action]|' \
-	'version: 11.0.0'; do
+	'version: 12.0.0'; do
 	require "$CODIFY" "$text"
 done
 for text in \

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-05T03:49:31Z",
+  "generated_at": "2026-11-05T11:49:23Z",
   "entries": [
     {
       "library_type": "template",
@@ -68,7 +68,7 @@
       "library_type": "template",
       "name": "codify-plan",
       "description": "Complete output skeleton for the plan of one accepted feature.",
-      "version": "1.0.0",
+      "version": "2.0.0",
       "source_path": "library/templates/output/codify-plan.md"
     },
     {

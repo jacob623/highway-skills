@@ -4,7 +4,7 @@ description: "Manages one functional artifact for one accepted implementation."
 usage: "Invoke as /highway-codify with one implementation name."
 compatibility: all
 metadata:
-  version: 11.0.0
+  version: 12.0.0
 ---
 
 # highway-codify
@@ -66,7 +66,7 @@ The complete structure is `.highway/library/templates/output/codify-record.md`, 
 
 ## Procedure
 
-Emit only the active template. `catalog` runs alone. Otherwise follow this order: `choose` when no implementation is named; `suggest`, with `codified`, when no action is named; then `start`, `standards`, `align`, `govern`, `project`, `layout`, `propose`, `revise`, `identifier`, `title` when needed, `write`, `index`, `plan`, `check`, `menu`, `tasks`, `code`, and `close`. Follow `.highway/governance/experience-standard.md` for attribution and acceptance wording. A current implementation is an accepted row in `implementations/implementations.md`. A removed row does not match and does not block a new automation.
+Emit only the active template. `catalog` runs alone. Otherwise follow this order: `choose` when no implementation is named; `rank`, with `codified`, when no action is named; then `suggest`, `draft`, `provider`, `standards`, `align`, `govern`, `resume`, `join`, `folder`, `layout`, `propose`, `revise`, `identifier`, `title` when needed, `write`, `index`, `plan`, `check`, `menu`, `tasks`, `code`, and `close`. Follow `.highway/governance/experience-standard.md` for attribution and acceptance wording. A current implementation is an accepted row in `implementations/implementations.md`. A removed row does not match and does not block a new automation.
 
 ### Entry
 
@@ -77,7 +77,7 @@ Emit only the active template. `catalog` runs alone. Otherwise follow this order
 5. When the invocation names a product in `code/code.md` by title, folder, or `CDY` id and its open feature has an open task, go to `code` at the first open task. When that feature has a plan and no task list, go to `menu`.
 6. When an implementation id matches one accepted implementation, select it and show its title.
 7. When an exact title matches one accepted implementation, select it. Compare without regard to case.
-8. After a selection, go to `start` when the invocation named one action. Otherwise go to `suggest`.
+8. After a selection, go to `draft` when the invocation named one action. Otherwise go to `rank`.
 9. When a description is present, go to `choose` and suggest at most five matches.
 10. When nothing is named and one to five accepted implementations exist, go to `choose` and list each one.
 11. When nothing is named and more than five accepted implementations exist, go to `choose` and list none.
@@ -110,7 +110,7 @@ A selection emits:
 
 **What would you like to know about it?**
 
-Write nothing. Do not enter `choose`, `suggest`, `start`, or `code`. Do not resume a task list.
+Write nothing. Do not enter `choose`, `suggest`, `draft`, or `code`. Do not resume a task list.
 
 ### choose
 
@@ -126,7 +126,7 @@ When the person named nothing and more than five accepted implementations exist,
 
 When a description is present, keep at most five. Put exact titles first, then a realized capability title that appears in full in the person's words, then a title that appears in full in those words or words that appear in full in the summary. Within each group, keep catalog order. Compare without regard to case.
 
-A number, a title, or a description selects one. Show the title. Go to `start` when the invocation named one action. Otherwise go to `suggest`.
+A number, a title, or a description selects one. Show the title. Go to `draft` when the invocation named one action. Otherwise go to `rank`.
 
 - `unknown`: re-emit this list. Stay on `choose`.
 - `decline`: stop. Write nothing.
@@ -145,13 +145,29 @@ Classify the latest reply before any other action.
 
 On `revise`, "looks good" is `accept`.
 
-### suggest
+### rank
 
 Read the selected implementation record. An instance is running when Context or Implementation Summary contains `instance is running` or `instances are running`, compared without regard to case.
 
-Each suggestion comes from one realized capability. A capability title containing `establish`, compared without regard to case, is establishing. Every other title runs, changes, or recovers. When no instance is running, establishing comes first. When an instance is running, the other kind comes first. Within a kind, keep Realized Capabilities order. When the leading kind has no title, put `Establish [implementation title]` or `Run [implementation title]` first, drawn from the Implementation Summary. Leave out each suggestion `codified` removes, then keep at most five. Drop items from the end.
+Each suggestion comes from one realized capability. A capability title containing `establish`, compared without regard to case, is establishing. Every other title runs, changes, or recovers. When no instance is running, establishing comes first. When an instance is running, the other kind comes first. Within a kind, keep Realized Capabilities order. When the leading kind has no title, put `Establish [implementation title]` or `Run [implementation title]` first, drawn from the Implementation Summary.
 
 Write each title as the action the automation will take. It starts with a verb and names its target. An establishing title starts with `Establish`. The summary is one sentence that expands on that action, grounded in the capability's Realized By and the first sentence of its evidence. Do not use an id as a label. Write nothing.
+
+Leave out each suggestion `codified` removes, then keep at most five. Drop items from the end. Go to `suggest`.
+
+### codified
+
+Read the accepted rows of `code/code.md` whose Implementations include the selected implementation. Skip removed rows. With no catalog, leave nothing out. Do not open a product folder. Write nothing.
+
+For each suggestion, in order:
+
+1. When a recorded feature's `<action>` is the same words, in the same order, as its title, compared without regard to case or hyphens, leave it out. Do not open that record.
+2. Otherwise, when a feature sentence or the product Summary means this suggestion, leave it out.
+3. Keep every other suggestion. An integration row does not leave a suggestion out.
+
+This check does not refuse a named action or the person's own idea. Return to `rank`.
+
+### suggest
 
 The name is the `Choice:` of the record's one Technology Choice. When the record has none or several, the name is the implementation title.
 
@@ -167,31 +183,19 @@ If you have another idea, provide a brief description and we'll work through it 
 
 When the list is empty, say no suggestion is grounded in this implementation. When `codified` removed every grounded suggestion, say `Each action grounded in this implementation is already codified.` instead. Then emit the last line above.
 
-- `select`: a listed number, title, or summary selects that suggestion. The person's own idea selects that automation, even when they also name a listed item. Its title is the person's action, starting with a verb, and its summary is one sentence that expands on it. When the reply names two actions, keep one and say the other waits for another run. Go to `start`.
+- `select`: a listed number, title, or summary selects that suggestion. The person's own idea selects that automation, even when they also name a listed item. Its title is the person's action, starting with a verb, and its summary is one sentence that expands on it. When the reply names two actions, keep one and say the other waits for another run. Go to `draft`.
 - A number that is not on the list: say so. Re-emit this list. Write nothing. Stay on `suggest`.
 - `unknown`: re-emit this list. Stay on `suggest`.
 - `question`: answer, then re-emit this list. Stay on `suggest`.
 - `decline`: stop. Write nothing.
 
-### codified
-
-Read the accepted rows of `code/code.md` whose Implementations include the selected implementation. Skip removed rows. With no catalog, leave nothing out. Do not open a product folder. Write nothing.
-
-For each suggestion, in order:
-
-1. When a recorded feature's `<action>` is the same words, in the same order, as its title, compared without regard to case or hyphens, leave it out. Do not open that record.
-2. Otherwise, when a feature sentence or the product Summary means this suggestion, leave it out.
-3. Keep every other suggestion. An integration row does not leave a suggestion out.
-
-This check does not refuse a named action or the person's own idea. Return to `suggest`.
-
-### start
+### draft
 
 Read the selected implementation record and the accepted architecture it names. When that architecture is missing or not accepted, say before the proposal that no accepted architecture describes this automation.
 
 The title and summary are the ones selected on `suggest`. When the invocation or the accepted request named one action, the title is that action and the summary is one sentence that expands on it.
 
-Draft the proposal. Emit nothing except the Provider lines below.
+Draft the proposal. Emit nothing here.
 
 - Description: what this one automation does, for whom, and what it returns.
 - At least one acceptance criterion.
@@ -199,15 +203,18 @@ Draft the proposal. Emit nothing except the Provider lines below.
 - The tasks, in order. Each task is one action against one platform, object, or API, and its action starts with a verb. A step with two targets is two tasks.
 - Scope says what the task does. Provider is the Provider. Method says how, naming the plugins, modules, libraries, MCP servers, or APIs it uses. Assumptions list what the task relies on that is not an earlier task, such as network access, an access level, an authentication method, or a credential source, or `None`.
 
-Read `library/coding-standards/codify-platforms.md` when present. Its When to use and When not to use cells hold entries separated by `; `. The Provider is the platform the person named. Otherwise it is the earliest row whose When to use fits this action and whose When not to use does not. A row with both cells blank is not chosen by fit. Otherwise it is this implementation, when it has a row. Otherwise it is the first row. When the catalog has no rows and the person named none, leave the Provider unset.
+Go to `provider`.
 
-When the named platform has no row, emit before the proposal:
+### provider
 
-[Platform] is not included as a platform that can start automation. To add it, run /highway-codify-config.
+A platform the person named is the Provider. When that name has no row, emit before the proposal: [Platform] is not included as a platform that can start automation. To add it, run /highway-codify-config.
 
-When the Provider is unset, emit before the proposal:
+When none is named, read `library/coding-standards/codify-platforms.md` when present. Split When to use and When not to use on `; `. Trim each entry. An entry appears on its own when a boundary sits on each side: the start or end of the text, or a character that is not a letter or digit. Compare without regard to case.
 
-A platform that can start automation is needed. Run /highway-codify-config.
+1. A row matches when it has a When to use entry, every such entry appears on its own in the action or the method, and no When not to use entry appears on its own there.
+2. The Provider is the earliest matching row.
+3. When no row matches, use this implementation's row, then the first row.
+4. When the catalog has no rows, leave the Provider unset. Emit before the proposal: A platform that can start automation is needed. Run /highway-codify-config.
 
 Go to `standards`.
 
@@ -217,8 +224,8 @@ Read `library/coding-standards/coding-standards.md` when present. Its When to us
 
 For each task, propose an ordered list of Standard Titles:
 
-1. Take each available row whose File Patterns match a file the task's method names, or whose Technology names the method or the Provider, and whose When to use fits the task.
-2. Drop a row whose When not to use matches the task.
+1. A row is a candidate when its File Patterns match a file the method names, or its Technology names the method or the Provider, and its standard file is present.
+2. Drop a candidate whose When to use is blank. An entry appears on its own under the boundary from `provider`. Drop a candidate when a When to use entry does not appear on its own in the action, the method, or the Provider, or a When not to use entry does.
 3. Put a standard before every standard it inherits from, and a platform standard before the language standards it builds on.
 4. Add each inherited standard once, after the standard that inherits it. Stop at a title already listed, so a cycle adds nothing twice.
 
@@ -250,33 +257,41 @@ Do not run `align` when continuing a feature that already has a plan. Otherwise 
 
 Read `library/governance/controls.md` and `library/governance/nfrs.md` when present. Read each active record. Skip a removed row. Read the selected implementation's Security Control Realization and NFR Realization. Write nothing.
 
-1. When both catalogs are absent, hold `No Control or NFR applies.` Go to `project`.
-2. A Control or NFR applies when its statement covers something a task does, touches, or stores.
+1. When both catalogs are absent, hold `No Control or NFR applies.` Go to `resume`.
+2. A Control or NFR applies when its statement contains, ignoring case, the task's target, a file name or path written in the task, or the mechanism that realization names for it.
 3. Correct the draft so each task abides by each one that applies. When the task touches this implementation, use the mechanism that realization names.
 4. When a coding standard disagrees, the Control or NFR wins. Hold the standard title that gave way.
 5. When two Controls disagree, or two NFRs disagree, apply the earlier catalog row. When a Control and an NFR disagree, apply the Control. Hold the title that gave way.
 6. When no correction meets one for this action, emit `[Title] cannot be met for **[Action title]**.` Show no proposal. Return to `suggest`. When the invocation named the action, ask for a different action.
 7. Hold the applied titles, Controls first, in catalog order, or `No Control or NFR applies.` Hold each conflict as `[Applied title] is applied. [Other title] disagrees.`
 
-Before the proposal, emit one line for each standard that gave way: `[Standard title] gives way to [Control or NFR title].` Go to `project`.
+Before the proposal, emit one line for each standard that gave way: `[Standard title] gives way to [Control or NFR title].` Go to `resume`.
 
-### project
+### resume
 
 Read the accepted rows of `code/code.md` and `code/integrations.md`. Skip removed rows. Do not open a product folder. Write nothing.
 
 1. When the person named a folder, use it.
 2. When a recorded feature's `<action>` is this action's title, compared without regard to case or hyphens, resume that feature: at `menu` with no task list, `code` with an open task, or `close` when every task is done.
 3. When a feature sentence or a product Summary means this same action, join that product.
-4. Read the matching coding standard. When one of its rules names where this action lives, that rule replaces the decision below.
-5. For a composition row, when only one side has a product, join that folder and list both implementations.
-6. For a composition row, when both sides have products, join the folder of the implementation being codified. Leave the other folder in place. List both implementations on the joined product.
-7. For a composition row, when neither side has a product, start one folder and list both implementations.
-8. For a capability row whose From is the selected implementation, join the product that lists From. Add To to its implementations.
-9. When a product Summary means the same consumer and outcome and this action is new, join that folder.
-10. Otherwise start a folder from the product title: lowercase words, hyphens.
-11. When that folder is already a catalog path, say it is taken and ask for another name.
 
-Stop at the first of steps 1 to 3 that applies. Otherwise use the first of steps 5 to 10 that fits, unless a rule read in step 4 replaced it. Step 11 applies to every new folder.
+Stop at the first that applies. Otherwise go to `join`.
+
+### join
+
+1. Read the matching coding standard. When one of its rules names where this action lives, that rule replaces the decision below.
+2. For a composition row, when only one side has a product, join that folder and list both implementations.
+3. For a composition row, when both sides have products, join the folder of the implementation being codified. Leave the other folder in place. List both implementations on the joined product.
+4. For a composition row, when neither side has a product, start one folder and list both implementations.
+5. For a capability row whose From is the selected implementation, join the product that lists From. Add To to its implementations.
+6. When a product Summary means the same consumer and outcome and this action is new, join that folder.
+
+Use the first of steps 2 to 6 that fits, unless a rule read in step 1 replaced it. Otherwise go to `folder`.
+
+### folder
+
+1. Otherwise start a folder from the product title: lowercase words, hyphens.
+2. When that folder is already a catalog path, say it is taken and ask for another name. This applies to every new folder.
 
 A new product's title names what it serves in at most four words, such as Worker. Its Summary is one sentence that says who it is for and what it returns. A joined product keeps its title and Summary.
 
@@ -301,7 +316,7 @@ When a listed standard has no File and Folder Structure, emit before the proposa
 
 [Standard Title] has no file and folder structure. To add one, run /highway-codify-config.
 
-Place that standard's files as if it were absent. Go to `propose`.
+Place that standard's files as if it were absent. Apply the match in step 2 of `govern` to each placed path. Add a new match. Do not drop a match already held. Go to `propose`.
 
 ### propose
 
@@ -348,9 +363,9 @@ flowchart TB
 
 - [Applied title] is applied. [Other title] disagrees. [Omit this section when nothing disagrees.]
 
-**Proposed project:** [From `project`.]
+**Proposed project:** [From `folder`.]
 
-**Rationale:** [From `project`.]
+**Rationale:** [From `folder`.]
 
 **What would you add, correct, or remove?**
 
@@ -381,7 +396,7 @@ An edit that would break a listed Control or NFR is not applied. Say: [Title] st
 
 ### identifier
 
-When `project` joined a product, keep its `CDY` id and go to `write`. Otherwise derive the id from the new product's title.
+When `join` joined a product, keep its `CDY` id and go to `write`. Otherwise derive the id from the new product's title.
 
 1. Lowercase the title. Remove hyphens and apostrophes. Split the rest into words.
 2. Take eight letters: the first two of word 1, the first two of word 2, the first two of word 3, and the last two of the last word. When the title has only two words, the third sample is the first two of the last word.
@@ -444,7 +459,7 @@ Do not write `codify-tasks.md` here. Go to `index`.
 
 Write these rows with the files in `write`. The catalog follows `.highway/library/templates/output/codify-catalog.md` at `code/code.md`. The first catalog version is `1.0.0`. Each change increments the minor version.
 
-1. For a new product, write one row. Append the new row as the last row. ID is the `CDY` id. Folder is `code/<folder>`. Title and Summary come from `project`. Status is `accepted`.
+1. For a new product, write one row. Append the new row as the last row. ID is the `CDY` id. Folder is `code/<folder>`. Title and Summary come from `folder`. Status is `accepted`.
 2. For a joined product, update its row in place. Add each implementation the proposal lists that Implementations lacks.
 3. In Features, add `<number>-<action> | one sentence` when this feature starts the product, adds an implementation, records an integration, changes the summary, or is open. A feature is open while it has no task list or its task list has an open task. When a finished feature did none of those, remove its entry and keep its directory.
 4. When the accepted proposal includes an integration, write it to `code/integrations.md` from `.highway/library/templates/output/codify-integrations.md`. When an accepted row already has that From, To, and Kind, write no second row. Ask nothing more.
@@ -455,9 +470,9 @@ On success, go to `plan` without asking a question.
 
 ### plan
 
-Write `code/<folder>/.highway/features/<number>-<action>/plan.md` from `.highway/library/templates/output/codify-plan.md`. The accepted proposal is not copied. The plan holds every outcome, so a review of it is the whole plan.
+Write `code/<folder>/.highway/features/<number>-<action>/plan.md` from `.highway/library/templates/output/codify-plan.md`. The plan holds one story per proposal task, so a review of it is the whole plan.
 
-1. A story states one outcome a person can see and the condition that shows it is done. Each proposal task's outcome is a story, including when that outcome is the task. Copy no scope, method, standards, or files.
+1. One story per proposal task, in task order. The title is that task's action. When an acceptance criterion contains that action, ignoring case, Done when is the earliest such criterion. Otherwise Done when is the task's Scope sentence. Copy no scope, method, standards, or files.
 2. An edge case names a situation the proposal's acceptance criteria do not.
 3. A functional requirement comes from the accepted proposal, an applied Control or NFR, or a coding standard on a task. Leave out any other. Each applied Control or NFR names the story that carries it.
 4. Record a decision only when the proposal, the standards, and the Controls leave a choice. State what was chosen, why, and what was rejected.
@@ -471,8 +486,8 @@ Compare the plan with the accepted proposal, the standards, the Controls, the NF
 
 1. When the plan contradicts the accepted proposal, or a proposal task's outcome has no story, correct the plan.
 2. When accepted material answers a question, record the answer as a decision. Ask nothing.
-3. Ask the person only when the answer changes a story and nothing accepted decides it. Ask one question. Write the answer into the plan. Then ask the next.
-4. Ask at most five. When more qualify, ask the five that change the most stories. Record each remaining one as an assumption.
+3. A story with no Done when, a repeated story title, or an applied Control or NFR that no story names is a gap. Walk stories in plan order, then the applied titles in proposal order. When accepted material answers a gap, record the answer and ask nothing.
+4. Ask the first five, one at a time. Write each answer into the plan. Record each later gap as an assumption.
 5. When none qualify, go to `menu`. Do not say the check ran.
 
 After the last answer, go to `menu`.
@@ -499,7 +514,7 @@ Write `codify-tasks.md` beside the plan from `.highway/library/templates/output/
 
 1. Order the lines by story, then by each proposal task that delivers no story. Under each heading, state how it is tested on its own.
 2. Each task names its file. Keep the line shape, the Provider, and `Tests: required`.
-3. Place each proposal task under the story it delivers, in proposal order. A proposal task that delivers no story gets a heading from that task and its line under it, after the stories. When a story has no proposal task, add a task for it. Leave out a line that names work the proposal does not list.
+3. Place each proposal task under the story whose title is that task's action, in proposal order. When no story has that title, give the task a heading from that task. When a story title is not a proposal task's action, add a task for it. Leave out a line that names work the proposal does not list.
 4. When a question remains that changes a story and nothing accepted decides it, ask it. Write nothing further until it is answered.
 5. On success, go to `code` without asking a question.
 
@@ -582,8 +597,6 @@ The automation was not run.
 - Each suggestion title is an action that starts with a verb, and its one summary sentence expands on it. The list holds at most five items, uses no id as a label, and ends with the invitation to describe another idea.
 - Suggestions of the kind that fits whether an instance is running come first, then the other kind, each in Realized Capabilities order.
 - A suggestion already in a product that lists this implementation is left out before the list keeps five: by a recorded feature with the same words, ignoring case, or by a feature sentence or product Summary with that meaning. No product folder is opened. Removed rows and integration rows leave nothing out.
-- `project` decides join or start from `code/code.md` and `code/integrations.md` without opening a product folder. A rule in the matching coding standard replaces the decision it speaks to.
-- A composition joins the only side with a product, starts one folder when neither has one, and joins the folder of the implementation being codified when both do. A capability joins the product that lists From and adds To.
 - The proposal shows **Proposed project:** as `New <folder>` or `Existing <folder>`, then **Rationale:**. Its first sentence is plain language. A standard or integration is cited only when it replaced the decision.
 - The person's project edit is written. The folder stays unique, including removed rows, the `CDY` id is in `.highway/metadata.md`, the feature is under `.highway/features/`, and paths are relative to the folder.
 - Each accepted action is the next numbered feature directory in its product. Earlier directories stay.
@@ -596,7 +609,6 @@ The automation was not run.
 - The diagram is one logical flow, top to bottom, from the Provider. Each arrow leaves the Provider, is one task's action, starts with a verb, and points to that task's target, in task order. No arrow leaves a target.
 - Every task names the same Provider, the platform executing the automation. The implementation being automated is a target. A Shopify proposal can use Cursor when Cursor is included, even though the Shopify records do not name it.
 - A named platform with no catalog row stays the Provider and the proposal says `/highway-codify-config` can add it. With no row and no named platform, the proposal says a platform is needed and accept stays on `revise`.
-- With no named platform, the Provider is the earliest row whose When to use fits the action and whose When not to use does not. A row with blank guidance is not chosen by fit. Otherwise this implementation's row, then the first row.
 - Each task shows Standards as an ordered list, or `No coding standard applies.` A standard whose When not to use matches is dropped. A standard comes before the standards it inherits from, and each inherited standard appears once.
 - A Standards edit re-emits the proposal with one consequence sentence. A title not in the catalog is left out and points to `/highway-codify-config`.
 - `align` corrects the method, library, module, or pattern against every standard on the task's list and keeps the Provider.
@@ -610,11 +622,8 @@ The automation was not run.
 - A second action waits for another run. Declining writes nothing. Accepting is the only confirmation.
 - Acceptance writes `codify.md`, the new product's `metadata.md`, the catalog row, and any new integrations row together, then `plan.md`. It writes no task list, no file the task list names, and no README.
 - The proposal heading is `Here is a proposed starting point for your codify feature:`. `Highway will use this specification to build out the solution.` follows `If this is accurate, just say so.`
-- Before any proposal, each active Control and NFR whose statement covers a task corrects the draft. A Control or NFR wins over a coding standard, a Control wins over an NFR, and two of the same kind use the earlier catalog row. The proposal lists the applied titles, or `No Control or NFR applies.`, and names each conflict. An edit that breaks one is not applied.
-- The plan copies no scope, method, standards, or files from the proposal. It holds a story for every proposal task's outcome, including when that outcome is the task, plus edge cases, functional requirements with their sources, and decisions. Each applied Control or NFR names its story. A review reads every section.
-- The check asks only questions that change a story and that nothing accepted answers, one at a time, at most five, and is silent when none qualify.
 - The menu offers Review the plan and Continue to code the solution. A feature with a plan and no task list resumes at the menu.
-- Continuing emits the building sentence once, then writes the task list ordered by story, each heading with its independent test. Every proposal task has a line. A proposal task that delivers no story keeps a heading from that task. A line that names work the proposal does not list is left out.
+- Continuing emits the building sentence once, then writes the task list ordered by story, each heading with its independent test.
 - The task list follows `codify-tasks.md`. A story's test line comes first only when its first standard says `Tests: required`.
 - Coding starts with no question after the task list is written. Every standard a task names, and each existing file it names, is read before its files are written, and no other automation file is read, the earlier one winning a disagreement, and each task is marked `[X]` before the next begins.
 - A task that cannot be finished stops the run with that task and every later task open. The next run starts at the first open task, redoes no finished task, and runs no check.

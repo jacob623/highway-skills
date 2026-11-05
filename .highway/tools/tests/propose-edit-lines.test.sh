@@ -52,8 +52,8 @@ if [[ "$words" -gt 400 ]]; then
 	fail=1
 fi
 
-if ! grep -Fq 'version: 11.0.0' "$CODIFY"; then
-	echo "FAIL: highway-codify omits: version: 11.0.0"
+if ! grep -Fq 'version: 12.0.0' "$CODIFY"; then
+	echo "FAIL: highway-codify omits: version: 12.0.0"
 	fail=1
 fi
 

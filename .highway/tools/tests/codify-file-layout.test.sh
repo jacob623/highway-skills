@@ -68,7 +68,7 @@ for text in \
 	'### layout' \
 	'**Files:**' \
 	'has no file and folder structure. To add one, run /highway-codify-config.' \
-	'version: 11.0.0'; do
+	'version: 12.0.0'; do
 	require "$CODIFY" "$text"
 done
 

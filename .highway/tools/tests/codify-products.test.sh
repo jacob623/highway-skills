@@ -3,7 +3,7 @@
 set -u
 # Instrument class: static-document-contract
 # Artifact classes: source-document
-# Seeded failure probe: restoring `code/[ID]/` in highway-codify, or removing `### project`, fails this check.
+# Seeded failure probe: restoring `code/[ID]/` in highway-codify, or removing `### resume`, fails this check.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
@@ -52,7 +52,7 @@ require_in() {
 }
 
 previous=0
-for step in align project layout propose revise identifier write index code; do
+for step in align resume join folder layout propose revise identifier write index code; do
 	line=$(grep -n "^### $step\$" "$CODIFY" | head -n 1 | cut -d: -f1)
 	if [[ -z "$line" || "$line" -le "$previous" ]]; then
 		echo "FAIL: highway-codify ### $step is missing or out of order"
@@ -64,16 +64,22 @@ done
 
 for text in \
 	'Read the accepted rows of `code/code.md` and `code/integrations.md`. Skip removed rows. Do not open a product folder.' \
-	'1. When the person named a folder, use it.' \
+	'1. When the person named a folder, use it.'; do
+	require_in resume "$text"
+done
+for text in \
 	'Read the matching coding standard. When one of its rules names where this action lives, that rule replaces the decision below.' \
 	'when both sides have products, join the folder of the implementation being codified. Leave the other folder in place.' \
 	'when neither side has a product, start one folder and list both implementations.' \
 	'For a capability row whose From is the selected implementation, join the product that lists From. Add To to its implementations.' \
-	'When a product Summary means the same consumer and outcome and this action is new, join that folder.' \
+	'When a product Summary means the same consumer and outcome and this action is new, join that folder.'; do
+	require_in join "$text"
+done
+for text in \
 	'When that folder is already a catalog path, say it is taken and ask for another name.' \
 	'The first sentence says in plain words why this folder is the right home.' \
 	'When a standard or integration replaced the decision, cite it after that sentence.'; do
-	require_in project "$text"
+	require_in folder "$text"
 done
 
 require_in codified 'Do not open a product folder.'
@@ -92,7 +98,7 @@ require_in index 'When an accepted row already has that From, To, and Kind, writ
 
 for text in \
 	'code/<folder>/' \
-	'version: 11.0.0'; do
+	'version: 12.0.0'; do
 	require "$CODIFY" "$text"
 done
 for text in \
