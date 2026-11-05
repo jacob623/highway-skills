@@ -1,8 +1,8 @@
 ---
 name: codify-record
-description: "Complete output skeleton for one accepted automation proposal."
+description: "Complete output skeleton for one accepted feature proposal."
 metadata:
-  version: 7.0.0
+  version: 9.0.0
 ---
 
 ## File Frontmatter
@@ -46,12 +46,26 @@ status: accepted
    - **Standards:**
      1. <Standard Title from `library/coding-standards/coding-standards.md`; or the field reads `No coding standard applies.`>
    - **Files:**
-     1. `<path relative to the automation folder>`
+     1. `<path relative to the product folder>`
    - **Assumptions:**
      - <what the task relies on that is not an earlier task, or `None`>
+
+**Controls and NFRs:**
+
+- <Title of each applied Control or NFR; or `No Control or NFR applies.`>
+
+**Conflicts:**
+
+- <Applied title> is applied. <Other title> disagrees.
+
+**Proposed project:** <New or Existing> <folder>
+
+**Rationale:** <one plain sentence of why this folder is the right home, then the standard or integration that changed the decision, when one did>
 ```
 
-The id is `CDY` plus eight hex digits derived from the automation title. `implementation` is the accepted implementation this automation serves. `architecture` is the accepted architecture this automation follows. `status` is `accepted`.
+The file is `code/<folder>/.highway/features/<number>-<action>/codify.md`. `<number>` is `001` for the product's first feature, then the next integer. `<action>` is the title in lowercase words separated by hyphens.
+
+The id is the product's `CDY` id. `implementation` is the accepted implementation this automation serves. `architecture` is the accepted architecture this automation follows. `status` is `accepted`.
 
 The body is the accepted proposal. It states one action, and the title is that action. The title and summary are the ones the person selected. It does not copy the implementation, the architecture, or the decision. It contains no instruction to run the automation.
 
@@ -59,7 +73,9 @@ Each task is one action against one platform, object, or API, in the order the d
 
 Standards is the ordered list of coding standards the person accepted for that task. An earlier standard wins a disagreement with a later one. Each inherited standard appears once, after the standard that inherits it. A task with no standard says `No coding standard applies.`
 
-Files is the ordered list of files the task creates or changes, by paths relative to the automation folder, placed from its standards' File and Folder Structure. A path has no unfilled placeholder.
+Files is the ordered list of files the task creates or changes, by paths relative to the product folder, placed from its standards' File and Folder Structure. A path has no unfilled placeholder.
+
+Controls and NFRs lists, by title, each active Control and NFR that applies to a task, Controls first, in catalog order. With none, it says `No Control or NFR applies.` Conflicts lists each pair that disagreed, applied title first. Conflicts is omitted when nothing disagreed.
 
 ## Diagram Block
 
@@ -73,7 +89,7 @@ The diagram is one logical flow. The first node is the Provider: the platform ex
 
 ## Readme
 
-The same folder contains `README.md` with two parts, in this order.
+The product folder root contains `README.md` with two parts, in this order.
 
 ```markdown
 ## Setup Instructions

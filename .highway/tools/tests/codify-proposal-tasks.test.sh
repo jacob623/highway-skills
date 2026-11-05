@@ -65,7 +65,7 @@ done
 require "$TASKS" '[Executor]'
 require "$TASKS" '[Task N]'
 
-require "$ADR" "that automation's title is this decision's title"
+require "$ADR" "a recorded feature's action is this decision's title"
 reject "$ADR" "that automation's \`## Action\`"
 
 align_line=$(grep -n '^### align$' "$CODIFY" | cut -d: -f1)

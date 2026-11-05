@@ -1,0 +1,54 @@
+FAIL: highway-codify ### govern is missing or out of order
+FAIL: highway-codify ### plan is missing or out of order
+FAIL: highway-codify ### check is missing or out of order
+FAIL: highway-codify ### menu is missing or out of order
+FAIL: highway-codify ### tasks is missing or out of order
+FAIL: highway-codify align omits: go to `govern`
+FAIL: highway-codify govern omits: library/governance/controls.md
+FAIL: highway-codify govern omits: library/governance/nfrs.md
+FAIL: highway-codify govern omits: Skip a removed row.
+FAIL: highway-codify govern omits: No Control or NFR applies.
+FAIL: highway-codify govern omits: When a coding standard disagrees, the Control or NFR wins.
+FAIL: highway-codify govern omits: When a Control and an NFR disagree, apply the Control.
+FAIL: highway-codify govern omits: apply the earlier catalog row
+FAIL: highway-codify govern omits: [Applied title] is applied. [Other title] disagrees.
+FAIL: highway-codify govern omits: Show no proposal. Return to `suggest`.
+FAIL: highway-codify propose omits: **Here is a proposed starting point for your codify feature:**
+FAIL: highway-codify propose omits: **Controls and NFRs:**
+FAIL: highway-codify propose omits: **Conflicts:**
+FAIL: highway-codify propose omits: Highway will use this specification to build out the solution.
+FAIL: highway-codify revise omits: stays in effect. To change a Control, run /highway-controls. To change an NFR, run /highway-nfrs.
+FAIL: highway-codify write omits: Do not write `codify-tasks.md` here.
+FAIL: highway-codify write omits: **Controls and NFRs:**
+FAIL: highway-codify index omits: On success, go to `plan`
+FAIL: highway-codify plan omits: .highway/library/templates/output/codify-plan.md
+FAIL: highway-codify plan omits: The accepted proposal is not copied.
+FAIL: highway-codify plan omits: Each applied Control or NFR names the story that carries it.
+FAIL: highway-codify check omits: Ask one question.
+FAIL: highway-codify check omits: Ask at most five.
+FAIL: highway-codify check omits: Do not say the check ran.
+FAIL: highway-codify menu omits: The plan is complete for feature <number>-<action>. **Would you like to:**
+FAIL: highway-codify menu omits: 1. Review the plan?
+FAIL: highway-codify menu omits: 2. Continue to code the solution?
+FAIL: highway-codify menu omits: `2`: go to `tasks`.
+FAIL: highway-codify tasks omits: Highway is now building out this solution. We can review, discuss, and revise it afterward, and continue refining it as requirements evolve.
+FAIL: highway-codify tasks omits: Do not emit the sentence again.
+FAIL: highway-codify tasks omits: On success, go to `code` without asking a question.
+FAIL: highway-codify code omits: whose catalog row is active
+FAIL: highway-codify close omits: To revisit this in the future, just ask Highway to show your Code Catalog. We can review, discuss, and revise any of your solutions, and continue refining them as requirements evolve.
+FAIL: SKILL.md omits: version: 11.0.0
+FAIL: SKILL.md omits: .highway/library/templates/output/codify-plan.md
+FAIL: SKILL.md still contains: **Here is a proposed starting point for your automation:**
+FAIL: SKILL.md still contains: just ask highway to show your code catalog
+FAIL: codify-record.md omits: version: 9.0.0
+FAIL: codify-record.md omits: **Controls and NFRs:**
+FAIL: codify-record.md omits: **Conflicts:**
+FAIL: codify-tasks.md omits: version: 6.0.0
+FAIL: codify-tasks.md omits: ## Story 1:
+FAIL: codify-tasks.md omits: Independent test:
+FAIL: codify-plan.md is missing
+FAIL: codify-plan.md is missing
+FAIL: codify-plan.md is missing
+FAIL: codify-plan.md is missing
+FAIL: codify-plan.md is missing
+EXIT:1

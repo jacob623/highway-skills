@@ -38,7 +38,7 @@ SAMPLE_STANDARD="$HIGHWAY_ROOT/../library/coding-standards/terraform.md"
 MANIFEST="$HIGHWAY_ROOT/tools/.distribution-manifest"
 
 for text in \
-	'Here is a proposed starting point for your automation:' \
+	'Here is a proposed starting point for your codify feature:' \
 	'What would you add, correct, or remove?' \
 	'If this is accurate, just say so.' \
 	'CDY' \
@@ -63,7 +63,7 @@ for text in \
 	require "$CODIFY" "$text"
 done
 
-require "$TASKS" 'automation: CDYXXXXXX'
+require "$TASKS" 'product: CDYXXXXXX'
 require "$TASKS" '- [ ] T001'
 for seeded in "$STANDARDS_CATALOG" "$SAMPLE_STANDARD"; do
 	if [[ -e "$seeded" ]]; then

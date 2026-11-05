@@ -1,0 +1,50 @@
+FAIL: highway-codify ### project is missing or out of order
+FAIL: highway-codify ### revise is missing or out of order
+FAIL: highway-codify ### index is missing or out of order
+FAIL: highway-codify project omits: Read the accepted rows of `code/code.md` and `code/integrations.md`. Skip removed rows. Do not open a product folder.
+FAIL: highway-codify project omits: 1. When the person named a folder, use it.
+FAIL: highway-codify project omits: Read the matching coding standard. When one of its rules names where this action lives, that rule replaces the decision below.
+FAIL: highway-codify project omits: when both sides have products, join the folder of the implementation being codified. Leave the other folder in place.
+FAIL: highway-codify project omits: when neither side has a product, start one folder and list both implementations.
+FAIL: highway-codify project omits: For a capability row whose From is the selected implementation, join the product that lists From. Add To to its implementations.
+FAIL: highway-codify project omits: When a product Summary means the same consumer and outcome and this action is new, join that folder.
+FAIL: highway-codify project omits: When that folder is already a catalog path, say it is taken and ask for another name.
+FAIL: highway-codify project omits: The first sentence says in plain words why this folder is the right home.
+FAIL: highway-codify project omits: When a standard or integration replaced the decision, cite it after that sentence.
+FAIL: highway-codify codified omits: Do not open a product folder.
+FAIL: highway-codify codified omits: An integration row does not leave a suggestion out.
+FAIL: highway-codify propose omits: **Proposed project:**
+FAIL: highway-codify propose omits: **Rationale:**
+FAIL: highway-codify propose omits: Go to `revise`.
+FAIL: highway-codify revise omits: An edit that changes the proposed project uses that folder.
+FAIL: highway-codify revise omits: Stay on `revise`.
+FAIL: highway-codify write omits: .highway/metadata.md
+FAIL: highway-codify write omits: .highway/features/
+FAIL: highway-codify index omits: code/integrations.md
+FAIL: highway-codify index omits: starts the product, adds an implementation, records an integration, changes the summary, or is open
+FAIL: highway-codify index omits: already accepted
+FAIL: SKILL.md omits: code/<folder>/
+FAIL: SKILL.md omits: version: 10.0.0
+FAIL: SKILL.md still contains: code/[ID]/
+FAIL: SKILL.md still contains: Automation Path
+FAIL: SKILL.md still contains: read `codify.md` at that row
+FAIL: SKILL.md omits: version: 6.0.0
+FAIL: SKILL.md omits: a recorded feature's action is this decision's title
+FAIL: SKILL.md still contains: code/[ID]/codify.md
+FAIL: codify-catalog.md omits: version: 3.0.0
+FAIL: codify-catalog.md omits: | ID | Folder | Title | Summary | Implementations | Features | Status |
+FAIL: codify-catalog.md omits: starts the product, adds an implementation, records an integration, changes the summary, or is open
+FAIL: codify-catalog.md still contains: Automation Path
+FAIL: codify-record.md omits: version: 8.0.0
+FAIL: codify-record.md omits: **Proposed project:**
+FAIL: codify-record.md omits: **Rationale:**
+FAIL: codify-record.md omits: .highway/features/
+FAIL: codify-tasks.md omits: version: 5.0.0
+FAIL: codify-tasks.md omits: product: CDYXXXXXX
+FAIL: codify-tasks.md omits: relative to the product folder
+FAIL: codify-metadata.md is missing
+FAIL: codify-metadata.md is missing
+FAIL: codify-integrations.md is missing
+FAIL: codify-integrations.md is missing
+FAIL: codify-integrations.md is missing
+EXIT:1

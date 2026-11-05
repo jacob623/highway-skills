@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-04T03:12:04Z",
+  "generated_at": "2026-11-05T11:49:23Z",
   "entries": [
     {
       "library_type": "template",
@@ -46,9 +46,30 @@
     {
       "library_type": "template",
       "name": "codify-catalog",
-      "description": "Complete output skeleton for the repository automation catalog.",
-      "version": "2.0.0",
+      "description": "Complete output skeleton for the repository product catalog.",
+      "version": "3.0.0",
       "source_path": "library/templates/output/codify-catalog.md"
+    },
+    {
+      "library_type": "template",
+      "name": "codify-integrations",
+      "description": "Complete output skeleton for the accepted integrations between implementations.",
+      "version": "1.0.0",
+      "source_path": "library/templates/output/codify-integrations.md"
+    },
+    {
+      "library_type": "template",
+      "name": "codify-metadata",
+      "description": "Complete output skeleton for the identity file of one product folder.",
+      "version": "1.0.0",
+      "source_path": "library/templates/output/codify-metadata.md"
+    },
+    {
+      "library_type": "template",
+      "name": "codify-plan",
+      "description": "Complete output skeleton for the plan of one accepted feature.",
+      "version": "2.0.0",
+      "source_path": "library/templates/output/codify-plan.md"
     },
     {
       "library_type": "template",
@@ -60,22 +81,22 @@
     {
       "library_type": "template",
       "name": "codify-record",
-      "description": "Complete output skeleton for one accepted automation proposal.",
-      "version": "7.0.0",
+      "description": "Complete output skeleton for one accepted feature proposal.",
+      "version": "9.0.0",
       "source_path": "library/templates/output/codify-record.md"
     },
     {
       "library_type": "template",
       "name": "codify-tasks",
       "description": "Complete output skeleton for the ordered task list of one accepted automation.",
-      "version": "4.0.0",
+      "version": "6.0.0",
       "source_path": "library/templates/output/codify-tasks.md"
     },
     {
       "library_type": "template",
       "name": "coding-standard",
       "description": "Complete output skeleton for one coding standard.",
-      "version": "2.0.0",
+      "version": "3.0.0",
       "source_path": "library/templates/output/coding-standard.md"
     },
     {

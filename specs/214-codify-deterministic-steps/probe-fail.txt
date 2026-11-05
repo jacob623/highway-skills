@@ -1,0 +1,30 @@
+FAIL: highway-codify ### rank is missing or out of order
+FAIL: highway-codify ### suggest is missing or out of order
+FAIL: highway-codify ### draft is missing or out of order
+FAIL: highway-codify ### provider is missing or out of order
+FAIL: highway-codify ### resume is missing or out of order
+FAIL: highway-codify ### join is missing or out of order
+FAIL: highway-codify ### folder is missing or out of order
+FAIL: highway-codify rank omits: Go to `suggest`.
+FAIL: highway-codify provider omits: A platform the person named is the Provider.
+FAIL: highway-codify provider omits: appears on its own
+FAIL: highway-codify provider omits: this implementation's row, then the first row.
+FAIL: highway-codify standards omits: File Patterns match a file the method names
+FAIL: highway-codify standards omits: appears on its own
+FAIL: highway-codify govern omits: the task's target
+FAIL: highway-codify layout omits: Add a new match.
+FAIL: highway-codify plan omits: One story per proposal task, in task order.
+FAIL: highway-codify plan omits: The title is that task's action.
+FAIL: highway-codify plan omits: Done when is the earliest such criterion.
+FAIL: highway-codify check omits: A story with no Done when
+FAIL: highway-codify check omits: Ask the first five
+FAIL: highway-codify tasks omits: the story whose title is that task's action
+FAIL: SKILL.md omits: version: 12.0.0
+FAIL: codify-plan.md omits: version: 2.0.0
+FAIL: codify-plan.md omits: The title is that task's action.
+FAIL: SKILL.md still contains: The accepted proposal is not copied.
+FAIL: SKILL.md still contains: the story it delivers
+FAIL: SKILL.md still contains: change the most stories
+FAIL: SKILL.md still contains: whose When to use fits
+FAIL: highway-codify suggest has 388 words; the limit is 250
+EXIT:1

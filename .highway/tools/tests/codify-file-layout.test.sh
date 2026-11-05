@@ -50,7 +50,7 @@ absent() {
 require "$STANDARD_TEMPLATE" '## File and Folder Structure'
 require "$STANDARD_TEMPLATE" 'Test path:'
 require "$STANDARD_TEMPLATE" 'Tests: not required'
-require "$STANDARD_TEMPLATE" 'version: 2.0.0'
+require "$STANDARD_TEMPLATE" 'version: 3.0.0'
 
 for text in \
 	'**File and Folder Structure:**' \
@@ -60,7 +60,7 @@ for text in \
 	'The test path must be part of the file and folder structure.' \
 	'When the catalog is absent, create it' \
 	'name the same relative path' \
-	'version: 2.0.0'; do
+	'version: 3.0.0'; do
 	require "$CONFIG" "$text"
 done
 
@@ -68,12 +68,12 @@ for text in \
 	'### layout' \
 	'**Files:**' \
 	'has no file and folder structure. To add one, run /highway-codify-config.' \
-	'version: 9.0.1'; do
+	'version: 12.0.0'; do
 	require "$CODIFY" "$text"
 done
 
 require "$RECORD" '**Files:**'
-require "$RECORD" 'version: 7.0.0'
+require "$RECORD" 'version: 9.0.0'
 
 for text in \
 	'[Executor]' \
@@ -82,7 +82,7 @@ for text in \
 	'Files: `README.md`' \
 	'Standards: `library/coding-standards/' \
 	'The Provider is the first node of the accepted diagram.' \
-	'version: 4.0.0'; do
+	'version: 6.0.0'; do
 	require "$TASKS" "$text"
 done
 
