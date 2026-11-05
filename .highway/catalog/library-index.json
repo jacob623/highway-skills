@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-04T17:13:19Z",
+  "generated_at": "2026-11-05T03:49:31Z",
   "entries": [
     {
       "library_type": "template",
@@ -66,6 +66,13 @@
     },
     {
       "library_type": "template",
+      "name": "codify-plan",
+      "description": "Complete output skeleton for the plan of one accepted feature.",
+      "version": "1.0.0",
+      "source_path": "library/templates/output/codify-plan.md"
+    },
+    {
+      "library_type": "template",
       "name": "codify-platforms",
       "description": "Complete output skeleton for the platforms that can start automation.",
       "version": "2.0.0",
@@ -75,14 +82,14 @@
       "library_type": "template",
       "name": "codify-record",
       "description": "Complete output skeleton for one accepted feature proposal.",
-      "version": "8.0.0",
+      "version": "9.0.0",
       "source_path": "library/templates/output/codify-record.md"
     },
     {
       "library_type": "template",
       "name": "codify-tasks",
       "description": "Complete output skeleton for the ordered task list of one accepted automation.",
-      "version": "5.0.0",
+      "version": "6.0.0",
       "source_path": "library/templates/output/codify-tasks.md"
     },
     {

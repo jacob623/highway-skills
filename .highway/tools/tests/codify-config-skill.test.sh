@@ -85,9 +85,9 @@ fi
 require "$STANDARD_TEMPLATE" '## Rules'
 require "$STANDARD_TEMPLATE" 'Tests: not required'
 require "$RECORD" '**Standards:**'
-require "$RECORD" 'version: 8.0.0'
+require "$RECORD" 'version: 9.0.0'
 require "$TASKS" 'Standards: `library/coding-standards/'
-require "$TASKS" 'version: 5.0.0'
+require "$TASKS" 'version: 6.0.0'
 reject "$TASKS" 'Implement and Use'
 
 for text in \
@@ -95,7 +95,7 @@ for text in \
 	'**Standards:**' \
 	'/highway-codify-config' \
 	'library/coding-standards/codify-platforms.md' \
-	'version: 10.0.0'; do
+	'version: 11.0.0'; do
 	require "$CODIFY" "$text"
 done
 for text in \

@@ -2,7 +2,7 @@
 name: codify-record
 description: "Complete output skeleton for one accepted feature proposal."
 metadata:
-  version: 8.0.0
+  version: 9.0.0
 ---
 
 ## File Frontmatter
@@ -50,6 +50,14 @@ status: accepted
    - **Assumptions:**
      - <what the task relies on that is not an earlier task, or `None`>
 
+**Controls and NFRs:**
+
+- <Title of each applied Control or NFR; or `No Control or NFR applies.`>
+
+**Conflicts:**
+
+- <Applied title> is applied. <Other title> disagrees.
+
 **Proposed project:** <New or Existing> <folder>
 
 **Rationale:** <one plain sentence of why this folder is the right home, then the standard or integration that changed the decision, when one did>
@@ -66,6 +74,8 @@ Each task is one action against one platform, object, or API, in the order the d
 Standards is the ordered list of coding standards the person accepted for that task. An earlier standard wins a disagreement with a later one. Each inherited standard appears once, after the standard that inherits it. A task with no standard says `No coding standard applies.`
 
 Files is the ordered list of files the task creates or changes, by paths relative to the product folder, placed from its standards' File and Folder Structure. A path has no unfilled placeholder.
+
+Controls and NFRs lists, by title, each active Control and NFR that applies to a task, Controls first, in catalog order. With none, it says `No Control or NFR applies.` Conflicts lists each pair that disagreed, applied title first. Conflicts is omitted when nothing disagreed.
 
 ## Diagram Block
 

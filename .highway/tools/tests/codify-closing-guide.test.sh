@@ -48,7 +48,7 @@ for text in \
 	"If you'd like to review the files together, just say so." \
 	'**Setup and Usage Instructions** can be found here:' \
 	"If you'd like to review the instructions together, just say so." \
-	'just ask highway to show your code catalog' \
+	'just ask Highway to show your Code Catalog' \
 	'Run /highway-help to explore what Highway can help you do.' \
 	'### catalog' \
 	'When the invocation is the word `catalog`' \
@@ -59,7 +59,7 @@ for text in \
 	'No automation has been created yet.' \
 	'The instructions are not written yet.' \
 	'Append the new row as the last row.' \
-	'version: 10.0.0'; do
+	'version: 11.0.0'; do
 	require "$CODIFY" "$text"
 done
 for text in \
@@ -73,7 +73,7 @@ done
 require "$RECORD" '## Setup Instructions'
 require "$RECORD" '## User Guide'
 require "$RECORD" 'User Guide follows the interface of the Provider.'
-require "$RECORD" 'version: 8.0.0'
+require "$RECORD" 'version: 9.0.0'
 reject_line "$RECORD" '## Implement'
 reject_line "$RECORD" '## Use'
 

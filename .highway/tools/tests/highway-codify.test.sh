@@ -38,7 +38,7 @@ SAMPLE_STANDARD="$HIGHWAY_ROOT/../library/coding-standards/terraform.md"
 MANIFEST="$HIGHWAY_ROOT/tools/.distribution-manifest"
 
 for text in \
-	'Here is a proposed starting point for your automation:' \
+	'Here is a proposed starting point for your codify feature:' \
 	'What would you add, correct, or remove?' \
 	'If this is accurate, just say so.' \
 	'CDY' \
