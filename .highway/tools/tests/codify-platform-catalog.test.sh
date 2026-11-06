@@ -47,7 +47,7 @@ for text in \
 	'**Would you like to configure [Platform] for automation?**' \
 	'library/coding-standards/codify-platforms.md' \
 	'an agent that starts the work' \
-	'version: 7.1.0'; do
+	'version: 7.2.0'; do
 	require "$IMPL" "$text"
 done
 

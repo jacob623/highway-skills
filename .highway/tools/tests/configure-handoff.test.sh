@@ -91,8 +91,8 @@ for pair in "$ONBOARD|### configure" "$IMPL|### platforms" "$CONFIG|### Entry" "
 done
 
 require "$ONBOARD" 'version: 10.1.0'
-require "$IMPL" 'version: 7.1.0'
-require "$CONFIG" 'version: 3.1.0'
+require "$IMPL" 'version: 7.2.0'
+require "$CONFIG" 'version: 3.2.0'
 
 if [[ "$fail" -ne 0 ]]; then
 	exit 1

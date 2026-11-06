@@ -56,11 +56,11 @@ for text in \
 	'go to `current`, then `standard proposal`' \
 	'does not run `current`' \
 	'**Why it matters:**' \
-	'The catalog view, a conflict quote, and the saved cell keep the rule only.' \
+	'The catalog view, a conflict quote, and the saved cell keep the entry only.' \
 	'the word must' \
 	'encoded or encrypted credentials' \
 	'Otherwise state the consequence of the accepted change in one sentence and go to `menu`.' \
-	'version: 3.1.0'; do
+	'version: 3.2.0'; do
 	require "$CONFIG" "$text"
 done
 
