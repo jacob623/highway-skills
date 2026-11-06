@@ -52,7 +52,7 @@ for text in \
 done
 
 require "$ONBOARD" 'follow `platforms` in `highway-implementation`'
-require "$ONBOARD" 'version: 9.0.0'
+require "$ONBOARD" 'version: 10.0.0'
 
 for text in \
 	'When the invocation is the word `configure`' \

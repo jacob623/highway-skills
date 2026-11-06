@@ -29,10 +29,9 @@ reject() {
 
 require "$ONBOARDING" 'Follow the steps in this order: `overview`, `capabilities`'
 require "$ONBOARDING" '### overview'
-require "$ONBOARDING" "Emit \"What we'll do together\" as a level-3 heading."
-require "$ONBOARDING" 'This is where Highway helps you navigate your technology landscape.'
+require "$ONBOARDING" "Emit \"Let's get to know your technology landscape\" as a level-3 heading."
 require "$ONBOARDING" "During onboarding we'll:"
-require "$ONBOARDING" '- **Identify important business capabilities** your organization relies on.'
+require "$ONBOARDING" '- **Identify the technology capabilities** that support your business.'
 require "$ONBOARDING" '- **Understand the platforms and processes** that support those capabilities today.'
 require "$ONBOARDING" "- **Validate Highway's understanding** before any architecture knowledge is created."
 require "$ONBOARDING" '- **Capture accepted knowledge** as connected architecture and implementation context.'

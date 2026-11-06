@@ -1,0 +1,15 @@
+FAIL: highway-onboarding overview omits: Emit "Let's get to know your technology landscape" as a level-3 heading.
+FAIL: highway-onboarding overview omits the heading line
+FAIL: highway-onboarding overview omits: - **Identify the technology capabilities** that support your business.
+FAIL: highway-onboarding capabilities omits: A technology capability is something software, a platform, a service, or infrastructure does for the organization.
+FAIL: highway-onboarding capabilities omits: For each business activity that accepted context names, propose the technology capability that activity relies on, including when context names no system.
+FAIL: highway-onboarding capabilities omits: Title it for what the technology does, such as Online Payments, not for the business function, such as Sales. The title is not a product or vendor.
+FAIL: highway-onboarding capabilities omits: Leave out an activity that no technology supports. When two activities rely on one technology, propose one capability.
+FAIL: highway-onboarding capabilities omits: [What the technology does for the organization.]
+FAIL: highway-onboarding map omits: [What the technology does for the organization.]
+FAIL: highway-onboarding still contains: What we'll do together
+FAIL: highway-onboarding still contains: This is where Highway helps you navigate your technology landscape.
+FAIL: highway-onboarding still contains: Identify important business capabilities
+FAIL: highway-onboarding still contains: [What the organization does.]
+FAIL: highway-onboarding omits: version: 10.0.0
+EXIT:1
