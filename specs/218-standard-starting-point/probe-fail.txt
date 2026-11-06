@@ -1,0 +1,58 @@
+FAIL: highway-codify-config ### Classify omits: Classify the latest reply before any other action. Test the classes in this order and stop at the first match.
+FAIL: highway-codify-config ### Classify omits: 1. `edit`: adds, removes, corrects, or replaces proposal text, or names a record to add, correct, or remove.
+FAIL: highway-codify-config ### Classify omits: 2. `decline`: answers no, stops, or cancels.
+FAIL: highway-codify-config ### Classify omits: 3. `question`: asks for an explanation.
+FAIL: highway-codify-config ### Classify omits: 4. `select`: names a listed option, conflict, platform, or standard by number or title.
+FAIL: highway-codify-config ### Classify omits: 5. `unknown`: the person says they do not know.
+FAIL: highway-codify-config ### Classify omits: 6. `accept`: affirms the proposal or answers yes, and adds no fact.
+FAIL: highway-codify-config ### platforms omits: 1. When Entry carried a platform name, apply the name bullets below to that name. Do not emit the list or its question.
+FAIL: highway-codify-config ### platforms omits: 2. Otherwise read `library/coding-standards/codify-platforms.md` when present. Emit one item per row, in file order. Do not use an id as the label.
+FAIL: highway-codify-config ### platforms omits:   - `decline`: emit this list and its question.
+FAIL: highway-codify-config ### platforms omits:   - `question`: answer, then ask **Would you like to onboard [Platform]?** again.
+FAIL: highway-codify-config ### platforms omits:   - `unknown`: ask **Would you like to onboard [Platform]?** again.
+FAIL: highway-codify-config ### platform proposal omits: 3. Fill this proposal.
+FAIL: highway-codify-config ### platform proposal omits: 4. Assess conflicts as `conflicts` does, against the catalogs as they would be after acceptance. With none, show `None`. When any exist, add: You can accept this proposal with these conflicts and resolve them afterward.
+FAIL: highway-codify-config ### platform proposal omits: 5. List each capability `current` marked new under New Realized Capabilities. With none, show `None`.
+FAIL: highway-codify-config ### platform proposal omits: 6. Emit this proposal, then the closing question and the cancel line.
+FAIL: highway-codify-config ### platform written omits: 1. When the accepted proposal listed conflicts, ask **Would you like help resolving these conflicts?** `accept` goes to `conflicts`. `question` answers, then asks again. `unknown` asks again.
+FAIL: highway-codify-config ### platform written omits: 2. Otherwise, when the platform works with code or configuration files, ask **Would you like to configure coding standards for [Platform]?** `accept` goes to `standards` with [Platform] as the standard to add or update. `question` answers, then asks again. `unknown` asks again.
+FAIL: highway-codify-config ### standard rules omits: 1. When no standard file exists, propose at most ten rules from the documentation `current` read. Use the file and folder structure that documentation recommends.
+FAIL: highway-codify-config ### standard rules omits: 2. Otherwise start from the standard file after `current`, including a standard re-added after removal.
+FAIL: highway-codify-config ### standard rules omits: 3. Write each rule with the word must, naming a condition and the required outcome.
+FAIL: highway-codify-config ### standard rules omits: 4. For a platform standard, inherit from the language standards its files use.
+FAIL: highway-codify-config ### standard rules omits: 5. Include one rule, once, that keeps encoded or encrypted credentials outside this standard's files. When the documentation names a supported way to encrypt or store them, require that way. When it names none, name no product.
+FAIL: highway-codify-config ### standard rules omits: 6. When ten current rules lack the credentials rule, leave out the last rule the documentation no longer describes, or the last rule when all are still described. Name it in Consequences.
+FAIL: highway-codify-config ### standard rules omits: 7. Write every structure path relative to the automation folder. Fill a placeholder in angle brackets, such as `<module>`, for each automation.
+FAIL: highway-codify-config ### standard rules omits: 8. Cover only this standard's own files in the structure. Leave a component the platform calls, such as a module, to its own standard.
+FAIL: highway-codify-config ### standard rules omits: 9. Return to `standard proposal`.
+FAIL: highway-codify-config ### standard proposal omits: 1. For an add or update, follow `standard rules`.
+FAIL: highway-codify-config ### standard proposal omits: 2. For an add or update, follow `use entries`.
+FAIL: highway-codify-config ### standard proposal omits: 3. For a remove, show the current values. Do not run `current`, `standard rules`, or `use entries`.
+FAIL: highway-codify-config ### standard proposal omits: 4. Fill this proposal.
+FAIL: highway-codify-config ### standard proposal omits: [On an add or update with no edit yet: **Here is a proposed starting point for the [Language or platform] coding standards**]
+FAIL: highway-codify-config ### standard proposal omits: 5. Assess conflicts as `conflicts` does, against the catalogs as they would be after acceptance. With none, show `None`. When any exist, add: You can accept this proposal with these conflicts and resolve them afterward.
+FAIL: highway-codify-config ### standard proposal omits: 6. For a remove, say in Consequences that `[Standard Path]` remains and is no longer used. List in Conflicts each standard whose Inherits From names it.
+FAIL: highway-codify-config ### standard proposal omits: 7. Emit this proposal, then the closing question and the cancel line.
+FAIL: highway-codify-config ### standard proposal omits: - `edit`: emit one consequence sentence. Re-emit this proposal with the change and without the starting-point line. Stay on `standard proposal`.
+FAIL: highway-codify-config standard proposal does not order the consequence, the starting-point line, then Standard Title
+FAIL: highway-codify-config ### standard write omits: 3. When the proposal listed conflicts, ask **Would you like help resolving these conflicts?** `accept` goes to `conflicts`. `question` answers, then asks again. `unknown` asks again. `decline` states the consequence of the accepted change in one sentence and goes to `menu`. Otherwise state the consequence of the accepted change in one sentence and go to `menu`.
+FAIL: highway-codify-config ### conflicts omits: 1. Read both catalogs.
+FAIL: highway-codify-config ### conflicts omits: 2. Assess platforms first, then standards, each in catalog order. Judge overlap by meaning, not exact wording. A conflict is:
+FAIL: highway-codify-config ### conflicts omits: 3. When none exist, emit `Highway found no conflicts between your platforms and coding standards.` Then ask **What inconsistencies have you noticed?** Assess what the person describes against the catalogs, then re-emit this step.
+FAIL: highway-codify-config ### conflicts omits: 4. Otherwise quote both entries and name both records in each description. Emit each conflict as an ordered list item, then the question and the cancel line.
+FAIL: highway-codify-config ### resolve omits: 1. Propose the fewest changes that remove the selected conflict, starting from its recommendation.
+FAIL: highway-codify-config ### resolve omits: 2. List each record once, in bold, with a lettered list of its changes.
+FAIL: highway-codify-config ### resolve omits: 3. Fill this proposal.
+FAIL: highway-codify-config ### resolve omits: 4. Emit this proposal, then the closing question and the cancel line.
+FAIL: highway-codify-config still contains: Assess conflicts as `platform proposal` does.
+FAIL: highway-codify-config still contains: Each rule contains the word must and names a condition and the required outcome.
+FAIL: highway-codify-config still contains: Then emit the closing question and the cancel line.
+FAIL: highway-codify-config ### platform proposal is missing or out of order
+FAIL: highway-codify-config ### platform written is missing or out of order
+FAIL: highway-codify-config ### standards is missing or out of order
+FAIL: highway-codify-config ### standard rules is missing or out of order
+FAIL: highway-codify-config ### standard proposal is missing or out of order
+FAIL: highway-codify-config ### standard write is missing or out of order
+FAIL: highway-codify-config ### standard rules has 0 words; the limit is 250
+FAIL: highway-codify-config omits: version: 3.2.1
+EXIT:1

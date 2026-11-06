@@ -46,7 +46,8 @@ require_in "$CONFIG" '### current' '7. Then go to the proposal named with this s
 
 require_in "$CONFIG" '### platform proposal' '1. For an add or update, follow `use entries`. Start an update from the current values after `current`.'
 require_in "$CONFIG" '### platform proposal' '2. For a remove, show the current values. Do not run `current` or `use entries`. Leave out New Realized Capabilities.'
-require_in "$CONFIG" '### platform proposal' '3. Emit this proposal.'
+require_in "$CONFIG" '### platform proposal' '3. Fill this proposal.'
+require_in "$CONFIG" '### platform proposal' '6. Emit this proposal, then the closing question and the cancel line.'
 require_in "$CONFIG" '### platform proposal' '[On an add or update with no edit yet: **Here is a proposed starting point for configuring [Platform] as a platform capable of executing automation**]'
 require_in "$CONFIG" '### platform proposal' '**New Realized Capabilities:**'
 require_in "$CONFIG" '### platform proposal' '1. **[Title]:** Realized By: [Platform]. Evidence: [What the current documentation describes.]'
@@ -132,7 +133,7 @@ for pair in "$CONFIG|### current" "$CONFIG|### platform proposal" "$CONFIG|### p
 	done
 done
 
-require "$CONFIG" 'version: 3.2.0'
+require "$CONFIG" 'version: 3.2.1'
 require "$IMPL" 'version: 7.2.0'
 
 if [[ "$fail" -ne 0 ]]; then

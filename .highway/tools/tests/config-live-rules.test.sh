@@ -33,9 +33,9 @@ reject() {
 }
 
 section_words() {
-	awk -v start="$1" -v end="$2" '
+	awk -v start="$1" '
 		$0 == start { p = 1; next }
-		$0 == end { p = 0 }
+		p && /^### / { p = 0 }
 		p { c += NF }
 		END { print c + 0 }
 	' "$CONFIG"
@@ -54,13 +54,13 @@ for text in \
 	'Then go to the proposal named with this step.' \
 	'go to `current`, then `platform proposal`' \
 	'go to `current`, then `standard proposal`' \
-	'does not run `current`' \
+	'Do not run `current`' \
 	'**Why it matters:**' \
 	'The catalog view, a conflict quote, and the saved cell keep the entry only.' \
 	'the word must' \
 	'encoded or encrypted credentials' \
 	'Otherwise state the consequence of the accepted change in one sentence and go to `menu`.' \
-	'version: 3.2.0'; do
+	'version: 3.2.1'; do
 	require "$CONFIG" "$text"
 done
 
@@ -68,12 +68,7 @@ reject "$CONFIG" 'each an imperative a reviewer can check'
 reject "$CONFIG" 'Otherwise go to `standards`.'
 
 for name in '### current' '### platform proposal' '### standard proposal'; do
-	case "$name" in
-		'### current') end='### platform proposal' ;;
-		'### platform proposal') end='### standards' ;;
-		'### standard proposal') end='### standard write' ;;
-	esac
-	words="$(section_words "$name" "$end")"
+	words="$(section_words "$name")"
 	if [[ "$words" -gt 400 ]]; then
 		echo "FAIL: highway-codify-config ${name#\#\#\# } has $words words; the limit is 400"
 		fail=1
