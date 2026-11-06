@@ -2,7 +2,7 @@
 name: coding-standard
 description: "Complete output skeleton for one coding standard."
 metadata:
-  version: 3.0.0
+  version: 3.0.1
 ---
 
 ## Body
@@ -20,7 +20,7 @@ metadata:
 
 ## Rules
 
-1. <one rule containing the word must; at most ten rules>
+1. <one rule with must once, one condition, and one outcome, in eight words or fewer; the model suggests at most fifteen>
 
 ## Tests
 

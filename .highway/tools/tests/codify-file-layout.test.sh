@@ -50,7 +50,7 @@ absent() {
 require "$STANDARD_TEMPLATE" '## File and Folder Structure'
 require "$STANDARD_TEMPLATE" 'Test path:'
 require "$STANDARD_TEMPLATE" 'Tests: not required'
-require "$STANDARD_TEMPLATE" 'version: 3.0.0'
+require "$STANDARD_TEMPLATE" 'version: 3.0.1'
 
 for text in \
 	'**File and Folder Structure:**' \
@@ -60,7 +60,7 @@ for text in \
 	'The test path must be part of the file and folder structure.' \
 	'When the catalog is absent, create it' \
 	'name the same relative path' \
-	'version: 3.2.3'; do
+	'version: 3.2.4'; do
 	require "$CONFIG" "$text"
 done
 

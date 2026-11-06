@@ -57,10 +57,10 @@ for text in \
 	'Do not run `current`' \
 	'**Why it matters:**' \
 	'The catalog view, a conflict quote, and the saved cell keep the entry only.' \
-	'the word must' \
+	'with must once' \
 	'encoded or encrypted credentials' \
 	'Otherwise state the consequence of the accepted change in one sentence and go to `menu`.' \
-	'version: 3.2.3'; do
+	'version: 3.2.4'; do
 	require "$CONFIG" "$text"
 done
 
@@ -75,8 +75,8 @@ for name in '### current' '### platform proposal' '### standard proposal'; do
 	fi
 done
 
-require "$TEMPLATE" 'version: 3.0.0'
-require "$TEMPLATE" 'one rule containing the word must; at most ten rules'
+require "$TEMPLATE" 'version: 3.0.1'
+require "$TEMPLATE" 'one rule with must once, one condition, and one outcome, in eight words or fewer; the model suggests at most fifteen'
 require "$TEMPLATE" 'One rule keeps encoded or encrypted credentials outside the files this standard covers.'
 require "$TEMPLATE" 'This file does not contain a Why it matters line.'
 

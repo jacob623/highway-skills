@@ -121,7 +121,7 @@ for pair in "$CONFIG|### current" "$CONFIG|### platform proposal" "$CONFIG|### p
 	done
 done
 
-require "$CONFIG" 'version: 3.2.3'
+require "$CONFIG" 'version: 3.2.4'
 require "$IMPL" 'version: 7.2.0'
 
 if [[ "$fail" -ne 0 ]]; then
