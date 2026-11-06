@@ -140,7 +140,7 @@ for heading in '### Classify' '### platforms' '### platform proposal' '### platf
 	done
 done
 
-require "$CONFIG" 'version: 3.2.2'
+require "$CONFIG" 'version: 3.2.3'
 
 if [[ "$fail" -ne 0 ]]; then
 	exit 1

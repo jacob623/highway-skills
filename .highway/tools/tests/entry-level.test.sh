@@ -131,7 +131,7 @@ for heading in '### entry level' '### use entries'; do
 	done
 done
 
-require "$CONFIG" 'version: 3.2.2'
+require "$CONFIG" 'version: 3.2.3'
 
 if [[ "$fail" -ne 0 ]]; then
 	exit 1

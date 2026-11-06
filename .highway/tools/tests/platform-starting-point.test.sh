@@ -39,10 +39,10 @@ require_in() {
 require_in "$CONFIG" '### current' '1. Read the technology'"'"'s current public documentation. Write nothing.'
 require_in "$CONFIG" '### current' '2. For a standard, capture each capability the documentation describes.'
 require_in "$CONFIG" '### current' '3. For a platform, capture each automation capability the documentation describes. Do not capture a capability unrelated to automation.'
-require_in "$CONFIG" '### current' '4. For a platform, mark each captured capability that the implementation'"'"'s Realized Capabilities do not list as a new realized capability.'
-require_in "$CONFIG" '### current' '5. Do not propose a capability the documentation no longer describes.'
+require_in "$CONFIG" '### current' '6. For a platform, mark each grouped capability that the implementation'"'"'s Realized Capabilities do not already mean as a new realized capability. Judge that by meaning.'
+require_in "$CONFIG" '### current' '7. Do not propose a capability the documentation no longer describes.'
 require_in "$CONFIG" '### current' 'Mark no new realized capability.'
-require_in "$CONFIG" '### current' '7. Then go to the proposal named with this step.'
+require_in "$CONFIG" '### current' '9. Then go to the proposal named with this step.'
 
 require_in "$CONFIG" '### platform proposal' '1. For an add or update, follow `use entries`. Start an update from the current values after `current`.'
 require_in "$CONFIG" '### platform proposal' '2. For a remove, show the current values. Do not run `current` or `use entries`. Leave out New Realized Capabilities.'
@@ -121,7 +121,7 @@ for pair in "$CONFIG|### current" "$CONFIG|### platform proposal" "$CONFIG|### p
 	done
 done
 
-require "$CONFIG" 'version: 3.2.2'
+require "$CONFIG" 'version: 3.2.3'
 require "$IMPL" 'version: 7.2.0'
 
 if [[ "$fail" -ne 0 ]]; then
