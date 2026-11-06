@@ -47,12 +47,12 @@ for text in \
 	'**Would you like to configure [Platform] for automation?**' \
 	'library/coding-standards/codify-platforms.md' \
 	'an agent that starts the work' \
-	'version: 7.0.0'; do
+	'version: 7.2.0'; do
 	require "$IMPL" "$text"
 done
 
 require "$ONBOARD" 'follow `platforms` in `highway-implementation`'
-require "$ONBOARD" 'version: 9.0.0'
+require "$ONBOARD" 'version: 10.1.0'
 
 for text in \
 	'When the invocation is the word `configure`' \

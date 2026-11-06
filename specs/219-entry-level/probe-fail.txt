@@ -1,0 +1,31 @@
+FAIL: highway-codify-config ### entry level omits: 1. Propose each entry as a class of automation for the type `use entries` took. A class names what the type is for.
+FAIL: highway-codify-config ### entry level omits: 2. Propose a class only when `current` describes it for this type. When `current` describes none, or could not read the documentation, propose one When to use class and one When not to use class at the level of steps 3 and 4.
+FAIL: highway-codify-config ### entry level omits: 3. For an agent, propose from classes such as Agentic automation, Local machine execution, Human in the loop, MCP integration, Sensitive data handling, and Autonomous automation.
+FAIL: highway-codify-config ### entry level omits: 4. For a pipeline, propose from classes such as Continuous integration, Continuous delivery, File-based triggers, and Workflow orchestration.
+FAIL: highway-codify-config ### entry level omits: 5. For a coding standard, and for any other type, propose classes at the level of steps 3 and 4.
+FAIL: highway-codify-config ### entry level omits: 6. A task is not an entry. Code change proposals, Pull request review, Bug investigation, and Test authoring are tasks.
+FAIL: highway-codify-config ### entry level omits: 7. Propose at most four When to use entries and at most four When not to use entries.
+FAIL: highway-codify-config ### entry level omits: 8. Take no class from this organization's customers, products, data, or decisions.
+FAIL: highway-codify-config ### entry level omits: 9. Return to `use entries`.
+FAIL: highway-codify-config ### use entries omits: 2. On an add, follow `entry level`, then write the entries it returned. On an update, start from the saved entries. Do not follow `entry level`.
+FAIL: highway-codify-config ### use entries omits: 4. Write each entry as one condition or one outcome, in five words or fewer. Count a hyphenated term as one word.
+FAIL: highway-codify-config ### use entries omits: 7. On an update, keep each saved entry. Rewrite a saved entry that breaks step 4 or step 5, and state the rewrite in its **Why it matters:** sentence.
+FAIL: highway-codify-config ### use entries omits: 9. Under each entry, emit **Why it matters:** and one sentence stating the consequence of that entry for the work Highway proposes. Name no customer, product, or decision of this organization. The catalog view, a conflict quote, and the saved cell keep the entry only.
+FAIL: highway-codify-config ### standard rules omits: 6. When ten current rules lack the credentials rule, leave out the last rule the documentation no longer describes, or the last rule when all are still described. Name it in the consequence sentence that opens the proposal.
+FAIL: highway-codify-config ### standard proposal omits: 6. For a remove, open the proposal with a consequence sentence saying `[Standard Path]` remains and is no longer used. List in Conflicts each standard whose Inherits From names it.
+FAIL: highway-codify-config omits: - Every proposal shows its fields as bold labels, list fields as ordered lists, then Conflicts, and ends with **What would you add or correct?** and the cancel line.
+FAIL: highway-codify-config omits: - On an add, `entry level` proposes one to four classes of automation for each of When to use and When not to use, from what `current` describes, and no task.
+FAIL: highway-codify-config platform proposal does not place a blank line, then Why it matters, under each entry (2 0)
+FAIL: highway-codify-config platform proposal still has a Consequences section
+FAIL: highway-codify-config standard proposal does not place a blank line, then Why it matters, under each entry (2 0)
+FAIL: highway-codify-config standard proposal still has a Consequences section
+FAIL: highway-codify-config still contains: **Consequences:**
+FAIL: highway-codify-config still contains: Name it in Consequences.
+FAIL: highway-codify-config still contains: Name each rewrite in Consequences.
+FAIL: highway-codify-config still contains: say in Consequences that
+FAIL: highway-codify-config still contains: such as Workflow orchestration, Web Service, Application Front-End, Desired State Configuration Management, GitOps, or Code Deployment
+FAIL: highway-codify-config still contains: Relate each entry to automation capabilities.
+FAIL: highway-codify-config ### entry level is missing or out of order
+FAIL: highway-codify-config ### entry level has 0 words; the limit is 250
+FAIL: highway-codify-config omits: version: 3.2.2
+EXIT:1

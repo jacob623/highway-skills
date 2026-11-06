@@ -1,0 +1,50 @@
+FAIL: highway-codify-config ### current omits: 1. Read the technology's current public documentation. Write nothing.
+FAIL: highway-codify-config ### current omits: 2. For a standard, capture each capability the documentation describes.
+FAIL: highway-codify-config ### current omits: 3. For a platform, capture each automation capability the documentation describes. Do not capture a capability unrelated to automation.
+FAIL: highway-codify-config ### current omits: 4. For a platform, mark each captured capability that the implementation's Realized Capabilities do not list as a new realized capability.
+FAIL: highway-codify-config ### current omits: 5. Do not propose a capability the documentation no longer describes.
+FAIL: highway-codify-config ### current omits: Mark no new realized capability.
+FAIL: highway-codify-config ### current omits: 7. Then go to the proposal named with this step.
+FAIL: highway-codify-config ### platform proposal omits: 1. For an add or update, follow `use entries`. An update starts from the current values after `current`.
+FAIL: highway-codify-config ### platform proposal omits: 2. For a remove, show the current values. Do not run `current` or `use entries`. Leave out New Realized Capabilities.
+FAIL: highway-codify-config ### platform proposal omits: 3. Emit this proposal.
+FAIL: highway-codify-config ### platform proposal omits: [On an add or update with no edit yet: **Here is a proposed starting point for configuring [Platform] as a platform capable of executing automation**]
+FAIL: highway-codify-config ### platform proposal omits: **New Realized Capabilities:**
+FAIL: highway-codify-config ### platform proposal omits: 1. **[Title]:** Realized By: [Platform]. Evidence: [What the current documentation describes.]
+FAIL: highway-codify-config ### platform proposal omits: New Realized Capabilities lists each capability `current` marked new. With none, show `None`.
+FAIL: highway-codify-config ### platform proposal omits: Re-emit this proposal with the change and without the starting-point line.
+FAIL: highway-codify-config ### platform proposal omits: After a write, when the proposal listed new realized capabilities, emit: Let's record the new capabilities for [Platform]. Follow `highway-implementation` for [RI id], with those capabilities and the return step `platform written` in `highway-codify-config`. Otherwise go to `platform written`.
+FAIL: highway-codify-config platform proposal does not order the consequence, the starting-point line, then Platform
+FAIL: highway-codify-config ### platform written omits: 1. When the accepted proposal listed conflicts, ask **Would you like help resolving these conflicts?** `accept` goes to `conflicts`.
+FAIL: highway-codify-config ### platform written omits: 2. Otherwise, when the platform works with code or configuration files, ask **Would you like to configure coding standards for [Platform]?**
+FAIL: highway-codify-config ### platform written omits: 3. Otherwise, or after `decline`, go to `platforms`.
+FAIL: highway-codify-config ### standard proposal omits: For an add or update, follow `use entries`.
+FAIL: highway-codify-config ### use entries omits: 1. For a platform, take its type from the implementation's Technology Choice and `current`
+FAIL: highway-codify-config ### use entries omits: 2. Propose each entry from best practice for that type in automation. Relate each entry to automation capabilities. Do not propose an entry unrelated to automation.
+FAIL: highway-codify-config ### use entries omits: 3. Do not take an entry from the implementation's Realized Capabilities or Runtime Components.
+FAIL: highway-codify-config ### use entries omits: 4. Write each entry as one condition or one outcome, in five words or fewer, such as Workflow orchestration, Web Service, Application Front-End, Desired State Configuration Management, GitOps, or Code Deployment.
+FAIL: highway-codify-config ### use entries omits: 5. Do not join two things with "and", "or", a comma, or a slash. Write two things as two entries.
+FAIL: highway-codify-config ### use entries omits: 6. Give When to use and When not to use at least one entry each.
+FAIL: highway-codify-config ### use entries omits: 7. On an update, rewrite each saved entry that breaks step 4 or step 5. Name each rewrite in Consequences.
+FAIL: highway-codify-config ### use entries omits: 9. Under each entry, emit **Why it matters:** and one sentence. The catalog view, a conflict quote, and the saved cell keep the entry only.
+FAIL: highway-codify-config ### use entries omits: 10. Return to the proposal that followed this step.
+FAIL: highway-codify-config omits: - `highway-implementation`.
+FAIL: highway-codify-config platform proposal does not place Why it matters under each entry (2 0)
+FAIL: highway-codify-config standard proposal does not place Why it matters under each entry (2 0)
+FAIL: highway-codify-config still contains: is one sentence that names a condition and the required outcome
+FAIL: highway-codify-config still contains: For a platform, a documented capability is proposed only when the accepted implementation realizes it.
+FAIL: highway-codify-config still contains: Ground When to use and When not to use in `current`, the implementation's Technology Choice, Runtime Components, and Realized Capabilities
+FAIL: highway-implementation ### Entry omits: 1. When the invocation names an accepted implementation, new realized capabilities, and a return step, go to `add capabilities`.
+FAIL: highway-implementation ### add capabilities omits: 1. Hold the return step for this visit.
+FAIL: highway-implementation ### add capabilities omits: 3. Leave out a passed capability whose title Realized Capabilities already lists.
+FAIL: highway-implementation ### add capabilities omits: 4. Derive each capability id as `write` does. When `write` would ask for a wording change, leave that capability out.
+FAIL: highway-implementation ### add capabilities omits: 5. Append each remaining capability to Realized Capabilities, in the order passed, with its Title, Realized By, and Evidence. Change no other byte of the record.
+FAIL: highway-implementation ### add capabilities omits: 6. Rewrite this Parent's rows in `implementations/capabilities.md` as `write` does, with the new capabilities. Leave other Parents unchanged.
+FAIL: highway-implementation ### add capabilities omits: 7. Write the record and the catalog together. A failed write leaves both unchanged. Say what failed. Go to the held step.
+FAIL: highway-implementation ### add capabilities omits: 8. Emit **New capabilities recorded for [Title]:** and list each recorded title.
+FAIL: highway-implementation ### add capabilities omits: 9. Go to the held step. Do not ask a question. Do not run `platforms` or `close`.
+FAIL: highway-codify-config ### use entries has 0 words; the limit is 250
+FAIL: highway-implementation ### add capabilities has 0 words; the limit is 250
+FAIL: highway-codify-config omits: version: 3.2.0
+FAIL: highway-implementation omits: version: 7.2.0
+EXIT:1
