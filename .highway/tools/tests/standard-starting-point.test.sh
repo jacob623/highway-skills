@@ -66,7 +66,7 @@ require_in "$CONFIG" '### standard rules' '2. Otherwise start from the standard 
 require_in "$CONFIG" '### standard rules' '3. Write each rule with the word must, naming a condition and the required outcome.'
 require_in "$CONFIG" '### standard rules' '4. For a platform standard, inherit from the language standards its files use.'
 require_in "$CONFIG" '### standard rules' "5. Include one rule, once, that keeps encoded or encrypted credentials outside this standard's files. When the documentation names a supported way to encrypt or store them, require that way. When it names none, name no product."
-require_in "$CONFIG" '### standard rules' '6. When ten current rules lack the credentials rule, leave out the last rule the documentation no longer describes, or the last rule when all are still described. Name it in Consequences.'
+require_in "$CONFIG" '### standard rules' '6. When ten current rules lack the credentials rule, leave out the last rule the documentation no longer describes, or the last rule when all are still described. Name it in the consequence sentence that opens the proposal.'
 require_in "$CONFIG" '### standard rules' '7. Write every structure path relative to the automation folder. Fill a placeholder in angle brackets, such as `<module>`, for each automation.'
 require_in "$CONFIG" '### standard rules' "8. Cover only this standard's own files in the structure. Leave a component the platform calls, such as a module, to its own standard."
 require_in "$CONFIG" '### standard rules' '9. Return to `standard proposal`.'
@@ -77,7 +77,7 @@ require_in "$CONFIG" '### standard proposal' '3. For a remove, show the current 
 require_in "$CONFIG" '### standard proposal' '4. Fill this proposal.'
 require_in "$CONFIG" '### standard proposal' '[On an add or update with no edit yet: **Here is a proposed starting point for the [Language or platform] coding standards**]'
 require_in "$CONFIG" '### standard proposal' '5. Assess conflicts as `conflicts` does, against the catalogs as they would be after acceptance. With none, show `None`. When any exist, add: You can accept this proposal with these conflicts and resolve them afterward.'
-require_in "$CONFIG" '### standard proposal' '6. For a remove, say in Consequences that `[Standard Path]` remains and is no longer used. List in Conflicts each standard whose Inherits From names it.'
+require_in "$CONFIG" '### standard proposal' '6. For a remove, open the proposal with a consequence sentence saying `[Standard Path]` remains and is no longer used. List in Conflicts each standard whose Inherits From names it.'
 require_in "$CONFIG" '### standard proposal' '7. Emit this proposal, then the closing question and the cancel line.'
 require_in "$CONFIG" '### standard proposal' '- `edit`: emit one consequence sentence. Re-emit this proposal with the change and without the starting-point line. Stay on `standard proposal`.'
 
@@ -107,7 +107,7 @@ reject "$CONFIG" 'Each rule contains the word must and names a condition and the
 reject "$CONFIG" 'Then emit the closing question and the cancel line.'
 
 previous=0
-for heading in '### Entry' '### Classify' '### menu' '### platforms' '### current' '### use entries' '### platform proposal' '### platform written' '### standards' '### standard rules' '### standard proposal' '### standard write' '### conflicts' '### resolve'; do
+for heading in '### Entry' '### Classify' '### menu' '### platforms' '### current' '### entry level' '### use entries' '### platform proposal' '### platform written' '### standards' '### standard rules' '### standard proposal' '### standard write' '### conflicts' '### resolve'; do
 	line="$(grep -nxF -- "$heading" "$CONFIG" | head -1 | cut -d: -f1)"
 	if [[ -z "$line" ]] || ((line <= previous)); then
 		echo "FAIL: highway-codify-config $heading is missing or out of order"
@@ -140,7 +140,7 @@ for heading in '### Classify' '### platforms' '### platform proposal' '### platf
 	done
 done
 
-require "$CONFIG" 'version: 3.2.1'
+require "$CONFIG" 'version: 3.2.2'
 
 if [[ "$fail" -ne 0 ]]; then
 	exit 1

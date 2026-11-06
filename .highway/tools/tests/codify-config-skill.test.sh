@@ -54,7 +54,6 @@ for text in \
 	"If you'd like to cancel, just say so." \
 	'**Which conflict would you like to resolve?**' \
 	'as an ordered list' \
-	'**Consequences:**' \
 	'**Conflicts:**' \
 	'**Coding Standards:**' \
 	'**Tests:**' \
@@ -69,7 +68,7 @@ for text in \
 	'### platforms' \
 	'### standards' \
 	'### conflicts' \
-	'version: 3.2.1'; do
+	'version: 3.2.2'; do
 	require "$CONFIG" "$text"
 done
 

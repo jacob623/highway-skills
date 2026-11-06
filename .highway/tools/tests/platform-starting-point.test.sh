@@ -71,27 +71,15 @@ require_in "$CONFIG" '### platform written' '3. Otherwise, or after `decline`, g
 require_in "$CONFIG" '### standard proposal' 'For an add or update, follow `use entries`.'
 
 require_in "$CONFIG" '### use entries' '1. For a platform, take its type from the implementation'"'"'s Technology Choice and `current`'
-require_in "$CONFIG" '### use entries' '2. Propose each entry from best practice for that type in automation. Relate each entry to automation capabilities. Do not propose an entry unrelated to automation.'
+require_in "$CONFIG" '### use entries' '2. On an add, follow `entry level`, then write the entries it returned. On an update, start from the saved entries. Do not follow `entry level`.'
 require_in "$CONFIG" '### use entries' '3. Do not take an entry from the implementation'"'"'s Realized Capabilities or Runtime Components.'
-require_in "$CONFIG" '### use entries' '4. Write each entry as one condition or one outcome, in five words or fewer, such as Workflow orchestration, Web Service, Application Front-End, Desired State Configuration Management, GitOps, or Code Deployment.'
+require_in "$CONFIG" '### use entries' '4. Write each entry as one condition or one outcome, in five words or fewer. Count a hyphenated term as one word.'
 require_in "$CONFIG" '### use entries' '5. Do not join two things with "and", "or", a comma, or a slash. Write two things as two entries.'
 require_in "$CONFIG" '### use entries' '6. Give When to use and When not to use at least one entry each.'
-require_in "$CONFIG" '### use entries' '7. On an update, rewrite each saved entry that breaks step 4 or step 5. Name each rewrite in Consequences.'
-require_in "$CONFIG" '### use entries' '9. Under each entry, emit **Why it matters:** and one sentence. The catalog view, a conflict quote, and the saved cell keep the entry only.'
+require_in "$CONFIG" '### use entries' '7. On an update, keep each saved entry. Rewrite a saved entry that breaks step 4 or step 5, and state the rewrite in its **Why it matters:** sentence.'
+require_in "$CONFIG" '### use entries' '9. Under each entry, emit **Why it matters:** and one sentence stating the consequence of that entry for the work Highway proposes. Name no customer, product, or decision of this organization. The catalog view, a conflict quote, and the saved cell keep the entry only.'
 require_in "$CONFIG" '### use entries' '10. Return to the proposal that followed this step.'
 require "$CONFIG" '- `highway-implementation`.'
-
-for name in '### platform proposal' '### standard proposal'; do
-	entries="$(section "$CONFIG" "$name" | awk '
-		prev == "1. [Entry]" { total++; if ($0 == "   **Why it matters:** [One sentence.]") ok++ }
-		{ prev = $0 }
-		END { print (total + 0) " " (ok + 0) }
-	')"
-	if [[ "$entries" != '2 2' ]]; then
-		echo "FAIL: highway-codify-config ${name#\#\#\# } does not place Why it matters under each entry ($entries)"
-		fail=1
-	fi
-done
 
 reject "$CONFIG" 'is one sentence that names a condition and the required outcome'
 reject "$CONFIG" 'For a platform, a documented capability is proposed only when the accepted implementation realizes it.'
@@ -133,7 +121,7 @@ for pair in "$CONFIG|### current" "$CONFIG|### platform proposal" "$CONFIG|### p
 	done
 done
 
-require "$CONFIG" 'version: 3.2.1'
+require "$CONFIG" 'version: 3.2.2'
 require "$IMPL" 'version: 7.2.0'
 
 if [[ "$fail" -ne 0 ]]; then

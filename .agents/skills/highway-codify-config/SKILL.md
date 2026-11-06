@@ -4,7 +4,7 @@ description: "Manages the repository-wide guidance used by highway-codify."
 usage: "Invoke as /highway-codify-config, or with one implementation name."
 compatibility: all
 metadata:
-  version: 3.2.1
+  version: 3.2.2
 ---
 
 # highway-codify-config
@@ -141,17 +141,29 @@ If you'd like to cancel, just say so.
 6. When the documentation cannot be read, say: The current documentation could not be read. Add no capability as current. Mark no new realized capability. Continue from the accepted implementation and the catalogs already present.
 7. Then go to the proposal named with this step.
 
+### entry level
+
+1. Propose each entry as a class of automation for the type `use entries` took. A class names what the type is for.
+2. Propose a class only when `current` describes it for this type. When `current` describes none, or could not read the documentation, propose one When to use class and one When not to use class at the level of steps 3 and 4.
+3. For an agent, propose from classes such as Agentic automation, Local machine execution, Human in the loop, MCP integration, Sensitive data handling, and Autonomous automation.
+4. For a pipeline, propose from classes such as Continuous integration, Continuous delivery, File-based triggers, and Workflow orchestration.
+5. For a coding standard, and for any other type, propose classes at the level of steps 3 and 4.
+6. A task is not an entry. Code change proposals, Pull request review, Bug investigation, and Test authoring are tasks.
+7. Propose at most four When to use entries and at most four When not to use entries.
+8. Take no class from this organization's customers, products, data, or decisions.
+9. Return to `use entries`.
+
 ### use entries
 
 1. For a platform, take its type from the implementation's Technology Choice and `current`, such as a pipeline, an orchestrator, a self-service platform, a desired-state or GitOps tool, or an agent. For a standard, take the type of its language or platform.
-2. Propose each entry from best practice for that type in automation. Relate each entry to automation capabilities. Do not propose an entry unrelated to automation.
+2. On an add, follow `entry level`, then write the entries it returned. On an update, start from the saved entries. Do not follow `entry level`.
 3. Do not take an entry from the implementation's Realized Capabilities or Runtime Components.
-4. Write each entry as one condition or one outcome, in five words or fewer, such as Workflow orchestration, Web Service, Application Front-End, Desired State Configuration Management, GitOps, or Code Deployment. Count a hyphenated term as one word.
+4. Write each entry as one condition or one outcome, in five words or fewer. Count a hyphenated term as one word.
 5. Do not join two things with "and", "or", a comma, or a slash. Write two things as two entries.
 6. Give When to use and When not to use at least one entry each.
-7. On an update, rewrite each saved entry that breaks step 4 or step 5. Name each rewrite in Consequences.
+7. On an update, keep each saved entry. Rewrite a saved entry that breaks step 4 or step 5, and state the rewrite in its **Why it matters:** sentence.
 8. Keep each entry distinct from the other rows' entries.
-9. Under each entry, emit **Why it matters:** and one sentence. The catalog view, a conflict quote, and the saved cell keep the entry only.
+9. Under each entry, emit **Why it matters:** and one sentence stating the consequence of that entry for the work Highway proposes. Name no customer, product, or decision of this organization. The catalog view, a conflict quote, and the saved cell keep the entry only.
 10. Return to the proposal that followed this step.
 
 ### platform proposal
@@ -170,17 +182,16 @@ If you'd like to cancel, just say so.
 
 **When to use:**
 1. [Entry]
-   **Why it matters:** [One sentence.]
+
+   **Why it matters:** [One sentence stating the consequence of this entry.]
 
 **When not to use:**
 1. [Entry]
-   **Why it matters:** [One sentence.]
+
+   **Why it matters:** [One sentence stating the consequence of this entry.]
 
 **New Realized Capabilities:**
 1. **[Title]:** Realized By: [Platform]. Evidence: [What the current documentation describes.]
-
-**Consequences:**
-- **[Consequence]:** [What changes for the automations highway proposes.]
 
 **Conflicts:**
 1. **[Conflict]:** [Description quoting both entries and naming both records.] Recommendation: [One change that removes it.]
@@ -234,7 +245,7 @@ If you'd like to cancel, just say so.
 3. Write each rule with the word must, naming a condition and the required outcome.
 4. For a platform standard, inherit from the language standards its files use.
 5. Include one rule, once, that keeps encoded or encrypted credentials outside this standard's files. When the documentation names a supported way to encrypt or store them, require that way. When it names none, name no product.
-6. When ten current rules lack the credentials rule, leave out the last rule the documentation no longer describes, or the last rule when all are still described. Name it in Consequences.
+6. When ten current rules lack the credentials rule, leave out the last rule the documentation no longer describes, or the last rule when all are still described. Name it in the consequence sentence that opens the proposal.
 7. Write every structure path relative to the automation folder. Fill a placeholder in angle brackets, such as `<module>`, for each automation.
 8. Cover only this standard's own files in the structure. Leave a component the platform calls, such as a module, to its own standard.
 9. Return to `standard proposal`.
@@ -266,23 +277,22 @@ If you'd like to cancel, just say so.
 
 **When to use:**
 1. [Entry]
-   **Why it matters:** [One sentence.]
+
+   **Why it matters:** [One sentence stating the consequence of this entry.]
 
 **When not to use:**
 1. [Entry]
-   **Why it matters:** [One sentence.]
+
+   **Why it matters:** [One sentence stating the consequence of this entry.]
 
 **Inherits From:**
 1. [Standard Title]
-
-**Consequences:**
-- **[Consequence]:** [What changes for the files highway codes.]
 
 **Conflicts:**
 1. **[Conflict]:** [Description quoting both entries and naming both records.] Recommendation: [One change that removes it.]
 
 5. Assess conflicts as `conflicts` does, against the catalogs as they would be after acceptance. With none, show `None`. When any exist, add: You can accept this proposal with these conflicts and resolve them afterward.
-6. For a remove, say in Consequences that `[Standard Path]` remains and is no longer used. List in Conflicts each standard whose Inherits From names it.
+6. For a remove, open the proposal with a consequence sentence saying `[Standard Path]` remains and is no longer used. List in Conflicts each standard whose Inherits From names it.
 7. Emit this proposal, then the closing question and the cancel line.
 
 - `edit`: emit one consequence sentence. Re-emit this proposal with the change and without the starting-point line. Stay on `standard proposal`.
@@ -353,7 +363,7 @@ If you'd like to cancel, just say so.
 - A return step named by `highway-onboarding` or `highway-implementation` is held for the visit. Declining the menu goes to that step. With none held, declining the menu stops.
 - Picking an option and every edit begin with one consequence sentence.
 - Platforms and coding standards views show each catalog with list fields as ordered lists, and ask what to add, correct, or remove.
-- Every proposal shows its fields as bold labels, list fields as ordered lists, then Consequences and Conflicts, and ends with **What would you add or correct?** and the cancel line.
+- Every proposal shows its fields as bold labels, list fields as ordered lists, then Conflicts, and ends with **What would you add or correct?** and the cancel line.
 - A platform is added only from an accepted implementation. Any other name offers onboarding, which ends by pointing back here.
 - Accepting a platform writes only its row. Accepting a standard writes its file, then its row. Removing a standard keeps its file.
 - A standard proposal shows its File and Folder Structure as relative paths. Accepting one with no path, a path beginning with `/` or `code/`, or a required test path outside the structure writes nothing and says what is needed.
@@ -362,7 +372,7 @@ If you'd like to cancel, just say so.
 - A resolution lists each record in bold with lettered changes, writes only those changes, and returns to the reassessed list.
 - A cancel writes nothing and returns to the menu.
 - `current` is read before an add or update, and a removal does not run it.
-- `use entries` builds each When to use and When not to use entry from best practice for the type in automation, as one condition or one outcome in five words or fewer, with at least one entry per list. Each proposal entry has **Why it matters:** on the next line, and the saved catalog does not keep that line.
+- On an add, `entry level` proposes one to four classes of automation for each of When to use and When not to use, from what `current` describes, and no task. `use entries` writes each as one condition or one outcome in five words or fewer, and keeps saved entries on an update. Each proposal entry has a blank line, then **Why it matters:** stating its consequence, and the saved catalog does not keep that line.
 - An add or update proposal with no edit yet, for a platform or a standard, shows the starting-point line after the consequence sentence. An edited proposal and a remove do not.
 - A standard add or update follows `standard rules`, then `use entries`. A remove runs neither.
 - `current` captures each automation capability the platform documentation describes. One the implementation does not list appears under New Realized Capabilities. After the write, configuration follows `highway-implementation` to record them, with the return step `platform written`.
