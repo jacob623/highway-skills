@@ -4,7 +4,7 @@ description: "Manages one decision, one reference architecture, and one referenc
 usage: "Invoke as `/highway-onboarding`."
 compatibility: all
 metadata:
-  version: 10.0.0
+  version: 10.1.0
 ---
 
 # highway-onboarding
@@ -54,7 +54,7 @@ The complete structure is `.highway/library/templates/output/adr-record.md`, `.h
 
 ## Procedure
 
-Emit only the active template. Follow the steps in this order: `overview`, `capabilities`, `map`, `mapping`, `orchestrate`, `lineage`, then `summary`. Review happens only when the person asks for it from the summary.
+Emit only the active template. Follow the steps in this order: `overview`, `capabilities`, `map`, `mapping`, `orchestrate`, `lineage`, `configure`, then `summary`. Review happens only when the person asks for it from the summary.
 
 Onboarding keeps two queues. The capability queue holds accepted capabilities that still need a platform. The provider queue holds accepted providers that still need a decision. Neither queue is written. Queue membership is not an ADR, an architecture, or an implementation.
 
@@ -261,7 +261,7 @@ After the implementation exists, follow `platforms` in `highway-implementation` 
 
 **Would you like to configure [Platform] for automation?**
 
-A yes adds [Platform] to the platforms to configure, which are kept in the conversation and not written. Any answer continues onboarding. Do not emit the configure pointer here. Do not ask this for a platform that cannot start automation.
+A yes adds [Platform] to the platforms to configure, in the order asked. Do not write that list. Any answer continues onboarding. When `highway-codify-config` started this onboarding for [Platform], do not ask this for [Platform]. Do not ask this for a platform that cannot start automation.
 
 When the ADR, Reference Architecture, and Reference Implementation exist, remove this provider from the provider queue. When another provider remains, repeat `orchestrate` for that provider. When the queue is empty, go to `lineage`.
 
@@ -275,7 +275,14 @@ Show one block for every completed provider, in the order they were created.
 
 [One sentence naming the capabilities this provider now covers.]
 
-Then go to `summary`.
+Then go to `configure`.
+
+### configure
+
+1. When no platform to configure remains, go to `summary`.
+2. Take the first platform to configure. Remove it from the list.
+3. Emit: Let's configure [Platform] for automation.
+4. Follow `highway-codify-config` for [Platform], with the return step `configure` in `highway-onboarding`.
 
 ### summary
 
@@ -292,8 +299,6 @@ If you'd like to review your Decision, Reference Architecture or Reference Imple
 `/highway-assessment` is a good choice. Highway can perform an assessment of your current business context and provide recommendations you can act on today.
 
 Run /highway-help to explore what Highway can help you do.
-
-[For each platform the person chose to configure, in the order asked: Run `/highway-codify-config [Platform]` to configure it for automation.]
 
 [When `highway-codify-config` handed off this onboarding for a platform: Run `/highway-codify-config [Platform]` to finish adding [Platform].]
 
@@ -371,7 +376,8 @@ If this is accurate, just say so.
 - Lineage is shown only after every provider on the queue has an ADR, Reference Architecture, and Reference Implementation, and it lists each of those providers.
 - No inventory file is written.
 - An implementation that can start automation is included in `library/coding-standards/codify-platforms.md` by `platforms` in `highway-implementation`, with blank guidance. The person is asked whether to configure it for automation, and any answer continues onboarding. No platform that cannot start automation is asked about.
-- The summary gives one `/highway-codify-config [Platform]` pointer for each yes. An onboarding handed off by `highway-codify-config` also ends with the line to finish adding that platform.
+- After lineage, each yes, in the order asked, emits "Let's configure [Platform] for automation." and follows `highway-codify-config` for that platform with the return step `configure`. The summary follows the last return and has no `/highway-codify-config [Platform]` configure pointer.
+- An onboarding handed off by `highway-codify-config` does not ask to configure that platform, and its summary ends with the line to finish adding that platform.
 - The summary recommends `/highway-assessment`, then `/highway-help`.
 
 ## Error Handling

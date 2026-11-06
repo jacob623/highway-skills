@@ -69,7 +69,7 @@ for text in \
 	'### platforms' \
 	'### standards' \
 	'### conflicts' \
-	'version: 3.0.0'; do
+	'version: 3.1.0'; do
 	require "$CONFIG" "$text"
 done
 
@@ -112,8 +112,8 @@ for file in "$IMPL" "$ONBOARD"; do
 	reject "$file" 'library/knowledge/codify-platforms.md'
 	reject "$file" '/highway-codify configure'
 done
-require "$IMPL" 'Run `/highway-codify-config [Platform]` to configure it.'
-require "$ONBOARD" 'Run `/highway-codify-config [Platform]` to configure it for automation.'
+require "$IMPL" 'Follow `highway-codify-config` for [Platform], with the return step `close` in `highway-implementation`.'
+require "$ONBOARD" 'Follow `highway-codify-config` for [Platform], with the return step `configure` in `highway-onboarding`.'
 require "$ONBOARD" 'to finish adding [Platform].'
 reject "$ONBOARD" 'emit its two sentences. Do not ask a question.'
 

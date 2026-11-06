@@ -4,7 +4,7 @@ description: "Manages one reference implementation from one accepted reference a
 usage: "Invoke as /highway-implementation with one architecture id."
 compatibility: all
 metadata:
-  version: 7.0.0
+  version: 7.1.0
 ---
 
 # highway-implementation
@@ -231,6 +231,8 @@ On success, go to `platforms`.
 
 Read the accepted implementation's Technology Choice, Runtime Components, and Realized By. It can start automation when they describe a pipeline, an orchestrator, a self-service platform, a desired-state or GitOps tool, or an agent that starts the work. A store, a newsletter, a records product, or a backup cannot. When it cannot, write nothing, say nothing, and go to `close`.
 
+When `highway-onboarding` follows this step, return to `highway-onboarding` after the write. Do not emit the included line or ask the question.
+
 Otherwise write `library/coding-standards/codify-platforms.md` from `.highway/library/templates/output/codify-platforms.md`. Create `library/coding-standards/` when it is absent. Platform is the implementation title. Implementation ID is its `RI` id. When to use and When not to use are blank. Keep one row for this Implementation ID: when present, replace its Platform and keep its When to use and When not to use; otherwise append it. Leave every other row unchanged. A failed write leaves the existing file unchanged. Say what failed, then go to `close`.
 
 On success, emit:
@@ -239,7 +241,7 @@ On success, emit:
 
 **Would you like to configure [Platform] for automation?**
 
-- `accept`, or a yes: emit: Run `/highway-codify-config [Platform]` to configure it. Then go to `close`.
+- `accept`, or a yes: emit: Let's configure [Platform] for automation. Follow `highway-codify-config` for [Platform], with the return step `close` in `highway-implementation`.
 - `decline`, or a no: go to `close`.
 - `question`: answer, then re-emit the question.
 - `unknown`: go to `close`.
@@ -281,7 +283,7 @@ This is a realization blueprint. It does not authorize deployment.
 - A failed write leaves existing implementation, implementation-catalog, and capability-catalog bytes unchanged.
 - The skill does not change the Reference Architecture, the decision statement, the rationale, the selected option, or the decision status.
 - The skill does not write an implementation id onto the ADR.
-- An accepted implementation that can start automation, such as an agent that starts the work, gets one row in `library/coding-standards/codify-platforms.md` with blank When to use and When not to use. The person is told it is included and asked whether to configure it for automation. A yes points to `/highway-codify-config [Platform]`. Either answer goes to `close`.
+- An accepted implementation that can start automation, such as an agent that starts the work, gets one row in `library/coding-standards/codify-platforms.md` with blank When to use and When not to use. The person is told it is included and asked whether to configure it for automation. A yes emits "Let's configure [Platform] for automation." and follows `highway-codify-config` for that platform with the return step `close`. A no goes to `close`. Under `highway-onboarding`, the step returns to onboarding after the write.
 - A store, a newsletter, a records product, or a backup gets no row and no message. Opening, listing, or declining writes no row.
 
 ## Error Handling

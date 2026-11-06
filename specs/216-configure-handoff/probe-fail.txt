@@ -1,0 +1,21 @@
+FAIL: highway-onboarding omits: Follow the steps in this order: `overview`, `capabilities`, `map`, `mapping`, `orchestrate`, `lineage`, `configure`, then `summary`.
+FAIL: highway-onboarding ### orchestrate omits: A yes adds [Platform] to the platforms to configure, in the order asked.
+FAIL: highway-onboarding ### orchestrate omits: When `highway-codify-config` started this onboarding for [Platform], do not ask this for [Platform].
+FAIL: highway-onboarding ### lineage omits: Then go to `configure`.
+FAIL: highway-onboarding ### configure omits: 1. When no platform to configure remains, go to `summary`.
+FAIL: highway-onboarding ### configure omits: 2. Take the first platform to configure. Remove it from the list.
+FAIL: highway-onboarding ### configure omits: 3. Emit: Let's configure [Platform] for automation.
+FAIL: highway-onboarding ### configure omits: 4. Follow `highway-codify-config` for [Platform], with the return step `configure` in `highway-onboarding`.
+FAIL: highway-onboarding does not order lineage, configure, then summary
+FAIL: highway-implementation ### platforms omits: When `highway-onboarding` follows this step, return to `highway-onboarding` after the write. Do not emit the included line or ask the question.
+FAIL: highway-implementation ### platforms omits: - `accept`, or a yes: emit: Let's configure [Platform] for automation. Follow `highway-codify-config` for [Platform], with the return step `close` in `highway-implementation`.
+FAIL: highway-codify-config ### Entry omits: 2. When the invocation names a return step, hold it for this visit.
+FAIL: highway-codify-config ### How would you like to configure Highway Codify? omits: - `decline`: when a return step is held, go to that step in its skill. Otherwise stop. Write nothing.
+FAIL: highway-onboarding still contains: Run `/highway-codify-config [Platform]` to configure it for automation.
+FAIL: highway-onboarding still contains: Do not emit the configure pointer here.
+FAIL: highway-implementation still contains: Run `/highway-codify-config [Platform]` to configure it.
+FAIL: highway-codify-config still contains: - `decline`: stop. Write nothing.
+FAIL: highway-onboarding omits: version: 10.1.0
+FAIL: highway-implementation omits: version: 7.1.0
+FAIL: highway-codify-config omits: version: 3.1.0
+EXIT:1

@@ -60,7 +60,7 @@ for text in \
 	'the word must' \
 	'encoded or encrypted credentials' \
 	'Otherwise state the consequence of the accepted change in one sentence and go to `menu`.' \
-	'version: 3.0.0'; do
+	'version: 3.1.0'; do
 	require "$CONFIG" "$text"
 done
 

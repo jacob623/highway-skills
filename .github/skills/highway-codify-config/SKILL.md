@@ -4,7 +4,7 @@ description: "Manages the repository-wide guidance used by highway-codify."
 usage: "Invoke as /highway-codify-config, or with one implementation name."
 compatibility: all
 metadata:
-  version: 3.0.0
+  version: 3.1.0
 ---
 
 # highway-codify-config
@@ -67,8 +67,9 @@ A cancel writes nothing and returns to `menu`.
 ### Entry
 
 1. When `.highway/` cannot be found, stop. Say the project root cannot be located. Write nothing.
-2. When the invocation names a platform, go to `platforms` with that name as an add or update. Do not show the menu.
-3. Otherwise go to `menu`.
+2. When the invocation names a return step, hold it for this visit.
+3. When the invocation names a platform, go to `platforms` with that name as an add or update. Do not show the menu.
+4. Otherwise go to `menu`.
 
 ### Classify
 
@@ -100,7 +101,7 @@ Emit this menu exactly, as rendered markdown:
 - `select` 3: emit `Resolving conflicts makes highway's choice of platform and coding standards predictable.` Go to `conflicts`.
 - `question`: answer, then re-emit the menu.
 - `unknown`: re-emit the menu.
-- `decline`: stop. Write nothing.
+- `decline`: when a return step is held, go to that step in its skill. Otherwise stop. Write nothing.
 
 ### platforms
 
@@ -303,6 +304,7 @@ Then emit the closing question and the cancel line.
 ## Verification
 
 - `/highway-codify-config` shows the three-option menu. A platform name skips the menu and opens that platform's add or update.
+- A return step named by `highway-onboarding` or `highway-implementation` is held for the visit. Declining the menu goes to that step. With none held, declining the menu stops.
 - Picking an option and every edit begin with one consequence sentence.
 - Platforms and coding standards views show each catalog with list fields as ordered lists, and ask what to add, correct, or remove.
 - Every proposal shows its fields as bold labels, list fields as ordered lists, then Consequences and Conflicts, and ends with **What would you add or correct?** and the cancel line.
