@@ -1,0 +1,8 @@
+FAIL: highway-codify-config ### platform proposal omits: 1. **[Conflict]:** [Description quoting both entries and naming both records.]
+FAIL: highway-codify-config ### standard proposal omits: 1. **[Conflict]:** [Description quoting both entries and naming both records.]
+FAIL: highway-codify-config ### conflicts omits: 1. **[Conflict]:** [Description.]
+FAIL: highway-codify-config ### platform proposal omits: 1. **[Title]:** Realized By: [Platform].
+FAIL: highway-codify-config still contains: ] Recommendation: [
+FAIL: highway-codify-config still contains: . Evidence: [
+FAIL: highway-codify-config omits: version: 3.2.5
+EXIT:1

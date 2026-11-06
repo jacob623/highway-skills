@@ -4,7 +4,7 @@ description: "Manages the repository-wide guidance used by highway-codify."
 usage: "Invoke as /highway-codify-config, or with one implementation name."
 compatibility: all
 metadata:
-  version: 3.2.3
+  version: 3.2.5
 ---
 
 # highway-codify-config
@@ -193,10 +193,14 @@ If you'd like to cancel, just say so.
    **Why it matters:** [One sentence stating the consequence of this entry.]
 
 **New Realized Capabilities:**
-1. **[Title]:** Realized By: [Platform]. Evidence: [What the current documentation describes.]
+1. **[Title]:** Realized By: [Platform].
+
+   **Evidence:** [What the current documentation describes.]
 
 **Conflicts:**
-1. **[Conflict]:** [Description quoting both entries and naming both records.] Recommendation: [One change that removes it.]
+1. **[Conflict]:** [Description quoting both entries and naming both records.]
+
+   **Recommendation:** [One change that removes it.]
 
 4. Assess conflicts as `conflicts` does, against the catalogs as they would be after acceptance. With none, show `None`. When any exist, add: You can accept this proposal with these conflicts and resolve them afterward.
 5. List each capability `current` marked new under New Realized Capabilities. With none, show `None`.
@@ -242,15 +246,23 @@ If you'd like to cancel, just say so.
 
 ### standard rules
 
-1. When no standard file exists, propose at most ten rules from the documentation `current` read. Use the file and folder structure that documentation recommends.
+1. When no standard file exists, suggest at most fifteen rules from the documentation `current` read. Use the file and folder structure that documentation recommends.
 2. Otherwise start from the standard file after `current`, including a standard re-added after removal.
-3. Write each rule with the word must, naming a condition and the required outcome.
+3. Follow `rule shape`, then write the rules it returned. When the suggestions exceed fifteen, keep the credentials rule, leave out the later suggestions, and name each left-out suggestion in the consequence sentence that opens the proposal. Do not leave out a rule the person provided.
 4. For a platform standard, inherit from the language standards its files use.
-5. Include one rule, once, that keeps encoded or encrypted credentials outside this standard's files. When the documentation names a supported way to encrypt or store them, require that way. When it names none, name no product.
-6. When ten current rules lack the credentials rule, leave out the last rule the documentation no longer describes, or the last rule when all are still described. Name it in the consequence sentence that opens the proposal.
+5. Include one rule, once, that keeps encoded or encrypted credentials outside this standard's files. When the documentation names a supported way to encrypt or store them, require that way in its own rule. Both follow `rule shape`. When it names none, name no product.
+6. When fifteen suggestions lack the credentials rule, leave out the last suggestion the documentation no longer describes, or the last suggestion when all are still described. Name it in the consequence sentence that opens the proposal. Do not leave out a rule the person provided.
 7. Write every structure path relative to the automation folder. Fill a placeholder in angle brackets, such as `<module>`, for each automation.
 8. Cover only this standard's own files in the structure. Leave a component the platform calls, such as a module, to its own standard.
 9. Return to `standard proposal`.
+
+### rule shape
+
+1. Write one rule with must once, one condition, and one outcome, in eight words or fewer. Count a path, a hyphenated word, and a placeholder as one word.
+2. A second outcome joined by and, or, or a comma is a separate rule. A slash that is part of a path stays inside that one word.
+3. When a rule the person provides, or a saved rule, lacks must, has more than eight words, or combines rules, rewrite it to conform before the proposal is presented. State that rewrite in the consequence sentence that opens the proposal. Keep a saved rule that conforms.
+4. Under each rule, emit **Why it matters:** and one sentence stating the consequence of that rule. Name no customer, product, or decision of this organization. The catalog view, a conflict quote, and the saved cell keep the rule only.
+5. Return to `standard rules`.
 
 ### standard proposal
 
@@ -275,6 +287,8 @@ If you'd like to cancel, just say so.
 **Coding Standards:**
 1. [Rule]
 
+   **Why it matters:** [One sentence stating the consequence of this rule.]
+
 **Tests:** [required. One sentence on how tests are written. Test path: `[relative path]`. Or: not required.]
 
 **When to use:**
@@ -291,7 +305,9 @@ If you'd like to cancel, just say so.
 1. [Standard Title]
 
 **Conflicts:**
-1. **[Conflict]:** [Description quoting both entries and naming both records.] Recommendation: [One change that removes it.]
+1. **[Conflict]:** [Description quoting both entries and naming both records.]
+
+   **Recommendation:** [One change that removes it.]
 
 5. Assess conflicts as `conflicts` does, against the catalogs as they would be after acceptance. With none, show `None`. When any exist, add: You can accept this proposal with these conflicts and resolve them afterward.
 6. For a remove, open the proposal with a consequence sentence saying `[Standard Path]` remains and is no longer used. List in Conflicts each standard whose Inherits From names it.
@@ -326,7 +342,9 @@ If you'd like to cancel, just say so.
 3. When none exist, emit `Highway found no conflicts between your platforms and coding standards.` Then ask **What inconsistencies have you noticed?** Assess what the person describes against the catalogs, then re-emit this step.
 4. Otherwise quote both entries and name both records in each description. Emit each conflict as an ordered list item, then the question and the cancel line.
 
-1. **[Conflict]:** [Description.] Recommendation: [One change that removes it.]
+1. **[Conflict]:** [Description.]
+
+   **Recommendation:** [One change that removes it.]
 
 **Which conflict would you like to resolve?**
 
@@ -378,7 +396,7 @@ If you'd like to cancel, just say so.
 - An add or update proposal with no edit yet, for a platform or a standard, shows the starting-point line after the consequence sentence. An edited proposal and a remove do not.
 - A standard add or update follows `standard rules`, then `use entries`. A remove runs neither.
 - `current` groups the automation capabilities the platform documentation describes by meaning. Each group the implementation does not already mean appears once under New Realized Capabilities, titled by the automation in five words or fewer, with the product and the handoff in the evidence. After the write, configuration follows `highway-implementation` to record them, with the return step `platform written`.
-- Each coding rule contains the word must, and one rule keeps encoded or encrypted credentials outside the files.
+- Each coding rule is one must, one condition, and one outcome in eight words or fewer. The model suggests at most fifteen, and one keeps encoded or encrypted credentials outside the files. A provided rule that does not conform is rewritten, and the opening consequence sentence names the rewrite. Each rule shows **Why it matters:** on the proposal only.
 - A standard write with no conflicts states one consequence sentence and returns to the menu.
 
 ## Error Handling

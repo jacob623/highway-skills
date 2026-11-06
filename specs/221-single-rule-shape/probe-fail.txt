@@ -1,0 +1,33 @@
+FAIL: highway-codify-config ### rule shape omits: 1. Write one rule with must once, one condition, and one outcome, in eight words or fewer. Count a path, a hyphenated word, and a placeholder as one word.
+FAIL: highway-codify-config ### rule shape omits: 2. A second outcome joined by and, or, or a comma is a separate rule. A slash that is part of a path stays inside that one word.
+FAIL: highway-codify-config ### rule shape omits: 3. When a rule the person provides, or a saved rule, lacks must, has more than eight words, or combines rules, rewrite it to conform before the proposal is presented. State that rewrite in the consequence sentence that opens the proposal. Keep a saved rule that conforms.
+FAIL: highway-codify-config ### rule shape omits: 4. Under each rule, emit **Why it matters:** and one sentence stating the consequence of that rule. Name no customer, product, or decision of this organization. The catalog view, a conflict quote, and the saved cell keep the rule only.
+FAIL: highway-codify-config ### rule shape omits: 5. Return to `standard rules`.
+FAIL: highway-codify-config does not order standard rules, rule shape, then standard proposal
+FAIL: highway-codify-config has a heading between rule shape and standard proposal: ### Entry
+### Classify
+### menu
+### How would you like to configure Highway Codify?
+### platforms
+### current
+### entry level
+### use entries
+### platform proposal
+### platform written
+### standards
+### standard rules
+FAIL: highway-codify-config ### standard rules omits: 1. When no standard file exists, suggest at most fifteen rules from the documentation `current` read. Use the file and folder structure that documentation recommends.
+FAIL: highway-codify-config ### standard rules omits: 3. Follow `rule shape`, then write the rules it returned. When the suggestions exceed fifteen, keep the credentials rule, leave out the later suggestions, and name each left-out suggestion in the consequence sentence that opens the proposal. Do not leave out a rule the person provided.
+FAIL: highway-codify-config ### standard rules omits: 5. Include one rule, once, that keeps encoded or encrypted credentials outside this standard's files. When the documentation names a supported way to encrypt or store them, require that way in its own rule. Both follow `rule shape`. When it names none, name no product.
+FAIL: highway-codify-config ### standard rules omits: 6. When fifteen suggestions lack the credentials rule, leave out the last suggestion the documentation no longer describes, or the last suggestion when all are still described. Name it in the consequence sentence that opens the proposal. Do not leave out a rule the person provided.
+FAIL: highway-codify-config standard proposal does not show each rule, a blank line, then Why it matters
+FAIL: SKILL.md still contains: propose at most ten rules
+FAIL: SKILL.md still contains: Write each rule with the word must, naming a condition and the required outcome.
+FAIL: SKILL.md still contains: When ten current rules lack the credentials rule
+FAIL: highway-codify-config ### rule shape has 0 words; the limit is 250
+FAIL: coding-standard.md omits: 1. <one rule with must once, one condition, and one outcome, in eight words or fewer; the model suggests at most fifteen>
+FAIL: coding-standard.md still contains: at most ten rules
+FAIL: SKILL.md omits: - Each coding rule is one must, one condition, and one outcome in eight words or fewer. The model suggests at most fifteen, and one keeps encoded or encrypted credentials outside the files. A provided rule that does not conform is rewritten, and the opening consequence sentence names the rewrite. Each rule shows **Why it matters:** on the proposal only.
+FAIL: SKILL.md omits: version: 3.2.4
+FAIL: coding-standard.md omits: version: 3.0.1
+EXIT:1

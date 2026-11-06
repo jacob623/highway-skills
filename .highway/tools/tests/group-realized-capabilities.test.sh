@@ -69,7 +69,7 @@ for word in 'so that' 'because' 'in order to' 'should' 'consider' 'prefer' 'usua
 done
 
 require "$CONFIG" '- `current` groups the automation capabilities the platform documentation describes by meaning. Each group the implementation does not already mean appears once under New Realized Capabilities, titled by the automation in five words or fewer, with the product and the handoff in the evidence. After the write, configuration follows `highway-implementation` to record them, with the return step `platform written`.'
-require "$CONFIG" 'version: 3.2.3'
+require "$CONFIG" 'version: 3.2.5'
 
 if [[ "$fail" -ne 0 ]]; then
 	exit 1

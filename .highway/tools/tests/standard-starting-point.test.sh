@@ -61,12 +61,12 @@ require_in "$CONFIG" '### platform written' '1. When the accepted proposal liste
 require_in "$CONFIG" '### platform written' '2. Otherwise, when the platform works with code or configuration files, ask **Would you like to configure coding standards for [Platform]?** `accept` goes to `standards` with [Platform] as the standard to add or update. '"$replies"
 require_in "$CONFIG" '### platform written' '3. Otherwise, or after `decline`, go to `platforms`.'
 
-require_in "$CONFIG" '### standard rules' '1. When no standard file exists, propose at most ten rules from the documentation `current` read. Use the file and folder structure that documentation recommends.'
+require_in "$CONFIG" '### standard rules' '1. When no standard file exists, suggest at most fifteen rules from the documentation `current` read. Use the file and folder structure that documentation recommends.'
 require_in "$CONFIG" '### standard rules' '2. Otherwise start from the standard file after `current`, including a standard re-added after removal.'
-require_in "$CONFIG" '### standard rules' '3. Write each rule with the word must, naming a condition and the required outcome.'
+require_in "$CONFIG" '### standard rules' '3. Follow `rule shape`, then write the rules it returned.'
 require_in "$CONFIG" '### standard rules' '4. For a platform standard, inherit from the language standards its files use.'
-require_in "$CONFIG" '### standard rules' "5. Include one rule, once, that keeps encoded or encrypted credentials outside this standard's files. When the documentation names a supported way to encrypt or store them, require that way. When it names none, name no product."
-require_in "$CONFIG" '### standard rules' '6. When ten current rules lack the credentials rule, leave out the last rule the documentation no longer describes, or the last rule when all are still described. Name it in the consequence sentence that opens the proposal.'
+require_in "$CONFIG" '### standard rules' "5. Include one rule, once, that keeps encoded or encrypted credentials outside this standard's files. When the documentation names a supported way to encrypt or store them, require that way in its own rule. Both follow \`rule shape\`. When it names none, name no product."
+require_in "$CONFIG" '### standard rules' '6. When fifteen suggestions lack the credentials rule, leave out the last suggestion the documentation no longer describes, or the last suggestion when all are still described. Name it in the consequence sentence that opens the proposal. Do not leave out a rule the person provided.'
 require_in "$CONFIG" '### standard rules' '7. Write every structure path relative to the automation folder. Fill a placeholder in angle brackets, such as `<module>`, for each automation.'
 require_in "$CONFIG" '### standard rules' "8. Cover only this standard's own files in the structure. Leave a component the platform calls, such as a module, to its own standard."
 require_in "$CONFIG" '### standard rules' '9. Return to `standard proposal`.'
@@ -107,7 +107,7 @@ reject "$CONFIG" 'Each rule contains the word must and names a condition and the
 reject "$CONFIG" 'Then emit the closing question and the cancel line.'
 
 previous=0
-for heading in '### Entry' '### Classify' '### menu' '### platforms' '### current' '### entry level' '### use entries' '### platform proposal' '### platform written' '### standards' '### standard rules' '### standard proposal' '### standard write' '### conflicts' '### resolve'; do
+for heading in '### Entry' '### Classify' '### menu' '### platforms' '### current' '### entry level' '### use entries' '### platform proposal' '### platform written' '### standards' '### standard rules' '### rule shape' '### standard proposal' '### standard write' '### conflicts' '### resolve'; do
 	line="$(grep -nxF -- "$heading" "$CONFIG" | head -1 | cut -d: -f1)"
 	if [[ -z "$line" ]] || ((line <= previous)); then
 		echo "FAIL: highway-codify-config $heading is missing or out of order"
@@ -140,7 +140,7 @@ for heading in '### Classify' '### platforms' '### platform proposal' '### platf
 	done
 done
 
-require "$CONFIG" 'version: 3.2.3'
+require "$CONFIG" 'version: 3.2.5'
 
 if [[ "$fail" -ne 0 ]]; then
 	exit 1
