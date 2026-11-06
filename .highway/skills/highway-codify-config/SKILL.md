@@ -4,7 +4,7 @@ description: "Manages the repository-wide guidance used by highway-codify."
 usage: "Invoke as /highway-codify-config, or with one implementation name."
 compatibility: all
 metadata:
-  version: 3.2.4
+  version: 3.2.5
 ---
 
 # highway-codify-config
@@ -193,10 +193,14 @@ If you'd like to cancel, just say so.
    **Why it matters:** [One sentence stating the consequence of this entry.]
 
 **New Realized Capabilities:**
-1. **[Title]:** Realized By: [Platform]. Evidence: [What the current documentation describes.]
+1. **[Title]:** Realized By: [Platform].
+
+   **Evidence:** [What the current documentation describes.]
 
 **Conflicts:**
-1. **[Conflict]:** [Description quoting both entries and naming both records.] Recommendation: [One change that removes it.]
+1. **[Conflict]:** [Description quoting both entries and naming both records.]
+
+   **Recommendation:** [One change that removes it.]
 
 4. Assess conflicts as `conflicts` does, against the catalogs as they would be after acceptance. With none, show `None`. When any exist, add: You can accept this proposal with these conflicts and resolve them afterward.
 5. List each capability `current` marked new under New Realized Capabilities. With none, show `None`.
@@ -301,7 +305,9 @@ If you'd like to cancel, just say so.
 1. [Standard Title]
 
 **Conflicts:**
-1. **[Conflict]:** [Description quoting both entries and naming both records.] Recommendation: [One change that removes it.]
+1. **[Conflict]:** [Description quoting both entries and naming both records.]
+
+   **Recommendation:** [One change that removes it.]
 
 5. Assess conflicts as `conflicts` does, against the catalogs as they would be after acceptance. With none, show `None`. When any exist, add: You can accept this proposal with these conflicts and resolve them afterward.
 6. For a remove, open the proposal with a consequence sentence saying `[Standard Path]` remains and is no longer used. List in Conflicts each standard whose Inherits From names it.
@@ -336,7 +342,9 @@ If you'd like to cancel, just say so.
 3. When none exist, emit `Highway found no conflicts between your platforms and coding standards.` Then ask **What inconsistencies have you noticed?** Assess what the person describes against the catalogs, then re-emit this step.
 4. Otherwise quote both entries and name both records in each description. Emit each conflict as an ordered list item, then the question and the cancel line.
 
-1. **[Conflict]:** [Description.] Recommendation: [One change that removes it.]
+1. **[Conflict]:** [Description.]
+
+   **Recommendation:** [One change that removes it.]
 
 **Which conflict would you like to resolve?**
 

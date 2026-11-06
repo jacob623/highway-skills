@@ -60,7 +60,7 @@ for text in \
 	'The test path must be part of the file and folder structure.' \
 	'When the catalog is absent, create it' \
 	'name the same relative path' \
-	'version: 3.2.4'; do
+	'version: 3.2.5'; do
 	require "$CONFIG" "$text"
 done
 
