@@ -124,7 +124,7 @@ require "$TEMPLATE" 'This file does not contain a Why it matters line.'
 reject "$TEMPLATE" 'at most ten rules'
 
 require "$CONFIG" '- Each coding rule is one must, one condition, and one outcome in eight words or fewer. The model suggests at most fifteen, and one keeps encoded or encrypted credentials outside the files. A provided rule that does not conform is rewritten, and the opening consequence sentence names the rewrite. Each rule shows **Why it matters:** on the proposal only.'
-require "$CONFIG" 'version: 3.2.5'
+require "$CONFIG" 'version: 3.3.0'
 require "$TEMPLATE" 'version: 3.0.1'
 
 if [[ "$fail" -ne 0 ]]; then

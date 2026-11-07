@@ -4,7 +4,7 @@ description: "Manages one reference implementation from one accepted reference a
 usage: "Invoke as /highway-implementation with one architecture id."
 compatibility: all
 metadata:
-  version: 7.2.0
+  version: 7.3.0
 ---
 
 # highway-implementation
@@ -60,7 +60,7 @@ The complete structure is `.highway/library/templates/output/implementation-reco
 
 ## Procedure
 
-Emit only the active template. Follow this order: `add capabilities` when `highway-codify-config` passes new realized capabilities; `choose` when no architecture id is supplied; otherwise `start`, then `identifier`, `title` when needed, `write`, `platforms`, and `close`. The accepted Reference Architecture remains authoritative. A realization cannot redesign it or override the ADR. A missing Profile, Objective, Control, or NFR continues without invented evidence. A malformed one of those baselines stops the skill and writes nothing. Clarification is read-only. An open finding can inform a risk. It cannot block the proposal.
+Emit only the active template. Follow this order: `add capabilities` when `highway-codify-config` passes new realized capabilities; `choose` when no architecture id is supplied; otherwise `start`, which follows `execution`, then `identifier`, `title` when needed, `write`, `platforms`, and `close`. The accepted Reference Architecture remains authoritative. A realization cannot redesign it or override the ADR. A missing Profile, Objective, Control, or NFR continues without invented evidence. A malformed one of those baselines stops the skill and writes nothing. Clarification is read-only. An open finding can inform a risk. It cannot block the proposal.
 
 One accepted architecture can have more than one current implementation. A current implementation is an accepted implementation-catalog row for that architecture. A removed row does not count and does not block a new one. Creating another leaves every existing implementation in place and does not change the decision or the architecture.
 
@@ -102,9 +102,27 @@ Classify the latest reply before any other action.
 
 On `start`, "looks good" is `accept`.
 
+### execution
+
+Read `library/coding-standards/codify-platforms.md` when present. A row with a blank Kind is not a candidate. Read `library/coding-standards/coding-standards.md` when present.
+
+1. Deployed by is the earliest candidate whose Kind is `pipeline`. When none, the earliest `orchestrator`. When none, the earliest `desired-state`. When none, the earliest `agent`.
+2. Managed by is the earliest candidate whose Kind is `self-service`. When none, the earliest `agent`. When none, the Deployed by row.
+3. Language is the earliest standard whose Technology appears on its own in a Technology Choice `Choice:`. Compare without regard to case. A boundary on each side makes an entry appear on its own. When none match, Language is None.
+4. When Deployed by or Managed by has no row, hold `Needed`. Do not take the first catalog row.
+5. Return to `start`.
+
+### field
+
+1. A platforms-catalog row replaces Deployed by or Managed by. Show its title.
+2. When the name has an accepted implementation and no row, emit: Let's configure [Platform]. Follow `highway-codify-config` for [Platform], with the return step `execution` in `highway-implementation`.
+3. When the name has no accepted implementation, emit: Let's onboard [Platform]. Follow `highway-onboarding` for [Platform], with the return step `execution` in `highway-implementation`.
+4. A listed coding-standard title, or None, replaces Language. Any other title is left out. Say: [Title] is not a listed coding standard. To add it, run /highway-codify-config.
+5. Re-emit the proposal. Stay on `start`.
+
 ### start
 
-Build the proposed realization from the accepted architecture. Cover every responsibility the architecture states. Mark a row `not applicable` only when that stated responsibility does not apply to this realization. Do not add a responsibility the architecture does not state. For each thing the architecture left free, state the choice this realization made, or `None` when nothing may vary. State the realized interface for each architecture interface, how conformance was shown, and the limitations of this realization, each or `None`. State one technology choice, with its intent, its reason, and its evidence. When evidence does not support a technology, use `Unknown` rather than inventing one. Derive the title with the rules in `identifier`.
+Build the proposed realization from the accepted architecture. Follow `execution`. Cover every responsibility the architecture states. Mark a row `not applicable` only when that stated responsibility does not apply to this realization. Do not add a responsibility the architecture does not state. For each thing the architecture left free, state the choice this realization made, or `None` when nothing may vary. State the realized interface for each architecture interface, how conformance was shown, and the limitations of this realization, each or `None`. State one technology choice, with its intent, its reason, and its evidence. When evidence does not support a technology, use `Unknown` rather than inventing one. Derive the title with the rules in `identifier`.
 
 When a proposed realization contradicts the architecture, name the requirement, the conflict, and the impact. Offer `Resolve implementation` or `Revisit architecture`. Do not write.
 
@@ -125,6 +143,12 @@ When a proposed realization contradicts the architecture, name the requirement, 
 
 **Operations:** [How accepted NFRs are met in operation, or `None`.]
 
+**Deployed by:** [Platform. Or: Needed.]
+
+**Managed by:** [Platform. Or: Needed.]
+
+**Language:** [Standard Title. Or: None.]
+
 **Capabilities:**
 - **[Business capability]:** Realized by [provider or mechanism]. A capability is a business outcome, not a component name.
 
@@ -132,8 +156,8 @@ When a proposed realization contradicts the architecture, name the requirement, 
 
 If this is accurate, just say so.
 
-- `edit`: emit one consequence sentence. A new title is a supplied title. Re-emit this block with the edit applied. Stay on `start`.
-- `accept`: when a stated responsibility is neither covered nor marked not applicable, name it and stay on `start`. Otherwise go to `identifier`.
+- `edit`: when the edit names Deployed by, Managed by, or Language, follow `field`. Otherwise emit one consequence sentence. A new title is a supplied title. Re-emit this block with the edit applied. Stay on `start`.
+- `accept`: when Deployed by or Managed by is Needed, name that field and stay on `start`. When a stated responsibility is neither covered nor marked not applicable, name it and stay on `start`. Otherwise go to `identifier`.
 - `unknown`: re-emit this block. Stay on `start`.
 - `question`: answer, then re-emit this block. Stay on `start`.
 - `decline`: stop. Write nothing.
@@ -194,7 +218,7 @@ The record follows `.highway/library/templates/output/implementation-record.md`.
 - `architecture` is the Reference Architecture id.
 - `status` is `accepted`.
 - The title is the accepted implementation title.
-- Include Variation Choices, Coverage, Realized Interfaces, Conformance Evidence, Limitations, Technology Choice, Context, Implementation Summary, Realized Capabilities, Runtime Components, Data Realization, Integration Realization, Security Control Realization, NFR Realization, Assumptions, Risks, Constraints, Dependencies, and Traceability.
+- Include Variation Choices, Coverage, Realized Interfaces, Conformance Evidence, Limitations, Technology Choice, Execution, Context, Implementation Summary, Realized Capabilities, Runtime Components, Data Realization, Integration Realization, Security Control Realization, NFR Realization, Assumptions, Risks, Constraints, Dependencies, and Traceability.
 - Coverage has one row per responsibility the architecture states. Status is covered or not applicable.
 - When every row is covered or not applicable, Conformance is `compatible`. Do not write a gap section or a conflict section.
 - When a stated responsibility is uncovered, Conformance is `incomplete` and the gap is stated.
@@ -236,7 +260,7 @@ Read the accepted implementation's Technology Choice, Runtime Components, and Re
 
 When `highway-onboarding` follows this step, return to `highway-onboarding` after the write. Do not emit the included line or ask the question.
 
-Otherwise write `library/coding-standards/codify-platforms.md` from `.highway/library/templates/output/codify-platforms.md`. Create `library/coding-standards/` when it is absent. Platform is the implementation title. Implementation ID is its `RI` id. When to use and When not to use are blank. Keep one row for this Implementation ID: when present, replace its Platform and keep its When to use and When not to use; otherwise append it. Leave every other row unchanged. A failed write leaves the existing file unchanged. Say what failed, then go to `close`.
+Otherwise write `library/coding-standards/codify-platforms.md` from `.highway/library/templates/output/codify-platforms.md`. Create `library/coding-standards/` when it is absent. Platform is the implementation title. Implementation ID is its `RI` id. Kind is blank. When to use and When not to use are blank. Keep one row for this Implementation ID: when present, replace its Platform and keep its Kind, When to use, and When not to use; otherwise append it. Leave every other row unchanged. A failed write leaves the existing file unchanged. Say what failed, then go to `close`.
 
 On success, emit:
 

@@ -1,0 +1,37 @@
+FAIL: output/codify-platforms.md omits: | Platform | Implementation ID | Kind | When to use | When not to use |
+FAIL: output/codify-platforms.md omits: version: 2.1.0
+FAIL: output/implementation-record.md omits: ## Execution
+FAIL: output/implementation-record.md omits: Deployed by: <platform title> (<RI id>) or Needed
+FAIL: output/implementation-record.md omits: version: 2.2.0
+FAIL: highway-implementation/SKILL.md omits: ### execution
+FAIL: highway-implementation/SKILL.md omits: earliest candidate whose Kind is `pipeline`
+FAIL: highway-implementation/SKILL.md omits: earliest `orchestrator`
+FAIL: highway-implementation/SKILL.md omits: earliest `desired-state`
+FAIL: highway-implementation/SKILL.md omits: earliest `agent`
+FAIL: highway-implementation/SKILL.md omits: earliest candidate whose Kind is `self-service`
+FAIL: highway-implementation/SKILL.md omits: **Deployed by:**
+FAIL: highway-implementation/SKILL.md omits: **Managed by:**
+FAIL: highway-implementation/SKILL.md omits: **Language:**
+FAIL: highway-implementation/SKILL.md omits: return step `execution`
+FAIL: highway-implementation/SKILL.md omits: Follow `highway-onboarding`
+FAIL: highway-implementation/SKILL.md omits: version: 7.3.0
+FAIL: highway-onboarding/SKILL.md omits: return step `execution`
+FAIL: highway-onboarding/SKILL.md omits: version: 10.2.0
+FAIL: highway-codify-config/SKILL.md omits: ### kind
+FAIL: highway-codify-config/SKILL.md omits: ### platform entries
+FAIL: highway-codify-config/SKILL.md omits: [Platform] is used
+FAIL: highway-codify-config/SKILL.md omits: [Platform] is not used
+FAIL: highway-codify-config/SKILL.md omits: **Kind:**
+FAIL: highway-codify-config/SKILL.md omits: version: 3.3.0
+FAIL: highway-codify/SKILL.md omits: **Executor:**
+FAIL: highway-codify/SKILL.md omits: Do not copy the Executor onto a task
+FAIL: highway-codify/SKILL.md omits: Helm, Terraform, or CloudFormation
+FAIL: highway-codify/SKILL.md omits: [Field] is needed. Name it on the implementation.
+FAIL: highway-codify/SKILL.md omits: A missing When to use entry does not remove Language
+FAIL: highway-codify/SKILL.md omits: version: 12.1.0
+FAIL: highway-codify/SKILL.md still contains: Every task names that same Provider
+FAIL: highway-codify/SKILL.md still contains: this implementation's row, then the first row
+FAIL: highway-implementation/SKILL.md ### execution has 0 words; the limit is 250
+FAIL: highway-codify-config/SKILL.md ### kind has 0 words; the limit is 250
+FAIL: highway-codify-config/SKILL.md ### platform entries has 0 words; the limit is 250
+EXIT:1

@@ -4,7 +4,7 @@ description: "Manages one functional artifact for one accepted implementation."
 usage: "Invoke as /highway-codify with one implementation name."
 compatibility: all
 metadata:
-  version: 12.0.0
+  version: 12.1.0
 ---
 
 # highway-codify
@@ -199,7 +199,7 @@ Draft the proposal. Emit nothing here.
 
 - Description: what this one automation does, for whom, and what it returns.
 - At least one acceptance criterion.
-- The Provider: the one platform that executes this automation. Every task names that same Provider. The implementation being automated is a target, not the Provider.
+- The Executor is chosen in `provider`. A task's Provider is the platform that task uses and may differ from the Executor. Method names how, including a tool such as Helm, Terraform, or CloudFormation. The implementation being automated is a target, not the Executor.
 - The tasks, in order. Each task is one action against one platform, object, or API, and its action starts with a verb. A step with two targets is two tasks.
 - Scope says what the task does. Provider is the Provider. Method says how, naming the plugins, modules, libraries, MCP servers, or APIs it uses. Assumptions list what the task relies on that is not an earlier task, such as network access, an access level, an authentication method, or a credential source, or `None`.
 
@@ -207,14 +207,12 @@ Go to `provider`.
 
 ### provider
 
-A platform the person named is the Provider. When that name has no row, emit before the proposal: [Platform] is not included as a platform that can start automation. To add it, run /highway-codify-config.
+Read the selected implementation record's Execution. The action is establishing when its title contains `establish`, compared without regard to case.
 
-When none is named, read `library/coding-standards/codify-platforms.md` when present. Split When to use and When not to use on `; `. Trim each entry. An entry appears on its own when a boundary sits on each side: the start or end of the text, or a character that is not a letter or digit. Compare without regard to case.
-
-1. A row matches when it has a When to use entry, every such entry appears on its own in the action or the method, and no When not to use entry appears on its own there.
-2. The Provider is the earliest matching row.
-3. When no row matches, use this implementation's row, then the first row.
-4. When the catalog has no rows, leave the Provider unset. Emit before the proposal: A platform that can start automation is needed. Run /highway-codify-config.
+1. The Executor is Deployed by when the action is establishing. Otherwise the Executor is Managed by.
+2. When that value is `Needed`, empty, or names a platform with no row, emit before the proposal: [Field] is needed. Name it on the implementation. Write nothing else. Stay on `provider`.
+3. Do not copy the Executor onto a task's Provider.
+4. Do not take this implementation's row or the first catalog row.
 
 Go to `standards`.
 
@@ -225,9 +223,10 @@ Read `library/coding-standards/coding-standards.md` when present. Its When to us
 For each task, propose an ordered list of Standard Titles:
 
 1. A row is a candidate when its File Patterns match a file the method names, or its Technology names the method or the Provider, and its standard file is present.
-2. Drop a candidate whose When to use is blank. An entry appears on its own under the boundary from `provider`. Drop a candidate when a When to use entry does not appear on its own in the action, the method, or the Provider, or a When not to use entry does.
+2. Drop a candidate whose When to use is blank. An entry appears on its own when a boundary sits on each side: the start or end of the text, or a character that is not a letter or digit. Drop a candidate when a When to use entry does not appear on its own in the action, the method, or the Provider, or a When not to use entry does.
 3. Put a standard before every standard it inherits from, and a platform standard before the language standards it builds on.
 4. Add each inherited standard once, after the standard that inherits it. Stop at a title already listed, so a cycle adds nothing twice.
+5. A missing When to use entry does not remove Language from a task whose Provider or Method names that standard's Technology on its own, and does not remove the standard whose Technology appears on its own in the task's Provider.
 
 A task with no row says `No coding standard applies.` An earlier standard wins a disagreement with a later one. The person can add, remove, or reorder the list on `revise`.
 
@@ -320,7 +319,7 @@ Place that standard's files as if it were absent. Apply the match in step 2 of `
 
 ### propose
 
-The diagram is one logical flow that starts at the Provider. Each task adds one arrow from the Provider, labeled with its action, to a new node for its target, in task order. No arrow leaves a target. Every target has its own node.
+The diagram is one logical flow that starts at the Executor. Each task adds one arrow from the Executor, labeled with its action, to a new node for its platform, in task order. No arrow leaves a target. Every target has its own node.
 
 **Here is a proposed starting point for your codify feature:**
 
@@ -334,19 +333,21 @@ The diagram is one logical flow that starts at the Provider. Each task adds one 
 
 - [One observable result of this automation.]
 
+**Executor:** [Executor.]
+
 **Diagram:**
 
 ```flowchart
 flowchart TB
-  P["[Provider]"] -->|[First action]| T1["[First target]"]
-  P -->|[Next action]| T2["[Next target]"]
+  P["[Executor]"] -->|[First action]| T1["[First task platform]"]
+  P -->|[Next action]| T2["[Next task platform]"]
 ```
 
 **Tasks:**
 
 1. **[First action]:**
    - **Scope:** [What the task does.]
-   - **Provider:** [The platform executing this automation.]
+   - **Provider:** [The platform this task uses.]
    - **Method:** [How it is done.]
    - **Standards:**
      1. [Standard Title. Or, when none applies: No coding standard applies.]
@@ -378,7 +379,8 @@ Go to `revise`.
 Classify the reply to the proposal.
 
 - `edit`: emit one consequence sentence. Re-emit the proposal with the diagram and tasks still matching. Stay on `revise`.
-An edit that names a different Provider sets it on every task and in the diagram, then goes to `standards`.
+An edit that names a different Executor sets the Executor and the diagram start. It does not change a task's Provider.
+An edit that names a different Provider sets it on that task, then goes to `standards`.
 An edit that changes a method goes to `standards`, then `align`, for that task.
 An edit that adds, removes, or reorders a task's Standards changes only that list, then goes to `align` for that task.
 A Files edit changes only this automation and leaves out a path that is not relative.

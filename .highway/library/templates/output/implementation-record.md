@@ -2,7 +2,7 @@
 name: implementation-record
 description: "Complete output skeleton for an accepted Reference Implementation record."
 metadata:
-  version: 2.1.0
+  version: 2.2.0
 ---
 
 ## File Frontmatter
@@ -54,6 +54,12 @@ Intent: <architecture intent>
 Choice: <technology or mechanism>
 Reason: <why this choice>
 Evidence: <deterministic supporting evidence>
+
+## Execution
+
+Deployed by: <platform title> (<RI id>) or Needed
+Managed by: <platform title> (<RI id>) or Needed
+Language: <Standard Title or None>
 
 ## Context
 

@@ -59,7 +59,7 @@ for text in \
 	'No automation has been created yet.' \
 	'The instructions are not written yet.' \
 	'Append the new row as the last row.' \
-	'version: 12.0.0'; do
+	'version: 12.1.0'; do
 	require "$CODIFY" "$text"
 done
 for text in \

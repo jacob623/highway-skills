@@ -4,7 +4,7 @@ description: "Manages the repository-wide guidance used by highway-codify."
 usage: "Invoke as /highway-codify-config, or with one implementation name."
 compatibility: all
 metadata:
-  version: 3.2.5
+  version: 3.3.0
 ---
 
 # highway-codify-config
@@ -157,8 +157,8 @@ If you'd like to cancel, just say so.
 
 ### use entries
 
-1. For a platform, take its type from the implementation's Technology Choice and `current`, such as a pipeline, an orchestrator, a self-service platform, a desired-state or GitOps tool, or an agent. For a standard, take the type of its language or platform.
-2. On an add, follow `entry level`, then write the entries it returned. On an update, start from the saved entries. Do not follow `entry level`.
+1. For a platform, take its type from the implementation's Technology Choice and `current`. For a standard, take the type of its language or platform.
+2. On an add or update of a standard whose Technology is a platforms-catalog title, the whole value, compared without regard to case, follow `platform entries`. Do not follow `entry level`. On another add, follow `entry level`, then write the entries it returned. On another update, start from the saved entries. Do not follow `entry level`.
 3. Do not take an entry from the implementation's Realized Capabilities or Runtime Components.
 4. Write each entry as one condition or one outcome, in five words or fewer. Count a hyphenated term as one word.
 5. Do not join two things with "and", "or", a comma, or a slash. Write two things as two entries.
@@ -168,9 +168,23 @@ If you'd like to cancel, just say so.
 9. Under each entry, emit **Why it matters:** and one sentence stating the consequence of that entry for the work Highway proposes. Name no customer, product, or decision of this organization. The catalog view, a conflict quote, and the saved cell keep the entry only.
 10. Return to the proposal that followed this step.
 
+### kind
+
+1. Take the type `use entries` named for this platform.
+2. Store `agent`, `pipeline`, `orchestrator`, `self-service`, or `desired-state`. A self-service platform is `self-service`. A desired-state or GitOps tool is `desired-state`.
+3. Return to `platform proposal`.
+
+### platform entries
+
+1. When to use is `[Platform] is used`.
+2. When not to use is `[Platform] is not used`. `[Platform]` is that row's title.
+3. Do not follow `entry level`. Do not keep other saved entries.
+4. Do not split these entries. Do not rewrite them.
+5. Return to the proposal that followed `use entries`.
+
 ### platform proposal
 
-1. For an add or update, follow `use entries`. Start an update from the current values after `current`.
+1. For an add or update, follow `kind`, then `use entries`. Start an update from the current values after `current`.
 2. For a remove, show the current values. Do not run `current` or `use entries`. Leave out New Realized Capabilities.
 3. Fill this proposal.
 
@@ -181,6 +195,8 @@ If you'd like to cancel, just say so.
 **Platform:** [Platform]
 
 **Implementation ID:** [RI id]
+
+**Kind:** [Kind.]
 
 **When to use:**
 1. [Entry]

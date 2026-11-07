@@ -4,7 +4,7 @@ description: "Manages one decision, one reference architecture, and one referenc
 usage: "Invoke as `/highway-onboarding`."
 compatibility: all
 metadata:
-  version: 10.1.0
+  version: 10.2.0
 ---
 
 # highway-onboarding
@@ -255,7 +255,7 @@ After the architecture is written, set the ADR's `Reference Architecture` field 
 
 When either of those records cannot be written, or the ADR cannot be updated to name the architecture, try that step once more. When it still fails, keep the ADR and any earlier provider results. Say which record could not be written or named. Do not claim onboarding is complete. When the implementation cannot be written, the ADR names the architecture and no implementation exists.
 
-After the implementation exists, follow `platforms` in `highway-implementation` to write the row. When it includes the platform, emit:
+After the implementation exists, follow `platforms` in `highway-implementation` to write the row. When the caller named the return step `execution`, go to `execution` in `highway-implementation` after the platform row is written. Do not ask to configure. Do not continue the queue. When it includes the platform, emit:
 
 **[Platform] is included as a platform that can start automation.**
 
