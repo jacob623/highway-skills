@@ -44,7 +44,7 @@ require_in "$CONFIG" '### current' '7. Do not propose a capability the documenta
 require_in "$CONFIG" '### current' 'Mark no new realized capability.'
 require_in "$CONFIG" '### current' '9. Then go to the proposal named with this step.'
 
-require_in "$CONFIG" '### platform proposal' '1. For an add or update, follow `use entries`. Start an update from the current values after `current`.'
+require_in "$CONFIG" '### platform proposal' '1. For an add or update, follow `kind`, then `use entries`. Start an update from the current values after `current`.'
 require_in "$CONFIG" '### platform proposal' '2. For a remove, show the current values. Do not run `current` or `use entries`. Leave out New Realized Capabilities.'
 require_in "$CONFIG" '### platform proposal' '3. Fill this proposal.'
 require_in "$CONFIG" '### platform proposal' '6. Emit this proposal, then the closing question and the cancel line.'
@@ -71,7 +71,7 @@ require_in "$CONFIG" '### platform written' '3. Otherwise, or after `decline`, g
 require_in "$CONFIG" '### standard proposal' 'For an add or update, follow `use entries`.'
 
 require_in "$CONFIG" '### use entries' '1. For a platform, take its type from the implementation'"'"'s Technology Choice and `current`'
-require_in "$CONFIG" '### use entries' '2. On an add, follow `entry level`, then write the entries it returned. On an update, start from the saved entries. Do not follow `entry level`.'
+require_in "$CONFIG" '### use entries' '2. On an add or update of a standard whose Technology is a platforms-catalog title, the whole value, compared without regard to case, follow `platform entries`. Do not follow `entry level`.'
 require_in "$CONFIG" '### use entries' '3. Do not take an entry from the implementation'"'"'s Realized Capabilities or Runtime Components.'
 require_in "$CONFIG" '### use entries' '4. Write each entry as one condition or one outcome, in five words or fewer. Count a hyphenated term as one word.'
 require_in "$CONFIG" '### use entries' '5. Do not join two things with "and", "or", a comma, or a slash. Write two things as two entries.'
@@ -121,8 +121,8 @@ for pair in "$CONFIG|### current" "$CONFIG|### platform proposal" "$CONFIG|### p
 	done
 done
 
-require "$CONFIG" 'version: 3.2.5'
-require "$IMPL" 'version: 7.2.0'
+require "$CONFIG" 'version: 3.3.0'
+require "$IMPL" 'version: 7.3.0'
 
 if [[ "$fail" -ne 0 ]]; then
 	exit 1

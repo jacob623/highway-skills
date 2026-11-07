@@ -98,7 +98,7 @@ require_in index 'When an accepted row already has that From, To, and Kind, writ
 
 for text in \
 	'code/<folder>/' \
-	'version: 12.0.0'; do
+	'version: 12.1.0'; do
 	require "$CODIFY" "$text"
 done
 for text in \

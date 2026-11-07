@@ -34,7 +34,8 @@ done || fail=1
 
 for text in \
 	'- `edit`: emit one consequence sentence. Re-emit the proposal with the diagram and tasks still matching. Stay on `revise`.' \
-	'An edit that names a different Provider sets it on every task and in the diagram, then goes to `standards`.' \
+	'An edit that names a different Executor sets the Executor and the diagram start. It does not change a task'"'"'s Provider.' \
+	'An edit that names a different Provider sets it on that task, then goes to `standards`.' \
 	'An edit that changes a method goes to `standards`, then `align`, for that task.' \
 	'An edit that adds, removes, or reorders a task'"'"'s Standards changes only that list, then goes to `align` for that task.' \
 	'A Files edit changes only this automation and leaves out a path that is not relative.' \
@@ -52,8 +53,8 @@ if [[ "$words" -gt 400 ]]; then
 	fail=1
 fi
 
-if ! grep -Fq 'version: 12.0.0' "$CODIFY"; then
-	echo "FAIL: highway-codify omits: version: 12.0.0"
+if ! grep -Fq 'version: 12.1.0' "$CODIFY"; then
+	echo "FAIL: highway-codify omits: version: 12.1.0"
 	fail=1
 fi
 

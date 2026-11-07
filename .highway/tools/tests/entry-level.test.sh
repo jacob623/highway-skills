@@ -45,7 +45,7 @@ require_in "$CONFIG" '### entry level' '7. Propose at most four When to use entr
 require_in "$CONFIG" '### entry level' "8. Take no class from this organization's customers, products, data, or decisions."
 require_in "$CONFIG" '### entry level' '9. Return to `use entries`.'
 
-require_in "$CONFIG" '### use entries' '2. On an add, follow `entry level`, then write the entries it returned. On an update, start from the saved entries. Do not follow `entry level`.'
+require_in "$CONFIG" '### use entries' '2. On an add or update of a standard whose Technology is a platforms-catalog title, the whole value, compared without regard to case, follow `platform entries`. Do not follow `entry level`.'
 require_in "$CONFIG" '### use entries' '4. Write each entry as one condition or one outcome, in five words or fewer. Count a hyphenated term as one word.'
 require_in "$CONFIG" '### use entries' '7. On an update, keep each saved entry. Rewrite a saved entry that breaks step 4 or step 5, and state the rewrite in its **Why it matters:** sentence.'
 require_in "$CONFIG" '### use entries' '9. Under each entry, emit **Why it matters:** and one sentence stating the consequence of that entry for the work Highway proposes. Name no customer, product, or decision of this organization. The catalog view, a conflict quote, and the saved cell keep the entry only.'
@@ -131,7 +131,7 @@ for heading in '### entry level' '### use entries'; do
 	done
 done
 
-require "$CONFIG" 'version: 3.2.5'
+require "$CONFIG" 'version: 3.3.0'
 
 if [[ "$fail" -ne 0 ]]; then
 	exit 1

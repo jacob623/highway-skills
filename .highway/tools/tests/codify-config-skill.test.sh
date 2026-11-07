@@ -68,13 +68,13 @@ for text in \
 	'### platforms' \
 	'### standards' \
 	'### conflicts' \
-	'version: 3.2.5'; do
+	'version: 3.3.0'; do
 	require "$CONFIG" "$text"
 done
 
-require "$PLATFORMS" '| Platform | Implementation ID | When to use | When not to use |'
+require "$PLATFORMS" '| Platform | Implementation ID | Kind | When to use | When not to use |'
 require "$PLATFORMS" 'library/coding-standards/codify-platforms.md'
-require "$PLATFORMS" 'version: 2.0.0'
+require "$PLATFORMS" 'version: 2.1.0'
 reject "$PLATFORMS" '| Source |'
 require "$STANDARDS_TEMPLATE" "$STANDARDS_HEADER"
 if [[ -e "$STANDARDS_CATALOG" ]]; then
@@ -94,7 +94,7 @@ for text in \
 	'**Standards:**' \
 	'/highway-codify-config' \
 	'library/coding-standards/codify-platforms.md' \
-	'version: 12.0.0'; do
+	'version: 12.1.0'; do
 	require "$CODIFY" "$text"
 done
 for text in \

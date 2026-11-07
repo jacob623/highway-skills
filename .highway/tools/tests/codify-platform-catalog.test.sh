@@ -38,8 +38,8 @@ reject() {
 	fi
 }
 
-require "$PLATFORMS" '| Platform | Implementation ID | When to use | When not to use |'
-require "$PLATFORMS" 'version: 2.0.0'
+require "$PLATFORMS" '| Platform | Implementation ID | Kind | When to use | When not to use |'
+require "$PLATFORMS" 'version: 2.1.0'
 
 for text in \
 	'### platforms' \
@@ -47,21 +47,20 @@ for text in \
 	'**Would you like to configure [Platform] for automation?**' \
 	'library/coding-standards/codify-platforms.md' \
 	'an agent that starts the work' \
-	'version: 7.2.0'; do
+	'version: 7.3.0'; do
 	require "$IMPL" "$text"
 done
 
 require "$ONBOARD" 'follow `platforms` in `highway-implementation`'
-require "$ONBOARD" 'version: 10.1.0'
+require "$ONBOARD" 'version: 10.2.0'
 
 for text in \
 	'When the invocation is the word `configure`' \
-	'is not included as a platform that can start automation. To add it, run /highway-codify-config.' \
-	'A platform that can start automation is needed. Run /highway-codify-config.' \
-	'Every task names that same Provider' \
+	'[Field] is needed. Name it on the implementation.' \
+	'**Executor:**' \
 	'Do not replace the Provider' \
 	'P -->|[Next action]|' \
-	'version: 12.0.0'; do
+	'version: 12.1.0'; do
 	require "$CODIFY" "$text"
 done
 for text in \
