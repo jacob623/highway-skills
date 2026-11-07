@@ -68,7 +68,7 @@ for text in \
 	'### platforms' \
 	'### standards' \
 	'### conflicts' \
-	'version: 3.3.0'; do
+	'version: 3.4.0'; do
 	require "$CONFIG" "$text"
 done
 
@@ -94,7 +94,7 @@ for text in \
 	'**Standards:**' \
 	'/highway-codify-config' \
 	'library/coding-standards/codify-platforms.md' \
-	'version: 12.1.0'; do
+	'version: 12.2.0'; do
 	require "$CODIFY" "$text"
 done
 for text in \

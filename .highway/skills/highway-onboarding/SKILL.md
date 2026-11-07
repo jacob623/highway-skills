@@ -4,7 +4,7 @@ description: "Manages one decision, one reference architecture, and one referenc
 usage: "Invoke as `/highway-onboarding`."
 compatibility: all
 metadata:
-  version: 10.2.0
+  version: 10.3.0
 ---
 
 # highway-onboarding
@@ -99,13 +99,13 @@ Then go to `capabilities`.
 
 Build a starting point from accepted repository context. Do not ask the person to invent the list.
 
-A technology capability is something software, a platform, a service, or infrastructure does for the organization. For each business activity that accepted context names, propose the technology capability that activity relies on, including when context names no system. Title it for what the technology does, such as Online Payments, not for the business function, such as Sales. The title is not a product or vendor. Leave out an activity that no technology supports. When two activities rely on one technology, propose one capability.
+A technology capability is something software, a platform, a service, or infrastructure does for the organization. For each business activity that accepted context names, propose the technology capability that activity relies on, including when context names no system. Title it for what the technology does, such as Online Payments, not for the business function, such as Sales. The title is not a product or vendor. Leave out an activity that no technology supports. When two activities rely on one technology, propose each as its own capability. Follow `capability title` in `highway-implementation` for each title, then return to `capabilities`.
 
 On an edit, re-emit only the starting point.
 
 **Here are the capabilities Highway believes you have today:**
 
-1. **AI-Assisted Engineering and Planning:**
+1. **AI-Augmented Technology Development:**
 
    Using AI systems to assist with research, planning, and implementation of technology solutions.
 
@@ -113,7 +113,7 @@ On an edit, re-emit only the starting point.
 
    [What the technology does for the organization.]
 
-Include the AI-Assisted Engineering and Planning line on the first capability list. Omit it when an accepted ADR already records this capability for the same agent-platform name. The person may correct or remove the line before accept. A removed AI-Assisted Engineering and Planning line is not placed on the capability queue.
+Include the AI-Augmented Technology Development line on the first capability list. Omit it when an accepted ADR already records this capability for the same agent-platform name. The person may correct or remove the line before accept. A removed AI-Augmented Technology Development line is not placed on the capability queue.
 
 Emit one numbered item per other capability, numbered in order. Each item names one capability. When context joins two activities in one capability, propose each as its own item. Keep the person's own wording when they add or correct a capability. Do not include a provider.
 
@@ -121,7 +121,7 @@ Emit one numbered item per other capability, numbered in order. Each item names 
 
 If this is accurate, just say so. If you don't know, say "I don't know" and we'll work through it together.
 
-- `edit`: emit one consequence sentence. Re-emit the starting point with the edit applied. Stay on `capabilities`.
+- `edit`: follow `capability title` in `highway-implementation` for each capability the edit adds or corrects, then return here. Emit one consequence sentence, or the one `capability title` gave. Re-emit the starting point with the edit applied. Stay on `capabilities`.
 - `accept`: place the capabilities on the capability queue, in displayed order. Go to `map`.
 - `unknown`: re-emit the starting point. Stay on `capabilities`.
 - `question`: answer, then re-emit the starting point. Stay on `capabilities`.
@@ -151,7 +151,7 @@ For each capability, we'll identify the platforms, services, processes, or peopl
 
 [observed platform, or `Unknown`]
 
-When the capability title is AI-Assisted Engineering and Planning and the session identifies the agent platform by name, that name is the provider. Cursor, VS Code, Claude, and Codex are names the session may identify. Do not guess a name. When no name is identified, the provider is `Unknown`. A corrected name replaces the provider. Do not assign this provider to a capability the platform does not operate.
+When the capability title is AI-Augmented Technology Development and the session identifies the agent platform by name, that name is the provider. Cursor, VS Code, Claude, and Codex are names the session may identify. Do not guess a name. When no name is identified, the provider is `Unknown`. A corrected name replaces the provider. Do not assign this provider to a capability the platform does not operate.
 
 When the provider is `Unknown`, emit this line immediately above the question:
 
@@ -349,9 +349,10 @@ If this is accurate, just say so.
 - The overview is shown once, before the first capability list, and opens with the level-3 heading "Let's get to know your technology landscape".
 - Each proposed capability names what a technology does for the organization. An activity that no technology supports is not proposed. An activity with no named system still yields its technology capability, and `map` asks for the provider.
 - Each capability is its own numbered item, with its bold title, a blank line, then its description.
-- The capability starting point includes **AI-Assisted Engineering and Planning:** Using AI systems to assist with research, planning, and implementation of technology solutions.
-- A removed AI-Assisted Engineering and Planning line is not placed on the capability queue.
-- The AI-Assisted Engineering and Planning provider is the agent platform the session identifies by name. An unidentified name uses the unable-to-infer prompt.
+- The capability starting point includes **AI-Augmented Technology Development:** Using AI systems to assist with research, planning, and implementation of technology solutions.
+- A removed AI-Augmented Technology Development line is not placed on the capability queue.
+- Each capability title follows `capability title` in `highway-implementation`. Two activities that rely on one technology are two capabilities.
+- The AI-Augmented Technology Development provider is the agent platform the session identifies by name. An unidentified name uses the unable-to-infer prompt.
 - The mapping transition is shown once, before the first capability mapping.
 - Each mapping label is bold, followed by a blank line and its value.
 - The agent platform is not assigned to a capability it does not operate.

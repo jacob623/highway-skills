@@ -46,7 +46,7 @@ require_in overview '- **Identify the technology capabilities** that support you
 require_in capabilities 'A technology capability is something software, a platform, a service, or infrastructure does for the organization.'
 require_in capabilities 'For each business activity that accepted context names, propose the technology capability that activity relies on, including when context names no system.'
 require_in capabilities 'Title it for what the technology does, such as Online Payments, not for the business function, such as Sales. The title is not a product or vendor.'
-require_in capabilities 'Leave out an activity that no technology supports. When two activities rely on one technology, propose one capability.'
+require_in capabilities 'Leave out an activity that no technology supports. When two activities rely on one technology, propose each as its own capability.'
 require_in capabilities 'Do not include a provider.'
 require_in capabilities '[What the technology does for the organization.]'
 require_in map '[What the technology does for the organization.]'
@@ -56,7 +56,7 @@ reject 'This is where Highway helps you navigate your technology landscape.'
 reject 'Identify important business capabilities'
 reject '[What the organization does.]'
 
-require 'version: 10.2.0'
+require 'version: 10.3.0'
 
 if [[ "$fail" -ne 0 ]]; then
 	exit 1

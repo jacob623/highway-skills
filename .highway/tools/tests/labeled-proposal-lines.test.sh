@@ -59,8 +59,8 @@ check_words '### platform proposal' 400
 check_words '### standard proposal' 400
 check_words '### conflicts' 250
 
-grep -Fq 'version: 3.3.0' "$CONFIG" || {
-	echo 'FAIL: highway-codify-config omits: version: 3.3.0'
+grep -Fq 'version: 3.4.0' "$CONFIG" || {
+	echo 'FAIL: highway-codify-config omits: version: 3.4.0'
 	fail=1
 }
 

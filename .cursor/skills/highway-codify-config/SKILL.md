@@ -4,7 +4,7 @@ description: "Manages the repository-wide guidance used by highway-codify."
 usage: "Invoke as /highway-codify-config, or with one implementation name."
 compatibility: all
 metadata:
-  version: 3.3.0
+  version: 3.4.0
 ---
 
 # highway-codify-config
@@ -35,6 +35,7 @@ Do not report Status, Summary, Next Action, Blocking Reason, Missing, Complete, 
 - `.highway/library/templates/output/codify-platforms.md`.
 - `.highway/library/templates/output/coding-standards-catalog.md`.
 - `.highway/library/templates/output/coding-standard.md`.
+- `.highway/library/templates/output/capability-catalog.md`.
 - `highway-onboarding`.
 - `highway-implementation`.
 - `.highway/governance/experience-standard.md`.
@@ -137,7 +138,7 @@ If you'd like to cancel, just say so.
 2. For a standard, capture each capability the documentation describes.
 3. For a platform, capture each automation capability the documentation describes. Do not capture a capability unrelated to automation.
 4. Group captured platform capabilities that perform the same automation. Judge sameness by meaning.
-5. Name that automation in the title, as one noun phrase of five words or fewer. Count a hyphenated word as one word. Put a product name and a handoff, such as a pull request, a comment, or a ticket, in the evidence.
+5. Title that automation under the Title rule in `.highway/library/templates/output/capability-catalog.md`. Put a product name and a handoff, such as a pull request, a comment, or a ticket, in the evidence.
 6. For a platform, mark each grouped capability that the implementation's Realized Capabilities do not already mean as a new realized capability. Judge that by meaning.
 7. Do not propose a capability the documentation no longer describes.
 8. When the documentation cannot be read, say: The current documentation could not be read. Add no capability as current. Mark no new realized capability. Continue from the accepted implementation and the catalogs already present.
@@ -411,7 +412,7 @@ If you'd like to cancel, just say so.
 - On an add, `entry level` proposes one to four classes of automation for each of When to use and When not to use, from what `current` describes, and no task. `use entries` writes each as one condition or one outcome in five words or fewer, and keeps saved entries on an update. Each proposal entry has a blank line, then **Why it matters:** stating its consequence, and the saved catalog does not keep that line.
 - An add or update proposal with no edit yet, for a platform or a standard, shows the starting-point line after the consequence sentence. An edited proposal and a remove do not.
 - A standard add or update follows `standard rules`, then `use entries`. A remove runs neither.
-- `current` groups the automation capabilities the platform documentation describes by meaning. Each group the implementation does not already mean appears once under New Realized Capabilities, titled by the automation in five words or fewer, with the product and the handoff in the evidence. After the write, configuration follows `highway-implementation` to record them, with the return step `platform written`.
+- `current` groups the automation capabilities the platform documentation describes by meaning. Each group the implementation does not already mean appears once under New Realized Capabilities, titled under the capability catalog Title rule, with the product and the handoff in the evidence. After the write, configuration follows `highway-implementation` to record them, with the return step `platform written`.
 - Each coding rule is one must, one condition, and one outcome in eight words or fewer. The model suggests at most fifteen, and one keeps encoded or encrypted credentials outside the files. A provided rule that does not conform is rewritten, and the opening consequence sentence names the rewrite. Each rule shows **Why it matters:** on the proposal only.
 - A standard write with no conflicts states one consequence sentence and returns to the menu.
 

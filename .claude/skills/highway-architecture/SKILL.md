@@ -4,7 +4,7 @@ description: "Manages one reference architecture from one accepted adr."
 usage: "Invoke as /highway-architecture with one adr id."
 compatibility: all
 metadata:
-  version: 5.0.0
+  version: 5.1.0
 ---
 
 # highway-architecture
@@ -39,6 +39,8 @@ Do not report Status, Summary, Next Action, Blocking Reason, Missing, Complete, 
 - `architectures/architectures.md` and `architectures/RA*.md` when present.
 - `.highway/library/templates/output/architecture-record.md`.
 - `.highway/library/templates/output/architecture-catalog.md`.
+- `.highway/library/templates/output/capability-catalog.md`.
+- `highway-implementation`.
 - `.highway/governance/experience-standard.md`.
 - A project root containing `.highway/`.
 
@@ -98,7 +100,7 @@ On `start`, "looks good" is `accept`.
 
 ### start
 
-Build the proposed architecture from the accepted ADR. Keep it conceptual. Do not authorize implementation. Do not name a platform, product, vendor, or specific technology. Derive the title with the rules in `identifier`.
+Build the proposed architecture from the accepted ADR. Keep it conceptual. Do not authorize implementation. Do not name a platform, product, vendor, or specific technology. Derive the title with the rules in `identifier`. Follow `capability title` in `highway-implementation` for each capability, then return to `start`.
 
 **Here is a proposed starting point for your architecture:**
 
@@ -142,7 +144,7 @@ Build the proposed architecture from the accepted ADR. Keep it conceptual. Do no
 
 If this is accurate, just say so.
 
-- `edit`: emit one consequence sentence. When the edit names a platform, product, vendor, or specific technology, say that it belongs on the Reference Implementation and leave it out of this architecture. A new title is a supplied title. Re-emit this block with the edit applied. Stay on `start`.
+- `edit`: follow `capability title` in `highway-implementation` for each capability the edit adds or corrects, then return here. Emit one consequence sentence, or the one `capability title` gave. When the edit names a platform, product, vendor, or specific technology, say that it belongs on the Reference Implementation and leave it out of this architecture. A new title is a supplied title. Re-emit this block with the edit applied. Stay on `start`.
 - `accept`: go to `identifier`.
 - `unknown`: re-emit this block. Stay on `start`.
 - `question`: answer, then re-emit this block. Stay on `start`.
@@ -219,7 +221,7 @@ The record follows `.highway/library/templates/output/architecture-record.md`.
 - Variation states what every implementation must keep and what an implementation may choose, or `None` when nothing may vary. A variation names no product, platform, or vendor.
 - Responsibilities are what a realization covers or marks not applicable.
 - Each Objective relationship is the Objective id and `advances`. Each Control relationship is the Control id and `bound by`. Each NFR relationship is the NFR id and `satisfies`. A section with no relationship is `None`.
-- Required Capabilities name the component that offers each one. Do not assign capability ids. The section is `None` when no capability applies.
+- Required Capabilities name the component that offers each one. Each capability title follows the Title rule in `.highway/library/templates/output/capability-catalog.md`. Do not assign capability ids. The section is `None` when no capability applies.
 - Traceability names the Request, Discovery, the current decisions, and this architecture.
 - Reference Implementation Guidance does not authorize implementation.
 - Empty optional evidence is `None`.
@@ -272,7 +274,7 @@ Run `/highway-implementation [RA id]` to create the Reference Implementation.
 - Variation, Responsibilities, Information, and each component's responsibility and interface are in the record.
 - Current Decisions lists every current decision that names this architecture, and the catalog ADR ID cell lists those same ids. A decision statement is not copied.
 - Relationship lines use `advances`, `bound by`, and `satisfies`, or `None`.
-- Required capabilities name their component and have no capability ids.
+- Required capabilities name their component, follow the capability catalog Title rule, and have no capability ids.
 - Implementation is not authorized.
 - Each id is `RA` plus eight hex digits derived from the title.
 - The catalog index columns are Architecture ID, ADR ID, Architecture Title, Architecture Path, and Status.

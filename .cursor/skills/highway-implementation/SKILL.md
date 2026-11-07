@@ -4,7 +4,7 @@ description: "Manages one reference implementation from one accepted reference a
 usage: "Invoke as /highway-implementation with one architecture id."
 compatibility: all
 metadata:
-  version: 7.3.0
+  version: 7.4.0
 ---
 
 # highway-implementation
@@ -120,9 +120,19 @@ Read `library/coding-standards/codify-platforms.md` when present. A row with a b
 4. A listed coding-standard title, or None, replaces Language. Any other title is left out. Say: [Title] is not a listed coding standard. To add it, run /highway-codify-config.
 5. Re-emit the proposal. Stay on `start`.
 
+### capability title
+
+1. Each capability title follows the Title rule in `.highway/library/templates/output/capability-catalog.md`.
+2. Split a title that joins two things into one capability per part, in its place in the list. Do not ask first. Each part keeps every other value of the entry it came from.
+3. Shorten a title of six or more words to five words or fewer. Keep its meaning.
+4. Leave out a part that matches a capability already listed.
+5. When step 2 changed an edit, its consequence sentence is: [Entry] is now [Part] and [Part]. If one is later done apart from the other, one joined capability would compound the effect of that change.
+6. When step 3 changed an edit, its consequence sentence is: [Entry] is now [Title].
+7. Return to the step that named this one.
+
 ### start
 
-Build the proposed realization from the accepted architecture. Follow `execution`. Cover every responsibility the architecture states. Mark a row `not applicable` only when that stated responsibility does not apply to this realization. Do not add a responsibility the architecture does not state. For each thing the architecture left free, state the choice this realization made, or `None` when nothing may vary. State the realized interface for each architecture interface, how conformance was shown, and the limitations of this realization, each or `None`. State one technology choice, with its intent, its reason, and its evidence. When evidence does not support a technology, use `Unknown` rather than inventing one. Derive the title with the rules in `identifier`.
+Build the proposed realization from the accepted architecture. Follow `execution`. Follow `capability title` for each capability. Cover every responsibility the architecture states. Mark a row `not applicable` only when that stated responsibility does not apply to this realization. Do not add a responsibility the architecture does not state. For each thing the architecture left free, state the choice this realization made, or `None` when nothing may vary. State the realized interface for each architecture interface, how conformance was shown, and the limitations of this realization, each or `None`. State one technology choice, with its intent, its reason, and its evidence. When evidence does not support a technology, use `Unknown` rather than inventing one. Derive the title with the rules in `identifier`.
 
 When a proposed realization contradicts the architecture, name the requirement, the conflict, and the impact. Offer `Resolve implementation` or `Revisit architecture`. Do not write.
 
@@ -156,7 +166,7 @@ When a proposed realization contradicts the architecture, name the requirement, 
 
 If this is accurate, just say so.
 
-- `edit`: when the edit names Deployed by, Managed by, or Language, follow `field`. Otherwise emit one consequence sentence. A new title is a supplied title. Re-emit this block with the edit applied. Stay on `start`.
+- `edit`: when the edit names Deployed by, Managed by, or Language, follow `field`. Otherwise follow `capability title` for each capability it adds or corrects, then emit one consequence sentence, or the one `capability title` gave. A new title is a supplied title. Re-emit this block with the edit applied. Stay on `start`.
 - `accept`: when Deployed by or Managed by is Needed, name that field and stay on `start`. When a stated responsibility is neither covered nor marked not applicable, name it and stay on `start`. Otherwise go to `identifier`.
 - `unknown`: re-emit this block. Stay on `start`.
 - `question`: answer, then re-emit this block. Stay on `start`.
@@ -226,7 +236,7 @@ The record follows `.highway/library/templates/output/implementation-record.md`.
 - The architecture is named once, in Architecture Reference.
 - Security Control Realization and NFR Realization project the accepted Controls and NFRs. Do not change those records.
 - Traceability names the Request, Discovery, the decision this realization came from, and this implementation. Do not name the architecture again.
-- Each realized capability has a business-readable title and one or more Realized By values.
+- Each realized capability title follows the Title rule in `.highway/library/templates/output/capability-catalog.md`, and each capability has one or more Realized By values.
 
 `implementations/capabilities.md` follows `.highway/library/templates/output/capability-catalog.md`.
 
@@ -291,7 +301,7 @@ This is a realization blueprint. It does not authorize deployment.
 1. Hold the return step for this visit.
 2. Read `implementations/[RI id].md` and `implementations/capabilities.md`. When the implementation is not accepted, say it is not accepted. Write nothing. Go to the held step.
 3. Leave out a passed capability whose title Realized Capabilities already lists.
-4. Derive each capability id as `write` does. When `write` would ask for a wording change, leave that capability out.
+4. Derive each capability id as `write` does. When a title breaks the Title rule in `.highway/library/templates/output/capability-catalog.md`, or `write` would ask for a wording change, leave that capability out.
 5. Append each remaining capability to Realized Capabilities, in the order passed, with its Title, Realized By, and Evidence. Change no other byte of the record.
 6. Rewrite this Parent's rows in `implementations/capabilities.md` as `write` does, with the new capabilities. Leave other Parents unchanged.
 7. Write the record and the catalog together. A failed write leaves both unchanged. Say what failed. Go to the held step.
@@ -312,6 +322,7 @@ This is a realization blueprint. It does not authorize deployment.
 - The architecture is named once. A technology choice is stated once.
 - The record status is `accepted`. The parent is an `RA` id.
 - `implementations/capabilities.md` is written in the same step, with ID, Parent, Title, and Realized By.
+- Each capability title follows the Title rule in `.highway/library/templates/output/capability-catalog.md`. A title that joins two things becomes two capabilities without a question, and the consequence sentence names the compounding effect.
 - A capability id is `CAP` plus eight hex digits. The same Parent and title reuse that id. No capability record file is written.
 - The record contains no plans, tasks, source code, or infrastructure definitions.
 - Each id is `RI` plus eight hex digits derived from the title.
@@ -324,7 +335,7 @@ This is a realization blueprint. It does not authorize deployment.
 - The skill does not write an implementation id onto the ADR.
 - An accepted implementation that can start automation, such as an agent that starts the work, gets one row in `library/coding-standards/codify-platforms.md` with blank When to use and When not to use. The person is told it is included and asked whether to configure it for automation. A yes emits "Let's configure [Platform] for automation." and follows `highway-codify-config` for that platform with the return step `close`. A no goes to `close`. Under `highway-onboarding`, the step returns to onboarding after the write.
 - A store, a newsletter, a records product, or a backup gets no row and no message. Opening, listing, or declining writes no row.
-- An invocation from `highway-codify-config` naming an accepted implementation, new realized capabilities, and a return step goes to `add capabilities`. It appends them to Realized Capabilities and to this Parent's capability rows, changes no other record byte, asks no question, and goes to the held step.
+- An invocation from `highway-codify-config` naming an accepted implementation, new realized capabilities, and a return step goes to `add capabilities`. It appends them to Realized Capabilities and to this Parent's capability rows, changes no other record byte, asks no question, and goes to the held step. A passed title that breaks the Title rule is left out and named.
 
 ## Error Handling
 
