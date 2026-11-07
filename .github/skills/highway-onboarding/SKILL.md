@@ -4,7 +4,7 @@ description: "Manages one decision, one reference architecture, and one referenc
 usage: "Invoke as `/highway-onboarding`."
 compatibility: all
 metadata:
-  version: 10.3.0
+  version: 10.4.0
 ---
 
 # highway-onboarding
@@ -257,9 +257,9 @@ When either of those records cannot be written, or the ADR cannot be updated to 
 
 After the implementation exists, follow `platforms` in `highway-implementation` to write the row. When the caller named the return step `execution`, go to `execution` in `highway-implementation` after the platform row is written. Do not ask to configure. Do not continue the queue. When it includes the platform, emit:
 
-**[Platform] is included as a platform that can start automation.**
+**[Platform] is included as a platform highway can use in highway-codify proposals**
 
-**Would you like to configure [Platform] for automation?**
+**Would you like to configure how highway-codify uses [Platform]?**
 
 A yes adds [Platform] to the platforms to configure, in the order asked. Do not write that list. Any answer continues onboarding. When `highway-codify-config` started this onboarding for [Platform], do not ask this for [Platform]. Do not ask this for a platform that cannot start automation.
 
@@ -281,7 +281,7 @@ Then go to `configure`.
 
 1. When no platform to configure remains, go to `summary`.
 2. Take the first platform to configure. Remove it from the list.
-3. Emit: Let's configure [Platform] for automation.
+3. Emit: Let's configure how highway-codify uses [Platform].
 4. Follow `highway-codify-config` for [Platform], with the return step `configure` in `highway-onboarding`.
 
 ### summary
@@ -376,8 +376,8 @@ If this is accurate, just say so.
 - A failed architecture or implementation does not claim onboarding is complete.
 - Lineage is shown only after every provider on the queue has an ADR, Reference Architecture, and Reference Implementation, and it lists each of those providers.
 - No inventory file is written.
-- An implementation that can start automation is included in `library/coding-standards/codify-platforms.md` by `platforms` in `highway-implementation`, with blank guidance. The person is asked whether to configure it for automation, and any answer continues onboarding. No platform that cannot start automation is asked about.
-- After lineage, each yes, in the order asked, emits "Let's configure [Platform] for automation." and follows `highway-codify-config` for that platform with the return step `configure`. The summary follows the last return and has no `/highway-codify-config [Platform]` configure pointer.
+- An implementation that can start automation is included in `library/coding-standards/codify-platforms.md` by `platforms` in `highway-implementation`, with blank guidance. The person is asked whether to configure how highway-codify uses it, and any answer continues onboarding. No platform that cannot start automation is asked about.
+- After lineage, each yes, in the order asked, emits "Let's configure how highway-codify uses [Platform]." and follows `highway-codify-config` for that platform with the return step `configure`. The summary follows the last return and has no `/highway-codify-config [Platform]` configure pointer.
 - An onboarding handed off by `highway-codify-config` does not ask to configure that platform, and its summary ends with the line to finish adding that platform.
 - The summary recommends `/highway-assessment`, then `/highway-help`.
 

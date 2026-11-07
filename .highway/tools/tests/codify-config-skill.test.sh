@@ -46,7 +46,7 @@ reject() {
 
 for text in \
 	'### How would you like to configure Highway Codify?' \
-	'1. **View or Update Platforms** highway considers for automation and self-service.' \
+	'1. **View or Update Platforms** highway-codify can use in proposals.' \
 	'2. **View or Update Coding Standards** highway uses for coding.' \
 	'3. **Resolve Codify Conflicts** so highway can provide more accurate and consistent proposals.' \
 	'**What would you add, correct, or remove?**' \
@@ -68,7 +68,7 @@ for text in \
 	'### platforms' \
 	'### standards' \
 	'### conflicts' \
-	'version: 3.4.0'; do
+	'version: 3.5.0'; do
 	require "$CONFIG" "$text"
 done
 
@@ -106,7 +106,7 @@ for text in \
 done
 
 for file in "$IMPL" "$ONBOARD"; do
-	require "$file" '**Would you like to configure [Platform] for automation?**'
+	require "$file" '**Would you like to configure how highway-codify uses [Platform]?**'
 	require "$file" 'library/coding-standards/codify-platforms.md'
 	reject "$file" 'library/knowledge/codify-platforms.md'
 	reject "$file" '/highway-codify configure'

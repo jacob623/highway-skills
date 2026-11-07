@@ -69,7 +69,7 @@ for text in \
 	'If one is later done apart from the other, one joined capability would compound the effect of that change.' \
 	'Follow `capability title` for each capability.' \
 	'4. Derive each capability id as `write` does. When a title breaks the Title rule in `.highway/library/templates/output/capability-catalog.md`, or `write` would ask for a wording change, leave that capability out.' \
-	'version: 7.4.0'; do
+	'version: 7.5.0'; do
 	require "$IMPL" "$text"
 done
 reject "$IMPL" 'Each realized capability has a business-readable title'
@@ -78,7 +78,7 @@ for text in \
 	'When two activities rely on one technology, propose each as its own capability.' \
 	'Follow `capability title` in `highway-implementation`' \
 	'1. **AI-Augmented Technology Development:**' \
-	'version: 10.3.0'; do
+	'version: 10.4.0'; do
 	require "$ONBOARD" "$text"
 done
 reject "$ONBOARD" 'When two activities rely on one technology, propose one capability.'
@@ -89,7 +89,7 @@ require "$ARCH" '.highway/library/templates/output/capability-catalog.md'
 require "$ARCH" 'version: 5.1.0'
 
 require "$CONFIG" '5. Title that automation under the Title rule in `.highway/library/templates/output/capability-catalog.md`.'
-require "$CONFIG" 'version: 3.4.0'
+require "$CONFIG" 'version: 3.5.0'
 reject "$CONFIG" 'one noun phrase of five words or fewer'
 
 for text in \

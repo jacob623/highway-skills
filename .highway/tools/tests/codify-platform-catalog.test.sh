@@ -43,16 +43,16 @@ require "$PLATFORMS" 'version: 2.1.0'
 
 for text in \
 	'### platforms' \
-	'is included as a platform that can start automation.**' \
-	'**Would you like to configure [Platform] for automation?**' \
+	'is included as a platform highway can use in highway-codify proposals**' \
+	'**Would you like to configure how highway-codify uses [Platform]?**' \
 	'library/coding-standards/codify-platforms.md' \
 	'an agent that starts the work' \
-	'version: 7.4.0'; do
+	'version: 7.5.0'; do
 	require "$IMPL" "$text"
 done
 
 require "$ONBOARD" 'follow `platforms` in `highway-implementation`'
-require "$ONBOARD" 'version: 10.3.0'
+require "$ONBOARD" 'version: 10.4.0'
 
 for text in \
 	'When the invocation is the word `configure`' \
