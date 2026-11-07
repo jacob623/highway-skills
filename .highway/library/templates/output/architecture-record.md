@@ -2,7 +2,7 @@
 name: architecture-record
 description: "Complete output skeleton for an accepted Reference Architecture record."
 metadata:
-  version: 2.1.0
+  version: 2.2.0
 ---
 
 ## File Frontmatter
@@ -89,7 +89,7 @@ May Choose: <what an implementation may choose, or `None`>
 ## Required Capabilities
 
 - Component: <component that offers it>
-  Capability: <advisory capability text without a capability identifier>
+  Capability: <capability title without a capability identifier>
 
 ## Assumptions
 

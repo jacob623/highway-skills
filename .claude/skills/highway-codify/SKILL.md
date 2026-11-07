@@ -4,7 +4,7 @@ description: "Manages one functional artifact for one accepted implementation."
 usage: "Invoke as /highway-codify with one implementation name."
 compatibility: all
 metadata:
-  version: 12.1.0
+  version: 12.2.0
 ---
 
 # highway-codify
@@ -149,9 +149,9 @@ On `revise`, "looks good" is `accept`.
 
 Read the selected implementation record. An instance is running when Context or Implementation Summary contains `instance is running` or `instances are running`, compared without regard to case.
 
-Each suggestion comes from one realized capability. A capability title containing `establish`, compared without regard to case, is establishing. Every other title runs, changes, or recovers. When no instance is running, establishing comes first. When an instance is running, the other kind comes first. Within a kind, keep Realized Capabilities order. When the leading kind has no title, put `Establish [implementation title]` or `Run [implementation title]` first, drawn from the Implementation Summary.
+When no instance is running, the first suggestion is `Establish [implementation title]`, drawn from the Implementation Summary. When an instance is running, do not suggest it. Each other suggestion comes from one realized capability, in Realized Capabilities order. When an instance is running and Realized Capabilities is empty, the only suggestion is `Run [implementation title]`.
 
-Write each title as the action the automation will take. It starts with a verb and names its target. An establishing title starts with `Establish`. The summary is one sentence that expands on that action, grounded in the capability's Realized By and the first sentence of its evidence. Do not use an id as a label. Write nothing.
+Write each title as the action the automation will take. It starts with a verb and names its target. A title from a realized capability does not start with `Establish`. The summary is one sentence that expands on that action, grounded in the capability's Realized By and the first sentence of its evidence. Do not use an id as a label. Write nothing.
 
 Leave out each suggestion `codified` removes, then keep at most five. Drop items from the end. Go to `suggest`.
 
@@ -597,7 +597,7 @@ The automation was not run.
 - No accepted implementation writes nothing.
 - With no named action, the suggestion list appears once before any proposal. It opens with the one Technology Choice, or the implementation title, and says automating these tasks may be worth visiting.
 - Each suggestion title is an action that starts with a verb, and its one summary sentence expands on it. The list holds at most five items, uses no id as a label, and ends with the invitation to describe another idea.
-- Suggestions of the kind that fits whether an instance is running come first, then the other kind, each in Realized Capabilities order.
+- With no instance running, `Establish [implementation title]` comes first. Every other suggestion comes from one realized capability, in Realized Capabilities order.
 - A suggestion already in a product that lists this implementation is left out before the list keeps five: by a recorded feature with the same words, ignoring case, or by a feature sentence or product Summary with that meaning. No product folder is opened. Removed rows and integration rows leave nothing out.
 - The proposal shows **Proposed project:** as `New <folder>` or `Existing <folder>`, then **Rationale:**. Its first sentence is plain language. A standard or integration is cited only when it replaced the decision.
 - The person's project edit is written. The folder stays unique, including removed rows, the `CDY` id is in `.highway/metadata.md`, the feature is under `.highway/features/`, and paths are relative to the folder.

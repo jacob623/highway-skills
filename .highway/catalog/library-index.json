@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-06T23:08:01Z",
+  "generated_at": "2026-11-07T16:00:23Z",
   "entries": [
     {
       "library_type": "template",
@@ -26,7 +26,7 @@
       "library_type": "template",
       "name": "architecture-record",
       "description": "Complete output skeleton for an accepted Reference Architecture record.",
-      "version": "2.1.0",
+      "version": "2.2.0",
       "source_path": "library/templates/output/architecture-record.md"
     },
     {
@@ -40,7 +40,7 @@
       "library_type": "template",
       "name": "capability-catalog",
       "description": "Complete output skeleton for the Capability Catalog written with a Reference Implementation.",
-      "version": "2.0.0",
+      "version": "2.1.0",
       "source_path": "library/templates/output/capability-catalog.md"
     },
     {

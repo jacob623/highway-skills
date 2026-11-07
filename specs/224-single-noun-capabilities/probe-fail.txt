@@ -1,0 +1,36 @@
+FAIL: output/capability-catalog.md omits: Title is one capability: one noun phrase of four words or fewer.
+FAIL: output/capability-catalog.md omits: A Title does not contain `and`, `or`, `&`, `/`, `+`, or a comma.
+FAIL: output/capability-catalog.md omits: A title that joins two things is two capabilities, one per part.
+FAIL: output/capability-catalog.md omits: version: 2.1.0
+FAIL: output/capability-catalog.md still contains: Title is the business capability.
+FAIL: output/architecture-record.md omits: Capability: <capability title without a capability identifier>
+FAIL: output/architecture-record.md omits: version: 2.2.0
+FAIL: output/architecture-record.md still contains: advisory capability text
+FAIL: highway-implementation/SKILL.md omits: ### capability title
+FAIL: highway-implementation/SKILL.md omits: 1. Each capability title follows the Title rule in `.highway/library/templates/output/capability-catalog.md`.
+FAIL: highway-implementation/SKILL.md omits: Do not ask first.
+FAIL: highway-implementation/SKILL.md omits: If one is later done apart from the other, one joined capability would compound the effect of that change.
+FAIL: highway-implementation/SKILL.md omits: Follow `capability title` for each capability.
+FAIL: highway-implementation/SKILL.md omits: 4. Derive each capability id as `write` does. When a title breaks the Title rule in `.highway/library/templates/output/capability-catalog.md`, or `write` would ask for a wording change, leave that capability out.
+FAIL: highway-implementation/SKILL.md omits: version: 7.4.0
+FAIL: highway-implementation/SKILL.md still contains: Each realized capability has a business-readable title
+FAIL: highway-onboarding/SKILL.md omits: When two activities rely on one technology, propose each as its own capability.
+FAIL: highway-onboarding/SKILL.md omits: Follow `capability title` in `highway-implementation`
+FAIL: highway-onboarding/SKILL.md omits: 1. **AI-Augmented Technology Development:**
+FAIL: highway-onboarding/SKILL.md omits: version: 10.3.0
+FAIL: highway-onboarding/SKILL.md still contains: When two activities rely on one technology, propose one capability.
+FAIL: highway-onboarding/SKILL.md still contains: AI-Assisted Engineering and Planning
+FAIL: highway-architecture/SKILL.md omits: Follow `capability title` in `highway-implementation`
+FAIL: highway-architecture/SKILL.md omits: .highway/library/templates/output/capability-catalog.md
+FAIL: highway-architecture/SKILL.md omits: version: 5.1.0
+FAIL: highway-codify-config/SKILL.md omits: 5. Title that automation under the Title rule in `.highway/library/templates/output/capability-catalog.md`.
+FAIL: highway-codify-config/SKILL.md omits: version: 3.4.0
+FAIL: highway-codify-config/SKILL.md still contains: one noun phrase of five words or fewer
+FAIL: highway-codify/SKILL.md omits: When no instance is running, the first suggestion is `Establish [implementation title]`
+FAIL: highway-codify/SKILL.md omits: When an instance is running and Realized Capabilities is empty, the only suggestion is `Run [implementation title]`.
+FAIL: highway-codify/SKILL.md omits: A title from a realized capability does not start with `Establish`.
+FAIL: highway-codify/SKILL.md omits: version: 12.2.0
+FAIL: highway-codify/SKILL.md still contains: A capability title containing `establish`
+FAIL: highway-codify/SKILL.md still contains: leading kind
+FAIL: highway-implementation/SKILL.md ### capability title has 0 words; the limit is 250
+EXIT:1

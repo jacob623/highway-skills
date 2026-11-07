@@ -66,12 +66,12 @@ for text in \
 	'Follow `highway-codify-config`' \
 	'return step `execution`' \
 	'Follow `highway-onboarding`' \
-	'version: 7.3.0'; do
+	'version: 7.4.0'; do
 	require "$IMPL" "$text"
 done
 
 require "$ONBOARD" 'return step `execution`'
-require "$ONBOARD" 'version: 10.2.0'
+require "$ONBOARD" 'version: 10.3.0'
 
 for text in \
 	'### kind' \
@@ -79,7 +79,7 @@ for text in \
 	'[Platform] is used' \
 	'[Platform] is not used' \
 	'**Kind:**' \
-	'version: 3.3.0'; do
+	'version: 3.4.0'; do
 	require "$CONFIG" "$text"
 done
 
@@ -89,7 +89,7 @@ for text in \
 	'Helm, Terraform, or CloudFormation' \
 	'[Field] is needed. Name it on the implementation.' \
 	'A missing When to use entry does not remove Language' \
-	'version: 12.1.0'; do
+	'version: 12.2.0'; do
 	require "$CODIFY" "$text"
 done
 
