@@ -4,7 +4,7 @@ description: "Manages the repository-wide nfr baseline."
 usage: "Invoke as /highway-nfrs."
 compatibility: all
 metadata:
-  version: 9.0.0
+  version: 9.1.0
 ---
 
 # highway-nfrs
@@ -99,7 +99,7 @@ Do not insert **No system hosting** or **Direct purchase** when that title is ab
 
 Then emit the validation block.
 
-- `edit`: emit one consequence sentence. Apply the edit to the named NFR. Preserve every NFR the person left unchanged. An added expectation becomes a new record. A removed NFR deletes that record file and keeps its catalog row with status `removed`, so the id stays taken. Derive the id before writing. When the id is taken for a different title, go to `title` and do not write yet. Otherwise rewrite the affected records and the catalog. Show the updated NFRs and emit the validation block. Stay on `review`.
+- `edit`: emit one consequence sentence. Apply the edit to the named NFR. Preserve every NFR the person left unchanged. An added expectation becomes a new record. Write its rationale with the `recommend` rationale rule. A removed NFR deletes that record file and keeps its catalog row with status `removed`, so the id stays taken. Derive the id before writing. When the id is taken for a different title, go to `title` and do not write yet. Otherwise rewrite the affected records and the catalog. Show the updated NFRs and emit the validation block. Stay on `review`.
 - `accept`: return `Finished`. Emit nothing else.
 - `unknown`: show the NFRs and emit the validation block. Stay on `review`.
 - `question`: answer in one sentence. Show the NFRs and emit the validation block. Stay on `review`.
@@ -114,11 +114,11 @@ If this is accurate, just say so.
 
 Build one set from the accepted Profile, accepted Objectives, and accepted Controls.
 
-1. Derive each recommendation from an accepted Control that no queued, shown, or captured NFR reflects yet. Use the accepted Profile and accepted Objectives to refine its scope, priority, and wording. One NFR may reflect more than one Control.
+1. Derive each recommendation from an accepted Control that no queued or captured NFR reflects yet. A shown recommendation the person did not select does not reflect its Control. Use the accepted Profile and accepted Objectives to refine its scope, priority, and wording. One NFR may reflect more than one Control.
 2. While any accepted Control is unreflected, the set contains only recommendations derived from Controls, plus **No system hosting** and **Direct purchase** in the first set. An unreflected Control is a remaining grounded recommendation.
 3. After every accepted Control is reflected, check coverage across Reliability, Availability, Performance, Scalability, Security, Compliance, Maintainability, and Operability. Do not name those areas. Add an expectation grounded in the accepted Profile or accepted Objectives, or from an uncovered area, only when it would reasonably benefit this organization.
 4. Do not add an expectation only to fill an area.
-5. Omit a title already queued, already shown, or already captured.
+5. Omit a title already queued or already captured. Omit a title already shown, unless it reflects an accepted Control that no queued or captured NFR reflects.
 6. Emit 3 to 5 recommendations. Emit fewer when fewer are grounded. Go to `ask` when none are grounded.
 
 Include **No system hosting** and **Direct purchase** in the first recommendation set. Omit one already queued, already shown, or already captured. They count toward the 3 to 5. Do not include them again in a later set. Do not ask a question in place of either limit.
@@ -135,13 +135,17 @@ When accepted material states who hosts the systems, or that the organization wi
 
 A limit the person does not select is not queued and does not apply.
 
-Each recommendation is a bold title and one sentence. Number every recommendation in the set, starting at 1. In the set, **No system hosting** and **Direct purchase** each show their title and statement. Do not say which source produced it. Include a measurable bound in the sentence only when accepted evidence supports that bound.
+Each recommendation is a bold title, one sentence, and an indented **Why it matters:** line. Number every recommendation in the set, starting at 1. In the set, **No system hosting** and **Direct purchase** each show their title, statement, and **Why it matters:** line. Do not say which source produced it. Include a measurable bound in the sentence only when accepted evidence supports that bound.
+
+An NFR that reflects one accepted Control has this rationale: **Enforces your Safeguard, [Control title],** by [how the expectation keeps that Control true]. An NFR that reflects more than one accepted Control has this rationale: **Enforces your Safeguards, [Control titles],** by [how the expectation keeps those Controls true]. Name two Controls as `[A] and [B]`. Name three or more as `[A], [B], and [C]`. Use each accepted Control title as written. Any other rationale is one line grounded in the accepted Profile and accepted Objectives.
 
 When the queue is empty, emit:
 
 Based on [Name]'s profile, accepted objectives, and accepted controls, here are recommended operational expectations that connect directly to [two or three accepted themes]:
 
 1. **[Title]:** [One sentence.]
+
+   **Why it matters:** [Rationale]
 
 **Which of these operational expectations would you like to establish, or what would you like to focus on?**
 
@@ -154,6 +158,8 @@ When the queue already has NFRs, emit:
 Looking across [the uncovered area, in the person's terms] alongside your accepted profile, objectives, and controls, here are additional operational expectations tailored to [Name]:
 
 1. **[Title]:** [One sentence.]
+
+   **Why it matters:** [Rationale]
 
 **Would you like to select any of these operational expectations, modify them, or are you ready to review the selected NFRs?**
 
@@ -172,7 +178,7 @@ If you'd like additional suggestions, just say so.
 
 ### more
 
-Build the next set with the `recommend` rules. When at least one grounded recommendation remains, emit that set and stay on `recommend`.
+Build the next set with the `recommend` rules. Omit every title in the set just shown. When at least one grounded recommendation remains, emit that set and stay on `recommend`.
 
 When none remain, emit no bullets. Emit:
 
@@ -207,6 +213,8 @@ When grounded non-duplicate recommendations remain, emit them in the same messag
 Based on [Name]'s profile, accepted objectives, and accepted controls, here are additional recommended operational expectations that connect directly to [two or three accepted themes]:
 
 1. **[Title]:** [One sentence.]
+
+   **Why it matters:** [Rationale]
 
 **Which of these operational expectations would you like to establish, or what would you like to focus on?**
 
@@ -258,7 +266,7 @@ If you're not sure, just say "I don't know," and we'll work through it together.
 
 Develop every queued NFR in queue order. Emit them in one message. One queued NFR has no separator.
 
-The title is the queued title unless the person changes it. The statement is one sentence stating how a solution must behave. Include a measurable bound only when accepted evidence supports it. The rationale is one line grounded in the accepted Profile, accepted Objectives, and accepted Controls.
+The title is the queued title unless the person changes it. The statement is one sentence stating how a solution must behave. Include a measurable bound only when accepted evidence supports it. The rationale is the **Why it matters:** line shown with that recommendation. Write the rationale of the person's own expectation with the `recommend` rationale rule. Keep a rationale the person edits as written.
 
 **Here's what I've captured as your NFRs:**
 
@@ -334,7 +342,7 @@ For each held NFR, write `library/governance/nfrs/[ID].md` in the shape required
 - Keep an existing id when the title is unchanged.
 - `title` is the accepted title.
 - `status` is `active`.
-- `controls` lists the accepted Control ids that influenced this expectation. Use `[]` when none did.
+- `controls` lists the accepted Control ids that influenced this expectation, including every Control its rationale names. Use `[]` when none did.
 - The statement is the statement shown with the title.
 - The rationale is the line shown with **Why it matters:**.
 - Do not show the stored records. Do not add a closing line.
@@ -365,6 +373,10 @@ No NFR record is written beneath `.highway`.
 - Capture starts when the person asks to review the queue.
 - A capture shows every queued NFR in one message, with `---` between NFRs and one acceptance question.
 - **No system hosting** and **Direct purchase** are recommendations. A limit the person does not select is not captured.
+- Each recommendation shows its title, one sentence, and a **Why it matters:** line.
+- An NFR that reflects accepted Controls has a rationale that opens with **Enforces your Safeguard, [Control title],** or **Enforces your Safeguards, [Control titles],** and continues with "by".
+- A shown recommendation the person did not select does not reflect its Control. A later set offers that Control again.
+- A rationale the person edits is kept as written.
 - A capture does not accept NFRs one at a time.
 - Records and the catalog are written once, after the set is accepted or declined.
 - Each id is `NFR` plus eight hex digits derived from the title.

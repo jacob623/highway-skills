@@ -4,7 +4,7 @@ description: "Manages one functional artifact for one accepted implementation."
 usage: "Invoke as /highway-codify with one implementation name."
 compatibility: all
 metadata:
-  version: 12.2.0
+  version: 12.3.0
 ---
 
 # highway-codify
@@ -66,7 +66,7 @@ The complete structure is `.highway/library/templates/output/codify-record.md`, 
 
 ## Procedure
 
-Emit only the active template. `catalog` runs alone. Otherwise follow this order: `choose` when no implementation is named; `rank`, with `codified`, when no action is named; then `suggest`, `draft`, `provider`, `standards`, `align`, `govern`, `resume`, `join`, `folder`, `layout`, `propose`, `revise`, `identifier`, `title` when needed, `write`, `index`, `plan`, `check`, `menu`, `tasks`, `code`, and `close`. Follow `.highway/governance/experience-standard.md` for attribution and acceptance wording. A current implementation is an accepted row in `implementations/implementations.md`. A removed row does not match and does not block a new automation.
+Emit only the active template. `catalog` runs alone. Otherwise follow this order: `choose` when no implementation is named; `rank`, with `codified`, when no action is named; then `suggest`, `draft`, `provider`, `platforms needed` when needed, `standards`, `align`, `govern`, `resume`, `join`, `folder`, `layout`, `propose`, `revise`, `identifier`, `title` when needed, `write`, `index`, `plan`, `check`, `menu`, `tasks`, `code`, and `close`. Follow `.highway/governance/experience-standard.md` for attribution and acceptance wording. A current implementation is an accepted row in `implementations/implementations.md`. A removed row does not match and does not block a new automation.
 
 ### Entry
 
@@ -210,11 +210,34 @@ Go to `provider`.
 Read the selected implementation record's Execution. The action is establishing when its title contains `establish`, compared without regard to case.
 
 1. The Executor is Deployed by when the action is establishing. Otherwise the Executor is Managed by.
-2. When that value is `Needed`, empty, or names a platform with no row, emit before the proposal: [Field] is needed. Name it on the implementation. Write nothing else. Stay on `provider`.
-3. Do not copy the Executor onto a task's Provider.
-4. Do not take this implementation's row or the first catalog row.
+2. When this run holds a named platform, it is the Executor. When this run holds a coding standard, it is Language for this run.
+3. When the Executor is `Needed`, empty, or names a platform with no row, go to `platforms needed`. Do not show the proposal. Write nothing.
+4. Do not copy the Executor onto a task's Provider.
+5. Do not take this implementation's row or the first catalog row.
 
 Go to `standards`.
+
+### platforms needed
+
+[Product Title] is the selected implementation title. Emit:
+
+**[Product Title]'s implementation record does not list preferred delivery platforms.**
+
+Without these, Codify is unable to make proposals for [Product title].
+
+**Would you like to set the preferred delivery platforms now?**
+
+If you'd prefer to name the delivery platform for this single codify run, just say so. Future highway-codify runs for [Product title] will result in this same message.
+
+- A yes that names no platform: emit: Let's set the preferred delivery platforms for [Product Title]. Follow `highway-implementation` for [RI id], with the return step `provider` in `highway-codify`.
+- A platforms-catalog row, named with or without a yes: hold it for this run. Return to `provider`.
+- Any other platform name: hold it for this run. When it is an accepted implementation, emit: Let's configure how highway-codify uses [Platform]. Follow `highway-codify-config` for [Platform], with the return step `provider` in `highway-codify`. Otherwise emit: Let's onboard [Platform]. Follow `highway-onboarding` for [Platform], with the return step `provider` in `highway-codify`.
+- A listed coding-standard title: hold it for this run. Re-emit the message.
+- A request to name a platform with no name: ask **Which platform would you like this codify run to use?**
+- `decline`, or a no: stop. Write nothing.
+- `question`: answer, then re-emit the message. `unknown`: re-emit the message.
+
+A held platform or coding standard is never written to the implementation. A return to `provider` keeps the selected implementation, the action, and the draft, and reads the record again.
 
 ### standards
 
@@ -611,6 +634,9 @@ The automation was not run.
 - The diagram is one logical flow, top to bottom, from the Provider. Each arrow leaves the Provider, is one task's action, starts with a verb, and points to that task's target, in task order. No arrow leaves a target.
 - Every task names the same Provider, the platform executing the automation. The implementation being automated is a target. A Shopify proposal can use Cursor when Cursor is included, even though the Shopify records do not name it.
 - A named platform with no catalog row stays the Provider and the proposal says `/highway-codify-config` can add it. With no row and no named platform, the proposal says a platform is needed and accept stays on `revise`.
+- An Executor that is `Needed`, empty, or has no row shows the preferred delivery platforms message and no proposal.
+- A yes to that message emits "Let's set the preferred delivery platforms for [Product Title]." and follows `highway-implementation` with the return step `provider`.
+- A platform named at that message is used for this run only and is not written to the implementation. The next run shows the message again.
 - Each task shows Standards as an ordered list, or `No coding standard applies.` A standard whose When not to use matches is dropped. A standard comes before the standards it inherits from, and each inherited standard appears once.
 - A Standards edit re-emits the proposal with one consequence sentence. A title not in the catalog is left out and points to `/highway-codify-config`.
 - `align` corrects the method, library, module, or pattern against every standard on the task's list and keeps the Provider.

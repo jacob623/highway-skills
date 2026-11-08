@@ -66,7 +66,7 @@ count_at_least "$OBJECTIVES" "If you'd like to add another outcome first, just s
 count_at_least "$CONTROLS" "If you'd like to add another safeguard first, just say so." 2
 count_at_least "$NFRS" "If you'd like to add another operational expectation first, just say so." 2
 
-require "$NFRS" 'Derive each recommendation from an accepted Control that no queued, shown, or captured NFR reflects yet.'
+require "$NFRS" 'Derive each recommendation from an accepted Control that no queued or captured NFR reflects yet.'
 require "$NFRS" 'Use the accepted Profile and accepted Objectives to refine its scope, priority, and wording.'
 require "$NFRS" 'One NFR may reflect more than one Control.'
 require "$NFRS" 'While any accepted Control is unreflected, the set contains only recommendations derived from Controls'

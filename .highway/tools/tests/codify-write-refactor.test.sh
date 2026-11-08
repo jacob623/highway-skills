@@ -56,7 +56,7 @@ require_in codified "$codified_body" 'same words, in the same order'
 require_in codified "$codified_body" 'Do not open a product folder.'
 require_in codified "$codified_body" 'Do not open that record.'
 require_in skill "$skill_body" 'Each action grounded in this implementation is already codified.'
-require_in skill "$skill_body" 'version: 12.2.0'
+require_in skill "$skill_body" 'version: 12.3.0'
 
 rank_line=$(grep -n '^### rank$' "$CODIFY" | cut -d: -f1)
 codified_line=$(grep -n '^### codified$' "$CODIFY" | cut -d: -f1)

@@ -90,8 +90,8 @@ for pair in "$ONBOARD|### configure" "$IMPL|### platforms" "$CONFIG|### Entry" "
 	done
 done
 
-require "$ONBOARD" 'version: 10.4.0'
-require "$IMPL" 'version: 7.5.0'
+require "$ONBOARD" 'version: 10.5.0'
+require "$IMPL" 'version: 7.6.0'
 require "$CONFIG" 'version: 3.5.0'
 
 if [[ "$fail" -ne 0 ]]; then

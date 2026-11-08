@@ -47,20 +47,20 @@ for text in \
 	'**Would you like to configure how highway-codify uses [Platform]?**' \
 	'library/coding-standards/codify-platforms.md' \
 	'an agent that starts the work' \
-	'version: 7.5.0'; do
+	'version: 7.6.0'; do
 	require "$IMPL" "$text"
 done
 
 require "$ONBOARD" 'follow `platforms` in `highway-implementation`'
-require "$ONBOARD" 'version: 10.4.0'
+require "$ONBOARD" 'version: 10.5.0'
 
 for text in \
 	'When the invocation is the word `configure`' \
-	'[Field] is needed. Name it on the implementation.' \
+	"**[Product Title]'s implementation record does not list preferred delivery platforms.**" \
 	'**Executor:**' \
 	'Do not replace the Provider' \
 	'P -->|[Next action]|' \
-	'version: 12.2.0'; do
+	'version: 12.3.0'; do
 	require "$CODIFY" "$text"
 done
 for text in \

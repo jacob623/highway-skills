@@ -39,9 +39,9 @@ for file in "$ONBOARD" "$IMPL"; do
 done
 
 require "$ONBOARD" "3. Emit: Let's configure how highway-codify uses [Platform]."
-require "$ONBOARD" 'version: 10.4.0'
+require "$ONBOARD" 'version: 10.5.0'
 require "$IMPL" "- \`accept\`, or a yes: emit: Let's configure how highway-codify uses [Platform]. Follow \`highway-codify-config\` for [Platform], with the return step \`close\` in \`highway-implementation\`."
-require "$IMPL" 'version: 7.5.0'
+require "$IMPL" 'version: 7.6.0'
 
 require "$CONFIG" '[On an add or update with no edit yet: **Here is a proposed starting point for configuring how highway-codify uses [Platform]**]'
 require "$CONFIG" '1. **View or Update Platforms** highway-codify can use in proposals.'
