@@ -47,7 +47,7 @@ for text in \
 	'**Would you like to configure how highway-codify uses [Platform]?**' \
 	'library/coding-standards/codify-platforms.md' \
 	'an agent that starts the work' \
-	'version: 7.6.0'; do
+	'version: 7.7.0'; do
 	require "$IMPL" "$text"
 done
 

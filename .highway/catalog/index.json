@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-08T13:21:17Z",
+  "generated_at": "2026-11-08T21:16:59Z",
   "entries": [
     {
       "id": "highway-adr",
@@ -79,7 +79,7 @@
       "description": "Manages one reference implementation from one accepted reference architecture.",
       "usage": "Invoke as /highway-implementation with one architecture id.",
       "compatibility": "all",
-      "version": "7.6.0",
+      "version": "7.7.0",
       "source_path": "skills/highway-implementation/SKILL.md"
     },
     {

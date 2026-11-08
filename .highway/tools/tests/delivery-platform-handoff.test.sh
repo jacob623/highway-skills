@@ -75,7 +75,7 @@ require_in "$IMPL" "$D" '**Deployed by:** [Platform. Or: Needed.]'
 require_in "$IMPL" "$D" '**Managed by:** [Platform. Or: Needed.]'
 require_in "$IMPL" "$D" '**Language:** [Standard Title. Or: None.]'
 require_in "$IMPL" "$D" '- `edit`: follow `field` for each named field, with the return step `delivery platforms` in `highway-implementation`. Re-emit this view.'
-require_in "$IMPL" "$D" 'Otherwise rewrite the three Execution lines. Change no other byte.'
+require_in "$IMPL" "$D" 'Otherwise rewrite the three Execution lines with the held fields. Change no other byte.'
 require_in "$IMPL" "$D" 'On success, emit: The preferred delivery platforms for [Title] are set. Picking up your highway-codify run. Go to the held step.'
 require_in "$IMPL" "$D" '- `decline`: emit: Leaving the preferred delivery platforms for [Title] unset. Picking up your highway-codify run. Write nothing. Go to the held step.'
 require_in "$IMPL" "$D" 'Do not create an implementation. Do not run `platforms` or `close`.'
@@ -96,7 +96,7 @@ require "$ONBOARD" 'Its Execution is `Deployed by: Needed`, `Managed by: Needed`
 require "$ONBOARD" 'When the caller named the return step `provider` in `highway-codify`, go to that step after the platform row is written.'
 
 require "$CODIFY" 'version: 12.3.0'
-require "$IMPL" 'version: 7.6.0'
+require "$IMPL" 'version: 7.7.0'
 require "$ONBOARD" 'version: 10.5.0'
 
 if [[ "$fail" -ne 0 ]]; then

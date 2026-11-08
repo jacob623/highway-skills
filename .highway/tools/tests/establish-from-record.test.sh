@@ -66,7 +66,7 @@ for text in \
 	'Follow `highway-codify-config`' \
 	'return step `execution`' \
 	'Follow `highway-onboarding`' \
-	'version: 7.6.0'; do
+	'version: 7.7.0'; do
 	require "$IMPL" "$text"
 done
 

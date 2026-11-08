@@ -69,7 +69,7 @@ for text in \
 	'If one is later done apart from the other, one joined capability would compound the effect of that change.' \
 	'Follow `capability title` for each capability.' \
 	'4. Derive each capability id as `write` does. When a title breaks the Title rule in `.highway/library/templates/output/capability-catalog.md`, or `write` would ask for a wording change, leave that capability out.' \
-	'version: 7.6.0'; do
+	'version: 7.7.0'; do
 	require "$IMPL" "$text"
 done
 reject "$IMPL" 'Each realized capability has a business-readable title'
