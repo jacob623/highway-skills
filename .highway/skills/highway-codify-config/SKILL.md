@@ -4,7 +4,7 @@ description: "Manages the repository-wide guidance used by highway-codify."
 usage: "Invoke as /highway-codify-config, or with one implementation name."
 compatibility: all
 metadata:
-  version: 3.4.0
+  version: 3.5.0
 ---
 
 # highway-codify-config
@@ -91,7 +91,7 @@ Emit this menu exactly, as rendered markdown:
 ```markdown
 ### How would you like to configure Highway Codify?
 
-1. **View or Update Platforms** highway considers for automation and self-service.
+1. **View or Update Platforms** highway-codify can use in proposals.
 2. **View or Update Coding Standards** highway uses for coding.
 3. **Resolve Codify Conflicts** so highway can provide more accurate and consistent proposals.
 ```
@@ -191,7 +191,7 @@ If you'd like to cancel, just say so.
 
 [One sentence stating the consequence of this change.]
 
-[On an add or update with no edit yet: **Here is a proposed starting point for configuring [Platform] as a platform capable of executing automation**]
+[On an add or update with no edit yet: **Here is a proposed starting point for configuring how highway-codify uses [Platform]**]
 
 **Platform:** [Platform]
 

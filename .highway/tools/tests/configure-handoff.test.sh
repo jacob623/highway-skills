@@ -48,7 +48,7 @@ require_in "$ONBOARD" '### orchestrate' 'When `highway-codify-config` started th
 require_in "$ONBOARD" '### lineage' 'Then go to `configure`.'
 require_in "$ONBOARD" '### configure' '1. When no platform to configure remains, go to `summary`.'
 require_in "$ONBOARD" '### configure' '2. Take the first platform to configure. Remove it from the list.'
-require_in "$ONBOARD" '### configure' "3. Emit: Let's configure [Platform] for automation."
+require_in "$ONBOARD" '### configure' "3. Emit: Let's configure how highway-codify uses [Platform]."
 require_in "$ONBOARD" '### configure' '4. Follow `highway-codify-config` for [Platform], with the return step `configure` in `highway-onboarding`.'
 require_in "$ONBOARD" '### summary' 'Run `/highway-codify-config [Platform]` to finish adding [Platform].'
 
@@ -67,7 +67,7 @@ if ((words > 250)); then
 fi
 
 require_in "$IMPL" '### platforms' 'When `highway-onboarding` follows this step, return to `highway-onboarding` after the write. Do not emit the included line or ask the question.'
-require_in "$IMPL" '### platforms' "- \`accept\`, or a yes: emit: Let's configure [Platform] for automation. Follow \`highway-codify-config\` for [Platform], with the return step \`close\` in \`highway-implementation\`."
+require_in "$IMPL" '### platforms' "- \`accept\`, or a yes: emit: Let's configure how highway-codify uses [Platform]. Follow \`highway-codify-config\` for [Platform], with the return step \`close\` in \`highway-implementation\`."
 require_in "$IMPL" '### platforms' '- `decline`, or a no: go to `close`.'
 require_in "$IMPL" '### platforms' '- `unknown`: go to `close`.'
 
@@ -90,9 +90,9 @@ for pair in "$ONBOARD|### configure" "$IMPL|### platforms" "$CONFIG|### Entry" "
 	done
 done
 
-require "$ONBOARD" 'version: 10.3.0'
-require "$IMPL" 'version: 7.4.0'
-require "$CONFIG" 'version: 3.4.0'
+require "$ONBOARD" 'version: 10.5.0'
+require "$IMPL" 'version: 7.6.0'
+require "$CONFIG" 'version: 3.5.0'
 
 if [[ "$fail" -ne 0 ]]; then
 	exit 1

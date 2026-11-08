@@ -60,7 +60,7 @@ for text in \
 	'The test path must be part of the file and folder structure.' \
 	'When the catalog is absent, create it' \
 	'name the same relative path' \
-	'version: 3.4.0'; do
+	'version: 3.5.0'; do
 	require "$CONFIG" "$text"
 done
 
@@ -68,7 +68,7 @@ for text in \
 	'### layout' \
 	'**Files:**' \
 	'has no file and folder structure. To add one, run /highway-codify-config.' \
-	'version: 12.2.0'; do
+	'version: 12.3.0'; do
 	require "$CODIFY" "$text"
 done
 

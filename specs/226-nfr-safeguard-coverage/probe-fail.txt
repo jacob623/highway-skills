@@ -1,0 +1,24 @@
+FAIL: highway-nfrs omits: version: 9.1.0
+FAIL: highway-nfrs omits: 1. Derive each recommendation from an accepted Control that no queued or captured NFR reflects yet. A shown recommendation the person did not select does not reflect its Control.
+FAIL: highway-nfrs omits: 5. Omit a title already queued or already captured. Omit a title already shown, unless it reflects an accepted Control that no queued or captured NFR reflects.
+FAIL: highway-nfrs omits: Omit every title in the set just shown.
+FAIL: highway-nfrs omits: Each recommendation is a bold title, one sentence, and an indented **Why it matters:** line.
+FAIL: highway-nfrs omits: In the set, **No system hosting** and **Direct purchase** each show their title, statement, and **Why it matters:** line.
+FAIL: highway-nfrs omits: An NFR that reflects one accepted Control has this rationale: **Enforces your Safeguard, [Control title],** by [how the expectation keeps that Control true].
+FAIL: highway-nfrs omits: An NFR that reflects more than one accepted Control has this rationale: **Enforces your Safeguards, [Control titles],** by [how the expectation keeps those Controls true].
+FAIL: highway-nfrs omits: Name two Controls as `[A] and [B]`. Name three or more as `[A], [B], and [C]`.
+FAIL: highway-nfrs omits: Use each accepted Control title as written. Any other rationale is one line grounded in the accepted Profile and accepted Objectives.
+FAIL: highway-nfrs shows **Why it matters:** in 1 templates, expected at least 4
+FAIL: highway-nfrs omits: The rationale is the **Why it matters:** line shown with that recommendation. Write the rationale of the person's own expectation with the `recommend` rationale rule. Keep a rationale the person edits as written.
+FAIL: highway-nfrs omits: An added expectation becomes a new record. Write its rationale with the `recommend` rationale rule.
+FAIL: highway-nfrs omits: `controls` lists the accepted Control ids that influenced this expectation, including every Control its rationale names.
+FAIL: highway-nfrs omits: - Each recommendation shows its title, one sentence, and a **Why it matters:** line.
+FAIL: highway-nfrs omits: - An NFR that reflects accepted Controls has a rationale that opens with **Enforces your Safeguard, [Control title],** or **Enforces your Safeguards, [Control titles],** and continues with "by".
+FAIL: highway-nfrs omits: - A shown recommendation the person did not select does not reflect its Control. A later set offers that Control again.
+FAIL: highway-nfrs omits: - A rationale the person edits is kept as written.
+FAIL: highway-nfrs still contains: no queued, shown, or captured NFR reflects yet
+FAIL: highway-nfrs still contains: 5. Omit a title already queued, already shown, or already captured.
+FAIL: highway-nfrs still contains: Each recommendation is a bold title and one sentence.
+FAIL: highway-nfrs still contains: each show their title and statement.
+FAIL: highway-nfrs still contains: The rationale is one line grounded in the accepted Profile, accepted Objectives, and accepted Controls.
+EXIT:1

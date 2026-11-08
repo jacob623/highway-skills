@@ -1,0 +1,36 @@
+FAIL: highway-codify ### provider omits: 2. When this run holds a named platform, it is the Executor. When this run holds a coding standard, it is Language for this run.
+FAIL: highway-codify ### provider omits: 3. When the Executor is `Needed`, empty, or names a platform with no row, go to `platforms needed`. Do not show the proposal. Write nothing.
+FAIL: highway-codify ### platforms needed omits: **[Product Title]'s implementation record does not list preferred delivery platforms.**
+FAIL: highway-codify ### platforms needed omits: Without these, Codify is unable to make proposals for [Product title].
+FAIL: highway-codify ### platforms needed omits: **Would you like to set the preferred delivery platforms now?**
+FAIL: highway-codify ### platforms needed omits: If you'd prefer to name the delivery platform for this single codify run, just say so. Future highway-codify runs for [Product title] will result in this same message.
+FAIL: highway-codify ### platforms needed omits: - A yes that names no platform: emit: Let's set the preferred delivery platforms for [Product Title]. Follow `highway-implementation` for [RI id], with the return step `provider` in `highway-codify`.
+FAIL: highway-codify ### platforms needed omits: - A platforms-catalog row, named with or without a yes: hold it for this run. Return to `provider`.
+FAIL: highway-codify ### platforms needed omits: Follow `highway-codify-config` for [Platform], with the return step `provider` in `highway-codify`.
+FAIL: highway-codify ### platforms needed omits: Follow `highway-onboarding` for [Platform], with the return step `provider` in `highway-codify`.
+FAIL: highway-codify ### platforms needed omits: - A listed coding-standard title: hold it for this run. Re-emit the message.
+FAIL: highway-codify ### platforms needed omits: **Which platform would you like this codify run to use?**
+FAIL: highway-codify ### platforms needed omits: - `decline`, or a no: stop. Write nothing.
+FAIL: highway-codify ### platforms needed omits: A held platform or coding standard is never written to the implementation.
+FAIL: highway-codify ### platforms needed omits: A return to `provider` keeps the selected implementation, the action, and the draft, and reads the record again.
+FAIL: highway-codify still contains: [Field] is needed. Name it on the implementation.
+FAIL: highway-codify ### platforms needed has 0 words; the limit is 250
+FAIL: highway-implementation ### Entry omits: 2. When the invocation names an accepted implementation and a return step, and names no realized capabilities, go to `delivery platforms`.
+FAIL: highway-implementation ### delivery platforms omits: 1. Hold the return step for this visit. Keep it while configuration or onboarding runs from this step.
+FAIL: highway-implementation ### delivery platforms omits: **Product Title:** [Title]
+FAIL: highway-implementation ### delivery platforms omits: **Architecture Reference:** [RA id] — [Architecture title]
+FAIL: highway-implementation ### delivery platforms omits: **Deployed by:** [Platform. Or: Needed.]
+FAIL: highway-implementation ### delivery platforms omits: **Managed by:** [Platform. Or: Needed.]
+FAIL: highway-implementation ### delivery platforms omits: **Language:** [Standard Title. Or: None.]
+FAIL: highway-implementation ### delivery platforms omits: - `edit`: follow `field` for each named field, with the return step `delivery platforms` in `highway-implementation`. Re-emit this view.
+FAIL: highway-implementation ### delivery platforms omits: Otherwise rewrite the three Execution lines. Change no other byte.
+FAIL: highway-implementation ### delivery platforms omits: On success, emit: The preferred delivery platforms for [Title] are set. Picking up your highway-codify run. Go to the held step.
+FAIL: highway-implementation ### delivery platforms omits: - `decline`: emit: Leaving the preferred delivery platforms for [Title] unset. Picking up your highway-codify run. Write nothing. Go to the held step.
+FAIL: highway-implementation ### delivery platforms omits: Do not create an implementation. Do not run `platforms` or `close`.
+FAIL: highway-implementation ### delivery platforms has 0 words; the limit is 250
+FAIL: highway-onboarding omits: Its Execution is `Deployed by: Needed`, `Managed by: Needed`, and `Language: None`.
+FAIL: highway-onboarding omits: When the caller named the return step `provider` in `highway-codify`, go to that step after the platform row is written.
+FAIL: highway-codify omits: version: 12.3.0
+FAIL: highway-implementation omits: version: 7.6.0
+FAIL: highway-onboarding omits: version: 10.5.0
+EXIT:1

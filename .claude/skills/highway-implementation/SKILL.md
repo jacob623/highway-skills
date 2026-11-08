@@ -4,20 +4,21 @@ description: "Manages one reference implementation from one accepted reference a
 usage: "Invoke as /highway-implementation with one architecture id."
 compatibility: all
 metadata:
-  version: 7.4.0
+  version: 7.6.0
 ---
 
 # highway-implementation
 
 ## Purpose
 
-Creates one proposed Reference Implementation from an accepted Reference Architecture after the person accepts the proposed realization, and records new realized capabilities on an accepted implementation when `highway-codify-config` passes them.
+Creates one proposed Reference Implementation from an accepted Reference Architecture after the person accepts the proposed realization, and records new realized capabilities on an accepted implementation when `highway-codify-config` passes them, and sets the preferred delivery platforms on an accepted implementation when `highway-codify` hands it off.
 
 ## When to use
 
 - The person invokes `/highway-implementation` with one Reference Architecture id.
 - The person invokes `/highway-implementation` without a Reference Architecture id.
 - `highway-codify-config` names an accepted implementation, new realized capabilities, and a return step.
+- `highway-codify` names an accepted implementation and a return step.
 
 ## When not to use
 
@@ -56,23 +57,25 @@ The complete structure is `.highway/library/templates/output/implementation-reco
 - One row in `library/coding-standards/codify-platforms.md`, with blank When to use and When not to use, when the accepted implementation can start automation.
 - A closing message that names the implementation.
 - New realized capabilities appended to an accepted implementation and to its rows in `implementations/capabilities.md`, when `highway-codify-config` passes them.
+- Rewritten Execution lines on an accepted implementation, when `highway-codify` hands it off and the person accepts.
 - No implementation when the architecture is missing, not accepted, incompatible, or a write fails.
 
 ## Procedure
 
-Emit only the active template. Follow this order: `add capabilities` when `highway-codify-config` passes new realized capabilities; `choose` when no architecture id is supplied; otherwise `start`, which follows `execution`, then `identifier`, `title` when needed, `write`, `platforms`, and `close`. The accepted Reference Architecture remains authoritative. A realization cannot redesign it or override the ADR. A missing Profile, Objective, Control, or NFR continues without invented evidence. A malformed one of those baselines stops the skill and writes nothing. Clarification is read-only. An open finding can inform a risk. It cannot block the proposal.
+Emit only the active template. Follow this order: `add capabilities` when `highway-codify-config` passes new realized capabilities; `delivery platforms` when `highway-codify` hands off an accepted implementation; `choose` when no architecture id is supplied; otherwise `start`, which follows `execution`, then `identifier`, `title` when needed, `write`, `platforms`, and `close`. The accepted Reference Architecture remains authoritative. A realization cannot redesign it or override the ADR. A missing Profile, Objective, Control, or NFR continues without invented evidence. A malformed one of those baselines stops the skill and writes nothing. Clarification is read-only. An open finding can inform a risk. It cannot block the proposal.
 
 One accepted architecture can have more than one current implementation. A current implementation is an accepted implementation-catalog row for that architecture. A removed row does not count and does not block a new one. Creating another leaves every existing implementation in place and does not change the decision or the architecture.
 
 ### Entry
 
 1. When the invocation names an accepted implementation, new realized capabilities, and a return step, go to `add capabilities`.
-2. Read the invocation for one Reference Architecture id.
-3. When none is present, go to `choose`.
-4. When an id is present, resolve it. When it matches no architecture, stop. Say the architecture was not found. Write nothing.
-5. When that architecture status is not `accepted`, stop. Say the architecture is not accepted. Write nothing.
-6. When that architecture already has current implementations, show each current implementation, then go to `start`. A new implementation can still be proposed.
-7. Otherwise go to `start`.
+2. When the invocation names an accepted implementation and a return step, and names no realized capabilities, go to `delivery platforms`.
+3. Read the invocation for one Reference Architecture id.
+4. When none is present, go to `choose`.
+5. When an id is present, resolve it. When it matches no architecture, stop. Say the architecture was not found. Write nothing.
+6. When that architecture status is not `accepted`, stop. Say the architecture is not accepted. Write nothing.
+7. When that architecture already has current implementations, show each current implementation, then go to `start`. A new implementation can still be proposed.
+8. Otherwise go to `start`.
 
 ### choose
 
@@ -86,7 +89,7 @@ Otherwise emit one numbered line per accepted architecture, starting at 1, in ar
 
 **Which Reference Architecture would you like to realize?**
 
-- A Reference Architecture id, a listed architecture title, or its number: follow Entry from case 3.
+- A Reference Architecture id, a listed architecture title, or its number: follow Entry from case 4.
 - `unknown`: re-emit this list. Stay on `choose`.
 - `decline`: stop. Write nothing.
 
@@ -274,11 +277,11 @@ Otherwise write `library/coding-standards/codify-platforms.md` from `.highway/li
 
 On success, emit:
 
-**[Platform] is included as a platform that can start automation.**
+**[Platform] is included as a platform highway can use in highway-codify proposals**
 
-**Would you like to configure [Platform] for automation?**
+**Would you like to configure how highway-codify uses [Platform]?**
 
-- `accept`, or a yes: emit: Let's configure [Platform] for automation. Follow `highway-codify-config` for [Platform], with the return step `close` in `highway-implementation`.
+- `accept`, or a yes: emit: Let's configure how highway-codify uses [Platform]. Follow `highway-codify-config` for [Platform], with the return step `close` in `highway-implementation`.
 - `decline`, or a no: go to `close`.
 - `question`: answer, then re-emit the question.
 - `unknown`: go to `close`.
@@ -308,6 +311,34 @@ This is a realization blueprint. It does not authorize deployment.
 8. Emit **New capabilities recorded for [Title]:** and list each recorded title. Name each capability left out in step 4.
 9. Go to the held step. Do not ask a question. Do not run `platforms` or `close`.
 
+### delivery platforms
+
+1. Hold the return step for this visit. Keep it while configuration or onboarding runs from this step.
+2. Read `implementations/[RI id].md` and its architecture.
+3. Emit:
+
+**Product Title:** [Title]
+
+**Architecture Reference:** [RA id] — [Architecture title]
+
+**Deployed by:** [Platform. Or: Needed.]
+
+**Managed by:** [Platform. Or: Needed.]
+
+**Language:** [Standard Title. Or: None.]
+
+**What would you add, correct, or remove?**
+
+If this is accurate, just say so.
+
+- `edit`: follow `field` for each named field, with the return step `delivery platforms` in `highway-implementation`. Re-emit this view.
+- `accept`: when Deployed by or Managed by is Needed, name that field and re-emit this view. Otherwise rewrite the three Execution lines. Change no other byte. A failed write leaves the record unchanged. Say what failed. Re-emit this view. On success, emit: The preferred delivery platforms for [Title] are set. Picking up your highway-codify run. Go to the held step.
+- `decline`: emit: Leaving the preferred delivery platforms for [Title] unset. Picking up your highway-codify run. Write nothing. Go to the held step.
+- `question`: answer, then re-emit this view.
+- `unknown`: re-emit this view.
+
+Do not create an implementation. Do not run `platforms` or `close`.
+
 ## Verification
 
 - A Reference Architecture id for an accepted architecture opens the proposed realization.
@@ -333,9 +364,10 @@ This is a realization blueprint. It does not authorize deployment.
 - A failed write leaves existing implementation, implementation-catalog, and capability-catalog bytes unchanged.
 - The skill does not change the Reference Architecture, the decision statement, the rationale, the selected option, or the decision status.
 - The skill does not write an implementation id onto the ADR.
-- An accepted implementation that can start automation, such as an agent that starts the work, gets one row in `library/coding-standards/codify-platforms.md` with blank When to use and When not to use. The person is told it is included and asked whether to configure it for automation. A yes emits "Let's configure [Platform] for automation." and follows `highway-codify-config` for that platform with the return step `close`. A no goes to `close`. Under `highway-onboarding`, the step returns to onboarding after the write.
+- An accepted implementation that can start automation, such as an agent that starts the work, gets one row in `library/coding-standards/codify-platforms.md` with blank When to use and When not to use. The person is told it is included and asked whether to configure how highway-codify uses it. A yes emits "Let's configure how highway-codify uses [Platform]." and follows `highway-codify-config` for that platform with the return step `close`. A no goes to `close`. Under `highway-onboarding`, the step returns to onboarding after the write.
 - A store, a newsletter, a records product, or a backup gets no row and no message. Opening, listing, or declining writes no row.
 - An invocation from `highway-codify-config` naming an accepted implementation, new realized capabilities, and a return step goes to `add capabilities`. It appends them to Realized Capabilities and to this Parent's capability rows, changes no other record byte, asks no question, and goes to the held step. A passed title that breaks the Title rule is left out and named.
+- An invocation from `highway-codify` naming an accepted implementation and a return step goes to `delivery platforms`. It shows Product Title, Architecture Reference, Deployed by, Managed by, and Language. Acceptance rewrites only the three Execution lines and emits "The preferred delivery platforms for [Title] are set. Picking up your highway-codify run." A decline writes nothing and emits "Leaving the preferred delivery platforms for [Title] unset. Picking up your highway-codify run." Both go to the held step.
 
 ## Error Handling
 
