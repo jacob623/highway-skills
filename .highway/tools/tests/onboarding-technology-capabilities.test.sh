@@ -56,7 +56,7 @@ reject 'This is where Highway helps you navigate your technology landscape.'
 reject 'Identify important business capabilities'
 reject '[What the organization does.]'
 
-require 'version: 10.5.0'
+require 'version: 10.6.0'
 
 if [[ "$fail" -ne 0 ]]; then
 	exit 1

@@ -2,7 +2,7 @@
 name: codify-record
 description: "Complete output skeleton for one accepted feature proposal."
 metadata:
-  version: 9.0.0
+  version: 9.1.0
 ---
 
 ## File Frontmatter
@@ -69,7 +69,7 @@ The id is the product's `CDY` id. `implementation` is the accepted implementatio
 
 The body is the accepted proposal. It states one action, and the title is that action. The title and summary are the ones the person selected. It does not copy the implementation, the architecture, or the decision. It contains no instruction to run the automation.
 
-Each task is one action against one platform, object, or API, in the order the diagram shows. At least one task is present. Every task names the same Provider. The implementation this automation serves is a target, not the Provider.
+Each task is one action against one platform, object, or API, in the order the diagram shows. At least one task is present. Every task names the same Provider. The implementation this automation serves is a target, not the Provider. In a code project, a code task shows **Language:** with the Language standard in place of **Provider:**, and its target is the product.
 
 Standards is the ordered list of coding standards the person accepted for that task. An earlier standard wins a disagreement with a later one. Each inherited standard appears once, after the standard that inherits it. A task with no standard says `No coding standard applies.`
 
@@ -85,7 +85,7 @@ flowchart TB
   P -->|<next action>| T2["<next target>"]
 ```
 
-The diagram is one logical flow. The first node is the Provider: the platform executing the automation. It is not a task. Each task adds one arrow from the Provider and one new node for its target, in task order. No arrow leaves a target. Each arrow label is its task's action and starts with a verb. Every target has its own node, even when two targets share a name.
+The diagram is one logical flow. The first node is the Provider: the platform executing the automation. It is not a task. Each task adds one arrow from the Provider and one new node for its target, in task order. No arrow leaves a target. Each arrow label is its task's action and starts with a verb. Every target has its own node, even when two targets share a name. In a code project, each code task's arrow points to the product.
 
 ## Readme
 
@@ -101,4 +101,4 @@ The product folder root contains `README.md` with two parts, in this order.
 <how a non-technical person starts this one automation, what they provide, and what comes back>
 ```
 
-Setup Instructions is for the person who accepted the proposal. User Guide follows the interface of the Provider. User Guide does not ask that person to edit the generated files or read the implementation record.
+Setup Instructions is for the person who accepted the proposal. User Guide follows the interface of the Provider. User Guide does not ask that person to edit the generated files or read the implementation record. In a code project, Setup Instructions say how to build, configure, and run the product, and User Guide says how to use its interfaces.

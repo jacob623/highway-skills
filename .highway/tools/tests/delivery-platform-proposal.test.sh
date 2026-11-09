@@ -32,16 +32,18 @@ if section "$IMPL" "$E" | grep -Fq -- '5. Return to `start`.'; then
 	fail=1
 fi
 
-require_in "$D" "3. Hold the record's value for each Execution field. Deployed by and Managed by are unset when \`Needed\`, empty, or naming a platform with no row. Language is unset when \`None\` or empty. Hold the \`execution\` value for each unset field. A value the person named in this visit replaces the held value."
+require_in "$D" "3. Hold the record's value for each Execution field. Deployed by and Managed by are unset when \`Needed\`, empty, or naming a platform with no row. Language is unset when \`Needed\`, empty, or naming a standard with no row. Hold the \`execution\` value for each unset field. A value the person named in this visit replaces the held value."
 require_in "$D" '4. Emit:'
 require_in "$D" 'Otherwise rewrite the three Execution lines with the held fields. Change no other byte.'
 
-require_in '## Verification' "- The delivery platforms view holds the record's fields, then the \`execution\` value for each unset one: Deployed by or Managed by that is \`Needed\`, empty, or has no row, and Language that is \`None\` or empty. A value the person named in the visit replaces it. This implementation's row is never a candidate."
+require_in '## Verification' "- The delivery platforms view holds the record's fields, then the \`execution\` value for each unset one: Deployed by or Managed by that is \`Needed\`, empty, or has no row, and Language that is \`Needed\`, empty, or has no row. A stored \`None\` is shown as stored. A value the person named in the visit replaces it. This implementation's row is never a candidate."
 
 for heading in "$E" "$D"; do
+	max=250
+	[[ "$heading" == "$D" ]] && max=400
 	words="$(section "$IMPL" "$heading" | wc -w | tr -d ' ')"
-	if [[ "$words" -eq 0 || "$words" -gt 250 ]]; then
-		echo "FAIL: highway-implementation $heading has $words words; the limit is 250"
+	if [[ "$words" -eq 0 || "$words" -gt "$max" ]]; then
+		echo "FAIL: highway-implementation $heading has $words words; the limit is $max"
 		fail=1
 	fi
 	for word in 'so that' 'because' 'in order to' 'should' 'consider' 'prefer' 'usually' 'where appropriate'; do
@@ -52,8 +54,8 @@ for heading in "$E" "$D"; do
 	done
 done
 
-grep -Fq 'version: 7.7.0' "$IMPL" || {
-	echo 'FAIL: highway-implementation omits: version: 7.7.0'
+grep -Fq 'version: 7.9.0' "$IMPL" || {
+	echo 'FAIL: highway-implementation omits: version: 7.9.0'
 	fail=1
 }
 

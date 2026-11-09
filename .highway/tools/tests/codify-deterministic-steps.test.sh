@@ -45,7 +45,7 @@ require_in() {
 }
 
 previous=0
-for step in rank codified suggest draft provider standards align govern resume join folder layout plan check tasks; do
+for step in 'record check' rank codified 'code project' suggest draft 'code tasks' provider standards align govern resume join folder layout plan check tasks; do
 	line=$(grep -n "^### $step\$" "$CODIFY" | head -n 1 | cut -d: -f1)
 	if [[ -z "$line" || "$line" -le "$previous" ]]; then
 		echo "FAIL: highway-codify ### $step is missing or out of order"
@@ -70,7 +70,7 @@ require_in plan 'Done when is the earliest such criterion.'
 require_in check 'A story with no Done when'
 require_in check 'Ask the first five'
 require_in tasks 'the story whose title is that task'"'"'s action'
-require "$CODIFY" 'version: 12.3.0'
+require "$CODIFY" 'version: 13.0.0'
 require "$PLAN" 'version: 2.0.0'
 require "$PLAN" 'The title is that task'"'"'s action.'
 reject "$CODIFY" 'The accepted proposal is not copied.'

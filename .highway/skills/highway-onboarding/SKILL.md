@@ -4,7 +4,7 @@ description: "Manages one decision, one reference architecture, and one referenc
 usage: "Invoke as `/highway-onboarding`."
 compatibility: all
 metadata:
-  version: 10.5.0
+  version: 10.6.0
 ---
 
 # highway-onboarding
@@ -249,13 +249,13 @@ When the ADR exists, create the Reference Architecture, then the Reference Imple
 
 The architecture uses an `RA` id. Its Current Decisions list is this ADR. Context states when it applies and what it leaves open. The style states why it was chosen. Each component has its responsibility and its interface, or `None`. Information, Variation, and Responsibilities are written. Relationship lines use `advances`, `bound by`, and `satisfies`, or `None`. Each required capability names its component and has no capability id. Do not write Key Technologies. Do not copy the decision statement. The architecture catalog ADR ID cell is this ADR id.
 
-The implementation uses an `RI` id and that `RA` parent. It states the variation choice, or `None`. Coverage rows are the architecture's responsibilities, each covered or not applicable. Conformance agrees with those rows. A compatible record has no gap section and no conflict section. It states the realized interface, how conformance was shown, and the limitations, each or `None`. A technology choice is stated once. The architecture is named once. Its Execution is `Deployed by: Needed`, `Managed by: Needed`, and `Language: None`.
+The implementation uses an `RI` id and that `RA` parent. It states the variation choice, or `None`. Coverage rows are the architecture's responsibilities, each covered or not applicable. Conformance agrees with those rows. A compatible record has no gap section and no conflict section. It states the realized interface, how conformance was shown, and the limitations, each or `None`. A technology choice is stated once. The architecture is named once. Its Execution is `Deployed by: Needed`, `Managed by: Needed`, and `Language: Needed`.
 
 After the architecture is written, set the ADR's `Reference Architecture` field to its id and the decision catalog Architecture ID to that same id. Change no other ADR byte. Do not set an implementation id.
 
 When either of those records cannot be written, or the ADR cannot be updated to name the architecture, try that step once more. When it still fails, keep the ADR and any earlier provider results. Say which record could not be written or named. Do not claim onboarding is complete. When the implementation cannot be written, the ADR names the architecture and no implementation exists.
 
-After the implementation exists, follow `platforms` in `highway-implementation` to write the row. When the caller named the return step `execution`, go to `execution` in `highway-implementation` after the platform row is written. When the caller named the return step `provider` in `highway-codify`, go to that step after the platform row is written. Do not ask to configure. Do not continue the queue. When it includes the platform, emit:
+After the implementation exists, follow `platforms` in `highway-implementation` to write the row. When the caller named the return step `execution`, go to `execution` in `highway-implementation` after the platform row is written. Do not ask to configure. Do not continue the queue. When it includes the platform, emit:
 
 **[Platform] is included as a platform highway can use in highway-codify proposals**
 
@@ -371,7 +371,7 @@ If this is accurate, just say so.
 - After the architecture is written, the ADR names the architecture and does not name an implementation. A failed ADR update is tried once more and is named when it still fails.
 - Onboarding does not ask whether a decision replaces or runs beside another.
 - The architecture and the implementation use the same sections as any other architecture and implementation.
-- An onboarded implementation stores Deployed by and Managed by as `Needed` and Language as `None`.
+- An onboarded implementation stores Deployed by, Managed by, and Language as `Needed`.
 - No Request or Discovery record is created.
 - The Reference Implementation is written only after that architecture record exists.
 - A failed architecture or implementation does not claim onboarding is complete.

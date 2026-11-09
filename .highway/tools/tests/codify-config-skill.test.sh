@@ -84,7 +84,7 @@ fi
 require "$STANDARD_TEMPLATE" '## Rules'
 require "$STANDARD_TEMPLATE" 'Tests: not required'
 require "$RECORD" '**Standards:**'
-require "$RECORD" 'version: 9.0.0'
+require "$RECORD" 'version: 9.1.0'
 require "$TASKS" 'Standards: `library/coding-standards/'
 require "$TASKS" 'version: 6.0.0'
 reject "$TASKS" 'Implement and Use'
@@ -94,7 +94,7 @@ for text in \
 	'**Standards:**' \
 	'/highway-codify-config' \
 	'library/coding-standards/codify-platforms.md' \
-	'version: 12.3.0'; do
+	'version: 13.0.0'; do
 	require "$CODIFY" "$text"
 done
 for text in \
