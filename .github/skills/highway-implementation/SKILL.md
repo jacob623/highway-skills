@@ -4,7 +4,7 @@ description: "Manages one reference implementation from one accepted reference a
 usage: "Invoke as /highway-implementation with one architecture id."
 compatibility: all
 metadata:
-  version: 7.6.0
+  version: 7.9.0
 ---
 
 # highway-implementation
@@ -62,7 +62,7 @@ The complete structure is `.highway/library/templates/output/implementation-reco
 
 ## Procedure
 
-Emit only the active template. Follow this order: `add capabilities` when `highway-codify-config` passes new realized capabilities; `delivery platforms` when `highway-codify` hands off an accepted implementation; `choose` when no architecture id is supplied; otherwise `start`, which follows `execution`, then `identifier`, `title` when needed, `write`, `platforms`, and `close`. The accepted Reference Architecture remains authoritative. A realization cannot redesign it or override the ADR. A missing Profile, Objective, Control, or NFR continues without invented evidence. A malformed one of those baselines stops the skill and writes nothing. Clarification is read-only. An open finding can inform a risk. It cannot block the proposal.
+Emit only the active template. Follow this order: `add capabilities` when `highway-codify-config` passes new realized capabilities; `delivery platforms`, with `delivery decline`, when `highway-codify` hands off an accepted implementation; `choose` when no architecture id is supplied; otherwise `start`, which follows `execution`, then `identifier`, `title` when needed, `write`, `platforms`, and `close`. The accepted Reference Architecture remains authoritative. A realization cannot redesign it or override the ADR. A missing Profile, Objective, Control, or NFR continues without invented evidence. A malformed one of those baselines stops the skill and writes nothing. Clarification is read-only. An open finding can inform a risk. It cannot block the proposal.
 
 One accepted architecture can have more than one current implementation. A current implementation is an accepted implementation-catalog row for that architecture. A removed row does not count and does not block a new one. Creating another leaves every existing implementation in place and does not change the decision or the architecture.
 
@@ -107,13 +107,13 @@ On `start`, "looks good" is `accept`.
 
 ### execution
 
-Read `library/coding-standards/codify-platforms.md` when present. A row with a blank Kind is not a candidate. Read `library/coding-standards/coding-standards.md` when present.
+Read `library/coding-standards/codify-platforms.md` when present. A row with a blank Kind is not a candidate. This implementation's row is not a candidate. Read `library/coding-standards/coding-standards.md` when present.
 
 1. Deployed by is the earliest candidate whose Kind is `pipeline`. When none, the earliest `orchestrator`. When none, the earliest `desired-state`. When none, the earliest `agent`.
 2. Managed by is the earliest candidate whose Kind is `self-service`. When none, the earliest `agent`. When none, the Deployed by row.
 3. Language is the earliest standard whose Technology appears on its own in a Technology Choice `Choice:`. Compare without regard to case. A boundary on each side makes an entry appear on its own. When none match, Language is None.
 4. When Deployed by or Managed by has no row, hold `Needed`. Do not take the first catalog row.
-5. Return to `start`.
+5. Return to the step that named this one.
 
 ### field
 
@@ -122,6 +122,17 @@ Read `library/coding-standards/codify-platforms.md` when present. A row with a b
 3. When the name has no accepted implementation, emit: Let's onboard [Platform]. Follow `highway-onboarding` for [Platform], with the return step `execution` in `highway-implementation`.
 4. A listed coding-standard title, or None, replaces Language. Any other title is left out. Say: [Title] is not a listed coding standard. To add it, run /highway-codify-config.
 5. Re-emit the proposal. Stay on `start`.
+
+### why it matters
+
+[Product title] is the implementation title. [codify platform] is the platform the field names. [Language] is the standard Language names. Emit the line that fits each field:
+
+- Deployed by names a platform: highway-codify will use [codify platform] to get [Product title] up and running.
+- Deployed by is Needed: highway-codify needs a codify platform to get [Product title] up and running.
+- Managed by names a platform: highway-codify will use [codify platform] for managing [Product title] once its running.
+- Managed by is Needed: highway-codify needs a codify platform for managing [Product title] once its running.
+- Language names a standard: highway-codify will treat [Product title] as a [Language] coding project.
+- Language is None: highway-codify will treat this as a Platform to manage as opposed to a coding project to write.
 
 ### capability title
 
@@ -158,9 +169,15 @@ When a proposed realization contradicts the architecture, name the requirement, 
 
 **Deployed by:** [Platform. Or: Needed.]
 
+**Why it matters:** [From `why it matters`.]
+
 **Managed by:** [Platform. Or: Needed.]
 
+**Why it matters:** [From `why it matters`.]
+
 **Language:** [Standard Title. Or: None.]
+
+**Why it matters:** [From `why it matters`.]
 
 **Capabilities:**
 - **[Business capability]:** Realized by [provider or mechanism]. A capability is a business outcome, not a component name.
@@ -315,7 +332,10 @@ This is a realization blueprint. It does not authorize deployment.
 
 1. Hold the return step for this visit. Keep it while configuration or onboarding runs from this step.
 2. Read `implementations/[RI id].md` and its architecture.
-3. Emit:
+3. Hold the record's value for each Execution field. Deployed by and Managed by are unset when `Needed`, empty, or naming a platform with no row. Language is unset when `Needed`, empty, or naming a standard with no row. Hold the `execution` value for each unset field. A value the person named in this visit replaces the held value.
+4. Emit:
+
+**Here is the proposed Deployed by, Managed by and Language for [Product Title]**
 
 **Product Title:** [Title]
 
@@ -323,21 +343,40 @@ This is a realization blueprint. It does not authorize deployment.
 
 **Deployed by:** [Platform. Or: Needed.]
 
+**Why it matters:** [From `why it matters`.]
+
 **Managed by:** [Platform. Or: Needed.]
 
+**Why it matters:** [From `why it matters`.]
+
 **Language:** [Standard Title. Or: None.]
+
+**Why it matters:** [From `why it matters`.]
 
 **What would you add, correct, or remove?**
 
 If this is accurate, just say so.
 
 - `edit`: follow `field` for each named field, with the return step `delivery platforms` in `highway-implementation`. Re-emit this view.
-- `accept`: when Deployed by or Managed by is Needed, name that field and re-emit this view. Otherwise rewrite the three Execution lines. Change no other byte. A failed write leaves the record unchanged. Say what failed. Re-emit this view. On success, emit: The preferred delivery platforms for [Title] are set. Picking up your highway-codify run. Go to the held step.
-- `decline`: emit: Leaving the preferred delivery platforms for [Title] unset. Picking up your highway-codify run. Write nothing. Go to the held step.
+- `accept`: when Deployed by, Managed by, or Language is Needed, name that field and re-emit this view. Otherwise rewrite the three Execution lines with the held fields. Change no other byte. A failed write leaves the record unchanged. Say what failed. Re-emit this view. On success, emit: The preferred delivery platforms for [Title] are set. Picking up your highway-codify run. Go to the held step.
+- `decline`: go to `delivery decline`.
 - `question`: answer, then re-emit this view.
 - `unknown`: re-emit this view.
 
 Do not create an implementation. Do not run `platforms` or `close`.
+
+### delivery decline
+
+Write nothing. Emit:
+
+Leaving the preferred delivery platforms for [Title] unset. highway-codify needs these details before it can make proposals for [Title].
+
+**Would you like to return and provide these details now?**
+
+- A yes: re-emit the `delivery platforms` view.
+- A no, or `decline`: go to the held step.
+- `question`: answer, then re-emit this question.
+- `unknown`: re-emit this question.
 
 ## Verification
 
@@ -367,7 +406,10 @@ Do not create an implementation. Do not run `platforms` or `close`.
 - An accepted implementation that can start automation, such as an agent that starts the work, gets one row in `library/coding-standards/codify-platforms.md` with blank When to use and When not to use. The person is told it is included and asked whether to configure how highway-codify uses it. A yes emits "Let's configure how highway-codify uses [Platform]." and follows `highway-codify-config` for that platform with the return step `close`. A no goes to `close`. Under `highway-onboarding`, the step returns to onboarding after the write.
 - A store, a newsletter, a records product, or a backup gets no row and no message. Opening, listing, or declining writes no row.
 - An invocation from `highway-codify-config` naming an accepted implementation, new realized capabilities, and a return step goes to `add capabilities`. It appends them to Realized Capabilities and to this Parent's capability rows, changes no other record byte, asks no question, and goes to the held step. A passed title that breaks the Title rule is left out and named.
-- An invocation from `highway-codify` naming an accepted implementation and a return step goes to `delivery platforms`. It shows Product Title, Architecture Reference, Deployed by, Managed by, and Language. Acceptance rewrites only the three Execution lines and emits "The preferred delivery platforms for [Title] are set. Picking up your highway-codify run." A decline writes nothing and emits "Leaving the preferred delivery platforms for [Title] unset. Picking up your highway-codify run." Both go to the held step.
+- An invocation from `highway-codify` naming an accepted implementation and a return step goes to `delivery platforms`. It opens with "Here is the proposed Deployed by, Managed by and Language for [Product Title]", then shows Product Title, Architecture Reference, Deployed by, Managed by, and Language, each field followed by its Why it matters line. Accept stays on the view while a field is Needed. Acceptance rewrites only the three Execution lines, emits "The preferred delivery platforms for [Title] are set. Picking up your highway-codify run.", and goes to the held step.
+- The delivery platforms view holds the record's fields, then the `execution` value for each unset one: Deployed by or Managed by that is `Needed`, empty, or has no row, and Language that is `Needed`, empty, or has no row. A stored `None` is shown as stored. A value the person named in the visit replaces it. This implementation's row is never a candidate.
+- The `start` proposal and the delivery platforms view follow Deployed by, Managed by, and Language each with its Why it matters line from `why it matters`.
+- A decline writes nothing, emits "Leaving the preferred delivery platforms for [Title] unset. highway-codify needs these details before it can make proposals for [Title].", and asks whether to return. A yes shows the view again. A no goes to the held step.
 
 ## Error Handling
 

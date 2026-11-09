@@ -51,7 +51,7 @@ require "$PLATFORMS" '| Platform | Implementation ID | Kind | When to use | When
 require "$PLATFORMS" 'version: 2.1.0'
 require "$RECORD" '## Execution'
 require "$RECORD" 'Deployed by: <platform title> (<RI id>) or Needed'
-require "$RECORD" 'version: 2.2.0'
+require "$RECORD" 'version: 2.3.0'
 
 for text in \
 	'### execution' \
@@ -66,12 +66,12 @@ for text in \
 	'Follow `highway-codify-config`' \
 	'return step `execution`' \
 	'Follow `highway-onboarding`' \
-	'version: 7.6.0'; do
+	'version: 7.9.0'; do
 	require "$IMPL" "$text"
 done
 
 require "$ONBOARD" 'return step `execution`'
-require "$ONBOARD" 'version: 10.5.0'
+require "$ONBOARD" 'version: 10.6.0'
 
 for text in \
 	'### kind' \
@@ -87,9 +87,9 @@ for text in \
 	'**Executor:**' \
 	'Do not copy the Executor onto a task' \
 	'Helm, Terraform, or CloudFormation' \
-	"**[Product Title]'s implementation record does not list preferred delivery platforms.**" \
+	"**[Product Title]'s implementation record is missing critical detail required for highway-codify proposals.**" \
 	'A missing When to use entry does not remove Language' \
-	'version: 12.3.0'; do
+	'version: 13.0.0'; do
 	require "$CODIFY" "$text"
 done
 

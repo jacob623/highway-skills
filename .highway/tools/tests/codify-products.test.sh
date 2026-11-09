@@ -98,7 +98,7 @@ require_in index 'When an accepted row already has that From, To, and Kind, writ
 
 for text in \
 	'code/<folder>/' \
-	'version: 12.3.0'; do
+	'version: 13.0.0'; do
 	require "$CODIFY" "$text"
 done
 for text in \
@@ -116,7 +116,7 @@ require "$CATALOG" 'version: 3.0.0'
 require "$CATALOG" '| ID | Folder | Title | Summary | Implementations | Features | Status |'
 require "$CATALOG" 'starts the product, adds an implementation, records an integration, changes the summary, or is open'
 reject "$CATALOG" 'Automation Path'
-require "$RECORD" 'version: 9.0.0'
+require "$RECORD" 'version: 9.1.0'
 require "$RECORD" '**Proposed project:**'
 require "$RECORD" '**Rationale:**'
 require "$RECORD" '.highway/features/'

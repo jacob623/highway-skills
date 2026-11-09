@@ -4,14 +4,14 @@ description: "Manages one functional artifact for one accepted implementation."
 usage: "Invoke as /highway-codify with one implementation name."
 compatibility: all
 metadata:
-  version: 12.3.0
+  version: 13.0.0
 ---
 
 # highway-codify
 
 ## Purpose
 
-Suggests actions worth automating for one accepted implementation, checks the chosen action against the organization's coding standards and current vendor documentation, writes the task-by-task proposal the person accepts, and codes it from a task list that follows those standards.
+Suggests actions worth automating for one accepted implementation, checks the chosen action against the organization's coding standards and current vendor documentation, writes the task-by-task proposal the person accepts, and codes it from a task list that follows those standards, writing the product's own code when the implementation names a Language.
 
 ## When to use
 
@@ -66,7 +66,7 @@ The complete structure is `.highway/library/templates/output/codify-record.md`, 
 
 ## Procedure
 
-Emit only the active template. `catalog` runs alone. Otherwise follow this order: `choose` when no implementation is named; `rank`, with `codified`, when no action is named; then `suggest`, `draft`, `provider`, `platforms needed` when needed, `standards`, `align`, `govern`, `resume`, `join`, `folder`, `layout`, `propose`, `revise`, `identifier`, `title` when needed, `write`, `index`, `plan`, `check`, `menu`, `tasks`, `code`, and `close`. Follow `.highway/governance/experience-standard.md` for attribution and acceptance wording. A current implementation is an accepted row in `implementations/implementations.md`. A removed row does not match and does not block a new automation.
+Emit only the active template. `catalog` runs alone. Otherwise follow this order: `choose` when no implementation is named; `record check`; `code project` for a code project, or `rank`, with `codified`, when no action is named; then `suggest`, `draft`, `code tasks` for a code project, `provider`, `standards`, `align`, `govern`, `resume`, `join`, `folder`, `layout`, `propose`, `revise`, `identifier`, `title` when needed, `write`, `index`, `plan`, `check`, `menu`, `tasks`, `code`, and `close`. Follow `.highway/governance/experience-standard.md` for attribution and acceptance wording. A current implementation is an accepted row in `implementations/implementations.md`. A removed row does not match and does not block a new automation.
 
 ### Entry
 
@@ -77,7 +77,7 @@ Emit only the active template. `catalog` runs alone. Otherwise follow this order
 5. When the invocation names a product in `code/code.md` by title, folder, or `CDY` id and its open feature has an open task, go to `code` at the first open task. When that feature has a plan and no task list, go to `menu`.
 6. When an implementation id matches one accepted implementation, select it and show its title.
 7. When an exact title matches one accepted implementation, select it. Compare without regard to case.
-8. After a selection, go to `draft` when the invocation named one action. Otherwise go to `rank`.
+8. After a selection, go to `record check`.
 9. When a description is present, go to `choose` and suggest at most five matches.
 10. When nothing is named and one to five accepted implementations exist, go to `choose` and list each one.
 11. When nothing is named and more than five accepted implementations exist, go to `choose` and list none.
@@ -126,11 +126,30 @@ When the person named nothing and more than five accepted implementations exist,
 
 When a description is present, keep at most five. Put exact titles first, then a realized capability title that appears in full in the person's words, then a title that appears in full in those words or words that appear in full in the summary. Within each group, keep catalog order. Compare without regard to case.
 
-A number, a title, or a description selects one. Show the title. Go to `draft` when the invocation named one action. Otherwise go to `rank`.
+A number, a title, or a description selects one. Show the title. Go to `record check`.
 
 - `unknown`: re-emit this list. Stay on `choose`.
 - `decline`: stop. Write nothing.
 - No match: say so. Write nothing. Stay on `choose` only when the person can still name one. When none exist, stop.
+
+### record check
+
+[Product Title] is the selected implementation title. Read its record's Execution. Read `library/coding-standards/codify-platforms.md` and `library/coding-standards/coding-standards.md` when present. Write nothing.
+
+1. The record is incomplete when Deployed by or Managed by is `Needed`, empty, or names a platform with no row.
+2. The record is incomplete when Language is `Needed`, empty, or names a standard with no row.
+3. When `highway-implementation` returned here and the record is still incomplete, stop.
+4. When the record is incomplete, emit:
+
+**[Product Title]'s implementation record is missing critical detail required for highway-codify proposals.**
+
+Let's set those details now for [Product Title].
+
+5. Then follow `highway-implementation` for [RI id], with the return step `record check` in `highway-codify`. Ask nothing.
+6. When Language names a coding standard, go to `code project`.
+7. Otherwise, when an action is selected or the invocation named one, go to `draft`. Otherwise go to `rank`.
+
+A return keeps the selected implementation and any selected action, and reads the record again.
 
 ### Classify
 
@@ -165,7 +184,18 @@ For each suggestion, in order:
 2. Otherwise, when a feature sentence or the product Summary means this suggestion, leave it out.
 3. Keep every other suggestion. An integration row does not leave a suggestion out.
 
-This check does not refuse a named action or the person's own idea. Return to `rank`.
+This check does not refuse a named action or the person's own idea. Return to the step that named this one.
+
+### code project
+
+The product is a code project when the selected implementation's Language names a coding standard. That standard is the Language standard. Read `code/code.md` when present. Write nothing.
+
+1. An Establish feature is recorded when an accepted row lists this implementation and a Features entry's `<action>` starts with `establish`.
+2. With none recorded, the only suggestion is `Establish [implementation title]`, even when an instance is running. Its summary is: Starts the [Language standard] code for [implementation title]. When another action is selected or named, say Establish comes first. Go to `suggest`.
+3. With one recorded, go to `draft` when an action is selected or the invocation named one.
+4. Otherwise take one suggestion per item, in this order: each Realized Capability, each Realized Interface, each Coverage row marked covered, then each NFR Realization item.
+5. Each title is a change to the product code. It starts with a verb and names what it changes. Its summary is one sentence grounded in that item.
+6. Follow `codified`. Keep at most five. Drop items from the end. Go to `suggest`.
 
 ### suggest
 
@@ -203,41 +233,38 @@ Draft the proposal. Emit nothing here.
 - The tasks, in order. Each task is one action against one platform, object, or API, and its action starts with a verb. A step with two targets is two tasks.
 - Scope says what the task does. Provider is the Provider. Method says how, naming the plugins, modules, libraries, MCP servers, or APIs it uses. Assumptions list what the task relies on that is not an earlier task, such as network access, an access level, an authentication method, or a credential source, or `None`.
 
+For a code project, follow `code tasks`.
+
 Go to `provider`.
+
+### code tasks
+
+Follow these steps for a code project. The Language standard is the one `code project` names.
+
+1. Until an Establish feature is recorded, another action waits. Say Establish comes first. Re-emit the `suggest` list.
+2. A code task writes or changes the product's source code. Its target is the product. It shows **Language:** [Language standard] in place of **Provider:**.
+3. Establish proposes code tasks for the project structure, the build file, the entry point, the configuration, and a health check. It proposes no Realized Capability. The person adds scope on `revise`.
+4. When Deployed by's row has Kind `pipeline`, Establish adds tasks that write that pipeline. Each shows **Provider:** [Deployed by].
+5. Every other action proposes code tasks that change the product code.
+6. A code task's Standards are the Language standard, each standard it inherits, then each standard whose Technology appears on its own in the Technology Choice `Choice:`. A pipeline task's Standards follow `standards`. A standard whose file is absent is left out.
+7. The Language standard places the source files. The pipeline's platform standard places only the pipeline files.
+8. The diagram starts at the Executor. Each code task's arrow points to the product.
+9. A new product's title is the implementation title. After Establish, each action joins the product whose Features hold the Establish feature. No other implementation joins it, and it joins no other product.
+10. Setup Instructions say how to build, configure, and run the product. User Guide says how to use its interfaces.
+11. The close says `The code was not run.` in place of `The automation was not run.`
+
+Return to the step that named this one.
 
 ### provider
 
 Read the selected implementation record's Execution. The action is establishing when its title contains `establish`, compared without regard to case.
 
-1. The Executor is Deployed by when the action is establishing. Otherwise the Executor is Managed by.
-2. When this run holds a named platform, it is the Executor. When this run holds a coding standard, it is Language for this run.
-3. When the Executor is `Needed`, empty, or names a platform with no row, go to `platforms needed`. Do not show the proposal. Write nothing.
-4. Do not copy the Executor onto a task's Provider.
-5. Do not take this implementation's row or the first catalog row.
+1. The Executor is Deployed by when the action is establishing or the product is a code project. Otherwise the Executor is Managed by.
+2. When the Executor names a platform with no row, go to `record check`. Do not show the proposal. Write nothing.
+3. Do not copy the Executor onto a task's Provider.
+4. Do not take this implementation's row or the first catalog row.
 
 Go to `standards`.
-
-### platforms needed
-
-[Product Title] is the selected implementation title. Emit:
-
-**[Product Title]'s implementation record does not list preferred delivery platforms.**
-
-Without these, Codify is unable to make proposals for [Product title].
-
-**Would you like to set the preferred delivery platforms now?**
-
-If you'd prefer to name the delivery platform for this single codify run, just say so. Future highway-codify runs for [Product title] will result in this same message.
-
-- A yes that names no platform: emit: Let's set the preferred delivery platforms for [Product Title]. Follow `highway-implementation` for [RI id], with the return step `provider` in `highway-codify`.
-- A platforms-catalog row, named with or without a yes: hold it for this run. Return to `provider`.
-- Any other platform name: hold it for this run. When it is an accepted implementation, emit: Let's configure how highway-codify uses [Platform]. Follow `highway-codify-config` for [Platform], with the return step `provider` in `highway-codify`. Otherwise emit: Let's onboard [Platform]. Follow `highway-onboarding` for [Platform], with the return step `provider` in `highway-codify`.
-- A listed coding-standard title: hold it for this run. Re-emit the message.
-- A request to name a platform with no name: ask **Which platform would you like this codify run to use?**
-- `decline`, or a no: stop. Write nothing.
-- `question`: answer, then re-emit the message. `unknown`: re-emit the message.
-
-A held platform or coding standard is never written to the implementation. A return to `provider` keeps the selected implementation, the action, and the draft, and reads the record again.
 
 ### standards
 
@@ -252,6 +279,8 @@ For each task, propose an ordered list of Standard Titles:
 5. A missing When to use entry does not remove Language from a task whose Provider or Method names that standard's Technology on its own, and does not remove the standard whose Technology appears on its own in the task's Provider.
 
 A task with no row says `No coding standard applies.` An earlier standard wins a disagreement with a later one. The person can add, remove, or reorder the list on `revise`.
+
+For a code project, `code tasks` decides a code task's list.
 
 Go to `align`.
 
@@ -308,6 +337,8 @@ Stop at the first that applies. Otherwise go to `join`.
 5. For a capability row whose From is the selected implementation, join the product that lists From. Add To to its implementations.
 6. When a product Summary means the same consumer and outcome and this action is new, join that folder.
 
+When this implementation, or an implementation a product lists, is a code project, `code tasks` decides the join.
+
 Use the first of steps 2 to 6 that fits, unless a rule read in step 1 replaced it. Otherwise go to `folder`.
 
 ### folder
@@ -315,7 +346,7 @@ Use the first of steps 2 to 6 that fits, unless a rule read in step 1 replaced i
 1. Otherwise start a folder from the product title: lowercase words, hyphens.
 2. When that folder is already a catalog path, say it is taken and ask for another name. This applies to every new folder.
 
-A new product's title names what it serves in at most four words, such as Worker. Its Summary is one sentence that says who it is for and what it returns. A joined product keeps its title and Summary.
+A new product's title names what it serves in at most four words, such as Worker. For a code project, `code tasks` decides the title. Its Summary is one sentence that says who it is for and what it returns. A joined product keeps its title and Summary.
 
 When this action connects the selected implementation to another accepted implementation and no accepted row holds that pair, hold From, To, Kind, and one summary sentence. Accepting the proposal records it.
 
@@ -327,7 +358,7 @@ For each task, place the files it creates or changes. Read the File and Folder S
 
 1. Place each file at a path from the first standard on the list whose structure has a path for that kind of file.
 2. Fill each placeholder in angle brackets from the task, such as the module or resource it names. While a placeholder is unfilled, `accept` stays on `revise`.
-3. The platform standard decides the folders. An inherited language standard's file names apply only where the platform standard names none.
+3. The platform standard decides the folders. An inherited language standard's file names apply only where the platform standard names none. For a code project, `code tasks` decides the folders.
 4. A component the task calls, such as a module, is placed from its own standard on the list.
 5. A file no structure places, or a task with no standard, goes at the root of the product folder, named from the task.
 6. A later task that changes a file an earlier task placed names that same path.
@@ -343,6 +374,8 @@ Place that standard's files as if it were absent. Apply the match in step 2 of `
 ### propose
 
 The diagram is one logical flow that starts at the Executor. Each task adds one arrow from the Executor, labeled with its action, to a new node for its platform, in task order. No arrow leaves a target. Every target has its own node.
+
+For a code project, `code tasks` decides the diagram and the **Language:** line.
 
 **Here is a proposed starting point for your codify feature:**
 
@@ -414,7 +447,7 @@ A preparation-only request stays one self-service action.
 Removing the last task or the last acceptance criterion says at least one is needed.
 An edit that changes the proposed project uses that folder. Say a removed product's folder is taken.
 An edit that would break a listed Control or NFR is not applied. Say: [Title] stays in effect. To change a Control, run /highway-controls. To change an NFR, run /highway-nfrs.
-- `accept`: go to `identifier` when the proposal has one action, a Provider, at least one task, at least one acceptance criterion, and an accepted architecture. Otherwise stay on `revise`.
+- `accept`: go to `identifier` when the proposal has one action, a Provider or a Language standard, at least one task, at least one acceptance criterion, and an accepted architecture. Otherwise stay on `revise`.
 - `unknown`: re-emit the proposal. Stay on `revise`.
 - `question`: answer, then re-emit the proposal. Stay on `revise`.
 - `decline`: stop. Write nothing.
@@ -558,6 +591,8 @@ Write only the paths the task names. Do not run any file.
 
 The README task writes two parts, in this order. Head the first part `## Setup Instructions` and the second part `## User Guide`. Setup Instructions says what is put in place, where it goes, and how to enable it, including the preparation this automation needs. User Guide says how a non-technical person starts this one automation, what they provide, and what they receive, using the interface of the Provider. User Guide does not ask that person to edit the generated files or read the implementation record.
 
+For a code project, `code tasks` decides both parts.
+
 When a task cannot be finished, stop at that task. Leave it and every later task open. Start no later task. Keep the files that finished tasks wrote. Go to `close`.
 
 When every task is done, apply step 3 of `index` to this feature's entry, then go to `close`.
@@ -565,6 +600,8 @@ When every task is done, apply step 3 of `index` to this feature's entry, then g
 ### close
 
 First emit the coding standards notices that apply, then one close.
+
+For a code project, `code tasks` decides the not-run line.
 
 [No coding standards catalog was found. A standard named by the catalog was not found at [path]. Include only the sentences that apply.]
 
@@ -634,9 +671,11 @@ The automation was not run.
 - The diagram is one logical flow, top to bottom, from the Provider. Each arrow leaves the Provider, is one task's action, starts with a verb, and points to that task's target, in task order. No arrow leaves a target.
 - Every task names the same Provider, the platform executing the automation. The implementation being automated is a target. A Shopify proposal can use Cursor when Cursor is included, even though the Shopify records do not name it.
 - A named platform with no catalog row stays the Provider and the proposal says `/highway-codify-config` can add it. With no row and no named platform, the proposal says a platform is needed and accept stays on `revise`.
-- An Executor that is `Needed`, empty, or has no row shows the preferred delivery platforms message and no proposal.
-- A yes to that message emits "Let's set the preferred delivery platforms for [Product Title]." and follows `highway-implementation` with the return step `provider`.
-- A platform named at that message is used for this run only and is not written to the implementation. The next run shows the message again.
+- After a selection, a record whose Deployed by or Managed by is `Needed`, empty, or has no row, or whose Language is `Needed`, empty, or has no row, emits the missing critical detail line and "Let's set those details now for [Product Title].", then follows `highway-implementation` with the return step `record check`. It asks no question and holds no platform for one run.
+- A return with the record still incomplete stops and writes nothing.
+- An implementation whose Language names a coding standard is a code project. Until an Establish feature is recorded, `Establish [implementation title]` is the only suggestion, even when an instance is running. Later suggestions come from Realized Capabilities, Realized Interfaces, covered Coverage rows, then NFR Realization, at most five.
+- A code project's Establish proposes the project structure, the build file, the entry point, the configuration, and a health check, plus pipeline tasks when Deployed by is a pipeline. A code task shows Language in place of Provider. The Executor is Deployed by.
+- A code project's product is titled from the implementation, lists only that implementation, and its close says the code was not run.
 - Each task shows Standards as an ordered list, or `No coding standard applies.` A standard whose When not to use matches is dropped. A standard comes before the standards it inherits from, and each inherited standard appears once.
 - A Standards edit re-emits the proposal with one consequence sentence. A title not in the catalog is left out and points to `/highway-codify-config`.
 - `align` corrects the method, library, module, or pattern against every standard on the task's list and keeps the Provider.

@@ -2,7 +2,7 @@
 name: implementation-record
 description: "Complete output skeleton for an accepted Reference Implementation record."
 metadata:
-  version: 2.2.0
+  version: 2.3.0
 ---
 
 ## File Frontmatter
@@ -59,7 +59,7 @@ Evidence: <deterministic supporting evidence>
 
 Deployed by: <platform title> (<RI id>) or Needed
 Managed by: <platform title> (<RI id>) or Needed
-Language: <Standard Title or None>
+Language: <Standard Title, None, or Needed>
 
 ## Context
 

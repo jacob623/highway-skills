@@ -49,14 +49,14 @@ for text in \
 	'the first " for "' \
 	'under a different architecture: the title becomes "[Product] for [purpose]"' \
 	'under this architecture: use the existing record' \
-	'version: 7.6.0'; do
+	'version: 7.9.0'; do
 	require "$IMPL" "$text"
 done
 
 require "$ARCH_RECORD" '# <purpose title>'
 require "$ARCH_RECORD" 'version: 2.2.0'
 require "$IMPL_RECORD" '# <product title>'
-require "$IMPL_RECORD" 'version: 2.2.0'
+require "$IMPL_RECORD" 'version: 2.3.0'
 
 if [[ "$fail" -ne 0 ]]; then
 	exit 1

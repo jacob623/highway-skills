@@ -1,0 +1,9 @@
+FAIL: highway-implementation ### execution omits: A row with a blank Kind is not a candidate. This implementation's row is not a candidate.
+FAIL: highway-implementation ### execution omits: 5. Return to the step that named this one.
+FAIL: highway-implementation ### execution still returns only to start
+FAIL: highway-implementation ### delivery platforms omits: 3. Hold the record's value for each Execution field. Deployed by and Managed by are unset when `Needed`, empty, or naming a platform with no row. Language is unset when `None` or empty. Follow `execution`, and hold its value for each unset field. A value the person named in this visit replaces the held value.
+FAIL: highway-implementation ### delivery platforms omits: 4. Emit:
+FAIL: highway-implementation ### delivery platforms omits: Otherwise rewrite the three Execution lines with the held fields. Change no other byte.
+FAIL: highway-implementation ## Verification omits: - The delivery platforms view holds the record's fields, then the `execution` value for each unset one: Deployed by or Managed by that is `Needed`, empty, or has no row, and Language that is `None` or empty. A value the person named in the visit replaces it. This implementation's row is never a candidate.
+FAIL: highway-implementation omits: version: 7.7.0
+EXIT:1

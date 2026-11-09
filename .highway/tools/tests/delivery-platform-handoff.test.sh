@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# An empty delivery platform stops highway-codify, which hands off to highway-implementation and back, or uses a platform named for one run.
+# An incomplete implementation record stops highway-codify, which hands off to highway-implementation and back.
 set -u
 # Instrument class: static-document-contract
 # Artifact classes: source-document
@@ -42,23 +42,16 @@ reject() {
 }
 
 P='### provider'
-require_in "$CODIFY" "$P" '2. When this run holds a named platform, it is the Executor. When this run holds a coding standard, it is Language for this run.'
-require_in "$CODIFY" "$P" '3. When the Executor is `Needed`, empty, or names a platform with no row, go to `platforms needed`. Do not show the proposal. Write nothing.'
-N='### platforms needed'
-require_in "$CODIFY" "$N" "**[Product Title]'s implementation record does not list preferred delivery platforms.**"
-require_in "$CODIFY" "$N" 'Without these, Codify is unable to make proposals for [Product title].'
-require_in "$CODIFY" "$N" '**Would you like to set the preferred delivery platforms now?**'
-require_in "$CODIFY" "$N" "If you'd prefer to name the delivery platform for this single codify run, just say so. Future highway-codify runs for [Product title] will result in this same message."
-require_in "$CODIFY" "$N" "- A yes that names no platform: emit: Let's set the preferred delivery platforms for [Product Title]. Follow \`highway-implementation\` for [RI id], with the return step \`provider\` in \`highway-codify\`."
-require_in "$CODIFY" "$N" '- A platforms-catalog row, named with or without a yes: hold it for this run. Return to `provider`.'
-require_in "$CODIFY" "$N" "Follow \`highway-codify-config\` for [Platform], with the return step \`provider\` in \`highway-codify\`."
-require_in "$CODIFY" "$N" "Follow \`highway-onboarding\` for [Platform], with the return step \`provider\` in \`highway-codify\`."
-require_in "$CODIFY" "$N" '- A listed coding-standard title: hold it for this run. Re-emit the message.'
-require_in "$CODIFY" "$N" '**Which platform would you like this codify run to use?**'
-require_in "$CODIFY" "$N" '- `decline`, or a no: stop. Write nothing.'
-require_in "$CODIFY" "$N" 'A held platform or coding standard is never written to the implementation.'
-require_in "$CODIFY" "$N" 'A return to `provider` keeps the selected implementation, the action, and the draft, and reads the record again.'
+require_in "$CODIFY" "$P" '2. When the Executor names a platform with no row, go to `record check`. Do not show the proposal. Write nothing.'
+N='### record check'
+require_in "$CODIFY" "$N" "**[Product Title]'s implementation record is missing critical detail required for highway-codify proposals.**"
+require_in "$CODIFY" "$N" "Let's set those details now for [Product Title]."
+require_in "$CODIFY" "$N" '5. Then follow `highway-implementation` for [RI id], with the return step `record check` in `highway-codify`. Ask nothing.'
+require_in "$CODIFY" "$N" '3. When `highway-implementation` returned here and the record is still incomplete, stop.'
+require_in "$CODIFY" "$N" 'A return keeps the selected implementation and any selected action, and reads the record again.'
 reject "$CODIFY" '[Field] is needed. Name it on the implementation.'
+reject "$CODIFY" '### platforms needed'
+reject "$CODIFY" 'with the return step `provider` in `highway-codify`'
 
 words="$(section "$CODIFY" "$N" | wc -w | tr -d ' ')"
 if [[ "$words" -eq 0 || "$words" -gt 250 ]]; then
@@ -75,14 +68,17 @@ require_in "$IMPL" "$D" '**Deployed by:** [Platform. Or: Needed.]'
 require_in "$IMPL" "$D" '**Managed by:** [Platform. Or: Needed.]'
 require_in "$IMPL" "$D" '**Language:** [Standard Title. Or: None.]'
 require_in "$IMPL" "$D" '- `edit`: follow `field` for each named field, with the return step `delivery platforms` in `highway-implementation`. Re-emit this view.'
-require_in "$IMPL" "$D" 'Otherwise rewrite the three Execution lines. Change no other byte.'
+require_in "$IMPL" "$D" 'Otherwise rewrite the three Execution lines with the held fields. Change no other byte.'
 require_in "$IMPL" "$D" 'On success, emit: The preferred delivery platforms for [Title] are set. Picking up your highway-codify run. Go to the held step.'
-require_in "$IMPL" "$D" '- `decline`: emit: Leaving the preferred delivery platforms for [Title] unset. Picking up your highway-codify run. Write nothing. Go to the held step.'
+require_in "$IMPL" "$D" '**Here is the proposed Deployed by, Managed by and Language for [Product Title]**'
+require_in "$IMPL" "$D" '- `decline`: go to `delivery decline`.'
 require_in "$IMPL" "$D" 'Do not create an implementation. Do not run `platforms` or `close`.'
+require_in "$IMPL" '### delivery decline' 'Leaving the preferred delivery platforms for [Title] unset. highway-codify needs these details before it can make proposals for [Title].'
+require_in "$IMPL" '### delivery decline' '**Would you like to return and provide these details now?**'
 
 words="$(section "$IMPL" "$D" | wc -w | tr -d ' ')"
-if [[ "$words" -eq 0 || "$words" -gt 250 ]]; then
-	echo "FAIL: highway-implementation $D has $words words; the limit is 250"
+if [[ "$words" -eq 0 || "$words" -gt 400 ]]; then
+	echo "FAIL: highway-implementation $D has $words words; the limit is 400"
 	fail=1
 fi
 for word in 'so that' 'because' 'in order to' 'should' 'consider' 'prefer' 'usually' 'where appropriate'; do
@@ -92,14 +88,14 @@ for word in 'so that' 'because' 'in order to' 'should' 'consider' 'prefer' 'usua
 	fi
 done
 
-require "$ONBOARD" 'Its Execution is `Deployed by: Needed`, `Managed by: Needed`, and `Language: None`.'
-require "$ONBOARD" 'When the caller named the return step `provider` in `highway-codify`, go to that step after the platform row is written.'
+require "$ONBOARD" 'Its Execution is `Deployed by: Needed`, `Managed by: Needed`, and `Language: Needed`.'
+reject "$ONBOARD" 'When the caller named the return step `provider` in `highway-codify`'
 
-require "$CODIFY" 'version: 12.3.0'
-require "$IMPL" 'version: 7.6.0'
-require "$ONBOARD" 'version: 10.5.0'
+require "$CODIFY" 'version: 13.0.0'
+require "$IMPL" 'version: 7.9.0'
+require "$ONBOARD" 'version: 10.6.0'
 
 if [[ "$fail" -ne 0 ]]; then
 	exit 1
 fi
-echo 'PASS: an empty delivery platform hands off to highway-implementation and back'
+echo 'PASS: an incomplete record hands off to highway-implementation and back'
