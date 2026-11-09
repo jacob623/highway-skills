@@ -25,7 +25,7 @@ None.
 A confirmation message.
 
 ## Verification
-`.highway/tools/validate-skill.sh .highway/tools/tests/fixtures/invalid-skill-unrecognized-word`
+The validator, run on this directory,
 exits 1.
 
 ## Error Handling

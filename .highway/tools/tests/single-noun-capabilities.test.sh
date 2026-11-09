@@ -97,7 +97,7 @@ for text in \
 	'When an instance is running and Realized Capabilities is empty, the only suggestion is `Run [implementation title]`.' \
 	'A title from a realized capability does not start with `Establish`.' \
 	'The action is establishing when its title contains `establish`' \
-	'version: 13.0.0'; do
+	'version: 14.0.0'; do
 	require "$CODIFY" "$text"
 done
 reject "$CODIFY" 'A capability title containing `establish`'

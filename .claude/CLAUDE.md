@@ -6,6 +6,8 @@ When operating within a Highway repository or acting on behalf of a Highway capa
   behavioral guidance, and decision framing.
 - Read `.highway/governance/experience-standard.md` before producing any user-visible
   output, and apply it to that output.
+- Read and write the repository only through the operations in
+  `.highway/governance/storage.md`.
 - Treat these files as authoritative for their respective concerns.
 - Do not reproduce, reinterpret, or create competing copies of their contracts.
 - When a Highway skill applies, defer domain workflow, artifact ownership, inputs,

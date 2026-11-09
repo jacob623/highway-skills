@@ -105,6 +105,23 @@ something is *currently* stale is a criterion, and is.
 
 `.highway/tools/validate-skill.sh` decides this for you and reports it under P6.4.
 
+## Reaching the repository
+
+Governed by P2.6. Your skill reads and writes the repository through four operations: read a file,
+check a file exists, list a folder, and write a group of files together. They are defined once, in
+`.highway/governance/storage.md`, which says what each one does in each storage mode. A skill
+written against them keeps working when the repository is reached another way.
+
+So the agent following your skill runs no script and no `git` command, names no path that starts
+at the filesystem root or the home folder, and decides nothing from a file's modified or created
+time. List a folder only when no index or record already holds the answer.
+
+The rule limits what the agent does, not what it writes. A pipeline, product code, or a README
+your skill writes may run scripts and `git` steps, and a fenced block showing such content is not
+examined. A slash command such as `/highway-help` and a URL are not absolute paths.
+
+`.highway/tools/validate-skill.sh` decides this for you and reports it under P2.6.
+
 ## Writing the rules inside a skill
 
 Cited rules, not restated. Read the rule text in the constitution.

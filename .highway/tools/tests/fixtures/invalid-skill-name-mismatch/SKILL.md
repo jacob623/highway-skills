@@ -25,7 +25,7 @@ None.
 A confirmation message.
 
 ## Verification
-`.highway/tools/validate-skill.sh .highway/tools/tests/fixtures/invalid-skill-name-mismatch`
+The validator, run on this directory,
 exits 1, naming the `name`/id mismatch.
 
 ## Error Handling

@@ -185,7 +185,7 @@ require "$CDY_RECORD" 'In a code project, a code task shows **Language:** with t
 require "$CDY_RECORD" "In a code project, each code task's arrow points to the product."
 require "$CDY_RECORD" 'In a code project, Setup Instructions say how to build, configure, and run the product, and User Guide says how to use its interfaces.'
 
-require "$CODIFY" 'version: 13.0.0'
+require "$CODIFY" 'version: 14.0.0'
 require "$IMPL" 'version: 7.9.0'
 require "$ONBOARD" 'version: 10.6.0'
 require "$RI_RECORD" 'version: 2.3.0'

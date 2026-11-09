@@ -1,5 +1,21 @@
 <!--
 Sync Impact Report
+Version change: 9.1.0 → 10.0.0 (MAJOR), 2026-11-09
+Bump rationale: P2.6 adds an obligation that a skill reaches the repository only through the
+operations `.highway/governance/storage.md` declares. A skill and fixtures that named a
+`.highway/tools/` script conformed before and fail now, so the bump is MAJOR. They are reworded in
+the same change.
+Changed elements:
+- Version line: 9.1.0 → 10.0.0
+- Last Amended date: 2026-10-22 → 2026-11-09
+- Principle II: rule P2.6 added, tier [auto], and one rationale sentence added
+Unchanged: P2.1 through P2.5, Principle Precedence, and every other rule.
+Self-application review: P1.1 PASS (P2.6 carries one keyword); P1.2 PASS (one obligation);
+P1.3 PASS (12 words); P1.4 PASS (no Prohibited Vagueness List term); P6.4 and P6.6 PASS (the
+Observable is decided by a registered check); P7.3 PASS (the operations are defined once, in
+`storage.md`, and cited here by path).
+
+Sync Impact Report
 Version change: 9.0.0 → 9.1.0 (MINOR), 2026-10-22
 Bump rationale: the user-owned profile location in the Principle XI rationale moves from the
 skill framework tree to `library/knowledge/profile.md` at the repository root. P11.1 and P11.2
@@ -343,9 +359,11 @@ failed on its own.
 | P2.3 | A technology-specific example MUST be labeled "Illustrative". | The example carries the literal word "Illustrative". | [agent-checkable] |
 | P2.4 | An illustrative example MUST sit outside every numbered rule list. | No example text appears inside a rule table or numbered rule list. | [agent-checkable] |
 | P2.5 | A skill MUST state outcomes as verifiable properties rather than as named implementations. | Each stated outcome names a checkable property, not a specific product. | [agent-checkable] |
+| P2.6 | A skill MUST reach the repository only through the operations `.highway/governance/storage.md` declares. | Outside fenced blocks, the skill names no `.highway/tools/` path or script file, no `git` command, no absolute path, and no file time. Written file content is excluded. | [auto] |
 
 Rationale: A skill that hard-codes an incidental technology stops working when that technology
-is replaced.
+is replaced. The same holds for storage: a skill that runs a local script or names a local path
+stops working when the repository is reached another way.
 
 ### III. Grounding in Approved Authority Sources
 
@@ -613,4 +631,4 @@ every other skill's version. This is the policy referenced by P7.7.
 - **MINOR**: a capability is added while every existing contract element continues to hold.
 - **PATCH**: wording repair with no change to Inputs, Outputs, or Verification.
 
-**Version**: 9.1.0 | **Ratified**: 2026-09-06 | **Last Amended**: 2026-10-22
+**Version**: 10.0.0 | **Ratified**: 2026-09-06 | **Last Amended**: 2026-11-09

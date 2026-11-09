@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-09T00:08:40Z",
+  "generated_at": "2026-11-09T14:58:12Z",
   "entries": [
     {
       "library_type": "template",
@@ -60,8 +60,8 @@
     {
       "library_type": "template",
       "name": "codify-metadata",
-      "description": "Complete output skeleton for the identity file of one product folder.",
-      "version": "1.0.0",
+      "description": "Complete output skeleton for the identity and feature index of one product folder.",
+      "version": "2.0.0",
       "source_path": "library/templates/output/codify-metadata.md"
     },
     {

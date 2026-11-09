@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-09T00:08:32Z",
+  "generated_at": "2026-11-09T14:58:03Z",
   "entries": [
     {
       "id": "highway-adr",
@@ -43,7 +43,7 @@
       "description": "Manages one functional artifact for one accepted implementation.",
       "usage": "Invoke as /highway-codify with one implementation name.",
       "compatibility": "all",
-      "version": "13.0.0",
+      "version": "14.0.0",
       "source_path": "skills/highway-codify/SKILL.md"
     },
     {
@@ -70,7 +70,7 @@
       "description": "Prints registration details for one named skill, or a discovery listing of every registered skill when none is named.",
       "usage": "Invoke as `/highway-help` for all skills, or `/highway-help <skill-id>` for one named skill's registration details.",
       "compatibility": "all",
-      "version": "3.0.4",
+      "version": "3.1.0",
       "source_path": "skills/highway-help/SKILL.md"
     },
     {

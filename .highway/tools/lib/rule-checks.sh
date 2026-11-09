@@ -14,6 +14,7 @@ rc_registry() {
 	cat <<-'EOF'
 		P1.1	rc_check_P1_1	-
 		P1.3	rc_check_P1_3	-
+		P2.6	rc_check_P2_6	-
 		P3.5	rc_check_P3_5	N2
 		P4.2	rc_check_P4_2	N2
 		P5.2	rc_check_P5_2	N2
@@ -56,12 +57,13 @@ rc_template_exempt_ids() {
 
 # Prints the rule ids every library file is exempt from, regardless of library type. P8.7's
 # subject is a skill, which is copied into each agent adapter tree; a library file is never
-# copied, so a relative link in one resolves. Reported N/A with a condition by the caller, not
-# skipped silently.
+# copied, so a relative link in one resolves. P2.6 limits what an agent does while following a
+# skill, and a library file is content a skill reads or copies. Reported N/A with a condition by
+# the caller, not skipped silently.
 # Usage: rc_library_exempt_ids
 rc_library_exempt_ids() {
 	printf '%s
-' P8.7 P6.4
+' P8.7 P6.4 P2.6
 }
 
 # --- P1.1: each normative line carries exactly one keyword -------------------------------
@@ -93,6 +95,33 @@ rc_check_P1_3() {
 			count = 0
 			for (i = 1; i <= n; i++) if (w[i] != "") count++
 			if (count > 25) printf("line %d: normative rule is %d words, limit is 25\n", $1, count)
+		}
+	')"
+	[[ -n "$out" ]] && { printf '%s\n' "$out"; found=1; }
+	return $found
+}
+
+# --- P2.6: the skill reaches the repository only through the storage contract --------------
+# Only lines outside fenced blocks are examined. A fenced block in a skill is a specimen of content
+# the skill shows or writes, and the rule limits what the agent does, not what a written file
+# holds. A slash command has no second slash and a URL's slashes follow a colon, so neither reads
+# as an absolute path. `.gitignore` and `GitHub` are not the word `git`.
+
+rc_check_P2_6() {
+	local file="$1" found=0 out
+	out="$(bs_scan "$file" | awk -F'\t' '
+		$3 == 1 { next }
+		{
+			t = $7
+			l = tolower(t)
+			if (t ~ /\.highway\/tools\// || t ~ /[A-Za-z0-9_-]\.(sh|bash|ps1|py)([^A-Za-z0-9]|$)/)
+				printf("line %d: names a script for the agent to run\n", $1)
+			if (t ~ /(^|[^A-Za-z0-9_.\/-])git([[:space:]`]|$)/)
+				printf("line %d: names a git command\n", $1)
+			if (t ~ /(^|[[:space:]`"(])(~\/|\/[A-Za-z0-9._-]+\/)/ || t ~ /(^|[^A-Za-z])[A-Za-z]:\\/)
+				printf("line %d: names an absolute path\n", $1)
+			if (l ~ /(modified|modification|creation|created|access|accessed) (time|date)|last[ -]modified|(^|[^a-z])mtime([^a-z]|$)|file.?s? timestamp|timestamp of (the|a|each) file/)
+				printf("line %d: decides from a file time\n", $1)
 		}
 	')"
 	[[ -n "$out" ]] && { printf '%s\n' "$out"; found=1; }

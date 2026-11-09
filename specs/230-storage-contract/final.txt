@@ -1,0 +1,339 @@
+==> Running adapter-coverage.test.sh
+PASS: adapter-coverage.test.sh
+
+==> Running adr-record-completeness.test.sh
+PASS: ADR record completeness
+PASS: adr-record-completeness.test.sh
+
+==> Running adr-span-progression.test.sh
+PASS: ADR span, assessment review, and discovery checks
+PASS: adr-span-progression.test.sh
+
+==> Running authoring-standard.test.sh
+PASS: authoring-standard.test.sh
+
+==> Running body-scan.test.sh
+PASS: body-scan.test.sh
+
+==> Running capability-catalog.test.sh
+PASS: capability catalog contract
+PASS: capability-catalog.test.sh
+
+==> Running classification-scope.test.sh
+classification scope
+  PASS: 18 prunable roots derived from the manifest
+  PASS: no derived prune root hides an included record
+  PASS: .highway/tools/generate-distribution.sh prunes derived roots
+  PASS: .highway/tools/tests/shipped-tree-independence.test.sh prunes derived roots
+PASS: classification-scope.test.sh
+
+==> Running code-project.test.sh
+PASS: a complete record leads codify, and a Language makes a code project
+PASS: code-project.test.sh
+
+==> Running codify-closing-guide.test.sh
+PASS: codify closing guide, README headings, and catalog view
+PASS: codify-closing-guide.test.sh
+
+==> Running codify-config-skill.test.sh
+PASS: codify config skill, catalogs, task standards, and inclusion question
+PASS: codify-config-skill.test.sh
+
+==> Running codify-deterministic-steps.test.sh
+PASS: codify matches rows and stories by name
+PASS: codify-deterministic-steps.test.sh
+
+==> Running codify-feature-wording.test.sh
+PASS: codify plans the feature before coding
+PASS: codify-feature-wording.test.sh
+
+==> Running codify-file-layout.test.sh
+PASS: codify file layout, feature task list, and unseeded coding standards
+PASS: codify-file-layout.test.sh
+
+==> Running codify-platform-catalog.test.sh
+PASS: codify platform catalog, provider, and diagram
+PASS: codify-platform-catalog.test.sh
+
+==> Running codify-platform-prompt.test.sh
+PASS: platform prompts name how highway-codify uses the platform
+PASS: codify-platform-prompt.test.sh
+
+==> Running codify-products.test.sh
+PASS: codify decides the product from the catalogs
+PASS: codify-products.test.sh
+
+==> Running codify-proposal-tasks.test.sh
+PASS: codify action suggestions, checks, and task proposal
+PASS: codify-proposal-tasks.test.sh
+
+==> Running codify-write-refactor.test.sh
+PASS: codify write names the task list template, and suggestions skip codified automations
+PASS: codify-write-refactor.test.sh
+
+==> Running config-live-rules.test.sh
+PASS: config proposals read current documentation and save the rule only
+PASS: config-live-rules.test.sh
+
+==> Running configure-handoff.test.sh
+PASS: onboarding and implementation hand off to configuration and return
+PASS: configure-handoff.test.sh
+
+==> Running constitution-experience-alignment.test.sh
+OK: Constitution and Experience Standard alignment contract passes
+PASS: constitution-experience-alignment.test.sh
+
+==> Running constitution-inventory.test.sh
+PASS: constitution-inventory.test.sh
+
+==> Running constitution-profile-context.test.sh
+OK: constitutional Profile context contract passes
+PASS: constitution-profile-context.test.sh
+
+==> Running control-nfr-batch-acceptance.test.sh
+PASS: control and NFR batch acceptance
+PASS: control-nfr-batch-acceptance.test.sh
+
+==> Running coverage-summary.test.sh
+PASS: coverage-summary.test.sh
+
+==> Running delivery-platform-handoff.test.sh
+PASS: an incomplete record hands off to highway-implementation and back
+PASS: delivery-platform-handoff.test.sh
+
+==> Running delivery-platform-proposal.test.sh
+PASS: delivery platforms proposes each unset field from execution
+PASS: delivery-platform-proposal.test.sh
+
+==> Running dependency-check.test.sh
+PASS: dependency-check.test.sh
+
+==> Running distribution-packaging.test.sh
+PASS: distribution-packaging.test.sh
+
+==> Running entry-level.test.sh
+PASS: config proposals offer classes of automation with each consequence under its entry
+PASS: entry-level.test.sh
+
+==> Running establish-from-record.test.sh
+PASS: establish reads the record and a platform standard has two entries
+PASS: establish-from-record.test.sh
+
+==> Running experience-standard-amendment.test.sh
+OK: Experience Standard amendment passes
+PASS: experience-standard-amendment.test.sh
+
+==> Running experience-standard-convergence.test.sh
+OK: Experience convergence contract passes
+PASS: experience-standard-convergence.test.sh
+
+==> Running experience-x23-contract.test.sh
+OK: X2.3 interaction contract passes
+PASS: experience-x23-contract.test.sh
+
+==> Running feature-092-correspondence.test.sh
+OK: Feature 092 correspondence evidence passes
+PASS: feature-092-correspondence.test.sh
+
+==> Running feature-141-experience-standard-refactor.test.sh
+OK: Feature 141 Experience Standard refactor contract passes
+PASS: feature-141-experience-standard-refactor.test.sh
+
+==> Running frontmatter-contract-required-keys.test.sh
+OK: the frontmatter contract manifest governs required keys at both scopes
+PASS: frontmatter-contract-required-keys.test.sh
+
+==> Running frontmatter-lexicon.test.sh
+PASS: frontmatter-lexicon.test.sh
+
+==> Running generate-agent-adapters.test.sh
+PASS: generate-agent-adapters.test.sh
+
+==> Running generate-catalog.test.sh
+PASS: generate-catalog.test.sh
+
+==> Running generate-instructions.test.sh
+PASS: generate-instructions.test.sh
+PASS: generate-instructions.test.sh
+
+==> Running generate-library-catalog.test.sh
+PASS: generate-library-catalog.test.sh
+
+==> Running group-realized-capabilities.test.sh
+PASS: current groups realized capabilities by the automation
+PASS: group-realized-capabilities.test.sh
+
+==> Running guided-flow-refinements.test.sh
+PASS: guided flow refinements
+PASS: guided-flow-refinements.test.sh
+
+==> Running help-output-all.test.sh
+PASS: All-Skills output declares catalog-ordered Name/Description/Help blocks without Usage.
+PASS: help-output-all.test.sh
+
+==> Running help-output-single.test.sh
+PASS: Single-Skill six-field, empty-catalog, and unknown-identifier contracts remain declared.
+PASS: help-output-single.test.sh
+
+==> Running highway-codify.test.sh
+PASS: highway-codify.test.sh
+
+==> Running highway-ux-alignment.test.sh
+PASS: highway UX alignment contract and skill checks
+PASS: highway-ux-alignment.test.sh
+
+==> Running instruction-coverage.test.sh
+PASS: instruction-coverage.test.sh
+PASS: instruction-coverage.test.sh
+
+==> Running labeled-proposal-lines.test.sh
+PASS: Recommendation and Evidence sit on their own bold line
+PASS: labeled-proposal-lines.test.sh
+
+==> Running library-containment.test.sh
+PASS: library-containment.test.sh
+
+==> Running multiple-reference-implementations.test.sh
+PASS: multiple reference implementations
+PASS: multiple-reference-implementations.test.sh
+
+==> Running new-agent-extensibility.test.sh
+PASS: new-agent-extensibility.test.sh
+
+==> Running nfr-safeguard-rationale.test.sh
+PASS: every safeguard gets an operational expectation that names it
+PASS: nfr-safeguard-rationale.test.sh
+
+==> Running objective-batch-acceptance.test.sh
+PASS: objective batch acceptance
+PASS: objective-batch-acceptance.test.sh
+
+==> Running objective-rename-contract.test.sh
+OK: migration audit is executable
+OK: migration allowlist exists
+OK: clean migration audit passes
+OK: missing allowlist is rejected
+OK: absolute allowlist path is rejected
+OK: parent-traversal allowlist path is rejected
+OK: duplicate allowlist entry is rejected
+OK: non-empty allowlist is rejected
+OK: prohibited allowlist path is rejected
+OK: stale live reference is rejected
+OK: generated-manifest contradiction is rejected
+OK: stale Feature 028 test path is rejected
+OK: negative-test probe cleaned up
+OK: objective rename contract passes
+PASS: objective-rename-contract.test.sh
+
+==> Running onboarding-assessment-guidance.test.sh
+PASS: onboarding and assessment guidance
+PASS: onboarding-assessment-guidance.test.sh
+
+==> Running onboarding-technology-capabilities.test.sh
+PASS: onboarding proposes technology capabilities
+PASS: onboarding-technology-capabilities.test.sh
+
+==> Running output-template.test.sh
+PASS: output-template.test.sh
+
+==> Running path-integrity.test.sh
+PASS: path-integrity.test.sh
+
+==> Running platform-starting-point.test.sh
+PASS: config proposals start from automation best practice and record new capabilities
+PASS: platform-starting-point.test.sh
+
+==> Running profile-adaptive.test.sh
+OK: adaptive Profile corpus passes
+PASS: profile-adaptive.test.sh
+
+==> Running profile-convergence-behavior.test.sh
+PASS: 8 Profile convergence fixtures, required fields, rubric dimensions, governance references, and runtime boundaries
+PASS: profile-convergence-behavior.test.sh
+
+==> Running profile-markdown-contract.test.sh
+OK: Markdown Profile contract passes
+PASS: profile-markdown-contract.test.sh
+
+==> Running profile-migration.test.sh
+OK: profile migration contract passes
+PASS: profile-migration.test.sh
+
+==> Running profile-template-migration.test.sh
+OK: Profile template migration contract passes
+PASS: profile-template-migration.test.sh
+
+==> Running profile-yaml.test.sh
+OK: obsolete Profile YAML output path is removed
+PASS: profile-yaml.test.sh
+
+==> Running promotion-invariants.test.sh
+PASS: promotion-invariants.test.sh
+PASS: promotion-invariants.test.sh
+
+==> Running propose-edit-lines.test.sh
+PASS: revise states each edit on its own line
+PASS: propose-edit-lines.test.sh
+
+==> Running record-purpose-titles.test.sh
+PASS: record purpose and product titles
+PASS: record-purpose-titles.test.sh
+
+==> Running review-presentation-refinements.test.sh
+PASS: review presentation refinements
+PASS: review-presentation-refinements.test.sh
+
+==> Running rule-checks.test.sh
+PASS: rule-checks.test.sh
+
+==> Running runtime-contract-hygiene.test.sh
+OK: runtime contract hygiene passes
+PASS: runtime-contract-hygiene.test.sh
+
+==> Running seed-library-context.test.sh
+PASS: seed-library-context.test.sh
+
+==> Running setup-welcome-overview.test.sh
+PASS: setup welcome overview
+PASS: setup-welcome-overview.test.sh
+
+==> Running shipped-tree-independence.test.sh
+PASS: shipped-tree-independence.test.sh
+
+==> Running single-noun-capabilities.test.sh
+PASS: a capability is one noun phrase of five words or fewer
+PASS: single-noun-capabilities.test.sh
+
+==> Running single-rule-shape.test.sh
+PASS: a coding rule is one must within eight words
+PASS: single-rule-shape.test.sh
+
+==> Running standard-starting-point.test.sh
+PASS: config steps are ordered, numbered, and open each standard proposal as a starting point
+PASS: standard-starting-point.test.sh
+
+==> Running static-highway-capability.test.sh
+PASS: static AI-Augmented Technology Development capability
+PASS: static-highway-capability.test.sh
+
+==> Running static-operating-nfrs.test.sh
+PASS: static operating NFRs
+PASS: static-operating-nfrs.test.sh
+
+==> Running storage-contract.test.sh
+PASS: every skill reaches the repository only through the storage contract
+PASS: storage-contract.test.sh
+
+==> Running validate-library.test.sh
+PASS: validate-library.test.sh
+
+==> Running validate-skill.test.sh
+PASS: validate-skill.test.sh
+
+==> Running validation-cache.test.sh
+OK: validation-cache
+PASS: validation-cache.test.sh
+
+--------------------------------------
+Summary: 85 passed, 0 failed
+EXIT:0

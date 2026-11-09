@@ -89,7 +89,7 @@ for text in \
 	'Helm, Terraform, or CloudFormation' \
 	"**[Product Title]'s implementation record is missing critical detail required for highway-codify proposals.**" \
 	'A missing When to use entry does not remove Language' \
-	'version: 13.0.0'; do
+	'version: 14.0.0'; do
 	require "$CODIFY" "$text"
 done
 

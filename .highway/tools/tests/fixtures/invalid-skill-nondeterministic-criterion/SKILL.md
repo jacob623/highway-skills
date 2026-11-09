@@ -25,7 +25,7 @@ None.
 A confirmation message naming the rule that rejected the seeded criterion.
 
 ## Verification
-`.highway/tools/validate-skill.sh .highway/tools/tests/fixtures/invalid-skill-nondeterministic-criterion`
+The validator, run on this directory,
 exits 1, naming P6.4 and the offending token.
 
 ## Error Handling
