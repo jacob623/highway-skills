@@ -224,7 +224,7 @@ require_in "$CODIFY" '## Verification' '- Each accepted feature adds one Feature
 require_in "$CODIFY" '## Verification' "- Acceptance writes \`codify.md\`, the product's \`metadata.md\` with the new Features row, the catalog row, and any new integrations row together, then \`plan.md\`."
 reject "$CODIFY" 'the highest directory in'
 reject "$CODIFY" 'written once'
-require "$CODIFY" 'version: 14.0.0'
+require "$CODIFY" 'version: 14.1.0'
 write_words="$(section "$CODIFY" '### write' | wc -w | tr -d ' ')"
 if [[ "$write_words" -gt 250 ]]; then
 	echo "FAIL: highway-codify write has $write_words words; the limit is 250"

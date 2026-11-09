@@ -98,7 +98,7 @@ reject "$CODIFY" 'When a task serves no story, leave it out.'
 require_in code 'whose catalog row is active'
 require "$CODIFY" 'To revisit this in the future, just ask Highway to show your Code Catalog. We can review, discuss, and revise any of your solutions, and continue refining them as requirements evolve.'
 
-require "$CODIFY" 'version: 14.0.0'
+require "$CODIFY" 'version: 14.1.0'
 require "$CODIFY" '.highway/library/templates/output/codify-plan.md'
 reject "$CODIFY" '**Here is a proposed starting point for your automation:**'
 reject "$CODIFY" 'just ask highway to show your code catalog'
