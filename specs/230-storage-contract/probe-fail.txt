@@ -1,0 +1,62 @@
+FAIL: .highway/governance/storage.md is missing
+FAIL: .highway/governance/storage.md omits: | Operation | Local | Remote (Option A) | Chat (Option B) |
+FAIL: storage.md has 0 operation rows, expected 4
+FAIL: storage.md has 0 rows with Remote and Chat not supported yet, expected 4
+FAIL: .highway/governance/storage.md omits: Every path is relative to the repository root.
+FAIL: .highway/governance/storage.md omits: Only Local is supported.
+FAIL: .highway/governance/storage.md omits: Nothing is committed.
+FAIL: .highway/governance/storage.md omits: The person handles any git step.
+FAIL: .highway/governance/storage.md omits: A failed write names the files already written and the file that failed.
+FAIL: .highway/governance/storage.md omits: Content a skill writes into a file
+FAIL: .highway/governance/constitution.md omits: | P2.6 | A skill MUST reach the repository only through the operations `.highway/governance/storage.md` declares. |
+FAIL: P2.6 is missing or is not [auto]
+FAIL: .highway/governance/constitution.md omits: **Version**: 10.0.0 | **Ratified**: 2026-09-06 | **Last Amended**: 2026-11-09
+FAIL: .highway/governance/constitution.md omits: Version change: 9.1.0 → 10.0.0 (MAJOR), 2026-11-09
+FAIL: P2.6 is not registered to rc_check_P2_6
+FAIL: P2.6 is not library-exempt
+FAIL[tools script]: expected a P2.6 finding. Got:
+    FAILED:    
+    OK: skill 'storage-fail-1' is valid (9 rules checked, 124 deferred, 0 unchecked)
+FAIL[script file]: expected a P2.6 finding. Got:
+    FAILED:    
+    OK: skill 'storage-fail-2' is valid (9 rules checked, 124 deferred, 0 unchecked)
+FAIL[git command]: expected a P2.6 finding. Got:
+    FAILED:    
+    OK: skill 'storage-fail-3' is valid (9 rules checked, 124 deferred, 0 unchecked)
+FAIL[absolute path]: expected a P2.6 finding. Got:
+    FAILED:    
+    OK: skill 'storage-fail-4' is valid (9 rules checked, 124 deferred, 0 unchecked)
+FAIL[home path]: expected a P2.6 finding. Got:
+    FAILED:    
+    OK: skill 'storage-fail-5' is valid (9 rules checked, 124 deferred, 0 unchecked)
+FAIL[file time]: expected a P2.6 finding. Got:
+    FAILED:    
+    OK: skill 'storage-fail-6' is valid (9 rules checked, 124 deferred, 0 unchecked)
+FAIL: rc_check_P2_6 is not defined
+FAIL: .highway/skills/highway-help/SKILL.md omits: - `.highway/catalog/index.json` — read for
+FAIL: .highway/skills/highway-help/SKILL.md omits: `ERROR: the skill catalog '.highway/catalog/index.json' is missing or unreadable`
+FAIL: .highway/skills/highway-help/SKILL.md still contains: .highway/tools/
+FAIL: .highway/skills/highway-help/SKILL.md omits: version: 3.1.0
+FAIL: .highway/skills/highway-codify/SKILL.md ## Inputs omits: - The product's `code/<folder>/.highway/metadata.md` when a proposal joins an existing product.
+FAIL: .highway/skills/highway-codify/SKILL.md ## Outputs omits: - One product folder `code/<folder>/`, with `.highway/metadata.md` written when the product is new. Each accepted feature adds one row to its Features table.
+FAIL: .highway/skills/highway-codify/SKILL.md ### write omits: For a joined product, it is the next integer after the last ID in the Features table of `code/<folder>/.highway/metadata.md`. Do not list `code/<folder>/.highway/features/`.
+FAIL: .highway/skills/highway-codify/SKILL.md ### write omits: Append this feature's row to its Features table.
+FAIL: .highway/skills/highway-codify/SKILL.md ## Verification omits: - Each accepted action is the next numbered feature directory in its product, numbered from the last row of the Features table in `.highway/metadata.md`. No features folder is listed. Earlier directories stay.
+FAIL: .highway/skills/highway-codify/SKILL.md ## Verification omits: - Each accepted feature adds one Features row with its number, folder, title, and Summary. A row is never removed.
+FAIL: .highway/skills/highway-codify/SKILL.md ## Verification omits: - Acceptance writes `codify.md`, the product's `metadata.md` with the new Features row, the catalog row, and any new integrations row together, then `plan.md`.
+FAIL: .highway/skills/highway-codify/SKILL.md still contains: the highest directory in
+FAIL: .highway/skills/highway-codify/SKILL.md still contains: written once
+FAIL: .highway/skills/highway-codify/SKILL.md omits: version: 14.0.0
+FAIL: .highway/library/templates/output/codify-metadata.md omits: ## Features
+FAIL: .highway/library/templates/output/codify-metadata.md omits: | ID | Folder | Title | Summary |
+FAIL: .highway/library/templates/output/codify-metadata.md omits: A row is appended and never removed or changed, so an ID is never reused.
+FAIL: .highway/library/templates/output/codify-metadata.md omits: The next feature number is the next integer after the last ID.
+FAIL: .highway/library/templates/output/codify-metadata.md omits: Features has no status column.
+FAIL: .highway/library/templates/output/codify-metadata.md omits: Title and Summary are copied when the feature is accepted.
+FAIL: .highway/library/templates/output/codify-metadata.md still contains: written once
+FAIL: .highway/library/templates/output/codify-metadata.md omits: version: 2.0.0
+FAIL: .highway/instructions/highway-agent-context.md omits: - Read and write the repository only through the operations in
+FAIL: AGENTS.md omits: `.highway/governance/storage.md`.
+FAIL: .claude/CLAUDE.md omits: `.highway/governance/storage.md`.
+FAIL: .github/copilot-instructions.md omits: `.highway/governance/storage.md`.
+FAIL: .cursor/rules/highway-agent-context.mdc omits: `.highway/governance/storage.md`.

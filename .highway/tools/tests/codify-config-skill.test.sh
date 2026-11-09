@@ -94,7 +94,7 @@ for text in \
 	'**Standards:**' \
 	'/highway-codify-config' \
 	'library/coding-standards/codify-platforms.md' \
-	'version: 13.0.0'; do
+	'version: 14.1.0'; do
 	require "$CODIFY" "$text"
 done
 for text in \

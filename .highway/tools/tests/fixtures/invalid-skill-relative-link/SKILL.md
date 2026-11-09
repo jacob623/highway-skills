@@ -25,7 +25,7 @@ A confirmation message. See [the authoring standard](../../../skills/_authoring-
 detail — this link is the seeded violation.
 
 ## Verification
-`.highway/tools/validate-skill.sh .highway/tools/tests/fixtures/invalid-skill-relative-link`
+The validator, run on this directory,
 exits 1, naming P8.7 and the offending target.
 
 ## Error Handling

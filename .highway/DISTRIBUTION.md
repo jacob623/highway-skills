@@ -11,7 +11,7 @@ never duplicated or hand-adapted per agent.
 ├── skills/        Skill sources, one directory per skill
 ├── library/       Shared reference material skills draw on
 ├── catalog/       The generated index of available skills
-├── governance/    The rules every skill is validated against
+├── governance/    The rules every skill is validated against, and the storage contract
 └── tools/         Validators and generators
 ```
 

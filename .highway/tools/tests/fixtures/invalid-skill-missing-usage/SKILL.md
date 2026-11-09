@@ -23,7 +23,7 @@ None.
 An error message naming the offending field.
 
 ## Verification
-`.highway/tools/validate-skill.sh <this-dir>` exits non-zero.
+The validator exits non-zero for this directory.
 
 ## Error Handling
 - If validation exits zero, abort and report the missed detection.

@@ -25,7 +25,7 @@ None.
 A confirmation message.
 
 ## Verification
-`.highway/tools/validate-skill.sh .highway/tools/tests/fixtures/valid-skill` exits 0.
+The validator exits 0 for this directory.
 
 ## Error Handling
 - If validation exits non-zero, abort and report the failing rule id.

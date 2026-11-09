@@ -1,0 +1,18 @@
+FAIL: highway-codify omits: `check`, `menu`, `review` when chosen, `tasks`,
+FAIL: highway-codify Classify omits: On `review`, a change to the plan is `edit`, and "no", "nothing", or "looks good" is `accept`.
+FAIL: highway-codify ### review is missing or not between ### menu and ### tasks
+FAIL: highway-codify menu omits: - `1`: go to `review`.
+FAIL: highway-codify still contains: Answer, then emit this menu.
+FAIL: highway-codify review omits: Read every section of `plan.md` with the person. Answer each question they ask along the way. Write nothing. After the last section, ask:
+FAIL: highway-codify review omits: **What would you add, correct, or remove?**
+FAIL: highway-codify review omits: If this is accurate, just say so.
+FAIL: highway-codify review omits: Do not emit the menu with this question.
+FAIL: highway-codify review omits: - `accept`: emit the menu. Go to `menu`.
+FAIL: highway-codify review omits: - `edit`: emit one consequence sentence. Regenerate the plan. Go to `check`.
+FAIL: highway-codify review omits: - `question`: answer, then ask this question again. Stay on `review`.
+FAIL: highway-codify review omits: - `unknown`: ask this question again. Stay on `review`.
+FAIL: highway-codify review omits: - `decline`: stop. Write nothing.
+FAIL: highway-codify review does not ask the question after the walkthrough and before the replies
+FAIL: highway-codify omits: - Reviewing the plan reads every section, then asks **What would you add, correct, or remove?** and "If this is accurate, just say so." before the menu returns. Accepting emits the menu, and a change regenerates the plan and runs `check`. Continuing to code asks no review question.
+FAIL: highway-codify omits: version: 14.1.0
+EXIT:1

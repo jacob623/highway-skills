@@ -188,9 +188,9 @@ d="$tmp_root/p87"; write_base_skill "$d"
 printf '\nSee [the standard](../governance/constitution.md) for detail.\n' >>"$d/SKILL.md"
 assert_reports "P8.7 relative link target" "P8.7" "$d"
 
-# A command example naming a path is not a link and must not be flagged.
+# A path in inline code is not a link and must not be flagged.
 d="$tmp_root/p87-ok"; write_base_skill "$d"
-printf '\nRun `.highway/tools/validate-skill.sh <dir>` and read [the site](https://example.org).\n' >>"$d/SKILL.md"
+printf '\nRead `.highway/governance/constitution.md` and [the site](https://example.org).\n' >>"$d/SKILL.md"
 if ! "$VALIDATE" "$d" >/dev/null 2>&1; then
 	echo "FAIL[P8.7 false positive]: a command example or absolute URL was reported as a relative link"
 	fail=1
@@ -256,6 +256,10 @@ fi
 d="$tmp_root/p95"; write_base_skill "$d"
 printf '\n## Example\nVersion: 9.9.9\n' >>"$d/SKILL.md"
 assert_reports "P9.5 specimen disagrees" "P9.5" "$d"
+
+d="$tmp_root/p26"; write_base_skill "$d"
+printf '\n## Notes\nCommit the result with `git commit`.\n' >>"$d/SKILL.md"
+assert_reports "P2.6 git command" "P2.6" "$d"
 
 # --- Every enforced rule has a seeded case above ------------------------------------------------------------------------------
 

@@ -91,7 +91,7 @@ done
 require "$ONBOARD" 'Its Execution is `Deployed by: Needed`, `Managed by: Needed`, and `Language: Needed`.'
 reject "$ONBOARD" 'When the caller named the return step `provider` in `highway-codify`'
 
-require "$CODIFY" 'version: 13.0.0'
+require "$CODIFY" 'version: 14.1.0'
 require "$IMPL" 'version: 7.9.0'
 require "$ONBOARD" 'version: 10.6.0'
 

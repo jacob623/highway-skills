@@ -4,7 +4,7 @@ description: "Manages one functional artifact for one accepted implementation."
 usage: "Invoke as /highway-codify with one implementation name."
 compatibility: all
 metadata:
-  version: 13.0.0
+  version: 14.1.0
 ---
 
 # highway-codify
@@ -35,6 +35,7 @@ Do not report Status, Summary, Next Action, Blocking Reason, Missing, Complete, 
 - `implementations/implementations.md` and the accepted implementation records.
 - `architectures/architectures.md` and the accepted architecture records.
 - `code/code.md` and `code/integrations.md` when present.
+- The product's `code/<folder>/.highway/metadata.md` when a proposal joins an existing product.
 - The open feature's `plan.md` and `codify-tasks.md` under `code/<folder>/.highway/features/` when present.
 - `library/coding-standards/coding-standards.md` and the standards it names, when present.
 - `library/governance/controls.md`, `library/governance/nfrs.md`, and the active records they name, when present.
@@ -53,7 +54,7 @@ Do not report Status, Summary, Next Action, Blocking Reason, Missing, Complete, 
 
 The complete structure is `.highway/library/templates/output/codify-record.md`, `.highway/library/templates/output/codify-catalog.md`, `.highway/library/templates/output/codify-plan.md`, `.highway/library/templates/output/codify-tasks.md`, `.highway/library/templates/output/codify-metadata.md`, and `.highway/library/templates/output/codify-integrations.md`.
 
-- One product folder `code/<folder>/`, with `.highway/metadata.md` written once when the product is new.
+- One product folder `code/<folder>/`, with `.highway/metadata.md` written when the product is new. Each accepted feature adds one row to its Features table.
 - One saved proposal at `code/<folder>/.highway/features/<number>-<action>/codify.md` after the person accepts the proposal.
 - One plan, `plan.md`, beside that proposal, written after it.
 - One task list, `codify-tasks.md`, beside that plan, written when the person continues from the plan.
@@ -66,7 +67,7 @@ The complete structure is `.highway/library/templates/output/codify-record.md`, 
 
 ## Procedure
 
-Emit only the active template. `catalog` runs alone. Otherwise follow this order: `choose` when no implementation is named; `record check`; `code project` for a code project, or `rank`, with `codified`, when no action is named; then `suggest`, `draft`, `code tasks` for a code project, `provider`, `standards`, `align`, `govern`, `resume`, `join`, `folder`, `layout`, `propose`, `revise`, `identifier`, `title` when needed, `write`, `index`, `plan`, `check`, `menu`, `tasks`, `code`, and `close`. Follow `.highway/governance/experience-standard.md` for attribution and acceptance wording. A current implementation is an accepted row in `implementations/implementations.md`. A removed row does not match and does not block a new automation.
+Emit only the active template. `catalog` runs alone. Otherwise follow this order: `choose` when no implementation is named; `record check`; `code project` for a code project, or `rank`, with `codified`, when no action is named; then `suggest`, `draft`, `code tasks` for a code project, `provider`, `standards`, `align`, `govern`, `resume`, `join`, `folder`, `layout`, `propose`, `revise`, `identifier`, `title` when needed, `write`, `index`, `plan`, `check`, `menu`, `review` when chosen, `tasks`, `code`, and `close`. Follow `.highway/governance/experience-standard.md` for attribution and acceptance wording. A current implementation is an accepted row in `implementations/implementations.md`. A removed row does not match and does not block a new automation.
 
 ### Entry
 
@@ -163,6 +164,7 @@ Classify the latest reply before any other action.
 - `decline`: the person stops or cancels.
 
 On `revise`, "looks good" is `accept`.
+On `review`, a change to the plan is `edit`, and "no", "nothing", or "looks good" is `accept`.
 
 ### rank
 
@@ -498,9 +500,9 @@ Do not write until the id is free or an accepted product is joined.
 
 Write the files below and the rows in `index` together. Write none of them until all are valid. A failed write leaves every existing product byte unchanged and leaves no partial folder. Say what failed in terms the person can act on. Stay on `write`. Do not write the README or any file the task list names here.
 
-The folder is `code/<folder>/` from the accepted proposal. `<number>` is `001` for a new product. For a joined product, it is the next integer after the highest directory in `code/<folder>/.highway/features/`. `<action>` is the title in lowercase words separated by hyphens.
+The folder is `code/<folder>/` from the accepted proposal. `<number>` is `001` for a new product. For a joined product, it is the next integer after the last ID in the Features table of `code/<folder>/.highway/metadata.md`. Do not list `code/<folder>/.highway/features/`. `<action>` is the title in lowercase words separated by hyphens.
 
-For a new product, write `code/<folder>/.highway/metadata.md` from `.highway/library/templates/output/codify-metadata.md`. A joined product keeps its file.
+For a new product, write `code/<folder>/.highway/metadata.md` from `.highway/library/templates/output/codify-metadata.md`. A joined product keeps its file. Append this feature's row to its Features table.
 
 The record is `code/<folder>/.highway/features/<number>-<action>/codify.md` and follows `.highway/library/templates/output/codify-record.md`.
 
@@ -559,9 +561,25 @@ The plan is complete for feature <number>-<action>. **Would you like to:**
 1. Review the plan?
 2. Continue to code the solution?
 
-- `1`: read every section of `plan.md` with the person. Write nothing. Answer, then emit this menu.
+- `1`: go to `review`.
 - A stated edit: regenerate the plan. Go to `check`.
 - `2`: go to `tasks`.
+- `decline`: stop. Write nothing.
+
+### review
+
+Read every section of `plan.md` with the person. Answer each question they ask along the way. Write nothing. After the last section, ask:
+
+**What would you add, correct, or remove?**
+
+If this is accurate, just say so.
+
+Do not emit the menu with this question.
+
+- `accept`: emit the menu. Go to `menu`.
+- `edit`: emit one consequence sentence. Regenerate the plan. Go to `check`.
+- `question`: answer, then ask this question again. Stay on `review`.
+- `unknown`: ask this question again. Stay on `review`.
 - `decline`: stop. Write nothing.
 
 ### tasks
@@ -661,7 +679,8 @@ The automation was not run.
 - A suggestion already in a product that lists this implementation is left out before the list keeps five: by a recorded feature with the same words, ignoring case, or by a feature sentence or product Summary with that meaning. No product folder is opened. Removed rows and integration rows leave nothing out.
 - The proposal shows **Proposed project:** as `New <folder>` or `Existing <folder>`, then **Rationale:**. Its first sentence is plain language. A standard or integration is cited only when it replaced the decision.
 - The person's project edit is written. The folder stays unique, including removed rows, the `CDY` id is in `.highway/metadata.md`, the feature is under `.highway/features/`, and paths are relative to the folder.
-- Each accepted action is the next numbered feature directory in its product. Earlier directories stay.
+- Each accepted action is the next numbered feature directory in its product, numbered from the last row of the Features table in `.highway/metadata.md`. No features folder is listed. Earlier directories stay.
+- Each accepted feature adds one Features row with its number, folder, title, and Summary. A row is never removed.
 - Features keeps an entry only when that feature starts the product, adds an implementation, records an integration, changes the summary, or is open.
 - Accepting a proposal that includes an integration writes one row to `code/integrations.md`, and a pair already accepted writes none.
 - A named action skips the suggestion list and opens the proposal for that action.
@@ -687,9 +706,10 @@ The automation was not run.
 - Each task is one action against one target and shows Scope, Provider, Method, Standards, Files, and Assumptions.
 - Files lists relative paths placed from the File and Folder Structure of the task's standards. A listed standard with no structure is named before the proposal with a pointer to `/highway-codify-config`. A Files edit changes only this automation. An unfilled placeholder keeps the proposal open.
 - A second action waits for another run. Declining writes nothing. Accepting is the only confirmation.
-- Acceptance writes `codify.md`, the new product's `metadata.md`, the catalog row, and any new integrations row together, then `plan.md`. It writes no task list, no file the task list names, and no README.
+- Acceptance writes `codify.md`, the product's `metadata.md` with the new Features row, the catalog row, and any new integrations row together, then `plan.md`. It writes no task list, no file the task list names, and no README.
 - The proposal heading is `Here is a proposed starting point for your codify feature:`. `Highway will use this specification to build out the solution.` follows `If this is accurate, just say so.`
 - The menu offers Review the plan and Continue to code the solution. A feature with a plan and no task list resumes at the menu.
+- Reviewing the plan reads every section, then asks **What would you add, correct, or remove?** and "If this is accurate, just say so." before the menu returns. Accepting emits the menu, and a change regenerates the plan and runs `check`. Continuing to code asks no review question.
 - Continuing emits the building sentence once, then writes the task list ordered by story, each heading with its independent test.
 - The task list follows `codify-tasks.md`. A story's test line comes first only when its first standard says `Tests: required`.
 - Coding starts with no question after the task list is written. Every standard a task names, and each existing file it names, is read before its files are written, and no other automation file is read, the earlier one winning a disagreement, and each task is marked `[X]` before the next begins.

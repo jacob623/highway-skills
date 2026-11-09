@@ -36,7 +36,7 @@ require_text 'development-time validation of shipped skills and shared runtime c
 require_text 'The applicable workflow defines proposal acceptance and persistence'
 require_text 'Development validation verifies that required failure behavior exists in the effective'
 require_text 'A correctness-critical contract choice between two or more actions'
-require_text '**Version**: 9.1.0 | **Ratified**: 2026-09-06 | **Last Amended**: 2026-10-22'
+require_text '**Version**: 10.0.0 | **Ratified**: 2026-09-06 | **Last Amended**: 2026-11-09'
 require_text 'P1.1-P1.4, P6.4, P6.6, and P7.3'
 require_text 'P10.1 remains the generic Experience delegation rule'
 
@@ -55,8 +55,9 @@ for token in 'common failure model' 'this model' '| P13.1 |'; do
 	require_absent "$token"
 done
 
-if [[ "$(grep -cE '^\| P[0-9]+[A-Z]?\.[0-9]+ ' "$CONSTITUTION")" -ne 73 ]]; then
-	echo 'FAIL: Constitution rule inventory does not match the 9.0.0 amendment'
+# Superseded inventory behavior: 73 rule rows before P2.6 was added in 10.0.0.
+if [[ "$(grep -cE '^\| P[0-9]+[A-Z]?\.[0-9]+ ' "$CONSTITUTION")" -ne 74 ]]; then
+	echo 'FAIL: Constitution rule inventory does not match the 10.0.0 amendment'
 	fail=1
 fi
 

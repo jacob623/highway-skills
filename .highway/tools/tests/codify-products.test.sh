@@ -98,7 +98,7 @@ require_in index 'When an accepted row already has that From, To, and Kind, writ
 
 for text in \
 	'code/<folder>/' \
-	'version: 13.0.0'; do
+	'version: 14.1.0'; do
 	require "$CODIFY" "$text"
 done
 for text in \
@@ -123,7 +123,7 @@ require "$RECORD" '.highway/features/'
 require "$TASKS" 'version: 6.0.0'
 require "$TASKS" 'product: CDYXXXXXX'
 require "$TASKS" 'relative to the product folder'
-require "$METADATA" 'version: 1.0.0'
+require "$METADATA" 'version: 2.0.0'
 require "$METADATA" '.highway/metadata.md'
 require "$INTEGRATIONS" 'version: 1.0.0'
 require "$INTEGRATIONS" '| From | To | Kind | Summary | Status |'
