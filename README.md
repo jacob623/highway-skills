@@ -23,6 +23,9 @@ duplicated or hand-adapted per agent.
 - **Configure Controls conversationally**: invoke `/highway-controls setup` or `/highway-controls configure`
   for adaptive Concern, Condition, and Obligation discovery; direct `/highway-controls add` creates one Control.
 - **Run the test suite**: `.highway/tools/tests/run-all.sh`
+- **Find a repository location in a script**: source the paths helper,
+  `.highway/tools/lib/paths.sh`, and use its `HW_*` variables, `hw_template`, and `hw_doc`.
+  Tests source `.highway/tools/tests/paths.sh`; harness scripts source `harness/bin/lib/paths.sh`.
 
 Feature 094 full-suite validation allows up to 240 seconds for completion.
 

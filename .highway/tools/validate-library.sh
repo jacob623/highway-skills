@@ -8,17 +8,18 @@
 set -u
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-# shellcheck source=tools/lib/frontmatter.sh
-source "$SCRIPT_DIR/lib/frontmatter.sh"
-# shellcheck source=tools/lib/library-schema.sh
-source "$SCRIPT_DIR/lib/library-schema.sh"
-# shellcheck source=tools/lib/constitution.sh
-source "$SCRIPT_DIR/lib/constitution.sh"
-# shellcheck source=tools/lib/body-scan.sh
-source "$SCRIPT_DIR/lib/body-scan.sh"
-# shellcheck source=tools/lib/rule-checks.sh
-source "$SCRIPT_DIR/lib/rule-checks.sh"
+# shellcheck source=lib/paths.sh
+source "$SCRIPT_DIR/lib/paths.sh"
+# shellcheck source=lib/frontmatter.sh
+source "$HW_LIB/frontmatter.sh"
+# shellcheck source=lib/library-schema.sh
+source "$HW_LIB/library-schema.sh"
+# shellcheck source=lib/constitution.sh
+source "$HW_LIB/constitution.sh"
+# shellcheck source=lib/body-scan.sh
+source "$HW_LIB/body-scan.sh"
+# shellcheck source=lib/rule-checks.sh
+source "$HW_LIB/rule-checks.sh"
 
 if [[ $# -ne 1 ]]; then
 	echo "ERROR: [SCHEMA] usage: .highway/tools/validate-library.sh <library-file>" >&2
@@ -26,7 +27,7 @@ if [[ $# -ne 1 ]]; then
 fi
 
 library_file="$1"
-constitution="$(con_file "$HIGHWAY_ROOT")"
+constitution="$(con_file "$HW_ROOT")"
 
 if [[ ! -f "$library_file" ]]; then
 	echo "ERROR: [SCHEMA] no library file found at '$library_file'" >&2
@@ -48,7 +49,7 @@ fi
 # under tools/tests/fixtures/library/, so the narrower scope would decline every one of them.
 library_file_abs="$(cd "$(dirname "$library_file")" 2>/dev/null && pwd)/$(basename "$library_file")"
 case "$library_file_abs" in
-	"$HIGHWAY_ROOT"/*) ;;
+	"$HW_FRAMEWORK"/*) ;;
 	*)
 		echo "ERROR: [OUT-OF-SCOPE] '$library_file' is outside the Highway framework root; it belongs to the repository and is not validated here" >&2
 		exit 1

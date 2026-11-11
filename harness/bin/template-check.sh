@@ -2,7 +2,7 @@
 # Structural template check: does a file carry the required parts of its output template?
 #
 # Usage: template-check.sh <template> <file>
-#   <template> is a file name under .highway/library/templates/output/ or a path.
+#   <template> is an output template file name, looked up with hw_template, or a path.
 #
 # Required parts, read from the template:
 #   - each top-level frontmatter key in the fence under `## File Frontmatter`;
@@ -17,8 +17,8 @@
 set -eu
 
 HERE="$(cd "$(dirname "$0")" && pwd)"
-REPO_ROOT="$(cd "$HERE/../.." && pwd)"
-TEMPLATES="$REPO_ROOT/.highway/library/templates/output"
+# shellcheck source=lib/paths.sh
+. "$HERE/lib/paths.sh"
 
 if [ "$#" -ne 2 ]; then
 	printf 'usage: template-check.sh <template> <file>\n' >&2
@@ -29,7 +29,7 @@ template="$1"
 target="$2"
 case "$template" in
 */*) ;;
-*) template="$TEMPLATES/$template" ;;
+*) template="$(hw_template "${template%.md}")" || exit 2 ;;
 esac
 if [ ! -f "$template" ]; then
 	printf 'template-check: no template at %s\n' "$template" >&2

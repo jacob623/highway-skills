@@ -7,14 +7,16 @@
 # target's current metadata.version. See
 # feature 004 (shared content library).
 
-# Usage: dc_validate_dependencies <skill_file> <highway_root>
+[[ -n "${HW_ROOT:-}" ]] || source "$(dirname "${BASH_SOURCE[0]}")/paths.sh"
+
+# Usage: dc_validate_dependencies <skill_file> <root>
 # Prints zero or more finding messages (one per line). Returns 1 if any were printed, else 0.
 dc_validate_dependencies() {
-	local skill_file="$1" highway_root="$2" found=0
+	local skill_file="$1" root="$2" found=0
 	local path version target_file target_version
 	while IFS='|' read -r path version; do
 		[[ -z "$path" ]] && continue
-		target_file="$highway_root/$path"
+		target_file="$(hw_at "$root" "$HW_FRAMEWORK")/$path"
 		if [[ ! -f "$target_file" ]]; then
 			echo "dependency '$path' does not exist"
 			found=1

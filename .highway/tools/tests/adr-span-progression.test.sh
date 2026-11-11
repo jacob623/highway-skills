@@ -6,9 +6,10 @@ set -u
 # Seeded failure probe: restoring the single-architecture question for a span, or removing the review menu, fails this check.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-SKILLS="$HIGHWAY_ROOT/skills"
-OUTPUT="$HIGHWAY_ROOT/library/templates/output"
+# shellcheck source=paths.sh
+source "$SCRIPT_DIR/paths.sh"
+SKILLS="$HW_SKILLS"
+OUTPUT="$HW_OUTPUT_TEMPLATES"
 ADR="$SKILLS/highway-adr/SKILL.md"
 ASSESSMENT="$SKILLS/highway-assessment/SKILL.md"
 DISCOVERY="$SKILLS/highway-discovery/SKILL.md"
@@ -46,7 +47,6 @@ require "$DISCOVERY_RECORD" '`product currency`'
 require "$DISCOVERY_RECORD" '`required platform`'
 require "$DISCOVERY_RECORD" 'A product claim check is not accepted repository evidence.'
 
-require "$ADR" 'version: 6.0.0'
 require "$ADR" '### span'
 require "$ADR" 'This decision runs beside the current decision of each of these architectures. None of those decisions is replaced, and no new architecture will follow.'
 require "$ADR" "If you'd like to leave out any of these architectures, just say so."
@@ -59,7 +59,6 @@ require "$ADR" 'Run `/highway-codify` for **[Implementation title]** to **[Decis
 require "$ADR" 'is not yet implemented.'
 require "$ADR" 'One Discovery has one ADR.'
 
-require "$ASSESSMENT" 'version: 5.0.0'
 require "$ASSESSMENT" '### review'
 require "$ASSESSMENT" '**What would you like to review?**'
 require "$ASSESSMENT" '1. Observed gaps against accepted architectures.'
@@ -74,7 +73,6 @@ require "$ASSESSMENT" 'continue as `highway-codify`'
 require "$ASSESSMENT" 'Do not write a ready record to the findings file.'
 reject "$ASSESSMENT" '/highway-codify'
 
-require "$DISCOVERY" 'version: 5.0.0'
 require "$DISCOVERY" "If you'd like to select this option for the Decision record, just say so."
 require "$DISCOVERY" '- `adopt`: selects the option being explored for the Decision record.'
 require "$DISCOVERY" '### check'

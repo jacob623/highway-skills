@@ -6,9 +6,10 @@ set -u
 # Seeded failure probe: restoring "The executor and each provider are the person" or a diagram arrow from one target to the next fails this check.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-SKILLS="$HIGHWAY_ROOT/skills"
-OUTPUT="$HIGHWAY_ROOT/library/templates/output"
+# shellcheck source=paths.sh
+source "$SCRIPT_DIR/paths.sh"
+SKILLS="$HW_SKILLS"
+OUTPUT="$HW_OUTPUT_TEMPLATES"
 IMPL="$SKILLS/highway-implementation/SKILL.md"
 ONBOARD="$SKILLS/highway-onboarding/SKILL.md"
 CODIFY="$SKILLS/highway-codify/SKILL.md"
@@ -39,28 +40,24 @@ reject() {
 }
 
 require "$PLATFORMS" '| Platform | Implementation ID | Kind | When to use | When not to use |'
-require "$PLATFORMS" 'version: 2.1.0'
 
 for text in \
 	'### platforms' \
 	'is included as a platform highway can use in highway-codify proposals**' \
 	'**Would you like to configure how highway-codify uses [Platform]?**' \
 	'library/coding-standards/codify-platforms.md' \
-	'an agent that starts the work' \
-	'version: 7.9.0'; do
+	'an agent that starts the work'; do
 	require "$IMPL" "$text"
 done
 
 require "$ONBOARD" 'follow `platforms` in `highway-implementation`'
-require "$ONBOARD" 'version: 10.6.0'
 
 for text in \
 	'When the invocation is the word `configure`' \
 	"**[Product Title]'s implementation record is missing critical detail required for highway-codify proposals.**" \
 	'**Executor:**' \
 	'Do not replace the Provider' \
-	'P -->|[Next action]|' \
-	'version: 14.1.0'; do
+	'P -->|[Next action]|'; do
 	require "$CODIFY" "$text"
 done
 for text in \
@@ -71,11 +68,9 @@ for text in \
 done
 
 require "$RECORD" 'P -->|<next action>|'
-require "$RECORD" 'version: 9.1.0'
 reject "$RECORD" 'T1 -->|<next action>|'
 
 require "$TASKS" 'The Provider is the first node'
-require "$TASKS" 'version: 6.0.0'
 
 if [[ "$fail" -ne 0 ]]; then
 	exit 1

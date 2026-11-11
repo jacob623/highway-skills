@@ -17,16 +17,16 @@
 set -u
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-REPO_ROOT="$(cd "$HIGHWAY_ROOT/.." && pwd)"
-# shellcheck source=tools/lib/frontmatter.sh
-source "$SCRIPT_DIR/lib/frontmatter.sh"
+# shellcheck source=lib/paths.sh
+source "$SCRIPT_DIR/lib/paths.sh"
+# shellcheck source=lib/frontmatter.sh
+source "$HW_LIB/frontmatter.sh"
 
-INSTRUCTIONS_DIR="$HIGHWAY_ROOT/instructions"
-MANIFEST="$HIGHWAY_ROOT/tools/.instruction-manifest"
-CLAUDE_REL=".claude/CLAUDE.md"
-COPILOT_REL=".github/copilot-instructions.md"
-AGENTS_REL="AGENTS.md"
+INSTRUCTIONS_DIR="$HW_INSTRUCTIONS"
+MANIFEST="$HW_TOOLS/.instruction-manifest"
+CLAUDE_REL="$(hw_rel "$HW_CLAUDE_MD")"
+COPILOT_REL="$(hw_rel "$HW_COPILOT_MD")"
+AGENTS_REL="$(hw_rel "$HW_AGENTS_MD")"
 
 sha256_of() {
 	local file="$1"
@@ -48,7 +48,7 @@ manifest_get() {
 # Returns 0 when the target may be written. A missing file is safe to create.
 check_no_drift() {
 	local rel_path="$1" abs_target entry current_hash recorded_hash
-	abs_target="$REPO_ROOT/$rel_path"
+	abs_target="$HW_ROOT/$rel_path"
 	[[ -f "$abs_target" ]] || return 0
 	if ! entry="$(manifest_get "$rel_path")"; then
 		echo "ERROR: '$rel_path' already exists and is not tracked by .highway/tools/.instruction-manifest -- refusing to overwrite a file that may have been hand-authored." >&2
@@ -192,15 +192,15 @@ if [[ -s "$sorted" ]]; then
 	while IFS= read -r src; do
 		id="$(basename "$src" .md)"
 		rel_path=".cursor/rules/$id.mdc"
-		abs_target="$REPO_ROOT/$rel_path"
+		abs_target="$HW_ROOT/$rel_path"
 		mkdir -p "$(dirname "$abs_target")"
 		cp "$stage/cursor-$id.mdc" "$abs_target"
 	done <"$sorted"
 fi
-mkdir -p "$(dirname "$REPO_ROOT/$CLAUDE_REL")" "$(dirname "$REPO_ROOT/$COPILOT_REL")" "$(dirname "$REPO_ROOT/$AGENTS_REL")"
-cp "$merged_tmp" "$REPO_ROOT/$CLAUDE_REL"
-cp "$merged_tmp" "$REPO_ROOT/$COPILOT_REL"
-cp "$merged_tmp" "$REPO_ROOT/$AGENTS_REL"
+mkdir -p "$(dirname "$HW_ROOT/$CLAUDE_REL")" "$(dirname "$HW_ROOT/$COPILOT_REL")" "$(dirname "$HW_ROOT/$AGENTS_REL")"
+cp "$merged_tmp" "$HW_ROOT/$CLAUDE_REL"
+cp "$merged_tmp" "$HW_ROOT/$COPILOT_REL"
+cp "$merged_tmp" "$HW_ROOT/$AGENTS_REL"
 
 manifest_tmp="$stage/manifest"
 : >"$manifest_tmp"
@@ -208,12 +208,12 @@ if [[ -s "$sorted" ]]; then
 	while IFS= read -r src; do
 		id="$(basename "$src" .md)"
 		rel_path=".cursor/rules/$id.mdc"
-		printf '%s\t%s\t%s\n' "$rel_path" "$id" "$(sha256_of "$REPO_ROOT/$rel_path")" >>"$manifest_tmp"
+		printf '%s\t%s\t%s\n' "$rel_path" "$id" "$(sha256_of "$HW_ROOT/$rel_path")" >>"$manifest_tmp"
 	done <"$sorted"
 fi
-printf '%s\t%s\t%s\n' "$CLAUDE_REL" "$joined_ids" "$(sha256_of "$REPO_ROOT/$CLAUDE_REL")" >>"$manifest_tmp"
-printf '%s\t%s\t%s\n' "$COPILOT_REL" "$joined_ids" "$(sha256_of "$REPO_ROOT/$COPILOT_REL")" >>"$manifest_tmp"
-printf '%s\t%s\t%s\n' "$AGENTS_REL" "$joined_ids" "$(sha256_of "$REPO_ROOT/$AGENTS_REL")" >>"$manifest_tmp"
+printf '%s\t%s\t%s\n' "$CLAUDE_REL" "$joined_ids" "$(sha256_of "$HW_ROOT/$CLAUDE_REL")" >>"$manifest_tmp"
+printf '%s\t%s\t%s\n' "$COPILOT_REL" "$joined_ids" "$(sha256_of "$HW_ROOT/$COPILOT_REL")" >>"$manifest_tmp"
+printf '%s\t%s\t%s\n' "$AGENTS_REL" "$joined_ids" "$(sha256_of "$HW_ROOT/$AGENTS_REL")" >>"$manifest_tmp"
 
 # A removed source leaves its Cursor file and its manifest row. Copy those rows forward.
 if [[ -f "$MANIFEST" ]]; then
@@ -226,7 +226,7 @@ if [[ -f "$MANIFEST" ]]; then
 		if grep -qF "$(printf '%s\t' "$path")" "$manifest_tmp"; then
 			continue
 		fi
-		if [[ -f "$REPO_ROOT/$path" ]]; then
+		if [[ -f "$HW_ROOT/$path" ]]; then
 			printf '%s\t%s\t%s\n' "$path" "$id" "$hash" >>"$manifest_tmp"
 		fi
 	done <"$MANIFEST"

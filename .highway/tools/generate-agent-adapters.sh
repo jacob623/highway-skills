@@ -16,23 +16,22 @@
 # Declarative per-agent config (FR-004/FR-008: adding an agent = one new row here, never an
 # edit to skills/).
 AGENT_IDS=(github-copilot claude-code cursor codex)
-AGENT_TARGET_TEMPLATES=(".github/skills/%s/SKILL.md" ".claude/skills/%s/SKILL.md" ".cursor/skills/%s/SKILL.md" ".agents/skills/%s/SKILL.md")
 AGENT_TRANSFORMS=(identity-copy identity-copy identity-copy identity-copy)
 
 set -u
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-# HIGHWAY_ROOT is the .highway/ framework root (holds skill sources + the manifest); REPO_ROOT
-# is the true repository root, one level further up, used only for agent adapter target paths.
-# The two differ since the .highway/ consolidation (per feature 002 (highway folder
-# consolidation), Decision 1) -- do not conflate them.
-HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-REPO_ROOT="$(cd "$HIGHWAY_ROOT/.." && pwd)"
-# shellcheck source=tools/lib/frontmatter.sh
-source "$SCRIPT_DIR/lib/frontmatter.sh"
+# shellcheck source=lib/paths.sh
+source "$SCRIPT_DIR/lib/paths.sh"
+# shellcheck source=lib/frontmatter.sh
+source "$HW_LIB/frontmatter.sh"
 
-SKILLS_DIR="$HIGHWAY_ROOT/skills"
-MANIFEST="$HIGHWAY_ROOT/tools/.adapter-manifest"
+# Adapter targets, relative to the repository root, in AGENT_IDS order. One line, so adding an
+# agent stays a one-row edit.
+AGENT_TARGET_TEMPLATES=("$(hw_rel "$HW_AGENT_COPILOT")/%s/SKILL.md" "$(hw_rel "$HW_AGENT_CLAUDE")/%s/SKILL.md" "$(hw_rel "$HW_AGENT_CURSOR")/%s/SKILL.md" "$(hw_rel "$HW_AGENT_CODEX")/%s/SKILL.md")
+
+SKILLS_DIR="$HW_SKILLS"
+MANIFEST="$HW_TOOLS/.adapter-manifest"
 
 target_path_for() {
 	local template="$1" id="$2"
@@ -111,7 +110,7 @@ skill_count=${#skill_dirs[@]}
 invalid_found=0
 for ((i = 0; i < skill_count; i++)); do
 	dir="${skill_dirs[$i]%/}"
-	if ! "$SCRIPT_DIR/validate-skill.sh" "$dir" >/dev/null 2>/tmp/validate-skill-err.$$; then
+	if ! "$HW_TOOLS/validate-skill.sh" "$dir" >/dev/null 2>/tmp/validate-skill-err.$$; then
 		id="$(basename "$dir")"
 		echo "ERROR: skill '$id' failed validation; aborting adapter generation for all skills:" >&2
 		cat /tmp/validate-skill-err.$$ >&2
@@ -132,7 +131,7 @@ for ((i = 0; i < skill_count; i++)); do
 
 	for j in "${!AGENT_IDS[@]}"; do
 		rel_path="$(target_path_for "${AGENT_TARGET_TEMPLATES[$j]}" "$id")"
-		abs_target="$REPO_ROOT/$rel_path"
+		abs_target="$HW_ROOT/$rel_path"
 		if ! check_no_drift "$abs_target" "$rel_path"; then
 			drift_found=1
 			continue
@@ -152,7 +151,7 @@ for ((i = 0; i < skill_count; i++)); do
 	for j in "${!AGENT_IDS[@]}"; do
 		transform="${AGENT_TRANSFORMS[$j]}"
 		rel_path="$(target_path_for "${AGENT_TARGET_TEMPLATES[$j]}" "$id")"
-		abs_target="$REPO_ROOT/$rel_path"
+		abs_target="$HW_ROOT/$rel_path"
 		case "$transform" in
 			identity-copy)
 				write_target_from_file "$abs_target" "$rel_path" "$id" "$version" "$skill_file"

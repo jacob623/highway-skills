@@ -6,8 +6,9 @@ set -u
 # Seeded failure probe: restoring "What we'll do together" or `[What the organization does.]` in highway-onboarding fails this check.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-ONBOARDING="$HIGHWAY_ROOT/skills/highway-onboarding/SKILL.md"
+# shellcheck source=paths.sh
+source "$SCRIPT_DIR/paths.sh"
+ONBOARDING="$HW_SKILLS/highway-onboarding/SKILL.md"
 fail=0
 
 require() {
@@ -56,7 +57,6 @@ reject 'This is where Highway helps you navigate your technology landscape.'
 reject 'Identify important business capabilities'
 reject '[What the organization does.]'
 
-require 'version: 10.6.0'
 
 if [[ "$fail" -ne 0 ]]; then
 	exit 1

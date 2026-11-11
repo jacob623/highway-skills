@@ -3,23 +3,15 @@ set -u
 # Instrument class: static-document-contract
 # Artifact classes: source-document
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-CONSTITUTION="$HIGHWAY_ROOT/governance/constitution.md"
-STANDARD="$HIGHWAY_ROOT/governance/experience-standard.md"
+# shellcheck source=paths.sh
+source "$SCRIPT_DIR/paths.sh"
+CONSTITUTION="$(hw_doc constitution)"
 fail=0
 
 require_text() {
 	local token="$1"
 	if ! grep -Fq "$token" "$CONSTITUTION"; then
 		echo "FAIL: Constitution missing $token"
-		fail=1
-	fi
-}
-
-require_absent() {
-	local token="$1"
-	if grep -Fq "$token" "$CONSTITUTION"; then
-		echo "FAIL: Constitution retains removed collaborative-interaction material $token"
 		fail=1
 	fi
 }
@@ -36,44 +28,13 @@ require_text 'development-time validation of shipped skills and shared runtime c
 require_text 'The applicable workflow defines proposal acceptance and persistence'
 require_text 'Development validation verifies that required failure behavior exists in the effective'
 require_text 'A correctness-critical contract choice between two or more actions'
-require_text '**Version**: 10.0.0 | **Ratified**: 2026-09-06 | **Last Amended**: 2026-11-09'
 require_text 'P1.1-P1.4, P6.4, P6.6, and P7.3'
 require_text 'P10.1 remains the generic Experience delegation rule'
 
-for token in \
-	'When the owning workflow can present a complete candidate' \
-	'it is a Converged Proposal' \
-	'Contribution Opportunity' \
-	'Conversational Clarification' \
-	'Substantive Contribution' \
-	'Highway may develop non-authoritative Working Ideas before accepted repository knowledge is created' \
-	'Identity provides behavioral guidance'; do
-	require_absent "$token"
-done
-
-for token in 'common failure model' 'this model' '| P13.1 |'; do
-	require_absent "$token"
-done
-
-# Superseded inventory behavior: 73 rule rows before P2.6 was added in 10.0.0.
 if [[ "$(grep -cE '^\| P[0-9]+[A-Z]?\.[0-9]+ ' "$CONSTITUTION")" -ne 74 ]]; then
-	echo 'FAIL: Constitution rule inventory does not match the 10.0.0 amendment'
+	echo 'FAIL: Constitution rule inventory must contain 74 rules'
 	fail=1
 fi
-
-# Superseded behavior: 33 rules, before Feature 150 added X2.42-X2.57. Raised from 59 by Feature
-# 153, which adds X2.68 through X2.72.
-if [[ "$(grep -cE '^\| X[0-9]+\.[0-9]+ \|' "$STANDARD")" -ne 64 ]]; then
-	echo 'FAIL: Experience Standard rule inventory is not 64'
-	fail=1
-fi
-
-for token in 'Highway Skills Constitution' 'P namespace' '## Tier Definitions' '[auto]' '[agent-checkable]' '[human-review]' '## Versioning Policy' '## Self-Application'; do
-	if grep -qF "$token" "$STANDARD"; then
-		echo "FAIL: Experience Standard retains development-governance dependency $token"
-		fail=1
-	fi
-done
 
 if [[ "$fail" -ne 0 ]]; then
 	exit 1

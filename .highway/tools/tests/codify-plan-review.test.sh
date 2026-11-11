@@ -6,8 +6,9 @@ set -u
 # Seeded failure probe: removing the review question from `### review`, or restoring `Answer, then emit this menu.`, fails this check.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-CODIFY="$HIGHWAY_ROOT/skills/highway-codify/SKILL.md"
+# shellcheck source=paths.sh
+source "$SCRIPT_DIR/paths.sh"
+CODIFY="$HW_SKILLS/highway-codify/SKILL.md"
 QUESTION='**What would you add, correct, or remove?**'
 WALK='Read every section of `plan.md` with the person. Answer each question they ask along the way. Write nothing. After the last section, ask:'
 fail=0
@@ -104,7 +105,6 @@ if [[ -z "$walk_at" || -z "$question_at" || -z "$reply_at" ]] || [[ "$question_a
 fi
 
 require '- Reviewing the plan reads every section, then asks **What would you add, correct, or remove?** and "If this is accurate, just say so." before the menu returns. Accepting emits the menu, and a change regenerates the plan and runs `check`. Continuing to code asks no review question.'
-require 'version: 14.1.0'
 
 if [[ "$fail" -ne 0 ]]; then
 	exit 1

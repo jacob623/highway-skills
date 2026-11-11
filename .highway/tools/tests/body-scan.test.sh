@@ -7,9 +7,10 @@ set -u
 # Seeded failure probe: this test must detect a defect in each declared class and clean its probe.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-# shellcheck source=tools/lib/body-scan.sh
-source "$HIGHWAY_ROOT/tools/lib/body-scan.sh"
+# shellcheck source=paths.sh
+source "$SCRIPT_DIR/paths.sh"
+# shellcheck source=../lib/body-scan.sh
+source "$HW_LIB/body-scan.sh"
 
 fail=0
 tmp_dir="$(mktemp -d)"

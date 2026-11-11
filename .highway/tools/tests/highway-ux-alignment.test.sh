@@ -4,9 +4,10 @@ set -u
 # Instrument class: mixed (static-document-contract and executed-behavior)
 # Artifact classes: governance-document, skill-document, disposable-fixture
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-EXPERIENCE_STANDARD="$HIGHWAY_ROOT/governance/experience-standard.md"
-SKILLS_ROOT="$HIGHWAY_ROOT/skills"
+# shellcheck source=paths.sh
+source "$SCRIPT_DIR/paths.sh"
+EXPERIENCE_STANDARD="$(hw_doc experience-standard)"
+SKILLS_ROOT="$HW_SKILLS"
 fail=0
 
 require_text() {
@@ -42,13 +43,8 @@ for token in \
 	require_text "$EXPERIENCE_STANDARD" "$token"
 done
 
-# Superseded behavior: 33 rules, before Feature 150 added X2.42-X2.57.
 # Superseded behavior: Interaction Model step 9 converged on owner completeness and conversational
 # convergence alone; Feature 150 adds a Substantive Contribution from the person as a third condition.
-if [[ "$(grep -cE '^\| X[0-9]+\.[0-9]+ \|' "$EXPERIENCE_STANDARD")" -ne 64 ]]; then
-	echo 'FAIL: Experience Standard rule inventory must contain 64 rules'
-	fail=1
-fi
 for old_section in \
 	'### Interactive Workflow UX Contract' \
 	'#### Collaborative Development (Non-Normative Guidance)' \

@@ -7,8 +7,9 @@ set -u
 # Seeded failure probe: this test must detect a defect in each declared class and clean its probe.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-VALIDATE="$HIGHWAY_ROOT/tools/validate-skill.sh"
+# shellcheck source=paths.sh
+source "$SCRIPT_DIR/paths.sh"
+VALIDATE="$HW_TOOLS/validate-skill.sh"
 fail=0
 
 tmp_root="$(mktemp -d)"
@@ -263,8 +264,8 @@ assert_reports "P2.6 git command" "P2.6" "$d"
 
 # --- Every enforced rule has a seeded case above ------------------------------------------------------------------------------
 
-# shellcheck source=tools/lib/rule-checks.sh
-source "$HIGHWAY_ROOT/tools/lib/rule-checks.sh"
+# shellcheck source=../lib/rule-checks.sh
+source "$HW_LIB/rule-checks.sh"
 for rule in $(rc_registered_ids); do
 	if ! grep -q "\"$rule\"" "${BASH_SOURCE[0]}"; then
 		echo "FAIL: rule $rule is registered as enforced but has no seeded violation case in this test"
@@ -274,7 +275,7 @@ done
 
 # Experience rows intentionally carry no development/test tier column. Their parsed classification
 # is the internal "runtime" category owned by constitution.sh.
-EXPERIENCE="$HIGHWAY_ROOT/governance/experience-standard.md"
+EXPERIENCE="$(hw_doc experience-standard)"
 
 for rule in X2.1 X2.3 X2.4 X2.5 X2.6; do
 	if ! grep -qE "^\| $rule \|[^|]+\|[^|]+\|$" "$EXPERIENCE"; then

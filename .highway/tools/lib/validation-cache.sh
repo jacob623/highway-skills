@@ -12,6 +12,8 @@
 #
 # Failed validations are never recorded, so a defective skill is re-reported on every invocation.
 
+[[ -n "${HW_ROOT:-}" ]] || source "$(dirname "${BASH_SOURCE[0]}")/paths.sh"
+
 # Prints the cache directory, or nothing when no usable directory exists.
 #
 # Held outside the repository so it needs no ignore entry and cannot be packaged. A cache path
@@ -77,16 +79,16 @@ VC_ENVIRONMENT_HASH=""
 # `.txt`, and the contract manifest, which is a dotfile -- either of which could have changed a
 # verdict without changing the key.
 vc_environment_hash() {
-	local highway_root="$1"
+	local root="$1"
 	if [[ -n "$VC_ENVIRONMENT_HASH" ]]; then
 		printf '%s' "$VC_ENVIRONMENT_HASH"
 		return 0
 	fi
 	VC_ENVIRONMENT_HASH="$(
 		{
-			printf '%s\n' "$highway_root/tools/validate-skill.sh"
-			printf '%s\n' "$highway_root/tools/.frontmatter-contract"
-			find "$highway_root/tools/lib" "$highway_root/library" "$highway_root/governance" \
+			printf '%s\n' "$(hw_at "$root" "$HW_TOOLS")/validate-skill.sh"
+			printf '%s\n' "$(hw_at "$root" "$HW_TOOLS")/.frontmatter-contract"
+			find "$(hw_at "$root" "$HW_LIB")" "$(hw_at "$root" "$HW_LIBRARY")" "$(hw_at "$root" "$HW_GOVERNANCE")" \
 				-type f 2>/dev/null
 		} | sort | vc_hash_list | vc_hash_stdin
 	)"
@@ -95,9 +97,9 @@ vc_environment_hash() {
 
 # Prints the record key for one skill file.
 vc_key() {
-	local skill_file="$1" highway_root="$2" skill_hash env_hash
+	local skill_file="$1" root="$2" skill_hash env_hash
 	skill_hash="$(vc_hash_file "$skill_file")"
-	env_hash="$(vc_environment_hash "$highway_root")"
+	env_hash="$(vc_environment_hash "$root")"
 	printf '%s%s' "$skill_hash" "$env_hash" | vc_hash_stdin
 }
 

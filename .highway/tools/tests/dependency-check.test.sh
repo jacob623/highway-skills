@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Tests lib/dependency-check.sh via validate-skill.sh. Dependency paths are resolved anchored
-# at the real $HIGHWAY_ROOT (FR-007), not fixture-relative, so this test generates its target
+# at the real framework folder (FR-007), not fixture-relative, so this test generates its target
 # file and skill fixtures at run time under temp locations rather than using static
 # tools/tests/fixtures/ files -- mirroring generate-catalog.test.sh's temp-real-artifact
 # pattern. Per feature 004 (shared content library).
@@ -10,12 +10,13 @@ set -u
 # Seeded failure probe: this test must detect a defect in each declared class and clean its probe.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-VALIDATE="$HIGHWAY_ROOT/tools/validate-skill.sh"
-FIXTURES="$SCRIPT_DIR/fixtures"
+# shellcheck source=paths.sh
+source "$SCRIPT_DIR/paths.sh"
+VALIDATE="$HW_TOOLS/validate-skill.sh"
+FIXTURES="$HW_FIXTURES"
 
 TARGET_REL="library/knowledge/dep-check-target-$$.md"
-TARGET_FILE="$HIGHWAY_ROOT/$TARGET_REL"
+TARGET_FILE="$HW_FRAMEWORK/$TARGET_REL"
 TMP_SKILLS_DIR="$(mktemp -d)"
 
 fail=0

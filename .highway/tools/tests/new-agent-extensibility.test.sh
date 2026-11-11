@@ -7,16 +7,14 @@ set -u
 # Seeded failure probe: this test must detect a defect in each declared class and clean its probe.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-# HIGHWAY_ROOT (.highway/) holds the generator + skill sources; REPO_ROOT (one level up) is
-# where agent adapters are actually written -- per feature 002 (highway folder consolidation).
-HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-REPO_ROOT="$(cd "$HIGHWAY_ROOT/.." && pwd)"
-GENERATOR="$HIGHWAY_ROOT/tools/generate-agent-adapters.sh"
-FIXTURES="$SCRIPT_DIR/fixtures"
+# shellcheck source=paths.sh
+source "$SCRIPT_DIR/paths.sh"
+GENERATOR="$HW_TOOLS/generate-agent-adapters.sh"
+FIXTURES="$HW_FIXTURES"
 
 TMP_ID="test-newagent-fixture-$$"
-SKILL_SRC_DIR="$HIGHWAY_ROOT/skills/$TMP_ID"
-MOCK_TARGET="$REPO_ROOT/.mock-agent-4/skills/$TMP_ID/SKILL.md"
+SKILL_SRC_DIR="$HW_SKILLS/$TMP_ID"
+MOCK_TARGET="$HW_ROOT/.mock-agent-4/skills/$TMP_ID/SKILL.md"
 BACKUP="$(mktemp)"
 
 fail=0
@@ -24,7 +22,7 @@ fail=0
 skills_snapshot() {
 	# Order-independent content snapshot of every file under skills/ (excluding the temp fixture
 	# this test itself adds), so we can prove the generator never edits existing skill content.
-	find "$HIGHWAY_ROOT/skills" -type f ! -path "$SKILL_SRC_DIR/*" -print0 \
+	find "$HW_SKILLS" -type f ! -path "$SKILL_SRC_DIR/*" -print0 \
 		| xargs -0 shasum -a 256 2>/dev/null | sort
 }
 
@@ -32,12 +30,12 @@ cleanup() {
 	cp "$BACKUP" "$GENERATOR"
 	rm -f "$BACKUP"
 	rm -rf "$SKILL_SRC_DIR" \
-		"$REPO_ROOT/.github/skills/$TMP_ID" \
-		"$REPO_ROOT/.claude/skills/$TMP_ID" \
-		"$REPO_ROOT/.cursor/skills/$TMP_ID" \
-		"$REPO_ROOT/.agents/skills/$TMP_ID" \
-		"$REPO_ROOT/.mock-agent-4"
-	local manifest="$HIGHWAY_ROOT/tools/.adapter-manifest"
+		"$HW_AGENT_COPILOT/$TMP_ID" \
+		"$HW_AGENT_CLAUDE/$TMP_ID" \
+		"$HW_AGENT_CURSOR/$TMP_ID" \
+		"$HW_AGENT_CODEX/$TMP_ID" \
+		"$HW_ROOT/.mock-agent-4"
+	local manifest="$HW_TOOLS/.adapter-manifest"
 	if [[ -f "$manifest" ]]; then
 		grep -vF "$TMP_ID" "$manifest" >"$manifest.tmp" || true
 		mv "$manifest.tmp" "$manifest"

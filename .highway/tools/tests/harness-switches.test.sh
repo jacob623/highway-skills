@@ -7,10 +7,10 @@ set -u
 # Seeded failure probe: a switch line with an empty usage, or a switch missing from harness/README.md, fails this check.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-REPO_ROOT="$(cd "$HIGHWAY_ROOT/.." && pwd)"
-SWITCHES="$REPO_ROOT/harness/src/switches.ts"
-README="$REPO_ROOT/harness/README.md"
+# shellcheck source=paths.sh
+source "$SCRIPT_DIR/paths.sh"
+SWITCHES="$HW_HARNESS/src/switches.ts"
+README="$HW_HARNESS/README.md"
 fail=0
 
 if [[ ! -f "$SWITCHES" ]]; then

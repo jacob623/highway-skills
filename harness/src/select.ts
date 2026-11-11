@@ -3,7 +3,7 @@ import { existsSync, mkdirSync, mkdtempSync, readdirSync, rmSync, writeFileSync 
 import { tmpdir } from "node:os";
 import { join, relative } from "node:path";
 import { HARNESS_DIR, REPO_ROOT } from "./config.ts";
-import { isStage, resolveFixture } from "./project.ts";
+import { isStage, location, resolveFixture } from "./project.ts";
 import type { Selection } from "./report.ts";
 import { readScenario, ScenarioError, type Scenario } from "./scenario.ts";
 
@@ -83,11 +83,12 @@ export function changedSince(ref: string): ChangedFiles {
 /** Writes the ref's SKILL.md files to a temporary skills folder, so deleted paths map as they did. */
 export function skillsAtRef(ref: string): string {
   const dir = mkdtempSync(join(tmpdir(), "harness-skills-"));
-  const files = git(["ls-tree", "-r", "--name-only", ref, ".highway/skills"])
+  const skills = location("skills");
+  const files = git(["ls-tree", "-r", "--name-only", ref, skills])
     .split("\n")
     .filter((p) => p.endsWith("/SKILL.md"));
   for (const file of files) {
-    const id = file.split("/")[2];
+    const id = file.slice(skills.length + 1).split("/")[0];
     mkdirSync(join(dir, id), { recursive: true });
     writeFileSync(join(dir, id, "SKILL.md"), git(["show", `${ref}:${file}`]));
   }

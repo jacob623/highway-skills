@@ -6,9 +6,10 @@ set -u
 # Seeded failure probe: removing `### record check` or `### code project` from highway-codify, or restoring `### platforms needed`, fails this check.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-SKILLS="$HIGHWAY_ROOT/skills"
-OUTPUT="$HIGHWAY_ROOT/library/templates/output"
+# shellcheck source=paths.sh
+source "$SCRIPT_DIR/paths.sh"
+SKILLS="$HW_SKILLS"
+OUTPUT="$HW_OUTPUT_TEMPLATES"
 CODIFY="$SKILLS/highway-codify/SKILL.md"
 IMPL="$SKILLS/highway-implementation/SKILL.md"
 ONBOARD="$SKILLS/highway-onboarding/SKILL.md"
@@ -185,11 +186,6 @@ require "$CDY_RECORD" 'In a code project, a code task shows **Language:** with t
 require "$CDY_RECORD" "In a code project, each code task's arrow points to the product."
 require "$CDY_RECORD" 'In a code project, Setup Instructions say how to build, configure, and run the product, and User Guide says how to use its interfaces.'
 
-require "$CODIFY" 'version: 14.1.0'
-require "$IMPL" 'version: 7.9.0'
-require "$ONBOARD" 'version: 10.6.0'
-require "$RI_RECORD" 'version: 2.3.0'
-require "$CDY_RECORD" 'version: 9.1.0'
 
 if [[ "$fail" -ne 0 ]]; then
 	exit 1

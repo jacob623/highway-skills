@@ -15,8 +15,9 @@
 set -eu
 
 HERE="$(cd "$(dirname "$0")" && pwd)"
-REPO_ROOT="$(cd "$HERE/../.." && pwd)"
-SKILLS_DIR="$REPO_ROOT/.highway/skills"
+# shellcheck source=lib/paths.sh
+. "$HERE/lib/paths.sh"
+SKILLS_DIR="$HW_SKILLS"
 
 if [ "${1:-}" = "--skills-dir" ]; then
 	SKILLS_DIR="$2"

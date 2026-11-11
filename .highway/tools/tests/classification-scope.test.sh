@@ -17,12 +17,12 @@ set -u
 # Seeded failure probe: removing the prune predicates from a declared walker must fail this test.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-REPO_ROOT="$(cd "$HIGHWAY_ROOT/.." && pwd)"
+# shellcheck source=paths.sh
+source "$SCRIPT_DIR/paths.sh"
 fail=0
 
 # shellcheck source=/dev/null
-. "$HIGHWAY_ROOT/tools/lib/distribution.sh"
+. "$HW_LIB/distribution.sh"
 
 # Every file containing a pass that walks repository paths and classifies them. A new one must be
 # added here; that is the point of the list being explicit rather than discovered.
@@ -68,7 +68,7 @@ fi
 # actually pass it to find.
 while IFS= read -r walker; do
 	[[ -n "$walker" ]] || continue
-	target="$REPO_ROOT/$walker"
+	target="$HW_ROOT/$walker"
 	if [[ ! -f "$target" ]]; then
 		echo "  FAIL: declared classification walker is missing"
 		echo "    $walker"

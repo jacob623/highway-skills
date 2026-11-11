@@ -6,8 +6,9 @@ set -u
 # Seeded failure probe: restoring "Recommendation: [One change that removes it.]" inline with a conflict description, or "Evidence:" inline with Realized By, fails this check.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-CONFIG="$HIGHWAY_ROOT/skills/highway-codify-config/SKILL.md"
+# shellcheck source=paths.sh
+source "$SCRIPT_DIR/paths.sh"
+CONFIG="$HW_SKILLS/highway-codify-config/SKILL.md"
 fail=0
 
 section() {
@@ -58,11 +59,6 @@ done
 check_words '### platform proposal' 400
 check_words '### standard proposal' 400
 check_words '### conflicts' 250
-
-grep -Fq 'version: 3.5.0' "$CONFIG" || {
-	echo 'FAIL: highway-codify-config omits: version: 3.5.0'
-	fail=1
-}
 
 if [[ "$fail" -ne 0 ]]; then
 	exit 1

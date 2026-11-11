@@ -17,10 +17,10 @@
 set -u
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-REPO_ROOT="$(cd "$HIGHWAY_ROOT/.." && pwd)"
-# shellcheck source=tools/lib/distribution.sh
-source "$SCRIPT_DIR/lib/distribution.sh"
+# shellcheck source=lib/paths.sh
+source "$SCRIPT_DIR/lib/paths.sh"
+# shellcheck source=lib/distribution.sh
+source "$HW_LIB/distribution.sh"
 
 RECORD_REL=".highway/tools/.distribution-record"
 
@@ -48,13 +48,13 @@ sha256_of() {
 # repository, which otherwise grows with every feature directory that is added and never shipped.
 candidate_files() {
 	local prune_args root
-	prune_args=(-path "$REPO_ROOT/.git")
+	prune_args=(-path "$HW_ROOT/.git")
 	while IFS= read -r root; do
 		[[ -n "$root" ]] || continue
-		prune_args=("${prune_args[@]}" -o -path "$REPO_ROOT/$root")
+		prune_args=("${prune_args[@]}" -o -path "$HW_ROOT/$root")
 	done < <(dist_prune_roots)
-	find "$REPO_ROOT" \( "${prune_args[@]}" \) -prune -o -type f -print 2>/dev/null \
-		| sed "s|^$REPO_ROOT/||" | sort
+	find "$HW_ROOT" \( "${prune_args[@]}" \) -prune -o -type f -print 2>/dev/null \
+		| sed "s|^$HW_ROOT/||" | sort
 }
 
 # Files inside the distribution, as distribution-relative paths.
@@ -154,7 +154,8 @@ verify_cross_references() {
 # would prove nothing: it resolves its governing document relative to its own location, so it
 # succeeds against a tree containing neither toolchain nor constitution.
 verify_self_validation() {
-	local validator="$TARGET/.highway/tools/validate-skill.sh"
+	local validator
+	validator="$(hw_at "$TARGET" "$HW_TOOLS")/validate-skill.sh"
 	if [[ ! -x "$validator" ]]; then
 		echo "  FAIL: the distribution's own validator did not succeed"
 		echo "    .highway/tools/validate-skill.sh is missing or not executable in the distribution"
@@ -162,7 +163,7 @@ verify_self_validation() {
 	fi
 
 	local skill_md skill_dir count=0 output rc
-	for skill_md in "$TARGET"/.highway/skills/*/SKILL.md; do
+	for skill_md in "$(hw_at "$TARGET" "$HW_SKILLS")"/*/SKILL.md; do
 		[[ -f "$skill_md" ]] || continue
 		skill_dir="$(dirname "$skill_md")"
 		output="$(env -u CONSTITUTION_FILE "$validator" "$skill_dir" 2>&1)"
@@ -186,7 +187,7 @@ verify_self_validation() {
 
 # --- Produce ---
 
-unclassified="$(dist_unclassified_paths "$REPO_ROOT")"
+unclassified="$(dist_unclassified_paths "$HW_ROOT")"
 if [[ -n "$unclassified" ]]; then
 	echo "ERROR: unclassified paths -- every path must be declared in .highway/tools/.distribution-manifest:" >&2
 	printf '%s\n' "$unclassified" | sed 's/^/    /' >&2
@@ -203,7 +204,7 @@ while IFS=$'\t' read -r class rel; do
 	[[ "$class" == "include" ]] || continue
 	dest="$(dist_destination "$rel")"
 	mkdir -p "$TARGET/$(dirname "$dest")"
-	cp "$REPO_ROOT/$rel" "$TARGET/$dest"
+	cp "$HW_ROOT/$rel" "$TARGET/$dest"
 	included=$((included + 1))
 done < <(candidate_files | dist_classify_many)
 echo "  included $included paths from .highway/tools/.distribution-manifest"

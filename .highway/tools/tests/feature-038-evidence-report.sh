@@ -3,9 +3,10 @@
 set -u
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(cd "$SCRIPT_DIR/../../.." && pwd)"
+# shellcheck source=paths.sh
+source "$SCRIPT_DIR/paths.sh"
 REPORT="${1:-${TMPDIR:-/tmp}/feature-038-evidence.tsv}"
-. "$SCRIPT_DIR/feature-038-helpers.sh"
+. "$HW_TESTS/feature-038-helpers.sh"
 : > "$REPORT"
 printf '%s\n' 'Feature 038 Evidence Report' >> "$REPORT"
 printf '%s\n' 'Category	Result	Detail' >> "$REPORT"
@@ -24,11 +25,11 @@ run_category() {
 	rm -f /tmp/feature-038-evidence.$$.log
 }
 
-run_category 'executable owner behavior' 'Profile, Objectives, Controls, and NFR fixture evaluation' bash "$SCRIPT_DIR/readiness-executable.test.sh"
-run_category 'Setup routing' 'ordered captured-response routing and short-circuiting' bash "$SCRIPT_DIR/highway-setup-executable.test.sh"
-run_category 'static contract' 'readiness contracts' bash -c "bash '$SCRIPT_DIR/readiness-contract.test.sh'"
-run_category 'generated artifacts' 'catalog and adapter correspondence' bash "$SCRIPT_DIR/adapter-coverage.test.sh"
-coverage_file="$REPO_ROOT/$(printf 'spec%s' 's')/038-readiness-verification-corrections/coverage.md"
+run_category 'executable owner behavior' 'Profile, Objectives, Controls, and NFR fixture evaluation' bash "$HW_TESTS/readiness-executable.test.sh"
+run_category 'Setup routing' 'ordered captured-response routing and short-circuiting' bash "$HW_TESTS/highway-setup-executable.test.sh"
+run_category 'static contract' 'readiness contracts' bash -c "bash '$HW_TESTS/readiness-contract.test.sh'"
+run_category 'generated artifacts' 'catalog and adapter correspondence' bash "$HW_TESTS/adapter-coverage.test.sh"
+coverage_file="$HW_ROOT/$(printf 'spec%s' 's')/038-readiness-verification-corrections/coverage.md"
 if [[ -f "$coverage_file" ]]; then
 	feature_038_write_evidence "$REPORT" 'requirement coverage' PASS 'FR-001..FR-015 and SC-001..SC-008 recorded'
 else

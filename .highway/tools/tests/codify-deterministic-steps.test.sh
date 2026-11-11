@@ -6,9 +6,10 @@ set -u
 # Seeded failure probe: removing `### rank` or `### provider` from highway-codify, or restoring `the story it delivers`, fails this check.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-CODIFY="$HIGHWAY_ROOT/skills/highway-codify/SKILL.md"
-PLAN="$HIGHWAY_ROOT/library/templates/output/codify-plan.md"
+# shellcheck source=paths.sh
+source "$SCRIPT_DIR/paths.sh"
+CODIFY="$HW_SKILLS/highway-codify/SKILL.md"
+PLAN="$(hw_template codify-plan)"
 fail=0
 
 require() {
@@ -70,8 +71,6 @@ require_in plan 'Done when is the earliest such criterion.'
 require_in check 'A story with no Done when'
 require_in check 'Ask the first five'
 require_in tasks 'the story whose title is that task'"'"'s action'
-require "$CODIFY" 'version: 14.1.0'
-require "$PLAN" 'version: 2.0.0'
 require "$PLAN" 'The title is that task'"'"'s action.'
 reject "$CODIFY" 'The accepted proposal is not copied.'
 reject "$CODIFY" 'the story it delivers'

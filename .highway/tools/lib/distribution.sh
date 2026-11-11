@@ -11,6 +11,8 @@
 # failure rather than a default, because a silently unclassified path is how a new directory
 # would go unnoticed.
 
+[[ -n "${HW_ROOT:-}" ]] || source "$(dirname "${BASH_SOURCE[0]}")/paths.sh"
+
 DIST_MANIFEST_DEFAULT="${DIST_MANIFEST_DEFAULT:-}"
 
 dist_manifest_file() {
@@ -18,9 +20,7 @@ dist_manifest_file() {
 		echo "$DIST_MANIFEST_DEFAULT"
 		return 0
 	fi
-	local lib_dir
-	lib_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-	echo "$lib_dir/../.distribution-manifest"
+	echo "$HW_TOOLS/.distribution-manifest"
 }
 
 # Emits "classification<TAB>source<TAB>destination" for every record, comments and blanks removed.

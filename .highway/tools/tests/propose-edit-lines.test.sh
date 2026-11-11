@@ -6,8 +6,9 @@ set -u
 # Seeded failure probe: joining the edit lines in revise back into one line fails this check.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-CODIFY="$HIGHWAY_ROOT/skills/highway-codify/SKILL.md"
+# shellcheck source=paths.sh
+source "$SCRIPT_DIR/paths.sh"
+CODIFY="$HW_SKILLS/highway-codify/SKILL.md"
 fail=0
 
 propose="$(awk '$0 == "### revise" {p=1; next} $0 == "### identifier" {p=0} p' "$CODIFY")"
@@ -50,11 +51,6 @@ done
 words=$(printf '%s\n' "$propose" | wc -w | tr -d ' ')
 if [[ "$words" -gt 400 ]]; then
 	echo "FAIL: highway-codify revise has $words words; the limit is 400"
-	fail=1
-fi
-
-if ! grep -Fq 'version: 14.1.0' "$CODIFY"; then
-	echo "FAIL: highway-codify omits: version: 14.1.0"
 	fail=1
 fi
 

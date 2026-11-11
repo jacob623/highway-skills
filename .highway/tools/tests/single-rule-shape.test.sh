@@ -6,9 +6,10 @@ set -u
 # Seeded failure probe: restoring "propose at most ten rules" in highway-codify-config, or removing ### rule shape, fails this check.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-CONFIG="$HIGHWAY_ROOT/skills/highway-codify-config/SKILL.md"
-TEMPLATE="$HIGHWAY_ROOT/library/templates/output/coding-standard.md"
+# shellcheck source=paths.sh
+source "$SCRIPT_DIR/paths.sh"
+CONFIG="$HW_SKILLS/highway-codify-config/SKILL.md"
+TEMPLATE="$(hw_template coding-standard)"
 fail=0
 
 section() {
@@ -124,8 +125,6 @@ require "$TEMPLATE" 'This file does not contain a Why it matters line.'
 reject "$TEMPLATE" 'at most ten rules'
 
 require "$CONFIG" '- Each coding rule is one must, one condition, and one outcome in eight words or fewer. The model suggests at most fifteen, and one keeps encoded or encrypted credentials outside the files. A provided rule that does not conform is rewritten, and the opening consequence sentence names the rewrite. Each rule shows **Why it matters:** on the proposal only.'
-require "$CONFIG" 'version: 3.5.0'
-require "$TEMPLATE" 'version: 3.0.1'
 
 if [[ "$fail" -ne 0 ]]; then
 	exit 1

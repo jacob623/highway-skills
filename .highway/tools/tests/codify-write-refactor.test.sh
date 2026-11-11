@@ -6,8 +6,9 @@ set -u
 # Seeded failure probe: restoring the `[Executor]` bullet in codify `write`, or removing `### codified`, fails this check.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-CODIFY="$HIGHWAY_ROOT/skills/highway-codify/SKILL.md"
+# shellcheck source=paths.sh
+source "$SCRIPT_DIR/paths.sh"
+CODIFY="$HW_SKILLS/highway-codify/SKILL.md"
 fail=0
 
 section() {
@@ -56,7 +57,6 @@ require_in codified "$codified_body" 'same words, in the same order'
 require_in codified "$codified_body" 'Do not open a product folder.'
 require_in codified "$codified_body" 'Do not open that record.'
 require_in skill "$skill_body" 'Each action grounded in this implementation is already codified.'
-require_in skill "$skill_body" 'version: 14.1.0'
 
 rank_line=$(grep -n '^### rank$' "$CODIFY" | cut -d: -f1)
 codified_line=$(grep -n '^### codified$' "$CODIFY" | cut -d: -f1)

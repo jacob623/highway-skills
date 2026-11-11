@@ -6,8 +6,9 @@ set -u
 # Seeded failure probe: restoring "no queued, shown, or captured NFR reflects yet" or "Each recommendation is a bold title and one sentence." fails this check.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-NFRS="$HIGHWAY_ROOT/skills/highway-nfrs/SKILL.md"
+# shellcheck source=paths.sh
+source "$SCRIPT_DIR/paths.sh"
+NFRS="$HW_SKILLS/highway-nfrs/SKILL.md"
 fail=0
 
 require() {
@@ -24,7 +25,6 @@ reject() {
 	fi
 }
 
-require 'version: 9.1.0'
 
 require '1. Derive each recommendation from an accepted Control that no queued or captured NFR reflects yet. A shown recommendation the person did not select does not reflect its Control.'
 require '5. Omit a title already queued or already captured. Omit a title already shown, unless it reflects an accepted Control that no queued or captured NFR reflects.'

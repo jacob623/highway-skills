@@ -1,0 +1,128 @@
+#!/usr/bin/env bash
+# Paths helper: the one declaration of where every repository location lives.
+#
+# Sourced, never executed. Every tool, library, test, and harness script gets its locations from
+# here rather than combining a root with a folder or file name itself, so moving a location means
+# editing its line here and nothing else. path-construction.test.sh enforces that (D2.5).
+#
+# The root is resolved from this file's own position, so the same file works in the repository
+# and in an unpacked distribution. Variables are not exported: a child script sources its own copy
+# and resolves its own root.
+#
+# Usage:
+#   source "<dir>/paths.sh"         sets HW_* for the root three folders above this file
+#   hw_paths_init [root]            sets HW_* for another root
+#   hw_template <name>              path of one output template, by base name
+#   hw_doc <name>                   path of one governance or knowledge document, by name
+#   hw_at <root> <path>             <path> (under HW_ROOT) re-rooted under <root>
+#   hw_rel <path>                   <path> relative to HW_ROOT
+#
+# Bash 3.2 and the Declared Toolchain only. Lookups use case and parameter expansion, no subshell.
+
+hw_paths_init() {
+	if [[ -n "${1:-}" ]]; then
+		HW_ROOT="$1"
+	else
+		HW_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../.." && pwd)"
+	fi
+
+	HW_FRAMEWORK="$HW_ROOT/.highway"
+	HW_SKILLS="$HW_FRAMEWORK/skills"
+	HW_TOOLS="$HW_FRAMEWORK/tools"
+	HW_LIB="$HW_TOOLS/lib"
+	HW_TESTS="$HW_TOOLS/tests"
+	HW_FIXTURES="$HW_TESTS/fixtures"
+	HW_CATALOG="$HW_FRAMEWORK/catalog"
+	HW_INSTRUCTIONS="$HW_FRAMEWORK/instructions"
+	HW_LIBRARY="$HW_FRAMEWORK/library"
+	HW_GOVERNANCE="$HW_FRAMEWORK/governance"
+	HW_KNOWLEDGE="$HW_LIBRARY/knowledge"
+	HW_OUTPUT_TEMPLATES="$HW_LIBRARY/templates/output"
+	HW_HARNESS="$HW_ROOT/harness"
+
+	HW_AGENT_COPILOT="$HW_ROOT/.github/skills"
+	HW_AGENT_CLAUDE="$HW_ROOT/.claude/skills"
+	HW_AGENT_CURSOR="$HW_ROOT/.cursor/skills"
+	HW_AGENT_CODEX="$HW_ROOT/.agents/skills"
+	HW_CURSOR_RULES="$HW_ROOT/.cursor/rules"
+	HW_CLAUDE_MD="$HW_ROOT/.claude/CLAUDE.md"
+	HW_COPILOT_MD="$HW_ROOT/.github/copilot-instructions.md"
+	HW_AGENTS_MD="$HW_ROOT/AGENTS.md"
+}
+
+# One arm per template, so a later phase can move one template by editing one arm.
+hw_template() {
+	case "${1:-}" in
+	adr-catalog) printf '%s\n' "$HW_OUTPUT_TEMPLATES/adr-catalog.md" ;;
+	adr-record) printf '%s\n' "$HW_OUTPUT_TEMPLATES/adr-record.md" ;;
+	architecture-catalog) printf '%s\n' "$HW_OUTPUT_TEMPLATES/architecture-catalog.md" ;;
+	architecture-record) printf '%s\n' "$HW_OUTPUT_TEMPLATES/architecture-record.md" ;;
+	assessment-findings) printf '%s\n' "$HW_OUTPUT_TEMPLATES/assessment-findings.md" ;;
+	capability-catalog) printf '%s\n' "$HW_OUTPUT_TEMPLATES/capability-catalog.md" ;;
+	codify-catalog) printf '%s\n' "$HW_OUTPUT_TEMPLATES/codify-catalog.md" ;;
+	codify-integrations) printf '%s\n' "$HW_OUTPUT_TEMPLATES/codify-integrations.md" ;;
+	codify-metadata) printf '%s\n' "$HW_OUTPUT_TEMPLATES/codify-metadata.md" ;;
+	codify-plan) printf '%s\n' "$HW_OUTPUT_TEMPLATES/codify-plan.md" ;;
+	codify-platforms) printf '%s\n' "$HW_OUTPUT_TEMPLATES/codify-platforms.md" ;;
+	codify-record) printf '%s\n' "$HW_OUTPUT_TEMPLATES/codify-record.md" ;;
+	codify-tasks) printf '%s\n' "$HW_OUTPUT_TEMPLATES/codify-tasks.md" ;;
+	coding-standard) printf '%s\n' "$HW_OUTPUT_TEMPLATES/coding-standard.md" ;;
+	coding-standards-catalog) printf '%s\n' "$HW_OUTPUT_TEMPLATES/coding-standards-catalog.md" ;;
+	control-catalog) printf '%s\n' "$HW_OUTPUT_TEMPLATES/control-catalog.md" ;;
+	control-record) printf '%s\n' "$HW_OUTPUT_TEMPLATES/control-record.md" ;;
+	discovery-catalog) printf '%s\n' "$HW_OUTPUT_TEMPLATES/discovery-catalog.md" ;;
+	discovery-record) printf '%s\n' "$HW_OUTPUT_TEMPLATES/discovery-record.md" ;;
+	implementation-catalog) printf '%s\n' "$HW_OUTPUT_TEMPLATES/implementation-catalog.md" ;;
+	implementation-record) printf '%s\n' "$HW_OUTPUT_TEMPLATES/implementation-record.md" ;;
+	nfr-catalog) printf '%s\n' "$HW_OUTPUT_TEMPLATES/nfr-catalog.md" ;;
+	nfr-record) printf '%s\n' "$HW_OUTPUT_TEMPLATES/nfr-record.md" ;;
+	objective-catalog) printf '%s\n' "$HW_OUTPUT_TEMPLATES/objective-catalog.md" ;;
+	objective-record) printf '%s\n' "$HW_OUTPUT_TEMPLATES/objective-record.md" ;;
+	profile-record) printf '%s\n' "$HW_OUTPUT_TEMPLATES/profile-record.md" ;;
+	request-catalog) printf '%s\n' "$HW_OUTPUT_TEMPLATES/request-catalog.md" ;;
+	request-record) printf '%s\n' "$HW_OUTPUT_TEMPLATES/request-record.md" ;;
+	*)
+		printf 'hw_template: unknown template: %s\n' "${1:-}" >&2
+		return 1
+		;;
+	esac
+}
+
+# One arm per document, so a later phase can move one document by editing one arm.
+hw_doc() {
+	case "${1:-}" in
+	constitution) printf '%s\n' "$HW_GOVERNANCE/constitution.md" ;;
+	experience-standard) printf '%s\n' "$HW_GOVERNANCE/experience-standard.md" ;;
+	storage) printf '%s\n' "$HW_GOVERNANCE/storage.md" ;;
+	highway-identity) printf '%s\n' "$HW_KNOWLEDGE/highway-identity.md" ;;
+	assessment-findings) printf '%s\n' "$HW_KNOWLEDGE/assessment-findings.md" ;;
+	frontmatter-lexicon) printf '%s\n' "$HW_KNOWLEDGE/frontmatter-lexicon.txt" ;;
+	*)
+		printf 'hw_doc: unknown document: %s\n' "${1:-}" >&2
+		return 1
+		;;
+	esac
+}
+
+hw_at() {
+	case "${2:-}" in
+	"$HW_ROOT") printf '%s\n' "$1" ;;
+	"$HW_ROOT"/*) printf '%s\n' "$1/${2#"$HW_ROOT"/}" ;;
+	*)
+		printf 'hw_at: not under %s: %s\n' "$HW_ROOT" "${2:-}" >&2
+		return 1
+		;;
+	esac
+}
+
+hw_rel() {
+	case "${1:-}" in
+	"$HW_ROOT"/*) printf '%s\n' "${1#"$HW_ROOT"/}" ;;
+	*)
+		printf 'hw_rel: not under %s: %s\n' "$HW_ROOT" "${1:-}" >&2
+		return 1
+		;;
+	esac
+}
+
+hw_paths_init

@@ -7,14 +7,15 @@ set -u
 # Seeded failure probe: this test must detect a defect in each declared class and clean its probe.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-# shellcheck source=tools/lib/constitution.sh
-source "$HIGHWAY_ROOT/tools/lib/constitution.sh"
+# shellcheck source=paths.sh
+source "$SCRIPT_DIR/paths.sh"
+# shellcheck source=../lib/constitution.sh
+source "$HW_LIB/constitution.sh"
 
-VALIDATE="$HIGHWAY_ROOT/tools/validate-skill.sh"
-FIXTURES="$SCRIPT_DIR/fixtures"
-CONSTITUTION="$HIGHWAY_ROOT/governance/constitution.md"
-EXPERIENCE="$HIGHWAY_ROOT/governance/experience-standard.md"
+VALIDATE="$HW_TOOLS/validate-skill.sh"
+FIXTURES="$HW_FIXTURES"
+CONSTITUTION="$(hw_doc constitution)"
+EXPERIENCE="$(hw_doc experience-standard)"
 fail=0
 
 output="$("$VALIDATE" "$FIXTURES/valid-skill" 2>/dev/null)"

@@ -15,9 +15,9 @@ set -u
 # Seeded failure probe: this test must detect a defect in each declared class and clean its probe.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-REPO_ROOT="$(cd "$HIGHWAY_ROOT/.." && pwd)"
-VALIDATE="$HIGHWAY_ROOT/tools/validate-library.sh"
+# shellcheck source=paths.sh
+source "$SCRIPT_DIR/paths.sh"
+VALIDATE="$HW_TOOLS/validate-library.sh"
 fail=0
 
 tmp_root="$(mktemp -d)"
@@ -74,7 +74,7 @@ fi
 # Without this the check above is satisfiable by declining everything, which would be containment
 # achieved by switching the validator off.
 
-fixture="$HIGHWAY_ROOT/tools/tests/fixtures/library/governance/valid/policy.md"
+fixture="$HW_FIXTURES/library/governance/valid/policy.md"
 if [[ -f "$fixture" ]]; then
 	if ! "$VALIDATE" "$fixture" >/dev/null 2>&1; then
 		echo "FAIL: a valid fixture inside the framework root was not validated"
@@ -87,7 +87,7 @@ fi
 
 # --- Nothing the skill writes lands inside the framework -----------------------------------------
 
-if [[ -d "$REPO_ROOT/.highway/library/governance/controls" ]]; then
+if [[ -d "$HW_LIBRARY/governance/controls" ]]; then
 	echo "FAIL: Control files were written under the framework root, where Highway's rules reach them"
 	fail=1
 fi

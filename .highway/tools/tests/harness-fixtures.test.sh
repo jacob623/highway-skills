@@ -8,11 +8,11 @@ set -u
 # Seeded failure probe: removing a required heading from a copy of a stage's implementation record makes template-check.sh fail on it, and a fixture with that copy fails this check.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-REPO_ROOT="$(cd "$HIGHWAY_ROOT/.." && pwd)"
-FIXTURES="$REPO_ROOT/harness/fixtures"
+# shellcheck source=paths.sh
+source "$SCRIPT_DIR/paths.sh"
+FIXTURES="$HW_HARNESS/fixtures"
 MAP="$FIXTURES/templates.map"
-TEMPLATES="$HIGHWAY_ROOT/library/templates/output"
+TEMPLATES="$HW_OUTPUT_TEMPLATES"
 fail=0
 TAB="$(printf '\t')"
 
@@ -37,7 +37,7 @@ for stage in setup request discovery architecture implementation; do
 done
 
 if [[ "$fail" -eq 0 ]]; then
-	if ! out="$(bash "$REPO_ROOT/harness/bin/fixture-check.sh")"; then
+	if ! out="$(bash "$HW_HARNESS/bin/fixture-check.sh")"; then
 		while IFS="$TAB" read -r fixture path problem; do
 			[[ -n "$fixture" ]] && echo "FAIL: fixture $fixture: $path: $problem"
 		done <<<"$out"
@@ -50,7 +50,7 @@ record="$(find "$FIXTURES/stages/implementation/implementations" -name 'RI*.md' 
 if [[ -n "$record" ]]; then
 	probe="$(mktemp)"
 	grep -v '^## Technology Choice$' "$record" >"$probe"
-	if bash "$REPO_ROOT/harness/bin/template-check.sh" implementation-record.md "$probe" >/dev/null 2>&1; then
+	if bash "$HW_HARNESS/bin/template-check.sh" implementation-record.md "$probe" >/dev/null 2>&1; then
 		echo "FAIL: template-check.sh passed a record with no ## Technology Choice heading"
 		fail=1
 	fi

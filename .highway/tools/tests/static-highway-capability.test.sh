@@ -6,8 +6,9 @@ set -u
 # Seeded failure probe: a missing AI-Augmented Technology Development line or an authorization to act fails this check.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-SKILL="$HIGHWAY_ROOT/skills/highway-onboarding/SKILL.md"
+# shellcheck source=paths.sh
+source "$SCRIPT_DIR/paths.sh"
+SKILL="$HW_SKILLS/highway-onboarding/SKILL.md"
 fail=0
 
 require() {

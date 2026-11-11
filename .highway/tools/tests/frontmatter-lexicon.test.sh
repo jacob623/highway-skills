@@ -8,25 +8,26 @@ set -u
 # Seeded failure probe: this test must detect a defect in each declared class and clean its probe.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-VALIDATE="$HIGHWAY_ROOT/tools/validate-skill.sh"
-FIXTURES="$SCRIPT_DIR/fixtures"
+# shellcheck source=paths.sh
+source "$SCRIPT_DIR/paths.sh"
+VALIDATE="$HW_TOOLS/validate-skill.sh"
+FIXTURES="$HW_FIXTURES"
 
-# shellcheck source=tools/lib/constitution.sh
-source "$HIGHWAY_ROOT/tools/lib/constitution.sh"
-# shellcheck source=tools/lib/frontmatter-lexicon.sh
-source "$HIGHWAY_ROOT/tools/lib/frontmatter-lexicon.sh"
+# shellcheck source=../lib/constitution.sh
+source "$HW_LIB/constitution.sh"
+# shellcheck source=../lib/frontmatter-lexicon.sh
+source "$HW_LIB/frontmatter-lexicon.sh"
 
 fail=0
 
 # --- Lexicon shape: one lowercase alphanumeric/hyphen word per line, sorted, no duplicates ------
 
-if ! fl_validate_lexicon "$HIGHWAY_ROOT"; then
+if ! fl_validate_lexicon "$HW_ROOT"; then
 	echo "FAIL: the frontmatter lexicon is malformed"
 	fail=1
 fi
 
-lexicon_file="$(fl_file "$HIGHWAY_ROOT")"
+lexicon_file="$(fl_file "$HW_ROOT")"
 if [[ ! -s "$lexicon_file" ]]; then
 	echo "FAIL: the frontmatter lexicon is empty or missing at $lexicon_file"
 	fail=1
@@ -42,25 +43,25 @@ fi
 
 # --- Skill-id resolution: an existing skill id in a field is accepted, not flagged --------------
 
-if ! fl_check_field "$HIGHWAY_ROOT" "test" "highway-help"; then
+if ! fl_check_field "$HW_ROOT" "test" "highway-help"; then
 	echo "FAIL: an existing skill id ('highway-help') was not accepted"
 	fail=1
 fi
 
-if fl_check_field "$HIGHWAY_ROOT" "test" "highway-nfrz" >/dev/null; then
+if fl_check_field "$HW_ROOT" "test" "highway-nfrz" >/dev/null; then
 	echo "FAIL: a nonexistent skill id ('highway-nfrz') was incorrectly accepted"
 	fail=1
 fi
 
 # --- Rule-id resolution: P- and X-prefixed rule ids that exist are accepted ----------------------
 
-if ! fl_check_field "$HIGHWAY_ROOT" "test" "P6.4"; then
+if ! fl_check_field "$HW_ROOT" "test" "P6.4"; then
 	echo "FAIL: an existing P-prefixed rule id (P6.4) was not accepted"
 	fail=1
 fi
 
 # Superseded behavior: X1.4 was accepted as a current Experience Standard rule id.
-if ! fl_check_field "$HIGHWAY_ROOT" "test" "P9.5"; then
+if ! fl_check_field "$HW_ROOT" "test" "P9.5"; then
 	echo "FAIL: an existing rule id (P9.5) was not accepted"
 	fail=1
 fi
@@ -70,7 +71,7 @@ fi
 # development-only location, so a D-prefixed token is treated like any other unrecognized word
 # rather than being resolved as a rule id.
 
-if fl_resolve_rule_id "$HIGHWAY_ROOT" "D1.1"; then
+if fl_resolve_rule_id "$HW_ROOT" "D1.1"; then
 	echo "FAIL: a D-prefixed rule id resolved, but D-rules live only in the (non-shipped) dev constitution"
 	fail=1
 fi
@@ -82,11 +83,11 @@ fi
 # ordinary use, so it is asserted directly.
 
 for fl_probe in '*' '?' '[a-z]'; do
-	if fl_word_in_lexicon "$HIGHWAY_ROOT" "$fl_probe"; then
+	if fl_word_in_lexicon "$HW_ROOT" "$fl_probe"; then
 		echo "FAIL: the pattern '$fl_probe' was accepted as a lexicon word; the match operand is being expanded"
 		fail=1
 	fi
-	if fl_resolve_rule_id "$HIGHWAY_ROOT" "$fl_probe"; then
+	if fl_resolve_rule_id "$HW_ROOT" "$fl_probe"; then
 		echo "FAIL: the pattern '$fl_probe' resolved as a rule id; the match operand is being expanded"
 		fail=1
 	fi
@@ -105,7 +106,7 @@ for ((fl_i = 0; fl_i < 400; fl_i++)); do
 done
 
 fl_started=$SECONDS
-fl_check_field "$HIGHWAY_ROOT" "test" "$fl_many" >/dev/null
+fl_check_field "$HW_ROOT" "test" "$fl_many" >/dev/null
 fl_elapsed=$((SECONDS - fl_started))
 
 if [[ $fl_elapsed -gt 3 ]]; then
@@ -115,7 +116,7 @@ fi
 
 # The cost assertion above would also pass if the checker silently accepted everything, so confirm
 # it still reports each unrecognized word.
-fl_reported="$(fl_check_field "$HIGHWAY_ROOT" "test" "zzqqx1 zzqqx2" 2>&1)"
+fl_reported="$(fl_check_field "$HW_ROOT" "test" "zzqqx1 zzqqx2" 2>&1)"
 if [[ "$fl_reported" != *"unrecognized word 'zzqqx1'"* || "$fl_reported" != *"unrecognized word 'zzqqx2'"* ]]; then
 	echo "FAIL: expected both unrecognized words to be reported individually. Got: $fl_reported"
 	fail=1

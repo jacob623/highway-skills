@@ -9,10 +9,10 @@ set -u
 # Seeded failure probe: a scenario whose `expect: exists` path matches none of its `writes:` patterns, or a second smoke scenario for one skill, fails this check.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-REPO_ROOT="$(cd "$HIGHWAY_ROOT/.." && pwd)"
-HARNESS="$REPO_ROOT/harness"
-SKILLS="$HIGHWAY_ROOT/skills"
+# shellcheck source=paths.sh
+source "$SCRIPT_DIR/paths.sh"
+HARNESS="$HW_HARNESS"
+SKILLS="$HW_SKILLS"
 FIXTURES="$HARNESS/fixtures"
 STAGES="setup request discovery architecture implementation"
 KEYS=" id skill through fixture chain smoke web open ask ask-pattern say writes expect covers reaches "
@@ -57,7 +57,7 @@ fixture_files() {
 : >"$WORK/smoke"
 : >"$WORK/chain"
 while IFS= read -r file; do
-	rel="${file#"$REPO_ROOT"/}"
+	rel="${file#"$HW_ROOT"/}"
 	entries="$(scenario_entries "$file")"
 	bad() {
 		echo "FAIL: $rel:$1: $2"

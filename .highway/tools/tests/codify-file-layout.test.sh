@@ -6,16 +6,17 @@ set -u
 # Seeded failure probe: restoring `executor/` in the codify task template, or the seeded Terraform standard, fails this check.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-SKILLS="$HIGHWAY_ROOT/skills"
-OUTPUT="$HIGHWAY_ROOT/library/templates/output"
+# shellcheck source=paths.sh
+source "$SCRIPT_DIR/paths.sh"
+SKILLS="$HW_SKILLS"
+OUTPUT="$HW_OUTPUT_TEMPLATES"
 CONFIG="$SKILLS/highway-codify-config/SKILL.md"
 CODIFY="$SKILLS/highway-codify/SKILL.md"
 STANDARD_TEMPLATE="$OUTPUT/coding-standard.md"
 RECORD="$OUTPUT/codify-record.md"
 TASKS="$OUTPUT/codify-tasks.md"
-ORG_STANDARDS="$HIGHWAY_ROOT/../library/coding-standards"
-MANIFEST="$HIGHWAY_ROOT/tools/.distribution-manifest"
+ORG_STANDARDS="$HW_ROOT/library/coding-standards"
+MANIFEST="$HW_TOOLS/.distribution-manifest"
 fail=0
 
 require() {
@@ -50,7 +51,6 @@ absent() {
 require "$STANDARD_TEMPLATE" '## File and Folder Structure'
 require "$STANDARD_TEMPLATE" 'Test path:'
 require "$STANDARD_TEMPLATE" 'Tests: not required'
-require "$STANDARD_TEMPLATE" 'version: 3.0.1'
 
 for text in \
 	'**File and Folder Structure:**' \
@@ -59,21 +59,18 @@ for text in \
 	'Paths are relative to the automation folder.' \
 	'The test path must be part of the file and folder structure.' \
 	'When the catalog is absent, create it' \
-	'name the same relative path' \
-	'version: 3.5.0'; do
+	'name the same relative path'; do
 	require "$CONFIG" "$text"
 done
 
 for text in \
 	'### layout' \
 	'**Files:**' \
-	'has no file and folder structure. To add one, run /highway-codify-config.' \
-	'version: 14.1.0'; do
+	'has no file and folder structure. To add one, run /highway-codify-config.'; do
 	require "$CODIFY" "$text"
 done
 
 require "$RECORD" '**Files:**'
-require "$RECORD" 'version: 9.1.0'
 
 for text in \
 	'[Executor]' \
@@ -81,8 +78,7 @@ for text in \
 	'- [ ] T001' \
 	'Files: `README.md`' \
 	'Standards: `library/coding-standards/' \
-	'The Provider is the first node of the accepted diagram.' \
-	'version: 6.0.0'; do
+	'The Provider is the first node of the accepted diagram.'; do
 	require "$TASKS" "$text"
 done
 

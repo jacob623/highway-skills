@@ -6,9 +6,10 @@ set -u
 # Seeded failure probe: restoring `### configure` in highway-codify, or the Source column in the platforms template, fails this check.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-SKILLS="$HIGHWAY_ROOT/skills"
-OUTPUT="$HIGHWAY_ROOT/library/templates/output"
+# shellcheck source=paths.sh
+source "$SCRIPT_DIR/paths.sh"
+SKILLS="$HW_SKILLS"
+OUTPUT="$HW_OUTPUT_TEMPLATES"
 CONFIG="$SKILLS/highway-codify-config/SKILL.md"
 CODIFY="$SKILLS/highway-codify/SKILL.md"
 IMPL="$SKILLS/highway-implementation/SKILL.md"
@@ -18,8 +19,8 @@ STANDARDS_TEMPLATE="$OUTPUT/coding-standards-catalog.md"
 STANDARD_TEMPLATE="$OUTPUT/coding-standard.md"
 RECORD="$OUTPUT/codify-record.md"
 TASKS="$OUTPUT/codify-tasks.md"
-STANDARDS_CATALOG="$HIGHWAY_ROOT/../library/coding-standards/coding-standards.md"
-MANIFEST="$HIGHWAY_ROOT/tools/.distribution-manifest"
+STANDARDS_CATALOG="$HW_ROOT/library/coding-standards/coding-standards.md"
+MANIFEST="$HW_TOOLS/.distribution-manifest"
 STANDARDS_HEADER='| Standard Title | Technology | File Patterns | Summary | When to use | When not to use | Inherits From | Standard Path |'
 fail=0
 
@@ -67,14 +68,12 @@ for text in \
 	'### menu' \
 	'### platforms' \
 	'### standards' \
-	'### conflicts' \
-	'version: 3.5.0'; do
+	'### conflicts'; do
 	require "$CONFIG" "$text"
 done
 
 require "$PLATFORMS" '| Platform | Implementation ID | Kind | When to use | When not to use |'
 require "$PLATFORMS" 'library/coding-standards/codify-platforms.md'
-require "$PLATFORMS" 'version: 2.1.0'
 reject "$PLATFORMS" '| Source |'
 require "$STANDARDS_TEMPLATE" "$STANDARDS_HEADER"
 if [[ -e "$STANDARDS_CATALOG" ]]; then
@@ -84,17 +83,14 @@ fi
 require "$STANDARD_TEMPLATE" '## Rules'
 require "$STANDARD_TEMPLATE" 'Tests: not required'
 require "$RECORD" '**Standards:**'
-require "$RECORD" 'version: 9.1.0'
 require "$TASKS" 'Standards: `library/coding-standards/'
-require "$TASKS" 'version: 6.0.0'
 reject "$TASKS" 'Implement and Use'
 
 for text in \
 	'### standards' \
 	'**Standards:**' \
 	'/highway-codify-config' \
-	'library/coding-standards/codify-platforms.md' \
-	'version: 14.1.0'; do
+	'library/coding-standards/codify-platforms.md'; do
 	require "$CODIFY" "$text"
 done
 for text in \

@@ -7,6 +7,8 @@
 #   returns 0 = pass, 1 = fail, 2 = not applicable
 # A check must never exit the calling shell.
 
+[[ -n "${HW_ROOT:-}" ]] || source "$(dirname "${BASH_SOURCE[0]}")/paths.sh"
+
 # rule_id <TAB> check_function <TAB> na_condition
 # na_condition is the permitted not-applicable condition the check cites, or "-" if the check
 # always applies. Conditions are defined by the constitution's Compliance Review Protocol.
@@ -357,9 +359,7 @@ rc_constitution_file() {
 		printf '%s' "$CONSTITUTION_FILE"
 		return 0
 	fi
-	local lib_dir
-	lib_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-	printf '%s' "$lib_dir/../../governance/constitution.md"
+	printf '%s' "$(hw_doc constitution)"
 }
 
 # The sections that state when a skill does and does not apply. A decision criterion lives in one

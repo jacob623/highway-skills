@@ -50,7 +50,7 @@ passing:
 | Phase | Spec | Depends on | Status |
 | --- | --- | --- | --- |
 | 4 | Removals | None | Complete: `specs/233-standard-alignment-removals/` |
-| 5 | Path Indirection | 4 | |
+| 5 | Path Indirection | 4 | Complete: `specs/234-standard-alignment-path-indirection/` |
 | 6 | Relocate the Framework, Tests, and Skills | 5 | |
 | 7 | highway-experience | 6 | |
 | 8 | Catalog Seeding | 7 | |
@@ -963,6 +963,9 @@ changes the helper, not every test. Nothing moves in this phase.
      - `runtime-contract-hygiene.test.sh`: covers only highway-profile and highway-setup.
        `shipped-tree-independence.test.sh` covers its `specs/` and `.specify/` checks for the whole
        distribution. Drop the test, and record its `FR-` and `Feature NNN` scan as superseded.
+   - Remove every exact skill and template version check from the remaining tests: 34 tests,
+     about 90 checks. A version bump then fails no test by itself, and the validator still checks
+     the version's form and that the Example matches the frontmatter.
 2. Add one paths helper that defines where the skills, the framework, the tests, the governance
    files, and each template live.
 3. Every bash test and framework script sources the helper instead of building paths from
@@ -975,6 +978,17 @@ changes the helper, not every test. Nothing moves in this phase.
 Exit: no regression-only test remains, every dropped assertion is accounted for, no test or
 framework script names a skill, tool, governance, or template path except through the helper, and
 the full suite passes.
+
+Status: complete in `specs/234-standard-alignment-path-indirection/`. The suite went from 88 tests
+to 82: seven removed, `path-construction.test.sh` added. Beyond the steps above:
+- The exact version checks removed came to 89 in 30 tests; `dropped-assertions.md` in the spec
+  lists each one.
+- The helper is `.highway/tools/lib/paths.sh`. Tests reach it through `.highway/tools/tests/paths.sh`
+  and harness scripts through `harness/bin/lib/paths.sh`; each shim is one `source` line.
+- `harness/bin/path-map.sh --location <skills|tools>` gives the TypeScript harness the same
+  locations.
+- `.specify/memory/constitution.md` is 3.1.0: D2.5, decided by `path-construction.test.sh`,
+  requires every script to get repository locations from the helper.
 
 # Phase 6: Relocate the Framework, Tests, and Skills
 

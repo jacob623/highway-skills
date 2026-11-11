@@ -4,10 +4,11 @@ set -u
 # Instrument class: executed-behavior
 # Artifact classes: source-document
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-VALIDATE="$HIGHWAY_ROOT/tools/validate-skill.sh"
-VALID_FIXTURE="$SCRIPT_DIR/fixtures/valid-skill"
-INVALID_FIXTURE="$SCRIPT_DIR/fixtures/invalid-skill-missing-usage"
+# shellcheck source=paths.sh
+source "$SCRIPT_DIR/paths.sh"
+VALIDATE="$HW_TOOLS/validate-skill.sh"
+VALID_FIXTURE="$HW_FIXTURES/valid-skill"
+INVALID_FIXTURE="$HW_FIXTURES/invalid-skill-missing-usage"
 fail=0
 
 WORK="$(mktemp -d "${TMPDIR:-/tmp}/validation-cache-test.XXXXXX")"
@@ -127,15 +128,15 @@ check "VC-5" "an edited skill is recorded under a new key" "$(key_count "$cache"
 # Exercised against a copy of the tree. Mutating the live governance documents to prove this would
 # make the test write into the shared tree and force it into the serial pool for no added rigour.
 
-source "$HIGHWAY_ROOT/tools/lib/validation-cache.sh"
+source "$HW_LIB/validation-cache.sh"
 tree="$WORK/tree"
 mkdir -p "$tree"
-cp -R "$HIGHWAY_ROOT" "$tree/.highway"
-copied_root="$tree/.highway"
+cp -R "$HW_FRAMEWORK" "$(hw_at "$tree" "$HW_FRAMEWORK")"
+copied_root="$tree"
 
 VC_ENVIRONMENT_HASH=""
 key_before="$(vc_key "$VALID_FIXTURE/SKILL.md" "$copied_root")"
-printf '\n<!-- an amendment -->\n' >>"$copied_root/governance/constitution.md"
+printf '\n<!-- an amendment -->\n' >>"$(hw_at "$copied_root" "$(hw_doc constitution)")"
 VC_ENVIRONMENT_HASH=""
 key_after_gov="$(vc_key "$VALID_FIXTURE/SKILL.md" "$copied_root")"
 if [[ "$key_before" == "$key_after_gov" ]]; then
@@ -143,7 +144,7 @@ if [[ "$key_before" == "$key_after_gov" ]]; then
 	fail=1
 fi
 
-printf '\n# an added comment\n' >>"$copied_root/tools/lib/rule-checks.sh"
+printf '\n# an added comment\n' >>"$(hw_at "$copied_root" "$HW_LIB")/rule-checks.sh"
 VC_ENVIRONMENT_HASH=""
 key_after_lib="$(vc_key "$VALID_FIXTURE/SKILL.md" "$copied_root")"
 if [[ "$key_after_lib" == "$key_after_gov" ]]; then
@@ -201,13 +202,12 @@ check "VC-8" "a cleared cache is repopulated" "$(key_count "$cache")" "1"
 
 # --- VC-9: the cache is never created inside the repository ----------------------------------
 
-REPO_ROOT="$(cd "$HIGHWAY_ROOT/.." && pwd)"
 rc=0
-TMPDIR="$REPO_ROOT" bash "$VALIDATE" "$VALID_FIXTURE" >/dev/null 2>&1 || rc=$?
+TMPDIR="$HW_ROOT" bash "$VALIDATE" "$VALID_FIXTURE" >/dev/null 2>&1 || rc=$?
 check "VC-9" "a repository-internal cache location still exits 0" "$rc" "0"
-if [[ -e "$REPO_ROOT/highway-validation-cache" ]]; then
+if [[ -e "$HW_ROOT/highway-validation-cache" ]]; then
 	echo "FAIL: VC-9 -- a cache directory was created inside the repository"
-	rm -rf "$REPO_ROOT/highway-validation-cache"
+	rm -rf "$HW_ROOT/highway-validation-cache"
 	fail=1
 fi
 

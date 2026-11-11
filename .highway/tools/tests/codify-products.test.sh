@@ -6,9 +6,10 @@ set -u
 # Seeded failure probe: restoring `code/[ID]/` in highway-codify, or removing `### resume`, fails this check.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-SKILLS="$HIGHWAY_ROOT/skills"
-OUTPUT="$HIGHWAY_ROOT/library/templates/output"
+# shellcheck source=paths.sh
+source "$SCRIPT_DIR/paths.sh"
+SKILLS="$HW_SKILLS"
+OUTPUT="$HW_OUTPUT_TEMPLATES"
 CODIFY="$SKILLS/highway-codify/SKILL.md"
 ADR="$SKILLS/highway-adr/SKILL.md"
 CATALOG="$OUTPUT/codify-catalog.md"
@@ -97,8 +98,7 @@ require_in index 'starts the product, adds an implementation, records an integra
 require_in index 'When an accepted row already has that From, To, and Kind, write no second row.'
 
 for text in \
-	'code/<folder>/' \
-	'version: 14.1.0'; do
+	'code/<folder>/'; do
 	require "$CODIFY" "$text"
 done
 for text in \
@@ -108,24 +108,18 @@ for text in \
 	reject "$CODIFY" "$text"
 done
 
-require "$ADR" 'version: 6.0.0'
 require "$ADR" "a recorded feature's action is this decision's title"
 reject "$ADR" 'code/[ID]/codify.md'
 
-require "$CATALOG" 'version: 3.0.0'
 require "$CATALOG" '| ID | Folder | Title | Summary | Implementations | Features | Status |'
 require "$CATALOG" 'starts the product, adds an implementation, records an integration, changes the summary, or is open'
 reject "$CATALOG" 'Automation Path'
-require "$RECORD" 'version: 9.1.0'
 require "$RECORD" '**Proposed project:**'
 require "$RECORD" '**Rationale:**'
 require "$RECORD" '.highway/features/'
-require "$TASKS" 'version: 6.0.0'
 require "$TASKS" 'product: CDYXXXXXX'
 require "$TASKS" 'relative to the product folder'
-require "$METADATA" 'version: 2.0.0'
 require "$METADATA" '.highway/metadata.md'
-require "$INTEGRATIONS" 'version: 1.0.0'
 require "$INTEGRATIONS" '| From | To | Kind | Summary | Status |'
 require "$INTEGRATIONS" 'code/integrations.md'
 

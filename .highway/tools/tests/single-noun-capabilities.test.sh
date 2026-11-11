@@ -6,9 +6,10 @@ set -u
 # Seeded failure probe: restoring the onboarding merge sentence, the joined static capability, or the capability-title establish check fails this check.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-SKILLS="$HIGHWAY_ROOT/skills"
-OUTPUT="$HIGHWAY_ROOT/library/templates/output"
+# shellcheck source=paths.sh
+source "$SCRIPT_DIR/paths.sh"
+SKILLS="$HW_SKILLS"
+OUTPUT="$HW_OUTPUT_TEMPLATES"
 IMPL="$SKILLS/highway-implementation/SKILL.md"
 ONBOARD="$SKILLS/highway-onboarding/SKILL.md"
 ARCH="$SKILLS/highway-architecture/SKILL.md"
@@ -51,14 +52,12 @@ words_under() {
 for text in \
 	'Title is one capability: one noun phrase of five words or fewer.' \
 	'A Title does not contain `and`, `or`, `&`, `/`, `+`, or a comma.' \
-	'A title that joins two things is two capabilities, one per part.' \
-	'version: 2.1.0'; do
+	'A title that joins two things is two capabilities, one per part.'; do
 	require "$CAP" "$text"
 done
 reject "$CAP" 'Title is the business capability.'
 
 require "$ARCH_RECORD" 'Capability: <capability title without a capability identifier>'
-require "$ARCH_RECORD" 'version: 2.2.0'
 reject "$ARCH_RECORD" 'advisory capability text'
 
 for text in \
@@ -68,8 +67,7 @@ for text in \
 	'3. Shorten a title of six or more words to five words or fewer.' \
 	'If one is later done apart from the other, one joined capability would compound the effect of that change.' \
 	'Follow `capability title` for each capability.' \
-	'4. Derive each capability id as `write` does. When a title breaks the Title rule in `.highway/library/templates/output/capability-catalog.md`, or `write` would ask for a wording change, leave that capability out.' \
-	'version: 7.9.0'; do
+	'4. Derive each capability id as `write` does. When a title breaks the Title rule in `.highway/library/templates/output/capability-catalog.md`, or `write` would ask for a wording change, leave that capability out.'; do
 	require "$IMPL" "$text"
 done
 reject "$IMPL" 'Each realized capability has a business-readable title'
@@ -77,8 +75,7 @@ reject "$IMPL" 'Each realized capability has a business-readable title'
 for text in \
 	'When two activities rely on one technology, propose each as its own capability.' \
 	'Follow `capability title` in `highway-implementation`' \
-	'1. **AI-Augmented Technology Development:**' \
-	'version: 10.6.0'; do
+	'1. **AI-Augmented Technology Development:**'; do
 	require "$ONBOARD" "$text"
 done
 reject "$ONBOARD" 'When two activities rely on one technology, propose one capability.'
@@ -86,18 +83,15 @@ reject "$ONBOARD" 'AI-Assisted Engineering and Planning'
 
 require "$ARCH" 'Follow `capability title` in `highway-implementation`'
 require "$ARCH" '.highway/library/templates/output/capability-catalog.md'
-require "$ARCH" 'version: 5.1.0'
 
 require "$CONFIG" '5. Title that automation under the Title rule in `.highway/library/templates/output/capability-catalog.md`.'
-require "$CONFIG" 'version: 3.5.0'
 reject "$CONFIG" 'one noun phrase of five words or fewer'
 
 for text in \
 	'When no instance is running, the first suggestion is `Establish [implementation title]`' \
 	'When an instance is running and Realized Capabilities is empty, the only suggestion is `Run [implementation title]`.' \
 	'A title from a realized capability does not start with `Establish`.' \
-	'The action is establishing when its title contains `establish`' \
-	'version: 14.1.0'; do
+	'The action is establishing when its title contains `establish`'; do
 	require "$CODIFY" "$text"
 done
 reject "$CODIFY" 'A capability title containing `establish`'

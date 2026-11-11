@@ -10,15 +10,13 @@
 set -u
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-# HIGHWAY_ROOT is the .highway/ framework root; distinct from the true repo root (per
-# feature 002 (highway folder consolidation), Decision 1). This script never writes
-# outside .highway/, so it needs no separate REPO_ROOT.
-HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-# shellcheck source=tools/lib/frontmatter.sh
-source "$SCRIPT_DIR/lib/frontmatter.sh"
+# shellcheck source=lib/paths.sh
+source "$SCRIPT_DIR/lib/paths.sh"
+# shellcheck source=lib/frontmatter.sh
+source "$HW_LIB/frontmatter.sh"
 
-SKILLS_DIR="$HIGHWAY_ROOT/skills"
-CATALOG_DIR="$HIGHWAY_ROOT/catalog"
+SKILLS_DIR="$HW_SKILLS"
+CATALOG_DIR="$HW_CATALOG"
 CATALOG_JSON="$CATALOG_DIR/index.json"
 
 json_escape() {
@@ -34,7 +32,7 @@ skill_count=${#skill_dirs[@]}
 invalid_found=0
 for ((i = 0; i < skill_count; i++)); do
 	dir="${skill_dirs[$i]%/}"
-	if ! "$SCRIPT_DIR/validate-skill.sh" "$dir" >/dev/null 2>/tmp/validate-skill-err.$$; then
+	if ! "$HW_TOOLS/validate-skill.sh" "$dir" >/dev/null 2>/tmp/validate-skill-err.$$; then
 		id="$(basename "$dir")"
 		echo "ERROR: skill '$id' failed validation; catalog NOT regenerated:" >&2
 		cat /tmp/validate-skill-err.$$ >&2

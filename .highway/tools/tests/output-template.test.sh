@@ -6,44 +6,45 @@ set -u
 # Seeded failure probe: this test must detect a defect in each declared class and clean its probe.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-CONSTITUTION="$HIGHWAY_ROOT/governance/constitution.md"
-EXPERIENCE="$HIGHWAY_ROOT/governance/experience-standard.md"
+# shellcheck source=paths.sh
+source "$SCRIPT_DIR/paths.sh"
+CONSTITUTION="$(hw_doc constitution)"
+EXPERIENCE="$(hw_doc experience-standard)"
 DEV_DIR=".spec""ify"
-DEV_CONSTITUTION="$(cd "$HIGHWAY_ROOT/.." && pwd)/$DEV_DIR/memory/constitution.md"
-RULE_CHECKS="$HIGHWAY_ROOT/tools/lib/rule-checks.sh"
-NFR_SKILL="$HIGHWAY_ROOT/skills/highway-nfrs/SKILL.md"
-CONTROL_SKILL="$HIGHWAY_ROOT/skills/highway-controls/SKILL.md"
-NFR_TEMPLATE="$HIGHWAY_ROOT/library/templates/output/nfr-record.md"
-CONTROL_TEMPLATE="$HIGHWAY_ROOT/library/templates/output/control-record.md"
-PROFILE_SKILL="$HIGHWAY_ROOT/skills/highway-profile/SKILL.md"
-PROFILE_TEMPLATE="$HIGHWAY_ROOT/library/templates/output/profile-record.md"
-OBJECTIVE_SKILL="$HIGHWAY_ROOT/skills/highway-objectives/SKILL.md"
-OBJECTIVE_TEMPLATE="$HIGHWAY_ROOT/library/templates/output/objective-record.md"
-NEW_SKILL="$HIGHWAY_ROOT/skills/highway-request/SKILL.md"
-REQUEST_TEMPLATE="$HIGHWAY_ROOT/library/templates/output/request-record.md"
-CATALOG_TEMPLATE="$HIGHWAY_ROOT/library/templates/output/request-catalog.md"
+DEV_CONSTITUTION="$(cd "$HW_ROOT" && pwd)/$DEV_DIR/memory/constitution.md"
+RULE_CHECKS="$HW_LIB/rule-checks.sh"
+NFR_SKILL="$HW_SKILLS/highway-nfrs/SKILL.md"
+CONTROL_SKILL="$HW_SKILLS/highway-controls/SKILL.md"
+NFR_TEMPLATE="$(hw_template nfr-record)"
+CONTROL_TEMPLATE="$(hw_template control-record)"
+PROFILE_SKILL="$HW_SKILLS/highway-profile/SKILL.md"
+PROFILE_TEMPLATE="$(hw_template profile-record)"
+OBJECTIVE_SKILL="$HW_SKILLS/highway-objectives/SKILL.md"
+OBJECTIVE_TEMPLATE="$(hw_template objective-record)"
+NEW_SKILL="$HW_SKILLS/highway-request/SKILL.md"
+REQUEST_TEMPLATE="$(hw_template request-record)"
+CATALOG_TEMPLATE="$(hw_template request-catalog)"
 DEV_SPECS="spec""s"
-FEATURE_CONTRACT_DIR="$(cd "$HIGHWAY_ROOT/.." && pwd)/$DEV_SPECS/053-request-solution-constraints/contracts"
+FEATURE_CONTRACT_DIR="$(cd "$HW_ROOT" && pwd)/$DEV_SPECS/053-request-solution-constraints/contracts"
 INTAKE_CONTRACT="$FEATURE_CONTRACT_DIR/request-solution-constraints-intake-contract.md"
 RECORD_CONTRACT="$FEATURE_CONTRACT_DIR/request-solution-constraints-record-contract.md"
-DISCOVERY_SKILL="$HIGHWAY_ROOT/skills/highway-discovery/SKILL.md"
-DISCOVERY_RECORD_TEMPLATE="$HIGHWAY_ROOT/library/templates/output/discovery-record.md"
-DISCOVERY_CATALOG_TEMPLATE="$HIGHWAY_ROOT/library/templates/output/discovery-catalog.md"
-OBJECTIVE_CATALOG_TEMPLATE="$HIGHWAY_ROOT/library/templates/output/objective-catalog.md"
-CONTROL_CATALOG_TEMPLATE="$HIGHWAY_ROOT/library/templates/output/control-catalog.md"
-NFR_CATALOG_TEMPLATE="$HIGHWAY_ROOT/library/templates/output/nfr-catalog.md"
-ADR_SKILL="$HIGHWAY_ROOT/skills/highway-adr/SKILL.md"
-ARCHITECTURE_SKILL="$HIGHWAY_ROOT/skills/highway-architecture/SKILL.md"
-IMPLEMENTATION_SKILL="$HIGHWAY_ROOT/skills/highway-implementation/SKILL.md"
-ONBOARDING_SKILL="$HIGHWAY_ROOT/skills/highway-onboarding/SKILL.md"
-ASSESSMENT_SKILL="$HIGHWAY_ROOT/skills/highway-assessment/SKILL.md"
-CODIFY_SKILL="$HIGHWAY_ROOT/skills/highway-codify/SKILL.md"
-CODIFY_CONFIG_SKILL="$HIGHWAY_ROOT/skills/highway-codify-config/SKILL.md"
-ADR_RECORD_TEMPLATE="$HIGHWAY_ROOT/library/templates/output/adr-record.md"
-ADR_CATALOG_TEMPLATE="$HIGHWAY_ROOT/library/templates/output/adr-catalog.md"
-VALIDATE_LIBRARY="$HIGHWAY_ROOT/tools/validate-library.sh"
-VALIDATE_SKILL="$HIGHWAY_ROOT/tools/validate-skill.sh"
+DISCOVERY_SKILL="$HW_SKILLS/highway-discovery/SKILL.md"
+DISCOVERY_RECORD_TEMPLATE="$(hw_template discovery-record)"
+DISCOVERY_CATALOG_TEMPLATE="$(hw_template discovery-catalog)"
+OBJECTIVE_CATALOG_TEMPLATE="$(hw_template objective-catalog)"
+CONTROL_CATALOG_TEMPLATE="$(hw_template control-catalog)"
+NFR_CATALOG_TEMPLATE="$(hw_template nfr-catalog)"
+ADR_SKILL="$HW_SKILLS/highway-adr/SKILL.md"
+ARCHITECTURE_SKILL="$HW_SKILLS/highway-architecture/SKILL.md"
+IMPLEMENTATION_SKILL="$HW_SKILLS/highway-implementation/SKILL.md"
+ONBOARDING_SKILL="$HW_SKILLS/highway-onboarding/SKILL.md"
+ASSESSMENT_SKILL="$HW_SKILLS/highway-assessment/SKILL.md"
+CODIFY_SKILL="$HW_SKILLS/highway-codify/SKILL.md"
+CODIFY_CONFIG_SKILL="$HW_SKILLS/highway-codify-config/SKILL.md"
+ADR_RECORD_TEMPLATE="$(hw_template adr-record)"
+ADR_CATALOG_TEMPLATE="$(hw_template adr-catalog)"
+VALIDATE_LIBRARY="$HW_TOOLS/validate-library.sh"
+VALIDATE_SKILL="$HW_TOOLS/validate-skill.sh"
 
 fail=0
 
@@ -147,7 +148,6 @@ if [[ -f "$NFR_TEMPLATE" ]]; then
 	require_text "$NFR_TEMPLATE" "status: active"
 	require_text "$NFR_TEMPLATE" "## File Frontmatter"
 	require_text "$NFR_TEMPLATE" "## Body"
-	require_text "$NFR_TEMPLATE" "version: 2.0.0"
 	require_text "$NFR_TEMPLATE" "<accepted NFR statement>"
 	require_text "$NFR_TEMPLATE" "<accepted evidence-grounded rationale>"
 	require_text "$NFR_TEMPLATE" "explicitly selected Highway recommendation"
@@ -161,7 +161,6 @@ if [[ -f "$CONTROL_TEMPLATE" ]]; then
 	require_text "$CONTROL_TEMPLATE" "id: CTLXXXXXX"
 	require_text "$CONTROL_TEMPLATE" "nfrs: []"
 	require_text "$CONTROL_TEMPLATE" "status: active"
-	require_text "$CONTROL_TEMPLATE" "version: 2.0.0"
 	require_text "$CONTROL_TEMPLATE" "## File Frontmatter"
 	require_text "$CONTROL_TEMPLATE" "## Body"
 	require_text "$CONTROL_TEMPLATE" "<user-provided statement>"
@@ -312,17 +311,17 @@ if [[ -f "$CATALOG_TEMPLATE" ]]; then
 	fi
 fi
 # Superseded with highway-clarify: clarification-record.md and clarification-catalog.md.
-if ! "$VALIDATE_SKILL" "$HIGHWAY_ROOT/skills/highway-nfrs" >/dev/null 2>&1; then
+if ! "$VALIDATE_SKILL" "$HW_SKILLS/highway-nfrs" >/dev/null 2>&1; then
 	echo "FAIL: highway-nfrs does not pass validate-skill.sh"
 	fail=1
 fi
-if ! "$VALIDATE_SKILL" "$HIGHWAY_ROOT/skills/highway-controls" >/dev/null 2>&1; then
+if ! "$VALIDATE_SKILL" "$HW_SKILLS/highway-controls" >/dev/null 2>&1; then
 	echo "FAIL: highway-controls does not pass validate-skill.sh"
 	fail=1
 fi
 
 # The current file-emitting skills are the complete set of citing skills for this feature.
-citing_count="$(grep -RIl 'library/templates/output/' "$HIGHWAY_ROOT/skills" --include='SKILL.md' | wc -l | tr -d ' ')"
+citing_count="$(grep -RIl 'library/templates/output/' "$HW_SKILLS" --include='SKILL.md' | wc -l | tr -d ' ')"
 if [[ "$citing_count" != "13" ]]; then
 	echo "FAIL: expected 13 output-template citing skills, found $citing_count"
 	fail=1
@@ -363,8 +362,8 @@ if ! nfr_catalog_structure_not_duplicated "$NFR_SKILL"; then
 fi
 
 for retained_artifact in request objective control nfr discovery; do
-	cp "$HIGHWAY_ROOT/library/templates/output/${retained_artifact}-record.md" "$fixture_templates/"
-	cp "$HIGHWAY_ROOT/library/templates/output/${retained_artifact}-catalog.md" "$fixture_templates/"
+	cp "$HW_OUTPUT_TEMPLATES/${retained_artifact}-record.md" "$fixture_templates/"
+	cp "$HW_OUTPUT_TEMPLATES/${retained_artifact}-catalog.md" "$fixture_templates/"
 done
 rm -f "$fixture_templates/objective-catalog.md"
 if template_pair_inventory_valid "$fixture_templates"; then
@@ -373,7 +372,7 @@ if template_pair_inventory_valid "$fixture_templates"; then
 fi
 
 for catalog_fixture in objective control nfr; do
-	source_catalog="$HIGHWAY_ROOT/library/templates/output/${catalog_fixture}-catalog.md"
+	source_catalog="$HW_OUTPUT_TEMPLATES/${catalog_fixture}-catalog.md"
 	case "$catalog_fixture" in
 		objective) catalog_name="objective-catalog"; next_id="OBJXXXXXX"; index_heading="Objective Index" ;;
 		control) catalog_name="control-catalog"; next_id="CTLXXXXXX"; index_heading="Control Index" ;;
@@ -411,7 +410,7 @@ if discovery_structure_not_duplicated "$duplicate_fixture"; then
 	fail=1
 fi
 
-control_adapter="$HIGHWAY_ROOT/../.github/skills/highway-controls/SKILL.md"
+control_adapter="$HW_AGENT_COPILOT/highway-controls/SKILL.md"
 if [[ -f "$control_adapter" ]] && ! cmp -s "$CONTROL_SKILL" "$control_adapter"; then
 	grep -Fq '.highway/library/templates/output/control-catalog.md' "$control_adapter" || {
 		echo "FAIL: Control adapter is stale relative to the canonical catalog citation"

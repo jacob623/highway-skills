@@ -2,7 +2,9 @@
 # Validates the structural contract of the Markdown Profile.
 set -u
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-source "$SCRIPT_DIR/lib/profile.sh"
+# shellcheck source=lib/paths.sh
+source "$SCRIPT_DIR/lib/paths.sh"
+source "$HW_LIB/profile.sh"
 if [[ $# -ne 1 ]]; then
 	echo "ERROR: [SCHEMA] usage: .highway/tools/validate-profile.sh <profile-file>" >&2
 	exit 1

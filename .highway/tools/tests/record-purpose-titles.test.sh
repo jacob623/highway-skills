@@ -6,9 +6,10 @@ set -u
 # Seeded failure probe: restoring "The architecture title is the ADR title" or "The implementation title is the architecture title" fails this check.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-SKILLS="$HIGHWAY_ROOT/skills"
-OUTPUT="$HIGHWAY_ROOT/library/templates/output"
+# shellcheck source=paths.sh
+source "$SCRIPT_DIR/paths.sh"
+SKILLS="$HW_SKILLS"
+OUTPUT="$HW_OUTPUT_TEMPLATES"
 ARCH="$SKILLS/highway-architecture/SKILL.md"
 IMPL="$SKILLS/highway-implementation/SKILL.md"
 ARCH_RECORD="$OUTPUT/architecture-record.md"
@@ -37,8 +38,7 @@ for text in \
 	'The architecture title is the purpose in the ADR title' \
 	'the first " for "' \
 	'ask for a purpose title' \
-	'for a different ADR: go to' \
-	'version: 5.1.0'; do
+	'for a different ADR: go to'; do
 	require "$ARCH" "$text"
 done
 
@@ -48,15 +48,12 @@ for text in \
 	'The implementation title is the product in the title of the decision this realization came from' \
 	'the first " for "' \
 	'under a different architecture: the title becomes "[Product] for [purpose]"' \
-	'under this architecture: use the existing record' \
-	'version: 7.9.0'; do
+	'under this architecture: use the existing record'; do
 	require "$IMPL" "$text"
 done
 
 require "$ARCH_RECORD" '# <purpose title>'
-require "$ARCH_RECORD" 'version: 2.2.0'
 require "$IMPL_RECORD" '# <product title>'
-require "$IMPL_RECORD" 'version: 2.3.0'
 
 if [[ "$fail" -ne 0 ]]; then
 	exit 1

@@ -2,8 +2,10 @@
 # Path map: what a changed path selects.
 #
 # Usage: path-map.sh [--skills-dir <dir>] <path>...
+#        path-map.sh --location <skills|tools>
 #   Paths are repository-relative. --skills-dir reads SKILL.md files from another tree, such as the
 #   target branch's skills for a deleted path.
+#   --location prints the repository-relative skills or tools location and exits.
 #
 # Prints `<path>\t<kind>\t<target>\t<reason>` for each selection a path makes:
 #   skill <id>       every scenario of that skill, including scenarios passing through it
@@ -18,11 +20,37 @@
 set -eu
 
 HERE="$(cd "$(dirname "$0")" && pwd)"
-REPO_ROOT="$(cd "$HERE/../.." && pwd)"
-SKILLS_DIR="$REPO_ROOT/.highway/skills"
-SHARED="$REPO_ROOT/harness/selection/shared.txt"
+# shellcheck source=lib/paths.sh
+. "$HERE/lib/paths.sh"
+SKILLS_DIR="$HW_SKILLS"
+SHARED="$HW_HARNESS/selection/shared.txt"
 # shellcheck source=lib/scenario.sh
-. "$HERE/lib/scenario.sh"
+. "$HW_HARNESS/bin/lib/scenario.sh"
+
+REL_SKILLS="$(hw_rel "$HW_SKILLS")"
+REL_HARNESS="$(hw_rel "$HW_HARNESS")"
+REL_LIBRARY="$(hw_rel "$HW_LIBRARY")"
+REL_GOVERNANCE="$(hw_rel "$HW_GOVERNANCE")"
+REL_INSTRUCTIONS="$(hw_rel "$HW_INSTRUCTIONS")"
+REL_CATALOG="$(hw_rel "$HW_CATALOG")"
+REL_TOOLS="$(hw_rel "$HW_TOOLS")"
+REL_COPILOT="$(hw_rel "$HW_AGENT_COPILOT")"
+REL_CLAUDE="$(hw_rel "$HW_AGENT_CLAUDE")"
+REL_CURSOR="$(hw_rel "$HW_AGENT_CURSOR")"
+REL_CODEX="$(hw_rel "$HW_AGENT_CODEX")"
+REL_AGENTS_MD="$(hw_rel "$HW_AGENTS_MD")"
+
+if [ "${1:-}" = "--location" ]; then
+	case "${2:-}" in
+	skills) printf '%s\n' "$REL_SKILLS" ;;
+	tools) printf '%s\n' "$REL_TOOLS" ;;
+	*)
+		printf 'path-map: unknown location: %s\n' "${2:-}" >&2
+		exit 2
+		;;
+	esac
+	exit 0
+fi
 
 if [ "${1:-}" = "--skills-dir" ]; then
 	SKILLS_DIR="$2"
@@ -62,25 +90,25 @@ skills_naming() {
 for path in "$@"; do
 	path="${path#./}"
 	case "$path" in
-	harness/scenarios/*/*.scenario)
+	"$REL_HARNESS"/scenarios/*/*.scenario)
 		emit "$path" scenario "$(scenario_id_from_path "$path")" "the scenario file changed"
 		continue
 		;;
-	harness/fixtures/stages/*/*)
-		rest="${path#harness/fixtures/stages/}"
+	"$REL_HARNESS"/fixtures/stages/*/*)
+		rest="${path#"$REL_HARNESS"/fixtures/stages/}"
 		emit "$path" fixture "${rest%%/*}" "stage fixture ${rest%%/*} changed"
 		continue
 		;;
-	harness/fixtures/overlays/*/*)
-		rest="${path#harness/fixtures/overlays/}"
+	"$REL_HARNESS"/fixtures/overlays/*/*)
+		rest="${path#"$REL_HARNESS"/fixtures/overlays/}"
 		emit "$path" fixture "${rest%%/*}" "overlay fixture ${rest%%/*} changed"
 		continue
 		;;
-	harness/src/* | harness/package.json | harness/package-lock.json | harness/harness.config.json)
+	"$REL_HARNESS"/src/* | "$REL_HARNESS"/package.json | "$REL_HARNESS"/package-lock.json | "$REL_HARNESS"/harness.config.json)
 		emit "$path" smoke smoke "the harness runner or driver changed ($path)"
 		continue
 		;;
-	harness/*)
+	"$REL_HARNESS"/*)
 		emit "$path" none - "harness documentation, coverage, or bash checks; the bash suite covers it"
 		continue
 		;;
@@ -97,11 +125,11 @@ for path in "$@"; do
 	fi
 
 	case "$path" in
-	.highway/skills/*/*)
-		rest="${path#.highway/skills/}"
+	"$REL_SKILLS"/*/*)
+		rest="${path#"$REL_SKILLS"/}"
 		emit "$path" skill "${rest%%/*}" "$path is part of ${rest%%/*}"
 		;;
-	.highway/library/* | .highway/governance/* | .highway/instructions/*)
+	"$REL_LIBRARY"/* | "$REL_GOVERNANCE"/* | "$REL_INSTRUCTIONS"/*)
 		found=0
 		for skill in $(skills_naming "$path"); do
 			emit "$path" skill "$skill" "$skill names $path"
@@ -111,13 +139,13 @@ for path in "$@"; do
 			emit "$path" unmapped - "no skill names $path and harness/selection/shared.txt does not list it"
 		fi
 		;;
-	.claude/* | .cursor/* | .github/* | .agents/* | AGENTS.md)
+	"${REL_CLAUDE%%/*}"/* | "${REL_CURSOR%%/*}"/* | "${REL_COPILOT%%/*}"/* | "${REL_CODEX%%/*}"/* | "$REL_AGENTS_MD")
 		emit "$path" none - "generated agent copy; its source selects scenarios"
 		;;
-	.highway/catalog/*)
+	"$REL_CATALOG"/*)
 		emit "$path" none - "generated catalog"
 		;;
-	.highway/tools/*)
+	"$REL_TOOLS"/*)
 		emit "$path" none - "tools, generators, validators, and tests are covered by the bash suite"
 		;;
 	*)

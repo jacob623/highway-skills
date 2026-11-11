@@ -7,7 +7,7 @@
 # compatibility enum, the valid-agents list) are NOT declared here -- they are read at call time
 # from lib/frontmatter-contract.sh's accessors over .frontmatter-contract, so the manifest is the
 # single declared source (feature 045, FR-002). Callers must source frontmatter-contract.sh
-# before calling any sv_validate_* function below that takes a highway_root argument.
+# before calling any sv_validate_* function below that takes a root argument.
 
 readonly SV_ID_REGEX='^[a-z0-9]+(-[a-z0-9]+)*$'
 readonly SV_VERSION_REGEX='^[0-9]+\.[0-9]+\.[0-9]+$'
@@ -63,10 +63,10 @@ sv_validate_name() {
 	return 0
 }
 
-# Usage: sv_validate_description <description_value> <highway_root>
+# Usage: sv_validate_description <description_value> <root>
 sv_validate_description() {
-	local desc="$1" highway_root="$2" ok=0 min max
-	_sv_parse_length_constraint "$(fc_constraint "$highway_root" top description)"
+	local desc="$1" root="$2" ok=0 min max
+	_sv_parse_length_constraint "$(fc_constraint "$root" top description)"
 	min="$SV_MIN" max="$SV_MAX"
 	if [[ -z "$desc" ]]; then
 		echo "ERROR: [SCHEMA] missing required field 'description'"
@@ -81,10 +81,10 @@ sv_validate_description() {
 	return $ok
 }
 
-# Usage: sv_validate_usage <usage_value> <highway_root>
+# Usage: sv_validate_usage <usage_value> <root>
 sv_validate_usage() {
-	local usage="$1" highway_root="$2" ok=0 min max
-	_sv_parse_length_constraint "$(fc_constraint "$highway_root" top usage)"
+	local usage="$1" root="$2" ok=0 min max
+	_sv_parse_length_constraint "$(fc_constraint "$root" top usage)"
 	min="$SV_MIN" max="$SV_MAX"
 	if [[ -z "$usage" ]]; then
 		echo "ERROR: [SCHEMA] missing required field 'usage'"
@@ -108,9 +108,9 @@ sv_validate_usage() {
 # twice. Any required key added to the manifest with no bespoke check of its own is still
 # enforced by this loop -- this is what makes adding a required key to the manifest alone (no
 # script change) break a previously-conforming skill (FR-016).
-# Usage: sv_validate_required_keys <file> <highway_root>
+# Usage: sv_validate_required_keys <file> <root>
 sv_validate_required_keys() {
-	local file="$1" highway_root="$2" ok=0 key value
+	local file="$1" root="$2" ok=0 key value
 
 	while IFS= read -r key; do
 		[[ -z "$key" ]] && continue
@@ -122,7 +122,7 @@ sv_validate_required_keys() {
 			echo "ERROR: [SCHEMA] missing required field '$key'"
 			ok=1
 		fi
-	done <<< "$(fc_required_keys "$highway_root" top)"
+	done <<< "$(fc_required_keys "$root" top)"
 
 	while IFS= read -r key; do
 		[[ -z "$key" ]] && continue
@@ -134,7 +134,7 @@ sv_validate_required_keys() {
 			echo "ERROR: [SCHEMA] missing required field 'metadata.$key'"
 			ok=1
 		fi
-	done <<< "$(fc_required_keys "$highway_root" metadata)"
+	done <<< "$(fc_required_keys "$root" metadata)"
 
 	return $ok
 }
@@ -143,11 +143,11 @@ sv_validate_required_keys() {
 # "metadata" -- the implicit container for the metadata scope, not itself a declared "top" row.
 # Every metadata-scope key present must likewise be declared. An undeclared key is reported by
 # name (FR-005).
-# Usage: sv_validate_closed_key_set <file> <highway_root>
+# Usage: sv_validate_closed_key_set <file> <root>
 sv_validate_closed_key_set() {
-	local file="$1" highway_root="$2" ok=0 key declared_top declared_metadata
-	declared_top="$(fc_declared_keys "$highway_root" top)"
-	declared_metadata="$(fc_declared_keys "$highway_root" metadata)"
+	local file="$1" root="$2" ok=0 key declared_top declared_metadata
+	declared_top="$(fc_declared_keys "$root" top)"
+	declared_metadata="$(fc_declared_keys "$root" metadata)"
 
 	while IFS= read -r key; do
 		[[ -z "$key" ]] && continue
@@ -194,11 +194,11 @@ sv_validate_duplicate_keys() {
 	return $ok
 }
 
-# Usage: sv_validate_compatibility <compatibility_value> <highway_root>
+# Usage: sv_validate_compatibility <compatibility_value> <root>
 sv_validate_compatibility() {
-	local compat="$1" highway_root="$2" ok=0 valid_compatibility
+	local compat="$1" root="$2" ok=0 valid_compatibility
 	if [[ -n "$compat" ]]; then
-		valid_compatibility="$(_sv_parse_enum_constraint "$(fc_constraint "$highway_root" top compatibility)")"
+		valid_compatibility="$(_sv_parse_enum_constraint "$(fc_constraint "$root" top compatibility)")"
 		if [[ ! " $valid_compatibility " == *" $compat "* ]]; then
 			echo "ERROR: [SCHEMA] field 'compatibility' (\"$compat\") must be one of: $valid_compatibility"
 			ok=1
@@ -210,10 +210,10 @@ sv_validate_compatibility() {
 # The valid-agents list is the compatibility enum minus the literal "all" token: agent_exceptions
 # names one specific agent, and "all" is not a specific agent. This keeps a single declared list
 # (the compatibility row) rather than a second manifest row that would only ever repeat it.
-# Usage: printf '%s\n' "$agent_exceptions_lines" | sv_validate_agent_exceptions <highway_root>
+# Usage: printf '%s\n' "$agent_exceptions_lines" | sv_validate_agent_exceptions <root>
 sv_validate_agent_exceptions() {
-	local highway_root="$1" ok=0 agent deviation valid_agents
-	valid_agents="$(_sv_parse_enum_constraint "$(fc_constraint "$highway_root" top compatibility)" | tr ' ' '\n' | grep -v '^all$' | tr '\n' ' ')"
+	local root="$1" ok=0 agent deviation valid_agents
+	valid_agents="$(_sv_parse_enum_constraint "$(fc_constraint "$root" top compatibility)" | tr ' ' '\n' | grep -v '^all$' | tr '\n' ' ')"
 	valid_agents="${valid_agents% }"
 	while IFS='|' read -r agent deviation; do
 		[[ -z "$agent" && -z "$deviation" ]] && continue

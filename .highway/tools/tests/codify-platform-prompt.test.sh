@@ -6,8 +6,9 @@ set -u
 # Seeded failure probe: restoring "Would you like to configure [Platform] for automation?" or "as a platform capable of executing automation" fails this check.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-SKILLS="$HIGHWAY_ROOT/skills"
+# shellcheck source=paths.sh
+source "$SCRIPT_DIR/paths.sh"
+SKILLS="$HW_SKILLS"
 ONBOARD="$SKILLS/highway-onboarding/SKILL.md"
 IMPL="$SKILLS/highway-implementation/SKILL.md"
 CONFIG="$SKILLS/highway-codify-config/SKILL.md"
@@ -39,13 +40,10 @@ for file in "$ONBOARD" "$IMPL"; do
 done
 
 require "$ONBOARD" "3. Emit: Let's configure how highway-codify uses [Platform]."
-require "$ONBOARD" 'version: 10.6.0'
 require "$IMPL" "- \`accept\`, or a yes: emit: Let's configure how highway-codify uses [Platform]. Follow \`highway-codify-config\` for [Platform], with the return step \`close\` in \`highway-implementation\`."
-require "$IMPL" 'version: 7.9.0'
 
 require "$CONFIG" '[On an add or update with no edit yet: **Here is a proposed starting point for configuring how highway-codify uses [Platform]**]'
 require "$CONFIG" '1. **View or Update Platforms** highway-codify can use in proposals.'
-require "$CONFIG" 'version: 3.5.0'
 reject "$CONFIG" 'capable of executing automation'
 reject "$CONFIG" 'considers for automation and self-service'
 

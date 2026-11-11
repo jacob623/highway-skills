@@ -305,6 +305,11 @@ For `--changed-since <ref>`, changed paths come from `git diff --name-status <re
 files. A deleted skill file is resolved against the skill list at `<ref>`. An empty selection
 prints why and exits 0.
 
+The path map reads every location from the framework's paths helper, `.highway/tools/lib/paths.sh`,
+through `harness/bin/lib/paths.sh`, which each `harness/bin/` script sources.
+`path-map.sh --location <skills|tools>` prints the skills or tools location, which the runner uses
+to find skills at a ref and to build the distribution.
+
 Coverage is printed in each run report per skill: each bullet's treatment, the reply kinds
 exercised, and the steps reached and not reached. When a bullet is reworded, its hash changes.
 The old tag becomes unknown, and the report and `harness-coverage.test.sh` show the new bullet
