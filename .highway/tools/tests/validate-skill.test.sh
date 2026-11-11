@@ -6,9 +6,10 @@ set -u
 # Seeded failure probe: this test must detect a defect in each declared class and clean its probe.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-VALIDATE="$HIGHWAY_ROOT/tools/validate-skill.sh"
-FIXTURES="$SCRIPT_DIR/fixtures"
+# shellcheck source=paths.sh
+source "$SCRIPT_DIR/paths.sh"
+VALIDATE="$HW_TOOLS/validate-skill.sh"
+FIXTURES="$HW_FIXTURES"
 
 fail=0
 
@@ -56,7 +57,7 @@ assert_exit_nonzero_naming "$FIXTURES/invalid-skill-duplicate-key" "duplicate to
 
 # Every skill-shaped artifact in the repository that is meant to be valid must pass, so that an
 # author copying one inherits a conforming skill (SC-001).
-for skill_dir in "$HIGHWAY_ROOT"/skills/*/; do
+for skill_dir in "$HW_SKILLS"/*/; do
 	[[ -f "$skill_dir/SKILL.md" ]] || continue
 	assert_exit_zero "$skill_dir"
 done
@@ -101,7 +102,7 @@ assert_exit_nonzero_naming "$FIXTURES/invalid-skill-duplicate-key" "duplicate to
 # and blocks every per-skill check (FR-003). Uses FRONTMATTER_CONTRACT_FILE to point at a
 # temporary, mutated copy so the real manifest is never touched.
 malformed_manifest_tmp="$(mktemp)"
-cp "$HIGHWAY_ROOT/tools/.frontmatter-contract" "$malformed_manifest_tmp"
+cp "$HW_TOOLS/.frontmatter-contract" "$malformed_manifest_tmp"
 printf 'top\tname\tyes\tkebab-case\n' >> "$malformed_manifest_tmp"
 malformed_manifest_out="$(FRONTMATTER_CONTRACT_FILE="$malformed_manifest_tmp" "$VALIDATE" "$FIXTURES/valid-skill" 2>&1)"
 malformed_manifest_rc=$?

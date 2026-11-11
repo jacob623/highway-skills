@@ -1,5 +1,22 @@
 <!--
 Sync Impact Report
+Version change: 3.0.0 → 3.1.0 (MINOR), 2026-11-11
+Bump rationale: D2.5 is added under Principle II, so every script gets repository locations from
+the paths helper at `.highway/tools/lib/paths.sh`. It adds a rule without redefining one, and every
+script under `.highway/tools/` and `harness/bin/` already meets it in the same change, so no
+conforming work fails.
+Changed elements:
+- Version line: 3.0.0 → 3.1.0
+- Principle II: D2.5 added, tier [auto]
+- Enforcement Map: a D2.5 row naming path-construction.test.sh
+- Toolchain Gate: trigger also covers `harness/bin/`; rules evaluated D2.1–D2.5
+Unchanged: D2.1–D2.4 rule text, Observables, and tiers; the Declared Toolchain and Harness
+Toolchain; every other rule, row, and gate; the Last Amended date (already 2026-11-11).
+Self-application review: D1.3 PASS (no Highway Skills Constitution rule sentence is copied);
+D1.4 PASS (this report cites rule IDs); D5.3 PASS (the four changed elements are listed above
+and every unlisted element carries forward).
+
+Sync Impact Report
 Version change: 2.3.0 → 3.0.0 (MAJOR), 2026-11-11
 Bump rationale: the recorded-generation-timestamp exception is removed from D4.2 and D4.7, which
 strengthens both obligations; the Versioning Policy classes that as MAJOR. `generate-catalog.sh`
@@ -388,6 +405,7 @@ table cannot silently go stale.
 |---|---|---|
 | D1.1 | shipped-tree-independence.test.sh | Scans the distributed path set for the prohibited tokens; seeds a probe to prove it can fail |
 | D1.2 | distribution-packaging.test.sh | Runs the distribution's own validator against a tree with the development directories absent |
+| D2.5 | path-construction.test.sh | Scans every script under `.highway/tools/` and `harness/bin/` for a path built from a root variable, a climb from the script's folder, or a named template or document joined to its folder; seeds a probe to prove it can fail |
 | D4.1 | generate-agent-adapters.test.sh | Asserts the generator refuses to overwrite a target that was hand-edited after it was produced |
 | D4.2 | generate-catalog.test.sh | Asserts re-running with unchanged inputs produces byte-identical output |
 | D4.3 | distribution-packaging.test.sh | Asserts refusal to overwrite an untracked directory and a modified file, naming each |
@@ -420,6 +438,7 @@ only to users.
 | D2.2 | A script MUST NOT invoke a utility outside the declared toolchain. | Each external command invoked appears in the Declared Toolchain list below. | [agent-checkable] |
 | D2.3 | A utility flag MUST work on both target platforms. | The flag is accepted by both GNU coreutils and the Apple/BSD variant of that utility. | [agent-checkable] |
 | D2.4 | A change MUST NOT add a runtime dependency. | The change introduces no package manager, interpreter, or binary absent from the declared toolchain. | [agent-checkable] |
+| D2.5 | A script MUST get repository locations from the paths helper. | No script other than `.highway/tools/lib/paths.sh` builds a path from a root variable, climbs from its own folder, or joins a named template or document to its folder. | [auto] |
 
 **Declared Toolchain** (referenced by D2.2 and D2.4). External utilities only; shell builtins are
 excluded:
@@ -537,7 +556,7 @@ A gate applies only when its trigger evaluates true. A gate whose trigger is fal
 | Gate | Trigger | Rules evaluated |
 |---|---|---|
 | **Packaging Gate** | The change touches a shipped path. | D1.1, D1.2, D6.2 |
-| **Toolchain Gate** | The change touches a file under `.highway/tools/`. | D2.1–D2.4 |
+| **Toolchain Gate** | The change touches a file under `.highway/tools/` or `harness/bin/`. | D2.1–D2.5 |
 | **Generator Gate** | The change touches a `generate-*.sh` script. | D4.1–D4.4 |
 | **Correspondence Gate** | The change adds, removes, or modifies a directory under `.highway/skills/`, or any other input to a declared generator. | D4.5–D4.7 |
 | **Validation Gate** | The change adds or modifies a validation check. | D3.4, D3.5 |
@@ -571,4 +590,4 @@ Highway Skills Constitution prevails for artifact content and this document prev
 This document is subject to D1.3, D1.4, and D5.3. Every amendment records a review against those
 rule IDs.
 
-**Version**: 3.0.0 | **Ratified**: 2026-09-08 | **Last Amended**: 2026-11-11
+**Version**: 3.1.0 | **Ratified**: 2026-09-08 | **Last Amended**: 2026-11-11

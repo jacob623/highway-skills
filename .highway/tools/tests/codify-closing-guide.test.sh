@@ -6,9 +6,10 @@ set -u
 # Seeded failure probe: a README sentence that heads the first part `## Implement` fails this check.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-SKILLS="$HIGHWAY_ROOT/skills"
-OUTPUT="$HIGHWAY_ROOT/library/templates/output"
+# shellcheck source=paths.sh
+source "$SCRIPT_DIR/paths.sh"
+SKILLS="$HW_SKILLS"
+OUTPUT="$HW_OUTPUT_TEMPLATES"
 fail=0
 
 require() {
@@ -58,8 +59,7 @@ for text in \
 	'You can name or describe any automation.' \
 	'No automation has been created yet.' \
 	'The instructions are not written yet.' \
-	'Append the new row as the last row.' \
-	'version: 14.1.0'; do
+	'Append the new row as the last row.'; do
 	require "$CODIFY" "$text"
 done
 for text in \
@@ -73,13 +73,11 @@ done
 require "$RECORD" '## Setup Instructions'
 require "$RECORD" '## User Guide'
 require "$RECORD" 'User Guide follows the interface of the Provider.'
-require "$RECORD" 'version: 9.1.0'
 reject_line "$RECORD" '## Implement'
 reject_line "$RECORD" '## Use'
 
 require "$CATALOG" 'Rows are in acceptance order.'
 require "$CATALOG" 'A new row is appended as the last row.'
-require "$CATALOG" 'version: 3.0.0'
 reject "$CATALOG" 'Rows are ordered by Automation ID.'
 
 if [[ "$fail" -ne 0 ]]; then

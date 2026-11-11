@@ -6,8 +6,9 @@ set -u
 # Seeded failure probe: absence of the batch heading or return of the one-at-a-time bridge fails this check.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-SKILL="$HIGHWAY_ROOT/skills/highway-objectives/SKILL.md"
+# shellcheck source=paths.sh
+source "$SCRIPT_DIR/paths.sh"
+SKILL="$HW_SKILLS/highway-objectives/SKILL.md"
 fail=0
 
 require() {

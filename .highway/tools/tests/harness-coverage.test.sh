@@ -8,9 +8,9 @@ set -u
 # Seeded failure probe: removing a highway-codify `covers:` line whose bullet has no treatment fails this check, naming the bullet.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-REPO_ROOT="$(cd "$HIGHWAY_ROOT/.." && pwd)"
-HARNESS="$REPO_ROOT/harness"
+# shellcheck source=paths.sh
+source "$SCRIPT_DIR/paths.sh"
+HARNESS="$HW_HARNESS"
 TREATMENTS="$HARNESS/coverage/treatments.txt"
 GATED="highway-codify"
 TAB="$(printf '\t')"

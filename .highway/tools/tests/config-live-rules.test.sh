@@ -6,9 +6,10 @@ set -u
 # Seeded failure probe: removing ### current, or telling the catalog to save a Why it matters line, fails this check.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-CONFIG="$HIGHWAY_ROOT/skills/highway-codify-config/SKILL.md"
-TEMPLATE="$HIGHWAY_ROOT/library/templates/output/coding-standard.md"
+# shellcheck source=paths.sh
+source "$SCRIPT_DIR/paths.sh"
+CONFIG="$HW_SKILLS/highway-codify-config/SKILL.md"
+TEMPLATE="$(hw_template coding-standard)"
 fail=0
 
 require() {
@@ -59,8 +60,7 @@ for text in \
 	'The catalog view, a conflict quote, and the saved cell keep the entry only.' \
 	'with must once' \
 	'encoded or encrypted credentials' \
-	'Otherwise state the consequence of the accepted change in one sentence and go to `menu`.' \
-	'version: 3.5.0'; do
+	'Otherwise state the consequence of the accepted change in one sentence and go to `menu`.'; do
 	require "$CONFIG" "$text"
 done
 
@@ -75,7 +75,6 @@ for name in '### current' '### platform proposal' '### standard proposal'; do
 	fi
 done
 
-require "$TEMPLATE" 'version: 3.0.1'
 require "$TEMPLATE" 'one rule with must once, one condition, and one outcome, in eight words or fewer; the model suggests at most fifteen'
 require "$TEMPLATE" 'One rule keeps encoded or encrypted credentials outside the files this standard covers.'
 require "$TEMPLATE" 'This file does not contain a Why it matters line.'

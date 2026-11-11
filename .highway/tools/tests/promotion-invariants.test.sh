@@ -7,7 +7,8 @@ set -u
 # Seeded failure probe: --probe source-document observes a missing invariant token; --neutralise restores it.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+# shellcheck source=paths.sh
+source "$SCRIPT_DIR/paths.sh"
 fail=0
 
 probe_class=""
@@ -49,11 +50,11 @@ require_text() {
 	fi
 }
 
-ARCH="$HIGHWAY_ROOT/skills/highway-architecture/SKILL.md"
-ADR="$HIGHWAY_ROOT/skills/highway-adr/SKILL.md"
-OBJ="$HIGHWAY_ROOT/library/templates/output/objective-catalog.md"
-REQ="$HIGHWAY_ROOT/library/templates/output/request-catalog.md"
-CAP="$HIGHWAY_ROOT/library/templates/output/capability-catalog.md"
+ARCH="$HW_SKILLS/highway-architecture/SKILL.md"
+ADR="$HW_SKILLS/highway-adr/SKILL.md"
+OBJ="$(hw_template objective-catalog)"
+REQ="$(hw_template request-catalog)"
+CAP="$(hw_template capability-catalog)"
 
 require_text "$ARCH" "The id is \`RA\` plus those eight hex digits."
 require_text "$ARCH" "Do not name a platform, product, vendor, or specific technology"

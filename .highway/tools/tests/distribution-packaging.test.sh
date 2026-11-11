@@ -16,9 +16,9 @@ set -u
 # probe-mode contract, which supersedes Feature 041's.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-REPO_ROOT="$(cd "$HIGHWAY_ROOT/.." && pwd)"
-GEN="$HIGHWAY_ROOT/tools/generate-distribution.sh"
+# shellcheck source=paths.sh
+source "$SCRIPT_DIR/paths.sh"
+GEN="$HW_TOOLS/generate-distribution.sh"
 fail=0
 
 probe_class=""
@@ -73,7 +73,7 @@ if [[ -n "$probe_class" ]]; then
 	trap cleanup_probe EXIT
 	case "$probe_class" in
 		source-document)
-			dev_probe="$HIGHWAY_ROOT/catalog/distribution-devref-probe-$$.md"
+			dev_probe="$HW_CATALOG/distribution-devref-probe-$$.md"
 			if [[ "$neutralise" -eq 0 ]]; then
 				printf 'see the spec at %s/001-multi-agent-skill-suite/spec.md\n' "$DEV_DIR" >"$dev_probe"
 			fi
@@ -86,7 +86,7 @@ if [[ -n "$probe_class" ]]; then
 			fi
 			;;
 		disposable-fixture)
-			stray_probe="$REPO_ROOT/distribution-probe-$$.md"
+			stray_probe="$HW_ROOT/distribution-probe-$$.md"
 			if [[ "$neutralise" -eq 0 ]]; then
 				printf 'probe\n' >"$stray_probe"
 			fi
@@ -127,17 +127,17 @@ fi
 
 WORK="$(mktemp -d)"
 cleanup_probes() {
-	rm -f "$REPO_ROOT"/distribution-probe-*.md \
-		"$HIGHWAY_ROOT"/catalog/distribution-devref-probe-*.md \
-		"$HIGHWAY_ROOT"/catalog/distribution-link-probe-*.md \
-		"$HIGHWAY_ROOT"/catalog/distribution-reject-probe-*.md
+	rm -f "$HW_ROOT"/distribution-probe-*.md \
+		"$HW_CATALOG"/distribution-devref-probe-*.md \
+		"$HW_CATALOG"/distribution-link-probe-*.md \
+		"$HW_CATALOG"/distribution-reject-probe-*.md
 }
 cleanup() { cleanup_probes; rm -rf "$WORK"; }
 trap cleanup EXIT
 
 # A killed packaging run can leave a link probe in the included catalog. Remove it before the
 # first build so the next run reports its own behavior rather than stale state from an earlier run.
-stale_link_probe="$HIGHWAY_ROOT/catalog/distribution-link-probe-stale.md"
+stale_link_probe="$HW_CATALOG/distribution-link-probe-stale.md"
 printf 'see [the missing file](stale-probe-target.md)\n' >"$stale_link_probe"
 cleanup_probes
 if [[ -e "$stale_link_probe" ]]; then
@@ -172,7 +172,7 @@ fi
 
 # --- Probe: an undeclared repository path is reported, not silently classified ---
 
-probe_path="$REPO_ROOT/distribution-probe-$$.md"
+probe_path="$HW_ROOT/distribution-probe-$$.md"
 printf 'probe\n' >"$probe_path"
 if "$GEN" "$WORK/p1" >"$WORK/p1.log" 2>&1; then
 	echo "FAIL: an undeclared repository path did not stop packaging"
@@ -192,7 +192,7 @@ rm -f "$probe_path"
 # keeps the seeded probe real without exempting this file from a check that should cover it.
 DEV_DIR="spec""s"
 
-dev_probe="$HIGHWAY_ROOT/catalog/distribution-devref-probe-$$.md"
+dev_probe="$HW_CATALOG/distribution-devref-probe-$$.md"
 printf 'see the spec at %s/001-multi-agent-skill-suite/spec.md\n' "$DEV_DIR" >"$dev_probe"
 if "$GEN" "$WORK/p2" >"$WORK/p2.log" 2>&1; then
 	echo "FAIL: a development-only reference in a distributed file did not stop packaging"
@@ -205,7 +205,7 @@ rm -f "$dev_probe"
 
 # --- Probe: an unresolvable cross-reference is caught ---
 
-link_probe="$HIGHWAY_ROOT/catalog/distribution-link-probe-$$.md"
+link_probe="$HW_CATALOG/distribution-link-probe-$$.md"
 printf 'see [the missing file](no-such-file-%s.md)\n' "$$" >"$link_probe"
 if "$GEN" "$WORK/p3" >"$WORK/p3.log" 2>&1; then
 	echo "FAIL: an unresolvable cross-reference did not stop packaging"
@@ -218,7 +218,7 @@ rm -f "$link_probe"
 
 # --- Probe: a rejected candidate is removed rather than left behind (FR-011) ---
 
-reject_probe="$HIGHWAY_ROOT/catalog/distribution-reject-probe-$$.md"
+reject_probe="$HW_CATALOG/distribution-reject-probe-$$.md"
 printf 'see %s/001-multi-agent-skill-suite/spec.md\n' "$DEV_DIR" >"$reject_probe"
 "$GEN" "$WORK/p4" >/dev/null 2>&1
 rm -f "$reject_probe"
@@ -234,9 +234,9 @@ fi
 if [[ -d "$dist" ]]; then
 	broken="$WORK/broken"
 	cp -R "$dist" "$broken"
-	rm -rf "$broken/.highway/governance"
-	if env -u CONSTITUTION_FILE "$broken/.highway/tools/validate-skill.sh" \
-		"$broken/.highway/skills/highway-help" >/dev/null 2>&1; then
+	rm -rf "$(hw_at "$broken" "$HW_GOVERNANCE")"
+	if env -u CONSTITUTION_FILE "$(hw_at "$broken" "$HW_TOOLS")/validate-skill.sh" \
+		"$(hw_at "$broken" "$HW_SKILLS")/highway-help" >/dev/null 2>&1; then
 		echo "FAIL: a distribution missing its governing document still validated"
 		fail=1
 	fi

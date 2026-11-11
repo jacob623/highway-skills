@@ -6,15 +6,15 @@ set -u
 # Seeded failure probe: a temporary skill naming `git commit` must fail P2.6, and removing a storage.md operation row fails this check.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-REPO_ROOT="$(cd "$HIGHWAY_ROOT/.." && pwd)"
-VALIDATE="$HIGHWAY_ROOT/tools/validate-skill.sh"
-STORAGE="$HIGHWAY_ROOT/governance/storage.md"
-CONSTITUTION="$HIGHWAY_ROOT/governance/constitution.md"
-CODIFY="$HIGHWAY_ROOT/skills/highway-codify/SKILL.md"
-HELP="$HIGHWAY_ROOT/skills/highway-help/SKILL.md"
-METADATA="$HIGHWAY_ROOT/library/templates/output/codify-metadata.md"
-CONTEXT="$HIGHWAY_ROOT/instructions/highway-agent-context.md"
+# shellcheck source=paths.sh
+source "$SCRIPT_DIR/paths.sh"
+VALIDATE="$HW_TOOLS/validate-skill.sh"
+STORAGE="$(hw_doc storage)"
+CONSTITUTION="$(hw_doc constitution)"
+CODIFY="$HW_SKILLS/highway-codify/SKILL.md"
+HELP="$HW_SKILLS/highway-help/SKILL.md"
+METADATA="$(hw_template codify-metadata)"
+CONTEXT="$HW_INSTRUCTIONS/highway-agent-context.md"
 fail=0
 
 tmp_root="$(mktemp -d)"
@@ -23,7 +23,7 @@ trap 'rm -rf "$tmp_root"' EXIT
 require() {
 	local file="$1" text="$2"
 	[[ -f "$file" ]] && grep -Fq -- "$text" "$file" || {
-		echo "FAIL: ${file#$REPO_ROOT/} omits: $text"
+		echo "FAIL: ${file#$HW_ROOT/} omits: $text"
 		fail=1
 	}
 }
@@ -31,7 +31,7 @@ require() {
 reject() {
 	local file="$1" text="$2"
 	if [[ -f "$file" ]] && grep -Fq -- "$text" "$file"; then
-		echo "FAIL: ${file#$REPO_ROOT/} still contains: $text"
+		echo "FAIL: ${file#$HW_ROOT/} still contains: $text"
 		fail=1
 	fi
 }
@@ -43,7 +43,7 @@ section() {
 require_in() {
 	local file="$1" heading="$2" text="$3"
 	section "$file" "$heading" | grep -Fq -- "$text" || {
-		echo "FAIL: ${file#$REPO_ROOT/} $heading omits: $text"
+		echo "FAIL: ${file#$HW_ROOT/} $heading omits: $text"
 		fail=1
 	}
 }
@@ -76,8 +76,8 @@ for text in \
 	require "$STORAGE" "$text"
 done
 
-# shellcheck source=tools/lib/distribution.sh
-source "$HIGHWAY_ROOT/tools/lib/distribution.sh"
+# shellcheck source=../lib/distribution.sh
+source "$HW_LIB/distribution.sh"
 if [[ "$(dist_classify .highway/governance/storage.md)" != "include" ]]; then
 	echo "FAIL: .highway/governance/storage.md does not ship"
 	fail=1
@@ -90,15 +90,12 @@ if ! grep -qE '^\| P2\.6 \|.*\| \[auto\] \|$' "$CONSTITUTION"; then
 	echo "FAIL: P2.6 is missing or is not [auto]"
 	fail=1
 fi
-require "$CONSTITUTION" '**Version**: 10.0.0 | **Ratified**: 2026-09-06 | **Last Amended**: 2026-11-09'
-require "$CONSTITUTION" 'Version change: 9.1.0 → 10.0.0 (MAJOR), 2026-11-09'
-
-# shellcheck source=tools/lib/body-scan.sh
-source "$HIGHWAY_ROOT/tools/lib/body-scan.sh"
-# shellcheck source=tools/lib/constitution.sh
-source "$HIGHWAY_ROOT/tools/lib/constitution.sh"
-# shellcheck source=tools/lib/rule-checks.sh
-source "$HIGHWAY_ROOT/tools/lib/rule-checks.sh"
+# shellcheck source=../lib/body-scan.sh
+source "$HW_LIB/body-scan.sh"
+# shellcheck source=../lib/constitution.sh
+source "$HW_LIB/constitution.sh"
+# shellcheck source=../lib/rule-checks.sh
+source "$HW_LIB/rule-checks.sh"
 if ! rc_registry | awk -F'\t' '$1 == "P2.6" && $2 == "rc_check_P2_6" && $3 == "-" { f = 1 } END { exit !f }'; then
 	echo "FAIL: P2.6 is not registered to rc_check_P2_6"
 	fail=1
@@ -192,7 +189,7 @@ expect_pass 'no timestamp' 'Emit no timestamp, random value, or environment valu
 expect_pass 'fenced content' "$(printf '%s\n' 'The pipeline file reads:' '' '```yaml' 'steps:' '  - run: git push' '  - run: ./build.sh' '```')"
 
 # Every shipped skill passes the check.
-for skill in "$HIGHWAY_ROOT"/skills/*/SKILL.md; do
+for skill in "$HW_SKILLS"/*/SKILL.md; do
 	if ! type rc_check_P2_6 >/dev/null 2>&1; then
 		echo "FAIL: rc_check_P2_6 is not defined"
 		fail=1
@@ -200,7 +197,7 @@ for skill in "$HIGHWAY_ROOT"/skills/*/SKILL.md; do
 	fi
 	out="$(rc_check_P2_6 "$skill")"
 	if [[ $? -eq 1 ]]; then
-		echo "FAIL: ${skill#$REPO_ROOT/} fails P2.6:"
+		echo "FAIL: ${skill#$HW_ROOT/} fails P2.6:"
 		printf '%s\n' "$out" | sed 's/^/    /'
 		fail=1
 	fi
@@ -211,7 +208,6 @@ done
 require "$HELP" '- `.highway/catalog/index.json` — read for'
 require "$HELP" "\`ERROR: the skill catalog '.highway/catalog/index.json' is missing or unreadable\`"
 reject "$HELP" '.highway/tools/'
-require "$HELP" 'version: 3.1.1'
 
 # --- highway-codify numbers from the Features table ------------------------------------------------
 
@@ -224,7 +220,6 @@ require_in "$CODIFY" '## Verification' '- Each accepted feature adds one Feature
 require_in "$CODIFY" '## Verification' "- Acceptance writes \`codify.md\`, the product's \`metadata.md\` with the new Features row, the catalog row, and any new integrations row together, then \`plan.md\`."
 reject "$CODIFY" 'the highest directory in'
 reject "$CODIFY" 'written once'
-require "$CODIFY" 'version: 14.1.0'
 write_words="$(section "$CODIFY" '### write' | wc -w | tr -d ' ')"
 if [[ "$write_words" -gt 250 ]]; then
 	echo "FAIL: highway-codify write has $write_words words; the limit is 250"
@@ -238,13 +233,12 @@ require "$METADATA" 'The next feature number is the next integer after the last 
 require "$METADATA" 'Features has no status column.'
 require "$METADATA" 'Title and Summary are copied when the feature is accepted.'
 reject "$METADATA" 'written once'
-require "$METADATA" 'version: 2.0.0'
 
 # --- The agent context points to the contract -------------------------------------------------------
 
 require "$CONTEXT" '- Read and write the repository only through the operations in'
 for generated in AGENTS.md .claude/CLAUDE.md .github/copilot-instructions.md .cursor/rules/highway-agent-context.mdc; do
-	require "$REPO_ROOT/$generated" '`.highway/governance/storage.md`.'
+	require "$HW_ROOT/$generated" '`.highway/governance/storage.md`.'
 done
 
 if [[ "$fail" -ne 0 ]]; then

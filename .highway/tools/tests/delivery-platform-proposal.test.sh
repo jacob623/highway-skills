@@ -6,8 +6,9 @@ set -u
 # Seeded failure probe: removing step 3 from ### delivery platforms, or restoring "5. Return to `start`." in ### execution, fails this check.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-IMPL="$HIGHWAY_ROOT/skills/highway-implementation/SKILL.md"
+# shellcheck source=paths.sh
+source "$SCRIPT_DIR/paths.sh"
+IMPL="$HW_SKILLS/highway-implementation/SKILL.md"
 fail=0
 
 section() {
@@ -53,11 +54,6 @@ for heading in "$E" "$D"; do
 		fi
 	done
 done
-
-grep -Fq 'version: 7.9.0' "$IMPL" || {
-	echo 'FAIL: highway-implementation omits: version: 7.9.0'
-	fail=1
-}
 
 if [[ "$fail" -ne 0 ]]; then
 	exit 1

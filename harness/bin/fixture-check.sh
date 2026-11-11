@@ -12,13 +12,14 @@
 set -eu
 
 HERE="$(cd "$(dirname "$0")" && pwd)"
-REPO_ROOT="$(cd "$HERE/../.." && pwd)"
-FIXTURES="$REPO_ROOT/harness/fixtures"
+# shellcheck source=lib/paths.sh
+. "$HERE/lib/paths.sh"
+FIXTURES="$HW_HARNESS/fixtures"
 MAP="$FIXTURES/templates.map"
 STAGES="setup request discovery architecture implementation"
 TAB="$(printf '\t')"
 # shellcheck source=lib/scenario.sh
-. "$HERE/lib/scenario.sh"
+. "$HW_HARNESS/bin/lib/scenario.sh"
 
 if [ "$#" -eq 0 ]; then
 	set -- $STAGES
@@ -101,13 +102,13 @@ for fixture in "$@"; do
 		fi
 	fi
 
-	if [ -d "$view/.highway" ]; then
+	if [ -d "$(hw_at "$view" "$HW_FRAMEWORK")" ]; then
 		problem "$fixture" .highway "fixtures hold project files only; the distribution supplies .highway/"
 	fi
 	while IFS= read -r rel; do
 		template="$(template_for "$rel")"
 		[ -n "$template" ] || continue
-		if ! out="$(bash "$HERE/template-check.sh" "$template" "$view/$rel" 2>&1)"; then
+		if ! out="$(bash "$HW_HARNESS/bin/template-check.sh" "$template" "$view/$rel" 2>&1)"; then
 			while IFS= read -r line; do
 				[ -n "$line" ] && problem "$fixture" "$rel" "$line ($template)"
 			done <<EOF

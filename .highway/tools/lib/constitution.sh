@@ -3,32 +3,34 @@
 # its own -- everything is parsed at run time so the tooling cannot drift from the constitution
 # (per feature 003 (constitution enforcement), Decision 1 and Decision 5).
 
+[[ -n "${HW_ROOT:-}" ]] || source "$(dirname "${BASH_SOURCE[0]}")/paths.sh"
+
 # Default location; callers may override by exporting CONSTITUTION_FILE.
 : "${CONSTITUTION_FILE:=}"
 : "${EXPERIENCE_FILE:=}"
 
-# Resolves the constitution path, preferring an explicit override. Anchored at the framework
-# root, not the repository root, so the document resolves in a tree holding only .highway/.
-# Usage: con_file <highway_root>
+# Resolves the constitution path, preferring an explicit override. Anchored at the governance
+# location the paths helper declares, re-rooted under <root> so a copy of the tree resolves too.
+# Usage: con_file <root>
 con_file() {
-	local highway_root="$1"
+	local root="$1"
 	if [[ -n "$CONSTITUTION_FILE" ]]; then
 		printf '%s' "$CONSTITUTION_FILE"
 	else
-		printf '%s' "$highway_root/governance/constitution.md"
+		printf '%s' "$(hw_at "$root" "$(hw_doc constitution)")"
 	fi
 }
 
-# Resolves the experience standard path. Anchored at the framework root, like con_file.
+# Resolves the experience standard path. Anchored like con_file.
 # Callers choose which documents to load; this one governs what a skill emits, so it applies to
 # skills and not to library content, which emits nothing.
-# Usage: con_experience_file <highway_root>
+# Usage: con_experience_file <root>
 con_experience_file() {
-	local highway_root="$1"
+	local root="$1"
 	if [[ -n "$EXPERIENCE_FILE" ]]; then
 		printf '%s' "$EXPERIENCE_FILE"
 	else
-		printf '%s' "$highway_root/governance/experience-standard.md"
+		printf '%s' "$(hw_at "$root" "$(hw_doc experience-standard)")"
 	fi
 }
 

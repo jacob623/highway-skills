@@ -6,7 +6,8 @@ set -u
 # Seeded failure probe: absence of the batch heading or return of the one-at-a-time bridge fails this check.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+# shellcheck source=paths.sh
+source "$SCRIPT_DIR/paths.sh"
 fail=0
 
 require() {
@@ -37,13 +38,13 @@ check_skill() {
 }
 
 check_skill \
-	"$HIGHWAY_ROOT/skills/highway-controls/SKILL.md" \
+	"$HW_SKILLS/highway-controls/SKILL.md" \
 	"**Here's what I've captured as your controls:**" \
 	'Put `---` between Controls.' \
 	"**Here's what I've captured as your Control:**"
 
 check_skill \
-	"$HIGHWAY_ROOT/skills/highway-nfrs/SKILL.md" \
+	"$HW_SKILLS/highway-nfrs/SKILL.md" \
 	"**Here's what I've captured as your NFRs:**" \
 	'Put `---` between NFRs.' \
 	"**Here's what I've captured as your NFR:**"

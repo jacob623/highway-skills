@@ -8,9 +8,10 @@ set -u
 # Seeded failure probe: this test must detect a defect in each declared class and clean its probe.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-VALIDATE="$HIGHWAY_ROOT/tools/validate-library.sh"
-FIXTURES="$SCRIPT_DIR/fixtures/library"
+# shellcheck source=paths.sh
+source "$SCRIPT_DIR/paths.sh"
+VALIDATE="$HW_TOOLS/validate-library.sh"
+FIXTURES="$HW_FIXTURES/library"
 
 fail=0
 

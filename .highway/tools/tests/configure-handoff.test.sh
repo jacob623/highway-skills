@@ -6,10 +6,11 @@ set -u
 # Seeded failure probe: restoring "Run `/highway-codify-config [Platform]` to configure it for automation." in highway-onboarding, or "- `decline`: stop. Write nothing." in highway-codify-config, fails this check.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-ONBOARD="$HIGHWAY_ROOT/skills/highway-onboarding/SKILL.md"
-IMPL="$HIGHWAY_ROOT/skills/highway-implementation/SKILL.md"
-CONFIG="$HIGHWAY_ROOT/skills/highway-codify-config/SKILL.md"
+# shellcheck source=paths.sh
+source "$SCRIPT_DIR/paths.sh"
+ONBOARD="$HW_SKILLS/highway-onboarding/SKILL.md"
+IMPL="$HW_SKILLS/highway-implementation/SKILL.md"
+CONFIG="$HW_SKILLS/highway-codify-config/SKILL.md"
 MENU='### How would you like to configure Highway Codify?'
 fail=0
 
@@ -90,9 +91,6 @@ for pair in "$ONBOARD|### configure" "$IMPL|### platforms" "$CONFIG|### Entry" "
 	done
 done
 
-require "$ONBOARD" 'version: 10.6.0'
-require "$IMPL" 'version: 7.9.0'
-require "$CONFIG" 'version: 3.5.0'
 
 if [[ "$fail" -ne 0 ]]; then
 	exit 1

@@ -7,19 +7,19 @@ set -u
 # Artifact classes: source-document, generated-artifact
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-REPO_ROOT="$(cd "$HIGHWAY_ROOT/.." && pwd)"
-# shellcheck source=tools/lib/frontmatter.sh
-source "$HIGHWAY_ROOT/tools/lib/frontmatter.sh"
+# shellcheck source=paths.sh
+source "$SCRIPT_DIR/paths.sh"
+# shellcheck source=../lib/frontmatter.sh
+source "$HW_LIB/frontmatter.sh"
 
-MANIFEST="$HIGHWAY_ROOT/tools/.instruction-manifest"
-DIST="$HIGHWAY_ROOT/tools/.distribution-manifest"
-CLAUDE="$REPO_ROOT/.claude/CLAUDE.md"
-COPILOT="$REPO_ROOT/.github/copilot-instructions.md"
+MANIFEST="$HW_TOOLS/.instruction-manifest"
+DIST="$HW_TOOLS/.distribution-manifest"
+CLAUDE="$HW_CLAUDE_MD"
+COPILOT="$HW_COPILOT_MD"
 fail=0
 
 shopt -s nullglob
-sources=( "$HIGHWAY_ROOT"/instructions/*.md )
+sources=( "$HW_INSTRUCTIONS"/*.md )
 shopt -u nullglob
 
 if [[ ${#sources[@]} -eq 0 ]]; then
@@ -51,7 +51,7 @@ include_row() {
 
 while IFS= read -r src; do
 	id="$(basename "$src" .md)"
-	mdc="$REPO_ROOT/.cursor/rules/$id.mdc"
+	mdc="$HW_CURSOR_RULES/$id.mdc"
 	if [[ ! -f "$mdc" ]]; then
 		echo "FAIL: instruction '$id' has no Cursor rule at .cursor/rules/$id.mdc"
 		fail=1
@@ -128,7 +128,7 @@ while IFS= read -r row_id; do
 		else
 			rest=""
 		fi
-		if [[ ! -f "$HIGHWAY_ROOT/instructions/$one.md" ]]; then
+		if [[ ! -f "$HW_INSTRUCTIONS/$one.md" ]]; then
 			echo "FAIL: instruction-manifest id '$one' has no source under .highway/instructions/"
 			fail=1
 		fi
@@ -138,7 +138,7 @@ done < <(awk -F '\t' 'NF { print $2 }' "$MANIFEST")
 while IFS= read -r path; do
 	[[ -n "$path" ]] || continue
 	base="$(basename "$path" .mdc)"
-	if [[ ! -f "$HIGHWAY_ROOT/instructions/$base.md" ]]; then
+	if [[ ! -f "$HW_INSTRUCTIONS/$base.md" ]]; then
 		echo "FAIL: distribution include $path names an instruction with no source"
 		fail=1
 	fi

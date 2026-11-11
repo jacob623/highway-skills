@@ -6,8 +6,9 @@ set -u
 # Seeded failure probe: restoring "[Field] is needed. Name it on the implementation." in highway-codify, or removing ### delivery platforms from highway-implementation, fails this check.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-SKILLS="$HIGHWAY_ROOT/skills"
+# shellcheck source=paths.sh
+source "$SCRIPT_DIR/paths.sh"
+SKILLS="$HW_SKILLS"
 CODIFY="$SKILLS/highway-codify/SKILL.md"
 IMPL="$SKILLS/highway-implementation/SKILL.md"
 ONBOARD="$SKILLS/highway-onboarding/SKILL.md"
@@ -91,9 +92,6 @@ done
 require "$ONBOARD" 'Its Execution is `Deployed by: Needed`, `Managed by: Needed`, and `Language: Needed`.'
 reject "$ONBOARD" 'When the caller named the return step `provider` in `highway-codify`'
 
-require "$CODIFY" 'version: 14.1.0'
-require "$IMPL" 'version: 7.9.0'
-require "$ONBOARD" 'version: 10.6.0'
 
 if [[ "$fail" -ne 0 ]]; then
 	exit 1

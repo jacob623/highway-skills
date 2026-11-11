@@ -6,10 +6,11 @@ set -u
 # Seeded failure probe: a missing default limit fails this check.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-NFRS="$HIGHWAY_ROOT/skills/highway-nfrs/SKILL.md"
-REQUEST="$HIGHWAY_ROOT/skills/highway-request/SKILL.md"
-DISCOVERY="$HIGHWAY_ROOT/skills/highway-discovery/SKILL.md"
+# shellcheck source=paths.sh
+source "$SCRIPT_DIR/paths.sh"
+NFRS="$HW_SKILLS/highway-nfrs/SKILL.md"
+REQUEST="$HW_SKILLS/highway-request/SKILL.md"
+DISCOVERY="$HW_SKILLS/highway-discovery/SKILL.md"
 fail=0
 
 require() {

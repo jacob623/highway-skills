@@ -10,25 +10,26 @@
 set -u
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-# shellcheck source=tools/lib/frontmatter.sh
-source "$SCRIPT_DIR/lib/frontmatter.sh"
-# shellcheck source=tools/lib/frontmatter-contract.sh
-source "$SCRIPT_DIR/lib/frontmatter-contract.sh"
-# shellcheck source=tools/lib/frontmatter-lexicon.sh
-source "$SCRIPT_DIR/lib/frontmatter-lexicon.sh"
-# shellcheck source=tools/lib/schema-validate.sh
-source "$SCRIPT_DIR/lib/schema-validate.sh"
-# shellcheck source=tools/lib/constitution.sh
-source "$SCRIPT_DIR/lib/constitution.sh"
-# shellcheck source=tools/lib/body-scan.sh
-source "$SCRIPT_DIR/lib/body-scan.sh"
-# shellcheck source=tools/lib/rule-checks.sh
-source "$SCRIPT_DIR/lib/rule-checks.sh"
-# shellcheck source=tools/lib/dependency-check.sh
-source "$SCRIPT_DIR/lib/dependency-check.sh"
-# shellcheck source=tools/lib/validation-cache.sh
-source "$SCRIPT_DIR/lib/validation-cache.sh"
+# shellcheck source=lib/paths.sh
+source "$SCRIPT_DIR/lib/paths.sh"
+# shellcheck source=lib/frontmatter.sh
+source "$HW_LIB/frontmatter.sh"
+# shellcheck source=lib/frontmatter-contract.sh
+source "$HW_LIB/frontmatter-contract.sh"
+# shellcheck source=lib/frontmatter-lexicon.sh
+source "$HW_LIB/frontmatter-lexicon.sh"
+# shellcheck source=lib/schema-validate.sh
+source "$HW_LIB/schema-validate.sh"
+# shellcheck source=lib/constitution.sh
+source "$HW_LIB/constitution.sh"
+# shellcheck source=lib/body-scan.sh
+source "$HW_LIB/body-scan.sh"
+# shellcheck source=lib/rule-checks.sh
+source "$HW_LIB/rule-checks.sh"
+# shellcheck source=lib/dependency-check.sh
+source "$HW_LIB/dependency-check.sh"
+# shellcheck source=lib/validation-cache.sh
+source "$HW_LIB/validation-cache.sh"
 
 use_cache=1
 if [[ ${1:-} == "--no-cache" ]]; then
@@ -44,14 +45,14 @@ fi
 skill_dir="${1%/}"
 skill_file="$skill_dir/SKILL.md"
 id="$(basename "$skill_dir")"
-constitution="$(con_file "$HIGHWAY_ROOT")"
+constitution="$(con_file "$HW_ROOT")"
 
 # A skill is subject to both shipping governance documents: the constitution governs its text, the
 # experience standard governs what it emits. validate-library.sh deliberately loads only the
 # former -- library content emits nothing, so experience rules would judge it against obligations
 # it cannot have.
 GOVERNANCE_DOCS=("$constitution")
-experience_standard="$(con_experience_file "$HIGHWAY_ROOT")"
+experience_standard="$(con_experience_file "$HW_ROOT")"
 if [[ -f "$experience_standard" ]]; then
 	GOVERNANCE_DOCS+=("$experience_standard")
 fi
@@ -79,9 +80,9 @@ fi
 cache_dir=""
 cache_key=""
 if (( use_cache )); then
-	cache_dir="$(vc_dir "$(cd "$HIGHWAY_ROOT/.." && pwd)")"
+	cache_dir="$(vc_dir "$HW_ROOT")"
 	if [[ -n "$cache_dir" ]]; then
-		cache_key="$(vc_key "$skill_file" "$HIGHWAY_ROOT")"
+		cache_key="$(vc_key "$skill_file" "$HW_ROOT")"
 		if vc_lookup "$cache_dir" "$cache_key"; then
 			exit 0
 		fi
@@ -95,7 +96,7 @@ fi
 
 # A malformed frontmatter contract manifest is a hard failure before any per-skill check runs
 # (FR-003): a manifest that cannot be trusted must not silently pass every skill.
-manifest_errors="$(fc_validate_manifest "$HIGHWAY_ROOT")"
+manifest_errors="$(fc_validate_manifest "$HW_ROOT")"
 if [[ $? -ne 0 ]]; then
 	printf '%s\n' "$manifest_errors" >&2
 	exit 1
@@ -116,39 +117,39 @@ collect "$(sv_validate_id "$id")"
 collect "$(sv_validate_name "$(fm_get "$skill_file" name || true)" "$id")"
 
 description_value="$(fm_get "$skill_file" description || true)"
-description_errors="$(sv_validate_description "$description_value" "$HIGHWAY_ROOT")"
+description_errors="$(sv_validate_description "$description_value" "$HW_ROOT")"
 collect "$description_errors"
 # The lexicon check is skipped once the length/presence check for a field has already failed, so
 # a single nonsense field (e.g. an over-length placeholder) is reported once, not once per
 # concern (mirrors the existing presence_failed skip-pattern for body-section rule checks below).
 if [[ -z "$description_errors" ]]; then
-	collect "$(fl_check_field "$HIGHWAY_ROOT" "description" "$description_value")"
+	collect "$(fl_check_field "$HW_ROOT" "description" "$description_value")"
 fi
 
 usage_value="$(fm_get "$skill_file" usage || true)"
-usage_errors="$(sv_validate_usage "$usage_value" "$HIGHWAY_ROOT")"
+usage_errors="$(sv_validate_usage "$usage_value" "$HW_ROOT")"
 collect "$usage_errors"
 if [[ -z "$usage_errors" ]]; then
-	collect "$(fl_check_field "$HIGHWAY_ROOT" "usage" "$usage_value")"
+	collect "$(fl_check_field "$HW_ROOT" "usage" "$usage_value")"
 fi
 
-collect "$(sv_validate_compatibility "$(fm_get "$skill_file" compatibility || true)" "$HIGHWAY_ROOT")"
-collect "$(sv_validate_required_keys "$skill_file" "$HIGHWAY_ROOT")"
-collect "$(sv_validate_closed_key_set "$skill_file" "$HIGHWAY_ROOT")"
+collect "$(sv_validate_compatibility "$(fm_get "$skill_file" compatibility || true)" "$HW_ROOT")"
+collect "$(sv_validate_required_keys "$skill_file" "$HW_ROOT")"
+collect "$(sv_validate_closed_key_set "$skill_file" "$HW_ROOT")"
 collect "$(sv_validate_duplicate_keys "$skill_file")"
 
 agent_exceptions="$(fm_get_agent_exceptions "$skill_file")"
 if [[ -n "$agent_exceptions" ]]; then
-	collect "$(printf '%s\n' "$agent_exceptions" | sv_validate_agent_exceptions "$HIGHWAY_ROOT")"
+	collect "$(printf '%s\n' "$agent_exceptions" | sv_validate_agent_exceptions "$HW_ROOT")"
 	while IFS='|' read -r _agent deviation; do
 		[[ -z "$_agent" && -z "$deviation" ]] && continue
-		collect "$(fl_check_field "$HIGHWAY_ROOT" "metadata.agent_exceptions[].deviation" "$deviation")"
+		collect "$(fl_check_field "$HW_ROOT" "metadata.agent_exceptions[].deviation" "$deviation")"
 	done <<< "$agent_exceptions"
 fi
 
 # --- Dependency checks (metadata.dependencies -> .highway/library/) -----------------------
 
-dependency_findings="$(dc_validate_dependencies "$skill_file" "$HIGHWAY_ROOT")"
+dependency_findings="$(dc_validate_dependencies "$skill_file" "$HW_ROOT")"
 if [[ -n "$dependency_findings" ]]; then
 	while IFS= read -r finding; do
 		[[ -z "$finding" ]] && continue

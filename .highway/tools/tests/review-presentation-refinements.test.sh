@@ -6,8 +6,9 @@ set -u
 # Seeded failure probe: restoring the request capture step or a snake-case Solution Constraints label fails this check.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-SKILLS="$HIGHWAY_ROOT/skills"
+# shellcheck source=paths.sh
+source "$SCRIPT_DIR/paths.sh"
+SKILLS="$HW_SKILLS"
 REQUEST="$SKILLS/highway-request/SKILL.md"
 fail=0
 

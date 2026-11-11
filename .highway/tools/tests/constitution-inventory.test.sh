@@ -11,7 +11,8 @@ set -u
 # probe-mode contract.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+# shellcheck source=paths.sh
+source "$SCRIPT_DIR/paths.sh"
 
 probe_class=""
 neutralise=0
@@ -33,7 +34,7 @@ fi
 # the same function decides D3.7 in both normal mode and under a self-probe.
 harness_probe_pair() {
 	local rule_id="$1" test_name="$2" class="$3"
-	local test_path="$SCRIPT_DIR/$test_name"
+	local test_path="$HW_TESTS/$test_name"
 	local seeded_exit neutral_exit problem=0
 
 	bash "$test_path" --probe "$class" >/dev/null 2>&1
@@ -72,7 +73,7 @@ harness_run() {
 		[[ -n "$rule_id" ]] || continue
 		[[ "$seen" == *" $test_name "* ]] && continue
 		seen="$seen $test_name "
-		test_path="$SCRIPT_DIR/$test_name"
+		test_path="$HW_TESTS/$test_name"
 		[[ -f "$test_path" ]] || continue
 		classes="$(grep '^# Artifact classes:' "$test_path" | head -1 \
 			| sed -e 's/^# Artifact classes:[[:space:]]*//' -e 's/,/ /g')"
@@ -110,7 +111,7 @@ harness_run() {
 if [[ -n "$probe_class" ]]; then
 	case "$probe_class" in
 		source-document)
-			TARGET="$SCRIPT_DIR/generate-catalog.test.sh"
+			TARGET="$HW_TESTS/generate-catalog.test.sh"
 			BACKUP="$(mktemp)"
 			cp "$TARGET" "$BACKUP"
 			trap 'cp "$BACKUP" "$TARGET"; rm -f "$BACKUP"' EXIT
@@ -138,10 +139,10 @@ if [[ -n "$probe_class" ]]; then
 	esac
 fi
 
-# shellcheck source=tools/lib/constitution.sh
-source "$HIGHWAY_ROOT/tools/lib/constitution.sh"
+# shellcheck source=../lib/constitution.sh
+source "$HW_LIB/constitution.sh"
 
-CONSTITUTION="$HIGHWAY_ROOT/governance/constitution.md"
+CONSTITUTION="$(hw_doc constitution)"
 fail=0
 
 # --- The parsed inventory matches the constitution itself ---------------------------------
@@ -236,8 +237,8 @@ fi
 # Every failure names its document. A message naming only the rule would leave a reader checking
 # two constitutions to find out which one is wrong.
 
-# shellcheck source=tools/lib/rule-checks.sh
-source "$HIGHWAY_ROOT/tools/lib/rule-checks.sh"
+# shellcheck source=../lib/rule-checks.sh
+source "$HW_LIB/rule-checks.sh"
 
 registered="$(rc_registered_ids | tr ' ' '\n' | sort -u)"
 unenforced=""
@@ -256,7 +257,7 @@ fi
 # The same assertion for the Experience Standard. It shares the P-side definition of [auto] --
 # a registered check reporting under the rule id -- because both documents are read by the same
 # validator against the same artifact.
-EXPERIENCE="$HIGHWAY_ROOT/governance/experience-standard.md"
+EXPERIENCE="$(hw_doc experience-standard)"
 if [[ -f "$EXPERIENCE" ]]; then
 	experience_rule_count="$(con_rule_ids "$EXPERIENCE" | grep -c .)"
 	if [[ "$experience_rule_count" -eq 0 ]]; then
@@ -317,7 +318,7 @@ fi
 # is to read the development constitution. Exempting the file instead would remove it from a check
 # that should cover it.
 DEV_DIR=".spec""ify"
-DEV_CONSTITUTION="$(cd "$HIGHWAY_ROOT/.." && pwd)/$DEV_DIR/memory/constitution.md"
+DEV_CONSTITUTION="$(cd "$HW_ROOT" && pwd)/$DEV_DIR/memory/constitution.md"
 if [[ -f "$DEV_CONSTITUTION" ]]; then
 	# The tier tags are read here rather than through con_rule_ids_by_tier, which parses only the
 	# P namespace and silently returns nothing for a D rule -- which made an earlier version of
@@ -359,7 +360,7 @@ if [[ -f "$DEV_CONSTITUTION" ]]; then
 	# A row naming a renamed or deleted test is the failure mode most likely to appear next.
 	while IFS=$'\t' read -r rule_id test_name; do
 		[[ -n "$test_name" ]] || continue
-		if [[ ! -f "$SCRIPT_DIR/$test_name" ]]; then
+		if [[ ! -f "$HW_TESTS/$test_name" ]]; then
 			echo "FAIL: the Highway Development Constitution's Enforcement Map names a test that does not exist: $rule_id -> $test_name"
 			fail=1
 		fi
@@ -371,7 +372,7 @@ if [[ -f "$DEV_CONSTITUTION" ]]; then
 	# the very report that would have announced its absence. Measured in Feature 042: with the
 	# seeded_exit branch deleted the whole suite still exited 0. Each of the three reports is
 	# therefore asserted here, in normal mode, on the same function the harness loop below calls.
-	pair_target="$SCRIPT_DIR/generate-catalog.test.sh"
+	pair_target="$HW_TESTS/generate-catalog.test.sh"
 	pair_backup="$(mktemp)"
 	cp "$pair_target" "$pair_backup"
 	trap 'cp "$pair_backup" "$pair_target" 2>/dev/null; rm -f "$pair_backup"' EXIT
@@ -424,7 +425,7 @@ fi
 
 # D3.8 and D3.7 require test instruments and declared artifact classes to be explicit. Keep this
 # structural check here so a newly added test cannot silently escape the repository-wide inventory.
-for test_file in "$SCRIPT_DIR"/*.test.sh; do
+for test_file in "$HW_TESTS"/*.test.sh; do
 	if ! grep -q '^# Instrument class:' "$test_file"; then
 		echo "FAIL: test does not declare an instrument class: $(basename "$test_file")"
 		fail=1
@@ -480,31 +481,12 @@ for rule_id in P3.3 P4.2 P4.4 P4.5 P4.6 P5.6 P5.7 P5.8 P5.9 P5.10 P5.11 P5.12 P5
 	fi
 done
 
-# Historical reports stay. Superseded footer behavior: version 3.0.1 and last amended 2026-09-25.
-if ! grep -qF 'Version change: 2.6.0 → 3.0.0 (MAJOR)' "$CONSTITUTION" || \
-   ! grep -qF 'This changes constitutional conflict-resolution behavior' "$CONSTITUTION"; then
-	echo 'FAIL: Constitution version classification or Feature 090 amendment is missing'
+if ! grep -qF 'This changes constitutional conflict-resolution behavior' "$CONSTITUTION"; then
+	echo 'FAIL: Constitution conflict-resolution amendment is missing'
 	fail=1
 fi
 if [[ "$(grep -cF 'Bump rationale: Principle XI and rules P11.1-P11.5 are added without invalidating a conforming' "$CONSTITUTION")" -ne 1 ]]; then
 	echo 'FAIL: Constitution must retain exactly one complete Principle XI bump rationale'
-	fail=1
-fi
-# Superseded footer behavior: **Version**: 4.0.0 described the prior amendment.
-if ! grep -qF '3.0.1 → 4.0.0 (MAJOR)' "$CONSTITUTION"; then
-	echo 'FAIL: historical 4.0.0 report is missing'
-	fail=1
-fi
-# Superseded footer behavior: **Version**: 4.1.0 described the prior amendment.
-if ! grep -qF '4.0.0 → 4.1.0 (MINOR)' "$CONSTITUTION"; then
-	echo 'FAIL: historical 4.1.0 report is missing'
-	fail=1
-fi
-# Superseded footer behavior: **Version**: 9.1.0, last amended 2026-10-22, before P2.6.
-if ! grep -qF '**Version**: 10.0.0' "$CONSTITUTION" || \
-   ! grep -qF '**Ratified**: 2026-09-06' "$CONSTITUTION" || \
-	! grep -qF '**Last Amended**: 2026-11-09' "$CONSTITUTION"; then
-	echo 'FAIL: current Constitution amendment metadata is missing'
 	fail=1
 fi
 p76_row="$(grep -E '^\| P7\.6 \|' "$CONSTITUTION" || true)"

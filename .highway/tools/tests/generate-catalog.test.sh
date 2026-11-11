@@ -54,14 +54,15 @@ if [[ -n "$probe_class" ]]; then
 fi
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-GENERATE="$HIGHWAY_ROOT/tools/generate-catalog.sh"
-FIXTURES="$SCRIPT_DIR/fixtures"
-CATALOG_JSON="$HIGHWAY_ROOT/catalog/index.json"
-CATALOG_MD="$HIGHWAY_ROOT/catalog/index.md"
+# shellcheck source=paths.sh
+source "$SCRIPT_DIR/paths.sh"
+GENERATE="$HW_TOOLS/generate-catalog.sh"
+FIXTURES="$HW_FIXTURES"
+CATALOG_JSON="$HW_CATALOG/index.json"
+CATALOG_MD="$HW_CATALOG/index.md"
 
 TMP_ID="test-catalog-fixture-$$"
-SKILL_DIR="$HIGHWAY_ROOT/skills/$TMP_ID"
+SKILL_DIR="$HW_SKILLS/$TMP_ID"
 BACKUP_DIR="$(mktemp -d)"
 
 fail=0

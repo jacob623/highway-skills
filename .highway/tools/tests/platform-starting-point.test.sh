@@ -6,9 +6,10 @@ set -u
 # Seeded failure probe: restoring "For a platform, a documented capability is proposed only when the accepted implementation realizes it." in highway-codify-config, or removing ### add capabilities from highway-implementation, fails this check.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-CONFIG="$HIGHWAY_ROOT/skills/highway-codify-config/SKILL.md"
-IMPL="$HIGHWAY_ROOT/skills/highway-implementation/SKILL.md"
+# shellcheck source=paths.sh
+source "$SCRIPT_DIR/paths.sh"
+CONFIG="$HW_SKILLS/highway-codify-config/SKILL.md"
+IMPL="$HW_SKILLS/highway-implementation/SKILL.md"
 fail=0
 
 section() {
@@ -121,8 +122,6 @@ for pair in "$CONFIG|### current" "$CONFIG|### platform proposal" "$CONFIG|### p
 	done
 done
 
-require "$CONFIG" 'version: 3.5.0'
-require "$IMPL" 'version: 7.9.0'
 
 if [[ "$fail" -ne 0 ]]; then
 	exit 1

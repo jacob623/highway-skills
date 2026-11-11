@@ -11,6 +11,11 @@
 
 : "${FRONTMATTER_LEXICON_FILE:=}"
 
+[[ -n "${HW_ROOT:-}" ]] || source "$(dirname "${BASH_SOURCE[0]}")/paths.sh"
+# Locations relative to a root, resolved once so the per-word paths below need no subshell.
+FL_LEXICON_REL="$(hw_rel "$(hw_doc frontmatter-lexicon)")"
+FL_SKILLS_REL="$(hw_rel "$HW_SKILLS")"
+
 # --- Caches -------------------------------------------------------------------------------------
 # Membership is answered from a newline-delimited blob held in memory rather than by running a
 # matcher per word. The word list is small (under 2 KB) and every caller checks tens of words
@@ -23,23 +28,24 @@
 FL_PATH=""          # scratch output of fl__path; not part of the public interface
 FL_LEX_PATH=""      # lexicon path the blob was built from, empty when unloaded
 FL_LEX_BLOB=""      # lexicon words, newline-delimited and newline-bracketed
-FL_RULE_ROOT=""     # framework root the rule blob was built from
+FL_RULE_ROOT=""     # repository root the rule blob was built from
 FL_RULE_LOADED=0    # separate from the blob: an empty rule set is a legitimate loaded state
 FL_RULE_BLOB=""     # rule ids, newline-delimited and newline-bracketed
 FL_LC=""            # scratch output of fl__lc; returned via a global to avoid a subshell
 
 # Resolves the lexicon path into FL_PATH without forking. Internal.
-# Usage: fl__path <highway_root>
+# Usage: fl__path <root>
 fl__path() {
 	if [[ -n "$FRONTMATTER_LEXICON_FILE" ]]; then
 		FL_PATH="$FRONTMATTER_LEXICON_FILE"
 	else
-		FL_PATH="$1/library/knowledge/frontmatter-lexicon.txt"
+		FL_PATH="$1/$FL_LEXICON_REL"
 	fi
 }
 
-# Resolves the lexicon path, preferring an explicit override. Anchored at the framework root.
-# Usage: fl_file <highway_root>
+# Resolves the lexicon path, preferring an explicit override. Anchored at the location the paths
+# helper declares, under <root>.
+# Usage: fl_file <root>
 fl_file() {
 	fl__path "$1"
 	printf '%s' "$FL_PATH"
@@ -47,7 +53,7 @@ fl_file() {
 
 # Loads the lexicon into FL_LEX_BLOB, bracketed by newlines so that a whole-word match is an
 # ordinary substring test. Returns 1 if the lexicon is missing. Internal.
-# Usage: fl__lex_load <highway_root>
+# Usage: fl__lex_load <root>
 fl__lex_load() {
 	fl__path "$1"
 	[[ -n "$FL_LEX_PATH" && "$FL_PATH" == "$FL_LEX_PATH" ]] && return 0
@@ -65,14 +71,14 @@ fl__lex_load() {
 # FL_RULE_BLOB. Loaded lazily: most fields contain no rule-id-shaped token at all, and paying for
 # this read unconditionally costs about a third of the per-invocation budget for nothing.
 # Internal.
-# Usage: fl__rule_load <highway_root>
+# Usage: fl__rule_load <root>
 fl__rule_load() {
-	local highway_root="$1" con exp
-	[[ $FL_RULE_LOADED -eq 1 && "$highway_root" == "$FL_RULE_ROOT" ]] && return 0
-	con="$(con_file "$highway_root")"
-	exp="$(con_experience_file "$highway_root")"
+	local root="$1" con exp
+	[[ $FL_RULE_LOADED -eq 1 && "$root" == "$FL_RULE_ROOT" ]] && return 0
+	con="$(con_file "$root")"
+	exp="$(con_experience_file "$root")"
 	FL_RULE_BLOB=$'\n'"$(cat "$con" "$exp" 2>/dev/null | sed -n 's/^| *\([A-Z][0-9]*\.[0-9]*\) *|.*/\1/p')"$'\n'
-	FL_RULE_ROOT="$highway_root"
+	FL_RULE_ROOT="$root"
 	FL_RULE_LOADED=1
 	return 0
 }
@@ -105,10 +111,10 @@ fl__lc() {
 
 # Validates the lexicon shape: sorted, one lowercase alphanumeric/hyphen word per line, no
 # duplicate lines. Prints one "ERROR: [SCHEMA] ..." line per problem and returns 1 if malformed.
-# Usage: fl_validate_lexicon <highway_root>
+# Usage: fl_validate_lexicon <root>
 fl_validate_lexicon() {
-	local highway_root="$1" file ok=0
-	file="$(fl_file "$highway_root")"
+	local root="$1" file ok=0
+	file="$(fl_file "$root")"
 	if [[ ! -f "$file" ]]; then
 		echo "ERROR: [SCHEMA] frontmatter lexicon not found at '$file'"
 		return 1
@@ -133,7 +139,7 @@ fl_validate_lexicon() {
 }
 
 # Returns 0 if word is present in the lexicon, 1 otherwise. word must already be lowercase.
-# Usage: fl_word_in_lexicon <highway_root> <word>
+# Usage: fl_word_in_lexicon <root> <word>
 fl_word_in_lexicon() {
 	fl__lex_load "$1" || return 1
 	# "$2" must stay quoted. Unquoted, a value of '*' is expanded as a pattern and matches any
@@ -145,28 +151,28 @@ fl_word_in_lexicon() {
 # Constitution or the Experience Standard. The development constitution is deliberately never
 # consulted here: this file ships to users (per D1.1, a shipped artifact must not reference a
 # development-only path), and a skill has no legitimate reason to cite a development-process rule.
-# Usage: fl_resolve_rule_id <highway_root> <token>
+# Usage: fl_resolve_rule_id <root> <token>
 fl_resolve_rule_id() {
-	local highway_root="$1" token="$2"
+	local root="$1" token="$2"
 	[[ "$token" =~ ^[A-Z][0-9]+\.[0-9]+$ ]] || return 1
-	fl__rule_load "$highway_root"
+	fl__rule_load "$root"
 	# "$token" must stay quoted, for the same reason as in fl_word_in_lexicon.
 	[[ "$FL_RULE_BLOB" == *$'\n'"$token"$'\n'* ]]
 }
 
 # Returns 0 if token is a skill id (kebab-case) that exists as a skill directory.
-# Usage: fl_resolve_skill_id <highway_root> <token>
+# Usage: fl_resolve_skill_id <root> <token>
 fl_resolve_skill_id() {
-	local highway_root="$1" token="$2"
+	local root="$1" token="$2"
 	[[ "$token" =~ ^[a-z0-9]+(-[a-z0-9]+)*$ ]] || return 1
-	[[ -d "$highway_root/skills/$token" ]]
+	[[ -d "$root/$FL_SKILLS_REL/$token" ]]
 }
 
 # Checks one free-form field value. Prints one "ERROR: [SCHEMA] ..." line per unrecognized word
 # and returns 1 if any word is unrecognized, or returns 0 silently if every word is accepted.
-# Usage: fl_check_field <highway_root> <field_label> <value>
+# Usage: fl_check_field <root> <field_label> <value>
 fl_check_field() {
-	local highway_root="$1" field_label="$2" value="$3" ok=0 raw clean lower noapos words part
+	local root="$1" field_label="$2" value="$3" ok=0 raw clean lower noapos words part
 	local -a raw_tokens
 
 	[[ -z "$value" ]] && return 0
@@ -183,10 +189,10 @@ fl_check_field() {
 		while [[ -n "$clean" && "$clean" == *[^A-Za-z0-9] ]]; do clean="${clean%?}"; done
 		[[ -z "$clean" ]] && continue
 
-		if fl_resolve_rule_id "$highway_root" "$clean"; then
+		if fl_resolve_rule_id "$root" "$clean"; then
 			continue
 		fi
-		if fl_resolve_skill_id "$highway_root" "$clean"; then
+		if fl_resolve_skill_id "$root" "$clean"; then
 			continue
 		fi
 
@@ -203,7 +209,7 @@ fl_check_field() {
 		for ((j = 0; j < part_count; j++)); do
 			part="${parts[$j]}"
 			[[ -z "$part" ]] && continue
-			if ! fl_word_in_lexicon "$highway_root" "$part"; then
+			if ! fl_word_in_lexicon "$root" "$part"; then
 				echo "ERROR: [SCHEMA] field '${field_label}' contains unrecognized word '${part}'"
 				ok=1
 			fi

@@ -8,24 +8,27 @@
 # "yes" or "no"; constraint is "-", "kebab-case", "length:MIN-MAX", "enum:v1,v2,...", or
 # "semver".
 
+[[ -n "${HW_ROOT:-}" ]] || source "$(dirname "${BASH_SOURCE[0]}")/paths.sh"
+
 : "${FRONTMATTER_CONTRACT_FILE:=}"
 
-# Resolves the manifest path, preferring an explicit override. Anchored at the framework root.
-# Usage: fc_file <highway_root>
+# Resolves the manifest path, preferring an explicit override. Anchored at the location the paths
+# helper declares, under <root>.
+# Usage: fc_file <root>
 fc_file() {
-	local highway_root="$1"
+	local root="$1"
 	if [[ -n "$FRONTMATTER_CONTRACT_FILE" ]]; then
 		printf '%s' "$FRONTMATTER_CONTRACT_FILE"
 	else
-		printf '%s' "$highway_root/tools/.frontmatter-contract"
+		printf '%s' "$(hw_at "$root" "$HW_TOOLS")/.frontmatter-contract"
 	fi
 }
 
 # Prints each non-comment, non-blank manifest line, unmodified (still TAB-delimited).
-# Usage: fc_rows <highway_root>
+# Usage: fc_rows <root>
 fc_rows() {
-	local highway_root="$1" file
-	file="$(fc_file "$highway_root")"
+	local root="$1" file
+	file="$(fc_file "$root")"
 	[[ -f "$file" ]] || return 0
 	awk -F'\t' '!/^#/ && NF > 0 { print }' "$file"
 }
@@ -33,10 +36,10 @@ fc_rows() {
 # Validates the manifest shape. Prints one "ERROR: [SCHEMA] ..." line per problem and returns 1
 # if the manifest is malformed; prints nothing and returns 0 if it is well-formed. A malformed
 # manifest is a hard failure -- callers must not silently fall back to treating it as empty.
-# Usage: fc_validate_manifest <highway_root>
+# Usage: fc_validate_manifest <root>
 fc_validate_manifest() {
-	local highway_root="$1" file ok=0
-	file="$(fc_file "$highway_root")"
+	local root="$1" file ok=0
+	file="$(fc_file "$root")"
 	if [[ ! -f "$file" ]]; then
 		echo "ERROR: [SCHEMA] frontmatter contract manifest not found at '$file'"
 		return 1
@@ -54,10 +57,10 @@ fc_validate_manifest() {
 			echo "ERROR: [SCHEMA] frontmatter contract manifest: invalid constraint '$constraint' for key '$key'"
 			ok=1
 		fi
-	done < <(fc_rows "$highway_root")
+	done < <(fc_rows "$root")
 
 	local dup
-	dup="$(fc_rows "$highway_root" | awk -F'\t' '{print $1"\t"$2}' | sort | uniq -d)"
+	dup="$(fc_rows "$root" | awk -F'\t' '{print $1"\t"$2}' | sort | uniq -d)"
 	if [[ -n "$dup" ]]; then
 		while IFS= read -r pair; do
 			[[ -z "$pair" ]] && continue
@@ -69,22 +72,22 @@ fc_validate_manifest() {
 }
 
 # Prints the declared key names for a scope (regardless of requiredness), one per line.
-# Usage: fc_declared_keys <highway_root> <scope>
+# Usage: fc_declared_keys <root> <scope>
 fc_declared_keys() {
-	local highway_root="$1" scope="$2"
-	fc_rows "$highway_root" | awk -F'\t' -v scope="$scope" '$1 == scope { print $2 }'
+	local root="$1" scope="$2"
+	fc_rows "$root" | awk -F'\t' -v scope="$scope" '$1 == scope { print $2 }'
 }
 
 # Prints the required key names for a scope, one per line.
-# Usage: fc_required_keys <highway_root> <scope>
+# Usage: fc_required_keys <root> <scope>
 fc_required_keys() {
-	local highway_root="$1" scope="$2"
-	fc_rows "$highway_root" | awk -F'\t' -v scope="$scope" '$1 == scope && $3 == "yes" { print $2 }'
+	local root="$1" scope="$2"
+	fc_rows "$root" | awk -F'\t' -v scope="$scope" '$1 == scope && $3 == "yes" { print $2 }'
 }
 
 # Prints the constraint token declared for a scope+key, or nothing if undeclared.
-# Usage: fc_constraint <highway_root> <scope> <key>
+# Usage: fc_constraint <root> <scope> <key>
 fc_constraint() {
-	local highway_root="$1" scope="$2" key="$3"
-	fc_rows "$highway_root" | awk -F'\t' -v scope="$scope" -v key="$key" '$1 == scope && $2 == key { print $4; exit }'
+	local root="$1" scope="$2" key="$3"
+	fc_rows "$root" | awk -F'\t' -v scope="$scope" -v key="$key" '$1 == scope && $2 == key { print $4; exit }'
 }

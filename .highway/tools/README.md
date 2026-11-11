@@ -62,10 +62,31 @@ The cache is an optimisation and never a source of truth: deleting the directory
 but runtime. `tests/validation-cache.test.sh` holds the assertions, including that breaking a
 previously-cached skill still fails with its original error.
 
+### Paths helper
+
+`lib/paths.sh` is the one declaration of where every repository location lives: the skills,
+tools, tests, fixtures, catalog, instructions, library, governance, harness, and agent trees, as
+`HW_*` variables, plus each output template and governance or knowledge document by name. Moving a
+location means editing its line there and nothing else.
+
+- Tools source it directly. Tests source `tests/paths.sh` and harness scripts source
+  `harness/bin/lib/paths.sh`; each shim is one `source` line.
+- `hw_template <name>` and `hw_doc <name>` return one template or document. Use them rather than
+  joining a file name to a folder.
+- `hw_at <root> <path>` re-roots a location under a copied tree, and `hw_rel <path>` makes it
+  repository-relative. Libraries take a repository root and re-root through `hw_at`, so a test
+  can point them at a copy.
+- `hw_paths_init [root]` resets every `HW_*` variable for another root.
+
+`tests/path-construction.test.sh` fails when a script under `.highway/tools/` or `harness/bin/`
+builds a path from a root variable, climbs from its own folder, or joins a named template or
+document to its folder (development constitution D2.5).
+
 ### Libraries
 
 | File | Responsibility |
 |---|---|
+| `lib/paths.sh` | The paths helper described above. |
 | `lib/frontmatter.sh` | Reads the YAML frontmatter block and body of a `SKILL.md`, including `metadata.dependencies`. |
 | `lib/constitution.sh` | Parses the rule inventory, rule fields, and token lists from the constitution. |
 | `lib/body-scan.sh` | Annotates each body line with its section, fenced-block state, and list membership, so no check parses Markdown for itself. |
@@ -186,9 +207,10 @@ declarative agent config table — never an edit to any file under `.highway/ski
 feature 009 (skill id namespace alignment)
 for the full contract. Procedure:
 
-1. Add one row to the `AGENT_IDS` / `AGENT_TARGET_TEMPLATES` / `AGENT_TRANSFORMS` arrays at the
-   top of `.highway/tools/generate-agent-adapters.sh` (agent id, target path pattern, transform
-   name).
+1. Declare the agent's skills tree in `lib/paths.sh` as an `HW_AGENT_*` variable, then add one
+   entry to each of the `AGENT_IDS` / `AGENT_TARGET_TEMPLATES` / `AGENT_TRANSFORMS` arrays in
+   `.highway/tools/generate-agent-adapters.sh` (agent id, target path pattern built with `hw_rel`
+   from that variable, transform name).
 2. If the new agent needs a transform other than `identity-copy`, implement that transform as a
    new function in the script's transform-dispatch section (mirroring `mdc-transform`).
 3. Run `.highway/tools/generate-agent-adapters.sh` and confirm the new target path is produced

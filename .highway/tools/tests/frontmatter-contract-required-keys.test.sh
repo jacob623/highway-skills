@@ -17,10 +17,11 @@ set -u
 # this test must then report the expected missing-field finding was absent.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-VALIDATE="$HIGHWAY_ROOT/tools/validate-skill.sh"
-FIXTURES="$SCRIPT_DIR/fixtures"
-MANIFEST="$HIGHWAY_ROOT/tools/.frontmatter-contract"
+# shellcheck source=paths.sh
+source "$SCRIPT_DIR/paths.sh"
+VALIDATE="$HW_TOOLS/validate-skill.sh"
+FIXTURES="$HW_FIXTURES"
+MANIFEST="$HW_TOOLS/.frontmatter-contract"
 TARGET="$FIXTURES/valid-skill"
 
 fail=0
@@ -39,7 +40,7 @@ PROBE_KEY="contract-proof-probe-key"
 
 # --- The probe key must genuinely be absent everywhere, or the proof proves nothing -------------
 
-if grep -rqF "$PROBE_KEY" "$HIGHWAY_ROOT/skills" "$FIXTURES" 2>/dev/null; then
+if grep -rqF "$PROBE_KEY" "$HW_SKILLS" "$FIXTURES" 2>/dev/null; then
 	echo "FAIL: probe key '$PROBE_KEY' already appears in a skill or fixture; the proof would be meaningless"
 	fail=1
 fi

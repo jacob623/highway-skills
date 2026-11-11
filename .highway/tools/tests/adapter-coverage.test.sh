@@ -25,15 +25,15 @@ set -u
 # Feature 041's.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-REPO_ROOT="$(cd "$HIGHWAY_ROOT/.." && pwd)"
-# shellcheck source=tools/lib/distribution.sh
-source "$HIGHWAY_ROOT/tools/lib/distribution.sh"
+# shellcheck source=paths.sh
+source "$SCRIPT_DIR/paths.sh"
+# shellcheck source=../lib/distribution.sh
+source "$HW_LIB/distribution.sh"
 fail=0
 
-CATALOG="$HIGHWAY_ROOT/catalog/index.json"
-ADAPTER_MANIFEST="$HIGHWAY_ROOT/tools/.adapter-manifest"
-DIST_MANIFEST="$HIGHWAY_ROOT/tools/.distribution-manifest"
+CATALOG="$HW_CATALOG/index.json"
+ADAPTER_MANIFEST="$HW_TOOLS/.adapter-manifest"
+DIST_MANIFEST="$HW_TOOLS/.distribution-manifest"
 
 probe_class=""
 neutralise=0
@@ -71,7 +71,7 @@ adapter_files() {
 }
 
 skill_exists() {
-	[[ -f "$HIGHWAY_ROOT/skills/$1/SKILL.md" ]]
+	[[ -f "$HW_SKILLS/$1/SKILL.md" ]]
 }
 
 catalog_ids() {
@@ -89,7 +89,7 @@ check_skill_correspondence() {
 	fi
 
 	while IFS= read -r rel; do
-		if [[ ! -f "$REPO_ROOT/$rel" ]]; then
+		if [[ ! -f "$HW_ROOT/$rel" ]]; then
 			echo "FAIL: skill '$skill_id' has no adapter at $rel"
 			ok=1
 		fi
@@ -162,7 +162,7 @@ orphan_problems() {
 			.github/*|.claude/*|.cursor/*|.agents/*) ;;
 			*) continue ;;  # fixture agent trees are not declared agent trees
 		esac
-		if [[ ! -f "$REPO_ROOT/$rel" ]]; then
+		if [[ ! -f "$HW_ROOT/$rel" ]]; then
 			echo "FAIL: adapter manifest names $rel, which is not on disk"
 			ok=1
 		fi
@@ -177,8 +177,8 @@ orphan_problems() {
 skill_currency_ok() {
 	local skill_id="$1" currency_root="$2" ok=0
 	while IFS= read -r rel; do
-		[[ -f "$REPO_ROOT/$rel" ]] || continue
-		if ! diff "$REPO_ROOT/$rel" "$currency_root/$rel" >/dev/null 2>&1; then
+		[[ -f "$HW_ROOT/$rel" ]] || continue
+		if ! diff "$HW_ROOT/$rel" "$currency_root/$rel" >/dev/null 2>&1; then
 			echo "FAIL: $rel is stale; regenerating skill '$skill_id' produces a different adapter"
 			ok=1
 		fi
@@ -195,7 +195,7 @@ if [[ -n "$probe_class" ]]; then
 			cp "$CATALOG" "$backup_dir/catalog.json"
 			cp "$ADAPTER_MANIFEST" "$backup_dir/adapter-manifest"
 			cp "$DIST_MANIFEST" "$backup_dir/dist-manifest"
-			GH_FILE="$REPO_ROOT/.github/skills/$SKILL_ID/SKILL.md"
+			GH_FILE="$HW_AGENT_COPILOT/$SKILL_ID/SKILL.md"
 			cp "$GH_FILE" "$backup_dir/gh-skill.md"
 			# Returns all four artifacts to their recorded state, so each defect below is the
 			# only one present when its check runs.
@@ -276,7 +276,7 @@ if [[ -n "$probe_class" ]]; then
 			exit 0
 			;;
 		source-document)
-			SRC_FILE="$HIGHWAY_ROOT/skills/$SKILL_ID/SKILL.md"
+			SRC_FILE="$HW_SKILLS/$SKILL_ID/SKILL.md"
 			SRC_BACKUP="$(mktemp)"
 			cp "$SRC_FILE" "$SRC_BACKUP"
 			currency_tmp=""
@@ -290,12 +290,12 @@ if [[ -n "$probe_class" ]]; then
 				sed -i.bak "s/^description: .*/description: probe-perturbed-$$ description/" "$SRC_FILE" && rm -f "$SRC_FILE.bak"
 			fi
 			currency_tmp="$(mktemp -d)"
-			cp -R "$HIGHWAY_ROOT" "$currency_tmp/.highway"
+			cp -R "$HW_FRAMEWORK" "$(hw_at "$currency_tmp" "$HW_FRAMEWORK")"
 			(
 				cd "$currency_tmp" || exit 1
-				.highway/tools/generate-catalog.sh
-				.highway/tools/generate-agent-adapters.sh
-				.highway/tools/generate-instructions.sh
+				"$(hw_at "$currency_tmp" "$HW_TOOLS")/generate-catalog.sh"
+				"$(hw_at "$currency_tmp" "$HW_TOOLS")/generate-agent-adapters.sh"
+				"$(hw_at "$currency_tmp" "$HW_TOOLS")/generate-instructions.sh"
 			) >/dev/null 2>&1
 			if skill_currency_ok "$SKILL_ID" "$currency_tmp" >/dev/null 2>&1; then
 				exit 0
@@ -310,7 +310,7 @@ fi
 # D4.5 -- every skill present has its generated artifacts.
 # ---------------------------------------------------------------------------
 skill_count=0
-for skill_dir in "$HIGHWAY_ROOT"/skills/*/; do
+for skill_dir in "$HW_SKILLS"/*/; do
 	[[ -f "$skill_dir/SKILL.md" ]] || continue
 	skill_id="$(basename "$skill_dir")"
 	skill_count=$((skill_count + 1))
@@ -349,41 +349,41 @@ cleanup() {
 trap cleanup EXIT
 
 CURRENCY_TMP="$(mktemp -d)"
-cp -R "$HIGHWAY_ROOT" "$CURRENCY_TMP/.highway"
+cp -R "$HW_FRAMEWORK" "$(hw_at "$CURRENCY_TMP" "$HW_FRAMEWORK")"
 (
 	cd "$CURRENCY_TMP" || exit 1
-	.highway/tools/generate-catalog.sh
-	.highway/tools/generate-agent-adapters.sh
-	.highway/tools/generate-instructions.sh
+	"$(hw_at "$CURRENCY_TMP" "$HW_TOOLS")/generate-catalog.sh"
+	"$(hw_at "$CURRENCY_TMP" "$HW_TOOLS")/generate-agent-adapters.sh"
+	"$(hw_at "$CURRENCY_TMP" "$HW_TOOLS")/generate-instructions.sh"
 ) >/dev/null 2>&1
 
-if ! diff "$HIGHWAY_ROOT/catalog/index.json" "$CURRENCY_TMP/.highway/catalog/index.json" >/dev/null 2>&1; then
+if ! diff "$HW_CATALOG/index.json" "$(hw_at "$CURRENCY_TMP" "$HW_CATALOG")/index.json" >/dev/null 2>&1; then
 	echo "FAIL: .highway/catalog/index.json is stale; regenerating from current sources produces a different file"
 	fail=1
 fi
 
-for skill_dir in "$HIGHWAY_ROOT"/skills/*/; do
+for skill_dir in "$HW_SKILLS"/*/; do
 	[[ -f "$skill_dir/SKILL.md" ]] || continue
 	skill_id="$(basename "$skill_dir")"
 	skill_currency_ok "$skill_id" "$CURRENCY_TMP" || fail=1
 done
 
-if ! diff "$HIGHWAY_ROOT/tools/.instruction-manifest" "$CURRENCY_TMP/.highway/tools/.instruction-manifest" >/dev/null 2>&1; then
+if ! diff "$HW_TOOLS/.instruction-manifest" "$(hw_at "$CURRENCY_TMP" "$HW_TOOLS")/.instruction-manifest" >/dev/null 2>&1; then
 	echo "FAIL: .highway/tools/.instruction-manifest is stale; regenerating from current sources produces a different file"
 	fail=1
 fi
 shopt -s nullglob
-for instruction_src in "$HIGHWAY_ROOT"/instructions/*.md; do
+for instruction_src in "$HW_INSTRUCTIONS"/*.md; do
 	instruction_id="$(basename "$instruction_src" .md)"
 	instruction_rel=".cursor/rules/$instruction_id.mdc"
-	if ! diff "$REPO_ROOT/$instruction_rel" "$CURRENCY_TMP/$instruction_rel" >/dev/null 2>&1; then
+	if ! diff "$HW_ROOT/$instruction_rel" "$CURRENCY_TMP/$instruction_rel" >/dev/null 2>&1; then
 		echo "FAIL: $instruction_rel is stale; regenerating from current sources produces a different file"
 		fail=1
 	fi
 done
 shopt -u nullglob
 for instruction_rel in .claude/CLAUDE.md .github/copilot-instructions.md; do
-	if ! diff "$REPO_ROOT/$instruction_rel" "$CURRENCY_TMP/$instruction_rel" >/dev/null 2>&1; then
+	if ! diff "$HW_ROOT/$instruction_rel" "$CURRENCY_TMP/$instruction_rel" >/dev/null 2>&1; then
 		echo "FAIL: $instruction_rel is stale; regenerating from current sources produces a different file"
 		fail=1
 	fi

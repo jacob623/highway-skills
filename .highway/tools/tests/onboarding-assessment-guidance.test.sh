@@ -6,9 +6,10 @@ set -u
 # Seeded failure probe: restoring the save-or-discard line or the separate open list fails this check.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-ONBOARDING="$HIGHWAY_ROOT/skills/highway-onboarding/SKILL.md"
-ASSESSMENT="$HIGHWAY_ROOT/skills/highway-assessment/SKILL.md"
+# shellcheck source=paths.sh
+source "$SCRIPT_DIR/paths.sh"
+ONBOARDING="$HW_SKILLS/highway-onboarding/SKILL.md"
+ASSESSMENT="$HW_SKILLS/highway-assessment/SKILL.md"
 fail=0
 
 require() {

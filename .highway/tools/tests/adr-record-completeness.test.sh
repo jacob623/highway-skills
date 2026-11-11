@@ -6,9 +6,10 @@ set -u
 # Seeded failure probe: restoring Selection Status or a handoff Selected Option in the ADR template fails this check.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-SKILLS="$HIGHWAY_ROOT/skills"
-OUTPUT="$HIGHWAY_ROOT/library/templates/output"
+# shellcheck source=paths.sh
+source "$SCRIPT_DIR/paths.sh"
+SKILLS="$HW_SKILLS"
+OUTPUT="$HW_OUTPUT_TEMPLATES"
 RECORD="$OUTPUT/adr-record.md"
 CATALOG="$OUTPUT/adr-catalog.md"
 ADR="$SKILLS/highway-adr/SKILL.md"

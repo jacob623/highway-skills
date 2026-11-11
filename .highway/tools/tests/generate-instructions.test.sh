@@ -6,22 +6,22 @@ set -u
 # Artifact classes: generated-artifact
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-REPO_ROOT="$(cd "$HIGHWAY_ROOT/.." && pwd)"
-# shellcheck source=tools/lib/frontmatter.sh
-source "$HIGHWAY_ROOT/tools/lib/frontmatter.sh"
+# shellcheck source=paths.sh
+source "$SCRIPT_DIR/paths.sh"
+# shellcheck source=../lib/frontmatter.sh
+source "$HW_LIB/frontmatter.sh"
 
-GENERATE="$HIGHWAY_ROOT/tools/generate-instructions.sh"
-MANIFEST="$HIGHWAY_ROOT/tools/.instruction-manifest"
+GENERATE="$HW_TOOLS/generate-instructions.sh"
+MANIFEST="$HW_TOOLS/.instruction-manifest"
 TMP_ID="test-instruction-$$"
-SRC="$HIGHWAY_ROOT/instructions/$TMP_ID.md"
-CURSOR="$REPO_ROOT/.cursor/rules/$TMP_ID.mdc"
-CLAUDE="$REPO_ROOT/.claude/CLAUDE.md"
-COPILOT="$REPO_ROOT/.github/copilot-instructions.md"
-AGENTS="$REPO_ROOT/AGENTS.md"
-SPECKIT_CURSOR="$REPO_ROOT/.cursor/skills/speckit-tasks/SKILL.md"
-SPECKIT_GITHUB="$REPO_ROOT/.github/skills/speckit-tasks/SKILL.md"
-ADAPTER_MANIFEST="$HIGHWAY_ROOT/tools/.adapter-manifest"
+SRC="$HW_INSTRUCTIONS/$TMP_ID.md"
+CURSOR="$HW_CURSOR_RULES/$TMP_ID.mdc"
+CLAUDE="$HW_CLAUDE_MD"
+COPILOT="$HW_COPILOT_MD"
+AGENTS="$HW_AGENTS_MD"
+SPECKIT_CURSOR="$HW_AGENT_CURSOR/speckit-tasks/SKILL.md"
+SPECKIT_GITHUB="$HW_AGENT_COPILOT/speckit-tasks/SKILL.md"
+ADAPTER_MANIFEST="$HW_TOOLS/.adapter-manifest"
 
 fail=0
 WORK="$(mktemp -d)"
@@ -78,7 +78,7 @@ if [[ ! -f "$GENERATE" ]]; then
 	exit 1
 fi
 
-mkdir -p "$HIGHWAY_ROOT/instructions"
+mkdir -p "$HW_INSTRUCTIONS"
 cat >"$SRC" <<EOF
 ---
 name: $TMP_ID
@@ -145,7 +145,7 @@ elif ! cmp -s "$WORK/body" "$CLAUDE"; then
 	# Equality to this body holds only when it is the only instruction. With a permanent
 	# instruction present, the merged file is the join and must still contain this body.
 	perm=0
-	for existing in "$HIGHWAY_ROOT"/instructions/*.md; do
+	for existing in "$HW_INSTRUCTIONS"/*.md; do
 		[[ "$(basename "$existing")" == "$TMP_ID.md" ]] && continue
 		[[ -f "$existing" ]] || continue
 		perm=1
@@ -207,17 +207,17 @@ cp "$COPILOT" "$CLAUDE"
 # Rejection and the empty set run in a copy so a bad source cannot touch this repository.
 make_copy() {
 	local dest="$1"
-	mkdir -p "$dest/.highway/tools/lib" "$dest/.highway/instructions" "$dest/.claude"
-	cp "$GENERATE" "$dest/.highway/tools/generate-instructions.sh"
-	cp "$HIGHWAY_ROOT/tools/lib/frontmatter.sh" "$dest/.highway/tools/lib/frontmatter.sh"
-	printf 'sentinel\n' >"$dest/.claude/CLAUDE.md"
+	mkdir -p "$(hw_at "$dest" "$HW_LIB")" "$(hw_at "$dest" "$HW_INSTRUCTIONS")" "$(dirname "$(hw_at "$dest" "$HW_CLAUDE_MD")")"
+	cp "$GENERATE" "$(hw_at "$dest" "$HW_TOOLS")/generate-instructions.sh"
+	cp "$HW_LIB/frontmatter.sh" "$HW_LIB/paths.sh" "$(hw_at "$dest" "$HW_LIB")/"
+	printf 'sentinel\n' >"$(hw_at "$dest" "$HW_CLAUDE_MD")"
 }
 
 expect_reject() {
 	local dest="$1" label="$2" named="$3"
 	local before
-	before="$(file_hash "$dest/.claude/CLAUDE.md")"
-	if "$dest/.highway/tools/generate-instructions.sh" >"$dest/run.log" 2>&1; then
+	before="$(file_hash "$(hw_at "$dest" "$HW_CLAUDE_MD")")"
+	if "$(hw_at "$dest" "$HW_TOOLS")/generate-instructions.sh" >"$dest/run.log" 2>&1; then
 		echo "FAIL: $label was accepted"
 		fail=1
 		return
@@ -227,11 +227,11 @@ expect_reject() {
 		sed 's/^/    /' "$dest/run.log"
 		fail=1
 	fi
-	if [[ "$before" != "$(file_hash "$dest/.claude/CLAUDE.md")" ]]; then
+	if [[ "$before" != "$(file_hash "$(hw_at "$dest" "$HW_CLAUDE_MD")")" ]]; then
 		echo "FAIL: $label wrote .claude/CLAUDE.md"
 		fail=1
 	fi
-	if find "$dest/.cursor" -name '*.mdc' -type f 2>/dev/null | grep -q .; then
+	if find "$(hw_at "$dest" "$HW_CURSOR_RULES")" -name '*.mdc' -type f 2>/dev/null | grep -q .; then
 		echo "FAIL: $label wrote a Cursor rule"
 		fail=1
 	fi
@@ -239,7 +239,7 @@ expect_reject() {
 
 bad_name="$WORK/bad-name"
 make_copy "$bad_name"
-cat >"$bad_name/.highway/instructions/sample-instruction.md" <<'EOF'
+cat >"$(hw_at "$bad_name" "$HW_INSTRUCTIONS")/sample-instruction.md" <<'EOF'
 ---
 name: other-name
 description: A description that does not match the filename.
@@ -252,7 +252,7 @@ expect_reject "$bad_name" "a mismatched name" "sample-instruction.md"
 
 bad_key="$WORK/bad-key"
 make_copy "$bad_key"
-cat >"$bad_key/.highway/instructions/sample-instruction.md" <<'EOF'
+cat >"$(hw_at "$bad_key" "$HW_INSTRUCTIONS")/sample-instruction.md" <<'EOF'
 ---
 name: sample-instruction
 description: A description with an unknown key beside it.
@@ -266,7 +266,7 @@ expect_reject "$bad_key" "an unknown frontmatter key" "sample-instruction.md"
 
 empty_body="$WORK/empty-body"
 make_copy "$empty_body"
-cat >"$empty_body/.highway/instructions/sample-instruction.md" <<'EOF'
+cat >"$(hw_at "$empty_body" "$HW_INSTRUCTIONS")/sample-instruction.md" <<'EOF'
 ---
 name: sample-instruction
 description: A description with no body after it.
@@ -276,22 +276,22 @@ expect_reject "$empty_body" "an empty body" "sample-instruction.md"
 
 empty_set="$WORK/empty-set"
 make_copy "$empty_set"
-rm -f "$empty_set/.claude/CLAUDE.md" "$empty_set/AGENTS.md"
-if ! "$empty_set/.highway/tools/generate-instructions.sh" >"$empty_set/run.log" 2>&1; then
+rm -f "$(hw_at "$empty_set" "$HW_CLAUDE_MD")" "$(hw_at "$empty_set" "$HW_AGENTS_MD")"
+if ! "$(hw_at "$empty_set" "$HW_TOOLS")/generate-instructions.sh" >"$empty_set/run.log" 2>&1; then
 	echo "FAIL: zero instructions exited non-zero"
 	sed 's/^/    /' "$empty_set/run.log"
 	fail=1
 else
 	printf '\n' >"$WORK/one-newline"
-	if ! cmp -s "$empty_set/.claude/CLAUDE.md" "$WORK/one-newline"; then
+	if ! cmp -s "$(hw_at "$empty_set" "$HW_CLAUDE_MD")" "$WORK/one-newline"; then
 		echo "FAIL: zero instructions did not write .claude/CLAUDE.md as one newline"
 		fail=1
 	fi
-	if ! cmp -s "$empty_set/.github/copilot-instructions.md" "$WORK/one-newline"; then
+	if ! cmp -s "$(hw_at "$empty_set" "$HW_COPILOT_MD")" "$WORK/one-newline"; then
 		echo "FAIL: zero instructions did not write .github/copilot-instructions.md as one newline"
 		fail=1
 	fi
-	if ! cmp -s "$empty_set/AGENTS.md" "$WORK/one-newline"; then
+	if ! cmp -s "$(hw_at "$empty_set" "$HW_AGENTS_MD")" "$WORK/one-newline"; then
 		echo "FAIL: zero instructions did not write AGENTS.md as one newline"
 		fail=1
 	fi
@@ -304,33 +304,33 @@ fi
 # Two instructions in a copy: bodies join in filename order with one blank line between them.
 ordered="$WORK/ordered"
 make_copy "$ordered"
-rm -f "$ordered/.claude/CLAUDE.md"
-cat >"$ordered/.highway/instructions/b-instruction.md" <<'EOF'
+rm -f "$(hw_at "$ordered" "$HW_CLAUDE_MD")"
+cat >"$(hw_at "$ordered" "$HW_INSTRUCTIONS")/b-instruction.md" <<'EOF'
 ---
 name: b-instruction
 description: Second in filename order.
 ---
 # Second
 EOF
-cat >"$ordered/.highway/instructions/a-instruction.md" <<'EOF'
+cat >"$(hw_at "$ordered" "$HW_INSTRUCTIONS")/a-instruction.md" <<'EOF'
 ---
 name: a-instruction
 description: First in filename order.
 ---
 # First
 EOF
-if ! "$ordered/.highway/tools/generate-instructions.sh" >"$ordered/run.log" 2>&1; then
+if ! "$(hw_at "$ordered" "$HW_TOOLS")/generate-instructions.sh" >"$ordered/run.log" 2>&1; then
 	echo "FAIL: two valid instructions were rejected"
 	sed 's/^/    /' "$ordered/run.log"
 	fail=1
-elif ! cmp -s "$ordered/.claude/CLAUDE.md" "$ordered/.github/copilot-instructions.md" \
-	|| ! cmp -s "$ordered/.claude/CLAUDE.md" "$ordered/AGENTS.md"; then
+elif ! cmp -s "$(hw_at "$ordered" "$HW_CLAUDE_MD")" "$(hw_at "$ordered" "$HW_COPILOT_MD")" \
+	|| ! cmp -s "$(hw_at "$ordered" "$HW_CLAUDE_MD")" "$(hw_at "$ordered" "$HW_AGENTS_MD")"; then
 	echo "FAIL: two-instruction merged files differ"
 	fail=1
 else
 	printf '%s\n' '# First' '' '# Second' >"$WORK/joined"
-	if ! cmp -s "$ordered/.claude/CLAUDE.md" "$WORK/joined" \
-		|| ! cmp -s "$ordered/AGENTS.md" "$WORK/joined"; then
+	if ! cmp -s "$(hw_at "$ordered" "$HW_CLAUDE_MD")" "$WORK/joined" \
+		|| ! cmp -s "$(hw_at "$ordered" "$HW_AGENTS_MD")" "$WORK/joined"; then
 		echo "FAIL: two instruction bodies were not joined in filename order"
 		fail=1
 	fi

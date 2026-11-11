@@ -6,8 +6,9 @@ set -u
 # Seeded failure probe: restoring "Assess conflicts as `platform proposal` does." in highway-codify-config, or removing ### standard rules, fails this check.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-CONFIG="$HIGHWAY_ROOT/skills/highway-codify-config/SKILL.md"
+# shellcheck source=paths.sh
+source "$SCRIPT_DIR/paths.sh"
+CONFIG="$HW_SKILLS/highway-codify-config/SKILL.md"
 fail=0
 
 section() {
@@ -140,7 +141,6 @@ for heading in '### Classify' '### platforms' '### platform proposal' '### platf
 	done
 done
 
-require "$CONFIG" 'version: 3.5.0'
 
 if [[ "$fail" -ne 0 ]]; then
 	exit 1

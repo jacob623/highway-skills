@@ -7,12 +7,13 @@ set -u
 # Seeded failure probe: this test must detect a defect in each declared class and clean its probe.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-# shellcheck source=tools/lib/constitution.sh
-source "$HIGHWAY_ROOT/tools/lib/constitution.sh"
+# shellcheck source=paths.sh
+source "$SCRIPT_DIR/paths.sh"
+# shellcheck source=../lib/constitution.sh
+source "$HW_LIB/constitution.sh"
 
-STANDARD="$HIGHWAY_ROOT/skills/_authoring-standard.md"
-CONSTITUTION="$HIGHWAY_ROOT/governance/constitution.md"
+STANDARD="$HW_SKILLS/_authoring-standard.md"
+CONSTITUTION="$(hw_doc constitution)"
 fail=0
 
 if [[ ! -f "$STANDARD" ]]; then
@@ -55,10 +56,10 @@ fi
 
 # --- The documented section list matches what validation requires ---------------------------------
 
-# shellcheck source=tools/lib/frontmatter.sh
-source "$HIGHWAY_ROOT/tools/lib/frontmatter.sh"
-# shellcheck source=tools/lib/schema-validate.sh
-source "$HIGHWAY_ROOT/tools/lib/schema-validate.sh"
+# shellcheck source=../lib/frontmatter.sh
+source "$HW_LIB/frontmatter.sh"
+# shellcheck source=../lib/schema-validate.sh
+source "$HW_LIB/schema-validate.sh"
 
 for section in "${SV_REQUIRED_SECTIONS[@]}"; do
 	if ! grep -qF "## $section" "$STANDARD"; then

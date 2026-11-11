@@ -6,9 +6,10 @@ set -u
 # Seeded failure probe: a choice line that labels an implementation by its id fails this check.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-SKILLS="$HIGHWAY_ROOT/skills"
-OUTPUT="$HIGHWAY_ROOT/library/templates/output"
+# shellcheck source=paths.sh
+source "$SCRIPT_DIR/paths.sh"
+SKILLS="$HW_SKILLS"
+OUTPUT="$HW_OUTPUT_TEMPLATES"
 fail=0
 
 require() {
@@ -33,9 +34,9 @@ ASSESSMENT="$SKILLS/highway-assessment/SKILL.md"
 RECORD="$OUTPUT/codify-record.md"
 CATALOG="$OUTPUT/codify-catalog.md"
 TASKS="$OUTPUT/codify-tasks.md"
-STANDARDS_CATALOG="$HIGHWAY_ROOT/../library/coding-standards/coding-standards.md"
-SAMPLE_STANDARD="$HIGHWAY_ROOT/../library/coding-standards/terraform.md"
-MANIFEST="$HIGHWAY_ROOT/tools/.distribution-manifest"
+STANDARDS_CATALOG="$HW_ROOT/library/coding-standards/coding-standards.md"
+SAMPLE_STANDARD="$HW_ROOT/library/coding-standards/terraform.md"
+MANIFEST="$HW_TOOLS/.distribution-manifest"
 
 for text in \
 	'Here is a proposed starting point for your codify feature:' \

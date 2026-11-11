@@ -7,16 +7,16 @@ set -u
 # Seeded failure probe: removing `exclude	harness	-` from the distribution manifest, or `harness/.env` from .gitignore, fails this check.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-REPO_ROOT="$(cd "$HIGHWAY_ROOT/.." && pwd)"
-MANIFEST="$HIGHWAY_ROOT/tools/.distribution-manifest"
-GITIGNORE="$REPO_ROOT/.gitignore"
+# shellcheck source=paths.sh
+source "$SCRIPT_DIR/paths.sh"
+MANIFEST="$HW_TOOLS/.distribution-manifest"
+GITIGNORE="$HW_ROOT/.gitignore"
 # Assembled rather than written literally, because shipped-tree-independence.test.sh scans this file
 # for the development-folder token.
 DEV_DIR=".spec""ify"
-DEV_CONSTITUTION="$REPO_ROOT/$DEV_DIR/memory/constitution.md"
+DEV_CONSTITUTION="$HW_ROOT/$DEV_DIR/memory/constitution.md"
 # shellcheck source=../lib/distribution.sh
-source "$HIGHWAY_ROOT/tools/lib/distribution.sh"
+source "$HW_LIB/distribution.sh"
 fail=0
 
 if ! grep -qx "$(printf 'exclude\tharness\t-')" "$MANIFEST"; then

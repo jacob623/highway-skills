@@ -3,10 +3,12 @@
 # Artifact classes: source-document, development-fixture
 set -euo pipefail
 
-repo_root=$(cd "$(dirname "$0")/../../.." && pwd)
-fixture_dir="$repo_root/.highway/tools/tests/fixtures/profile-convergence"
-source_skill="$repo_root/.highway/skills/highway-profile/SKILL.md"
-profile_template="$repo_root/.highway/library/templates/output/profile-record.md"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=paths.sh
+source "$SCRIPT_DIR/paths.sh"
+fixture_dir="$HW_FIXTURES/profile-convergence"
+source_skill="$HW_SKILLS/highway-profile/SKILL.md"
+profile_template="$(hw_template profile-record)"
 
 required_keys="fixture_id category scenario starting_context active_context user_stimulus passing_behaviors failing_behaviors rubric_dimensions governance_references hard_failures"
 required_dimensions="contextual_re_evaluation constructive_contribution convergence_timing contribution_opportunity clarification_discipline authority_boundary conversational_presence implementation_detail_leakage non_manufactured_collaboration"
@@ -60,7 +62,7 @@ for category in $expected_categories; do
 done
 
 case "$fixture_dir" in
-  "$repo_root/.highway/skills"/*|"$repo_root/.highway/library"/*) fail "fixtures are inside a shipped/runtime path" ;;
+  "$HW_SKILLS"/*|"$HW_LIBRARY"/*) fail "fixtures are inside a shipped/runtime path" ;;
 esac
 
 if grep -Eq 'profile-convergence|rubric' "$source_skill"; then

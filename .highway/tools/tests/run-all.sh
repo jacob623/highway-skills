@@ -4,8 +4,8 @@
 set -u
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-REPO_ROOT="$(cd "$HIGHWAY_ROOT/.." && pwd)"
+# shellcheck source=paths.sh
+source "$SCRIPT_DIR/paths.sh"
 
 # Feature 092 checks are included by the existing *.test.sh discovery below; no separate dispatch
 # list is required. Two tests seed probes into the live tree, because what they check -- packaging and adapter
@@ -16,26 +16,26 @@ REPO_ROOT="$(cd "$HIGHWAY_ROOT/.." && pwd)"
 # whichever test sorts first and reported there. Observed twice -- an orphaned adapter row failed
 # adapter-coverage, and an abandoned link probe failed distribution-packaging, each time naming a
 # defect that did not exist and sending the reader to the wrong file.
-rm -rf "$REPO_ROOT"/distribution-probe-*.md \
-	"$HIGHWAY_ROOT"/catalog/distribution-devref-probe-*.md \
-	"$HIGHWAY_ROOT"/catalog/distribution-link-probe-*.md \
-	"$HIGHWAY_ROOT"/catalog/distribution-reject-probe-*.md \
-	"$HIGHWAY_ROOT"/skills/test-adapter-fixture-* \
-	"$REPO_ROOT"/.github/skills/test-adapter-fixture-* \
-	"$REPO_ROOT"/.claude/skills/test-adapter-fixture-* \
-	"$REPO_ROOT"/.cursor/skills/test-adapter-fixture-* \
-	"$REPO_ROOT"/.agents/skills/test-adapter-fixture-* \
-	"$REPO_ROOT"/.agents/skills/test-newagent-fixture-* \
-	"$HIGHWAY_ROOT"/instructions/test-instruction-* \
-	"$REPO_ROOT"/.cursor/rules/test-instruction-*.mdc \
-	"$HIGHWAY_ROOT"/tools/shipped-tree-cliprobe-*.tmp \
-	"$HIGHWAY_ROOT"/tools/tests/fixtures/shipped-tree-cliprobe-*.tmp
-adapter_manifest="$HIGHWAY_ROOT/tools/.adapter-manifest"
+rm -rf "$HW_ROOT"/distribution-probe-*.md \
+	"$HW_CATALOG"/distribution-devref-probe-*.md \
+	"$HW_CATALOG"/distribution-link-probe-*.md \
+	"$HW_CATALOG"/distribution-reject-probe-*.md \
+	"$HW_SKILLS"/test-adapter-fixture-* \
+	"$HW_AGENT_COPILOT"/test-adapter-fixture-* \
+	"$HW_AGENT_CLAUDE"/test-adapter-fixture-* \
+	"$HW_AGENT_CURSOR"/test-adapter-fixture-* \
+	"$HW_AGENT_CODEX"/test-adapter-fixture-* \
+	"$HW_AGENT_CODEX"/test-newagent-fixture-* \
+	"$HW_INSTRUCTIONS"/test-instruction-* \
+	"$HW_CURSOR_RULES"/test-instruction-*.mdc \
+	"$HW_TOOLS"/shipped-tree-cliprobe-*.tmp \
+	"$HW_FIXTURES"/shipped-tree-cliprobe-*.tmp
+adapter_manifest="$HW_TOOLS/.adapter-manifest"
 if [[ -f "$adapter_manifest" ]] && grep -q 'test-adapter-fixture-' "$adapter_manifest"; then
 	grep -v 'test-adapter-fixture-' "$adapter_manifest" >"$adapter_manifest.tmp" || true
 	mv "$adapter_manifest.tmp" "$adapter_manifest"
 fi
-instruction_manifest="$HIGHWAY_ROOT/tools/.instruction-manifest"
+instruction_manifest="$HW_TOOLS/.instruction-manifest"
 if [[ -f "$instruction_manifest" ]] && grep -q 'test-instruction-' "$instruction_manifest"; then
 	grep -v 'test-instruction-' "$instruction_manifest" >"$instruction_manifest.tmp" || true
 	mv "$instruction_manifest.tmp" "$instruction_manifest"
@@ -61,7 +61,7 @@ run_test() {
 }
 
 shopt -s nullglob
-for test_file in "$SCRIPT_DIR"/*.test.sh; do
+for test_file in "$HW_TESTS"/*.test.sh; do
 	run_test "$test_file"
 done
 shopt -u nullglob

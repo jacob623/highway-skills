@@ -9,14 +9,14 @@ set -u
 # Seeded failure probe: running the map against a skills folder where no skill names codify-plan.md reports the template as unmapped, and this check fails on it.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-REPO_ROOT="$(cd "$HIGHWAY_ROOT/.." && pwd)"
-PATH_MAP="$REPO_ROOT/harness/bin/path-map.sh"
+# shellcheck source=paths.sh
+source "$SCRIPT_DIR/paths.sh"
+PATH_MAP="$HW_HARNESS/bin/path-map.sh"
 # Assembled rather than written literally, because shipped-tree-independence.test.sh scans this file
 # for development-folder tokens.
 SPEC_DIR="spec""s"
 # shellcheck source=../lib/distribution.sh
-source "$HIGHWAY_ROOT/tools/lib/distribution.sh"
+source "$HW_LIB/distribution.sh"
 fail=0
 TAB="$(printf '\t')"
 
@@ -28,7 +28,7 @@ fi
 # expect <path> <kind> <target>: the map prints exactly one line for <path> with that kind and target.
 expect() {
 	local out lines kind target
-	out="$(cd "$REPO_ROOT" && bash "$PATH_MAP" "$1")"
+	out="$(cd "$HW_ROOT" && bash "$PATH_MAP" "$1")"
 	lines="$(printf '%s\n' "$out" | grep -c .)"
 	kind="$(printf '%s\n' "$out" | head -n 1 | cut -f2)"
 	target="$(printf '%s\n' "$out" | head -n 1 | cut -f3)"
@@ -55,7 +55,7 @@ expect .claude/skills/highway-codify/SKILL.md none -
 expect .highway/catalog/index.json none -
 expect .highway/governance/constitution.md none -
 
-reason="$(cd "$REPO_ROOT" && bash "$PATH_MAP" .highway/library/templates/output/codify-plan.md | cut -f4)"
+reason="$(cd "$HW_ROOT" && bash "$PATH_MAP" .highway/library/templates/output/codify-plan.md | cut -f4)"
 case "$reason" in
 *highway-codify*codify-plan.md*) ;;
 *)
@@ -65,7 +65,7 @@ case "$reason" in
 esac
 
 # A template that several skills name selects each of them.
-multi="$(cd "$REPO_ROOT" && bash "$PATH_MAP" .highway/library/templates/output/adr-record.md | cut -f3 | sort -u | grep -c .)"
+multi="$(cd "$HW_ROOT" && bash "$PATH_MAP" .highway/library/templates/output/adr-record.md | cut -f3 | sort -u | grep -c .)"
 if [[ "$multi" -lt 2 ]]; then
 	echo "FAIL: adr-record.md, named by several skills, selects $multi skill(s)"
 	fail=1
@@ -75,12 +75,12 @@ fi
 shipped=()
 while IFS= read -r rel; do
 	[[ "$(dist_classify "$rel")" == "include" ]] && shipped+=("$rel")
-done < <(cd "$REPO_ROOT" && find .highway/library .highway/governance .highway/instructions -type f | LC_ALL=C sort)
+done < <(cd "$HW_ROOT" && find "$(hw_rel "$HW_LIBRARY")" "$(hw_rel "$HW_GOVERNANCE")" "$(hw_rel "$HW_INSTRUCTIONS")" -type f | LC_ALL=C sort)
 if [[ "${#shipped[@]}" -lt 30 ]]; then
 	echo "FAIL: found only ${#shipped[@]} shipped library, governance, and instruction files"
 	fail=1
 fi
-mapped="$(cd "$REPO_ROOT" && bash "$PATH_MAP" "${shipped[@]}")"
+mapped="$(cd "$HW_ROOT" && bash "$PATH_MAP" "${shipped[@]}")"
 if [[ "$(printf '%s\n' "$mapped" | cut -f1 | sort -u | grep -c .)" -ne "${#shipped[@]}" ]]; then
 	echo "FAIL: the path map did not print a line for every shipped path"
 	fail=1
@@ -95,7 +95,7 @@ fi
 
 # Seeded probe: with no skill naming the template, it is reported unmapped.
 empty_skills="$(mktemp -d)"
-probe="$(cd "$REPO_ROOT" && bash "$PATH_MAP" --skills-dir "$empty_skills" .highway/library/templates/output/codify-plan.md | cut -f2)"
+probe="$(cd "$HW_ROOT" && bash "$PATH_MAP" --skills-dir "$empty_skills" .highway/library/templates/output/codify-plan.md | cut -f2)"
 rm -rf "$empty_skills"
 if [[ "$probe" != "unmapped" ]]; then
 	echo "FAIL: a template no skill names maps to '$probe', expected unmapped"

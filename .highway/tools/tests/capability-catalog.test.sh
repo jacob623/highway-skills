@@ -33,11 +33,12 @@ if [[ -n "$probe_class" ]]; then
 fi
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-SKILL="$HIGHWAY_ROOT/skills/highway-implementation/SKILL.md"
-RECORD_TEMPLATE="$HIGHWAY_ROOT/library/templates/output/implementation-record.md"
-CATALOG_TEMPLATE="$HIGHWAY_ROOT/library/templates/output/implementation-catalog.md"
-CAPABILITY_CATALOG_TEMPLATE="$HIGHWAY_ROOT/library/templates/output/capability-catalog.md"
+# shellcheck source=paths.sh
+source "$SCRIPT_DIR/paths.sh"
+SKILL="$HW_SKILLS/highway-implementation/SKILL.md"
+RECORD_TEMPLATE="$(hw_template implementation-record)"
+CATALOG_TEMPLATE="$(hw_template implementation-catalog)"
+CAPABILITY_CATALOG_TEMPLATE="$(hw_template capability-catalog)"
 fail=0
 
 require_text() {

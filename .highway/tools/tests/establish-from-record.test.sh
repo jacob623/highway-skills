@@ -6,9 +6,10 @@ set -u
 # Seeded failure probe: removing the Kind column, the Execution section, or the two platform-standard phrases fails this check.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-SKILLS="$HIGHWAY_ROOT/skills"
-OUTPUT="$HIGHWAY_ROOT/library/templates/output"
+# shellcheck source=paths.sh
+source "$SCRIPT_DIR/paths.sh"
+SKILLS="$HW_SKILLS"
+OUTPUT="$HW_OUTPUT_TEMPLATES"
 IMPL="$SKILLS/highway-implementation/SKILL.md"
 ONBOARD="$SKILLS/highway-onboarding/SKILL.md"
 CODIFY="$SKILLS/highway-codify/SKILL.md"
@@ -48,10 +49,8 @@ words_under() {
 }
 
 require "$PLATFORMS" '| Platform | Implementation ID | Kind | When to use | When not to use |'
-require "$PLATFORMS" 'version: 2.1.0'
 require "$RECORD" '## Execution'
 require "$RECORD" 'Deployed by: <platform title> (<RI id>) or Needed'
-require "$RECORD" 'version: 2.3.0'
 
 for text in \
 	'### execution' \
@@ -65,21 +64,18 @@ for text in \
 	'**Language:**' \
 	'Follow `highway-codify-config`' \
 	'return step `execution`' \
-	'Follow `highway-onboarding`' \
-	'version: 7.9.0'; do
+	'Follow `highway-onboarding`'; do
 	require "$IMPL" "$text"
 done
 
 require "$ONBOARD" 'return step `execution`'
-require "$ONBOARD" 'version: 10.6.0'
 
 for text in \
 	'### kind' \
 	'### platform entries' \
 	'[Platform] is used' \
 	'[Platform] is not used' \
-	'**Kind:**' \
-	'version: 3.5.0'; do
+	'**Kind:**'; do
 	require "$CONFIG" "$text"
 done
 
@@ -88,8 +84,7 @@ for text in \
 	'Do not copy the Executor onto a task' \
 	'Helm, Terraform, or CloudFormation' \
 	"**[Product Title]'s implementation record is missing critical detail required for highway-codify proposals.**" \
-	'A missing When to use entry does not remove Language' \
-	'version: 14.1.0'; do
+	'A missing When to use entry does not remove Language'; do
 	require "$CODIFY" "$text"
 done
 

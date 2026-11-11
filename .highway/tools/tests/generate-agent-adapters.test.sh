@@ -48,33 +48,31 @@ if [[ -n "$probe_class" ]]; then
 fi
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-# HIGHWAY_ROOT (.highway/) holds the generator + skill sources; REPO_ROOT (one level up) is
-# where agent adapters are actually written -- per feature 002 (highway folder consolidation).
-HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-REPO_ROOT="$(cd "$HIGHWAY_ROOT/.." && pwd)"
-GENERATE="$HIGHWAY_ROOT/tools/generate-agent-adapters.sh"
-FIXTURES="$SCRIPT_DIR/fixtures"
+# shellcheck source=paths.sh
+source "$SCRIPT_DIR/paths.sh"
+GENERATE="$HW_TOOLS/generate-agent-adapters.sh"
+FIXTURES="$HW_FIXTURES"
 
 TMP_ID="test-adapter-fixture-$$"
-SKILL_SRC_DIR="$HIGHWAY_ROOT/skills/$TMP_ID"
-GH_TARGET="$REPO_ROOT/.github/skills/$TMP_ID/SKILL.md"
-CLAUDE_TARGET="$REPO_ROOT/.claude/skills/$TMP_ID/SKILL.md"
-CURSOR_TARGET="$REPO_ROOT/.cursor/skills/$TMP_ID/SKILL.md"
-CODEX_TARGET="$REPO_ROOT/.agents/skills/$TMP_ID/SKILL.md"
-SPECKIT_SENTINEL="$REPO_ROOT/.github/skills/speckit-tasks/SKILL.md"
-CURSOR_SPECKIT_SENTINEL="$REPO_ROOT/.cursor/skills/speckit-tasks/SKILL.md"
-MANIFEST="$HIGHWAY_ROOT/tools/.adapter-manifest"
+SKILL_SRC_DIR="$HW_SKILLS/$TMP_ID"
+GH_TARGET="$HW_AGENT_COPILOT/$TMP_ID/SKILL.md"
+CLAUDE_TARGET="$HW_AGENT_CLAUDE/$TMP_ID/SKILL.md"
+CURSOR_TARGET="$HW_AGENT_CURSOR/$TMP_ID/SKILL.md"
+CODEX_TARGET="$HW_AGENT_CODEX/$TMP_ID/SKILL.md"
+SPECKIT_SENTINEL="$HW_AGENT_COPILOT/speckit-tasks/SKILL.md"
+CURSOR_SPECKIT_SENTINEL="$HW_AGENT_CURSOR/speckit-tasks/SKILL.md"
+MANIFEST="$HW_TOOLS/.adapter-manifest"
 
 fail=0
 
 cleanup() {
 	rm -rf "$SKILL_SRC_DIR" \
-		"$REPO_ROOT/.github/skills/$TMP_ID" \
-		"$REPO_ROOT/.claude/skills/$TMP_ID" \
-		"$REPO_ROOT/.cursor/skills/$TMP_ID" \
-		"$REPO_ROOT/.agents/skills/$TMP_ID" \
-		"$REPO_ROOT/.cursor/rules/$TMP_ID.mdc" \
-		"$REPO_ROOT"/.cursor/rules/highway-leftover-*.mdc
+		"$HW_AGENT_COPILOT/$TMP_ID" \
+		"$HW_AGENT_CLAUDE/$TMP_ID" \
+		"$HW_AGENT_CURSOR/$TMP_ID" \
+		"$HW_AGENT_CODEX/$TMP_ID" \
+		"$HW_CURSOR_RULES/$TMP_ID.mdc" \
+		"$HW_CURSOR_RULES"/highway-leftover-*.mdc
 	if [[ -f "$MANIFEST" ]]; then
 		grep -vF "$TMP_ID" "$MANIFEST" >"$MANIFEST.tmp" || true
 		mv "$MANIFEST.tmp" "$MANIFEST"
@@ -84,12 +82,12 @@ trap cleanup EXIT
 
 # Residue from a run killed before its cleanup carries a different PID, so no later run removes it.
 # Its manifest rows then fail the correspondence check as orphans naming a skill with no source.
-rm -rf "$HIGHWAY_ROOT"/skills/test-adapter-fixture-* \
-	"$REPO_ROOT"/.github/skills/test-adapter-fixture-* \
-	"$REPO_ROOT"/.claude/skills/test-adapter-fixture-* \
-	"$REPO_ROOT"/.cursor/skills/test-adapter-fixture-* \
-	"$REPO_ROOT"/.agents/skills/test-adapter-fixture-* \
-	"$REPO_ROOT"/.cursor/rules/test-adapter-fixture-*.mdc
+rm -rf "$HW_SKILLS"/test-adapter-fixture-* \
+	"$HW_AGENT_COPILOT"/test-adapter-fixture-* \
+	"$HW_AGENT_CLAUDE"/test-adapter-fixture-* \
+	"$HW_AGENT_CURSOR"/test-adapter-fixture-* \
+	"$HW_AGENT_CODEX"/test-adapter-fixture-* \
+	"$HW_CURSOR_RULES"/test-adapter-fixture-*.mdc
 if [[ -f "$MANIFEST" ]] && grep -q 'test-adapter-fixture-' "$MANIFEST"; then
 	grep -v 'test-adapter-fixture-' "$MANIFEST" >"$MANIFEST.tmp" || true
 	mv "$MANIFEST.tmp" "$MANIFEST"
@@ -103,9 +101,9 @@ sed -i.bak "s/^name: .*/name: $TMP_ID/" "$SKILL_SRC_DIR/SKILL.md" && rm -f "$SKI
 
 speckit_before="$(sha256sum "$SPECKIT_SENTINEL" 2>/dev/null || shasum -a 256 "$SPECKIT_SENTINEL")"
 cursor_speckit_before="$(sha256sum "$CURSOR_SPECKIT_SENTINEL" 2>/dev/null || shasum -a 256 "$CURSOR_SPECKIT_SENTINEL")"
-instruction_claude="$REPO_ROOT/.claude/CLAUDE.md"
-instruction_copilot="$REPO_ROOT/.github/copilot-instructions.md"
-instruction_manifest_path="$HIGHWAY_ROOT/tools/.instruction-manifest"
+instruction_claude="$HW_CLAUDE_MD"
+instruction_copilot="$HW_COPILOT_MD"
+instruction_manifest_path="$HW_TOOLS/.instruction-manifest"
 instruction_hash() {
 	if [[ ! -f "$1" ]]; then
 		printf 'absent\n'
@@ -169,7 +167,7 @@ if [[ ! -f "$CODEX_TARGET" ]] || ! diff -q "$SKILL_SRC_DIR/SKILL.md" "$CODEX_TAR
 	fail=1
 fi
 
-if [[ -e "$REPO_ROOT/.cursor/rules/$TMP_ID.mdc" ]]; then
+if [[ -e "$HW_CURSOR_RULES/$TMP_ID.mdc" ]]; then
 	echo "FAIL: a Cursor rule file was generated for $TMP_ID; Cursor receives skills, not rules"
 	fail=1
 fi
@@ -178,10 +176,10 @@ fi
 # highway-*.mdc because no instruction outputs existed (D3.5). A file is a leftover skill rule
 # only when the instruction manifest has no row for that path. The adapter manifest still must
 # not name .cursor/rules/.
-instruction_manifest="$HIGHWAY_ROOT/tools/.instruction-manifest"
-for stale_rule in "$REPO_ROOT"/.cursor/rules/highway-*.mdc; do
+instruction_manifest="$HW_TOOLS/.instruction-manifest"
+for stale_rule in "$HW_CURSOR_RULES"/highway-*.mdc; do
 	if [[ -e "$stale_rule" ]]; then
-		rel_rule="${stale_rule#"$REPO_ROOT"/}"
+		rel_rule="${stale_rule#"$HW_ROOT"/}"
 		if [[ ! -f "$instruction_manifest" ]] || ! grep -qF "$(printf '%s\t' "$rel_rule")" "$instruction_manifest"; then
 			echo "FAIL: superseded Cursor rule file still present: $rel_rule"
 			fail=1
@@ -189,10 +187,10 @@ for stale_rule in "$REPO_ROOT"/.cursor/rules/highway-*.mdc; do
 	fi
 done
 # The same predicate, executed against a file that has no instruction-manifest row.
-leftover_rule="$REPO_ROOT/.cursor/rules/highway-leftover-$$.mdc"
+leftover_rule="$HW_CURSOR_RULES/highway-leftover-$$.mdc"
 mkdir -p "$(dirname "$leftover_rule")"
 printf 'leftover\n' >"$leftover_rule"
-leftover_rel="${leftover_rule#"$REPO_ROOT"/}"
+leftover_rel="${leftover_rule#"$HW_ROOT"/}"
 leftover_reported=0
 if [[ -e "$leftover_rule" ]]; then
 	if [[ ! -f "$instruction_manifest" ]] || ! grep -qF "$(printf '%s\t' "$leftover_rel")" "$instruction_manifest"; then
@@ -221,7 +219,7 @@ if [[ "$cursor_speckit_before" != "$cursor_speckit_after" ]]; then
 	fail=1
 fi
 
-if find "$REPO_ROOT/.agents/skills" -name 'speckit-*' -print -quit 2>/dev/null | grep -q .; then
+if find "$HW_AGENT_CODEX" -name 'speckit-*' -print -quit 2>/dev/null | grep -q .; then
 	echo "FAIL: a speckit skill was created under .agents/skills/"
 	fail=1
 fi

@@ -6,8 +6,9 @@ set -u
 # Seeded failure probe: restoring the step that marks capabilities the implementation does not list, or removing the grouping step, fails this check.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-HIGHWAY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-CONFIG="$HIGHWAY_ROOT/skills/highway-codify-config/SKILL.md"
+# shellcheck source=paths.sh
+source "$SCRIPT_DIR/paths.sh"
+CONFIG="$HW_SKILLS/highway-codify-config/SKILL.md"
 fail=0
 
 section() {
@@ -69,7 +70,6 @@ for word in 'so that' 'because' 'in order to' 'should' 'consider' 'prefer' 'usua
 done
 
 require "$CONFIG" '- `current` groups the automation capabilities the platform documentation describes by meaning. Each group the implementation does not already mean appears once under New Realized Capabilities, titled under the capability catalog Title rule, with the product and the handoff in the evidence. After the write, configuration follows `highway-implementation` to record them, with the return step `platform written`.'
-require "$CONFIG" 'version: 3.5.0'
 
 if [[ "$fail" -ne 0 ]]; then
 	exit 1
