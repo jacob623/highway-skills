@@ -26,19 +26,12 @@ rm -rf "$HW_ROOT"/distribution-probe-*.md \
 	"$HW_AGENT_CURSOR"/test-adapter-fixture-* \
 	"$HW_AGENT_CODEX"/test-adapter-fixture-* \
 	"$HW_AGENT_CODEX"/test-newagent-fixture-* \
-	"$HW_INSTRUCTIONS"/test-instruction-* \
-	"$HW_CURSOR_RULES"/test-instruction-*.mdc \
 	"$HW_FRAMEWORK"/shipped-tree-cliprobe-*.tmp \
 	"$HW_FIXTURES"/shipped-tree-cliprobe-*.tmp
 adapter_manifest="$HW_FRAMEWORK/.adapter-manifest"
 if [[ -f "$adapter_manifest" ]] && grep -q 'test-adapter-fixture-' "$adapter_manifest"; then
 	grep -v 'test-adapter-fixture-' "$adapter_manifest" >"$adapter_manifest.tmp" || true
 	mv "$adapter_manifest.tmp" "$adapter_manifest"
-fi
-instruction_manifest="$HW_FRAMEWORK/.instruction-manifest"
-if [[ -f "$instruction_manifest" ]] && grep -q 'test-instruction-' "$instruction_manifest"; then
-	grep -v 'test-instruction-' "$instruction_manifest" >"$instruction_manifest.tmp" || true
-	mv "$instruction_manifest.tmp" "$instruction_manifest"
 fi
 
 pass=0

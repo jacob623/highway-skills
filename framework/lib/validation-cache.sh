@@ -90,8 +90,8 @@ vc_environment_hash() {
 			printf '%s\n' "$(hw_at "$root" "$HW_FRAMEWORK")/.frontmatter-contract"
 			hw_at "$root" "$(hw_doc constitution)"
 			hw_at "$root" "$(hw_doc frontmatter-lexicon)"
-			find "$(hw_at "$root" "$HW_LIB")" "$(hw_at "$root" "$HW_LIBRARY")" "$(hw_at "$root" "$HW_GOVERNANCE")" \
-				-type f 2>/dev/null
+			hw_at "$root" "$(hw_doc experience-standard)"
+			find "$(hw_at "$root" "$HW_LIB")" "$(hw_at "$root" "$HW_LIBRARY")" -type f 2>/dev/null
 		} | sort | vc_hash_list | vc_hash_stdin
 	)"
 	printf '%s' "$VC_ENVIRONMENT_HASH"

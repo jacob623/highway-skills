@@ -4,7 +4,7 @@ description: "Manages one discovery for a complete request."
 usage: "Invoke as /highway-discovery with one request id or one discovery id."
 compatibility: all
 metadata:
-  version: 5.0.0
+  version: 5.1.0
 ---
 
 # highway-discovery
@@ -39,7 +39,7 @@ Do not report Status, Summary, Next Action, Blocking Reason, Missing, Complete, 
 - `requests/requests.md` and `discoveries/discoveries.md`.
 - `.highway/library/templates/output/discovery-record.md`.
 - `.highway/library/templates/output/discovery-catalog.md`.
-- `.highway/governance/experience-standard.md`.
+- The highway-experience skill, activated first.
 - A project root containing `.highway/`.
 
 ## Outputs
@@ -52,6 +52,8 @@ The complete structure is `.highway/library/templates/output/discovery-record.md
 - No Discovery artifact when fewer than two options remain or a write fails.
 
 ## Procedure
+
+Activate the highway-experience skill before any output the person sees, and follow it for Highway's identity, the Experience Standard, and the storage contract.
 
 User-visible interaction follows the Highway Experience Standard. Repository ownership stays with the person.
 

@@ -4,7 +4,7 @@ description: "Manages one reference implementation from one accepted reference a
 usage: "Invoke as /highway-implementation with one architecture id."
 compatibility: all
 metadata:
-  version: 7.9.0
+  version: 7.10.0
 ---
 
 # highway-implementation
@@ -44,7 +44,7 @@ Do not report Status, Summary, Next Action, Blocking Reason, Missing, Complete, 
 - `implementations/capabilities.md` when present.
 - `library/coding-standards/codify-platforms.md` when present.
 - `.highway/library/templates/output/codify-platforms.md`.
-- `.highway/governance/experience-standard.md`.
+- The highway-experience skill, activated first.
 - A project root containing `.highway/`.
 
 ## Outputs
@@ -61,6 +61,8 @@ The complete structure is `.highway/library/templates/output/implementation-reco
 - No implementation when the architecture is missing, not accepted, incompatible, or a write fails.
 
 ## Procedure
+
+Activate the highway-experience skill before any output the person sees, and follow it for Highway's identity, the Experience Standard, and the storage contract.
 
 Emit only the active template. Follow this order: `add capabilities` when `highway-codify-config` passes new realized capabilities; `delivery platforms`, with `delivery decline`, when `highway-codify` hands off an accepted implementation; `choose` when no architecture id is supplied; otherwise `start`, which follows `execution`, then `identifier`, `title` when needed, `write`, `platforms`, and `close`. The accepted Reference Architecture remains authoritative. A realization cannot redesign it or override the ADR. A missing Profile, Objective, Control, or NFR continues without invented evidence. A malformed one of those baselines stops the skill and writes nothing. Clarification is read-only. An open finding can inform a risk. It cannot block the proposal.
 

@@ -4,7 +4,7 @@ description: "Manages one decision, one reference architecture, and one referenc
 usage: "Invoke as `/highway-onboarding`."
 compatibility: all
 metadata:
-  version: 10.6.0
+  version: 10.7.0
 ---
 
 # highway-onboarding
@@ -39,7 +39,7 @@ Do not report Status, Summary, Next Action, Blocking Reason, Missing, Complete, 
 - `highway-implementation`.
 - `library/coding-standards/codify-platforms.md` when present.
 - `.highway/library/templates/output/codify-platforms.md`.
-- `.highway/governance/experience-standard.md`.
+- The highway-experience skill, activated first.
 - A project root containing `.highway/`.
 
 ## Outputs
@@ -53,6 +53,8 @@ The complete structure is `.highway/library/templates/output/adr-record.md`, `.h
 - No inventory file. The capability queue and the provider queue are not written.
 
 ## Procedure
+
+Activate the highway-experience skill before any output the person sees, and follow it for Highway's identity, the Experience Standard, and the storage contract.
 
 Emit only the active template. Follow the steps in this order: `overview`, `capabilities`, `map`, `mapping`, `orchestrate`, `lineage`, `configure`, then `summary`. Review happens only when the person asks for it from the summary.
 

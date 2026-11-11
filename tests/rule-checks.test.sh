@@ -191,7 +191,7 @@ assert_reports "P8.7 relative link target" "P8.7" "$d"
 
 # A path in inline code is not a link and must not be flagged.
 d="$tmp_root/p87-ok"; write_base_skill "$d"
-printf '\nRead `.highway/governance/storage.md` and [the site](https://example.org).\n' >>"$d/SKILL.md"
+printf '\nRead `references/storage-contract.md` and [the site](https://example.org).\n' >>"$d/SKILL.md"
 if ! "$VALIDATE" "$d" >/dev/null 2>&1; then
 	echo "FAIL[P8.7 false positive]: a command example or absolute URL was reported as a relative link"
 	fail=1

@@ -4,7 +4,7 @@ description: "Assess accepted repository context."
 usage: "Invoke as /highway-assessment."
 compatibility: all
 metadata:
-  version: 5.0.0
+  version: 5.1.0
 ---
 
 # highway-assessment
@@ -34,7 +34,7 @@ Do not report Status, Summary, Next Action, Blocking Reason, Missing, Complete, 
 - `.highway/library/knowledge/assessment-findings.md` when present.
 - `.highway/library/templates/output/assessment-findings.md`.
 - The domain named in the invocation. The default domain is `portfolio`.
-- `.highway/governance/experience-standard.md`.
+- The highway-experience skill, activated first.
 - A project root containing `.highway/`.
 
 ## Outputs
@@ -48,6 +48,8 @@ The complete structure is `.highway/library/templates/output/assessment-findings
 - No owner artifact and no new identifier family.
 
 ## Procedure
+
+Activate the highway-experience skill before any output the person sees, and follow it for Highway's identity, the Experience Standard, and the storage contract.
 
 Emit only the active template. Start at `review`. For ready records, go to `ready records`. For gaps, follow this order: `write` each new finding, then show the findings in `list of findings`, then show the chosen finding in `finding`, then return to `list of findings`. Go to `summary` when no further finding remains. Read catalogs before opening source records. Open a source record only when the catalog row does not answer the question. A conflict between a catalog and a record is reported as uncertainty. Do not repair either file.
 

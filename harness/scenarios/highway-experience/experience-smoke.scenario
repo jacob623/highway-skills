@@ -1,0 +1,6 @@
+# Smoke: the direct summary answers and writes nothing.
+id: experience-smoke
+skill: highway-experience
+fixture: setup
+smoke: yes
+open: /highway-experience

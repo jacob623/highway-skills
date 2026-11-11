@@ -3,7 +3,7 @@
 set -u
 # Instrument class: mixed (static-document-contract and executed-behavior)
 # Artifact classes: source-document, generated-artifact, disposable-fixture
-# Seeded failure probe: a temporary skill naming `git commit` must fail P2.6, and removing a storage.md operation row fails this check.
+# Seeded failure probe: a temporary skill naming `git commit` must fail P2.6, and removing a storage contract operation row fails this check.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=paths.sh
@@ -14,7 +14,6 @@ CONSTITUTION="$(hw_doc constitution)"
 CODIFY="$HW_SKILLS/highway-codify/SKILL.md"
 HELP="$HW_SKILLS/highway-help/SKILL.md"
 METADATA="$(hw_template codify-metadata)"
-CONTEXT="$HW_INSTRUCTIONS/highway-agent-context.md"
 fail=0
 
 tmp_root="$(mktemp -d)"
@@ -51,19 +50,19 @@ require_in() {
 # --- The storage contract ---------------------------------------------------------------------
 
 if [[ ! -f "$STORAGE" ]]; then
-	echo "FAIL: .highway/governance/storage.md is missing"
+	echo "FAIL: highway-experience's storage contract is missing at $(hw_rel "$STORAGE")"
 	fail=1
 fi
 require "$STORAGE" '| Operation | Local | Remote (Option A) | Chat (Option B) |'
 ops='^\| (Read a file|Check a file exists|List a folder|Write a group of files together) \|'
 op_rows="$(grep -cE "$ops" "$STORAGE" 2>/dev/null)"
 if [[ "${op_rows:-0}" -ne 4 ]]; then
-	echo "FAIL: storage.md has ${op_rows:-0} operation rows, expected 4"
+	echo "FAIL: the storage contract has ${op_rows:-0} operation rows, expected 4"
 	fail=1
 fi
 unsupported_rows="$(grep -E "$ops" "$STORAGE" 2>/dev/null | grep -cF '| not supported yet | not supported yet |')"
 if [[ "${unsupported_rows:-0}" -ne 4 ]]; then
-	echo "FAIL: storage.md has ${unsupported_rows:-0} rows with Remote and Chat not supported yet, expected 4"
+	echo "FAIL: the storage contract has ${unsupported_rows:-0} rows with Remote and Chat not supported yet, expected 4"
 	fail=1
 fi
 for text in \
@@ -72,20 +71,33 @@ for text in \
 	'Nothing is committed.' \
 	'The person handles any git step.' \
 	'A failed write names the files already written and the file that failed.' \
-	'Content a skill writes into a file'; do
+	'Content a skill writes into a file' \
+	'The four operations govern every read and write of the project.' \
+	'A skill reading its own bundled' \
+	'files, and a skill activating highway-experience, are not repository operations.' \
+	'A run uses Local unless the mode record names another mode.' \
+	'## Mode record' \
+	'The project records its mode in `library/knowledge/storage.md`.' \
+	'a skill reads that file with "Read a file".' \
+	'- An absent record means Local.' \
+	'- A record that names a mode other than Local stops the skill before any other repository read or' \
+	'The skill says the recorded mode is not supported yet and names Local as the supported' \
+	'mode.'; do
 	require "$STORAGE" "$text"
 done
 
+reject "$STORAGE" 'Every run uses Local.'
+
 # shellcheck source=../lib/distribution.sh
 source "$HW_LIB/distribution.sh"
-if [[ "$(dist_classify .highway/governance/storage.md)" != "include" ]]; then
-	echo "FAIL: .highway/governance/storage.md does not ship"
+if [[ "$(dist_classify "$(hw_rel "$STORAGE")")" != "include" ]]; then
+	echo "FAIL: $(hw_rel "$STORAGE") does not ship"
 	fail=1
 fi
 
 # --- The rule and its registered check ---------------------------------------------------------
 
-require "$CONSTITUTION" '| P2.6 | A skill MUST reach the repository only through the operations `.highway/governance/storage.md` declares. |'
+require "$CONSTITUTION" '| P2.6 | A skill MUST reach the repository only through the operations highway-experience'"'"'s `references/storage-contract.md` declares. |'
 if ! grep -qE '^\| P2\.6 \|.*\| \[auto\] \|$' "$CONSTITUTION"; then
 	echo "FAIL: P2.6 is missing or is not [auto]"
 	fail=1
@@ -235,13 +247,6 @@ require "$METADATA" 'The next feature number is the next integer after the last 
 require "$METADATA" 'Features has no status column.'
 require "$METADATA" 'Title and Summary are copied when the feature is accepted.'
 reject "$METADATA" 'written once'
-
-# --- The agent context points to the contract -------------------------------------------------------
-
-require "$CONTEXT" '- Read and write the repository only through the operations in'
-for generated in AGENTS.md .claude/CLAUDE.md .github/copilot-instructions.md .cursor/rules/highway-agent-context.mdc; do
-	require "$HW_ROOT/$generated" '`.highway/governance/storage.md`.'
-done
 
 if [[ "$fail" -ne 0 ]]; then
 	exit 1

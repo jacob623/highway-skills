@@ -4,7 +4,7 @@ description: "Orchestrates initial highway setup through the owning governance s
 usage: "Invoke as /highway-setup."
 compatibility: all
 metadata:
-  version: 10.0.0
+  version: 10.1.0
 ---
 
 # highway-setup
@@ -33,7 +33,7 @@ Do not show `Finished` to the person.
 - `highway-controls`.
 - `highway-nfrs`.
 - `library/knowledge/profile.md` when present.
-- `.highway/governance/experience-standard.md`.
+- The highway-experience skill, activated first.
 - The person's request to run setup.
 
 ## Outputs
@@ -44,6 +44,8 @@ Do not show `Finished` to the person.
 - No repository file written by Setup.
 
 ## Procedure
+
+Activate the highway-experience skill before any output the person sees, and follow it for Highway's identity, the Experience Standard, and the storage contract.
 
 User-visible interaction follows the Highway Experience Standard.
 

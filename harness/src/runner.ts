@@ -4,7 +4,7 @@ import { tmpdir } from "node:os";
 import { join, relative } from "node:path";
 import { helpText, parseArgs, USAGE_POINTER, type Options } from "./args.ts";
 import { chainOf, promote, runChain, type ProjectSourceSpec, type StageRun } from "./chain.ts";
-import { changedPaths, diffSnapshots, runExpectation, snapshot, storageInvariant } from "./checks.ts";
+import { changedPaths, diffSnapshots, experienceInvariant, runExpectation, snapshot, storageInvariant } from "./checks.ts";
 import { HARNESS_DIR, loadEnv, readFileConfig, REPO_ROOT, resolveConfig, type Config } from "./config.ts";
 import { coverageSection, readInventory, readTreatments } from "./coverage.ts";
 import { copilotDriver, RunStop, type DriveResult, type Driver, type TranscriptEntry, type Warning } from "./driver.ts";
@@ -173,6 +173,7 @@ async function runAttempt(ctx: Context, scenario: Scenario, attempt: number, att
         usage: { calls: 0, inputTokens: 0, outputTokens: 0, cacheReadTokens: 0, cacheWriteTokens: 0, cost: 0 },
         usedReplies: [],
         skillsInvoked: [],
+        skillsBeforeOutput: [],
         lastMessage: "",
         error: { kind: "unclassified", message: errorText(error) },
       };
@@ -202,6 +203,9 @@ async function runAttempt(ctx: Context, scenario: Scenario, attempt: number, att
       failures.push({ ...where, kind: "rejected-request", check: "storage", expected: "no shell, memory, or outside-write request", actual: fatal.map((r) => `${r.kind}: ${r.detail}`).join("; ") });
     }
     for (const f of storageInvariant(diff, scenario.writes)) failures.push({ ...where, kind: "outside-writes", ...f });
+    if (drive.outcome !== "error") {
+      for (const f of experienceInvariant(drive.skillsBeforeOutput)) failures.push({ ...where, kind: "experience-order", ...f });
+    }
     if (drive.outcome === "ended") {
       for (const exp of scenario.expects) {
         const f = runExpectation(projectDir, after.keys(), exp);

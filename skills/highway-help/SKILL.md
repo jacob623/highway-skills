@@ -4,7 +4,7 @@ description: "Prints registration details for one named skill, or a discovery li
 usage: "Invoke as `/highway-help` for all skills, or `/highway-help <skill-id>` for one named skill's registration details."
 compatibility: all
 metadata:
-  version: 3.1.1
+  version: 3.2.0
 ---
 
 ## Purpose
@@ -37,6 +37,7 @@ Print a registered skill's own registration details, or list every registered sk
   `metadata.version`, `metadata.dependencies`) and `## Example` body section, for Single-Skill
   mode. Frontmatter `name` is validated to equal `<id>` exactly, but `Name:` below is still read
   from the catalog `id`, never frontmatter `name` directly — see Outputs below.
+- The highway-experience skill, activated first.
 
 ## Outputs
 
@@ -56,6 +57,10 @@ Satisfies `P9.2`, `P9.3`, `P9.4` and `X5.1` of the Highway Skills Constitution a
   Single-Skill mode.
 - Listing all skills reads the whole catalog once: cost is O(n), where n is the number of
   registered skill entries.
+
+## Procedure
+
+Activate the highway-experience skill before any output the person sees, and follow it for Highway's identity, the Experience Standard, and the storage contract.
 
 ## Verification
 
@@ -88,7 +93,7 @@ This self-check exercises `P9.2`, `P9.3`, `P9.4` and `X5.1`.
 Name: highway-help
 Description: Prints registration details for one named skill, or a discovery listing of every registered skill when none is named.
 Dependencies: none
-Version: 3.1.1
+Version: 3.2.0
 Usage: Invoke as `/highway-help` for all skills, or `/highway-help <skill-id>` for one named skill's registration details.
 Example: `/highway-help highway-help`
 ```

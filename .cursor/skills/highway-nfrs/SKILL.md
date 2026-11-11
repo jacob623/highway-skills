@@ -4,7 +4,7 @@ description: "Manages the repository-wide nfr baseline."
 usage: "Invoke as /highway-nfrs."
 compatibility: all
 metadata:
-  version: 9.1.0
+  version: 9.2.0
 ---
 
 # highway-nfrs
@@ -35,7 +35,7 @@ Do not emit Setup's operational-expectation transition. Setup already emitted it
 - `library/governance/nfrs/NFR*.md` when present.
 - `.highway/library/templates/output/nfr-record.md`.
 - `.highway/library/templates/output/nfr-catalog.md`.
-- `.highway/governance/experience-standard.md`.
+- The highway-experience skill, activated first.
 - Delegation from `highway-setup`.
 
 ## Outputs
@@ -49,9 +49,11 @@ The complete structure is `.highway/library/templates/output/nfr-record.md` and 
 
 ## Procedure
 
+Activate the highway-experience skill before any output the person sees, and follow it for Highway's identity, the Experience Standard, and the storage contract.
+
 User-visible interaction follows the Highway Experience Standard. Repository ownership stays with the person.
 
-Emit only the active template. Follow this order: `review` when the catalog exists; otherwise `recommend`, then `queue` or `ask`, then `capture`, then `identifier`, `title` when needed, and `write`. Follow `.highway/governance/experience-standard.md` for attribution and acceptance wording. Use the accepted Organization Name from the Profile. Use Repository Name when no Organization Name is accepted. Do not ask for Profile, Objective, or Control facts already accepted.
+Emit only the active template. Follow this order: `review` when the catalog exists; otherwise `recommend`, then `queue` or `ask`, then `capture`, then `identifier`, `title` when needed, and `write`. Follow the Highway Experience Standard for attribution and acceptance wording. Use the accepted Organization Name from the Profile. Use Repository Name when no Organization Name is accepted. Do not ask for Profile, Objective, or Control facts already accepted.
 
 An NFR is an operational expectation: how a solution needs to behave. Do not write an enforceable safeguard, an Objective, or an implementation plan.
 

@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # The harness path map selects scenarios from changed paths: a skill's files select that skill, a
 # template selects each skill that names it, shared files and the runner select the smoke set,
-# and generated copies, tests, and specs select nothing. Every shipped template, governance,
-# library, and instruction file maps to a skill or is listed as shared.
+# and generated copies, tests, and specs select nothing. Every shipped library file and every
+# highway-experience file maps to a skill or is listed as shared.
 set -u
 # Instrument class: executable-behavior
 # Artifact classes: harness-path-map, harness-selection
@@ -40,10 +40,12 @@ expect() {
 
 expect .highway/library/templates/output/codify-plan.md skill highway-codify
 expect skills/highway-adr/SKILL.md skill highway-adr
-expect .highway/governance/experience-standard.md smoke smoke
-expect .highway/governance/storage.md smoke smoke
-expect .highway/library/knowledge/highway-identity.md smoke smoke
-expect .highway/instructions/highway-agent-context.md smoke smoke
+expect skills/highway-experience/SKILL.md smoke smoke
+expect skills/highway-experience/references/experience-standard.md smoke smoke
+expect skills/highway-experience/references/storage-contract.md smoke smoke
+expect skills/highway-experience/references/highway-identity.md smoke smoke
+expect .highway/governance/storage.md none -
+expect .highway/instructions/highway-agent-context.md none -
 expect harness/src/runner.ts smoke smoke
 expect harness/harness.config.json smoke smoke
 expect harness/scenarios/highway-codify/codify-plan-review.scenario scenario codify-plan-review
@@ -71,13 +73,13 @@ if [[ "$multi" -lt 2 ]]; then
 	fail=1
 fi
 
-# FR-025: every shipped file under the library, governance, and instruction trees maps.
+# FR-025: every shipped file under the library and highway-experience maps.
 shipped=()
 while IFS= read -r rel; do
 	[[ "$(dist_classify "$rel")" == "include" ]] && shipped+=("$rel")
-done < <(cd "$HW_ROOT" && find "$(hw_rel "$HW_LIBRARY")" "$(hw_rel "$HW_GOVERNANCE")" "$(hw_rel "$HW_INSTRUCTIONS")" -type f | LC_ALL=C sort)
+done < <(cd "$HW_ROOT" && find "$(hw_rel "$HW_LIBRARY")" "$(hw_rel "$HW_EXPERIENCE")" -type f | LC_ALL=C sort)
 if [[ "${#shipped[@]}" -lt 30 ]]; then
-	echo "FAIL: found only ${#shipped[@]} shipped library, governance, and instruction files"
+	echo "FAIL: found only ${#shipped[@]} shipped library and highway-experience files"
 	fail=1
 fi
 mapped="$(cd "$HW_ROOT" && bash "$PATH_MAP" "${shipped[@]}")"

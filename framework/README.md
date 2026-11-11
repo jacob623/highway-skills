@@ -12,10 +12,12 @@ framework/         Validators, generators, and the rules every skill is validate
 tests/             The bash test suite for the framework
 .highway/
 ├── library/       Shared reference material skills draw on
-├── catalog/       The generated index of available skills
-├── governance/    The Experience Standard and the storage contract
-└── instructions/  Always-on instruction sources
+└── catalog/       The generated index of available skills
 ```
+
+`skills/highway-experience/` holds Highway's identity, the Experience Standard, and the storage
+contract under `references/`. Every other Highway skill activates it as the first step of its
+Procedure, so no always-on instruction file is needed.
 
 The framework is POSIX shell (`bash`, `awk`, `sed`, `grep`) only, with no network calls and no
 language runtime to install.
@@ -92,7 +94,7 @@ validation.
 
 The cache key is a hash of the skill's `SKILL.md` combined with a hash of **every validator
 input**: `validate-skill.sh` itself, `.frontmatter-contract`, the constitution, the frontmatter
-lexicon, and every file under `framework/lib/`, `.highway/library/` and `.highway/governance/`.
+lexicon, the Experience Standard, and every file under `framework/lib/` and `.highway/library/`.
 Change any of them and the key changes, so a recorded verdict can never outlive the thing that
 decided it. Three properties are deliberate and should be preserved by anyone editing this:
 
@@ -122,7 +124,9 @@ Iterates `skills/*/SKILL.md`, validates each via `validate-skill.sh`, and writes
 Regenerates the per-agent copies for every valid skill under `skills/`, into
 `.github/skills/<id>/SKILL.md`, `.claude/skills/<id>/SKILL.md`, `.cursor/skills/<id>/SKILL.md`,
 and `.agents/skills/<id>/SKILL.md` at the repository root, per feature 009 (skill id namespace
-alignment). The deliverables for one skill are byte-identical copies of the source.
+alignment). The deliverables for one skill are byte-identical copies of the source. Every other
+file in the skill's folder, such as `references/<name>.md`, is copied to the same relative path
+beside each copy's `SKILL.md`.
 `<id>` is already the full agent-facing identifier (e.g. `highway-help`) — this generator injects
 no namespace prefix of its own.
 
@@ -132,24 +136,6 @@ no namespace prefix of its own.
 - Never reads, writes, or removes existing `speckit-*` folders under `.github/skills/`,
   `.cursor/skills/`, or `.agents/skills/` — those are external tooling used to build this
   repository, not part of this suite. The generator removes no file at all.
-
-### `framework/generate-instructions.sh`
-
-Publishes every `.highway/instructions/<id>.md` file to the always-on instruction locations.
-Author one instruction as its own file. The frontmatter is `name` (equal to the filename id) and
-`description`. The body is plain markdown and is copied unchanged.
-
-- Cursor receives one always-on rule per instruction: `.cursor/rules/<id>.mdc`, with
-  `alwaysApply: true`.
-- Claude Code receives every body in `.claude/CLAUDE.md`.
-- GitHub Copilot receives the same bytes in `.github/copilot-instructions.md`.
-- Codex receives the same bytes in `AGENTS.md` at the repository root.
-
-Bodies in the merged files are in filename order, with one blank line between bodies.
-
-- **Exit 0**: every output written or already current.
-- **Exit 1**: a source is invalid, or a target was hand-edited outside this generator (refuses
-  to overwrite, names the file). A non-zero exit writes nothing. The generator removes no file.
 
 ### `framework/validate-library.sh <library-file>`
 
@@ -208,9 +194,9 @@ non-zero if any test fails.
 ## Paths helper
 
 `framework/lib/paths.sh` is the one declaration of where every repository location lives: the
-skills, framework, tests, fixtures, catalog, instructions, library, governance, harness, and agent
-trees, as `HW_*` variables, plus each output template and governance or framework document by
-name. Moving a location means editing its line there and nothing else.
+skills, highway-experience, framework, tests, fixtures, catalog, library, harness, and agent
+trees, as `HW_*` variables, plus each output template and each framework or highway-experience
+document by name. Moving a location means editing its line there and nothing else.
 
 - Framework scripts source it directly. Tests source `tests/paths.sh` and harness scripts source
   `harness/bin/lib/paths.sh`; each shim is one `source` line.

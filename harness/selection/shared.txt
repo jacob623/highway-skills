@@ -4,7 +4,4 @@
 # `none <path>`: a shipped file that deliberately selects nothing.
 # A path may use `*` (within one folder) and `**` (across folders). The first matching line wins.
 
-smoke	.highway/governance/experience-standard.md
-smoke	.highway/governance/storage.md
-smoke	.highway/library/knowledge/highway-identity.md
-smoke	.highway/instructions/highway-agent-context.md
+smoke	skills/highway-experience/**

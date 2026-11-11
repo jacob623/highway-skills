@@ -1,5 +1,24 @@
 <!--
 Sync Impact Report
+Version change: 10.1.0 → 10.2.0 (MINOR), 2026-11-11
+Bump rationale: the storage contract, the Experience Standard, and the Highway Identity move into
+the highway-experience skill's `references/`. P2.6, P10.1's Observable, and the Repository Context
+note follow the new locations. No rule is added, removed, or strengthened, and no tier changes.
+Activation of highway-experience is enforced by tests/experience-activation.test.sh and the
+harness invariant, not by a rule here. Highway is unreleased, so nothing depends on the old
+locations.
+Changed elements:
+- Version line: 10.1.0 → 10.2.0
+- P2.6 rule text: `.highway/governance/storage.md` → highway-experience's `references/storage-contract.md`
+- P10.1 Observable: the skill references the Experience Standard by activating highway-experience
+- XI. Repository Context: the Highway Identity source is highway-experience's `references/highway-identity.md`
+Unchanged: every rule's keyword and obligation, every tier, the Last Amended date, and every other
+element.
+Self-application review: D1.3 PASS (no Highway Skills Constitution rule sentence is copied);
+D1.4 PASS (this report cites rule IDs); D5.3 PASS (the four changed elements are listed above
+and every unlisted element carries forward).
+
+Sync Impact Report
 Version change: 10.0.0 → 10.1.0 (MINOR), 2026-11-11
 Bump rationale: the framework moves from `.highway/tools/` to `framework/`, and this document
 moves with it to `framework/constitution.md`. P2.6's Observable names `framework/` in place of
@@ -376,7 +395,7 @@ failed on its own.
 | P2.3 | A technology-specific example MUST be labeled "Illustrative". | The example carries the literal word "Illustrative". | [agent-checkable] |
 | P2.4 | An illustrative example MUST sit outside every numbered rule list. | No example text appears inside a rule table or numbered rule list. | [agent-checkable] |
 | P2.5 | A skill MUST state outcomes as verifiable properties rather than as named implementations. | Each stated outcome names a checkable property, not a specific product. | [agent-checkable] |
-| P2.6 | A skill MUST reach the repository only through the operations `.highway/governance/storage.md` declares. | Outside fenced blocks, the skill names no `framework/` path or script file, no `git` command, no absolute path, and no file time. Written file content is excluded. | [auto] |
+| P2.6 | A skill MUST reach the repository only through the operations highway-experience's `references/storage-contract.md` declares. | Outside fenced blocks, the skill names no `framework/` path or script file, no `git` command, no absolute path, and no file time. Written file content is excluded. | [auto] |
 
 Rationale: A skill that hard-codes an incidental technology stops working when that technology
 is replaced. The same holds for storage: a skill that runs a local script or names a local path
@@ -486,7 +505,7 @@ silently diverging in metadata or body structure.
 
 | ID | Rule | Observable | Tier |
 |---|---|---|---|
-| P10.1 | Every new or amended skill MUST comply with all applicable Experience Standard rules. | The skill references the Experience Standard and does not restate its generic interaction rules. | [agent-checkable] |
+| P10.1 | Every new or amended skill MUST comply with all applicable Experience Standard rules. | The skill references the Experience Standard by activating highway-experience and does not restate its generic interaction rules. | [agent-checkable] |
 | P10.2 | A skill that cannot satisfy an applicable Experience Standard rule MUST identify the X-rule and exception condition. | Each exception names one X rule and the condition that displaces it in the skill file. | [agent-checkable] |
 
 Rationale: Experience Compliance makes user-visible behavior reviewable alongside correctness and
@@ -495,7 +514,7 @@ portability while leaving the Experience Standard as the source of interaction r
 ### XI. Repository Context
 
 Repository Context Sources are declared inputs considered during development validation. The
-`.highway/library/knowledge/highway-identity.md` source is shared, non-normative context describing
+highway-experience skill's `references/highway-identity.md` source is shared, non-normative context describing
 what Highway is, why it exists, and what it is trying to achieve. The user-owned organizational context
 at `library/knowledge/profile.md` from the repository root and accepted repository artifacts remain owned by
 their workflows. This Constitution does not define behavioral guidance, strategic direction,
@@ -648,4 +667,4 @@ every other skill's version. This is the policy referenced by P7.7.
 - **MINOR**: a capability is added while every existing contract element continues to hold.
 - **PATCH**: wording repair with no change to Inputs, Outputs, or Verification.
 
-**Version**: 10.1.0 | **Ratified**: 2026-09-06 | **Last Amended**: 2026-11-11
+**Version**: 10.2.0 | **Ratified**: 2026-09-06 | **Last Amended**: 2026-11-11

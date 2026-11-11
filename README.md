@@ -15,11 +15,10 @@ duplicated or hand-adapted per agent.
 - **Generate agent adapters**: `framework/generate-agent-adapters.sh` writes
   `.github/skills/`, `.claude/skills/`, `.cursor/skills/`, and `.agents/skills/` from the skills under
   `skills/`.
-- **Author an always-on instruction**: create `.highway/instructions/<id>.md` with `name` and
-  `description`, then run `framework/generate-instructions.sh`. Claude Code receives
-  `.claude/CLAUDE.md`, GitHub Copilot receives `.github/copilot-instructions.md`, and Codex receives
-  `AGENTS.md`, one merged file each. Cursor receives one always-on rule per instruction at
-  `.cursor/rules/<id>.mdc`.
+  A skill's bundled files, such as `references/<name>.md`, are copied beside its `SKILL.md`.
+- **Share Highway's guidance**: `skills/highway-experience/` holds Highway's identity, the
+  Experience Standard, and the storage contract as references. Every other Highway skill opens its
+  Procedure by activating it. Highway ships no always-on instruction file.
 - **Configure Controls conversationally**: invoke `/highway-controls setup` or `/highway-controls configure`
   for adaptive Concern, Condition, and Obligation discovery; direct `/highway-controls add` creates one Control.
 - **Run the test suite**: `tests/run-all.sh`

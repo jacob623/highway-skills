@@ -74,6 +74,21 @@ export function writesNothing(diff: SnapshotDiff): CheckFailure[] {
   return all.length === 0 ? [] : [{ check: "writes-nothing", path: "-", expected: "no file changes", actual: all.join(", ") }];
 }
 
+export const EXPERIENCE_SKILL = "highway-experience";
+
+/** FR-010: highway-experience must be activated before the first output the person sees. */
+export function experienceInvariant(skillsBeforeOutput: readonly string[]): CheckFailure[] {
+  if (skillsBeforeOutput.includes(EXPERIENCE_SKILL)) return [];
+  return [
+    {
+      check: "experience",
+      path: EXPERIENCE_SKILL,
+      expected: `${EXPERIENCE_SKILL} activated before the first output`,
+      actual: skillsBeforeOutput.length > 0 ? skillsBeforeOutput.join(", ") : "no skill",
+    },
+  ];
+}
+
 function matchingFiles(files: Iterable<string>, glob: string): string[] {
   const re = globToRegExp(glob);
   return [...files].filter((f) => re.test(f)).sort();

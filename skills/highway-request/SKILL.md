@@ -4,7 +4,7 @@ description: "Manages one business request and its accepted artifact."
 usage: "Invoke as /highway-request with the business change."
 compatibility: all
 metadata:
-  version: 5.0.0
+  version: 5.1.0
 ---
 
 # highway-request
@@ -33,7 +33,7 @@ Do not show Current Domain, Completed Domains, or Remaining Domains.
 - `requests/requests.md` and `requests/REQ*.md` when present.
 - `.highway/library/templates/output/request-record.md`.
 - `.highway/library/templates/output/request-catalog.md`.
-- `.highway/governance/experience-standard.md`.
+- The highway-experience skill, activated first.
 - A project root containing `.highway/`.
 
 ## Outputs
@@ -47,7 +47,9 @@ The complete structure is `.highway/library/templates/output/request-record.md` 
 
 ## Procedure
 
-Emit only the active template. Follow this order: `intake` when the invocation has no description; otherwise `start`, then `identifier`, `title` when needed, `write`, and `close`. Follow `.highway/governance/experience-standard.md` for attribution and acceptance wording. Use accepted Profile, Objectives, Controls, and NFRs as grounding. Do not ask for facts those records already answer. Do not treat an example as the person's evidence.
+Activate the highway-experience skill before any output the person sees, and follow it for Highway's identity, the Experience Standard, and the storage contract.
+
+Emit only the active template. Follow this order: `intake` when the invocation has no description; otherwise `start`, then `identifier`, `title` when needed, `write`, and `close`. Follow the Highway Experience Standard for attribution and acceptance wording. Use accepted Profile, Objectives, Controls, and NFRs as grounding. Do not ask for facts those records already answer. Do not treat an example as the person's evidence.
 
 Collect seven domains in this order: Problem, Actors, Current Process, Desired Change, Success Measure, Business Constraints, Solution Constraints. Record `Unknown` when the person says they do not know. Do not invent a value.
 
