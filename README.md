@@ -4,32 +4,32 @@
 
 
 This repository hosts a portable, multi-agent skill-authoring framework. Skills are authored
-once under `.highway/skills/<id>/SKILL.md` and distributed to each supported agent (GitHub
+once under `skills/<id>/SKILL.md` and distributed to each supported agent (GitHub
 Copilot, Claude Code, Cursor) via generated adapters, so skill content never needs to be
 duplicated or hand-adapted per agent.
 
-- **Author a skill**: create `.highway/skills/<id>/SKILL.md` per [.highway/skills/_authoring-standard.md](.highway/skills/_authoring-standard.md).
+- **Author a skill**: create `skills/<id>/SKILL.md` per [framework/authoring-standard.md](framework/authoring-standard.md).
 - **Create an architecture decision**: invoke `highway-adr` with one completed `DISC######` artifact; the workflow publishes an accepted ADR using the shared `adr-record.md` and `adr-catalog.md` output templates.
-- **Validate a skill**: `.highway/tools/validate-skill.sh .highway/skills/<id>`
-- **Build the catalog**: `.highway/tools/generate-catalog.sh` writes `.highway/catalog/index.json`.
-- **Generate agent adapters**: `.highway/tools/generate-agent-adapters.sh` writes
+- **Validate a skill**: `framework/validate-skill.sh skills/<id>`
+- **Build the catalog**: `framework/generate-catalog.sh` writes `.highway/catalog/index.json`.
+- **Generate agent adapters**: `framework/generate-agent-adapters.sh` writes
   `.github/skills/`, `.claude/skills/`, `.cursor/skills/`, and `.agents/skills/` from the skills under
-  `.highway/skills/`.
+  `skills/`.
 - **Author an always-on instruction**: create `.highway/instructions/<id>.md` with `name` and
-  `description`, then run `.highway/tools/generate-instructions.sh`. Claude Code receives
+  `description`, then run `framework/generate-instructions.sh`. Claude Code receives
   `.claude/CLAUDE.md`, GitHub Copilot receives `.github/copilot-instructions.md`, and Codex receives
   `AGENTS.md`, one merged file each. Cursor receives one always-on rule per instruction at
   `.cursor/rules/<id>.mdc`.
 - **Configure Controls conversationally**: invoke `/highway-controls setup` or `/highway-controls configure`
   for adaptive Concern, Condition, and Obligation discovery; direct `/highway-controls add` creates one Control.
-- **Run the test suite**: `.highway/tools/tests/run-all.sh`
+- **Run the test suite**: `tests/run-all.sh`
 - **Find a repository location in a script**: source the paths helper,
-  `.highway/tools/lib/paths.sh`, and use its `HW_*` variables, `hw_template`, and `hw_doc`.
-  Tests source `.highway/tools/tests/paths.sh`; harness scripts source `harness/bin/lib/paths.sh`.
+  `framework/lib/paths.sh`, and use its `HW_*` variables, `hw_template`, and `hw_doc`.
+  Tests source `tests/paths.sh`; harness scripts source `harness/bin/lib/paths.sh`.
 
 Feature 094 full-suite validation allows up to 240 seconds for completion.
 
-See [.highway/tools/README.md](.highway/tools/README.md) for full tool documentation (including
+See [framework/README.md](framework/README.md) for full tool documentation (including
 how to add a new agent) and [specs/001-multi-agent-skill-suite/quickstart.md](specs/001-multi-agent-skill-suite/quickstart.md)
 for an end-to-end walkthrough.
 
@@ -38,12 +38,12 @@ for an end-to-end walkthrough.
 A skill is validated against written rules, each carrying a stable id, an Observable, and a tier
 that says how it is decided. Two documents govern:
 
-- **[.highway/governance/constitution.md](.highway/governance/constitution.md)** — the Highway
+- **[framework/constitution.md](framework/constitution.md)** — the Highway
   Skills Constitution. The rules a skill is judged by, in the `P` namespace. Rule text lives here
   and nowhere else.
-- **[.highway/skills/_authoring-standard.md](.highway/skills/_authoring-standard.md)** — the
+- **[framework/authoring-standard.md](framework/authoring-standard.md)** — the
   practical authoring guide. Cites rules by id rather than restating them, so the two cannot
   drift apart.
 
-Run `.highway/tools/validate-skill.sh .highway/skills/<id>` to see which rules are checked
+Run `framework/validate-skill.sh skills/<id>` to see which rules are checked
 automatically, which were not verified for you, and which your skill failed.

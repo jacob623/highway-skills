@@ -102,7 +102,7 @@ for fixture in "$@"; do
 		fi
 	fi
 
-	if [ -d "$(hw_at "$view" "$HW_FRAMEWORK")" ]; then
+	if [ -d "$(hw_at "$view" "$HW_HIGHWAY")" ]; then
 		problem "$fixture" .highway "fixtures hold project files only; the distribution supplies .highway/"
 	fi
 	while IFS= read -r rel; do

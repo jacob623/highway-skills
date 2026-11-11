@@ -51,7 +51,7 @@ passing:
 | --- | --- | --- | --- |
 | 4 | Removals | None | Complete: `specs/233-standard-alignment-removals/` |
 | 5 | Path Indirection | 4 | Complete: `specs/234-standard-alignment-path-indirection/` |
-| 6 | Relocate the Framework, Tests, and Skills | 5 | |
+| 6 | Relocate the Framework, Tests, and Skills | 5 | Complete: `specs/235-standard-alignment-relocation/` |
 | 7 | highway-experience | 6 | |
 | 8 | Catalog Seeding | 7 | |
 | 9 | Record Templates in Their Skills | 6 | |
@@ -1008,6 +1008,19 @@ changes.
 
 Exit: `skills/`, `tests/`, and `framework/` hold their Phase 3 contents, no `SKILL.md` body
 changed, and the full suite passes.
+
+Status: complete in `specs/235-standard-alignment-relocation/`. The suite stays at 82 tests, all
+passing, and the harness tests at 75. Beyond the steps above:
+- The framework no longer ships. Skills ship from `skills/` to `.highway/skills/`, and packaging
+  validates them with `framework/validate-skill.sh` from a verification tree: the distribution
+  plus `framework/`, with the skills moved back to `skills/`.
+- `framework/README.md` ships as the distribution's `README.md` until Phase 14.
+- The Highway Skills Constitution is 10.1.0 at `framework/constitution.md`; P2.6 and its check
+  name `framework/`. The development constitution is 3.2.0.
+- `harness/bin/path-map.sh --location <skills|framework>` replaces `--location tools`; `tests/`
+  selects no scenario.
+- The committed test leftovers are gone, and the three tests that add temporary skills or adapter
+  rows remove them on exit.
 
 # Phase 7: highway-experience
 
