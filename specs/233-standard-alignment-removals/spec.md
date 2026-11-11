@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-11
 
-**Status**: Draft
+**Status**: Complete
 
 **Input**: User description: "create a new spec for implementing phase 4 in standard-alignment.md". Phase 4 (Removals) removes the files that Phases 2 and 3 of `standard-alignment.md` drop and that nothing else depends on, before any file moves, so later phases convert and move fewer files. It removes the shared library index and its generator; the three library READMEs and the catalog README; the skill catalog's `index.md`, its `overlap_flags` field, and its `generated_at` field, with highway-help's line about `overlap_flags`; the finished one-off audits, the rename allowlist, and the library seeding script, with their tests; and the `.DS_Store` files. The always-on instructions wait for Phase 7, and `validate-library.sh` waits for Phase 11. Exit: the removed files are gone, nothing references them, and the full suite passes.
 

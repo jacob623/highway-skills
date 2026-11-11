@@ -47,19 +47,19 @@ complete in this document and have no spec of their own.
 Phases 4 to 14 carry out those decisions. Each is one speckit spec and leaves the full suite
 passing:
 
-| Phase | Spec | Depends on |
-| --- | --- | --- |
-| 4 | Removals | None |
-| 5 | Path Indirection | 4 |
-| 6 | Relocate the Framework, Tests, and Skills | 5 |
-| 7 | highway-experience | 6 |
-| 8 | Catalog Seeding | 7 |
-| 9 | Record Templates in Their Skills | 6 |
-| 10 | Onboarding Handoffs | 8 |
-| 11 | Self-Contained Skills | 7 to 10 |
-| 12 | Agent Skills Format Conformance | 6 |
-| 13 | Progressive Disclosure | 11 |
-| 14 | Agent Plugins Package | 11 to 13 |
+| Phase | Spec | Depends on | Status |
+| --- | --- | --- | --- |
+| 4 | Removals | None | Complete: `specs/233-standard-alignment-removals/` |
+| 5 | Path Indirection | 4 | |
+| 6 | Relocate the Framework, Tests, and Skills | 5 | |
+| 7 | highway-experience | 6 | |
+| 8 | Catalog Seeding | 7 | |
+| 9 | Record Templates in Their Skills | 6 | |
+| 10 | Onboarding Handoffs | 8 | |
+| 11 | Self-Contained Skills | 7 to 10 | |
+| 12 | Agent Skills Format Conformance | 6 | |
+| 13 | Progressive Disclosure | 11 | |
+| 14 | Agent Plugins Package | 11 to 13 | |
 
 ## Conformance map
 
@@ -923,22 +923,58 @@ Not in this phase: the always-on instructions wait for highway-experience (Phase
 
 Exit: the removed files are gone, nothing references them, and the full suite passes.
 
+Status: complete in `specs/233-standard-alignment-removals/`. The suite went from 92 tests to 88.
+Beyond the steps above:
+- The distribution manifest lost its rows for the three missing root context files that only the
+  seeding script read.
+- `.specify/memory/constitution.md` is 3.0.0: D4.2 and D4.7 no longer allow a timestamp
+  difference.
+- highway-help is 3.1.1.
+
 # Phase 5: Path Indirection
 
 Goal: every bash test and framework script finds files through one paths helper, so a later move
 changes the helper, not every test. Nothing moves in this phase.
 
-1. Add one paths helper that defines where the skills, the framework, the tests, the governance
+1. Retire the tests whose only purpose is regression checking, before converting any test, so
+   none is converted only to be deleted later. Record each dropped assertion as superseded, or keep
+   it in a remaining test, as Phase 4 did.
+   - Remove the tests that only guard a finished change:
+     - `profile-yaml.test.sh` guards the removed `profile.yaml` template.
+       `profile-template-migration.test.sh` repeats that check.
+     - `path-integrity.test.sh` guards against paths from before the `.highway/` relocation.
+       Phase 6 changes the layout it scans.
+   - Remove the tests that check past-feature evidence files rather than behavior, with the
+     fixtures only they read:
+     - `feature-092-correspondence.test.sh`, with
+       `fixtures/profile-092/dependent-artifact-inventory.tsv` and `impact-review.tsv`.
+       `adapter-coverage.test.sh` already checks the generated files it names.
+     - `profile-adaptive.test.sh`, with `fixtures/profile-091/adaptive-corpus.md`.
+   - Reduce the tests that are mostly regression checks to their current-behavior assertions, or
+     remove them when nothing remains:
+     - `profile-template-migration.test.sh`: drop the obsolete template checks.
+     - `experience-standard-amendment.test.sh`, `feature-141-experience-standard-refactor.test.sh`,
+       and `experience-standard-convergence.test.sh` repeat the same 64-rule count, the same
+       retired-rule and removed-section checks, and two exact version pins. Keep one copy of each
+       current check, in one test. Drop the exact version pins and the protected-path check,
+       which can never fail.
+     - `constitution-experience-alignment.test.sh`: drop the exact version line and the checks
+       that removed text stays absent.
+     - `runtime-contract-hygiene.test.sh`: covers only highway-profile and highway-setup.
+       `shipped-tree-independence.test.sh` covers its `specs/` and `.specify/` checks for the whole
+       distribution. Drop the test, and record its `FR-` and `Feature NNN` scan as superseded.
+2. Add one paths helper that defines where the skills, the framework, the tests, the governance
    files, and each template live.
-2. Every bash test and framework script sources the helper instead of building paths from
-   `HIGHWAY_ROOT`. Today 90 of the 92 tests build their own paths: 45 name `skills/`, 38 name
-   `tools/`, and 33 name `library/templates/`.
-3. The harness reads the same locations through `bin/path-map.sh`.
-4. A bash check fails when a test or framework script builds a path to a moved location without
+3. Every bash test and framework script sources the helper instead of building paths from
+   `HIGHWAY_ROOT`. Before step 1, 87 of the 88 tests build their own paths: 44 name `skills/`,
+   34 name `tools/`, and 31 name `library/templates/`.
+4. The harness reads the same locations through `bin/path-map.sh`.
+5. A bash check fails when a test or framework script builds a path to a moved location without
    the helper.
 
-Exit: no test or framework script names a skill, tool, governance, or template path except
-through the helper, and the full suite passes.
+Exit: no regression-only test remains, every dropped assertion is accounted for, no test or
+framework script names a skill, tool, governance, or template path except through the helper, and
+the full suite passes.
 
 # Phase 6: Relocate the Framework, Tests, and Skills
 
