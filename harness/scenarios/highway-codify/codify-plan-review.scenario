@@ -1,0 +1,56 @@
+# The whole path: suggestion, proposal, plan review, task list, coding, and the close.
+id: codify-plan-review
+skill: highway-codify
+fixture: implementation
+web: yes
+open: /highway-codify Northwind Restock Alerts
+ask: Would you like to explore any of these options?
+say: [select] 1
+ask: What would you add, correct, or remove?
+say: [accept] Looks good.
+ask: Would you like to:
+say: [select] 1
+ask: What would you add, correct, or remove?
+say: [accept] Nothing to change.
+ask: Would you like to:
+say: [select] 2
+ask: Where would you like to go next?
+say: [decline] Nothing else for now.
+writes: code/**
+expect: template code/code.md :: codify-catalog.md
+expect: template code/*/.highway/metadata.md :: codify-metadata.md
+expect: template code/*/.highway/features/001-*/codify.md :: codify-record.md
+expect: template code/*/.highway/features/001-*/plan.md :: codify-plan.md
+expect: template code/*/.highway/features/001-*/codify-tasks.md :: codify-tasks.md
+expect: contains code/*/.highway/features/001-*/codify-tasks.md :: [X] T001
+expect: heading code/*/README.md :: ## Setup Instructions
+expect: heading code/*/README.md :: ## User Guide
+covers: 2b566cce0a70 Before any proposal, coding standards are checked first and vendor documentation second. Corrections and inconclusive results are named before the proposal and are not saved. The checks keep the selected action.
+covers: 6f30961050f5 The diagram is one logical flow, top to bottom, from the Provider. Each arrow leaves the Provider, is one task's action, starts with a verb, and points to that task's target, in task order. No arrow leaves a target.
+covers: 16622f4387dc Every task names the same Provider, the platform executing the automation. The implementation being automated is a target. A Shopify proposal can use Cursor when Cursor is included, even though the Shopify records do not name it.
+covers: 5aeb5f3a3fff Each task is one action against one target and shows Scope, Provider, Method, Standards, Files, and Assumptions.
+covers: a328baed3185 The proposal shows **Proposed project:** as `New <folder>` or `Existing <folder>`, then **Rationale:**. Its first sentence is plain language. A standard or integration is cited only when it replaced the decision.
+covers: ded7741aec3c The menu offers Review the plan and Continue to code the solution. A feature with a plan and no task list resumes at the menu.
+covers: 9809699407cf Reviewing the plan reads every section, then asks **What would you add, correct, or remove?** and "If this is accurate, just say so." before the menu returns. Accepting emits the menu, and a change regenerates the plan and runs `check`. Continuing to code asks no review question.
+covers: 993e375d731b Continuing emits the building sentence once, then writes the task list ordered by story, each heading with its independent test.
+covers: 575724a229f8 The task list follows `codify-tasks.md`. A story's test line comes first only when its first standard says `Tests: required`.
+covers: bf767f40cbdb Coding starts with no question after the task list is written. Every standard a task names, and each existing file it names, is read before its files are written, and no other automation file is read, the earlier one winning a disagreement, and each task is marked `[X]` before the next begins.
+covers: 04aafc1c888f The README is headed `## Setup Instructions`, then `## User Guide`.
+covers: fe3491ad1b88 A finished run closes with the completion message, both paths, and the sentence that the automation was not run. A stopped run names the stopped task and does not say the codify stage is complete.
+covers: 86e4936f161e Acceptance and coding run the automation zero times and leave the implementation, architecture, decision, request, and finding unchanged.
+covers: 8b150f32ee3b A missing coding standards catalog leaves every task with `No coding standard applies.` The close says no catalog was found.
+covers: 1d823addb999 Each accepted action is the next numbered feature directory in its product, numbered from the last row of the Features table in `.highway/metadata.md`. No features folder is listed. Earlier directories stay.
+covers: fa5ad7c89ce4 Each accepted feature adds one Features row with its number, folder, title, and Summary. A row is never removed.
+reaches: provider
+reaches: standards
+reaches: align
+reaches: govern
+reaches: folder
+reaches: layout
+reaches: identifier
+reaches: index
+reaches: check
+reaches: review
+reaches: tasks
+reaches: code
+reaches: close

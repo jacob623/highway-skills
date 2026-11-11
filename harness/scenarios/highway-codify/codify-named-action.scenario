@@ -1,0 +1,16 @@
+# A named action skips suggestions. A question is answered; removing every task and criterion keeps the proposal open.
+id: codify-named-action
+skill: highway-codify
+fixture: implementation
+open: /highway-codify Northwind Restock Alerts Check reorder points every night
+ask: What would you add, correct, or remove?
+say: [question] Which platform runs this?
+ask: What would you add, correct, or remove?
+say: [edit] Remove every task and every acceptance criterion.
+ask: What would you add, correct, or remove?
+say: [decline] Stop.
+covers: 394212ea3630 A named action skips the suggestion list and opens the proposal for that action.
+covers: d0c51fb69963 Removing the last task or the last acceptance criterion keeps the proposal open and writes nothing.
+reaches: draft
+reaches: propose
+reaches: revise

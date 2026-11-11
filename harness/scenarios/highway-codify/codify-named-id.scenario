@@ -1,0 +1,14 @@
+# An implementation id selects it and shows its title; a reply with two actions keeps one; declining writes nothing.
+id: codify-named-id
+skill: highway-codify
+fixture: implementation
+open: /highway-codify RIde140b32
+ask: Would you like to explore any of these options?
+say: [select] Check reorder points every night, and also email the store manager a monthly summary.
+ask: What would you add, correct, or remove?
+say: [decline] Cancel this.
+covers: d6438e900c5e A supplied id selects the matching accepted implementation, and the title is shown afterward.
+covers: f9cc62afad04 A second action waits for another run. Declining writes nothing. Accepting is the only confirmation.
+covers: 9dde8c6abcab Declining a proposal writes nothing.
+reaches: suggest
+reaches: propose

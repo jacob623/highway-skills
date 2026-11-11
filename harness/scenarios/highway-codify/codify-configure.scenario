@@ -1,0 +1,7 @@
+# The word `configure` points to /highway-codify-config and writes nothing.
+id: codify-configure
+skill: highway-codify
+fixture: implementation
+open: /highway-codify configure
+covers: 46cde0e116f1 An invocation of the word `configure` points to `/highway-codify-config` and writes nothing.
+reaches: Entry

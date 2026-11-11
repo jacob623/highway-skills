@@ -1,0 +1,11 @@
+# The code catalog lists accepted automations newest first, selects one, and writes nothing.
+id: codify-catalog
+skill: highway-codify
+fixture: codify-existing-product
+open: /highway-codify catalog
+ask: Which automation would you like to discuss?
+say: [select] 1
+ask: What would you like to know about it?
+say: [decline] Nothing, thanks.
+covers: 0f12977d85f6 `/highway-codify catalog` lists at most five accepted automations, newest first, with each implementation title and progress, says how many more exist, and writes nothing. A selection shows the files path and the README path.
+reaches: catalog

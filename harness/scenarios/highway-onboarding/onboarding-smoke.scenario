@@ -1,0 +1,26 @@
+# Smoke: one existing provider to its decision, architecture, and implementation.
+id: onboarding-smoke
+skill: highway-onboarding
+fixture: setup
+smoke: yes
+open: /highway-onboarding We build, deploy, and run scheduled jobs for every repository with GitHub Actions on GitHub-hosted runners.
+ask: What would you add, correct, or remove?
+say: [accept] Looks good.
+ask: What would you add, correct, or remove?
+say: [accept] Looks good.
+ask: What would you add, correct, or remove?
+say: [accept] Looks good.
+ask-pattern: Would you like to configure how highway-codify uses
+say: [decline] Not now.
+ask: Where would you like to go next?
+say: [decline] Nothing else for now.
+ask-pattern: \?
+say: [unknown] I don't know.
+writes: adrs/**
+writes: architectures/**
+writes: implementations/**
+writes: library/coding-standards/codify-platforms.md
+expect: template adrs/adrs.md :: adr-catalog.md
+expect: template architectures/architectures.md :: architecture-catalog.md
+expect: template implementations/implementations.md :: implementation-catalog.md
+expect: row adrs/adrs.md :: onboarding

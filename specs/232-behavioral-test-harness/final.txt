@@ -1,0 +1,32 @@
+Final verification, spec 232 (2026-11-10). No live agent run: no Copilot token was available.
+
+Bash suite: bash .highway/tools/tests/run-all.sh
+  Summary: 92 passed, 0 failed (exit 0, 314 s)
+  Includes the six new harness checks: harness-placement, harness-path-map,
+  harness-fixtures, harness-coverage, harness-scenarios, harness-switches.
+
+Harness: npm test (harness/), Node 24.22.2
+  75 tests, 75 pass, 0 fail (exit 0)
+Harness: npm run typecheck
+  exit 0
+
+CLI exit codes: see quickstart-results.txt
+  --help 0, --bogus 2, --smoke with --skills 2, missing token 2
+
+Requirement coverage (separate from suite results):
+  highway-codify: 65 of 65 bullets treated (59 scenario, 1 invariant, 4 waived);
+  every reply kind exercised; every step reached.
+  Scenarios: 47 (28 highway-codify, 15 smoke, chain stages 1 to 6).
+
+Shipped files changed: .highway/tools/.distribution-manifest (harness/ exclude) and the
+development constitution only. No skill, template, or governance file changed.
+
+Not verified (needs a Copilot token, see the spike checklist in harness/README.md):
+  - the spike: skill invocation through the SDK, instruction loading, usage reporting, cost
+  - SC-002 (targeted highway-codify run passes from fixtures)
+  - SC-003 (full run passes and produces the five stage candidates; promotion itself is
+    unit-tested)
+  - SC-005 (live smoke run executes the 15 smoke scenarios; selection of exactly 15 is
+    statically checked)
+  - SC-006 to SC-008 in live sessions (each is enforced in code and tested with a fake driver)
+  - scenario replies and ask-pattern keys against real transcripts

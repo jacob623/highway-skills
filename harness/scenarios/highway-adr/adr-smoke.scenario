@@ -1,0 +1,16 @@
+# Smoke: an accepted Discovery to the first accepted decision.
+id: adr-smoke
+skill: highway-adr
+fixture: discovery
+smoke: yes
+open: /highway-adr Weekly Order Restock Alerts Options
+ask: Which option would you like to select?
+say: [select] 1
+ask: What would you add, correct, or remove?
+say: [accept] Looks good.
+ask-pattern: \?
+say: [accept] Yes, go ahead.
+writes: adrs/adrs.md
+writes: adrs/*.md
+expect: template adrs/adrs.md :: adr-catalog.md
+expect: template adrs/ADR*.md :: adr-record.md

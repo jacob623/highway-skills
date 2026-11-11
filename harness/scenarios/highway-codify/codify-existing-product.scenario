@@ -1,0 +1,26 @@
+# An existing product: the codified suggestion is left out, and the new action joins the product as feature 002.
+id: codify-existing-product
+skill: highway-codify
+fixture: codify-existing-product
+open: /highway-codify Northwind Restock Alerts
+ask: Would you like to explore any of these options?
+say: [select] 1
+ask: What would you add, correct, or remove?
+say: [accept] Looks good.
+ask: Would you like to:
+say: [decline] Stop here.
+writes: code/**
+expect: template code/restock-alerts/.highway/features/002-*/codify.md :: codify-record.md
+expect: field code/restock-alerts/.highway/features/002-*/codify.md :: id=CDY140b0b32
+expect: row code/restock-alerts/.highway/metadata.md :: 002
+expect: contains code/code.md :: 002-
+expect: absent code/restock-alerts/.highway/features/002-*/codify-tasks.md
+covers: 0d42102601ef A suggestion already in a product that lists this implementation is left out before the list keeps five: by a recorded feature with the same words, ignoring case, or by a feature sentence or product Summary with that meaning. No product folder is opened. Removed rows and integration rows leave nothing out.
+covers: a328baed3185 The proposal shows **Proposed project:** as `New <folder>` or `Existing <folder>`, then **Rationale:**. Its first sentence is plain language. A standard or integration is cited only when it replaced the decision.
+covers: 1d823addb999 Each accepted action is the next numbered feature directory in its product, numbered from the last row of the Features table in `.highway/metadata.md`. No features folder is listed. Earlier directories stay.
+covers: fa5ad7c89ce4 Each accepted feature adds one Features row with its number, folder, title, and Summary. A row is never removed.
+covers: 2af7b6ac676b Features keeps an entry only when that feature starts the product, adds an implementation, records an integration, changes the summary, or is open.
+covers: 033fb38019d6 Each id is `CDY` plus eight hex digits derived from the product title. A joined product keeps its id.
+reaches: codified
+reaches: resume
+reaches: join

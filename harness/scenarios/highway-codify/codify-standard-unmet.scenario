@@ -1,0 +1,10 @@
+# A named action a standard forbids shows no proposal and asks for a different action; nothing is written.
+id: codify-standard-unmet
+skill: highway-codify
+fixture: codify-standard-unmet
+open: /highway-codify Northwind Restock Alerts Email the restock list to the warehouse lead
+ask-pattern: \?
+say: [decline] Never mind.
+covers: 35ab7a437429 A standard that cannot be met for the selected action shows no proposal and returns to suggestions.
+covers: 23a124cd8241 A standard that cannot be met for the selected action returns to `suggest` and writes nothing.
+reaches: align

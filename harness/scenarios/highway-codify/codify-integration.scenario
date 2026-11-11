@@ -1,0 +1,17 @@
+# A named action that connects two accepted implementations writes one integrations row on acceptance.
+id: codify-integration
+skill: highway-codify
+fixture: codify-many-implementations
+open: /highway-codify Northwind Restock Alerts Send the weekly restock alert through the Northwind Email Gateway
+ask: What would you add, correct, or remove?
+say: [accept] Looks good.
+ask: Would you like to:
+say: [decline] Stop here.
+writes: code/**
+expect: template code/integrations.md :: codify-integrations.md
+expect: row code/integrations.md :: RIde4c6008
+expect: template code/*/.highway/features/001-*/codify.md :: codify-record.md
+covers: 6b5e2f7efb7c Accepting a proposal that includes an integration writes one row to `code/integrations.md`, and a pair already accepted writes none.
+covers: 394212ea3630 A named action skips the suggestion list and opens the proposal for that action.
+reaches: draft
+reaches: index

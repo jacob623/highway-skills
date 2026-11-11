@@ -1,0 +1,44 @@
+# A code project: Establish is the only suggestion; the removed row's folder and id are taken; coding ends with "The code was not run."
+id: codify-code-project
+skill: highway-codify
+fixture: codify-code-project
+open: /highway-codify Northwind Restock Alerts
+ask: Would you like to explore any of these options?
+say: [select] 1
+ask-pattern: taken
+say: [edit] Use the folder restock-alerts-code.
+ask: What would you add, correct, or remove?
+say: [accept] Looks good.
+ask: What would you add, correct, or remove?
+say: [accept] That title works.
+ask: Would you like to:
+say: [select] 2
+ask: Where would you like to go next?
+say: [decline] Nothing else for now.
+writes: code/**
+expect: template code/restock-alerts-code/.highway/metadata.md :: codify-metadata.md
+expect: template code/restock-alerts-code/.highway/features/001-*/codify.md :: codify-record.md
+expect: contains code/restock-alerts-code/.highway/features/001-*/codify.md :: Language:
+expect: contains code/restock-alerts-code/.highway/features/001-*/codify.md :: Python Coding Standard
+expect: template code/restock-alerts-code/.highway/features/001-*/codify-tasks.md :: codify-tasks.md
+expect: exists code/restock-alerts-code/pyproject.toml
+expect: exists code/restock-alerts-code/.github/workflows/*.yml
+expect: heading code/restock-alerts-code/README.md :: ## Setup Instructions
+covers: e5097c411bbe An implementation whose Language names a coding standard is a code project. Until an Establish feature is recorded, `Establish [implementation title]` is the only suggestion, even when an instance is running. Later suggestions come from Realized Capabilities, Realized Interfaces, covered Coverage rows, then NFR Realization, at most five.
+covers: 5b53eac82f36 A code project's Establish proposes the project structure, the build file, the entry point, the configuration, and a health check, plus pipeline tasks when Deployed by is a pipeline. A code task shows Language in place of Provider. The Executor is Deployed by.
+covers: 4309df5fe08e A code project's product is titled from the implementation, lists only that implementation, and its close says the code was not run.
+covers: dc2d04d6117b Each task shows Standards as an ordered list, or `No coding standard applies.` A standard whose When not to use matches is dropped. A standard comes before the standards it inherits from, and each inherited standard appears once.
+covers: 4e232bd062c7 Files lists relative paths placed from the File and Folder Structure of the task's standards. A listed standard with no structure is named before the proposal with a pointer to `/highway-codify-config`. A Files edit changes only this automation. An unfilled placeholder keeps the proposal open.
+covers: 92309a0a6fec `align` corrects the method, library, module, or pattern against every standard on the task's list and keeps the Provider.
+covers: 210f282c16d8 A folder already in the catalog, including a removed row, is not started. The person names another.
+covers: c05d6527af4a The person's project edit is written. The folder stays unique, including removed rows, the `CDY` id is in `.highway/metadata.md`, the feature is under `.highway/features/`, and paths are relative to the folder.
+covers: 46bfa03d0bdd A taken id names the conflicting titles, says a title change is appropriate, and shows a new title. The write waits until the person accepts that title.
+covers: 9f30ffae292a That message does not mention identifiers, hex, sampling, or the catalog.
+covers: 575724a229f8 The task list follows `codify-tasks.md`. A story's test line comes first only when its first standard says `Tests: required`.
+reaches: code project
+reaches: code tasks
+reaches: folder
+reaches: title
+reaches: tasks
+reaches: code
+reaches: close

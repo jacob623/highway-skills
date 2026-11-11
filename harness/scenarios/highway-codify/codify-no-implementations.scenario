@@ -1,0 +1,7 @@
+# No accepted implementation exists: say so and write nothing.
+id: codify-no-implementations
+skill: highway-codify
+fixture: architecture
+open: /highway-codify
+covers: 1c4c948dfd55 No accepted implementation writes nothing.
+reaches: Entry

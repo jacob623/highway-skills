@@ -1,0 +1,19 @@
+# Smoke: an accepted Reference Architecture to the first accepted Reference Implementation.
+id: implementation-smoke
+skill: highway-implementation
+fixture: architecture
+smoke: yes
+open: /highway-implementation Scheduled Restock Alert Service. A GitHub Actions scheduled workflow runs every Monday, calls the order service stock query with a read-only token, and emails the warehouse lead. It is not running yet.
+ask: What would you add, correct, or remove?
+say: [accept] Looks good.
+ask: Would you like to return and provide these details now?
+say: [decline] Not now.
+ask-pattern: Would you like to configure how highway-codify uses
+say: [decline] Not now.
+ask-pattern: \?
+say: [unknown] I don't know.
+writes: implementations/implementations.md
+writes: implementations/*.md
+writes: library/coding-standards/codify-platforms.md
+expect: template implementations/implementations.md :: implementation-catalog.md
+expect: template implementations/RI*.md :: implementation-record.md

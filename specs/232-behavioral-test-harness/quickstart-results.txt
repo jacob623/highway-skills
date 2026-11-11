@@ -1,0 +1,83 @@
+# Quickstart results: runner command line and unit checks (no token)
+# Node v24.22.2; recorded 2026-11-10T13:05Z
+# Live runs (spike, smoke, targeted, full) need a Copilot token and were not run.
+
+$ node harness/src/cli.ts --help
+Usage: node harness/src/cli.ts [switches]
+
+With no selection switch, the full suite runs: the chain, then every scenario.
+
+Selection:
+  --smoke                 Run one smoke scenario per skill (default: off)
+  --changed-since <ref>   Run scenarios affected by files changed since <ref>
+  --paths <files>         Run scenarios affected by these comma-separated paths
+  --skills <ids>          Run scenarios for these comma-separated skill ids
+
+Agent:
+  --model <id>            Model for scenario sessions (default: harness.config.json model)
+  --judge-model <id>      Model for the judge and the reply fallback (default: the run's model)
+  --no-judge              Skip the judge (default: off)
+
+Execution:
+  --parallel <n>          Scenarios run at once (default: 4)
+  --max-turns <n>         Turn limit per attempt (default: 40)
+  --timeout <minutes>     Time limit per attempt, in minutes (default: 20)
+
+Output:
+  --transcripts <dir>     Folder that receives run folders (default: harness/runs/)
+
+Fixtures:
+  --promote <run folder>  Replace stage fixtures with a run's candidate snapshots
+
+Help:
+  --help, -h              Print this help and exit 0
+
+Examples:
+  node harness/src/cli.ts --smoke
+  node harness/src/cli.ts --changed-since origin/main
+  node harness/src/cli.ts --skills highway-codify
+
+Exit codes: 0 every gated check passed or nothing was selected; 1 a gated check failed;
+2 the run could not start, a switch was invalid, or a rate limit or allowance stopped it.
+exit 0
+
+$ node harness/src/cli.ts --bogus
+Unknown switch: --bogus
+Run with --help for usage.
+exit 2
+
+$ node harness/src/cli.ts --smoke --skills highway-codify
+--smoke cannot be used with --skills. Use --smoke alone.
+Run with --help for usage.
+exit 2
+
+$ env -u GITHUB_TOKEN -u COPILOT_GITHUB_TOKEN node harness/src/cli.ts --skills highway-help --transcripts /tmp/harness-qs-runs
+HARNESS run=20261110-130524Z-targeted-6d99016 commit=6d99016c0d8726bc312b7f27062c9081f3de144c type=targeted model=claude-sonnet-4.5 judge=claude-sonnet-4.5 sdk=1.0.30 cli=1.0.108
+Selected 1 scenario(s):
+  help-smoke: --skills highway-help
+==== FAILURE run ====
+Where:   -; stage -; turn -; step -
+What:    token
+         expected: GITHUB_TOKEN or COPILOT_GITHUB_TOKEN; actual: neither is set in the environment or harness/.env
+Covers:  none
+Recent:  none
+Rejected: none
+Likely cause: No Copilot token was found. Set GITHUB_TOKEN in harness/.env.
+HARNESS-FAILURE {"run":"20261110-130524Z-targeted-6d99016","scenario":null,"attempt":null,"kind":"missing-token","stage":null,"turn":null,"step":null,"check":"token","path":null,"expected":"GITHUB_TOKEN or COPILOT_GITHUB_TOKEN","actual":"neither is set in the environment or harness/.env","line":null,"covers":[],"rejected":[],"detail":null,"cause":"No Copilot token was found. Set GITHUB_TOKEN in harness/.env."}
+==== SUMMARY ====
+Passed 0, failed 0, flaky 0, blocked 0, not run 0, skipped 0
+FAIL run: missing-token - No Copilot token was found. Set GITHUB_TOKEN in harness/.env.
+Usage: 0 model calls, 0 input tokens, 0 output tokens
+Run folder: /tmp/harness-qs-runs/20261110-130524Z-targeted-6d99016
+exit 2
+
+$ npm --prefix harness test
+ℹ tests 75
+ℹ pass 75
+ℹ fail 0
+exit 0
+
+$ npm --prefix harness run typecheck
+> highway-harness@0.1.0 typecheck
+> tsc -p tsconfig.json
+exit 0

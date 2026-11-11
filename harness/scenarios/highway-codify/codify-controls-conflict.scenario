@@ -1,0 +1,16 @@
+# A Control and an NFR disagree: the Control is applied and the conflict is recorded; an edit that breaks the Control is refused.
+id: codify-controls-conflict
+skill: highway-codify
+fixture: codify-controls-nfrs
+open: /highway-codify Northwind Restock Alerts Send the weekly restock alert
+ask: What would you add, correct, or remove?
+say: [edit] Send it by email instead.
+ask: What would you add, correct, or remove?
+say: [accept] Fine, keep it as it is.
+ask: Would you like to:
+say: [decline] Stop here.
+writes: code/**
+expect: contains code/*/.highway/features/001-*/codify.md :: Restock Alerts Use Team Chat
+expect: contains code/*/.highway/features/001-*/codify.md :: Restock Alert Email Delivery disagrees.
+reaches: govern
+reaches: revise

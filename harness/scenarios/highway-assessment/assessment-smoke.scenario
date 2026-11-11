@@ -1,0 +1,14 @@
+# Smoke: review gaps; each finding is written before it is shown.
+id: assessment-smoke
+skill: highway-assessment
+fixture: implementation
+smoke: yes
+open: /highway-assessment
+ask: What would you like to review?
+say: [select] 1
+ask: Would you like to explore any of these findings in more detail?
+say: [decline] No, that's all for now.
+ask-pattern: \?
+say: [decline] Stop here.
+writes: .highway/library/knowledge/assessment-findings.md
+expect: template .highway/library/knowledge/assessment-findings.md :: assessment-findings.md

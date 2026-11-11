@@ -1,0 +1,10 @@
+# Deployed by and Managed by name a platform with no row: the missing-detail line, then highway-implementation.
+id: codify-platform-no-row
+skill: highway-codify
+through: highway-implementation
+fixture: codify-platform-no-row
+open: /highway-codify Northwind Restock Alerts
+ask-pattern: \?
+say: [decline] Not now.
+covers: c47da852c65d After a selection, a record whose Deployed by or Managed by is `Needed`, empty, or has no row, or whose Language is `Needed`, empty, or has no row, emits the missing critical detail line and "Let's set those details now for [Product Title].", then follows `highway-implementation` with the return step `record check`. It asks no question and holds no platform for one run.
+reaches: record check

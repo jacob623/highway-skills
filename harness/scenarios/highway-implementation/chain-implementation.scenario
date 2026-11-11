@@ -1,0 +1,36 @@
+# Chain stage 5: onboard GitHub Actions as a codify platform, then realize the restock architecture on it.
+id: chain-implementation
+skill: highway-implementation
+through: highway-onboarding
+through: highway-codify-config
+fixture: architecture
+chain: 5
+open: /highway-onboarding We build, deploy, and run scheduled jobs for every repository with GitHub Actions on GitHub-hosted runners.
+ask: What would you add, correct, or remove?
+say: [accept] Looks good.
+ask: What would you add, correct, or remove?
+say: [accept] Looks good.
+ask: What would you add, correct, or remove?
+say: [accept] Looks good.
+ask-pattern: Would you like to configure how highway-codify uses
+say: [accept] Yes.
+ask: What would you add or correct?
+say: [edit] Kind is pipeline. Use it for scheduled jobs and for work started by a repository change. Do not use it for work that needs a person to approve each step.
+ask: What would you add or correct?
+say: [accept] Looks good.
+ask-pattern: Would you like to configure coding standards for
+say: [decline] Not now.
+ask: Where would you like to go next?
+say: /highway-implementation for the Scheduled Restock Alert Service architecture. A GitHub Actions scheduled workflow, deployed and managed by GitHub Actions, runs every Monday, calls the order service stock query with a read-only token, and emails the warehouse lead. It is not a code project, so Language is None. An instance is running.
+ask: What would you add, correct, or remove?
+say: [accept] Looks good.
+ask-pattern: \?
+say: [decline] Not now.
+writes: adrs/**
+writes: architectures/**
+writes: implementations/**
+writes: library/coding-standards/**
+expect: template implementations/implementations.md :: implementation-catalog.md
+expect: template implementations/RI*.md :: implementation-record.md
+expect: template library/coding-standards/codify-platforms.md :: codify-platforms.md
+expect: row library/coding-standards/codify-platforms.md :: pipeline

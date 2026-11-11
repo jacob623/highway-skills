@@ -1,0 +1,19 @@
+# A feature with a plan and no task list resumes at the menu; continuing writes the task list and codes it.
+id: codify-open-plan
+skill: highway-codify
+fixture: codify-open-plan
+open: /highway-codify Restock Alerts
+ask: Would you like to:
+say: [select] 2
+ask: Where would you like to go next?
+say: [decline] Nothing else.
+writes: code/**
+expect: template code/restock-alerts/.highway/features/002-check-reorder-points/codify-tasks.md :: codify-tasks.md
+expect: contains code/restock-alerts/.highway/features/002-check-reorder-points/codify-tasks.md :: [X] T001
+expect: exists code/restock-alerts/.github/workflows/*.yml
+covers: ded7741aec3c The menu offers Review the plan and Continue to code the solution. A feature with a plan and no task list resumes at the menu.
+covers: 993e375d731b Continuing emits the building sentence once, then writes the task list ordered by story, each heading with its independent test.
+reaches: menu
+reaches: tasks
+reaches: code
+reaches: close

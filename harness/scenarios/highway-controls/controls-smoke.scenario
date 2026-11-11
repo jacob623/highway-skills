@@ -1,0 +1,17 @@
+# Smoke: add one Control to an existing baseline and accept it.
+id: controls-smoke
+skill: highway-controls
+fixture: setup
+smoke: yes
+open: /highway-controls
+ask: What would you add, correct, or remove?
+say: [edit] Add a Control: every staff account signs in with two-factor authentication, because a stolen password would expose customer orders.
+ask: What would you add, correct, or remove?
+say: [accept] Looks good.
+ask-pattern: \?
+say: [accept] Yes, that's right.
+writes: library/governance/controls.md
+writes: library/governance/controls/*.md
+expect: template library/governance/controls.md :: control-catalog.md
+expect: template library/governance/controls/*.md :: control-record.md
+expect: contains library/governance/controls/*.md :: two-factor

@@ -1,0 +1,18 @@
+# Chain stage 3: the Discovery for the only accepted Request.
+id: chain-discovery
+skill: highway-discovery
+fixture: request
+chain: 3
+web: yes
+open: /highway-discovery
+ask: Which would you like to work on?
+say: [select] 1
+ask: Would you like to analyze the Request, or explore the Discovery?
+say: [select] Analyze the Request.
+ask: What would you add, correct, or remove?
+say: [accept] Looks good.
+ask-pattern: \?
+say: [accept] Yes, go ahead.
+writes: discoveries/**
+expect: template discoveries/discoveries.md :: discovery-catalog.md
+expect: template discoveries/DISC*.md :: discovery-record.md

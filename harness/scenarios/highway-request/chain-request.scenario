@@ -1,0 +1,13 @@
+# Chain stage 2: the restock request, from the setup stage.
+id: chain-request
+skill: highway-request
+fixture: setup
+chain: 2
+open: /highway-request Popular items sell out before anyone notices, and orders wait for stock, which breaks one-day shipping. The warehouse lead checks stock against reorder points by hand every Monday in a spreadsheet; the store manager approves purchase orders. We want items at or below their reorder point found automatically each week, with one alert to the warehouse lead. Success means no order waits on an item that was below its reorder point on the previous alert. No business constraints. The solution should be scheduled automation, preferably on GitHub Actions, using the existing order service, with no new paid vendors.
+ask: What would you add, correct, or remove?
+say: [accept] Looks good.
+ask-pattern: \?
+say: [unknown] I don't know.
+writes: requests/**
+expect: template requests/requests.md :: request-catalog.md
+expect: template requests/REQ*.md :: request-record.md

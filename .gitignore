@@ -6,3 +6,9 @@ Thumbs.db
 .vscode/
 .idea/
 rollout-plan.md
+
+# Behavioral test harness: run output, dependencies, and secrets
+harness/runs/
+harness/node_modules/
+harness/.env
+.env

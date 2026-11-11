@@ -1,0 +1,15 @@
+# With no Controls or NFRs catalog, the accepted proposal says no Control or NFR applies.
+id: codify-no-governance
+skill: highway-codify
+fixture: codify-no-governance
+open: /highway-codify Northwind Restock Alerts
+ask: Would you like to explore any of these options?
+say: [select] 1
+ask: What would you add, correct, or remove?
+say: [accept] Looks good.
+ask: Would you like to:
+say: [decline] Stop here.
+writes: code/**
+expect: contains code/*/.highway/features/001-*/codify.md :: No Control or NFR applies.
+covers: 0757f7395dee Missing Controls and NFRs catalogs leave the proposal with `No Control or NFR applies.`
+reaches: govern

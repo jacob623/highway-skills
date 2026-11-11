@@ -1,0 +1,25 @@
+# Chain stage 4: the decision for the recommended option, then its Reference Architecture.
+id: chain-architecture
+skill: highway-architecture
+through: highway-adr
+fixture: discovery
+chain: 4
+open: /highway-adr for the only Discovery. Once the decision is recorded, run /highway-architecture for that decision.
+ask: Which Discovery would you like to decide?
+say: [select] 1
+ask: Which option would you like to select?
+say: [select] The recommended option.
+ask: What would you add, correct, or remove?
+say: [accept] Looks good.
+ask: Which ADR would you like to turn into a Reference Architecture?
+say: [select] 1
+ask: What would you add, correct, or remove?
+say: [accept] Looks good.
+ask-pattern: \?
+say: [accept] Yes, go ahead.
+writes: adrs/**
+writes: architectures/**
+expect: template adrs/adrs.md :: adr-catalog.md
+expect: template adrs/ADR*.md :: adr-record.md
+expect: template architectures/architectures.md :: architecture-catalog.md
+expect: template architectures/RA*.md :: architecture-record.md

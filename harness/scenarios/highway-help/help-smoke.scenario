@@ -1,0 +1,6 @@
+# Smoke: the skill listing answers and writes nothing.
+id: help-smoke
+skill: highway-help
+fixture: implementation
+smoke: yes
+open: /highway-help

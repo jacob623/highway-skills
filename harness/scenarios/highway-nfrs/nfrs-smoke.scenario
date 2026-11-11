@@ -1,0 +1,17 @@
+# Smoke: add one NFR to an existing baseline and accept it.
+id: nfrs-smoke
+skill: highway-nfrs
+fixture: setup
+smoke: yes
+open: /highway-nfrs
+ask: What would you add, correct, or remove?
+say: [edit] Add an NFR: store pages load within two seconds for 95 percent of visits, because slow pages lose sales.
+ask: What would you add, correct, or remove?
+say: [accept] Looks good.
+ask-pattern: \?
+say: [accept] Yes, that's right.
+writes: library/governance/nfrs.md
+writes: library/governance/nfrs/*.md
+expect: template library/governance/nfrs.md :: nfr-catalog.md
+expect: template library/governance/nfrs/*.md :: nfr-record.md
+expect: contains library/governance/nfrs/*.md :: two seconds
