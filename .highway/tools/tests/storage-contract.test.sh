@@ -211,7 +211,7 @@ done
 require "$HELP" '- `.highway/catalog/index.json` — read for'
 require "$HELP" "\`ERROR: the skill catalog '.highway/catalog/index.json' is missing or unreadable\`"
 reject "$HELP" '.highway/tools/'
-require "$HELP" 'version: 3.1.0'
+require "$HELP" 'version: 3.1.1'
 
 # --- highway-codify numbers from the Features table ------------------------------------------------
 

@@ -115,8 +115,6 @@ exclude	.highway/tools/tests	-
 exclude	.highway/tools/generate-distribution.sh	-
 exclude	.highway/tools/lib/distribution.sh	-
 exclude	.highway/tools/.distribution-manifest	-
-exclude	.highway/tools/.objective-rename-allowlist	-
-exclude	.highway/tools/audit-objective-rename.sh	-
 
 # --- The distribution's front page, which cannot occupy the repository root ---
 include	.highway/DISTRIBUTION.md	README.md
@@ -131,7 +129,4 @@ exclude	governance-plan.md	-
 exclude	nfr-plan.md	-
 exclude	rollout-plan.md	-
 exclude	standard-alignment.md	-
-exclude	highway-identity.md	-
-exclude	highway-platform-objectives.md	-
-exclude	highway-vision.md	-
 exclude	.DS_Store	-

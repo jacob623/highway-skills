@@ -4,7 +4,7 @@ description: "Prints registration details for one named skill, or a discovery li
 usage: "Invoke as `/highway-help` for all skills, or `/highway-help <skill-id>` for one named skill's registration details."
 compatibility: all
 metadata:
-  version: 3.1.0
+  version: 3.1.1
 ---
 
 ## Purpose
@@ -24,8 +24,6 @@ Print a registered skill's own registration details, or list every registered sk
 
 - Do not use to validate a skill file's authoring correctness; use the repository's authoring
   workflow instead.
-- Do not use to browse skill overlap or dependency graphs; that is
-  `.highway/catalog/index.json`'s `overlap_flags` field, read directly.
 
 ## Inputs
 
@@ -90,7 +88,7 @@ This self-check exercises `P9.2`, `P9.3`, `P9.4` and `X5.1`.
 Name: highway-help
 Description: Prints registration details for one named skill, or a discovery listing of every registered skill when none is named.
 Dependencies: none
-Version: 3.1.0
+Version: 3.1.1
 Usage: Invoke as `/highway-help` for all skills, or `/highway-help <skill-id>` for one named skill's registration details.
 Example: `/highway-help highway-help`
 ```

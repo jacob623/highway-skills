@@ -10,7 +10,4 @@ smoke	.highway/library/knowledge/highway-identity.md
 smoke	.highway/instructions/highway-agent-context.md
 
 none	.highway/governance/constitution.md
-none	.highway/library/templates/README.md
-none	.highway/library/knowledge/README.md
 none	.highway/library/knowledge/frontmatter-lexicon.txt
-none	.highway/library/governance/README.md

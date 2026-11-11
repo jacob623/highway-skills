@@ -171,12 +171,6 @@ orphan_problems() {
 	return $ok
 }
 
-# A recorded generation timestamp differs on every run; D4.2's Observable excepts it, and D4.7
-# inherits that exception.
-strip_timestamp() {
-	grep -v 'generated_at' "$1" 2>/dev/null | grep -v '_Generated at:'
-}
-
 # Every adapter of one skill matches what regenerating from current sources would produce.
 # Echoes FAIL lines and returns non-zero if any adapter is stale. Shared by normal mode's per-skill
 # loop (against the real, once-built currency tree) and probe mode's seeded single-skill check.
@@ -300,7 +294,6 @@ if [[ -n "$probe_class" ]]; then
 			(
 				cd "$currency_tmp" || exit 1
 				.highway/tools/generate-catalog.sh
-				.highway/tools/generate-library-catalog.sh
 				.highway/tools/generate-agent-adapters.sh
 				.highway/tools/generate-instructions.sh
 			) >/dev/null 2>&1
@@ -360,17 +353,14 @@ cp -R "$HIGHWAY_ROOT" "$CURRENCY_TMP/.highway"
 (
 	cd "$CURRENCY_TMP" || exit 1
 	.highway/tools/generate-catalog.sh
-	.highway/tools/generate-library-catalog.sh
 	.highway/tools/generate-agent-adapters.sh
 	.highway/tools/generate-instructions.sh
 ) >/dev/null 2>&1
 
-for rel in catalog/index.json catalog/index.md catalog/library-index.json catalog/library-index.md; do
-	if ! diff <(strip_timestamp "$HIGHWAY_ROOT/$rel") <(strip_timestamp "$CURRENCY_TMP/.highway/$rel") >/dev/null 2>&1; then
-		echo "FAIL: .highway/$rel is stale; regenerating from current sources produces a different file"
-		fail=1
-	fi
-done
+if ! diff "$HIGHWAY_ROOT/catalog/index.json" "$CURRENCY_TMP/.highway/catalog/index.json" >/dev/null 2>&1; then
+	echo "FAIL: .highway/catalog/index.json is stale; regenerating from current sources produces a different file"
+	fail=1
+fi
 
 for skill_dir in "$HIGHWAY_ROOT"/skills/*/; do
 	[[ -f "$skill_dir/SKILL.md" ]] || continue
@@ -378,7 +368,6 @@ for skill_dir in "$HIGHWAY_ROOT"/skills/*/; do
 	skill_currency_ok "$skill_id" "$CURRENCY_TMP" || fail=1
 done
 
-# Instruction outputs have no generation timestamp, so the comparison is the raw bytes.
 if ! diff "$HIGHWAY_ROOT/tools/.instruction-manifest" "$CURRENCY_TMP/.highway/tools/.instruction-manifest" >/dev/null 2>&1; then
 	echo "FAIL: .highway/tools/.instruction-manifest is stale; regenerating from current sources produces a different file"
 	fail=1
