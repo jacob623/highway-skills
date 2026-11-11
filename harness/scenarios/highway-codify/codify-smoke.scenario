@@ -1,0 +1,31 @@
+# Smoke: select a suggestion, accept the proposal, and stop at the menu after the first accepted write.
+id: codify-smoke
+skill: highway-codify
+fixture: implementation
+smoke: yes
+open: /highway-codify Northwind Restock Alerts
+ask: Would you like to explore any of these options?
+say: [select] 1
+ask: What would you add, correct, or remove?
+say: [accept] Looks good.
+ask: Would you like to:
+say: [decline] Stop here for now.
+writes: code/**
+expect: template code/code.md :: codify-catalog.md
+expect: template code/*/.highway/metadata.md :: codify-metadata.md
+expect: template code/*/.highway/features/001-*/codify.md :: codify-record.md
+expect: template code/*/.highway/features/001-*/plan.md :: codify-plan.md
+expect: absent code/*/.highway/features/*/codify-tasks.md
+covers: f840f259ec7b An exact title selects that accepted implementation, and the title is what the person sees.
+covers: 50279644665a With no named action, the suggestion list appears once before any proposal. It opens with the one Technology Choice, or the implementation title, and says automating these tasks may be worth visiting.
+covers: 1f61b8fb8de0 Each suggestion title is an action that starts with a verb, and its one summary sentence expands on it. The list holds at most five items, uses no id as a label, and ends with the invitation to describe another idea.
+covers: fc4c59dcbe37 The proposal shows Title, Summary, Description, Acceptance criteria, Diagram, and Tasks, in that order. It shows no components, current state, separate action, day, or means.
+covers: 905ef491ed3e The proposal heading is `Here is a proposed starting point for your codify feature:`. `Highway will use this specification to build out the solution.` follows `If this is accurate, just say so.`
+covers: f8b67baeb055 Acceptance writes `codify.md`, the product's `metadata.md` with the new Features row, the catalog row, and any new integrations row together, then `plan.md`. It writes no task list, no file the task list names, and no README.
+covers: 033fb38019d6 Each id is `CDY` plus eight hex digits derived from the product title. A joined product keeps its id.
+reaches: rank
+reaches: suggest
+reaches: propose
+reaches: write
+reaches: plan
+reaches: menu

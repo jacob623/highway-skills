@@ -1,0 +1,16 @@
+# Shared files for harness selection (harness/bin/path-map.sh).
+#
+# `smoke <path>`: a change selects the smoke set, because every skill reads the file.
+# `none <path>`: a shipped file that deliberately selects nothing.
+# A path may use `*` (within one folder) and `**` (across folders). The first matching line wins.
+
+smoke	.highway/governance/experience-standard.md
+smoke	.highway/governance/storage.md
+smoke	.highway/library/knowledge/highway-identity.md
+smoke	.highway/instructions/highway-agent-context.md
+
+none	.highway/governance/constitution.md
+none	.highway/library/templates/README.md
+none	.highway/library/knowledge/README.md
+none	.highway/library/knowledge/frontmatter-lexicon.txt
+none	.highway/library/governance/README.md

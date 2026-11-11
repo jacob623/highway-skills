@@ -1,0 +1,16 @@
+# A feature with an open task resumes coding at the first open task and redoes no finished task.
+id: codify-open-task
+skill: highway-codify
+fixture: codify-open-task
+open: /highway-codify Restock Alerts
+ask: Where would you like to go next?
+say: [decline] Nothing else.
+writes: code/**
+expect: contains code/restock-alerts/.highway/features/002-check-reorder-points/codify-tasks.md :: [X] T002
+expect: contains code/restock-alerts/.highway/features/002-check-reorder-points/codify-tasks.md :: [X] T003
+expect: contains code/restock-alerts/.github/workflows/reorder-check.yml :: upload-artifact
+expect: heading code/restock-alerts/README.md :: ## User Guide
+covers: 2c0b10922a8f A task that cannot be finished stops the run with that task and every later task open. The next run starts at the first open task, redoes no finished task, and runs no check.
+covers: bf767f40cbdb Coding starts with no question after the task list is written. Every standard a task names, and each existing file it names, is read before its files are written, and no other automation file is read, the earlier one winning a disagreement, and each task is marked `[X]` before the next begins.
+reaches: code
+reaches: close

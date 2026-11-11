@@ -1,0 +1,31 @@
+name: Restock alert
+
+on:
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+jobs:
+  alert:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Query items below reorder point
+        id: stock
+        env:
+          STOCK_TOKEN: ${{ secrets.STOCK_TOKEN }}
+        run: |
+          curl -fsS -H "Authorization: Bearer $STOCK_TOKEN" \
+            "https://orders.northwind.example/stock?below=reorder" > stock.json
+      - name: Email the restock list
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.northwind.example
+          server_port: 587
+          username: ${{ secrets.SMTP_USER }}
+          password: ${{ secrets.SMTP_PASSWORD }}
+          subject: Weekly restock list
+          to: warehouse@northwind.example
+          from: alerts@northwind.example
+          attachments: stock.json
+          body: Items at or below their reorder point are attached.

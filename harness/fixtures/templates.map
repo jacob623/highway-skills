@@ -1,0 +1,30 @@
+# Fixture file to output template, for harness/bin/fixture-check.sh.
+# `<glob>\t<template file name>`; the first matching line wins. `*` stays within one folder.
+
+library/knowledge/profile.md	profile-record.md
+library/governance/objectives.md	objective-catalog.md
+library/objectives/*.md	objective-record.md
+library/governance/controls.md	control-catalog.md
+library/governance/controls/*.md	control-record.md
+library/governance/nfrs.md	nfr-catalog.md
+library/governance/nfrs/*.md	nfr-record.md
+library/coding-standards/codify-platforms.md	codify-platforms.md
+library/coding-standards/coding-standards.md	coding-standards-catalog.md
+library/coding-standards/*.md	coding-standard.md
+requests/requests.md	request-catalog.md
+requests/*.md	request-record.md
+discoveries/discoveries.md	discovery-catalog.md
+discoveries/*.md	discovery-record.md
+adrs/adrs.md	adr-catalog.md
+adrs/*.md	adr-record.md
+architectures/architectures.md	architecture-catalog.md
+architectures/*.md	architecture-record.md
+implementations/implementations.md	implementation-catalog.md
+implementations/capabilities.md	capability-catalog.md
+implementations/*.md	implementation-record.md
+code/code.md	codify-catalog.md
+code/integrations.md	codify-integrations.md
+code/*/.highway/metadata.md	codify-metadata.md
+code/*/.highway/features/*/codify.md	codify-record.md
+code/*/.highway/features/*/plan.md	codify-plan.md
+code/*/.highway/features/*/codify-tasks.md	codify-tasks.md

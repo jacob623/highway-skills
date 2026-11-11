@@ -1,0 +1,16 @@
+# Smoke: an accepted decision with no architecture to the first accepted Reference Architecture.
+id: architecture-smoke
+skill: highway-architecture
+fixture: adr-accepted
+smoke: yes
+open: /highway-architecture Use Scheduled Pipeline For Restock Alerts
+ask: What would you add, correct, or remove?
+say: [accept] Looks good.
+ask-pattern: \?
+say: [accept] Yes, go ahead.
+writes: architectures/architectures.md
+writes: architectures/*.md
+writes: adrs/adrs.md
+writes: adrs/*.md
+expect: template architectures/architectures.md :: architecture-catalog.md
+expect: template architectures/RA*.md :: architecture-record.md

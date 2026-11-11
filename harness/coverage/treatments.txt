@@ -1,0 +1,9 @@
+# Bullets a scenario cannot exercise, for harness-coverage.test.sh and the run report (FR-017).
+# `invariant: <skill> <hash> <storage|no-shell|writes-nothing> :: <bullet text>`
+# `waiver: <skill> <hash> <reason> :: <bullet text>`
+
+invariant: highway-codify 4ff27ebe0e6d storage :: Codify creates, edits, and removes no coding standard and no row of the coding standards catalog.
+waiver: highway-codify 6b552c6b8284 A failed write needs a filesystem fault inside the session; the harness denies no project write without ending the run, so a partial write cannot be staged. :: A failed write leaves no partial folder and leaves existing catalog bytes unchanged.
+waiver: highway-codify ac10f4458f68 Templates come from the generated distribution, and fixtures hold project files only, so no scenario can remove one. :: A missing record, catalog, plan, or task list template stops the skill, names the template path, and writes nothing.
+waiver: highway-codify bfa8a56d79c7 No fixture makes a task fail deterministically; codify-open-task covers the restart from the first open task. :: A task that cannot be finished stops coding at that task, leaves it open, and keeps the files finished tasks wrote.
+waiver: highway-codify f030f9d71c6f Every scenario project is built from the distribution, which always installs `.highway/`. :: A missing `.highway/` root stops the skill and writes nothing.

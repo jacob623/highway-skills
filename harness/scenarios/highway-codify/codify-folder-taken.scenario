@@ -1,0 +1,24 @@
+# A project edit naming a removed product's folder is refused; the next folder is written and its row appended last.
+id: codify-folder-taken
+skill: highway-codify
+fixture: codify-existing-product
+open: /highway-codify Northwind Restock Alerts
+ask: Would you like to explore any of these options?
+say: [select] 1
+ask: What would you add, correct, or remove?
+say: [edit] Put this in a new project folder named restock-reports.
+ask-pattern: taken
+say: [edit] Use the folder stock-checks instead.
+ask: What would you add, correct, or remove?
+say: [accept] Looks good.
+ask: Would you like to:
+say: [decline] Stop here.
+writes: code/**
+expect: template code/stock-checks/.highway/metadata.md :: codify-metadata.md
+expect: absent code/restock-reports/**
+expect: row code/code.md :: code/stock-checks
+covers: 210f282c16d8 A folder already in the catalog, including a removed row, is not started. The person names another.
+covers: c05d6527af4a The person's project edit is written. The folder stays unique, including removed rows, the `CDY` id is in `.highway/metadata.md`, the feature is under `.highway/features/`, and paths are relative to the folder.
+covers: f7b3f9d3ef52 A new row in `code/code.md` is appended as the last row.
+reaches: revise
+reaches: folder

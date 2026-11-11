@@ -1,0 +1,17 @@
+# Smoke: add one objective to an existing baseline and accept it.
+id: objectives-smoke
+skill: highway-objectives
+fixture: setup
+smoke: yes
+open: /highway-objectives
+ask: What would you add, correct, or remove?
+say: [edit] Add an objective: grow repeat customers by a fifth within a year, measured by the share of monthly orders placed by returning customers.
+ask: What would you add, correct, or remove?
+say: [accept] Looks good.
+ask-pattern: \?
+say: [accept] Yes, that's right.
+writes: library/governance/objectives.md
+writes: library/objectives/*.md
+expect: template library/governance/objectives.md :: objective-catalog.md
+expect: template library/objectives/*.md :: objective-record.md
+expect: contains library/objectives/*.md :: repeat

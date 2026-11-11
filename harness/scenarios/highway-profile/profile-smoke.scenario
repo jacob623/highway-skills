@@ -1,0 +1,19 @@
+# Smoke: an empty project to the first accepted Profile.
+id: profile-smoke
+skill: highway-profile
+fixture: empty
+smoke: yes
+open: /highway-profile
+ask: What would you like to call your Highway repository?
+say: northwind-highway
+ask-pattern: Do you already have something I can use
+say: [edit] Northwind Outfitters (https://northwind.example) is an online retailer of outdoor clothing and camping gear run by a team of twelve. We want to ship every order within one business day and grow repeat customers by a fifth this year. We plan to automate routine warehouse work and keep a small, managed stack. We protect customer data before adding features and prefer services we already run.
+ask: What would you add, correct, or remove?
+say: [accept] Looks good.
+ask-pattern: \?
+say: [edit] Northwind Outfitters sells outdoor clothing and camping gear online. Our goals are one-day shipping and more repeat customers.
+ask-pattern: \?
+say: [unknown] I don't know; please use what I've already told you.
+writes: library/knowledge/profile.md
+expect: template library/knowledge/profile.md :: profile-record.md
+expect: contains library/knowledge/profile.md :: northwind-highway

@@ -1,0 +1,17 @@
+# Smoke: an accepted Request to the first accepted Discovery.
+id: discovery-smoke
+skill: highway-discovery
+fixture: request
+smoke: yes
+web: yes
+open: /highway-discovery Automate Weekly Order Restock Alerts
+ask: Would you like to analyze the Request, or explore the Discovery?
+say: [select] Analyze the Request.
+ask: What would you add, correct, or remove?
+say: [accept] Looks good.
+ask-pattern: \?
+say: [accept] Yes, go ahead.
+writes: discoveries/discoveries.md
+writes: discoveries/*.md
+expect: template discoveries/discoveries.md :: discovery-catalog.md
+expect: template discoveries/DISC*.md :: discovery-record.md

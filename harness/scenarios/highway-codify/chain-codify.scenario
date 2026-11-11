@@ -1,0 +1,23 @@
+# Chain stage 6: codify the restock implementation end to end.
+id: chain-codify
+skill: highway-codify
+fixture: implementation
+chain: 6
+open: /highway-codify
+ask: Which implementation should this automation serve?
+say: [select] The restock alerts implementation.
+ask: Would you like to explore any of these options?
+say: [select] 1
+ask: What would you add, correct, or remove?
+say: [accept] Looks good.
+ask: Would you like to:
+say: [select] 2
+ask: Where would you like to go next?
+say: [decline] Nothing else for now.
+writes: code/**
+expect: template code/code.md :: codify-catalog.md
+expect: template code/*/.highway/features/001-*/codify.md :: codify-record.md
+expect: template code/*/.highway/features/001-*/codify-tasks.md :: codify-tasks.md
+expect: heading code/*/README.md :: ## Setup Instructions
+reaches: choose
+reaches: close

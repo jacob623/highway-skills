@@ -1,0 +1,16 @@
+# Nothing named and two accepted implementations: both are listed by title; "I don't know" re-emits the list.
+id: codify-choose
+skill: highway-codify
+fixture: implementation
+open: /highway-codify
+ask: Which implementation should this automation serve?
+say: [unknown] I'm not sure.
+ask: Which implementation should this automation serve?
+say: [select] Northwind Restock Alerts
+ask: Would you like to explore any of these options?
+say: [decline] Not right now.
+covers: df0ebb18f7a2 A list shows a title and the implementation summary. It does not use an id as the label.
+covers: 511cec229721 One to five accepted implementations are listed when the person names nothing. More than five lists none until the person gives a title or a description, then at most five.
+reaches: choose
+reaches: record check
+reaches: suggest

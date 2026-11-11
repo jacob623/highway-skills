@@ -1,0 +1,25 @@
+# Standards are proposed per task; a title not in the catalog is left out with a pointer to /highway-codify-config.
+id: codify-standards
+skill: highway-codify
+fixture: codify-coding-standards
+web: yes
+open: /highway-codify Northwind Restock Alerts
+ask: Would you like to explore any of these options?
+say: [select] 1
+ask: What would you add, correct, or remove?
+say: [edit] Add the Terraform Coding Standard to the first task.
+ask: What would you add, correct, or remove?
+say: [accept] Looks good.
+ask: Would you like to:
+say: [decline] Stop here.
+writes: code/**
+expect: contains code/*/.highway/features/001-*/codify.md :: GitHub Actions Coding Standard
+expect: contains code/*/.highway/features/001-*/codify.md :: .github/workflows/
+covers: dc2d04d6117b Each task shows Standards as an ordered list, or `No coding standard applies.` A standard whose When not to use matches is dropped. A standard comes before the standards it inherits from, and each inherited standard appears once.
+covers: cefa57b40954 A Standards edit re-emits the proposal with one consequence sentence. A title not in the catalog is left out and points to `/highway-codify-config`.
+covers: 92309a0a6fec `align` corrects the method, library, module, or pattern against every standard on the task's list and keeps the Provider.
+covers: 2b566cce0a70 Before any proposal, coding standards are checked first and vendor documentation second. Corrections and inconclusive results are named before the proposal and are not saved. The checks keep the selected action.
+covers: 4e232bd062c7 Files lists relative paths placed from the File and Folder Structure of the task's standards. A listed standard with no structure is named before the proposal with a pointer to `/highway-codify-config`. A Files edit changes only this automation. An unfilled placeholder keeps the proposal open.
+reaches: standards
+reaches: align
+reaches: layout

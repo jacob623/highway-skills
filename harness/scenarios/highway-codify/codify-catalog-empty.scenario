@@ -1,0 +1,7 @@
+# With no product, the catalog says no automation has been created yet, asks nothing, and writes nothing.
+id: codify-catalog-empty
+skill: highway-codify
+fixture: implementation
+open: /highway-codify catalog
+covers: 0f12977d85f6 `/highway-codify catalog` lists at most five accepted automations, newest first, with each implementation title and progress, says how many more exist, and writes nothing. A selection shows the files path and the README path.
+reaches: catalog

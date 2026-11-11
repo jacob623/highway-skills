@@ -1,0 +1,9 @@
+# A removed implementation is not selected, and nothing is written.
+id: codify-removed-implementation
+skill: highway-codify
+fixture: codify-removed-implementation
+open: /highway-codify Northwind Storefront
+ask: Which implementation should this automation serve?
+say: [decline] Never mind.
+covers: 1d64e79cce75 An implementation that is not accepted stops the skill and writes nothing.
+reaches: Entry

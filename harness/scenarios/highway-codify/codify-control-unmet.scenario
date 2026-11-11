@@ -1,0 +1,9 @@
+# A named action no correction can fit to a Control shows no proposal and asks for a different action.
+id: codify-control-unmet
+skill: highway-codify
+fixture: codify-controls-nfrs
+open: /highway-codify Northwind Restock Alerts Email the restock list to the store manager
+ask-pattern: \?
+say: [decline] Never mind.
+covers: 83795f5d4fa0 A Control or NFR that cannot be met for the selected action returns to `suggest` and writes nothing.
+reaches: govern

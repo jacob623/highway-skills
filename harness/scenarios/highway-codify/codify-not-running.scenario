@@ -1,0 +1,17 @@
+# No instance is running: Establish comes first. A question is answered and the list returns; declining writes nothing.
+id: codify-not-running
+skill: highway-codify
+fixture: codify-not-running
+open: /highway-codify Northwind Restock Alerts
+ask: Would you like to explore any of these options?
+say: [question] Why is establishing it the first option?
+ask: Would you like to explore any of these options?
+say: [select] 1
+ask: What would you add, correct, or remove?
+say: [decline] Not now, let's stop.
+covers: 405960288b58 With no instance running, `Establish [implementation title]` comes first. Every other suggestion comes from one realized capability, in Realized Capabilities order.
+covers: 9dde8c6abcab Declining a proposal writes nothing.
+reaches: rank
+reaches: suggest
+reaches: Classify
+reaches: revise

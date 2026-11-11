@@ -1,0 +1,17 @@
+# Smoke: configure a platform's codify guidance and accept it.
+id: codify-config-smoke
+skill: highway-codify-config
+fixture: implementation
+smoke: yes
+open: /highway-codify-config GitHub Actions
+ask: What would you add or correct?
+say: [accept] Looks good.
+ask-pattern: Would you like to configure coding standards for
+say: [decline] Not now.
+ask-pattern: Would you like help resolving these conflicts
+say: [decline] Not now.
+ask-pattern: \?
+say: [unknown] I don't know.
+writes: library/coding-standards/**
+expect: template library/coding-standards/codify-platforms.md :: codify-platforms.md
+expect: row library/coding-standards/codify-platforms.md :: GitHub Actions

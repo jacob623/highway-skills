@@ -1,0 +1,13 @@
+# More than five accepted implementations: none are listed until the person describes one.
+id: codify-many-implementations
+skill: highway-codify
+fixture: codify-many-implementations
+open: /highway-codify
+ask: Which implementation should this automation serve?
+say: [select] The one that sends restock alerts.
+ask: Which implementation should this automation serve?
+say: [select] Northwind Restock Alerts
+ask: Would you like to explore any of these options?
+say: [decline] Never mind.
+covers: 511cec229721 One to five accepted implementations are listed when the person names nothing. More than five lists none until the person gives a title or a description, then at most five.
+reaches: choose

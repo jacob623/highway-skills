@@ -1,0 +1,14 @@
+# No accepted architecture: the proposal says so, acceptance keeps it open, and nothing is written.
+id: codify-no-architecture
+skill: highway-codify
+fixture: codify-no-architecture
+open: /highway-codify Northwind Restock Alerts
+ask: Would you like to explore any of these options?
+say: [select] 1
+ask: What would you add, correct, or remove?
+say: [accept] Looks good.
+ask: What would you add, correct, or remove?
+say: [decline] Stop.
+covers: 15a1cf63744c No accepted architecture for this automation keeps the proposal open and says so.
+reaches: draft
+reaches: revise

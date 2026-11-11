@@ -1,0 +1,41 @@
+# Chain stage 1: setup from an empty project through Profile, Objectives, Controls, and NFRs.
+id: chain-setup
+skill: highway-setup
+through: highway-profile
+through: highway-objectives
+through: highway-controls
+through: highway-nfrs
+fixture: empty
+chain: 1
+open: /highway-setup
+ask: What would you like to call your Highway repository?
+say: northwind-highway
+ask-pattern: Do you already have something I can use
+say: [edit] Northwind Outfitters (https://northwind.example) is an online retailer of outdoor clothing and camping gear run by a team of twelve. We want to ship every order within one business day and grow repeat customers by a fifth this year. We plan to automate routine warehouse work and keep a small, managed stack. We protect customer data before adding features and prefer services we already run.
+ask: What would you add, correct, or remove?
+say: [accept] Looks good.
+ask: Which of these outcomes would you like to pursue, or what would you like to focus on?
+say: [select] 1
+ask: Would you like to select any of these outcomes, modify them, or are you ready to review the selected objectives?
+say: [accept] I'm ready to review.
+ask: What would you add, correct, or remove?
+say: [accept] Looks good.
+ask: Which of these safeguards would you like to establish, or what would you like to focus on?
+say: [select] 1
+ask: Would you like to select any of these safeguards, modify them, or are you ready to review the selected Controls?
+say: [accept] I'm ready to review.
+ask: What would you add, correct, or remove?
+say: [accept] Looks good.
+ask: Which of these operational expectations would you like to establish, or what would you like to focus on?
+say: [select] 1
+ask: Would you like to select any of these operational expectations, modify them, or are you ready to review the selected NFRs?
+say: [accept] I'm ready to review.
+ask: What would you add, correct, or remove?
+say: [accept] Looks good.
+ask: Where would you like to go next?
+say: [decline] That's all for setup.
+writes: library/**
+expect: template library/knowledge/profile.md :: profile-record.md
+expect: template library/governance/objectives.md :: objective-catalog.md
+expect: template library/governance/controls.md :: control-catalog.md
+expect: template library/governance/nfrs.md :: nfr-catalog.md

@@ -1,0 +1,57 @@
+== harness-placement.test.sh before T003/T004
+FAIL: the distribution manifest does not exclude harness
+FAIL: harness is not excluded from the distribution
+FAIL: harness/src/cli.ts is not excluded from the distribution
+FAIL: harness/scenarios/highway-codify/codify-plan-review.scenario is not excluded from the distribution
+FAIL: harness/README.md is not excluded from the distribution
+FAIL: .gitignore does not ignore harness/runs/
+FAIL: .gitignore does not ignore harness/node_modules/
+FAIL: .gitignore does not ignore harness/.env
+FAIL: .gitignore does not ignore .env
+FAIL: the development constitution does not declare the Harness Toolchain
+exit 1
+
+== harness-path-map.test.sh before path-map.sh exists (T021)
+FAIL: harness/bin/path-map.sh does not exist
+exit 1
+
+== harness-fixtures.test.sh before the stage fixtures exist (T025)
+FAIL: stage fixture harness/fixtures/stages/setup is missing or empty
+FAIL: stage fixture harness/fixtures/stages/request is missing or empty
+FAIL: stage fixture harness/fixtures/stages/discovery is missing or empty
+FAIL: stage fixture harness/fixtures/stages/architecture is missing or empty
+FAIL: stage fixture harness/fixtures/stages/implementation is missing or empty
+exit 1
+
+== harness-coverage.test.sh before codify scenarios and treatments exist (T024)
+exit 1
+INFO: highway-adr coverage 0/30 (reported, not gated)
+INFO: highway-architecture coverage 0/29 (reported, not gated)
+INFO: highway-assessment coverage 0/33 (reported, not gated)
+FAIL: highway-codify bullet f840f259ec7b is not covered by a scenario, an invariant, or a waiver
+      new: An exact title selects that accepted implementation, and the title is what the person sees.
+FAIL: highway-codify bullet d6438e900c5e is not covered by a scenario, an invariant, or a waiver
+... 65 FAIL lines
+INFO: highway-adr coverage 0/30 (reported, not gated)
+INFO: highway-architecture coverage 0/29 (reported, not gated)
+INFO: highway-assessment coverage 0/33 (reported, not gated)
+
+== harness-scenarios.test.sh before any scenario exists (T031)
+FAIL: no scenario files under harness/scenarios/
+exit 1
+
+== harness-switches.test.sh before harness/README.md exists (T036)
+FAIL: switch --smoke does not appear in harness/README.md
+FAIL: switch --changed-since does not appear in harness/README.md
+FAIL: switch --paths does not appear in harness/README.md
+FAIL: switch --skills does not appear in harness/README.md
+FAIL: switch --model does not appear in harness/README.md
+FAIL: switch --judge-model does not appear in harness/README.md
+FAIL: switch --no-judge does not appear in harness/README.md
+FAIL: switch --parallel does not appear in harness/README.md
+FAIL: switch --max-turns does not appear in harness/README.md
+FAIL: switch --timeout does not appear in harness/README.md
+FAIL: switch --transcripts does not appear in harness/README.md
+FAIL: switch --promote does not appear in harness/README.md
+FAIL: switch --help does not appear in harness/README.md
+exit 1

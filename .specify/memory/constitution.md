@@ -1,5 +1,21 @@
 <!--
 Sync Impact Report
+Version change: 2.2.0 → 2.3.0 (MINOR), 2026-11-10
+Bump rationale: a Harness Toolchain declaration is added under Principle II for the behavioral test
+harness in `harness/`. It adds a declared section and does not remove or redefine a principle.
+No previously conforming work fails: `harness/` is new, is excluded from the distribution, and no
+script under `.highway/tools/` invokes the declared tools.
+Changed elements:
+- Version line: 2.2.0 → 2.3.0
+- Last Amended date: 2026-09-29 → 2026-11-10
+- Principle II: a "Harness Toolchain" paragraph follows the Declared Toolchain
+Unchanged: D2.1–D2.4 rule text, Observables, and tiers; the Declared Toolchain list; the Toolchain
+Gate trigger; every other rule.
+Self-application review: D1.3 PASS (no Highway Skills Constitution rule sentence is copied);
+D1.4 PASS (this report cites rule IDs); D5.3 PASS (the three changed elements are listed above
+and every unlisted element carries forward).
+
+Sync Impact Report
 Version change: 2.1.0 → 2.2.0 (MINOR), 2026-09-29
 Bump rationale: `codex` is added to the declared agent trees. The copies for that tree are
 produced in this same change, so previously conforming work still conforms. Adding the name
@@ -394,6 +410,13 @@ excluded:
 Version control is not on this list. The toolchain must run in a distributed tree, which is not a
 repository.
 
+**Harness Toolchain** (development-only). The behavioral test harness in `harness/` runs on Node
+24 with TypeScript and `@github/copilot-sdk`, and reads changed files with `git`. These tools are
+used only under `harness/`. `harness/` is excluded from the distribution, so none of them is a
+runtime dependency, and D2.2 and D2.4 govern only the Declared Toolchain above. A script under
+`.highway/tools/` never invokes them. Bash scripts under `harness/bin/` that the test suite runs
+use only the Declared Toolchain.
+
 Rationale: The toolchain must run unmodified on the default shell and utilities of the target
 platform. D2.3 tests portability across the two platforms actually targeted rather than
 conformance to POSIX, because a flag can be non-POSIX and still universally available — `sort -V`
@@ -527,4 +550,4 @@ Highway Skills Constitution prevails for artifact content and this document prev
 This document is subject to D1.3, D1.4, and D5.3. Every amendment records a review against those
 rule IDs.
 
-**Version**: 2.2.0 | **Ratified**: 2026-09-08 | **Last Amended**: 2026-09-29
+**Version**: 2.3.0 | **Ratified**: 2026-09-08 | **Last Amended**: 2026-11-10
