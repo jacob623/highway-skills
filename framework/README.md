@@ -151,13 +151,21 @@ being a rule statement.
   `library/templates/`, `library/knowledge/`, or `library/governance/` (tagged
   `[LIBRARY-TYPE]`).
 
+`validate-library.sh --asset <file>` checks a template that lives in a skill's `assets/`: it skips
+the location check and treats the file as a template. `validate-skill.sh` runs it on every complete
+template in the skill's `assets/`, meaning a file with a `## File Frontmatter`, `## Body`, or
+`## Catalog Structure` heading, and reports a finding as `ERROR: [<tag>] assets/<file>: ...`. Seeded
+skeletons have none of those headings and are not checked this way;
+`tests/catalog-seeding.test.sh` compares each one with its reference copy in
+`tests/fixtures/catalog-seeding/skeletons/`.
+
 Output format is a contract, per feature 005 (rename content to library).
 
-Complete skeletons for retained records emitted by skills live under
-`.highway/library/templates/output/`. Each skeleton covers the emitted file's frontmatter and
-body. Request-producing skills use the shared request skeleton at
-`.highway/library/templates/output/request-record.md`; every skill that cites it must be
-revalidated when it changes.
+A record that one skill creates has its complete template in that skill's `assets/`, such as
+`skills/highway-request/assets/request-record.md`. The three records several skills read, the
+ADR, the reference architecture, and the reference implementation, keep their templates under
+`.highway/library/templates/output/`; every skill that cites one must be revalidated when it
+changes.
 
 The organization catalogs, the findings file, and the storage record are seeded:
 `skills/highway-setup/assets/` holds their skeletons, and highway-setup writes each absent one

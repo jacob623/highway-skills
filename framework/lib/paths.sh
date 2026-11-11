@@ -58,26 +58,26 @@ hw_template() {
 	capability-catalog) printf '%s\n' "$HW_SETUP/assets/capability-catalog.md" ;;
 	codify-catalog) printf '%s\n' "$HW_SETUP/assets/codify-catalog.md" ;;
 	codify-integrations) printf '%s\n' "$HW_SETUP/assets/codify-integrations.md" ;;
-	codify-metadata) printf '%s\n' "$HW_OUTPUT_TEMPLATES/codify-metadata.md" ;;
-	codify-plan) printf '%s\n' "$HW_OUTPUT_TEMPLATES/codify-plan.md" ;;
+	codify-metadata) printf '%s\n' "$HW_SKILLS/highway-codify/assets/codify-metadata.md" ;;
+	codify-plan) printf '%s\n' "$HW_SKILLS/highway-codify/assets/codify-plan.md" ;;
 	codify-platforms) printf '%s\n' "$HW_SETUP/assets/codify-platforms.md" ;;
-	codify-record) printf '%s\n' "$HW_OUTPUT_TEMPLATES/codify-record.md" ;;
-	codify-tasks) printf '%s\n' "$HW_OUTPUT_TEMPLATES/codify-tasks.md" ;;
-	coding-standard) printf '%s\n' "$HW_OUTPUT_TEMPLATES/coding-standard.md" ;;
+	codify-record) printf '%s\n' "$HW_SKILLS/highway-codify/assets/codify-record.md" ;;
+	codify-tasks) printf '%s\n' "$HW_SKILLS/highway-codify/assets/codify-tasks.md" ;;
+	coding-standard) printf '%s\n' "$HW_SKILLS/highway-codify-config/assets/coding-standard.md" ;;
 	coding-standards-catalog) printf '%s\n' "$HW_SETUP/assets/coding-standards-catalog.md" ;;
 	control-catalog) printf '%s\n' "$HW_SKILLS/highway-controls/assets/control-catalog.md" ;;
-	control-record) printf '%s\n' "$HW_OUTPUT_TEMPLATES/control-record.md" ;;
+	control-record) printf '%s\n' "$HW_SKILLS/highway-controls/assets/control-record.md" ;;
 	discovery-catalog) printf '%s\n' "$HW_SETUP/assets/discovery-catalog.md" ;;
-	discovery-record) printf '%s\n' "$HW_OUTPUT_TEMPLATES/discovery-record.md" ;;
+	discovery-record) printf '%s\n' "$HW_SKILLS/highway-discovery/assets/discovery-record.md" ;;
 	implementation-catalog) printf '%s\n' "$HW_SETUP/assets/implementation-catalog.md" ;;
 	implementation-record) printf '%s\n' "$HW_OUTPUT_TEMPLATES/implementation-record.md" ;;
 	nfr-catalog) printf '%s\n' "$HW_SKILLS/highway-nfrs/assets/nfr-catalog.md" ;;
-	nfr-record) printf '%s\n' "$HW_OUTPUT_TEMPLATES/nfr-record.md" ;;
+	nfr-record) printf '%s\n' "$HW_SKILLS/highway-nfrs/assets/nfr-record.md" ;;
 	objective-catalog) printf '%s\n' "$HW_SKILLS/highway-objectives/assets/objective-catalog.md" ;;
-	objective-record) printf '%s\n' "$HW_OUTPUT_TEMPLATES/objective-record.md" ;;
-	profile-record) printf '%s\n' "$HW_OUTPUT_TEMPLATES/profile-record.md" ;;
+	objective-record) printf '%s\n' "$HW_SKILLS/highway-objectives/assets/objective-record.md" ;;
+	profile-record) printf '%s\n' "$HW_SKILLS/highway-profile/assets/profile-record.md" ;;
 	request-catalog) printf '%s\n' "$HW_SETUP/assets/request-catalog.md" ;;
-	request-record) printf '%s\n' "$HW_OUTPUT_TEMPLATES/request-record.md" ;;
+	request-record) printf '%s\n' "$HW_SKILLS/highway-request/assets/request-record.md" ;;
 	storage) printf '%s\n' "$HW_SETUP/assets/storage.md" ;;
 	*)
 		printf 'hw_template: unknown template: %s\n' "${1:-}" >&2

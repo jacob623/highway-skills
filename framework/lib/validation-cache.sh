@@ -87,6 +87,7 @@ vc_environment_hash() {
 	VC_ENVIRONMENT_HASH="$(
 		{
 			printf '%s\n' "$(hw_at "$root" "$HW_FRAMEWORK")/validate-skill.sh"
+			printf '%s\n' "$(hw_at "$root" "$HW_FRAMEWORK")/validate-library.sh"
 			printf '%s\n' "$(hw_at "$root" "$HW_FRAMEWORK")/.frontmatter-contract"
 			hw_at "$root" "$(hw_doc constitution)"
 			hw_at "$root" "$(hw_doc frontmatter-lexicon)"
@@ -100,7 +101,13 @@ vc_environment_hash() {
 # Prints the record key for one skill file.
 vc_key() {
 	local skill_file="$1" root="$2" skill_hash env_hash
-	skill_hash="$(vc_hash_file "$skill_file")"
+	# The skill's assets/ are inputs too: validate-skill.sh checks the complete templates there.
+	skill_hash="$(
+		{
+			printf '%s\n' "$skill_file"
+			find "$(dirname "$skill_file")/assets" -type f 2>/dev/null | LC_ALL=C sort
+		} | vc_hash_list | awk '{print $1}' | vc_hash_stdin
+	)"
 	env_hash="$(vc_environment_hash "$root")"
 	printf '%s%s' "$skill_hash" "$env_hash" | vc_hash_stdin
 }

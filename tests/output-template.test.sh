@@ -42,7 +42,6 @@ CODIFY_SKILL="$HW_SKILLS/highway-codify/SKILL.md"
 CODIFY_CONFIG_SKILL="$HW_SKILLS/highway-codify-config/SKILL.md"
 ADR_RECORD_TEMPLATE="$(hw_template adr-record)"
 ADR_CATALOG_SKELETON="$(hw_template adr-catalog)"
-VALIDATE_LIBRARY="$HW_FRAMEWORK/validate-library.sh"
 VALIDATE_SKILL="$HW_FRAMEWORK/validate-skill.sh"
 
 fail=0
@@ -245,14 +244,14 @@ EOF
 done
 
 # Each file-emitting skill must cite its complete skeleton.
-require_text "$NFR_SKILL" ".highway/library/templates/output/nfr-record.md"
-require_text "$CONTROL_SKILL" ".highway/library/templates/output/control-record.md"
-require_text "$PROFILE_SKILL" ".highway/library/templates/output/profile-record.md"
-require_text "$OBJECTIVE_SKILL" ".highway/library/templates/output/objective-record.md"
+require_text "$NFR_SKILL" "assets/nfr-record.md"
+require_text "$CONTROL_SKILL" "assets/control-record.md"
+require_text "$PROFILE_SKILL" "assets/profile-record.md"
+require_text "$OBJECTIVE_SKILL" "assets/objective-record.md"
 require_text "$OBJECTIVE_SKILL" "assets/objective-catalog.md"
 require_text "$CONTROL_SKILL" "assets/control-catalog.md"
 require_text "$NFR_SKILL" "assets/nfr-catalog.md"
-require_text "$NEW_SKILL" ".highway/library/templates/output/request-record.md"
+require_text "$NEW_SKILL" "assets/request-record.md"
 require_text "$NEW_SKILL" "Edit \`requests/requests.md\` in its existing structure."
 require_text "$DISCOVERY_SKILL" "Edit \`discoveries/discoveries.md\` in its existing structure."
 require_text "$ADR_SKILL" ".highway/library/templates/output/adr-record.md"
@@ -278,48 +277,26 @@ if grep -Fq 'listing every Control by identifier and title' "$CONTROL_SKILL" ||
 	fail=1
 fi
 
-# Library and skill validators must accept the migrated source artifacts.
-if [[ -f "$NFR_TEMPLATE" ]]; then
-	if ! "$VALIDATE_LIBRARY" "$NFR_TEMPLATE" >/dev/null 2>&1; then
-		echo "FAIL: NFR output template does not pass validate-library.sh"
+# The skill validator checks each record template in its owner's assets/.
+for owner_template in "highway-nfrs|$NFR_TEMPLATE" "highway-controls|$CONTROL_TEMPLATE" "highway-objectives|$OBJECTIVE_TEMPLATE" "highway-request|$REQUEST_TEMPLATE"; do
+	owner="${owner_template%%|*}"
+	template="${owner_template#*|}"
+	if [[ ! -f "$template" ]]; then
+		echo "FAIL: $owner has no record template at $template"
+		fail=1
+	elif ! "$VALIDATE_SKILL" "$HW_SKILLS/$owner" >/dev/null 2>&1; then
+		echo "FAIL: $owner does not pass validate-skill.sh"
 		fail=1
 	fi
-fi
-if [[ -f "$CONTROL_TEMPLATE" ]]; then
-	if ! "$VALIDATE_LIBRARY" "$CONTROL_TEMPLATE" >/dev/null 2>&1; then
-		echo "FAIL: Control output template does not pass validate-library.sh"
-		fail=1
-	fi
-fi
-if [[ -f "$OBJECTIVE_TEMPLATE" ]]; then
-	if ! "$VALIDATE_LIBRARY" "$OBJECTIVE_TEMPLATE" >/dev/null 2>&1; then
-		echo "FAIL: objective output template does not pass validate-library.sh"
-		fail=1
-	fi
-fi
-if [[ -f "$REQUEST_TEMPLATE" ]]; then
-	if ! "$VALIDATE_LIBRARY" "$REQUEST_TEMPLATE" >/dev/null 2>&1; then
-		echo "FAIL: request output template does not pass validate-library.sh"
-		fail=1
-	fi
-fi
-# Superseded with highway-clarify: clarification-record.md and clarification-catalog.md.
-if ! "$VALIDATE_SKILL" "$HW_SKILLS/highway-nfrs" >/dev/null 2>&1; then
-	echo "FAIL: highway-nfrs does not pass validate-skill.sh"
-	fail=1
-fi
-if ! "$VALIDATE_SKILL" "$HW_SKILLS/highway-controls" >/dev/null 2>&1; then
-	echo "FAIL: highway-controls does not pass validate-skill.sh"
-	fail=1
-fi
+done
 
-# The current file-emitting skills are the complete set of citing skills for this feature.
+# Only the skills that share a record template still cite the shared template folder.
 citing_count="$(grep -RIl 'library/templates/output/' "$HW_SKILLS" --include='SKILL.md' | wc -l | tr -d ' ')"
-if [[ "$citing_count" != "12" ]]; then
-	echo "FAIL: expected 12 output-template citing skills, found $citing_count"
+if [[ "$citing_count" != "4" ]]; then
+	echo "FAIL: expected 4 output-template citing skills, found $citing_count"
 	fail=1
 fi
-for citing_skill in "$NFR_SKILL" "$CONTROL_SKILL" "$PROFILE_SKILL" "$OBJECTIVE_SKILL" "$NEW_SKILL" "$DISCOVERY_SKILL" "$ADR_SKILL" "$ARCHITECTURE_SKILL" "$IMPLEMENTATION_SKILL" "$ONBOARDING_SKILL" "$CODIFY_SKILL" "$CODIFY_CONFIG_SKILL"; do
+for citing_skill in "$ADR_SKILL" "$ARCHITECTURE_SKILL" "$IMPLEMENTATION_SKILL" "$ONBOARDING_SKILL"; do
 	if ! grep -Fq "library/templates/output/" "$citing_skill"; then
 		echo "FAIL: dependent review omitted citing skill $citing_skill"
 		fail=1
@@ -336,7 +313,7 @@ mkdir -p "$fixture_templates"
 nfr_citation_fixture="$fixture_root/nfr-missing-catalog-citation.md"
 sed '/nfr-catalog\.md/d' "$NFR_SKILL" > "$nfr_citation_fixture"
 if skill_citations_valid "$nfr_citation_fixture" \
-	".highway/library/templates/output/nfr-record.md" \
+	"assets/nfr-record.md" \
 	"assets/nfr-catalog.md"; then
 	echo "FAIL: missing NFR catalog citation fixture was accepted"
 	fail=1
@@ -355,7 +332,7 @@ if ! nfr_catalog_structure_not_duplicated "$NFR_SKILL"; then
 fi
 
 for retained_artifact in request objective control nfr discovery; do
-	cp "$HW_OUTPUT_TEMPLATES/${retained_artifact}-record.md" "$fixture_templates/"
+	cp "$(hw_template "${retained_artifact}-record")" "$fixture_templates/"
 	cp "$(hw_template "${retained_artifact}-catalog")" "$fixture_templates/"
 done
 rm -f "$fixture_templates/objective-catalog.md"
@@ -389,7 +366,7 @@ done
 citation_fixture="$fixture_root/objectives-missing-citation.md"
 sed '/objective-catalog\.md/d' "$OBJECTIVE_SKILL" > "$citation_fixture"
 if skill_citations_valid "$citation_fixture" \
-	".highway/library/templates/output/objective-record.md" \
+	"assets/objective-record.md" \
 	"assets/objective-catalog.md"; then
 	echo "FAIL: missing skill citation fixture was accepted"
 	fail=1

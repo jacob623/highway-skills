@@ -38,7 +38,7 @@ expect() {
 	fi
 }
 
-expect .highway/library/templates/output/codify-plan.md skill highway-codify
+expect skills/highway-codify/assets/codify-plan.md skill highway-codify
 expect skills/highway-adr/SKILL.md skill highway-adr
 expect skills/highway-setup/assets/request-catalog.md skill highway-setup
 expect skills/highway-experience/SKILL.md smoke smoke
@@ -58,11 +58,11 @@ expect .claude/skills/highway-codify/SKILL.md none -
 expect .highway/catalog/index.json none -
 expect framework/constitution.md none -
 
-reason="$(cd "$HW_ROOT" && bash "$PATH_MAP" .highway/library/templates/output/codify-plan.md | cut -f4)"
+reason="$(cd "$HW_ROOT" && bash "$PATH_MAP" .highway/library/templates/output/adr-record.md | cut -f4 | grep -F highway-adr)"
 case "$reason" in
-*highway-codify*codify-plan.md*) ;;
+"highway-adr names .highway/library/templates/output/adr-record.md") ;;
 *)
-	echo "FAIL: the reason for codify-plan.md does not name the skill and the template: $reason"
+	echo "FAIL: the reason for adr-record.md does not name the skill and the template: $reason"
 	fail=1
 	;;
 esac
@@ -98,7 +98,7 @@ fi
 
 # Seeded probe: with no skill naming the template, it is reported unmapped.
 empty_skills="$(mktemp -d)"
-probe="$(cd "$HW_ROOT" && bash "$PATH_MAP" --skills-dir "$empty_skills" .highway/library/templates/output/codify-plan.md | cut -f2)"
+probe="$(cd "$HW_ROOT" && bash "$PATH_MAP" --skills-dir "$empty_skills" .highway/library/templates/output/adr-record.md | cut -f2)"
 rm -rf "$empty_skills"
 if [[ "$probe" != "unmapped" ]]; then
 	echo "FAIL: a template no skill names maps to '$probe', expected unmapped"

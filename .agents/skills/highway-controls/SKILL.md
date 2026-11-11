@@ -4,7 +4,7 @@ description: "Manages the repository-wide control baseline."
 usage: "Invoke as /highway-controls."
 compatibility: all
 metadata:
-  version: 8.2.0
+  version: 8.3.0
 ---
 
 # highway-controls
@@ -32,14 +32,14 @@ Do not emit Setup's safeguard transition. Setup already emitted it.
 - `library/governance/objectives.md` and `library/objectives/` when present.
 - `library/governance/controls.md` when present.
 - `library/governance/controls/CTL*.md` when present.
-- `.highway/library/templates/output/control-record.md`.
+- `assets/control-record.md`.
 - `assets/control-catalog.md`.
 - The highway-experience skill, activated first.
 - Delegation from `highway-setup`.
 
 ## Outputs
 
-The complete structure is `.highway/library/templates/output/control-record.md` and `assets/control-catalog.md`.
+The complete structure is `assets/control-record.md` and `assets/control-catalog.md`.
 
 - Updated Control records and catalog after a review edit.
 - New Control records and catalog after the guided flow writes them.
@@ -313,7 +313,7 @@ Resolve every id in `identifier` before writing. Write the held Controls and the
 
 On success, emit nothing. Return `Finished`.
 
-For each held Control, write `library/governance/controls/[ID].md` in the shape required by `.highway/library/templates/output/control-record.md`.
+For each held Control, write `library/governance/controls/[ID].md` in the shape required by `assets/control-record.md`.
 
 - `id` is the derived `CTL` id.
 - Keep an existing id when the title is unchanged.
@@ -356,7 +356,7 @@ No Control record is written beneath `.highway`.
 - A taken id for a different title names the conflicting titles, says a title change is appropriate, and shows a new title. The write waits until the person accepts that title.
 - That message does not mention identifiers, hex, sampling, or the catalog.
 - A successful guided write returns `Finished`, emits nothing else, and does not show the stored records.
-- Written records match `.highway/library/templates/output/control-record.md`.
+- Written records match `assets/control-record.md`.
 - The written catalog matches `assets/control-catalog.md`.
 - Setup receives `Finished` and the person does not see that word.
 

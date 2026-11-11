@@ -4,7 +4,7 @@ description: "Manages the repository-wide nfr baseline."
 usage: "Invoke as /highway-nfrs."
 compatibility: all
 metadata:
-  version: 9.3.0
+  version: 9.4.0
 ---
 
 # highway-nfrs
@@ -33,14 +33,14 @@ Do not emit Setup's operational-expectation transition. Setup already emitted it
 - `library/governance/controls.md` and `library/governance/controls/` when present.
 - `library/governance/nfrs.md` when present.
 - `library/governance/nfrs/NFR*.md` when present.
-- `.highway/library/templates/output/nfr-record.md`.
+- `assets/nfr-record.md`.
 - `assets/nfr-catalog.md`.
 - The highway-experience skill, activated first.
 - Delegation from `highway-setup`.
 
 ## Outputs
 
-The complete structure is `.highway/library/templates/output/nfr-record.md` and `assets/nfr-catalog.md`.
+The complete structure is `assets/nfr-record.md` and `assets/nfr-catalog.md`.
 
 - Updated NFR records and catalog after a review edit.
 - New NFR records and catalog after the guided flow writes them.
@@ -338,7 +338,7 @@ Resolve every id in `identifier` before writing. Write the held NFRs and the cat
 
 On success, emit nothing. Return `Finished`.
 
-For each held NFR, write `library/governance/nfrs/[ID].md` in the shape required by `.highway/library/templates/output/nfr-record.md`.
+For each held NFR, write `library/governance/nfrs/[ID].md` in the shape required by `assets/nfr-record.md`.
 
 - `id` is the derived `NFR` id.
 - Keep an existing id when the title is unchanged.
@@ -385,7 +385,7 @@ No NFR record is written beneath `.highway`.
 - A taken id for a different title names the conflicting titles, says a title change is appropriate, and shows a new title. The write waits until the person accepts that title.
 - That message does not mention identifiers, hex, sampling, or the catalog.
 - A successful guided write returns `Finished`, emits nothing else, and does not show the stored records.
-- Written records match `.highway/library/templates/output/nfr-record.md`.
+- Written records match `assets/nfr-record.md`.
 - The written catalog matches `assets/nfr-catalog.md`.
 - Setup receives `Finished` and the person does not see that word.
 

@@ -21,10 +21,10 @@ const fakeDeps = (changed: { present: string[]; deleted: string[] }): SelectDeps
   skillsAt: () => "/nonexistent",
 });
 
-test("a template selects every scenario of the skill naming it, including pass-through scenarios", () => {
-  const r = selectTargeted(scenarios, { paths: [".highway/library/templates/output/codify-plan.md"], skills: [] });
+test("a skill's template selects every scenario of that skill, including pass-through scenarios", () => {
+  const r = selectTargeted(scenarios, { paths: ["skills/highway-codify/assets/codify-plan.md"], skills: [] });
   assert.deepEqual(r.selection.map((s) => s.scenario), ["codify-plan-review", "codify-smoke", "onboarding-through"]);
-  assert.match(r.selection[0].reasons[0], /^--paths: highway-codify names \.highway\/library\/templates\/output\/codify-plan\.md$/);
+  assert.match(r.selection[0].reasons[0], /^--paths: skills\/highway-codify\/assets\/codify-plan\.md is part of highway-codify$/);
 });
 
 test("--skills and --paths combine as a union and keep both reasons", () => {

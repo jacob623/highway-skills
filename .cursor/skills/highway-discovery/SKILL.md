@@ -4,7 +4,7 @@ description: "Manages one discovery for a complete request."
 usage: "Invoke as /highway-discovery with one request id or one discovery id."
 compatibility: all
 metadata:
-  version: 5.2.0
+  version: 5.3.0
 ---
 
 # highway-discovery
@@ -37,13 +37,13 @@ Do not report Status, Summary, Next Action, Blocking Reason, Missing, Complete, 
 - Reference Architectures and Reference Implementations when present, for exact matching and tie-breaks only.
 - The vendor's current public documentation for each product or feature a generated option names.
 - `requests/requests.md` and `discoveries/discoveries.md`.
-- `.highway/library/templates/output/discovery-record.md`.
+- `assets/discovery-record.md`.
 - The highway-experience skill, activated first.
 - A project root containing `.highway/`.
 
 ## Outputs
 
-The complete structure is `.highway/library/templates/output/discovery-record.md`. `discoveries/discoveries.md` keeps the structure highway-setup seeded.
+The complete structure is `assets/discovery-record.md`. `discoveries/discoveries.md` keeps the structure highway-setup seeded.
 
 - One Discovery record at `discoveries/[ID].md`, written before the option list is shown.
 - An updated `discoveries/discoveries.md` written with that record.
@@ -214,7 +214,7 @@ Write `discoveries/[ID].md` and `discoveries/discoveries.md` together. Write nei
 
 The Discovery title is `Options for [request title]` unless the person supplied a title.
 
-The record follows `.highway/library/templates/output/discovery-record.md`.
+The record follows `assets/discovery-record.md`.
 
 - `id` is the derived `DISC` id.
 - `request` is the Request id.

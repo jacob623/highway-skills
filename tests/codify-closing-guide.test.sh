@@ -9,7 +9,6 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=paths.sh
 source "$SCRIPT_DIR/paths.sh"
 SKILLS="$HW_SKILLS"
-OUTPUT="$HW_OUTPUT_TEMPLATES"
 fail=0
 
 require() {
@@ -37,7 +36,7 @@ reject_line() {
 }
 
 CODIFY="$SKILLS/highway-codify/SKILL.md"
-RECORD="$OUTPUT/codify-record.md"
+RECORD="$(hw_template codify-record)"
 
 for text in \
 	'Head the first part `## Setup Instructions` and the second part `## User Guide`.' \

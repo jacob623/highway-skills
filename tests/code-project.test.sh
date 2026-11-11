@@ -14,7 +14,7 @@ CODIFY="$SKILLS/highway-codify/SKILL.md"
 IMPL="$SKILLS/highway-implementation/SKILL.md"
 ONBOARD="$SKILLS/highway-onboarding/SKILL.md"
 RI_RECORD="$OUTPUT/implementation-record.md"
-CDY_RECORD="$OUTPUT/codify-record.md"
+CDY_RECORD="$(hw_template codify-record)"
 fail=0
 
 section() {

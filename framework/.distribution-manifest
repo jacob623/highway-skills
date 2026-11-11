@@ -90,11 +90,8 @@ include	skills	.highway/skills
 # --- The .highway directory: excluded by default so each child is a deliberate decision ---
 exclude	.highway	-
 include	.highway/library	-
-include	.highway/library/templates/output/objective-record.md	-
-include	.highway/library/templates/output/request-record.md	-
 include	.highway/library/templates/output/adr-record.md	-
 include	.highway/library/templates/output/architecture-record.md	-
-include	.highway/library/templates/output/profile-record.md	-
 include	.highway/catalog	-
 
 # --- Organization library: highway-setup seeds it in a project at run time, so no organization file ships ---

@@ -9,7 +9,6 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=paths.sh
 source "$SCRIPT_DIR/paths.sh"
 SKILLS="$HW_SKILLS"
-OUTPUT="$HW_OUTPUT_TEMPLATES"
 fail=0
 
 require() {
@@ -31,8 +30,8 @@ reject() {
 CODIFY="$SKILLS/highway-codify/SKILL.md"
 REQUEST="$SKILLS/highway-request/SKILL.md"
 ASSESSMENT="$SKILLS/highway-assessment/SKILL.md"
-RECORD="$OUTPUT/codify-record.md"
-TASKS="$OUTPUT/codify-tasks.md"
+RECORD="$(hw_template codify-record)"
+TASKS="$(hw_template codify-tasks)"
 STANDARDS_CATALOG="$HW_ROOT/library/coding-standards/coding-standards.md"
 SAMPLE_STANDARD="$HW_ROOT/library/coding-standards/terraform.md"
 MANIFEST="$HW_FRAMEWORK/.distribution-manifest"

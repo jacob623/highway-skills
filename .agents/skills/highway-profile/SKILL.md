@@ -4,7 +4,7 @@ description: "Manages the repository-wide organizational Profile and its context
 usage: "Invoke as /highway-profile."
 compatibility: all
 metadata:
-  version: 14.1.0
+  version: 14.2.0
 ---
 
 # highway-profile
@@ -28,14 +28,14 @@ Do not report Status, Summary, Next Action, Blocking Reason, Missing, Complete, 
 
 - Project root containing `.highway/`.
 - `library/knowledge/profile.md` when present.
-- `.highway/library/templates/output/profile-record.md`.
+- `assets/profile-record.md`.
 - The highway-experience skill, activated first.
 - Delegation from `highway-setup`.
 - Material the person supplies, including a public website when retrieval is available.
 
 ## Outputs
 
-The complete structure is `.highway/library/templates/output/profile-record.md`.
+The complete structure is `assets/profile-record.md`.
 
 - An updated `library/knowledge/profile.md` after a review edit.
 - A new `library/knowledge/profile.md` after the guided flow writes it.
@@ -54,7 +54,7 @@ Emit only the active template. Follow this order: `review` when `profile.md` exi
 
 ### Entry
 
-1. Read `library/knowledge/profile.md` from the repository root. Do not read, copy, or review `.highway/library/knowledge/profile.md`.
+1. Read `library/knowledge/profile.md` from the repository root.
 2. If `library/knowledge/profile.md` is present and readable, go to `review`.
 3. If that file is absent, go to `name`.
 4. If that file is present and unreadable, stop. Say the Profile could not be read. Leave the file unchanged. Do not return `Finished`.
@@ -249,7 +249,7 @@ Bold only the question in each block.
 
 ### write
 
-Write `library/knowledge/profile.md` from the repository root once, in the shape required by `.highway/library/templates/output/profile-record.md`. Create `library/knowledge/` when it is absent. Do not write `.highway/library/knowledge/profile.md`.
+Write `library/knowledge/profile.md` from the repository root once, in the shape required by `assets/profile-record.md`. Create `library/knowledge/` when it is absent.
 
 - A captured domain is `discussed` and its narrative section contains the held bullets. Omit a term the person rejected.
 - A declined domain is `bounded` and its narrative section is omitted.
@@ -267,7 +267,7 @@ Write `library/knowledge/profile.md` from the repository root once, in the shape
 - A starting-point message contains no canonical question.
 - The file is written once, after Guiding Principles is captured or declined.
 - A successful guided write returns `Finished` and emits nothing else.
-- The written file matches `.highway/library/templates/output/profile-record.md`.
+- The written file matches `assets/profile-record.md`.
 - Setup receives `Finished` and the person does not see that word.
 
 ## Error Handling
