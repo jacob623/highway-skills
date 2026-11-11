@@ -8,6 +8,3 @@ smoke	.highway/governance/experience-standard.md
 smoke	.highway/governance/storage.md
 smoke	.highway/library/knowledge/highway-identity.md
 smoke	.highway/instructions/highway-agent-context.md
-
-none	.highway/governance/constitution.md
-none	.highway/library/knowledge/frontmatter-lexicon.txt

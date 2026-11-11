@@ -2,10 +2,10 @@
 # Path map: what a changed path selects.
 #
 # Usage: path-map.sh [--skills-dir <dir>] <path>...
-#        path-map.sh --location <skills|tools>
+#        path-map.sh --location <skills|framework>
 #   Paths are repository-relative. --skills-dir reads SKILL.md files from another tree, such as the
 #   target branch's skills for a deleted path.
-#   --location prints the repository-relative skills or tools location and exits.
+#   --location prints the repository-relative skills or framework location and exits.
 #
 # Prints `<path>\t<kind>\t<target>\t<reason>` for each selection a path makes:
 #   skill <id>       every scenario of that skill, including scenarios passing through it
@@ -33,7 +33,8 @@ REL_LIBRARY="$(hw_rel "$HW_LIBRARY")"
 REL_GOVERNANCE="$(hw_rel "$HW_GOVERNANCE")"
 REL_INSTRUCTIONS="$(hw_rel "$HW_INSTRUCTIONS")"
 REL_CATALOG="$(hw_rel "$HW_CATALOG")"
-REL_TOOLS="$(hw_rel "$HW_TOOLS")"
+REL_FRAMEWORK="$(hw_rel "$HW_FRAMEWORK")"
+REL_TESTS="$(hw_rel "$HW_TESTS")"
 REL_COPILOT="$(hw_rel "$HW_AGENT_COPILOT")"
 REL_CLAUDE="$(hw_rel "$HW_AGENT_CLAUDE")"
 REL_CURSOR="$(hw_rel "$HW_AGENT_CURSOR")"
@@ -43,7 +44,7 @@ REL_AGENTS_MD="$(hw_rel "$HW_AGENTS_MD")"
 if [ "${1:-}" = "--location" ]; then
 	case "${2:-}" in
 	skills) printf '%s\n' "$REL_SKILLS" ;;
-	tools) printf '%s\n' "$REL_TOOLS" ;;
+	framework) printf '%s\n' "$REL_FRAMEWORK" ;;
 	*)
 		printf 'path-map: unknown location: %s\n' "${2:-}" >&2
 		exit 2
@@ -145,8 +146,11 @@ for path in "$@"; do
 	"$REL_CATALOG"/*)
 		emit "$path" none - "generated catalog"
 		;;
-	"$REL_TOOLS"/*)
-		emit "$path" none - "tools, generators, validators, and tests are covered by the bash suite"
+	"$REL_FRAMEWORK"/*)
+		emit "$path" none - "framework scripts and documents; the bash suite covers them"
+		;;
+	"$REL_TESTS"/*)
+		emit "$path" none - "the bash suite; it covers itself"
 		;;
 	*)
 		emit "$path" none - "not a shipped skill input"

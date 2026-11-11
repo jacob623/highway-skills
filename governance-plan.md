@@ -43,7 +43,7 @@ layer boundaries, not because they are open.
 | # | Layer | Governs | Owner | Ships? | ID namespace | Home |
 |---|---|---|---|---|---|---|
 | 0 | **Development** | How the Highway project is built | Maintainer | No (persists in dev tree) | `D1.1`–`Dn.n` | `.specify/memory/constitution.md` |
-| 1 | **Authoring** | The text inside a `SKILL.md` | Maintainer | Yes | `P1.1`–`P8.6` | `.highway/governance/constitution.md` |
+| 1 | **Authoring** | The text inside a `SKILL.md` | Maintainer | Yes | `P1.1`–`P8.6` | `framework/constitution.md` |
 | 2 | **Experience** | What a skill emits at runtime, and how it interacts | Maintainer | Yes | `X1.1`–`Xn.n` | `.highway/governance/experience-standard.md` |
 | 3 | **Architecture** | The systems the user designs | End user | Skills ship; content does not | User-defined (`NFR-001`, `CTL-001`) | User's own workspace |
 
@@ -142,7 +142,7 @@ re-tiered honestly; deciding which is small work, but it belongs to whoever next
 Enforcement Map rather than to a runtime phase.
 
 **Also found 2026-10-08.** Running the suite rewrites the tracked file
-`.highway/tools/.adapter-manifest`, and the rewrite is **not byte-stable**: twelve `.mock-agent-4`
+`framework/.adapter-manifest`, and the rewrite is **not byte-stable**: twelve `.mock-agent-4`
 rows come back in a different order each run, with identical paths, versions and hashes. Two
 separate problems sit behind that one observation:
 
@@ -594,7 +594,7 @@ range requirement stands unmet.
 - The 240-second interim ceiling Feature 042 set is removed once 180 is met again, rather than
   surviving as a second target.
 - No constitution rule is added or amended, and neither Layer 1 nor Layer 2 is touched.
-- `.highway/tools/tests/run-all.sh` exits 0.
+- `tests/run-all.sh` exits 0.
 
 ---
 
@@ -700,7 +700,7 @@ The argument that the prohibition's *intent* is met:
   full validation. The regression still fails in the current tree.
 - A failed validation is never recorded, so a defective skill is re-validated and re-reported on
   every invocation.
-- `.highway/tools/tests/validation-cache.test.sh` asserts this directly: it populates the cache
+- `tests/validation-cache.test.sh` asserts this directly: it populates the cache
   for a skill, then breaks that skill, and requires rejection with the original error text.
 - The cache disables itself entirely when any of `CONSTITUTION_FILE`, `EXPERIENCE_FILE`,
   `FRONTMATTER_CONTRACT_FILE` or `FRONTMATTER_LEXICON_FILE` is set, because an override repoints
@@ -738,7 +738,7 @@ having closed this phase.**
   on.
 - The validator's command-line contract is unchanged.
 - No constitution rule is added or amended, and neither Layer 1 nor Layer 2 is touched.
-- `.highway/tools/tests/run-all.sh` exits 0.
+- `tests/run-all.sh` exits 0.
 
 ---
 
@@ -787,7 +787,7 @@ Checking which legs write shared live-tree state found more:
 | Shared file | Written by |
 |---|---|
 | `.highway/catalog/index.*` | `adapter-coverage`, `generate-catalog` |
-| `.highway/tools/.adapter-manifest` | `adapter-coverage`, `generate-agent-adapters`, `new-agent-extensibility`, `path-integrity` |
+| `framework/.adapter-manifest` | `adapter-coverage`, `generate-agent-adapters`, `new-agent-extensibility`, `path-integrity` |
 | `generate-catalog.test.sh`'s own source, perturbed in place | `constitution-inventory`'s `source-document` leg |
 
 That collapses four legs into one serialized group of roughly 21s, which is where the ~21–25s
@@ -843,7 +843,7 @@ reasoning; if it is closed unimplemented, `getconf` stays off the list.
 - `xargs -P` ordered replay and `getconf _NPROCESSORS_ONLN` are verified on Linux and macOS.
 - The `getconf` amendment is re-made with its Sync Impact Report, or `getconf` stays off the list.
 - Every artifact class still declared, no assertion removed or loosened.
-- `.highway/tools/tests/run-all.sh` exits 0.
+- `tests/run-all.sh` exits 0.
 
 ---
 
@@ -909,7 +909,7 @@ as a standing check after the sites settle, not as a survey before.
 - The report is generated from the tree, with no hand-maintained list of rules or skills.
 - The limit above is recorded in the spec, so a future reader does not mistake a covered row for a
   conformant behaviour.
-- `.highway/tools/tests/run-all.sh` exits 0, and the added runtime is measured against the phases
+- `tests/run-all.sh` exits 0, and the added runtime is measured against the phases
   14 and 15 budget rather than assumed negligible.
 
 ---

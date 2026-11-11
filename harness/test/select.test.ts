@@ -42,7 +42,7 @@ test("a shared file selects the smoke set", () => {
 });
 
 test("specs and tests select nothing and the run says so", () => {
-  const r = selectTargeted(scenarios, { paths: [".highway/tools/tests/run-all.sh"], skills: [] });
+  const r = selectTargeted(scenarios, { paths: ["tests/run-all.sh"], skills: [] });
   assert.deepEqual(r.selection, []);
   assert.match(r.notes[0], /selects nothing/);
 });
@@ -53,7 +53,7 @@ test("a stage fixture selects scenarios starting from it", () => {
 });
 
 test("--changed-since maps present and deleted files", () => {
-  const r = selectTargeted(scenarios, { paths: [], skills: [], changedSince: "main" }, fakeDeps({ present: [".highway/skills/highway-adr/SKILL.md"], deleted: [] }));
+  const r = selectTargeted(scenarios, { paths: [], skills: [], changedSince: "main" }, fakeDeps({ present: ["skills/highway-adr/SKILL.md"], deleted: [] }));
   assert.deepEqual(r.selection.map((s) => s.scenario), ["adr-smoke"]);
   assert.match(r.selection[0].reasons[0], /^changed since main: /);
 });

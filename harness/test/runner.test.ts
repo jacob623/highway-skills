@@ -187,7 +187,7 @@ test("a fixture that fails validation blocks its scenario", async () => {
 
 test("a targeted run that selects nothing exits 0 and says so", async () => {
   const { dir, transcripts, lines } = setup({ "highway-help/help-smoke.scenario": SCENARIO("help-smoke") });
-  const code = await main(["--paths", ".highway/tools/tests/run-all.sh"], { ...deps({}, lines, transcripts), scenariosDir: dir });
+  const code = await main(["--paths", "tests/run-all.sh"], { ...deps({}, lines, transcripts), scenariosDir: dir });
   assert.equal(code, 0);
   assert.match(lines.join("\n"), /Nothing selected; no scenario runs\./);
   rmSync(dir, { recursive: true });

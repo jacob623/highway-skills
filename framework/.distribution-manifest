@@ -1,0 +1,127 @@
+# Distribution classification. Read by generate-distribution.sh and by
+# shipped-tree-independence.test.sh, so the set of distributed paths is declared exactly once
+# (D1.6). Three tab-delimited fields: classification, source, destination.
+#
+# classification  include | exclude
+# source          repository-relative path
+# destination     repository-relative path in the distribution, or - for unchanged
+#
+# The most specific matching record wins, so a directory may be included while a child is
+# excluded. A path matching no record is reported as unclassified and fails the run: a new
+# directory must be classified deliberately rather than defaulting to either answer.
+#
+# Development-only paths are written without a trailing slash on purpose. The verification
+# searches distributed files for '.specify/' and 'specs/', and this file is excluded from the
+# distribution anyway, but the shorter form keeps it from matching under either condition.
+
+# --- Agent adapter trees: the highway-* entries ship, their speckit-* siblings do not ---
+exclude	.claude	-
+include	.claude/CLAUDE.md	-
+include	.claude/skills/highway-objectives	-
+include	.claude/skills/highway-help	-
+include	.claude/skills/highway-controls	-
+include	.claude/skills/highway-nfrs	-
+include	.claude/skills/highway-profile	-
+include	.claude/skills/highway-setup	-
+include	.claude/skills/highway-request	-
+include	.claude/skills/highway-discovery	-
+include	.claude/skills/highway-adr	-
+include	.claude/skills/highway-onboarding	-
+include	.claude/skills/highway-architecture	-
+include	.claude/skills/highway-implementation	-
+include	.claude/skills/highway-assessment	-
+include	.claude/skills/highway-codify	-
+include	.claude/skills/highway-codify-config	-
+exclude	.cursor	-
+include	.cursor/rules/highway-agent-context.mdc	-
+include	.cursor/skills/highway-objectives	-
+include	.cursor/skills/highway-help	-
+include	.cursor/skills/highway-controls	-
+include	.cursor/skills/highway-nfrs	-
+include	.cursor/skills/highway-profile	-
+include	.cursor/skills/highway-setup	-
+include	.cursor/skills/highway-request	-
+include	.cursor/skills/highway-discovery	-
+include	.cursor/skills/highway-adr	-
+include	.cursor/skills/highway-onboarding	-
+include	.cursor/skills/highway-architecture	-
+include	.cursor/skills/highway-implementation	-
+include	.cursor/skills/highway-assessment	-
+include	.cursor/skills/highway-codify	-
+include	.cursor/skills/highway-codify-config	-
+exclude	.github	-
+include	.github/copilot-instructions.md	-
+include	.github/skills/highway-objectives	-
+include	.github/skills/highway-help	-
+include	.github/skills/highway-controls	-
+include	.github/skills/highway-nfrs	-
+include	.github/skills/highway-profile	-
+include	.github/skills/highway-setup	-
+include	.github/skills/highway-request	-
+include	.github/skills/highway-discovery	-
+include	.github/skills/highway-adr	-
+include	.github/skills/highway-onboarding	-
+include	.github/skills/highway-architecture	-
+include	.github/skills/highway-implementation	-
+include	.github/skills/highway-assessment	-
+include	.github/skills/highway-codify	-
+include	.github/skills/highway-codify-config	-
+exclude	.agents	-
+include	.agents/skills/highway-objectives	-
+include	.agents/skills/highway-help	-
+include	.agents/skills/highway-controls	-
+include	.agents/skills/highway-nfrs	-
+include	.agents/skills/highway-profile	-
+include	.agents/skills/highway-setup	-
+include	.agents/skills/highway-request	-
+include	.agents/skills/highway-discovery	-
+include	.agents/skills/highway-adr	-
+include	.agents/skills/highway-onboarding	-
+include	.agents/skills/highway-architecture	-
+include	.agents/skills/highway-implementation	-
+include	.agents/skills/highway-assessment	-
+include	.agents/skills/highway-codify	-
+include	.agents/skills/highway-codify-config	-
+include	AGENTS.md	-
+
+# --- Skills: authored at the root, shipped under .highway/ ---
+include	skills	.highway/skills
+
+# --- The .highway directory: excluded by default so each child is a deliberate decision ---
+exclude	.highway	-
+include	.highway/library	-
+include	.highway/library/templates/output/objective-record.md	-
+include	.highway/library/templates/output/request-record.md	-
+include	.highway/library/templates/output/request-catalog.md	-
+include	.highway/library/templates/output/adr-record.md	-
+include	.highway/library/templates/output/adr-catalog.md	-
+include	.highway/library/templates/output/architecture-record.md	-
+include	.highway/library/templates/output/architecture-catalog.md	-
+include	.highway/library/templates/output/profile-record.md	-
+include	.highway/library/templates/output/assessment-findings.md	-
+include	.highway/catalog	-
+include	.highway/governance	-
+include	.highway/instructions	-
+
+# --- Organization library: Highway seeds none, so no organization file ships ---
+exclude	library	-
+
+# --- The framework does not ship. Its README is the distribution's front page, which cannot
+# occupy the repository root because the repository's own README is development-only ---
+exclude	framework	-
+include	framework/README.md	README.md
+
+# --- The test suite does not ship. Fixtures are deliberately non-conformant ---
+exclude	tests	-
+
+# --- Development-only ---
+exclude	.gitignore	-
+exclude	.specify	-
+exclude	specs	-
+exclude	harness	-
+exclude	README.md	-
+exclude	governance-plan.md	-
+exclude	nfr-plan.md	-
+exclude	rollout-plan.md	-
+exclude	standard-alignment.md	-
+exclude	.DS_Store	-

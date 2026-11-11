@@ -11,7 +11,7 @@ export const FIXTURES_DIR = join(HARNESS_DIR, "fixtures");
 export type BuildResult = { ok: true; dir: string } | { ok: false; tail: string };
 
 /** A repository-relative location from the paths helper, read through `path-map.sh --location`. */
-export function location(name: "skills" | "tools"): string {
+export function location(name: "skills" | "framework"): string {
   const result = spawnSync("bash", [join(HARNESS_DIR, "bin", "path-map.sh"), "--location", name], {
     encoding: "utf8",
     cwd: REPO_ROOT,
@@ -23,7 +23,7 @@ export function location(name: "skills" | "tools"): string {
 /** Builds the distribution once per run into <workRoot>/dist (FR-005). */
 export function buildDistribution(workRoot: string): BuildResult {
   const dir = join(workRoot, "dist");
-  const result = spawnSync("bash", [join(REPO_ROOT, location("tools"), "generate-distribution.sh"), dir], {
+  const result = spawnSync("bash", [join(REPO_ROOT, location("framework"), "generate-distribution.sh"), dir], {
     encoding: "utf8",
     cwd: REPO_ROOT,
   });

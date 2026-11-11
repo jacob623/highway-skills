@@ -1,5 +1,29 @@
 <!--
 Sync Impact Report
+Version change: 3.1.0 → 3.2.0 (MINOR), 2026-11-11
+Bump rationale: the skills move from `.highway/skills/` to `skills/`, the framework from
+`.highway/tools/` to `framework/`, and the test suite to `tests/`. The framework no longer ships;
+packaging validates the shipped skills from a verification tree that adds `framework/`. Rules
+name the new locations and no obligation changes, so no conforming work fails.
+Changed elements:
+- Version line: 3.1.0 → 3.2.0
+- Definitions: Shipped artifact names `skills/` and `framework/README.md` with their shipped
+  locations; Generated artifact names `framework/`
+- Tier Definitions: `[auto]` names `tests/run-all.sh`
+- Enforcement Map: the D1.2 note names the verification tree; the D2.5 note names `framework/`,
+  `tests/`, and `harness/bin/`
+- D2.5, D3.1, D3.2, D3.3, D4.5, and D4.6 Observables: the new locations
+- Harness Toolchain note: `framework/` and `tests/`
+- Toolchain Gate trigger: `framework/`, `tests/`, and `harness/bin/`
+- Correspondence Gate and Skill Content Gate triggers: `skills/`
+Unchanged: every rule's text, keyword, and tier; the Declared Toolchain; every other row and
+gate; the Last Amended date (already 2026-11-11). Earlier reports below keep the paths that were
+current when they were written.
+Self-application review: D1.3 PASS (no Highway Skills Constitution rule sentence is copied);
+D1.4 PASS (this report cites rule IDs); D5.3 PASS (the nine changed elements are listed above
+and every unlisted element carries forward).
+
+Sync Impact Report
 Version change: 3.0.0 → 3.1.0 (MINOR), 2026-11-11
 Bump rationale: D2.5 is added under Principle II, so every script gets repository locations from
 the paths helper at `.highway/tools/lib/paths.sh`. It adds a rule without redefining one, and every
@@ -365,9 +389,9 @@ Highway Skills Constitution.
 
 | Term | Definition |
 |---|---|
-| **Shipped artifact** | Any file included in the packaged distribution: `.highway/skills/`, `.highway/library/`, `.highway/catalog/`, `.highway/governance/`, and the generated agent adapter trees. |
+| **Shipped artifact** | Any file included in the packaged distribution: `skills/` (shipped as `.highway/skills/`), `.highway/library/`, `.highway/catalog/`, `.highway/governance/`, the generated agent adapter trees, and `framework/README.md` (shipped as `README.md`). |
 | **Development artifact** | Any file excluded from the packaged distribution: `.specify/`, `specs/`, and the `speckit-*` agent skills. |
-| **Generated artifact** | A file produced by a script under `.highway/tools/` and recorded in a manifest. |
+| **Generated artifact** | A file produced by a script under `framework/` and recorded in a manifest. |
 | **Live documentation** | A document that describes current behavior: tool READMEs, the authoring standard, the root README. |
 | **Behavioral change** | A change that alters the output, exit code, or accepted input of any script or skill. |
 | **Verdict** | One of exactly three tokens: PASS, FAIL, N/A. |
@@ -379,7 +403,7 @@ violation or whether they must check it themselves.
 
 | Tier | What it obliges in this document |
 |---|---|
-| `[auto]` | A test run by `.highway/tools/tests/run-all.sh` decides the rule, and the Enforcement Map below names that test. |
+| `[auto]` | A test run by `tests/run-all.sh` decides the rule, and the Enforcement Map below names that test. |
 | `[agent-checkable]` | An agent or person performs the check and reports the result. No test decides it. |
 | `[human-review]` | A human judgement is required; neither a test nor an agent can decide it. |
 
@@ -404,8 +428,8 @@ table cannot silently go stale.
 | Rule | Enforced by | Note |
 |---|---|---|
 | D1.1 | shipped-tree-independence.test.sh | Scans the distributed path set for the prohibited tokens; seeds a probe to prove it can fail |
-| D1.2 | distribution-packaging.test.sh | Runs the distribution's own validator against a tree with the development directories absent |
-| D2.5 | path-construction.test.sh | Scans every script under `.highway/tools/` and `harness/bin/` for a path built from a root variable, a climb from the script's folder, or a named template or document joined to its folder; seeds a probe to prove it can fail |
+| D1.2 | distribution-packaging.test.sh | Runs `framework/validate-skill.sh` from a verification tree: the distribution plus `framework/`, with the skills moved back to `skills/` and the development directories absent |
+| D2.5 | path-construction.test.sh | Scans every script under `framework/`, `tests/`, and `harness/bin/` for a path built from a root variable, a climb from the script's folder, or a named template or document joined to its folder; seeds a probe to prove it can fail |
 | D4.1 | generate-agent-adapters.test.sh | Asserts the generator refuses to overwrite a target that was hand-edited after it was produced |
 | D4.2 | generate-catalog.test.sh | Asserts re-running with unchanged inputs produces byte-identical output |
 | D4.3 | distribution-packaging.test.sh | Asserts refusal to overwrite an untracked directory and a modified file, naming each |
@@ -438,7 +462,7 @@ only to users.
 | D2.2 | A script MUST NOT invoke a utility outside the declared toolchain. | Each external command invoked appears in the Declared Toolchain list below. | [agent-checkable] |
 | D2.3 | A utility flag MUST work on both target platforms. | The flag is accepted by both GNU coreutils and the Apple/BSD variant of that utility. | [agent-checkable] |
 | D2.4 | A change MUST NOT add a runtime dependency. | The change introduces no package manager, interpreter, or binary absent from the declared toolchain. | [agent-checkable] |
-| D2.5 | A script MUST get repository locations from the paths helper. | No script other than `.highway/tools/lib/paths.sh` builds a path from a root variable, climbs from its own folder, or joins a named template or document to its folder. | [auto] |
+| D2.5 | A script MUST get repository locations from the paths helper. | No script other than `framework/lib/paths.sh` builds a path from a root variable, climbs from its own folder, or joins a named template or document to its folder. | [auto] |
 
 **Declared Toolchain** (referenced by D2.2 and D2.4). External utilities only; shell builtins are
 excluded:
@@ -454,8 +478,8 @@ repository.
 24 with TypeScript and `@github/copilot-sdk`, and reads changed files with `git`. These tools are
 used only under `harness/`. `harness/` is excluded from the distribution, so none of them is a
 runtime dependency, and D2.2 and D2.4 govern only the Declared Toolchain above. A script under
-`.highway/tools/` never invokes them. Bash scripts under `harness/bin/` that the test suite runs
-use only the Declared Toolchain.
+`framework/` or `tests/` never invokes them. Bash scripts under `harness/bin/` that the test suite
+runs use only the Declared Toolchain.
 
 Rationale: The toolchain must run unmodified on the default shell and utilities of the target
 platform. D2.3 tests portability across the two platforms actually targeted rather than
@@ -466,9 +490,9 @@ is the worked example.
 
 | ID | Rule | Observable | Tier |
 |---|---|---|---|
-| D3.1 | A change MUST begin from a passing test suite. | `.highway/tools/tests/run-all.sh` exits 0 before the first edit. | [agent-checkable] |
-| D3.2 | A change MUST end with a passing test suite. | `.highway/tools/tests/run-all.sh` exits 0 after the final edit. | [agent-checkable] |
-| D3.3 | A behavioral change MUST add or amend at least one test. | The change includes an edit to a file under `.highway/tools/tests/`. | [agent-checkable] |
+| D3.1 | A change MUST begin from a passing test suite. | `tests/run-all.sh` exits 0 before the first edit. | [agent-checkable] |
+| D3.2 | A change MUST end with a passing test suite. | `tests/run-all.sh` exits 0 after the final edit. | [agent-checkable] |
+| D3.3 | A behavioral change MUST add or amend at least one test. | The change includes an edit to a file under `tests/`. | [agent-checkable] |
 | D3.4 | A new validation check MUST be evaluated against every existing fixture before it is enabled. | Each fixture's expected verdict under the new check is recorded before the check is wired in. | [agent-checkable] |
 | D3.5 | A test MUST NOT be weakened to accommodate a change. | No assertion is removed or loosened without a recorded reason naming the superseded behavior. | [human-review] |
 | D3.6 | A test MUST be observed failing for the behavior it claims to cover before that behavior is marked complete. | The failing run and its message are recorded before the implementation that makes it pass. | [agent-checkable] |
@@ -488,8 +512,8 @@ artifact already in the repository.
 | D4.2 | A generator MUST produce identical output from unchanged inputs. | Two consecutive runs differ in no byte. | [auto] |
 | D4.3 | A generator MUST refuse to overwrite a target it did not produce. | The run exits non-zero and names the file. | [auto] |
 | D4.4 | A change to a generator MUST be followed by regeneration of every artifact it produces. | No diff remains after running the generator. | [agent-checkable] |
-| D4.5 | Every skill in the source MUST have its generated artifacts. | Each directory under `.highway/skills/` has a catalog entry, an adapter in each declared agent tree, an adapter manifest row for each adapter, and a distribution manifest row for each adapter. | [auto] |
-| D4.6 | A generated artifact MUST NOT name a skill absent from the source. | No catalog entry, adapter file, adapter manifest row, or distribution manifest row names a skill with no directory under `.highway/skills/`. | [auto] |
+| D4.5 | Every skill in the source MUST have its generated artifacts. | Each directory under `skills/` has a catalog entry, an adapter in each declared agent tree, an adapter manifest row for each adapter, and a distribution manifest row for each adapter. | [auto] |
+| D4.6 | A generated artifact MUST NOT name a skill absent from the source. | No catalog entry, adapter file, adapter manifest row, or distribution manifest row names a skill with no directory under `skills/`. | [auto] |
 | D4.7 | A change to a generator's input MUST be followed by regeneration. | Re-running every declared generator leaves no diff against the committed artifacts. | [auto] |
 
 Rationale: Generated artifacts are the product surface; drift between source and output ships
@@ -556,11 +580,11 @@ A gate applies only when its trigger evaluates true. A gate whose trigger is fal
 | Gate | Trigger | Rules evaluated |
 |---|---|---|
 | **Packaging Gate** | The change touches a shipped path. | D1.1, D1.2, D6.2 |
-| **Toolchain Gate** | The change touches a file under `.highway/tools/` or `harness/bin/`. | D2.1–D2.5 |
+| **Toolchain Gate** | The change touches a file under `framework/`, `tests/`, or `harness/bin/`. | D2.1–D2.5 |
 | **Generator Gate** | The change touches a `generate-*.sh` script. | D4.1–D4.4 |
-| **Correspondence Gate** | The change adds, removes, or modifies a directory under `.highway/skills/`, or any other input to a declared generator. | D4.5–D4.7 |
+| **Correspondence Gate** | The change adds, removes, or modifies a directory under `skills/`, or any other input to a declared generator. | D4.5–D4.7 |
 | **Validation Gate** | The change adds or modifies a validation check. | D3.4, D3.5 |
-| **Skill Content Gate** | The change creates or modifies a file under `.highway/skills/` or `.highway/library/`. | Delegated to the Highway Skills Constitution per D1.5 |
+| **Skill Content Gate** | The change creates or modifies a file under `skills/` or `.highway/library/`. | Delegated to the Highway Skills Constitution per D1.5 |
 
 ## Constitution Check Output Shape
 
@@ -590,4 +614,4 @@ Highway Skills Constitution prevails for artifact content and this document prev
 This document is subject to D1.3, D1.4, and D5.3. Every amendment records a review against those
 rule IDs.
 
-**Version**: 3.1.0 | **Ratified**: 2026-09-08 | **Last Amended**: 2026-11-11
+**Version**: 3.2.0 | **Ratified**: 2026-09-08 | **Last Amended**: 2026-11-11

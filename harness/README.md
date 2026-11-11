@@ -14,7 +14,7 @@ The harness is a development tool. `harness/` is excluded from the distribution,
 
 For each attempt, the runner builds a new project in a temporary folder:
 
-1. The distribution output from `.highway/tools/generate-distribution.sh`, built once per run. It
+1. The distribution output from `framework/generate-distribution.sh`, built once per run. It
    supplies `.highway/`, `.github/skills/`, `.github/copilot-instructions.md`, `.claude/`,
    `.agents/`, and `AGENTS.md`, exactly as a user's repository would have them.
 2. The scenario's fixture on top: a stage snapshot from `harness/fixtures/stages/`, or an overlay
@@ -292,22 +292,22 @@ Targeted runs map each changed path to scenarios with `harness/bin/path-map.sh`:
 
 | Changed path | Selects |
 |---|---|
-| `.highway/skills/<skill>/...` | Every scenario of that skill, including scenarios that pass through it |
+| `skills/<skill>/...` | Every scenario of that skill, including scenarios that pass through it |
 | A template, governance, library, or instruction file a skill names | Every scenario of each skill whose `SKILL.md` contains the full path |
 | A shared file listed as `smoke` in `harness/selection/shared.txt` | The smoke set |
 | `harness/src/`, `harness/package*.json`, `harness/harness.config.json` | The smoke set |
 | A scenario file | That scenario |
 | A stage fixture | Every scenario that starts from that stage, directly or through an overlay |
 | An overlay | Every scenario that uses that overlay |
-| Generated agent copies, `AGENTS.md`, tests, specs, the catalog, tools, and other files | Nothing |
+| Generated agent copies, `AGENTS.md`, tests, specs, the catalog, `framework/`, `tests/`, and other files | Nothing |
 
 For `--changed-since <ref>`, changed paths come from `git diff --name-status <ref>` plus untracked
 files. A deleted skill file is resolved against the skill list at `<ref>`. An empty selection
 prints why and exits 0.
 
-The path map reads every location from the framework's paths helper, `.highway/tools/lib/paths.sh`,
+The path map reads every location from the framework's paths helper, `framework/lib/paths.sh`,
 through `harness/bin/lib/paths.sh`, which each `harness/bin/` script sources.
-`path-map.sh --location <skills|tools>` prints the skills or tools location, which the runner uses
+`path-map.sh --location <skills|framework>` prints the skills or framework location, which the runner uses
 to find skills at a ref and to build the distribution.
 
 Coverage is printed in each run report per skill: each bullet's treatment, the reply kinds
@@ -318,11 +318,11 @@ beside the old tag. Retag it by replacing the old hash and text with the new one
 
 ## Bash suite checks
 
-`bash .highway/tools/tests/run-all.sh` runs these harness checks. None needs Node or a token.
+`bash tests/run-all.sh` runs these harness checks. None needs Node or a token.
 
 | Check | Fails when | How to fix |
 |---|---|---|
-| `harness-placement.test.sh` | `harness/` is not excluded in `.highway/tools/.distribution-manifest`, run output, `node_modules`, or `.env` is not gitignored, or the development constitution lacks the harness toolchain | Restore the manifest line, the `.gitignore` entries, or the constitution paragraph |
+| `harness-placement.test.sh` | `harness/` is not excluded in `framework/.distribution-manifest`, run output, `node_modules`, or `.env` is not gitignored, or the development constitution lacks the harness toolchain | Restore the manifest line, the `.gitignore` entries, or the constitution paragraph |
 | `harness-path-map.test.sh` | A shipped template, governance, library, or instruction file maps to no skill and is not in `harness/selection/shared.txt`, or a mapping rule changed | Name the file in the skill that reads it, or add it to `shared.txt` as `smoke` or `none` |
 | `harness-fixtures.test.sh` | A fixture file lacks a part of its current template, or an overlay names no stage | Promote a fresh chain run, or fix the fixture by hand |
 | `harness-coverage.test.sh` | A highway-codify bullet has no scenario tag, invariant, or waiver | Retag the reworded bullet, add a scenario, or add a treatment |
