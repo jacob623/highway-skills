@@ -13,7 +13,7 @@
 #   2 declared segment  a variable joined to a folder the helper declares
 #   3 script folder     the script's own folder used for anything but sourcing the helper, or a
 #                       climb with .. from a variable or a dirname
-#   4 named file        a named template or governance or knowledge document joined to its folder
+#   4 named file        a named template, highway-experience reference, or knowledge document joined to its folder
 #                       instead of looked up with hw_template or hw_doc
 #
 # The patterns use bracket expressions ([.], [$], [_]) so this file's own source does not match.
@@ -50,7 +50,8 @@ HARNESS_SHIM="$HW_HARNESS/bin/lib/paths.sh"
 B='([/"[:space:]]|$)'
 R1='(^|[^A-Za-z0-9_])(HIGHWAY[_]ROOT|REPO[_]ROOT|highway[_]root)([^A-Za-z0-9_]|$)'
 R2="[\$][{]?[A-Za-z_][A-Za-z0-9_]*[}]?\"?/([.]highway|[.]github/|[.]claude/|[.]cursor/|[.]agents/|AGENTS[.]md|harness$B|skills$B|framework$B|tests$B)"
-R2="$R2|[\$][{]?HW[_]HIGHWAY[}]?\"?/(skills|catalog|governance|instructions|library)$B"
+R2="$R2|[\$][{]?HW[_]HIGHWAY[}]?\"?/(skills|catalog|library)$B"
+R2="$R2|[\$][{]?HW[_]SKILLS[}]?\"?/highway-experience$B"
 R2="$R2|[\$][{]?HW[_]FRAMEWORK[}]?\"?/lib$B"
 R2="$R2|[\$][{]?HW[_]TESTS[}]?\"?/fixtures$B"
 R2="$R2|[\$][{]?HW[_]LIBRARY[}]?\"?/(knowledge|templates)$B"
@@ -58,7 +59,8 @@ R3_USE='(^|[^A-Za-z0-9_])(SCRIPT[_]DIR|H[E]RE)([^A-Za-z0-9_]|$)'
 R3_ASSIGN='^[[:space:]]*(SCRIPT[_]DIR|H[E]RE)='
 R3_SOURCE='(source|[.])[[:space:]].*paths[.]sh'
 R3_CLIMB="(dirname[^)]*[)]|[\$][{]?[A-Za-z_][A-Za-z0-9_]*[}]?)\"?/[.][.]$B"
-R4="[\$][{]?HW[_](OUTPUT[_]TEMPLATES|GOVERNANCE|KNOWLEDGE)[}]?\"?/[A-Za-z0-9_-]"
+R4="[\$][{]?HW[_](OUTPUT[_]TEMPLATES|KNOWLEDGE)[}]?\"?/[A-Za-z0-9_-]"
+R4="$R4|[\$][{]?HW[_]EXPERIENCE[}]?\"?/references$B"
 R4="$R4|[\$][{]?HW[_]FRAMEWORK[}]?\"?/(constitution|authoring-standard|frontmatter-lexicon)[.]"
 
 # scan_file <file> <label> <shim 0|1>

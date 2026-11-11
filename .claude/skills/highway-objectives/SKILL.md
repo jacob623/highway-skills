@@ -4,7 +4,7 @@ description: "Manages the repository-wide business objective baseline and its st
 usage: "Invoke as /highway-objectives."
 compatibility: all
 metadata:
-  version: 8.0.0
+  version: 8.1.0
 ---
 
 # highway-objectives
@@ -33,7 +33,7 @@ Do not emit Setup's outcome transition. Setup already emitted it.
 - `library/objectives/OBJ*.md` when present.
 - `.highway/library/templates/output/objective-record.md`.
 - `.highway/library/templates/output/objective-catalog.md`.
-- `.highway/governance/experience-standard.md`.
+- The highway-experience skill, activated first.
 - Delegation from `highway-setup`.
 
 ## Outputs
@@ -47,9 +47,11 @@ The complete structure is `.highway/library/templates/output/objective-record.md
 
 ## Procedure
 
+Activate the highway-experience skill before any output the person sees, and follow it for Highway's identity, the Experience Standard, and the storage contract.
+
 User-visible interaction follows the Highway Experience Standard. Repository ownership stays with the person.
 
-Emit only the active template. Follow this order: `review` when the catalog exists; otherwise `recommend`, then `queue` or `ask`, then `capture`, then `identifier`, `title` when needed, and `write`. Follow `.highway/governance/experience-standard.md` for attribution and acceptance wording. Use the accepted Organization Name from the Profile. Use Repository Name when no Organization Name is accepted. Do not ask for Profile facts already accepted.
+Emit only the active template. Follow this order: `review` when the catalog exists; otherwise `recommend`, then `queue` or `ask`, then `capture`, then `identifier`, `title` when needed, and `write`. Follow the Highway Experience Standard for attribution and acceptance wording. Use the accepted Organization Name from the Profile. Use Repository Name when no Organization Name is accepted. Do not ask for Profile facts already accepted.
 
 ### Entry
 

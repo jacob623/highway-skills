@@ -13,8 +13,8 @@
 #   scenario <id>    that scenario
 #   fixture <name>   every scenario starting from that fixture (a stage includes its overlays)
 #   none -           nothing; the reason says why
-#   unmapped -       a shipped library, governance, or instruction file no skill names and
-#                    harness/selection/shared.txt does not list (harness-path-map.test.sh fails on it)
+#   unmapped -       a shipped library file no skill names and harness/selection/shared.txt does
+#                    not list (harness-path-map.test.sh fails on it)
 #
 # Bash 3.2 and the Declared Toolchain only. This is the single implementation; the runner calls it.
 set -eu
@@ -30,8 +30,6 @@ SHARED="$HW_HARNESS/selection/shared.txt"
 REL_SKILLS="$(hw_rel "$HW_SKILLS")"
 REL_HARNESS="$(hw_rel "$HW_HARNESS")"
 REL_LIBRARY="$(hw_rel "$HW_LIBRARY")"
-REL_GOVERNANCE="$(hw_rel "$HW_GOVERNANCE")"
-REL_INSTRUCTIONS="$(hw_rel "$HW_INSTRUCTIONS")"
 REL_CATALOG="$(hw_rel "$HW_CATALOG")"
 REL_FRAMEWORK="$(hw_rel "$HW_FRAMEWORK")"
 REL_TESTS="$(hw_rel "$HW_TESTS")"
@@ -39,7 +37,6 @@ REL_COPILOT="$(hw_rel "$HW_AGENT_COPILOT")"
 REL_CLAUDE="$(hw_rel "$HW_AGENT_CLAUDE")"
 REL_CURSOR="$(hw_rel "$HW_AGENT_CURSOR")"
 REL_CODEX="$(hw_rel "$HW_AGENT_CODEX")"
-REL_AGENTS_MD="$(hw_rel "$HW_AGENTS_MD")"
 
 if [ "${1:-}" = "--location" ]; then
 	case "${2:-}" in
@@ -130,7 +127,7 @@ for path in "$@"; do
 		rest="${path#"$REL_SKILLS"/}"
 		emit "$path" skill "${rest%%/*}" "$path is part of ${rest%%/*}"
 		;;
-	"$REL_LIBRARY"/* | "$REL_GOVERNANCE"/* | "$REL_INSTRUCTIONS"/*)
+	"$REL_LIBRARY"/*)
 		found=0
 		for skill in $(skills_naming "$path"); do
 			emit "$path" skill "$skill" "$skill names $path"
@@ -140,7 +137,7 @@ for path in "$@"; do
 			emit "$path" unmapped - "no skill names $path and harness/selection/shared.txt does not list it"
 		fi
 		;;
-	"${REL_CLAUDE%%/*}"/* | "${REL_CURSOR%%/*}"/* | "${REL_COPILOT%%/*}"/* | "${REL_CODEX%%/*}"/* | "$REL_AGENTS_MD")
+	"${REL_CLAUDE%%/*}"/* | "${REL_CURSOR%%/*}"/* | "${REL_COPILOT%%/*}"/* | "${REL_CODEX%%/*}"/*)
 		emit "$path" none - "generated agent copy; its source selects scenarios"
 		;;
 	"$REL_CATALOG"/*)

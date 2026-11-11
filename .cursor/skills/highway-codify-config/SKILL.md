@@ -4,7 +4,7 @@ description: "Manages the repository-wide guidance used by highway-codify."
 usage: "Invoke as /highway-codify-config, or with one implementation name."
 compatibility: all
 metadata:
-  version: 3.5.0
+  version: 3.6.0
 ---
 
 # highway-codify-config
@@ -38,7 +38,7 @@ Do not report Status, Summary, Next Action, Blocking Reason, Missing, Complete, 
 - `.highway/library/templates/output/capability-catalog.md`.
 - `highway-onboarding`.
 - `highway-implementation`.
-- `.highway/governance/experience-standard.md`.
+- The highway-experience skill, activated first.
 - A project root containing `.highway/`.
 
 ## Outputs
@@ -52,7 +52,9 @@ The complete structure is `.highway/library/templates/output/codify-platforms.md
 
 ## Procedure
 
-Emit only the active template. Start at `Entry`. Follow `.highway/governance/experience-standard.md` for attribution and acceptance wording. Write only after `accept`.
+Activate the highway-experience skill before any output the person sees, and follow it for Highway's identity, the Experience Standard, and the storage contract.
+
+Emit only the active template. Start at `Entry`. Follow the Highway Experience Standard for attribution and acceptance wording. Write only after `accept`.
 
 A list field is stored in one table cell, with entries separated by `; `. A blank cell is an empty list. Every proposal and every catalog view presents When to use, When not to use, Inherits From, and Coding Standards as an ordered list under its bold label, one entry per item. An empty list shows `None`. Writing joins the accepted items with `; `.
 

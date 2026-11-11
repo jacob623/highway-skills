@@ -109,8 +109,13 @@ something is *currently* stale is a criterion, and is.
 
 Governed by P2.6. Your skill reads and writes the repository through four operations: read a file,
 check a file exists, list a folder, and write a group of files together. They are defined once, in
-`.highway/governance/storage.md`, which says what each one does in each storage mode. A skill
-written against them keeps working when the repository is reached another way.
+the highway-experience skill's `references/storage-contract.md`, which says what each one does in
+each storage mode. A skill written against them keeps working when the repository is reached
+another way.
+
+Open your skill's Procedure with the activation step every Highway skill shares, exactly as it
+appears in the other skills. It loads highway-experience, which brings the storage contract, the
+Experience Standard, and Highway's identity. Do not name their files yourself.
 
 So the agent following your skill runs no script and no `git` command, names no path that starts
 at the filesystem root or the home folder, and decides nothing from a file's modified or created

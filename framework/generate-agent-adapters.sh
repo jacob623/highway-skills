@@ -3,6 +3,8 @@
 # .github/skills/<id>/SKILL.md, .claude/skills/<id>/SKILL.md, .cursor/skills/<id>/SKILL.md, and
 # .agents/skills/<id>/SKILL.md, per feature 009 (skill id namespace alignment), feature 097
 # (Cursor receives skills, not rules), and feature 099 (Codex receives the same identity copy).
+# Every other file in a skill folder, such as references/<name>.md, is copied to the same relative
+# path beside the adapter's SKILL.md, with its own manifest row.
 # <id> is already the full agent-facing identifier (e.g. highway-help) -- this generator injects
 # no namespace prefix of its own; the prefix lives once, at the source directory name. The
 # deliverables for one skill are byte-identical. The generator never creates, modifies, or removes
@@ -26,16 +28,23 @@ source "$SCRIPT_DIR/lib/paths.sh"
 # shellcheck source=lib/frontmatter.sh
 source "$HW_LIB/frontmatter.sh"
 
-# Adapter targets, relative to the repository root, in AGENT_IDS order. One line, so adding an
-# agent stays a one-row edit.
-AGENT_TARGET_TEMPLATES=("$(hw_rel "$HW_AGENT_COPILOT")/%s/SKILL.md" "$(hw_rel "$HW_AGENT_CLAUDE")/%s/SKILL.md" "$(hw_rel "$HW_AGENT_CURSOR")/%s/SKILL.md" "$(hw_rel "$HW_AGENT_CODEX")/%s/SKILL.md")
+# Adapter skill folders, relative to the repository root, in AGENT_IDS order. One line, so adding
+# an agent stays a one-row edit.
+AGENT_TARGET_TEMPLATES=("$(hw_rel "$HW_AGENT_COPILOT")/%s" "$(hw_rel "$HW_AGENT_CLAUDE")/%s" "$(hw_rel "$HW_AGENT_CURSOR")/%s" "$(hw_rel "$HW_AGENT_CODEX")/%s")
 
 SKILLS_DIR="$HW_SKILLS"
 MANIFEST="$HW_FRAMEWORK/.adapter-manifest"
 
+# Prints the target path of one skill file, relative to the repository root.
 target_path_for() {
-	local template="$1" id="$2"
-	printf "$template" "$id"
+	local template="$1" id="$2" file="$3"
+	printf "$template/%s" "$id" "$file"
+}
+
+# Prints every file in a skill folder, relative to it, in a fixed order. A skill's bundled files
+# (references/, scripts/, assets/) are copied beside its SKILL.md. Dotfiles are not skill content.
+skill_files() {
+	(cd "$1" && find . -type f ! -name '.*' | sed 's|^\./||' | LC_ALL=C sort)
 }
 
 sha256_of() {
@@ -129,14 +138,16 @@ for ((i = 0; i < skill_count; i++)); do
 	skill_file="$dir/SKILL.md"
 	version="$(fm_get_nested "$skill_file" metadata version || true)"
 
-	for j in "${!AGENT_IDS[@]}"; do
-		rel_path="$(target_path_for "${AGENT_TARGET_TEMPLATES[$j]}" "$id")"
-		abs_target="$HW_ROOT/$rel_path"
-		if ! check_no_drift "$abs_target" "$rel_path"; then
-			drift_found=1
-			continue
-		fi
-	done
+	while IFS= read -r file; do
+		for j in "${!AGENT_IDS[@]}"; do
+			rel_path="$(target_path_for "${AGENT_TARGET_TEMPLATES[$j]}" "$id" "$file")"
+			abs_target="$HW_ROOT/$rel_path"
+			if ! check_no_drift "$abs_target" "$rel_path"; then
+				drift_found=1
+				continue
+			fi
+		done
+	done < <(skill_files "$dir")
 done
 if [[ $drift_found -ne 0 ]]; then
 	exit 1
@@ -148,21 +159,23 @@ for ((i = 0; i < skill_count; i++)); do
 	skill_file="$dir/SKILL.md"
 	version="$(fm_get_nested "$skill_file" metadata version || true)"
 
-	for j in "${!AGENT_IDS[@]}"; do
-		transform="${AGENT_TRANSFORMS[$j]}"
-		rel_path="$(target_path_for "${AGENT_TARGET_TEMPLATES[$j]}" "$id")"
-		abs_target="$HW_ROOT/$rel_path"
-		case "$transform" in
-			identity-copy)
-				write_target_from_file "$abs_target" "$rel_path" "$id" "$version" "$skill_file"
-				;;
-			*)
-				echo "ERROR: unknown transform '$transform' for agent '${AGENT_IDS[$j]}'" >&2
-				exit 1
-				;;
-		esac
-		echo "Generated $rel_path (${AGENT_IDS[$j]}, $transform)"
-	done
+	while IFS= read -r file; do
+		for j in "${!AGENT_IDS[@]}"; do
+			transform="${AGENT_TRANSFORMS[$j]}"
+			rel_path="$(target_path_for "${AGENT_TARGET_TEMPLATES[$j]}" "$id" "$file")"
+			abs_target="$HW_ROOT/$rel_path"
+			case "$transform" in
+				identity-copy)
+					write_target_from_file "$abs_target" "$rel_path" "$id" "$version" "$dir/$file"
+					;;
+				*)
+					echo "ERROR: unknown transform '$transform' for agent '${AGENT_IDS[$j]}'" >&2
+					exit 1
+					;;
+			esac
+			echo "Generated $rel_path (${AGENT_IDS[$j]}, $transform)"
+		done
+	done < <(skill_files "$dir")
 done
 
 exit 0

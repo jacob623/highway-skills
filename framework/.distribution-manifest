@@ -16,7 +16,6 @@
 
 # --- Agent adapter trees: the highway-* entries ship, their speckit-* siblings do not ---
 exclude	.claude	-
-include	.claude/CLAUDE.md	-
 include	.claude/skills/highway-objectives	-
 include	.claude/skills/highway-help	-
 include	.claude/skills/highway-controls	-
@@ -32,8 +31,8 @@ include	.claude/skills/highway-implementation	-
 include	.claude/skills/highway-assessment	-
 include	.claude/skills/highway-codify	-
 include	.claude/skills/highway-codify-config	-
+include	.claude/skills/highway-experience	-
 exclude	.cursor	-
-include	.cursor/rules/highway-agent-context.mdc	-
 include	.cursor/skills/highway-objectives	-
 include	.cursor/skills/highway-help	-
 include	.cursor/skills/highway-controls	-
@@ -49,8 +48,8 @@ include	.cursor/skills/highway-implementation	-
 include	.cursor/skills/highway-assessment	-
 include	.cursor/skills/highway-codify	-
 include	.cursor/skills/highway-codify-config	-
+include	.cursor/skills/highway-experience	-
 exclude	.github	-
-include	.github/copilot-instructions.md	-
 include	.github/skills/highway-objectives	-
 include	.github/skills/highway-help	-
 include	.github/skills/highway-controls	-
@@ -66,6 +65,7 @@ include	.github/skills/highway-implementation	-
 include	.github/skills/highway-assessment	-
 include	.github/skills/highway-codify	-
 include	.github/skills/highway-codify-config	-
+include	.github/skills/highway-experience	-
 exclude	.agents	-
 include	.agents/skills/highway-objectives	-
 include	.agents/skills/highway-help	-
@@ -82,7 +82,7 @@ include	.agents/skills/highway-implementation	-
 include	.agents/skills/highway-assessment	-
 include	.agents/skills/highway-codify	-
 include	.agents/skills/highway-codify-config	-
-include	AGENTS.md	-
+include	.agents/skills/highway-experience	-
 
 # --- Skills: authored at the root, shipped under .highway/ ---
 include	skills	.highway/skills
@@ -100,8 +100,6 @@ include	.highway/library/templates/output/architecture-catalog.md	-
 include	.highway/library/templates/output/profile-record.md	-
 include	.highway/library/templates/output/assessment-findings.md	-
 include	.highway/catalog	-
-include	.highway/governance	-
-include	.highway/instructions	-
 
 # --- Organization library: Highway seeds none, so no organization file ships ---
 exclude	library	-

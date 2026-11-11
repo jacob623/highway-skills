@@ -4,7 +4,7 @@ description: "Manages one architecture decision for one discovery."
 usage: "Invoke as /highway-adr with one discovery id."
 compatibility: all
 metadata:
-  version: 6.0.0
+  version: 6.1.0
 ---
 
 # highway-adr
@@ -41,7 +41,7 @@ Do not report Status, Summary, Next Action, Blocking Reason, Missing, Complete, 
 - `.highway/library/templates/output/adr-record.md`.
 - `.highway/library/templates/output/adr-catalog.md`.
 - `.highway/library/templates/output/architecture-record.md` and `.highway/library/templates/output/architecture-catalog.md` when this decision reuses or replaces an architecture.
-- `.highway/governance/experience-standard.md`.
+- The highway-experience skill, activated first.
 - A project root containing `.highway/`.
 
 ## Outputs
@@ -55,6 +55,8 @@ The complete structure is `.highway/library/templates/output/adr-record.md` and 
 - No ADR when the person has not selected an option or a write fails.
 
 ## Procedure
+
+Activate the highway-experience skill before any output the person sees, and follow it for Highway's identity, the Experience Standard, and the storage contract.
 
 User-visible interaction follows the Highway Experience Standard. Repository ownership stays with the person.
 

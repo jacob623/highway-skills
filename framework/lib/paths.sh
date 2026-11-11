@@ -13,7 +13,7 @@
 #   source "<dir>/paths.sh"         sets HW_* for the root two folders above this file
 #   hw_paths_init [root]            sets HW_* for another root
 #   hw_template <name>              path of one output template, by base name
-#   hw_doc <name>                   path of one framework, governance, or knowledge document, by name
+#   hw_doc <name>                   path of one framework, highway-experience, or knowledge document, by name
 #   hw_at <root> <path>             <path> (under HW_ROOT) re-rooted under <root>
 #   hw_rel <path>                   <path> relative to HW_ROOT
 #
@@ -27,15 +27,14 @@ hw_paths_init() {
 	fi
 
 	HW_SKILLS="$HW_ROOT/skills"
+	HW_EXPERIENCE="$HW_SKILLS/highway-experience"
 	HW_FRAMEWORK="$HW_ROOT/framework"
 	HW_LIB="$HW_FRAMEWORK/lib"
 	HW_TESTS="$HW_ROOT/tests"
 	HW_FIXTURES="$HW_TESTS/fixtures"
 	HW_HIGHWAY="$HW_ROOT/.highway"
 	HW_CATALOG="$HW_HIGHWAY/catalog"
-	HW_INSTRUCTIONS="$HW_HIGHWAY/instructions"
 	HW_LIBRARY="$HW_HIGHWAY/library"
-	HW_GOVERNANCE="$HW_HIGHWAY/governance"
 	HW_KNOWLEDGE="$HW_LIBRARY/knowledge"
 	HW_OUTPUT_TEMPLATES="$HW_LIBRARY/templates/output"
 	HW_HARNESS="$HW_ROOT/harness"
@@ -44,10 +43,6 @@ hw_paths_init() {
 	HW_AGENT_CLAUDE="$HW_ROOT/.claude/skills"
 	HW_AGENT_CURSOR="$HW_ROOT/.cursor/skills"
 	HW_AGENT_CODEX="$HW_ROOT/.agents/skills"
-	HW_CURSOR_RULES="$HW_ROOT/.cursor/rules"
-	HW_CLAUDE_MD="$HW_ROOT/.claude/CLAUDE.md"
-	HW_COPILOT_MD="$HW_ROOT/.github/copilot-instructions.md"
-	HW_AGENTS_MD="$HW_ROOT/AGENTS.md"
 }
 
 # One arm per template, so a later phase can move one template by editing one arm.
@@ -94,9 +89,9 @@ hw_doc() {
 	constitution) printf '%s\n' "$HW_FRAMEWORK/constitution.md" ;;
 	authoring-standard) printf '%s\n' "$HW_FRAMEWORK/authoring-standard.md" ;;
 	frontmatter-lexicon) printf '%s\n' "$HW_FRAMEWORK/frontmatter-lexicon.txt" ;;
-	experience-standard) printf '%s\n' "$HW_GOVERNANCE/experience-standard.md" ;;
-	storage) printf '%s\n' "$HW_GOVERNANCE/storage.md" ;;
-	highway-identity) printf '%s\n' "$HW_KNOWLEDGE/highway-identity.md" ;;
+	experience-standard) printf '%s\n' "$HW_EXPERIENCE/references/experience-standard.md" ;;
+	storage) printf '%s\n' "$HW_EXPERIENCE/references/storage-contract.md" ;;
+	highway-identity) printf '%s\n' "$HW_EXPERIENCE/references/highway-identity.md" ;;
 	assessment-findings) printf '%s\n' "$HW_KNOWLEDGE/assessment-findings.md" ;;
 	*)
 		printf 'hw_doc: unknown document: %s\n' "${1:-}" >&2

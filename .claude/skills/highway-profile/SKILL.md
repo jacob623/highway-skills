@@ -4,7 +4,7 @@ description: "Manages the repository-wide organizational Profile and its context
 usage: "Invoke as /highway-profile."
 compatibility: all
 metadata:
-  version: 14.0.0
+  version: 14.1.0
 ---
 
 # highway-profile
@@ -29,8 +29,7 @@ Do not report Status, Summary, Next Action, Blocking Reason, Missing, Complete, 
 - Project root containing `.highway/`.
 - `library/knowledge/profile.md` when present.
 - `.highway/library/templates/output/profile-record.md`.
-- `.highway/library/knowledge/highway-identity.md` as shared, non-normative context.
-- `.highway/governance/experience-standard.md`.
+- The highway-experience skill, activated first.
 - Delegation from `highway-setup`.
 - Material the person supplies, including a public website when retrieval is available.
 
@@ -45,11 +44,13 @@ The complete structure is `.highway/library/templates/output/profile-record.md`.
 
 ## Procedure
 
+Activate the highway-experience skill before any output the person sees, and follow it for Highway's identity, the Experience Standard, and the storage contract.
+
 User-visible interaction follows the Highway Experience Standard. Repository ownership stays with the person.
 
 X2.21 does not apply. The accepted proposal bullets are the retained domain, so Profile does not show a second capture heading.
 
-Emit only the active template. Follow this order: `review` when `profile.md` exists; otherwise `name`, `offer`, Identity, Vision, Competitive Path, Guiding Principles, then `write`. Follow `.highway/governance/experience-standard.md` for attribution and acceptance wording. Use accepted Organization Name in templates. Use Repository Name until an Organization Name is accepted. Repository Name does not become Organization Name.
+Emit only the active template. Follow this order: `review` when `profile.md` exists; otherwise `name`, `offer`, Identity, Vision, Competitive Path, Guiding Principles, then `write`. Follow the Highway Experience Standard for attribution and acceptance wording. Use accepted Organization Name in templates. Use Repository Name until an Organization Name is accepted. Repository Name does not become Organization Name.
 
 ### Entry
 

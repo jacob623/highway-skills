@@ -4,7 +4,7 @@ description: "Manages one functional artifact for one accepted implementation."
 usage: "Invoke as /highway-codify with one implementation name."
 compatibility: all
 metadata:
-  version: 14.1.0
+  version: 14.2.0
 ---
 
 # highway-codify
@@ -47,7 +47,7 @@ Do not report Status, Summary, Next Action, Blocking Reason, Missing, Complete, 
 - `.highway/library/templates/output/codify-tasks.md`.
 - `.highway/library/templates/output/codify-metadata.md`.
 - `.highway/library/templates/output/codify-integrations.md`.
-- `.highway/governance/experience-standard.md`.
+- The highway-experience skill, activated first.
 - A project root containing `.highway/`.
 
 ## Outputs
@@ -67,7 +67,9 @@ The complete structure is `.highway/library/templates/output/codify-record.md`, 
 
 ## Procedure
 
-Emit only the active template. `catalog` runs alone. Otherwise follow this order: `choose` when no implementation is named; `record check`; `code project` for a code project, or `rank`, with `codified`, when no action is named; then `suggest`, `draft`, `code tasks` for a code project, `provider`, `standards`, `align`, `govern`, `resume`, `join`, `folder`, `layout`, `propose`, `revise`, `identifier`, `title` when needed, `write`, `index`, `plan`, `check`, `menu`, `review` when chosen, `tasks`, `code`, and `close`. Follow `.highway/governance/experience-standard.md` for attribution and acceptance wording. A current implementation is an accepted row in `implementations/implementations.md`. A removed row does not match and does not block a new automation.
+Activate the highway-experience skill before any output the person sees, and follow it for Highway's identity, the Experience Standard, and the storage contract.
+
+Emit only the active template. `catalog` runs alone. Otherwise follow this order: `choose` when no implementation is named; `record check`; `code project` for a code project, or `rank`, with `codified`, when no action is named; then `suggest`, `draft`, `code tasks` for a code project, `provider`, `standards`, `align`, `govern`, `resume`, `join`, `folder`, `layout`, `propose`, `revise`, `identifier`, `title` when needed, `write`, `index`, `plan`, `check`, `menu`, `review` when chosen, `tasks`, `code`, and `close`. Follow the Highway Experience Standard for attribution and acceptance wording. A current implementation is an accepted row in `implementations/implementations.md`. A removed row does not match and does not block a new automation.
 
 ### Entry
 

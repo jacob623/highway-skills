@@ -27,7 +27,17 @@ expect: exists out/answer.md
 ${extra}`;
 
 function ended(options: DriveOptions, turns = 1): DriveResult {
-  return { outcome: "ended", turns, rejected: [], warnings: [], usage: { ...emptyUsage(), calls: 1 }, usedReplies: [], skillsInvoked: [], lastMessage: "done" };
+  return {
+    outcome: "ended",
+    turns,
+    rejected: [],
+    warnings: [],
+    usage: { ...emptyUsage(), calls: 1 },
+    usedReplies: [],
+    skillsInvoked: ["highway-experience", "highway-help"],
+    skillsBeforeOutput: ["highway-experience", "highway-help"],
+    lastMessage: "done",
+  };
 }
 
 /** Writes out/answer.md so the scenario's expectation passes. */
@@ -152,6 +162,19 @@ test("a file outside writes and a rejected shell request fail the storage invari
   assert.match(text, /actual: stray\.md/);
   assert.match(text, /"kind":"rejected-request"/);
   assert.match(text, /^Rejected: shell: ls$/m);
+  rmSync(dir, { recursive: true });
+  rmSync(transcripts, { recursive: true });
+});
+
+test("output before highway-experience is activated fails the experience invariant", async () => {
+  const { dir, transcripts, lines } = setup({ "highway-help/help-smoke.scenario": SCENARIO("help-smoke") });
+  const lateDriver: Driver = async (o) => ({ ...(await writingDriver(o)), skillsInvoked: ["highway-help", "highway-experience"], skillsBeforeOutput: ["highway-help"] });
+  const code = await main(["--smoke", "--transcripts", transcripts, "--no-judge"], { ...deps({ driver: lateDriver }, lines, transcripts), scenariosDir: dir });
+  assert.equal(code, 1);
+  const text = lines.join("\n");
+  assert.match(text, /"kind":"experience-order"/);
+  assert.match(text, /expected: highway-experience activated before the first output; actual: highway-help/);
+  assert.match(text, /Likely cause: The agent showed output before activating highway-experience/);
   rmSync(dir, { recursive: true });
   rmSync(transcripts, { recursive: true });
 });

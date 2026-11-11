@@ -4,7 +4,7 @@ description: "Manages one reference architecture from one accepted adr."
 usage: "Invoke as /highway-architecture with one adr id."
 compatibility: all
 metadata:
-  version: 5.1.0
+  version: 5.2.0
 ---
 
 # highway-architecture
@@ -41,7 +41,7 @@ Do not report Status, Summary, Next Action, Blocking Reason, Missing, Complete, 
 - `.highway/library/templates/output/architecture-catalog.md`.
 - `.highway/library/templates/output/capability-catalog.md`.
 - `highway-implementation`.
-- `.highway/governance/experience-standard.md`.
+- The highway-experience skill, activated first.
 - A project root containing `.highway/`.
 
 ## Outputs
@@ -55,6 +55,8 @@ The complete structure is `.highway/library/templates/output/architecture-record
 - No architecture when the ADR is missing, not accepted, or a write fails.
 
 ## Procedure
+
+Activate the highway-experience skill before any output the person sees, and follow it for Highway's identity, the Experience Standard, and the storage contract.
 
 Emit only the active template. Follow this order: `choose` when no ADR id is supplied; otherwise `start`, then `identifier`, `title` when needed, `write`, `name`, and `close`. The ADR remains the decision. Inherit its decision, rationale, alternatives, consequences, and constraints without changing their meaning. Describe the architecture in conceptual terms. A platform, product, vendor, or specific technology stays in the inherited decision and is not part of the architecture. A missing Profile, Objective, Control, or NFR continues without invented evidence. A malformed one of those baselines stops the skill and writes nothing.
 

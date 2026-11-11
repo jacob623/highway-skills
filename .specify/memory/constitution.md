@@ -1,5 +1,24 @@
 <!--
 Sync Impact Report
+Version change: 3.2.0 → 3.3.0 (MINOR), 2026-11-11
+Bump rationale: Highway's identity, the Experience Standard, and the storage contract move into
+the highway-experience skill under `skills/`, and the always-on instructions are removed with
+`generate-instructions.sh` and its outputs. The definitions and lists follow the new arrangement.
+No rule's text, keyword, or tier changes, and no conforming work fails. Highway is unreleased, so
+nothing depends on the removed files.
+Changed elements:
+- Version line: 3.2.0 → 3.3.0
+- Definitions: Shipped artifact no longer names `.highway/governance/`
+- Enforcement Map, D4.7 note: the regeneration no longer includes `generate-instructions.sh`
+- Declared generators, under Principle IV: `generate-instructions.sh` is removed
+Unchanged: every rule's text, keyword, and tier; the Declared Toolchain; every gate; the Last
+Amended date (already 2026-11-11). Earlier reports below keep the paths and generators that were
+current when they were written.
+Self-application review: D1.3 PASS (no Highway Skills Constitution rule sentence is copied);
+D1.4 PASS (this report cites rule IDs); D5.3 PASS (the four changed elements are listed above
+and every unlisted element carries forward).
+
+Sync Impact Report
 Version change: 3.1.0 → 3.2.0 (MINOR), 2026-11-11
 Bump rationale: the skills move from `.highway/skills/` to `skills/`, the framework from
 `.highway/tools/` to `framework/`, and the test suite to `tests/`. The framework no longer ships;
@@ -389,7 +408,7 @@ Highway Skills Constitution.
 
 | Term | Definition |
 |---|---|
-| **Shipped artifact** | Any file included in the packaged distribution: `skills/` (shipped as `.highway/skills/`), `.highway/library/`, `.highway/catalog/`, `.highway/governance/`, the generated agent adapter trees, and `framework/README.md` (shipped as `README.md`). |
+| **Shipped artifact** | Any file included in the packaged distribution: `skills/` (shipped as `.highway/skills/`), `.highway/library/`, `.highway/catalog/`, the generated agent adapter trees, and `framework/README.md` (shipped as `README.md`). |
 | **Development artifact** | Any file excluded from the packaged distribution: `.specify/`, `specs/`, and the `speckit-*` agent skills. |
 | **Generated artifact** | A file produced by a script under `framework/` and recorded in a manifest. |
 | **Live documentation** | A document that describes current behavior: tool READMEs, the authoring standard, the root README. |
@@ -435,7 +454,7 @@ table cannot silently go stale.
 | D4.3 | distribution-packaging.test.sh | Asserts refusal to overwrite an untracked directory and a modified file, naming each |
 | D4.5 | adapter-coverage.test.sh | Asserts every skill present has a catalog entry, an adapter in each declared agent tree, an adapter manifest row for each adapter, and an included distribution manifest row for each adapter |
 | D4.6 | adapter-coverage.test.sh | Asserts no catalog entry, adapter file, adapter manifest row, or distribution manifest row names a skill with no source directory |
-| D4.7 | adapter-coverage.test.sh | Regenerates into a temporary tree, including generate-instructions.sh, and asserts no diff against the committed artifacts |
+| D4.7 | adapter-coverage.test.sh | Regenerates into a temporary tree and asserts no diff against the committed artifacts |
 | D3.7 | constitution-inventory.test.sh | Executes each mapped test's declared probe per artifact class and requires a non-zero exit; requires a zero exit when the same probe is invoked neutralised |
 
 ## Core Principles
@@ -531,7 +550,7 @@ skill that has no source and cannot be maintained. Neither is expressible as "no
 because adapters are never pruned and manifest rows are hand-maintained.
 
 **Declared generators** (referenced by D4.7): `generate-catalog.sh`,
-`generate-agent-adapters.sh`, `generate-instructions.sh`. No declared generator writes a
+`generate-agent-adapters.sh`. No declared generator writes a
 generation timestamp. `generate-distribution.sh` is
 excluded — it takes a target directory and writes outside the repository, so it produces no
 committed artifact to compare against.
@@ -614,4 +633,4 @@ Highway Skills Constitution prevails for artifact content and this document prev
 This document is subject to D1.3, D1.4, and D5.3. Every amendment records a review against those
 rule IDs.
 
-**Version**: 3.2.0 | **Ratified**: 2026-09-08 | **Last Amended**: 2026-11-11
+**Version**: 3.3.0 | **Ratified**: 2026-09-08 | **Last Amended**: 2026-11-11

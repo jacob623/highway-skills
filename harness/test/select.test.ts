@@ -37,7 +37,7 @@ test("--skills and --paths combine as a union and keep both reasons", () => {
 });
 
 test("a shared file selects the smoke set", () => {
-  const r = selectTargeted(scenarios, { paths: [".highway/governance/storage.md"], skills: [] });
+  const r = selectTargeted(scenarios, { paths: ["skills/highway-experience/references/storage-contract.md"], skills: [] });
   assert.deepEqual(r.selection.map((s) => s.scenario), ["codify-smoke", "impl-smoke", "adr-smoke"]);
 });
 

@@ -52,7 +52,7 @@ passing:
 | 4 | Removals | None | Complete: `specs/233-standard-alignment-removals/` |
 | 5 | Path Indirection | 4 | Complete: `specs/234-standard-alignment-path-indirection/` |
 | 6 | Relocate the Framework, Tests, and Skills | 5 | Complete: `specs/235-standard-alignment-relocation/` |
-| 7 | highway-experience | 6 | |
+| 7 | highway-experience | 6 | Complete: `specs/236-standard-alignment-experience/` |
 | 8 | Catalog Seeding | 7 | |
 | 9 | Record Templates in Their Skills | 6 | |
 | 10 | Onboarding Handoffs | 8 | |
@@ -1045,6 +1045,23 @@ highway-experience, and the always-on instructions are gone.
 
 Exit: no skill reads `.highway/governance/`, no always-on file exists, and the full suite and
 harness pass.
+
+Status: complete in `specs/236-standard-alignment-experience/`. The suite went from 82 tests to 81,
+all passing, and the harness tests from 75 to 77. Beyond the steps above:
+- The project's mode record is `library/knowledge/storage.md`. A record naming a mode other than
+  Local stops the skill before any other repository read or write. Nothing writes the record yet.
+- The activation step is one sentence, identical in every skill, as the first line of its
+  Procedure. `tests/experience-activation.test.sh` checks it, and highway-help gains a Procedure
+  for it. Each of the 15 skills took a MINOR version.
+- The adapter generator copies every file in a skill folder, so each agent tree holds
+  highway-experience's `references/`.
+- The harness records the skills loaded before the first output and fails a run with
+  `experience-order` when highway-experience is not among them. Every file under
+  `skills/highway-experience/` selects the smoke set, which gains `experience-smoke`.
+- `framework/lib/paths.sh` declares `HW_EXPERIENCE`, and `hw_doc` resolves the three references
+  there. The governance, instruction, and always-on variables are gone.
+- The frontmatter lexicon gains the words highway-experience's description and usage need.
+- The Highway Skills Constitution is 10.2.0 and the development constitution is 3.3.0.
 
 # Phase 8: Catalog Seeding
 

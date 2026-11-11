@@ -44,6 +44,8 @@ export interface DriveResult {
   usage: Usage;
   usedReplies: number[];
   skillsInvoked: string[];
+  /** Skills invoked before the first output the person sees; every skill invoked when nothing was shown. */
+  skillsBeforeOutput: string[];
   unmatched?: string;
   repeated?: { question: string; count: number };
   error?: { kind: FailureKind; message: string };
@@ -196,6 +198,8 @@ export const copilotDriver: Driver = async (options) => {
   const warnings: Warning[] = [];
   const used = new Set<number>();
   const skillsInvoked: string[] = [];
+  const skillsBeforeOutput: string[] = [];
+  let outputSeen = false;
   const askedCount = new Map<string, number>();
   let usage = emptyUsage();
   let turn = 0;
@@ -239,6 +243,7 @@ export const copilotDriver: Driver = async (options) => {
       usage,
       usedReplies: [...used],
       skillsInvoked,
+      skillsBeforeOutput,
       unmatched,
       repeated,
       lastMessage: turnMessages.join("\n\n"),
@@ -264,6 +269,7 @@ export const copilotDriver: Driver = async (options) => {
             return decision.result;
           },
           onUserInputRequest: async (request) => {
+            outputSeen = true;
             const question = request.question;
             log({ turn, role: "question", text: [question, ...(request.choices ?? []).map((c, i) => `${i + 1}. ${c}`)].join("\n") });
             const index = await pickReply(question, lastQuestion(question));
@@ -286,7 +292,10 @@ export const copilotDriver: Driver = async (options) => {
       const data = (event as { data?: Record<string, unknown> }).data ?? {};
       switch (event.type) {
         case "assistant.message":
-          if (!data.parentToolCallId && typeof data.content === "string" && data.content.trim() !== "") turnMessages.push(data.content);
+          if (!data.parentToolCallId && typeof data.content === "string" && data.content.trim() !== "") {
+            turnMessages.push(data.content);
+            if (!Array.isArray(data.toolRequests) || data.toolRequests.length === 0) outputSeen = true;
+          }
           break;
         case "assistant.usage":
           usage = addUsage(usage, usageFrom(data));
@@ -294,6 +303,7 @@ export const copilotDriver: Driver = async (options) => {
         case "skill.invoked": {
           const name = String(data.name ?? data.skillName ?? "skill");
           skillsInvoked.push(name);
+          if (!outputSeen) skillsBeforeOutput.push(name);
           log({ turn, role: "skill", text: `invoked ${name}` });
           break;
         }

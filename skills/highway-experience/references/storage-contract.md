@@ -1,12 +1,15 @@
 # Highway Storage Contract
 
-Version `1.0.0`.
+Version `1.1.0`.
 
 ## Scope
 
 This document defines how a Highway skill reads and writes the repository. A skill reaches the
 repository only through the four operations below. Each mode column states what an operation does
 in that mode. A new mode fills its column, and no skill changes.
+
+The four operations govern every read and write of the project. A skill reading its own bundled
+files, and a skill activating highway-experience, are not repository operations.
 
 ## Paths
 
@@ -20,7 +23,18 @@ home folder.
   pushes.
 - **Chat (Option B)**: calls to the git host's API, for a surface with no working tree.
 
-Only Local is supported. Every run uses Local.
+Only Local is supported. A run uses Local unless the mode record names another mode.
+
+## Mode record
+
+The project records its mode in `library/knowledge/storage.md`. Before its first other repository
+operation, a skill reads that file with "Read a file".
+
+- An absent record means Local.
+- A record that names Local means Local.
+- A record that names a mode other than Local stops the skill before any other repository read or
+  write. The skill says the recorded mode is not supported yet and names Local as the supported
+  mode.
 
 ## Operations
 

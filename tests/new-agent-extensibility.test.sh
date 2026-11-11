@@ -57,7 +57,7 @@ skills_before="$(skills_snapshot)"
 # Add one row for a temporary 4th mock agent -- the only edit required to support a new agent.
 sed -i.sedbak \
 	-e 's/^AGENT_IDS=(\(.*\))$/AGENT_IDS=(\1 mock-agent-4)/' \
-	-e 's/^AGENT_TARGET_TEMPLATES=(\(.*\))$/AGENT_TARGET_TEMPLATES=(\1 ".mock-agent-4\/skills\/%s\/SKILL.md")/' \
+	-e 's/^AGENT_TARGET_TEMPLATES=(\(.*\))$/AGENT_TARGET_TEMPLATES=(\1 ".mock-agent-4\/skills\/%s")/' \
 	-e 's/^AGENT_TRANSFORMS=(\(.*\))$/AGENT_TRANSFORMS=(\1 identity-copy)/' \
 	"$GENERATOR"
 rm -f "$GENERATOR.sedbak"

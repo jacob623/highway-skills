@@ -60,14 +60,17 @@ adapter_paths() {
 		".agents/skills/$id"
 }
 
-# The file each adapter path resolves to. All three are directories holding a SKILL.md.
+# Every file each adapter path should hold: a copy of each file in the skill's source folder, its
+# SKILL.md and any bundled file such as references/<name>.md.
 adapter_files() {
-	local id="$1"
-	printf '%s\n' \
-		".github/skills/$id/SKILL.md" \
-		".claude/skills/$id/SKILL.md" \
-		".cursor/skills/$id/SKILL.md" \
-		".agents/skills/$id/SKILL.md"
+	local id="$1" file
+	while IFS= read -r file; do
+		printf '%s\n' \
+			".github/skills/$id/$file" \
+			".claude/skills/$id/$file" \
+			".cursor/skills/$id/$file" \
+			".agents/skills/$id/$file"
+	done < <(cd "$HW_SKILLS/$id" 2>/dev/null && find . -type f ! -name '.*' | sed 's|^\./||' | LC_ALL=C sort)
 }
 
 skill_exists() {
@@ -297,7 +300,6 @@ if [[ -n "$probe_class" ]]; then
 				cd "$currency_tmp" || exit 1
 				"$(hw_at "$currency_tmp" "$HW_FRAMEWORK")/generate-catalog.sh"
 				"$(hw_at "$currency_tmp" "$HW_FRAMEWORK")/generate-agent-adapters.sh"
-				"$(hw_at "$currency_tmp" "$HW_FRAMEWORK")/generate-instructions.sh"
 			) >/dev/null 2>&1
 			if skill_currency_ok "$SKILL_ID" "$currency_tmp" >/dev/null 2>&1; then
 				exit 0
@@ -358,7 +360,6 @@ cp -R "$HW_FRAMEWORK" "$(hw_at "$CURRENCY_TMP" "$HW_FRAMEWORK")"
 	cd "$CURRENCY_TMP" || exit 1
 	"$(hw_at "$CURRENCY_TMP" "$HW_FRAMEWORK")/generate-catalog.sh"
 	"$(hw_at "$CURRENCY_TMP" "$HW_FRAMEWORK")/generate-agent-adapters.sh"
-	"$(hw_at "$CURRENCY_TMP" "$HW_FRAMEWORK")/generate-instructions.sh"
 ) >/dev/null 2>&1
 
 if ! diff "$HW_CATALOG/index.json" "$(hw_at "$CURRENCY_TMP" "$HW_CATALOG")/index.json" >/dev/null 2>&1; then
@@ -370,27 +371,6 @@ for skill_dir in "$HW_SKILLS"/*/; do
 	[[ -f "$skill_dir/SKILL.md" ]] || continue
 	skill_id="$(basename "$skill_dir")"
 	skill_currency_ok "$skill_id" "$CURRENCY_TMP" || fail=1
-done
-
-if ! diff "$HW_FRAMEWORK/.instruction-manifest" "$(hw_at "$CURRENCY_TMP" "$HW_FRAMEWORK")/.instruction-manifest" >/dev/null 2>&1; then
-	echo "FAIL: framework/.instruction-manifest is stale; regenerating from current sources produces a different file"
-	fail=1
-fi
-shopt -s nullglob
-for instruction_src in "$HW_INSTRUCTIONS"/*.md; do
-	instruction_id="$(basename "$instruction_src" .md)"
-	instruction_rel=".cursor/rules/$instruction_id.mdc"
-	if ! diff "$HW_ROOT/$instruction_rel" "$CURRENCY_TMP/$instruction_rel" >/dev/null 2>&1; then
-		echo "FAIL: $instruction_rel is stale; regenerating from current sources produces a different file"
-		fail=1
-	fi
-done
-shopt -u nullglob
-for instruction_rel in .claude/CLAUDE.md .github/copilot-instructions.md; do
-	if ! diff "$HW_ROOT/$instruction_rel" "$CURRENCY_TMP/$instruction_rel" >/dev/null 2>&1; then
-		echo "FAIL: $instruction_rel is stale; regenerating from current sources produces a different file"
-		fail=1
-	fi
 done
 
 exit $fail

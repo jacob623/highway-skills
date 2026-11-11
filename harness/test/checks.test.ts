@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { diffSnapshots, runExpectation, snapshot, storageInvariant, writesNothing } from "../src/checks.ts";
+import { diffSnapshots, experienceInvariant, runExpectation, snapshot, storageInvariant, writesNothing } from "../src/checks.ts";
 import type { Expectation } from "../src/scenario.ts";
 
 function project(files: Record<string, string>): string {
@@ -85,4 +85,14 @@ test("the storage invariant names every file outside the writes patterns", () =>
   assert.deepEqual(storageInvariant(diff, ["**"]), []);
   assert.equal(writesNothing(diff).length, 1);
   rmSync(dir, { recursive: true });
+});
+
+test("the experience invariant requires highway-experience before the first output", () => {
+  assert.deepEqual(experienceInvariant(["highway-experience", "highway-setup"]), []);
+  assert.deepEqual(experienceInvariant(["highway-setup", "highway-experience"]), []);
+  const late = experienceInvariant(["highway-setup"]);
+  assert.equal(late.length, 1);
+  assert.equal(late[0].check, "experience");
+  assert.equal(late[0].actual, "highway-setup");
+  assert.equal(experienceInvariant([])[0].actual, "no skill");
 });

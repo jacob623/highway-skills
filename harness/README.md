@@ -15,8 +15,8 @@ The harness is a development tool. `harness/` is excluded from the distribution,
 For each attempt, the runner builds a new project in a temporary folder:
 
 1. The distribution output from `framework/generate-distribution.sh`, built once per run. It
-   supplies `.highway/`, `.github/skills/`, `.github/copilot-instructions.md`, `.claude/`,
-   `.agents/`, and `AGENTS.md`, exactly as a user's repository would have them.
+   supplies `.highway/`, `.github/skills/`, `.claude/`, `.cursor/`, and `.agents/`, exactly as a
+   user's repository would have them.
 2. The scenario's fixture on top: a stage snapshot from `harness/fixtures/stages/`, or an overlay
    from `harness/fixtures/overlays/` applied to its stage. `empty` adds nothing.
 
@@ -26,8 +26,8 @@ The project is snapshotted before the conversation starts and compared with its 
 
 The driver is GitHub Copilot through `@github/copilot-sdk`, local runtime. Each attempt gets its
 own client, its own temporary Copilot home, and one session whose working directory is the test
-project. Config discovery is on, so the session finds the project's skills and instructions the
-same way the Copilot CLI does. Session storage and telemetry are off.
+project. Config discovery is on, so the session finds the project's skills the same way the
+Copilot CLI does. Session storage and telemetry are off.
 
 Every permission request is decided by a fixed policy:
 
@@ -43,7 +43,7 @@ Every permission request is decided by a fixed policy:
 | Any other tool | rejected | no |
 
 Shell, memory, and outside writes are fatal because the storage contract
-(`.highway/governance/storage.md`) forbids them. A rejected request that ends the attempt is a
+(`skills/highway-experience/references/storage-contract.md`) forbids them. A rejected request that ends the attempt is a
 `rejected-request` failure.
 
 ### Keyed replies and the model fallback
@@ -66,7 +66,9 @@ that asks nothing ends the conversation. `--no-judge` does not turn the fallback
 
 1. **File assertions**: each `expect:` line in the scenario.
 2. **Invariants**: every file the conversation changed matches a `writes:` pattern (a scenario
-   with no `writes:` must write nothing), and no shell, memory, or outside-write request was made.
+   with no `writes:` must write nothing), no shell, memory, or outside-write request was made, and
+   highway-experience was activated before the first output the person sees. The first output is
+   the first question sent to the person, or the first top-level message that requests no tool.
 3. **Judge** (advisory): a new session with the same model, or `--judge-model`, reads the
    finished transcript, the written files, and the text of the bullets the scenario covers. It
    answers met or not met for each bullet, with a quote. A met verdict without a quote, or with a
@@ -293,13 +295,13 @@ Targeted runs map each changed path to scenarios with `harness/bin/path-map.sh`:
 | Changed path | Selects |
 |---|---|
 | `skills/<skill>/...` | Every scenario of that skill, including scenarios that pass through it |
-| A template, governance, library, or instruction file a skill names | Every scenario of each skill whose `SKILL.md` contains the full path |
-| A shared file listed as `smoke` in `harness/selection/shared.txt` | The smoke set |
+| A library file a skill names | Every scenario of each skill whose `SKILL.md` contains the full path |
+| A shared file listed as `smoke` in `harness/selection/shared.txt`, including every file under `skills/highway-experience/` | The smoke set |
 | `harness/src/`, `harness/package*.json`, `harness/harness.config.json` | The smoke set |
 | A scenario file | That scenario |
 | A stage fixture | Every scenario that starts from that stage, directly or through an overlay |
 | An overlay | Every scenario that uses that overlay |
-| Generated agent copies, `AGENTS.md`, tests, specs, the catalog, `framework/`, `tests/`, and other files | Nothing |
+| Generated agent copies, tests, specs, the catalog, `framework/`, `tests/`, and other files | Nothing |
 
 For `--changed-since <ref>`, changed paths come from `git diff --name-status <ref>` plus untracked
 files. A deleted skill file is resolved against the skill list at `<ref>`. An empty selection
@@ -323,7 +325,7 @@ beside the old tag. Retag it by replacing the old hash and text with the new one
 | Check | Fails when | How to fix |
 |---|---|---|
 | `harness-placement.test.sh` | `harness/` is not excluded in `framework/.distribution-manifest`, run output, `node_modules`, or `.env` is not gitignored, or the development constitution lacks the harness toolchain | Restore the manifest line, the `.gitignore` entries, or the constitution paragraph |
-| `harness-path-map.test.sh` | A shipped template, governance, library, or instruction file maps to no skill and is not in `harness/selection/shared.txt`, or a mapping rule changed | Name the file in the skill that reads it, or add it to `shared.txt` as `smoke` or `none` |
+| `harness-path-map.test.sh` | A shipped library or highway-experience file maps to no skill and is not in `harness/selection/shared.txt`, or a mapping rule changed | Name the file in the skill that reads it, or add it to `shared.txt` as `smoke` or `none` |
 | `harness-fixtures.test.sh` | A fixture file lacks a part of its current template, or an overlay names no stage | Promote a fresh chain run, or fix the fixture by hand |
 | `harness-coverage.test.sh` | A highway-codify bullet has no scenario tag, invariant, or waiver | Retag the reworded bullet, add a scenario, or add a treatment |
 | `harness-scenarios.test.sh` | A scenario breaks the format, names an unknown skill, fixture, or step, expects a file outside its `writes:`, or a skill has no or two smoke scenarios, or a chain position is missing or repeated | Fix the line named in the message |
@@ -364,6 +366,7 @@ The likely cause comes from a fixed table, so the same failure always prints the
 | `unmatched-question` | The skill's question changed, or the agent left the workflow at this step. | Compare the last question in Recent with the scenario's `ask:` lines and the skill's bold question text. |
 | `rejected-request` | The agent tried to run a shell command, use memory, or write outside the project. | The Rejected line names the request. Find the skill step that led the agent there. |
 | `outside-writes` | The agent changed a file outside the scenario's `writes:` patterns. | The path in What; compare it with the skill's output paths and the scenario's `writes:`. |
+| `experience-order` | The agent showed output before activating highway-experience. | The skills listed as actual; check that the skill's Procedure opens with the activation step. |
 | `turn-limit` | The agent kept going past the turn limit, naming a repeated question when one repeats. | A repeated question usually means a reply does not satisfy that step. Check the reply's kind and text. |
 | `timeout` | The attempt ran past its time limit. | The model may be slow; raise `--timeout`, or look for a stalled step in Recent. |
 | `assertion` | A written file is missing a required part. | If it is a template heading, the template changed after the fixture was promoted, or the skill skipped its template. |

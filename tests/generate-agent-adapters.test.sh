@@ -70,9 +70,7 @@ cleanup() {
 		"$HW_AGENT_COPILOT/$TMP_ID" \
 		"$HW_AGENT_CLAUDE/$TMP_ID" \
 		"$HW_AGENT_CURSOR/$TMP_ID" \
-		"$HW_AGENT_CODEX/$TMP_ID" \
-		"$HW_CURSOR_RULES/$TMP_ID.mdc" \
-		"$HW_CURSOR_RULES"/highway-leftover-*.mdc
+		"$HW_AGENT_CODEX/$TMP_ID"
 	if [[ -f "$MANIFEST" ]]; then
 		grep -vF "$TMP_ID" "$MANIFEST" >"$MANIFEST.tmp" || true
 		mv "$MANIFEST.tmp" "$MANIFEST"
@@ -86,8 +84,7 @@ rm -rf "$HW_SKILLS"/test-adapter-fixture-* \
 	"$HW_AGENT_COPILOT"/test-adapter-fixture-* \
 	"$HW_AGENT_CLAUDE"/test-adapter-fixture-* \
 	"$HW_AGENT_CURSOR"/test-adapter-fixture-* \
-	"$HW_AGENT_CODEX"/test-adapter-fixture-* \
-	"$HW_CURSOR_RULES"/test-adapter-fixture-*.mdc
+	"$HW_AGENT_CODEX"/test-adapter-fixture-*
 if [[ -f "$MANIFEST" ]] && grep -q 'test-adapter-fixture-' "$MANIFEST"; then
 	grep -v 'test-adapter-fixture-' "$MANIFEST" >"$MANIFEST.tmp" || true
 	mv "$MANIFEST.tmp" "$MANIFEST"
@@ -98,24 +95,11 @@ cp "$FIXTURES/valid-skill/SKILL.md" "$SKILL_SRC_DIR/SKILL.md"
 # The fixture's frontmatter name is authored to match the fixture's own directory id
 # (`valid-skill`); rewrite it to this temp skill's id so it still satisfies sv_validate_name.
 sed -i.bak "s/^name: .*/name: $TMP_ID/" "$SKILL_SRC_DIR/SKILL.md" && rm -f "$SKILL_SRC_DIR/SKILL.md.bak"
+mkdir -p "$SKILL_SRC_DIR/references"
+printf 'Bundled reference for the adapter fixture.\n' >"$SKILL_SRC_DIR/references/sample.md"
 
 speckit_before="$(sha256sum "$SPECKIT_SENTINEL" 2>/dev/null || shasum -a 256 "$SPECKIT_SENTINEL")"
 cursor_speckit_before="$(sha256sum "$CURSOR_SPECKIT_SENTINEL" 2>/dev/null || shasum -a 256 "$CURSOR_SPECKIT_SENTINEL")"
-instruction_claude="$HW_CLAUDE_MD"
-instruction_copilot="$HW_COPILOT_MD"
-instruction_manifest_path="$HW_FRAMEWORK/.instruction-manifest"
-instruction_hash() {
-	if [[ ! -f "$1" ]]; then
-		printf 'absent\n'
-	elif command -v sha256sum >/dev/null 2>&1; then
-		sha256sum "$1" | awk '{print $1}'
-	else
-		shasum -a 256 "$1" | awk '{print $1}'
-	fi
-}
-instruction_claude_before="$(instruction_hash "$instruction_claude")"
-instruction_copilot_before="$(instruction_hash "$instruction_copilot")"
-instruction_manifest_before="$(instruction_hash "$instruction_manifest_path")"
 
 if ! "$GENERATE" >/tmp/generate-agent-adapters.$$.log 2>&1; then
 	echo "FAIL: framework/generate-agent-adapters.sh exited non-zero"
@@ -167,39 +151,23 @@ if [[ ! -f "$CODEX_TARGET" ]] || ! diff -q "$SKILL_SRC_DIR/SKILL.md" "$CODEX_TAR
 	fail=1
 fi
 
-if [[ -e "$HW_CURSOR_RULES/$TMP_ID.mdc" ]]; then
-	echo "FAIL: a Cursor rule file was generated for $TMP_ID; Cursor receives skills, not rules"
-	fail=1
-fi
-
-# Regression guard (feature 097, narrowed by feature 098). The loop previously failed on every
-# highway-*.mdc because no instruction outputs existed (D3.5). A file is a leftover skill rule
-# only when the instruction manifest has no row for that path. The adapter manifest still must
-# not name .cursor/rules/.
-instruction_manifest="$HW_FRAMEWORK/.instruction-manifest"
-for stale_rule in "$HW_CURSOR_RULES"/highway-*.mdc; do
-	if [[ -e "$stale_rule" ]]; then
-		rel_rule="${stale_rule#"$HW_ROOT"/}"
-		if [[ ! -f "$instruction_manifest" ]] || ! grep -qF "$(printf '%s\t' "$rel_rule")" "$instruction_manifest"; then
-			echo "FAIL: superseded Cursor rule file still present: $rel_rule"
-			fail=1
-		fi
+# A skill's bundled files are copied beside its SKILL.md in every agent tree, with a manifest row each.
+for agent_tree in "$HW_AGENT_COPILOT" "$HW_AGENT_CLAUDE" "$HW_AGENT_CURSOR" "$HW_AGENT_CODEX"; do
+	copy="$agent_tree/$TMP_ID/references/sample.md"
+	if [[ ! -f "$copy" ]] || ! diff -q "$SKILL_SRC_DIR/references/sample.md" "$copy" >/dev/null 2>&1; then
+		echo "FAIL: ${copy#"$HW_ROOT"/} is not byte-identical to the bundled source file"
+		fail=1
+	fi
+	if ! grep -qF "$(printf '%s\t' "${copy#"$HW_ROOT"/}")" "$MANIFEST"; then
+		echo "FAIL: the adapter manifest has no row for ${copy#"$HW_ROOT"/}"
+		fail=1
 	fi
 done
-# The same predicate, executed against a file that has no instruction-manifest row.
-leftover_rule="$HW_CURSOR_RULES/highway-leftover-$$.mdc"
-mkdir -p "$(dirname "$leftover_rule")"
-printf 'leftover\n' >"$leftover_rule"
-leftover_rel="${leftover_rule#"$HW_ROOT"/}"
-leftover_reported=0
-if [[ -e "$leftover_rule" ]]; then
-	if [[ ! -f "$instruction_manifest" ]] || ! grep -qF "$(printf '%s\t' "$leftover_rel")" "$instruction_manifest"; then
-		leftover_reported=1
-	fi
-fi
-rm -f "$leftover_rule"
-if [[ "$leftover_reported" -ne 1 ]]; then
-	echo "FAIL: a highway-*.mdc with no instruction-manifest row was not treated as a leftover skill rule"
+
+# Cursor receives skills, not rules (feature 097), and Highway ships no always-on rule (Phase 7).
+cursor_rules="$(find "$(dirname "$HW_AGENT_CURSOR")" -path '*/rules/highway-*.mdc' -type f 2>/dev/null)"
+if [[ -n "$cursor_rules" ]]; then
+	echo "FAIL: a Cursor rule file is present: $cursor_rules"
 	fail=1
 fi
 if [[ -f "$MANIFEST" ]] && grep -q '^\.cursor/rules/' "$MANIFEST"; then
@@ -230,6 +198,8 @@ fi
 # skill are removed first, so a run that ignored the collision would visibly recreate them.
 {
 	rm -f "$GH_TARGET" "$CLAUDE_TARGET" "$CODEX_TARGET"
+	rm -rf "$HW_AGENT_COPILOT/$TMP_ID/references" "$HW_AGENT_CLAUDE/$TMP_ID/references" \
+		"$HW_AGENT_CURSOR/$TMP_ID/references" "$HW_AGENT_CODEX/$TMP_ID/references"
 	mkdir -p "$(dirname "$CURSOR_TARGET")"
 	grep -vF "$TMP_ID" "$MANIFEST" >"$MANIFEST.tmp" || true
 	mv "$MANIFEST.tmp" "$MANIFEST"
@@ -273,13 +243,6 @@ if [[ -f "$GH_TARGET" ]]; then
 		echo "FAIL: a hand-edited adapter was overwritten; the edit was lost"
 		fail=1
 	fi
-fi
-
-if [[ "$instruction_claude_before" != "$(instruction_hash "$instruction_claude")" \
-	|| "$instruction_copilot_before" != "$(instruction_hash "$instruction_copilot")" \
-	|| "$instruction_manifest_before" != "$(instruction_hash "$instruction_manifest_path")" ]]; then
-	echo "FAIL: generate-agent-adapters.sh changed an instruction output or .instruction-manifest"
-	fail=1
 fi
 
 exit $fail
