@@ -111,7 +111,7 @@ Run from the repository root with `node harness/src/cli.ts [switches]`, or
 | Full | `node harness/src/cli.ts` | The six-stage chain, then every scenario |
 | Smoke | `node harness/src/cli.ts --smoke` | One smoke scenario per skill (15) |
 | Targeted | `node harness/src/cli.ts --changed-since origin/main` | Scenarios affected by changed files |
-| Targeted | `node harness/src/cli.ts --paths .highway/library/templates/output/codify-plan.md` | Scenarios affected by these paths |
+| Targeted | `node harness/src/cli.ts --paths skills/highway-codify/assets/codify-plan.md` | Scenarios affected by these paths |
 | Targeted | `node harness/src/cli.ts --skills highway-codify` | Every scenario of these skills |
 
 ### Switches

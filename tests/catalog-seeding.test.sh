@@ -3,9 +3,10 @@
 # never creates it.
 set -u
 # Instrument class: static-document-contract
-# Artifact classes: source-document
+# Artifact classes: source-document, development-fixture
 # Seeded failure probe: a skill copy with one changed byte in its setup message, a skill copy that
-# creates a seeded folder when it is absent, and a skeleton holding a placeholder each fail this check.
+# creates a seeded folder when it is absent, a skeleton holding a placeholder, and a skeleton with
+# a column removed each fail this check.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=paths.sh
@@ -141,6 +142,19 @@ skeleton_defects() {
 		}
 	' "$1"
 }
+# A skeleton must match its reference copy byte for byte; edit both together to change one on purpose.
+REFERENCES="$HW_FIXTURES/catalog-seeding/skeletons"
+skeleton_drift() {
+	local asset="$1" file="$2" ref="$REFERENCES/$1" lines
+	if [[ ! -f "$ref" ]]; then
+		echo "$asset: no reference copy"
+		return
+	fi
+	if ! lines="$(diff "$ref" "$file")"; then
+		echo "$asset: differs from its reference copy"
+		printf '%s\n' "$lines" | grep -E '^[<>]'
+	fi
+}
 while IFS="$TAB" read -r asset path; do
 	a="$HW_SETUP/assets/$asset"
 	if [[ ! -f "$a" ]]; then
@@ -148,11 +162,16 @@ while IFS="$TAB" read -r asset path; do
 		continue
 	fi
 	report "$(skeleton_defects "$a" | sed "s#^#$asset: #")"
+	report "$(skeleton_drift "$asset" "$a")"
 done <<EOF
 $(hw_seeded)
 EOF
 if [[ "$(hw_seeded | grep -c .)" -ne 12 ]]; then
 	report "hw_seeded lists $(hw_seeded | grep -c .) files, not 12"
+fi
+storage="$(hw_template storage)"
+if ! grep -qx 'Mode: Local' "$storage"; then
+	report "storage.md: does not say Mode: Local"
 fi
 
 # 4. The checks above can fail.
@@ -170,6 +189,10 @@ fi
 { cat "$(hw_template request-catalog)"; printf '| <ID> | <Title> | <Status> |\n'; } >"$probe_dir/skeleton.md"
 if [[ -z "$(skeleton_defects "$probe_dir/skeleton.md")" ]]; then
 	report "probe: a skeleton placeholder row was not caught"
+fi
+sed -E 's/ Status \|$//; s/--------\|$//' "$(hw_template request-catalog)" >"$probe_dir/request-catalog.md"
+if [[ -z "$(skeleton_drift request-catalog.md "$probe_dir/request-catalog.md")" ]]; then
+	report "probe: a skeleton with its Status column removed was not caught"
 fi
 
 if [[ "$fail" -ne 0 ]]; then

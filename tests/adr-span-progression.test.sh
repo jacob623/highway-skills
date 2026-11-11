@@ -14,7 +14,7 @@ ADR="$SKILLS/highway-adr/SKILL.md"
 ASSESSMENT="$SKILLS/highway-assessment/SKILL.md"
 DISCOVERY="$SKILLS/highway-discovery/SKILL.md"
 ADR_RECORD="$OUTPUT/adr-record.md"
-DISCOVERY_RECORD="$OUTPUT/discovery-record.md"
+DISCOVERY_RECORD="$(hw_template discovery-record)"
 fail=0
 
 require() {

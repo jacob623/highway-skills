@@ -4,6 +4,9 @@
 # skill. Output format is a contract: per feature 005 (rename content to library).
 #
 # Usage: framework/validate-library.sh <library-file>
+#        framework/validate-library.sh --asset <file>
+# --asset checks a complete template in a skill's assets/ as a template. validate-skill.sh calls it
+# for each one, having already chosen the file, so containment and type detection are skipped.
 # Exit 0: no check failed. Exit 1: at least one check failed.
 set -u
 
@@ -21,8 +24,14 @@ source "$HW_LIB/body-scan.sh"
 # shellcheck source=lib/rule-checks.sh
 source "$HW_LIB/rule-checks.sh"
 
+asset=0
+if [[ ${1:-} == "--asset" ]]; then
+	asset=1
+	shift
+fi
+
 if [[ $# -ne 1 ]]; then
-	echo "ERROR: [SCHEMA] usage: framework/validate-library.sh <library-file>" >&2
+	echo "ERROR: [SCHEMA] usage: framework/validate-library.sh [--asset] <library-file>" >&2
 	exit 1
 fi
 
@@ -48,21 +57,26 @@ fi
 # Scoped to the Highway root and the test fixtures rather than to the library/ subdirectory: the
 # library fixtures live under tests/fixtures/library/, so the narrower scope would decline every
 # one of them.
-library_file_abs="$(cd "$(dirname "$library_file")" 2>/dev/null && pwd)/$(basename "$library_file")"
-case "$library_file_abs" in
-	"$HW_HIGHWAY"/* | "$HW_FIXTURES"/*) ;;
-	*)
-		echo "ERROR: [OUT-OF-SCOPE] '$library_file' is outside the Highway framework root; it belongs to the repository and is not validated here" >&2
-		exit 1
-		;;
-esac
+if (( ! asset )); then
+	library_file_abs="$(cd "$(dirname "$library_file")" 2>/dev/null && pwd)/$(basename "$library_file")"
+	case "$library_file_abs" in
+		"$HW_HIGHWAY"/* | "$HW_FIXTURES"/*) ;;
+		*)
+			echo "ERROR: [OUT-OF-SCOPE] '$library_file' is outside the Highway framework root; it belongs to the repository and is not validated here" >&2
+			exit 1
+			;;
+	esac
+fi
 # --- Library type detection (FR-001 through FR-004) -----------------------------------------
 
 library_type=""
-case "$library_file" in
-	*/library/templates/*) library_type="template" ;;
-	*/library/knowledge/*) library_type="knowledge" ;;
-	*/library/governance/*) library_type="governance" ;;
+if (( asset )); then
+	library_type="template"
+fi
+case "$library_type:$library_file" in
+	:*/library/templates/*) library_type="template" ;;
+	:*/library/knowledge/*) library_type="knowledge" ;;
+	:*/library/governance/*) library_type="governance" ;;
 esac
 
 if [[ -z "$library_type" ]]; then

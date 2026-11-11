@@ -54,7 +54,7 @@ passing:
 | 6 | Relocate the Framework, Tests, and Skills | 5 | Complete: `specs/235-standard-alignment-relocation/` |
 | 7 | highway-experience | 6 | Complete: `specs/236-standard-alignment-experience/` |
 | 8 | Catalog Seeding | 7 | Complete: `specs/237-standard-alignment-catalog-seeding/` |
-| 9 | Record Templates in Their Skills | 6 | |
+| 9 | Record Templates in Their Skills | 6 | Complete: `specs/238-standard-alignment-record-templates/` |
 | 10 | Onboarding Handoffs | 8 | |
 | 11 | Self-Contained Skills | 7 to 10 | |
 | 12 | Agent Skills Format Conformance | 6 | |
@@ -1125,6 +1125,20 @@ record (Phase 2).
 
 Exit: only `adr-record.md`, `architecture-record.md`, and `implementation-record.md` remain in
 `.highway/library/templates/`, and the full suite and harness pass.
+
+Status: complete in `specs/238-standard-alignment-record-templates/`. The suite went from 83 tests to
+84, all passing, and the harness tests stay at 81. Beyond the steps above:
+- `validate-skill.sh` checks every complete template in a skill's `assets/` through the new
+  `validate-library.sh --asset` mode, and reports a finding as `ERROR: [<tag>] assets/<file>: ...`.
+  This starts Phase 11 step 2. The validation cache key covers each skill's `assets/`.
+- Seeded skeletons are not validator-checked. `tests/catalog-seeding.test.sh` compares each with a
+  reference copy in `tests/fixtures/catalog-seeding/skeletons/` and requires `Mode: Local` in
+  `storage.md`.
+- `tests/record-templates.test.sh` checks each template's location and citation and probes the
+  asset check and the cache key. The path-construction test also rejects a skill asset joined to
+  its folder by name.
+- The distribution ships each moved template inside its skill. Each changed skill took a MINOR
+  version. Neither constitution changed.
 
 # Phase 10: Onboarding Handoffs
 

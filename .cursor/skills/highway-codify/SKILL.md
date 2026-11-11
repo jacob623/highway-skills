@@ -4,7 +4,7 @@ description: "Manages one functional artifact for one accepted implementation."
 usage: "Invoke as /highway-codify with one implementation name."
 compatibility: all
 metadata:
-  version: 14.3.0
+  version: 14.4.0
 ---
 
 # highway-codify
@@ -41,16 +41,16 @@ Do not report Status, Summary, Next Action, Blocking Reason, Missing, Complete, 
 - `library/governance/controls.md`, `library/governance/nfrs.md`, and the active records they name, when present.
 - `library/coding-standards/codify-platforms.md` when present.
 - The vendor's current public documentation for each product, API, plugin, module, or library a draft proposal names.
-- `.highway/library/templates/output/codify-record.md`.
-- `.highway/library/templates/output/codify-plan.md`.
-- `.highway/library/templates/output/codify-tasks.md`.
-- `.highway/library/templates/output/codify-metadata.md`.
+- `assets/codify-record.md`.
+- `assets/codify-plan.md`.
+- `assets/codify-tasks.md`.
+- `assets/codify-metadata.md`.
 - The highway-experience skill, activated first.
 - A project root containing `.highway/`.
 
 ## Outputs
 
-The complete structure is `.highway/library/templates/output/codify-record.md`, `.highway/library/templates/output/codify-plan.md`, `.highway/library/templates/output/codify-tasks.md`, and `.highway/library/templates/output/codify-metadata.md`. `code/code.md` and `code/integrations.md` keep the structure highway-setup seeded.
+The complete structure is `assets/codify-record.md`, `assets/codify-plan.md`, `assets/codify-tasks.md`, and `assets/codify-metadata.md`. `code/code.md` and `code/integrations.md` keep the structure highway-setup seeded.
 
 - One product folder `code/<folder>/`, with `.highway/metadata.md` written when the product is new. Each accepted feature adds one row to its Features table.
 - One saved proposal at `code/<folder>/.highway/features/<number>-<action>/codify.md` after the person accepts the proposal.
@@ -509,9 +509,9 @@ Write the files below and the rows in `index` together. Write none of them until
 
 The folder is `code/<folder>/` from the accepted proposal. `<number>` is `001` for a new product. For a joined product, it is the next integer after the last ID in the Features table of `code/<folder>/.highway/metadata.md`. Do not list `code/<folder>/.highway/features/`. `<action>` is the title in lowercase words separated by hyphens.
 
-For a new product, write `code/<folder>/.highway/metadata.md` from `.highway/library/templates/output/codify-metadata.md`. A joined product keeps its file. Append this feature's row to its Features table.
+For a new product, write `code/<folder>/.highway/metadata.md` from `assets/codify-metadata.md`. A joined product keeps its file. Append this feature's row to its Features table.
 
-The record is `code/<folder>/.highway/features/<number>-<action>/codify.md` and follows `.highway/library/templates/output/codify-record.md`.
+The record is `code/<folder>/.highway/features/<number>-<action>/codify.md` and follows `assets/codify-record.md`.
 
 - `id` is the product's `CDY` id.
 - `implementation` is the accepted implementation id.
@@ -559,7 +559,7 @@ A row records the connection only. It does not mean any feature is built.
 
 ### plan
 
-Write `code/<folder>/.highway/features/<number>-<action>/plan.md` from `.highway/library/templates/output/codify-plan.md`. The plan holds one story per proposal task, so a review of it is the whole plan.
+Write `code/<folder>/.highway/features/<number>-<action>/plan.md` from `assets/codify-plan.md`. The plan holds one story per proposal task, so a review of it is the whole plan.
 
 1. One story per proposal task, in task order. The title is that task's action. When an acceptance criterion contains that action, ignoring case, Done when is the earliest such criterion. Otherwise Done when is the task's Scope sentence. Copy no scope, method, standards, or files.
 2. An edge case names a situation the proposal's acceptance criteria do not.
@@ -615,7 +615,7 @@ Do not emit the menu with this question.
 
 Emit this sentence once: Highway is now building out this solution. We can review, discuss, and revise it afterward, and continue refining it as requirements evolve.
 
-Write `codify-tasks.md` beside the plan from `.highway/library/templates/output/codify-tasks.md`.
+Write `codify-tasks.md` beside the plan from `assets/codify-tasks.md`.
 
 1. Order the lines by story, then by each proposal task that delivers no story. Under each heading, state how it is tested on its own.
 2. Each task names its file. Keep the line shape, the Provider, and `Tests: required`.

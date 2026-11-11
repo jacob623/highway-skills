@@ -4,7 +4,7 @@ description: "Manages one business request and its accepted artifact."
 usage: "Invoke as /highway-request with the business change."
 compatibility: all
 metadata:
-  version: 5.2.0
+  version: 5.3.0
 ---
 
 # highway-request
@@ -31,13 +31,13 @@ Do not show Current Domain, Completed Domains, or Remaining Domains.
 - The person's invocation text.
 - Accepted Profile, Objectives, Controls, and NFRs when present.
 - `requests/requests.md` and `requests/REQ*.md` when present.
-- `.highway/library/templates/output/request-record.md`.
+- `assets/request-record.md`.
 - The highway-experience skill, activated first.
 - A project root containing `.highway/`.
 
 ## Outputs
 
-The complete structure is `.highway/library/templates/output/request-record.md`. `requests/requests.md` keeps the structure highway-setup seeded.
+The complete structure is `assets/request-record.md`. `requests/requests.md` keeps the structure highway-setup seeded.
 
 - One request record at `requests/[ID].md` after the complete proposal is accepted.
 - An updated `requests/requests.md` written with that record.
@@ -208,7 +208,7 @@ Do not write until the id is free or the existing record is reused.
 
 Write `requests/[ID].md` and `requests/requests.md` together. Write neither file until both are valid. A failed write leaves every existing request byte unchanged. Say what failed in terms the person can act on. Stay on `write`.
 
-The record follows `.highway/library/templates/output/request-record.md`.
+The record follows `assets/request-record.md`.
 
 - `id` is the derived `REQ` id.
 - `status` is `accepted`.

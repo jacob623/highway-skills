@@ -4,7 +4,7 @@ description: "Manages the repository-wide guidance used by highway-codify."
 usage: "Invoke as /highway-codify-config, or with one implementation name."
 compatibility: all
 metadata:
-  version: 3.7.0
+  version: 3.8.0
 ---
 
 # highway-codify-config
@@ -32,7 +32,7 @@ Do not report Status, Summary, Next Action, Blocking Reason, Missing, Complete, 
 - `library/coding-standards/codify-platforms.md`.
 - `library/coding-standards/coding-standards.md` and the standard files it names.
 - `implementations/implementations.md` and the accepted implementation records.
-- `.highway/library/templates/output/coding-standard.md`.
+- `assets/coding-standard.md`.
 - `highway-onboarding`.
 - `highway-implementation`.
 - The highway-experience skill, activated first.
@@ -40,7 +40,7 @@ Do not report Status, Summary, Next Action, Blocking Reason, Missing, Complete, 
 
 ## Outputs
 
-The complete structure is `.highway/library/templates/output/coding-standard.md`. `library/coding-standards/codify-platforms.md` and `library/coding-standards/coding-standards.md` keep the structure highway-setup seeded.
+The complete structure is `assets/coding-standard.md`. `library/coding-standards/codify-platforms.md` and `library/coding-standards/coding-standards.md` keep the structure highway-setup seeded.
 
 - An updated `library/coding-standards/codify-platforms.md` after an accepted platform change.
 - A standard file in `library/coding-standards/`, then an updated `library/coding-standards/coding-standards.md`, after an accepted standard change.
@@ -367,7 +367,7 @@ Removing a row leaves its standard file in place. A standard file that no row na
    - The structure has no path: `A file and folder structure is needed.`
    - A path begins with `/` or `code/`: `Paths are relative to the automation folder.`
    - Tests are required and the test path is not in the structure: `The test path must be part of the file and folder structure.`
-2. Write the standard file from `.highway/library/templates/output/coding-standard.md` at its Standard Path. A new Standard Path is `library/coding-standards/[technology in lowercase, with hyphens].md`. Then edit `library/coding-standards/coding-standards.md` in its existing structure, changing only this row. When the standard file write fails, write no catalog. Say what failed and return to `standard proposal`.
+2. Write the standard file from `assets/coding-standard.md` at its Standard Path. A new Standard Path is `library/coding-standards/[technology in lowercase, with hyphens].md`. Then edit `library/coding-standards/coding-standards.md` in its existing structure, changing only this row. When the standard file write fails, write no catalog. Say what failed and return to `standard proposal`.
 3. When the proposal listed conflicts, ask **Would you like help resolving these conflicts?** `accept` goes to `conflicts`. `question` answers, then asks again. `unknown` asks again. `decline` states the consequence of the accepted change in one sentence and goes to `menu`. Otherwise state the consequence of the accepted change in one sentence and go to `menu`.
 
 ### conflicts

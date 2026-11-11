@@ -8,11 +8,10 @@ set -u
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=paths.sh
 source "$SCRIPT_DIR/paths.sh"
-OUTPUT="$HW_OUTPUT_TEMPLATES"
 CODIFY="$HW_SKILLS/highway-codify/SKILL.md"
-RECORD="$OUTPUT/codify-record.md"
-TASKS="$OUTPUT/codify-tasks.md"
-PLAN="$OUTPUT/codify-plan.md"
+RECORD="$(hw_template codify-record)"
+TASKS="$(hw_template codify-tasks)"
+PLAN="$(hw_template codify-plan)"
 fail=0
 
 require() {
@@ -77,7 +76,7 @@ require_in revise 'stays in effect. To change a Control, run /highway-controls. 
 require_in write 'Do not write `codify-tasks.md` here.'
 require_in write '**Controls and NFRs:**'
 require_in index 'On success, go to `plan`'
-require_in plan '.highway/library/templates/output/codify-plan.md'
+require_in plan 'assets/codify-plan.md'
 require_in plan 'The plan holds one story per proposal task, so a review of it is the whole plan.'
 require_in plan 'One story per proposal task, in task order.'
 require_in plan "The title is that task's action."
@@ -99,7 +98,7 @@ reject "$CODIFY" 'When a task serves no story, leave it out.'
 require_in code 'whose catalog row is active'
 require "$CODIFY" 'To revisit this in the future, just ask Highway to show your Code Catalog. We can review, discuss, and revise any of your solutions, and continue refining them as requirements evolve.'
 
-require "$CODIFY" '.highway/library/templates/output/codify-plan.md'
+require "$CODIFY" 'assets/codify-plan.md'
 reject "$CODIFY" '**Here is a proposed starting point for your automation:**'
 reject "$CODIFY" 'just ask highway to show your code catalog'
 

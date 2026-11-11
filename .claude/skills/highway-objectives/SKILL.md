@@ -4,7 +4,7 @@ description: "Manages the repository-wide business objective baseline and its st
 usage: "Invoke as /highway-objectives."
 compatibility: all
 metadata:
-  version: 8.2.0
+  version: 8.3.0
 ---
 
 # highway-objectives
@@ -31,14 +31,14 @@ Do not emit Setup's outcome transition. Setup already emitted it.
 - `library/knowledge/profile.md` when present.
 - `library/governance/objectives.md` when present.
 - `library/objectives/OBJ*.md` when present.
-- `.highway/library/templates/output/objective-record.md`.
+- `assets/objective-record.md`.
 - `assets/objective-catalog.md`.
 - The highway-experience skill, activated first.
 - Delegation from `highway-setup`.
 
 ## Outputs
 
-The complete structure is `.highway/library/templates/output/objective-record.md` and `assets/objective-catalog.md`.
+The complete structure is `assets/objective-record.md` and `assets/objective-catalog.md`.
 
 - Updated Objective records and catalog after a review edit.
 - New Objective records and catalog after the guided flow writes them.
@@ -314,7 +314,7 @@ Resolve every id in `identifier` before writing. Write the held Objectives and t
 
 On success, emit nothing. Return `Finished`.
 
-For each held Objective, write `library/objectives/[ID].md` in the shape required by `.highway/library/templates/output/objective-record.md`.
+For each held Objective, write `library/objectives/[ID].md` in the shape required by `assets/objective-record.md`.
 
 - `id` is the derived `OBJ` id.
 - Keep an existing id when the title is unchanged.
@@ -357,7 +357,7 @@ No Objective record is written beneath `.highway`.
 - A taken id for a different title names the conflicting titles, says a title change is appropriate, and shows a new title. The write waits until the person accepts that title.
 - That message does not mention identifiers, hex, sampling, or the catalog.
 - A successful guided write returns `Finished`, emits nothing else, and does not show the stored records.
-- Written records match `.highway/library/templates/output/objective-record.md`.
+- Written records match `assets/objective-record.md`.
 - The written catalog matches `assets/objective-catalog.md`.
 - Setup receives `Finished` and the person does not see that word.
 

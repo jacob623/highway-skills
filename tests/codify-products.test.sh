@@ -9,13 +9,12 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=paths.sh
 source "$SCRIPT_DIR/paths.sh"
 SKILLS="$HW_SKILLS"
-OUTPUT="$HW_OUTPUT_TEMPLATES"
 CODIFY="$SKILLS/highway-codify/SKILL.md"
 ADR="$SKILLS/highway-adr/SKILL.md"
 CATALOG="$(hw_template codify-catalog)"
-RECORD="$OUTPUT/codify-record.md"
-TASKS="$OUTPUT/codify-tasks.md"
-METADATA="$OUTPUT/codify-metadata.md"
+RECORD="$(hw_template codify-record)"
+TASKS="$(hw_template codify-tasks)"
+METADATA="$(hw_template codify-metadata)"
 INTEGRATIONS="$(hw_template codify-integrations)"
 fail=0
 

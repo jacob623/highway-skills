@@ -221,6 +221,29 @@ while IFS= read -r rule_line; do
 	esac
 done <<< "$(for doc in "${GOVERNANCE_DOCS[@]}"; do con_rules "$doc"; done)"
 
+# --- Asset template checks -----------------------------------------------------------------
+
+# A file in the skill's assets/ with a template section is a complete template and gets the checks
+# validate-library.sh applies to a template; a file without one, such as a seeded skeleton, does not.
+# Findings fail the skill but leave the verdict lines, which describe SKILL.md, unchanged.
+for asset_file in "$skill_dir"/assets/*.md; do
+	[[ -f "$asset_file" ]] || continue
+	grep -Eq '^## (File Frontmatter|Body|Catalog Structure)[[:space:]]*$' "$asset_file" || continue
+	asset_name="assets/$(basename "$asset_file")"
+	if asset_errors="$("$HW_FRAMEWORK/validate-library.sh" --asset "$asset_file" 2>&1 >/dev/null)"; then
+		continue
+	fi
+	asset_errors="$(printf '%s\n' "$asset_errors" | grep '^ERROR: ')"
+	if [[ -z "$asset_errors" ]]; then
+		collect "ERROR: [ASSET] $asset_name: the template check failed without a finding"
+		continue
+	fi
+	collect "$(printf '%s\n' "$asset_errors" | sed -E "s#^ERROR: \[([^]]+)\] #ERROR: [\1] $asset_name: #")"
+	while IFS= read -r rule_id; do
+		[[ -n "$rule_id" && " $failed_rules " != *" $rule_id "* ]] && failed_rules="$failed_rules $rule_id"
+	done <<< "$(printf '%s\n' "$asset_errors" | sed -nE 's/^ERROR: \[([A-Z][0-9]+\.[0-9]+)\].*/\1/p')"
+done
+
 # --- Report --------------------------------------------------------------------------------
 
 if [[ -n "$errors" ]]; then

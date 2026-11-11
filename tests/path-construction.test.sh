@@ -61,6 +61,7 @@ R3_SOURCE='(source|[.])[[:space:]].*paths[.]sh'
 R3_CLIMB="(dirname[^)]*[)]|[\$][{]?[A-Za-z_][A-Za-z0-9_]*[}]?)\"?/[.][.]$B"
 R4="[\$][{]?HW[_]OUTPUT[_]TEMPLATES[}]?\"?/[A-Za-z0-9_-]"
 R4="$R4|[\$][{]?HW[_]SETUP[}]?\"?/assets/[A-Za-z0-9_-]"
+R4="$R4|[\$][{]?HW[_]SKILLS[}]?\"?/[A-Za-z0-9_\$-]+/assets/[A-Za-z0-9_-]"
 R4="$R4|[\$][{]?HW[_]EXPERIENCE[}]?\"?/references$B"
 R4="$R4|[\$][{]?HW[_]FRAMEWORK[}]?\"?/(constitution|authoring-standard|frontmatter-lexicon)[.]"
 
