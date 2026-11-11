@@ -157,9 +157,6 @@ Required by FR-005 of feature 001, and governed by **P7.3**.
    and divide by the new skill's MUST-level rule count. Above 0.50, consolidate the two skills;
    otherwise replace the restated rules with a cross-reference naming the other skill's id. The
    threshold and the ordered decision live in the constitution's Skill Authoring Workflow.
-4. Record any residual overlap in `.highway/catalog/index.json`'s `overlap_flags` array:
-   `{"skill_a": "<id>", "skill_b": "<id>", "reason": "<why they overlap>"}`.
-   `.highway/tools/generate-catalog.sh` preserves these across regenerations.
 
 Automated overlap detection across the catalog is performed by a separate, external application
 outside this codebase.

@@ -1,5 +1,26 @@
 <!--
 Sync Impact Report
+Version change: 2.3.0 → 3.0.0 (MAJOR), 2026-11-11
+Bump rationale: the recorded-generation-timestamp exception is removed from D4.2 and D4.7, which
+strengthens both obligations; the Versioning Policy classes that as MAJOR. `generate-catalog.sh`
+no longer writes a timestamp and `generate-library-catalog.sh` is removed in the same change, so
+every declared generator meets the stricter rules.
+Changed elements:
+- Version line: 2.3.0 → 3.0.0
+- Last Amended date: 2026-11-10 → 2026-11-11
+- D4.2 Observable: the "other than a recorded generation timestamp" exception is removed
+- D4.7 Observable: the "aside from a recorded generation timestamp" exception is removed
+- Enforcement Map, D4.2 note: asserts byte-identical output, with no excepted timestamp
+- Enforcement Map, D4.7 note: the timestamp exception is removed
+- Declared generators, under Principle IV: `generate-library-catalog.sh` is removed, and the
+  note that `generate-instructions.sh` writes no timestamp now covers every declared generator
+Unchanged: D4.2 and D4.7 rule text and tiers, every other rule, the Enforcement Map's other
+rows, the declared agent trees, and the gates.
+Self-application review: D1.3 PASS (no Highway Skills Constitution rule sentence is copied);
+D1.4 PASS (this report cites rule IDs); D5.3 PASS (the seven changed elements are listed above
+and every unlisted element carries forward).
+
+Sync Impact Report
 Version change: 2.2.0 → 2.3.0 (MINOR), 2026-11-10
 Bump rationale: a Harness Toolchain declaration is added under Principle II for the behavioral test
 harness in `harness/`. It adds a declared section and does not remove or redefine a principle.
@@ -368,11 +389,11 @@ table cannot silently go stale.
 | D1.1 | shipped-tree-independence.test.sh | Scans the distributed path set for the prohibited tokens; seeds a probe to prove it can fail |
 | D1.2 | distribution-packaging.test.sh | Runs the distribution's own validator against a tree with the development directories absent |
 | D4.1 | generate-agent-adapters.test.sh | Asserts the generator refuses to overwrite a target that was hand-edited after it was produced |
-| D4.2 | generate-catalog.test.sh | Asserts re-running with unchanged inputs produces no difference aside from the recorded timestamp the Observable excepts |
+| D4.2 | generate-catalog.test.sh | Asserts re-running with unchanged inputs produces byte-identical output |
 | D4.3 | distribution-packaging.test.sh | Asserts refusal to overwrite an untracked directory and a modified file, naming each |
 | D4.5 | adapter-coverage.test.sh | Asserts every skill present has a catalog entry, an adapter in each declared agent tree, an adapter manifest row for each adapter, and an included distribution manifest row for each adapter |
 | D4.6 | adapter-coverage.test.sh | Asserts no catalog entry, adapter file, adapter manifest row, or distribution manifest row names a skill with no source directory |
-| D4.7 | adapter-coverage.test.sh | Regenerates into a temporary tree, including generate-instructions.sh, and asserts no diff against the committed artifacts, excepting the recorded generation timestamp on generators that write one |
+| D4.7 | adapter-coverage.test.sh | Regenerates into a temporary tree, including generate-instructions.sh, and asserts no diff against the committed artifacts |
 | D3.7 | constitution-inventory.test.sh | Executes each mapped test's declared probe per artifact class and requires a non-zero exit; requires a zero exit when the same probe is invoked neutralised |
 
 ## Core Principles
@@ -445,12 +466,12 @@ artifact already in the repository.
 | ID | Rule | Observable | Tier |
 |---|---|---|---|
 | D4.1 | A generated artifact MUST NOT be hand-edited. | Re-running its generator produces no diff. | [auto] |
-| D4.2 | A generator MUST produce identical output from unchanged inputs. | Two consecutive runs differ in no byte other than a recorded generation timestamp. | [auto] |
+| D4.2 | A generator MUST produce identical output from unchanged inputs. | Two consecutive runs differ in no byte. | [auto] |
 | D4.3 | A generator MUST refuse to overwrite a target it did not produce. | The run exits non-zero and names the file. | [auto] |
 | D4.4 | A change to a generator MUST be followed by regeneration of every artifact it produces. | No diff remains after running the generator. | [agent-checkable] |
 | D4.5 | Every skill in the source MUST have its generated artifacts. | Each directory under `.highway/skills/` has a catalog entry, an adapter in each declared agent tree, an adapter manifest row for each adapter, and a distribution manifest row for each adapter. | [auto] |
 | D4.6 | A generated artifact MUST NOT name a skill absent from the source. | No catalog entry, adapter file, adapter manifest row, or distribution manifest row names a skill with no directory under `.highway/skills/`. | [auto] |
-| D4.7 | A change to a generator's input MUST be followed by regeneration. | Re-running every declared generator leaves no diff against the committed artifacts, aside from a recorded generation timestamp. | [auto] |
+| D4.7 | A change to a generator's input MUST be followed by regeneration. | Re-running every declared generator leaves no diff against the committed artifacts. | [auto] |
 
 Rationale: Generated artifacts are the product surface; drift between source and output ships
 directly to users.
@@ -467,8 +488,8 @@ skill that has no source and cannot be maintained. Neither is expressible as "no
 because adapters are never pruned and manifest rows are hand-maintained.
 
 **Declared generators** (referenced by D4.7): `generate-catalog.sh`,
-`generate-library-catalog.sh`, `generate-agent-adapters.sh`, `generate-instructions.sh`.
-`generate-instructions.sh` writes no generation timestamp. `generate-distribution.sh` is
+`generate-agent-adapters.sh`, `generate-instructions.sh`. No declared generator writes a
+generation timestamp. `generate-distribution.sh` is
 excluded — it takes a target directory and writes outside the repository, so it produces no
 committed artifact to compare against.
 
@@ -550,4 +571,4 @@ Highway Skills Constitution prevails for artifact content and this document prev
 This document is subject to D1.3, D1.4, and D5.3. Every amendment records a review against those
 rule IDs.
 
-**Version**: 2.3.0 | **Ratified**: 2026-09-08 | **Last Amended**: 2026-11-10
+**Version**: 3.0.0 | **Ratified**: 2026-09-08 | **Last Amended**: 2026-11-11

@@ -52,7 +52,7 @@ expect harness/fixtures/overlays/code-project/overlay.txt fixture code-project
 expect "$SPEC_DIR/232-behavioral-test-harness/spec.md" none -
 expect .highway/tools/tests/run-all.sh none -
 expect .claude/skills/highway-codify/SKILL.md none -
-expect .highway/catalog/index.md none -
+expect .highway/catalog/index.json none -
 expect .highway/governance/constitution.md none -
 
 reason="$(cd "$REPO_ROOT" && bash "$PATH_MAP" .highway/library/templates/output/codify-plan.md | cut -f4)"

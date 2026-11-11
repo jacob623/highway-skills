@@ -156,22 +156,6 @@ fi
 
 # --- Two runs from the same repository state are byte-identical (FR-012) ---
 # The production record is excluded: its content is a function of the files already compared.
-# Catalog timestamps are intentional metadata, so normalize them in disposable outputs first.
-
-normalize_catalog_timestamps() {
-	local catalog_dir="$1" file temp
-	for file in \
-		"$catalog_dir/.highway/catalog/index.json" \
-		"$catalog_dir/.highway/catalog/index.md" \
-		"$catalog_dir/.highway/catalog/library-index.json" \
-		"$catalog_dir/.highway/catalog/library-index.md"; do
-		[[ -f "$file" ]] || continue
-		temp="$file.tmp"
-		sed -e 's/^  "generated_at": ".*",$/  "generated_at": "<normalized>",/' \
-			-e 's/^_Generated at: .*_$/_Generated at: <normalized>_/' "$file" >"$temp"
-		mv "$temp" "$file"
-	done
-}
 
 second="$WORK/second"
 if ! "$GEN" "$second" >"$WORK/second.log" 2>&1; then
@@ -179,13 +163,7 @@ if ! "$GEN" "$second" >"$WORK/second.log" 2>&1; then
 	sed 's/^/    /' "$WORK/second.log"
 	fail=1
 else
-	compare_dist="$WORK/compare-dist"
-	compare_second="$WORK/compare-second"
-	cp -R "$dist" "$compare_dist"
-	cp -R "$second" "$compare_second"
-	normalize_catalog_timestamps "$compare_dist"
-	normalize_catalog_timestamps "$compare_second"
-	if ! diff -r -x '.distribution-record' "$compare_dist" "$compare_second" >"$WORK/diff.log" 2>&1; then
+	if ! diff -r -x '.distribution-record' "$dist" "$second" >"$WORK/diff.log" 2>&1; then
 		echo "FAIL: two packaging runs from the same repository state differ"
 		sed 's/^/    /' "$WORK/diff.log"
 		fail=1

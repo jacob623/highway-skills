@@ -79,7 +79,7 @@ previously-cached skill still fails with its original error.
 ### `.highway/tools/generate-catalog.sh`
 
 Iterates `.highway/skills/*/SKILL.md`, validates each via `validate-skill.sh`, and writes
-`.highway/catalog/index.json` + `.highway/catalog/index.md`.
+`.highway/catalog/index.json`. Unchanged skill sources produce a byte-identical file.
 
 - **Exit 0**: catalog written.
 - **Exit 1**: at least one skill under `.highway/skills/` is invalid; the catalog is **not** written (no
@@ -166,19 +166,6 @@ legitimately contain those words without being a rule statement.
 
 Output format is a contract, per feature 005 (rename content to library).
 
-### `.highway/tools/generate-library-catalog.sh`
-
-Iterates `.highway/library/{templates,knowledge,governance}/*.md` (excluding each directory's
-`README.md` and the three opaque root-seeded context documents
-`highway-identity.md`, `highway-platform-objectives.md`, and `highway-vision.md`), validates each
-cataloged file via `validate-library.sh`, and writes
-`.highway/catalog/library-index.json` + `.highway/catalog/library-index.md` — a sibling listing
-to the skill catalog, kept separate since the skill catalog's schema is closed to additional
-properties and shaped around skill-only fields.
-
-- **Exit 0**: catalog written.
-- **Exit 1**: at least one file under `.highway/library/` is invalid; the catalog is **not**
-  written (no partial catalog), and the failing file's path is named in the error output.
 Complete skeletons for retained files emitted by skills live under
 `.highway/library/templates/output/`. Each skeleton covers the emitted file's frontmatter and
 body. Request-producing skills use the shared request skeletons at

@@ -23,9 +23,8 @@ if [[ -n "$probe_class" ]] && [[ "$DECLARED_CLASSES" != *" $probe_class "* ]]; t
 	exit 2
 fi
 
-# Two catalog snapshots agree once the `generated_at` field is excluded (D4.2 determinism).
-# Shared by normal mode, which compares two real generator runs, and probe mode, which compares
-# two seeded snapshots directly.
+# Two catalog snapshots agree byte for byte (D4.2 determinism). Shared by normal mode, which
+# compares two real generator runs, and probe mode, which compares two seeded snapshots directly.
 catalog_snapshots_match() {
 	[[ "$1" == "$2" ]]
 }
@@ -70,15 +69,13 @@ fail=0
 cleanup() {
 	rm -rf "$SKILL_DIR"
 	# Restore whatever catalog existed (or didn't) before this test ran.
-	rm -f "$CATALOG_JSON" "$CATALOG_MD"
+	rm -f "$CATALOG_JSON"
 	[[ -f "$BACKUP_DIR/index.json" ]] && cp "$BACKUP_DIR/index.json" "$CATALOG_JSON"
-	[[ -f "$BACKUP_DIR/index.md" ]] && cp "$BACKUP_DIR/index.md" "$CATALOG_MD"
 	rm -rf "$BACKUP_DIR"
 }
 trap cleanup EXIT
 
 [[ -f "$CATALOG_JSON" ]] && cp "$CATALOG_JSON" "$BACKUP_DIR/index.json"
-[[ -f "$CATALOG_MD" ]] && cp "$CATALOG_MD" "$BACKUP_DIR/index.md"
 
 # --- Part 1: valid skill produces a well-shaped, single-entry catalog ---
 mkdir -p "$SKILL_DIR"
@@ -94,9 +91,13 @@ if ! "$GENERATE" >/tmp/generate-catalog.$$.log 2>&1; then
 fi
 rm -f /tmp/generate-catalog.$$.log
 
-for key in generated_at entries overlap_flags; do
-	if ! grep -q "\"$key\"" "$CATALOG_JSON"; then
-		echo "FAIL: catalog/index.json missing top-level key '$key'"
+if ! grep -q '"entries"' "$CATALOG_JSON"; then
+	echo "FAIL: catalog/index.json missing top-level key 'entries'"
+	fail=1
+fi
+for key in generated_at overlap_flags; do
+	if grep -q "\"$key\"" "$CATALOG_JSON"; then
+		echo "FAIL: catalog/index.json has removed key '$key'"
 		fail=1
 	fi
 done
@@ -113,17 +114,17 @@ for field in name description usage compatibility version source_path; do
 	fi
 done
 
-if [[ ! -f "$CATALOG_MD" ]]; then
-	echo "FAIL: catalog/index.md was not generated"
+if [[ -e "$CATALOG_MD" ]]; then
+	echo "FAIL: catalog/index.md exists; the generator writes catalog/index.json only"
 	fail=1
 fi
 
-# --- Part 2: determinism -- re-run with no changes yields identical entries/overlap_flags ---
-before_entries="$(grep -v '"generated_at"' "$CATALOG_JSON")"
+# --- Part 2: determinism -- re-run with no changes yields a byte-identical catalog ---
+before_catalog="$(cat "$CATALOG_JSON")"
 "$GENERATE" >/dev/null 2>&1
-after_entries="$(grep -v '"generated_at"' "$CATALOG_JSON")"
-if ! catalog_snapshots_match "$before_entries" "$after_entries"; then
-	echo "FAIL: re-running with unchanged skills/ content produced a different catalog (aside from generated_at)"
+after_catalog="$(cat "$CATALOG_JSON")"
+if ! catalog_snapshots_match "$before_catalog" "$after_catalog"; then
+	echo "FAIL: re-running with unchanged skills/ content produced a different catalog"
 	fail=1
 fi
 
