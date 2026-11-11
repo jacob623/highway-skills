@@ -53,7 +53,7 @@ passing:
 | 5 | Path Indirection | 4 | Complete: `specs/234-standard-alignment-path-indirection/` |
 | 6 | Relocate the Framework, Tests, and Skills | 5 | Complete: `specs/235-standard-alignment-relocation/` |
 | 7 | highway-experience | 6 | Complete: `specs/236-standard-alignment-experience/` |
-| 8 | Catalog Seeding | 7 | |
+| 8 | Catalog Seeding | 7 | Complete: `specs/237-standard-alignment-catalog-seeding/` |
 | 9 | Record Templates in Their Skills | 6 | |
 | 10 | Onboarding Handoffs | 8 | |
 | 11 | Self-Contained Skills | 7 to 10 | |
@@ -93,18 +93,20 @@ Seeded by highway-setup: a resolution can name a template as seeded. That patter
 
 - The template's skeleton (frontmatter, headings, and table header) moves to highway-setup's
   `assets/`. highway-setup is its only reader.
-- highway-setup writes the empty file into the project once, from the skeleton, when the file is
-  absent. It never overwrites an existing file.
+- At the start of every run, before the welcome and Profile, highway-setup writes the empty file
+  into the project from the skeleton when the file is absent. It never overwrites an existing
+  file and shows the person nothing about seeding.
 - From then on, the project file is the only copy any skill reads or edits. Each skill that edits
   it follows the file's existing structure.
 - The template's rules (row order, status values, id formats, removed rows, version changes, and
-  cell formats) move into the skills that write the file. When two skills write the same file, the
-  generator inserts the shared rule into both from one source in this repo, and a bash check fails
-  when a copy differs.
-- A skill that must edit a seeded file that is still absent follows highway-setup's seeding step
-  for that file, then continues.
-- The bash fixture check and the harness template assertions still compare project files against
-  the template, so a skill that drifts from the structure is caught.
+  cell formats) move into the skills that write the file. When two skills state the same rule,
+  both hold it word for word from one source file in `framework/shared-rules/`, and a bash check
+  fails when a copy differs. No generator is involved.
+- A skill that edits a seeded file checks for it before its first question. When the file is
+  absent, the skill writes nothing and shows one fixed message, identical in every such skill,
+  directing the person to run `/highway-setup`.
+- The bash fixture check and the harness template assertions compare project files against the
+  skeleton, so a skill that drifts from the structure is caught.
 
 Catalog rule: when highway-setup finishes, every catalog exists.
 
@@ -278,9 +280,9 @@ rule stated in the skills that apply it.
 - The title rule: a capability title is one noun phrase of five words or fewer, with no `and`,
   `or`, `&`, `/`, `+`, or comma, and a title that joins two things becomes two capabilities.
   The seeded file holds only the table, so the rule cannot come from it.
-  - highway-architecture and highway-implementation state the rule in their own text. The
-    generator inserts it into both `SKILL.md` files from one source in this repo, and a bash
-    check fails when either copy differs from the source.
+  - highway-architecture and highway-implementation state the rule in their own text, word for
+    word from one source, `framework/shared-rules/capability-title.txt`.
+    `tests/shared-rules.test.sh` fails when either copy differs from the source.
   - highway-codify-config stops checking titles and drops the template from its inputs. It passes
     new capabilities to highway-implementation, which already leaves out any title that breaks
     the rule.
@@ -373,8 +375,9 @@ Resolution: seeded by highway-setup (see the catalog rule in the Phase 1 introdu
 - highway-adr edits only an existing row's ADR ID cell, when a decision replaces, runs beside,
   reuses an implemented architecture, or spans architectures, and drops the template from its
   inputs.
-- The ADR ID cell format is a shared rule, inserted into highway-architecture and highway-adr from
-  one source: ids in id order, separated by a comma and a space; a superseded or removed decision
+- The ADR ID cell format is a shared rule, stated word for word in highway-architecture and
+  highway-adr from one source, `framework/shared-rules/adr-id-cell.txt`, with the same check as
+  the capability title rule: ids in id order, separated by a comma and a space; a superseded or removed decision
   is not in the cell; an ADR id is on at most one row, except a span decision, which is on the row
   of each architecture it names.
 - highway-implementation, highway-codify, and highway-assessment read it only.
@@ -1069,12 +1072,14 @@ Goal: highway-setup guarantees every catalog exists (Phase 1 catalog rule), and 
 rules live in the skills that write it.
 
 1. highway-setup's `assets/` holds the skeletons of the 11 seeded catalogs and the storage record.
-   Setup writes each one once when absent and never overwrites.
-2. The catalog templates' rules move into the skills that write each catalog. The generator
-   inserts each shared rule, the capability title rule and the ADR ID cell format, into every
-   skill that states it, from one source, with a drift check.
-3. Skills drop their "create the catalog when absent" steps. A skill that must edit a seeded file
-   that is still absent follows highway-setup's seeding step for it, then continues.
+   Setup writes each absent one at the start of every run, before the welcome and Profile,
+   never overwrites, and shows nothing about it.
+2. The catalog templates' rules move into the skills that write each catalog. Each shared rule,
+   the capability title rule and the ADR ID cell format, has one source file, and a bash check
+   fails when a skill's copy differs from it. There is no generator.
+3. Skills drop their "create the catalog when absent" steps. A skill that edits a seeded file
+   checks for it before its first question; when it is absent, the skill writes nothing and shows
+   the fixed message directing the person to `/highway-setup`.
 4. The ownership changes for `codify-platforms.md`, `capability-catalog.md`, `adr-catalog.md`,
    and `architecture-catalog.md` (Phase 1).
 5. The three governance catalog templates move to highway-objectives, highway-controls, and
@@ -1086,6 +1091,24 @@ rules live in the skills that write it.
 
 Exit: a fresh highway-setup run leaves every catalog in place, no catalog template remains in
 `.highway/library/templates/`, and the full suite and harness pass.
+
+Status: complete in `specs/237-standard-alignment-catalog-seeding/`. The suite went from 81 tests to
+83, all passing, and the harness tests from 77 to 81. Beyond the steps above:
+- The nine skills that edit a seeded file open with one identical entry check, after the
+  activation step. When a seeded file they edit is absent, they show **Oops... we need to setup
+  your repository.** and direct the person to `/highway-setup`, asking nothing and writing
+  nothing. `tests/catalog-seeding.test.sh` checks it, and the harness scenario
+  `request-setup-needed` runs it in an empty project with the new `shows` key.
+- The two shared rules live in `framework/shared-rules/`, each naming the skills that hold it, and
+  `tests/shared-rules.test.sh` checks each copy as a whole line.
+- `framework/lib/paths.sh` declares `HW_SETUP` and `HW_SHARED_RULES`, `hw_template` resolves the
+  skeletons and governance assets, and `hw_seeded` lists the 12 seeded pairs. `HW_KNOWLEDGE` and
+  `.highway/library/knowledge/` are gone.
+- The template check reads a skeleton's parts directly, and every stage fixture holds all 12
+  seeded files.
+- Each changed skill took a MINOR version. The Highway Skills Constitution is 10.3.0: P9.1 accepts
+  a template in the skill's own `assets/` and an Outputs section naming only seeded files. The
+  development constitution stays 3.3.0.
 
 # Phase 9: Record Templates in Their Skills
 

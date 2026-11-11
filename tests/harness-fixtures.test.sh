@@ -12,7 +12,6 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/paths.sh"
 FIXTURES="$HW_HARNESS/fixtures"
 MAP="$FIXTURES/templates.map"
-TEMPLATES="$HW_OUTPUT_TEMPLATES"
 fail=0
 TAB="$(printf '\t')"
 
@@ -23,7 +22,7 @@ fi
 
 while IFS="$TAB" read -r glob template; do
 	case "$glob" in '' | '#'*) continue ;; esac
-	if [[ -z "$template" || ! -f "$TEMPLATES/$template" ]]; then
+	if [[ -z "$template" ]] || ! path="$(hw_template "${template%.md}" 2>/dev/null)" || [[ ! -f "$path" ]]; then
 		echo "FAIL: templates.map maps $glob to '$template', which is not an output template"
 		fail=1
 	fi

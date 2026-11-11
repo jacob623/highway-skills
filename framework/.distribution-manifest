@@ -92,16 +92,12 @@ exclude	.highway	-
 include	.highway/library	-
 include	.highway/library/templates/output/objective-record.md	-
 include	.highway/library/templates/output/request-record.md	-
-include	.highway/library/templates/output/request-catalog.md	-
 include	.highway/library/templates/output/adr-record.md	-
-include	.highway/library/templates/output/adr-catalog.md	-
 include	.highway/library/templates/output/architecture-record.md	-
-include	.highway/library/templates/output/architecture-catalog.md	-
 include	.highway/library/templates/output/profile-record.md	-
-include	.highway/library/templates/output/assessment-findings.md	-
 include	.highway/catalog	-
 
-# --- Organization library: Highway seeds none, so no organization file ships ---
+# --- Organization library: highway-setup seeds it in a project at run time, so no organization file ships ---
 exclude	library	-
 
 # --- The framework does not ship. Its README is the distribution's front page, which cannot

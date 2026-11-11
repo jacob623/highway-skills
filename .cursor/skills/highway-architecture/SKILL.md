@@ -4,7 +4,7 @@ description: "Manages one reference architecture from one accepted adr."
 usage: "Invoke as /highway-architecture with one adr id."
 compatibility: all
 metadata:
-  version: 5.2.0
+  version: 5.3.0
 ---
 
 # highway-architecture
@@ -38,15 +38,13 @@ Do not report Status, Summary, Next Action, Blocking Reason, Missing, Complete, 
 - Accepted Profile, Objectives, Controls, and NFRs when present.
 - `architectures/architectures.md` and `architectures/RA*.md` when present.
 - `.highway/library/templates/output/architecture-record.md`.
-- `.highway/library/templates/output/architecture-catalog.md`.
-- `.highway/library/templates/output/capability-catalog.md`.
 - `highway-implementation`.
 - The highway-experience skill, activated first.
 - A project root containing `.highway/`.
 
 ## Outputs
 
-The complete structure is `.highway/library/templates/output/architecture-record.md` and `.highway/library/templates/output/architecture-catalog.md`.
+The complete structure is `.highway/library/templates/output/architecture-record.md`. `architectures/architectures.md` keeps the structure highway-setup seeded.
 
 - One architecture record at `architectures/[ID].md` after the person accepts the proposed architecture.
 - An updated `architectures/architectures.md` written with that record.
@@ -57,6 +55,13 @@ The complete structure is `.highway/library/templates/output/architecture-record
 ## Procedure
 
 Activate the highway-experience skill before any output the person sees, and follow it for Highway's identity, the Experience Standard, and the storage contract.
+
+Before the first question, confirm these seeded files exist: `architectures/architectures.md`.
+When any is absent, emit the message below exactly, stop, and write nothing.
+
+**Oops... we need to setup your repository.**
+
+Highway needs to gather your organizational preferences and set up your repository. Run /highway-setup to get started.
 
 Emit only the active template. Follow this order: `choose` when no ADR id is supplied; otherwise `start`, then `identifier`, `title` when needed, `write`, `name`, and `close`. The ADR remains the decision. Inherit its decision, rationale, alternatives, consequences, and constraints without changing their meaning. Describe the architecture in conceptual terms. A platform, product, vendor, or specific technology stays in the inherited decision and is not part of the architecture. A missing Profile, Objective, Control, or NFR continues without invented evidence. A malformed one of those baselines stops the skill and writes nothing.
 
@@ -223,13 +228,23 @@ The record follows `.highway/library/templates/output/architecture-record.md`.
 - Variation states what every implementation must keep and what an implementation may choose, or `None` when nothing may vary. A variation names no product, platform, or vendor.
 - Responsibilities are what a realization covers or marks not applicable.
 - Each Objective relationship is the Objective id and `advances`. Each Control relationship is the Control id and `bound by`. Each NFR relationship is the NFR id and `satisfies`. A section with no relationship is `None`.
-- Required Capabilities name the component that offers each one. Each capability title follows the Title rule in `.highway/library/templates/output/capability-catalog.md`. Do not assign capability ids. The section is `None` when no capability applies.
+- Required Capabilities name the component that offers each one. Each capability title follows the capability title rule. Do not assign capability ids. The section is `None` when no capability applies.
 - Traceability names the Request, Discovery, the current decisions, and this architecture.
 - Reference Implementation Guidance does not authorize implementation.
 - Empty optional evidence is `None`.
 - Emit no timestamp, random value, or environment value.
 
-The catalog follows `.highway/library/templates/output/architecture-catalog.md`.
+Capability title rule: a capability title is one noun phrase of five words or fewer. A hyphenated word counts as one word. Modifiers can precede the noun. A title does not contain `and`, `or`, `&`, `/`, `+`, or a comma. A title that joins two things is two capabilities, one per part. Each part keeps its own words and repeats a shared noun when there is one.
+
+Edit `architectures/architectures.md` in its existing structure.
+
+The catalog owns the baseline version and the architecture index. It has no `Next ID` field. The index columns are Architecture ID, ADR ID, Architecture Title, Architecture Path, and Status.
+
+Each Architecture ID appears once. Rows are ordered by Architecture ID. The Architecture ID is `RA` plus the eight hex digits derived from the title. Status is `accepted` or `removed`.
+
+ADR ID cell rule: the architecture catalog ADR ID cell lists every current decision that names the architecture, in id order, separated by a comma and a space. One id is used when only one current decision names it. A superseded or removed decision is not in that cell. An ADR id appears on at most one row. A decision whose ADR catalog Architecture ID cell lists several architectures is the exception: it appears on the row of each architecture it names.
+
+`accepted` has a record at `architectures/<id>.md`. `removed` has no record file. A removed row stays in the index, keeps the title that last held that id, and leaves the id taken.
 
 - The index columns are Architecture ID, ADR ID, Architecture Title, Architecture Path, and Status.
 - Architecture ID is the `RA` id. The ADR ID cell lists every current decision id in id order, separated by a comma and a space. At creation that cell is this ADR id. Architecture Path is `architectures/<RA id>.md`. Status is `accepted`.
@@ -276,7 +291,7 @@ Run `/highway-implementation [RA id]` to create the Reference Implementation.
 - Variation, Responsibilities, Information, and each component's responsibility and interface are in the record.
 - Current Decisions lists every current decision that names this architecture, and the catalog ADR ID cell lists those same ids. A decision statement is not copied.
 - Relationship lines use `advances`, `bound by`, and `satisfies`, or `None`.
-- Required capabilities name their component, follow the capability catalog Title rule, and have no capability ids.
+- Required capabilities name their component, follow the capability title rule, and have no capability ids.
 - Implementation is not authorized.
 - Each id is `RA` plus eight hex digits derived from the title.
 - The catalog index columns are Architecture ID, ADR ID, Architecture Title, Architecture Path, and Status.

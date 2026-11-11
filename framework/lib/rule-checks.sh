@@ -329,8 +329,10 @@ rc_check_P8_7() {
 }
 
 # --- P9.1: file-emitting skills cite a complete shared output template ---------------------
-# A skill with no declared file path is not subject to this rule. The semantic comparison of a
-# cited template with a produced artifact remains an agent-checkable X/D review.
+# A skill with no declared file path is not subject to this rule. A cited file under the skill's own
+# assets/ counts as a template, and Outputs naming only files highway-setup seeds needs none: the
+# seeded skeleton is the shape. The semantic comparison of a cited template with a produced artifact
+# remains an agent-checkable X/D review.
 rc_check_P9_1() {
 	local file="$1" outputs outputs_without_links
 	outputs="$(awk '
@@ -344,11 +346,33 @@ rc_check_P9_1() {
 		return 2
 	fi
 
-	if ! printf '%s\n' "$outputs_without_links" | grep -Eq '\.highway/library/templates/output/[^[:space:]`]+\.md'; then
-		echo "Outputs section emits a file but cites no complete template under .highway/library/templates/output/"
-		return 1
+	if printf '%s\n' "$outputs_without_links" | grep -Eq '\.highway/library/templates/output/[^[:space:]`]+\.md'; then
+		return 0
 	fi
-	return 0
+
+	local cited dir
+	dir="$(dirname "$file")"
+	while IFS= read -r cited; do
+		[[ -n "$cited" && -f "$dir/$cited" ]] && return 0
+	done <<EOF
+$(printf '%s\n' "$outputs_without_links" | grep -oE '(^|[^A-Za-z0-9_./-])assets/[^[:space:]`]+\.md' | sed -E 's/^[^a]*//')
+EOF
+
+	local named seeded only_seeded=1
+	seeded="$(hw_seeded | cut -f2)"
+	while IFS= read -r named; do
+		[[ -n "$named" ]] || continue
+		if ! printf '%s\n' "$seeded" | grep -Fqx -- "$named"; then
+			only_seeded=0
+			break
+		fi
+	done <<EOF
+$(printf '%s\n' "$outputs_without_links" | grep -oE '[A-Za-z0-9_./<>-]+\.md')
+EOF
+	((only_seeded)) && return 0
+
+	echo "Outputs section emits a file but cites no complete template under .highway/library/templates/output/ or the skill's assets/, and names a file highway-setup does not seed"
+	return 1
 }
 
 # Resolves the constitution the way validate-skill.sh does, so a token list is read from the same

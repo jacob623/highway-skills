@@ -41,6 +41,13 @@ test("rejects a say with no key, an unknown key, and a bad chain", () => {
   assert.throws(() => parseScenario(EXAMPLE + "ask: dangling\n", "x"), /no "say"/);
 });
 
+test("shows is repeatable and needs text", () => {
+  const s = parseScenario(EXAMPLE + "shows: **Oops... we need to setup your repository.**\nshows: Run /highway-setup to get started.\n", "x");
+  assert.deepEqual(s.shows, ["**Oops... we need to setup your repository.**", "Run /highway-setup to get started."]);
+  assert.deepEqual(parseScenario(EXAMPLE, "x").shows, []);
+  assert.throws(() => parseScenario(EXAMPLE + "shows:\n", "x"), /"shows" needs/);
+});
+
 test("globs: * stays in a folder, ** crosses folders", () => {
   assert.ok(globToRegExp("code/*/plan.md").test("code/a/plan.md"));
   assert.ok(!globToRegExp("code/*/plan.md").test("code/a/b/plan.md"));

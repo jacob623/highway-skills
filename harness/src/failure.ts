@@ -30,7 +30,7 @@ const LIKELY_CAUSE: Record<FailureKind, string> = {
   "experience-order": "The agent showed output before activating highway-experience. Check that the skill's Procedure opens with the activation step.",
   "turn-limit": "The agent kept going past the turn limit.",
   timeout: "The attempt ran past its time limit; the agent stalled or the model was slow.",
-  assertion: "A written file is missing a required part. If it is a template heading, the template changed after the fixture was promoted, or the skill skipped its template.",
+  assertion: "A written file is missing a required part. If it is a template heading, the template changed after the fixture was promoted, or the skill skipped its template. For a shows check, the agent did not show the expected text.",
   "fixture-blocked": "The scenario's fixture no longer matches its template. Promote a fresh chain run or fix the fixture.",
   "missing-token": "No Copilot token was found. Set GITHUB_TOKEN in harness/.env.",
   "no-access": "The token has no Copilot access. Check the account's Copilot plan.",

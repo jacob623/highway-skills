@@ -14,7 +14,7 @@ IMPL="$SKILLS/highway-implementation/SKILL.md"
 ONBOARD="$SKILLS/highway-onboarding/SKILL.md"
 CODIFY="$SKILLS/highway-codify/SKILL.md"
 CONFIG="$SKILLS/highway-codify-config/SKILL.md"
-PLATFORMS="$OUTPUT/codify-platforms.md"
+PLATFORMS="$(hw_template codify-platforms)"
 RECORD="$OUTPUT/implementation-record.md"
 fail=0
 

@@ -11,6 +11,10 @@
 # Skipped: headings and rows holding a `<placeholder>`, and a heading the template's prose says may be
 # omitted (a sentence naming the heading with "only when", "omit", "omitted", or "optional").
 #
+# A template with no `## File Frontmatter`, `## Body`, or `## Catalog Structure` section is a skeleton:
+# a project file as seeded. Its required parts are the keys of its leading frontmatter, each `## `
+# heading, and each table header row.
+#
 # Prints `missing <field|heading|row>: <text>` for each absent part. Exit 0 when nothing is missing,
 # 1 when something is, 2 on a usage error. Bash 3.2 and the Declared Toolchain only. This is the
 # single implementation; harness-fixtures.test.sh and the runner's `template` assertion call it.
@@ -41,6 +45,25 @@ if [ ! -f "$target" ]; then
 fi
 
 # `<kind>\t<text>` for each required part of the template.
+if ! grep -Eq '^## (File Frontmatter|Body|Catalog Structure)[[:space:]]*$' "$template"; then
+	required="$(awk '
+		function trim(s) { sub(/^[ \t]+/, "", s); sub(/[ \t]+$/, "", s); return s }
+		{ sub(/\r$/, "") }
+		NR == 1 && $0 == "---" { in_fm = 1; next }
+		in_fm {
+			if ($0 == "---") { in_fm = 0; next }
+			if (match($0, /^[A-Za-z_][A-Za-z0-9_-]*:/)) print "field\t" substr($0, 1, RLENGTH - 1)
+			next
+		}
+		/^## / { print "heading\t" trim($0) }
+		/^\|[ \t:|-]+\|[ \t]*$/ && /-/ && prev ~ /^\|/ {
+			row = trim(prev)
+			gsub(/[ \t]*\|[ \t]*/, "|", row)
+			print "row\t" row
+		}
+		{ prev = $0 }
+	' "$template")"
+else
 required="$(awk '
 	function norm_row(s) {
 		gsub(/[ \t]*\|[ \t]*/, "|", s)
@@ -92,6 +115,7 @@ required="$(awk '
 		}
 	}
 ' "$template")"
+fi
 
 missing=0
 TAB="$(printf '\t')"

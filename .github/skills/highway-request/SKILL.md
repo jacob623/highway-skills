@@ -4,7 +4,7 @@ description: "Manages one business request and its accepted artifact."
 usage: "Invoke as /highway-request with the business change."
 compatibility: all
 metadata:
-  version: 5.1.0
+  version: 5.2.0
 ---
 
 # highway-request
@@ -32,13 +32,12 @@ Do not show Current Domain, Completed Domains, or Remaining Domains.
 - Accepted Profile, Objectives, Controls, and NFRs when present.
 - `requests/requests.md` and `requests/REQ*.md` when present.
 - `.highway/library/templates/output/request-record.md`.
-- `.highway/library/templates/output/request-catalog.md`.
 - The highway-experience skill, activated first.
 - A project root containing `.highway/`.
 
 ## Outputs
 
-The complete structure is `.highway/library/templates/output/request-record.md` and `.highway/library/templates/output/request-catalog.md`.
+The complete structure is `.highway/library/templates/output/request-record.md`. `requests/requests.md` keeps the structure highway-setup seeded.
 
 - One request record at `requests/[ID].md` after the complete proposal is accepted.
 - An updated `requests/requests.md` written with that record.
@@ -48,6 +47,13 @@ The complete structure is `.highway/library/templates/output/request-record.md` 
 ## Procedure
 
 Activate the highway-experience skill before any output the person sees, and follow it for Highway's identity, the Experience Standard, and the storage contract.
+
+Before the first question, confirm these seeded files exist: `requests/requests.md`.
+When any is absent, emit the message below exactly, stop, and write nothing.
+
+**Oops... we need to setup your repository.**
+
+Highway needs to gather your organizational preferences and set up your repository. Run /highway-setup to get started.
 
 Emit only the active template. Follow this order: `intake` when the invocation has no description; otherwise `start`, then `identifier`, `title` when needed, `write`, and `close`. Follow the Highway Experience Standard for attribution and acceptance wording. Use accepted Profile, Objectives, Controls, and NFRs as grounding. Do not ask for facts those records already answer. Do not treat an example as the person's evidence.
 
@@ -211,7 +217,13 @@ The record follows `.highway/library/templates/output/request-record.md`.
 - `## Completeness` is `Complete`.
 - Do not write relationship sections.
 
-The catalog follows `.highway/library/templates/output/request-catalog.md`.
+Edit `requests/requests.md` in its existing structure.
+
+The catalog owns the baseline version and the request index. It has no `Next ID` field.
+
+Each ID appears once. Rows are ordered by ID. The id is `REQ` plus the eight hex digits derived from the title. Status is `accepted` or `removed`.
+
+`accepted` has a record at `requests/<id>.md`. `removed` has no record file. A removed row stays in the index, keeps the title that last held that id, and leaves the id taken.
 
 - Add one index row for this request.
 - Order the index by identifier.
@@ -274,7 +286,7 @@ Do not continue into codify in the same message. Do not rewrite the request.
 
 - An empty invocation stays on `intake` and writes nothing.
 - A missing `.highway/` root stops the skill and writes nothing.
-- A missing record or catalog template stops the skill, names the template path, and writes nothing.
+- A missing record template stops the skill, names the template path, and writes nothing.
 - A failed write leaves existing request and catalog bytes unchanged.
 - A secret or regulated personal value is replaced up to three times, then the skill stops and writes nothing.
 - An invalid Solution Constraints field is replaced up to three times. Further failure leaves existing bytes unchanged.

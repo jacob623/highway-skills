@@ -4,7 +4,7 @@ description: "Manages one functional artifact for one accepted implementation."
 usage: "Invoke as /highway-codify with one implementation name."
 compatibility: all
 metadata:
-  version: 14.2.0
+  version: 14.3.0
 ---
 
 # highway-codify
@@ -34,7 +34,7 @@ Do not report Status, Summary, Next Action, Blocking Reason, Missing, Complete, 
 - An implementation title, a description, or an implementation id, and one optional action, when the person supplies them.
 - `implementations/implementations.md` and the accepted implementation records.
 - `architectures/architectures.md` and the accepted architecture records.
-- `code/code.md` and `code/integrations.md` when present.
+- `code/code.md` and `code/integrations.md`.
 - The product's `code/<folder>/.highway/metadata.md` when a proposal joins an existing product.
 - The open feature's `plan.md` and `codify-tasks.md` under `code/<folder>/.highway/features/` when present.
 - `library/coding-standards/coding-standards.md` and the standards it names, when present.
@@ -42,17 +42,15 @@ Do not report Status, Summary, Next Action, Blocking Reason, Missing, Complete, 
 - `library/coding-standards/codify-platforms.md` when present.
 - The vendor's current public documentation for each product, API, plugin, module, or library a draft proposal names.
 - `.highway/library/templates/output/codify-record.md`.
-- `.highway/library/templates/output/codify-catalog.md`.
 - `.highway/library/templates/output/codify-plan.md`.
 - `.highway/library/templates/output/codify-tasks.md`.
 - `.highway/library/templates/output/codify-metadata.md`.
-- `.highway/library/templates/output/codify-integrations.md`.
 - The highway-experience skill, activated first.
 - A project root containing `.highway/`.
 
 ## Outputs
 
-The complete structure is `.highway/library/templates/output/codify-record.md`, `.highway/library/templates/output/codify-catalog.md`, `.highway/library/templates/output/codify-plan.md`, `.highway/library/templates/output/codify-tasks.md`, `.highway/library/templates/output/codify-metadata.md`, and `.highway/library/templates/output/codify-integrations.md`.
+The complete structure is `.highway/library/templates/output/codify-record.md`, `.highway/library/templates/output/codify-plan.md`, `.highway/library/templates/output/codify-tasks.md`, and `.highway/library/templates/output/codify-metadata.md`. `code/code.md` and `code/integrations.md` keep the structure highway-setup seeded.
 
 - One product folder `code/<folder>/`, with `.highway/metadata.md` written when the product is new. Each accepted feature adds one row to its Features table.
 - One saved proposal at `code/<folder>/.highway/features/<number>-<action>/codify.md` after the person accepts the proposal.
@@ -68,6 +66,13 @@ The complete structure is `.highway/library/templates/output/codify-record.md`, 
 ## Procedure
 
 Activate the highway-experience skill before any output the person sees, and follow it for Highway's identity, the Experience Standard, and the storage contract.
+
+Before the first question, confirm these seeded files exist: `code/code.md`, `code/integrations.md`.
+When any is absent, emit the message below exactly, stop, and write nothing.
+
+**Oops... we need to setup your repository.**
+
+Highway needs to gather your organizational preferences and set up your repository. Run /highway-setup to get started.
 
 Emit only the active template. `catalog` runs alone. Otherwise follow this order: `choose` when no implementation is named; `record check`; `code project` for a code project, or `rank`, with `codified`, when no action is named; then `suggest`, `draft`, `code tasks` for a code project, `provider`, `standards`, `align`, `govern`, `resume`, `join`, `folder`, `layout`, `propose`, `revise`, `identifier`, `title` when needed, `write`, `index`, `plan`, `check`, `menu`, `review` when chosen, `tasks`, `code`, and `close`. Follow the Highway Experience Standard for attribution and acceptance wording. A current implementation is an accepted row in `implementations/implementations.md`. A removed row does not match and does not block a new automation.
 
@@ -192,7 +197,7 @@ This check does not refuse a named action or the person's own idea. Return to th
 
 ### code project
 
-The product is a code project when the selected implementation's Language names a coding standard. That standard is the Language standard. Read `code/code.md` when present. Write nothing.
+The product is a code project when the selected implementation's Language names a coding standard. That standard is the Language standard. Read `code/code.md`. Write nothing.
 
 1. An Establish feature is recorded when an accepted row lists this implementation and a Features entry's `<action>` starts with `establish`.
 2. With none recorded, the only suggestion is `Establish [implementation title]`, even when an instance is running. Its summary is: Starts the [Language standard] code for [implementation title]. When another action is selected or named, say Establish comes first. Go to `suggest`.
@@ -519,16 +524,38 @@ Do not write `codify-tasks.md` here. Go to `index`.
 
 ### index
 
-Write these rows with the files in `write`. The catalog follows `.highway/library/templates/output/codify-catalog.md` at `code/code.md`. The first catalog version is `1.0.0`. Each change increments the minor version.
+Write these rows with the files in `write`. Edit `code/code.md` in its existing structure, under `index rules`. The first catalog version is `1.0.0`. Each change increments the minor version.
 
 1. For a new product, write one row. Append the new row as the last row. ID is the `CDY` id. Folder is `code/<folder>`. Title and Summary come from `folder`. Status is `accepted`.
 2. For a joined product, update its row in place. Add each implementation the proposal lists that Implementations lacks.
 3. In Features, add `<number>-<action> | one sentence` when this feature starts the product, adds an implementation, records an integration, changes the summary, or is open. A feature is open while it has no task list or its task list has an open task. When a finished feature did none of those, remove its entry and keep its directory.
-4. When the accepted proposal includes an integration, write it to `code/integrations.md` from `.highway/library/templates/output/codify-integrations.md`. When an accepted row already has that From, To, and Kind, write no second row. Ask nothing more.
+4. When the accepted proposal includes an integration, edit `code/integrations.md` in its existing structure, under `index rules`, to add it. When an accepted row already has that From, To, and Kind, write no second row. Ask nothing more.
 
 A row whose status changes keeps its position. Do not allocate from `Next ID`. More than one row may name the same Implementation ID. A removed row keeps its id and has no folder. Emit no timestamp, random value, or environment value. Do not change the implementation, its architecture, its decision, the request, the assessment finding, Controls, or NFRs.
 
 On success, go to `plan` without asking a question.
+
+### index rules
+
+The catalog is `code/code.md`. It owns the baseline version and the product index. It has no `Next ID` field. The index columns are ID, Folder, Title, Summary, Implementations, Features, and Status.
+
+Each ID appears once, and each row is one product. Rows are in acceptance order. A new row is appended as the last row. A new feature updates its product's row and adds no row. A row whose status changes keeps its position. The ID is `CDY` plus the eight hex digits derived from the product title. It is not the folder name. Status is `accepted` or `removed`.
+
+Folder is `code/` plus the product title in lowercase words separated by hyphens, or the folder the person named. Each Folder appears once, including removed rows.
+
+Summary is one sentence that says who the product is for and what it returns. Implementations lists the accepted implementation ids the product serves, separated by `; `. More than one row may name the same Implementation ID.
+
+Features lists entries separated by `; `, in acceptance order. Each entry is `<number>-<action> | one sentence`. An entry is kept only when that feature starts the product, adds an implementation, records an integration, changes the summary, or is open. A finished feature that did none of those leaves the cell. Its directory remains.
+
+`accepted` has a folder at its Folder path. `removed` has no folder. A removed row keeps its id and has no folder. A removed row stays in the index, keeps its Folder and recorded feature titles taken, and is not joined.
+
+The integrations catalog is `code/integrations.md`. A row is written when the person accepts a proposal that includes that integration. No second acceptance is asked.
+
+From and To are accepted implementation ids. Kind `composition` means the two implementations form one product, such as a frontend and its backend. Kind `capability` means From uses To as a feature of the product that serves From.
+
+The same From, To, and Kind appears once. A proposal for a pair already accepted writes no second row. Rows are in acceptance order. A row whose status changes keeps its position. Status is `accepted` or `removed`.
+
+A row records the connection only. It does not mean any feature is built.
 
 ### plan
 

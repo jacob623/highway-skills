@@ -12,11 +12,11 @@ SKILLS="$HW_SKILLS"
 OUTPUT="$HW_OUTPUT_TEMPLATES"
 CODIFY="$SKILLS/highway-codify/SKILL.md"
 ADR="$SKILLS/highway-adr/SKILL.md"
-CATALOG="$OUTPUT/codify-catalog.md"
+CATALOG="$(hw_template codify-catalog)"
 RECORD="$OUTPUT/codify-record.md"
 TASKS="$OUTPUT/codify-tasks.md"
 METADATA="$OUTPUT/codify-metadata.md"
-INTEGRATIONS="$OUTPUT/codify-integrations.md"
+INTEGRATIONS="$(hw_template codify-integrations)"
 fail=0
 
 require() {
@@ -112,8 +112,9 @@ require "$ADR" "a recorded feature's action is this decision's title"
 reject "$ADR" 'code/[ID]/codify.md'
 
 require "$CATALOG" '| ID | Folder | Title | Summary | Implementations | Features | Status |'
-require "$CATALOG" 'starts the product, adds an implementation, records an integration, changes the summary, or is open'
+require "$CODIFY" 'starts the product, adds an implementation, records an integration, changes the summary, or is open'
 reject "$CATALOG" 'Automation Path'
+reject "$CODIFY" 'Automation Path'
 require "$RECORD" '**Proposed project:**'
 require "$RECORD" '**Rationale:**'
 require "$RECORD" '.highway/features/'
@@ -121,7 +122,7 @@ require "$TASKS" 'product: CDYXXXXXX'
 require "$TASKS" 'relative to the product folder'
 require "$METADATA" '.highway/metadata.md'
 require "$INTEGRATIONS" '| From | To | Kind | Summary | Status |'
-require "$INTEGRATIONS" 'code/integrations.md'
+require "$CODIFY" 'The integrations catalog is `code/integrations.md`.'
 
 over=$(awk '/^### /{if(n && c>400)print n": "c; n=$0; c=0; next} /^## /{if(n && c>400)print n": "c; n=""; next} n{c+=NF} END{if(n && c>400)print n": "c}' "$CODIFY")
 if [[ -n "$over" ]]; then

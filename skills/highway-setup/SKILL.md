@@ -4,14 +4,14 @@ description: "Orchestrates initial highway setup through the owning governance s
 usage: "Invoke as /highway-setup."
 compatibility: all
 metadata:
-  version: 10.1.0
+  version: 10.2.0
 ---
 
 # highway-setup
 
 ## Purpose
 
-Orchestrates Profile, Objectives, Controls, and NFRs in order when the person runs setup.
+Seeds the project's catalogs, then orchestrates Profile, Objectives, Controls, and NFRs in order when the person runs setup.
 
 ## When to use
 
@@ -21,7 +21,7 @@ Orchestrates Profile, Objectives, Controls, and NFRs in order when the person ru
 ## When not to use
 
 Do not collect Profile, Objective, Control, or NFR evidence.
-Do not write those records or catalogs.
+Do not write Profile, Objective, Control, or NFR records or catalogs.
 Do not report Status, Summary, Next Action, Blocking Reason, Missing, Complete, or Blocked.
 Do not show `Finished` to the person.
 
@@ -33,6 +33,7 @@ Do not show `Finished` to the person.
 - `highway-controls`.
 - `highway-nfrs`.
 - `library/knowledge/profile.md` when present.
+- The seeded files' skeletons in `assets/`, one per row of the Seed table.
 - The highway-experience skill, activated first.
 - The person's request to run setup.
 
@@ -41,7 +42,7 @@ Do not show `Finished` to the person.
 - The welcome, once, when Profile has not been written.
 - One domain transition before Objectives, Controls, and NFRs.
 - The closing conclusion, once, after NFRs returns `Finished`.
-- No repository file written by Setup.
+- Each seeded file that was absent, written from its asset, such as `requests/requests.md` from `assets/request-catalog.md`.
 
 ## Procedure
 
@@ -49,9 +50,30 @@ Activate the highway-experience skill before any output the person sees, and fol
 
 User-visible interaction follows the Highway Experience Standard.
 
-Delegate each owner in this order: Profile, Objectives, Controls, NFRs. Stay with the current owner until it returns `Finished`. Render that owner's messages as written. Do not answer its question, restate its recommendations, or add a second question.
+Seed first. Then delegate each owner in this order: Profile, Objectives, Controls, NFRs. Stay with the current owner until it returns `Finished`. Render that owner's messages as written. Do not answer its question, restate its recommendations, or add a second question.
 
 `Finished` is the only result that advances. Do not show that word. An owner that stops without `Finished` ends Setup. Do not delegate a later owner, and do not emit the conclusion.
+
+### Seed
+
+Seed in every setup run, after the storage contract's mode check and before the welcome.
+
+For each row below, when the project file is absent, write it from the asset unchanged. Write every absent file as one group. Do not change a file that exists. Emit nothing for this step.
+
+| Asset | Project file |
+|---|---|
+| `assets/request-catalog.md` | `requests/requests.md` |
+| `assets/discovery-catalog.md` | `discoveries/discoveries.md` |
+| `assets/adr-catalog.md` | `adrs/adrs.md` |
+| `assets/architecture-catalog.md` | `architectures/architectures.md` |
+| `assets/implementation-catalog.md` | `implementations/implementations.md` |
+| `assets/capability-catalog.md` | `implementations/capabilities.md` |
+| `assets/codify-catalog.md` | `code/code.md` |
+| `assets/codify-integrations.md` | `code/integrations.md` |
+| `assets/codify-platforms.md` | `library/coding-standards/codify-platforms.md` |
+| `assets/coding-standards-catalog.md` | `library/coding-standards/coding-standards.md` |
+| `assets/assessment-findings.md` | `library/knowledge/assessment-findings.md` |
+| `assets/storage.md` | `library/knowledge/storage.md` |
 
 ### Welcome
 
@@ -132,10 +154,14 @@ Run /highway-help to explore what Highway can help you do.
 
 ## Resume
 
-Every `/highway-setup` run starts at Profile. Setup stores no checkpoint. When `profile.md` already exists, skip the welcome and still delegate Profile, then Objectives, Controls, and NFRs. Each owner reviews what it already holds before returning `Finished`.
+Every `/highway-setup` run starts at Seed, then Profile. Setup stores no checkpoint. Seeding writes only absent files, so a later run keeps every catalog as it is. When `profile.md` already exists, skip the welcome and still delegate Profile, then Objectives, Controls, and NFRs. Each owner reviews what it already holds before returning `Finished`.
 
 ## Verification
 
+- Seeding runs before the welcome in every run.
+- Seeding writes only absent seeded files, each from its asset.
+- Seeding changes no existing file.
+- Seeding emits nothing.
 - Owner order is Profile, Objectives, Controls, NFRs.
 - The welcome is emitted once, and only when `profile.md` is absent.
 - Profile is always delegated.
@@ -147,10 +173,11 @@ Every `/highway-setup` run starts at Profile. Setup stores no checkpoint. When `
 - An owner that stops without `Finished` ends Setup before the next owner.
 - The conclusion is emitted once, after NFRs returns `Finished`.
 - The conclusion directs the person to `/highway-onboarding` before `/highway-help`.
-- Setup writes no repository file.
+- Setup writes no file other than the seeded files.
 
 ## Error Handling
 
+- A seeded file that cannot be written stops Setup before the welcome. Say which file could not be written and what the person can do next.
 - An owner that stops without `Finished` ends Setup. The owner's message is the person's explanation. Do not delegate a later owner and do not emit the conclusion.
 - An unexpected orchestration failure stops Setup without claiming completion and says what the person can do next.
 

@@ -38,7 +38,6 @@ reject_line() {
 
 CODIFY="$SKILLS/highway-codify/SKILL.md"
 RECORD="$OUTPUT/codify-record.md"
-CATALOG="$OUTPUT/codify-catalog.md"
 
 for text in \
 	'Head the first part `## Setup Instructions` and the second part `## User Guide`.' \
@@ -76,9 +75,9 @@ require "$RECORD" 'User Guide follows the interface of the Provider.'
 reject_line "$RECORD" '## Implement'
 reject_line "$RECORD" '## Use'
 
-require "$CATALOG" 'Rows are in acceptance order.'
-require "$CATALOG" 'A new row is appended as the last row.'
-reject "$CATALOG" 'Rows are ordered by Automation ID.'
+require "$CODIFY" 'Rows are in acceptance order.'
+require "$CODIFY" 'A new row is appended as the last row.'
+reject "$CODIFY" 'Rows are ordered by Automation ID.'
 
 if [[ "$fail" -ne 0 ]]; then
 	exit 1

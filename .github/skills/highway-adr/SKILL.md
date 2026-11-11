@@ -4,7 +4,7 @@ description: "Manages one architecture decision for one discovery."
 usage: "Invoke as /highway-adr with one discovery id."
 compatibility: all
 metadata:
-  version: 6.1.0
+  version: 6.2.0
 ---
 
 # highway-adr
@@ -39,14 +39,13 @@ Do not report Status, Summary, Next Action, Blocking Reason, Missing, Complete, 
 - `architectures/architectures.md`, `implementations/implementations.md`, and the accepted architecture and implementation records they name.
 - `code/code.md` and the accepted `code/<folder>/.highway/features/<number>-<action>/codify.md` records it names, when closing a span.
 - `.highway/library/templates/output/adr-record.md`.
-- `.highway/library/templates/output/adr-catalog.md`.
-- `.highway/library/templates/output/architecture-record.md` and `.highway/library/templates/output/architecture-catalog.md` when this decision reuses or replaces an architecture.
+- `.highway/library/templates/output/architecture-record.md` when this decision reuses or replaces an architecture.
 - The highway-experience skill, activated first.
 - A project root containing `.highway/`.
 
 ## Outputs
 
-The complete structure is `.highway/library/templates/output/adr-record.md` and `.highway/library/templates/output/adr-catalog.md`.
+The complete structure is `.highway/library/templates/output/adr-record.md`. `adrs/adrs.md` and `architectures/architectures.md` keep the structure highway-setup seeded.
 
 - One ADR at `adrs/[ID].md` after the person accepts the proposed decision.
 - An updated `adrs/adrs.md` written with that record.
@@ -57,6 +56,13 @@ The complete structure is `.highway/library/templates/output/adr-record.md` and 
 ## Procedure
 
 Activate the highway-experience skill before any output the person sees, and follow it for Highway's identity, the Experience Standard, and the storage contract.
+
+Before the first question, confirm these seeded files exist: `adrs/adrs.md`, `architectures/architectures.md`.
+When any is absent, emit the message below exactly, stop, and write nothing.
+
+**Oops... we need to setup your repository.**
+
+Highway needs to gather your organizational preferences and set up your repository. Run /highway-setup to get started.
 
 User-visible interaction follows the Highway Experience Standard. Repository ownership stays with the person.
 
@@ -269,7 +275,13 @@ The record follows `.highway/library/templates/output/adr-record.md`.
 
 Status is `superseded` in the record and in the catalog exactly when `superseded_by` names an ADR. Otherwise it is `accepted`. A superseded record keeps its file and its id. Do not treat it as removed.
 
-The catalog follows `.highway/library/templates/output/adr-catalog.md`.
+Edit `adrs/adrs.md` in its existing structure.
+
+The catalog owns the baseline version and the ADR index. It has no `Next ID` field. The index columns are ADR ID, Discovery ID, Request ID, ADR Title, ADR Path, Architecture ID, and Status.
+
+Each ADR ID appears once. Rows are ordered by ADR ID. The ADR ID is `ADR` plus the eight hex digits derived from the title. Discovery ID is the Discovery this decision records. Each Discovery ID appears on at most one row. Architecture ID is the one reference architecture this decision names, or `None` before that architecture exists. A decision that runs beside the current decision of several architectures lists every architecture it names, in id order, separated by a comma and a space. `None` means a new architecture will follow. Status is `accepted`, `superseded`, or `removed`.
+
+`accepted` has a record at `adrs/<id>.md`. `superseded` has a record at `adrs/<id>.md` whose `superseded_by` names the replacing ADR, and its id stays taken. `removed` has no record file. A removed row stays in the index, keeps the title that last held that id, and leaves the id taken.
 
 - Add one index row with the ADR ID, Discovery ID, Request ID, ADR Title, ADR Path, Architecture ID, and Status `accepted`. Architecture ID is the reused RA id, every RA id in a span, or `None` when a new architecture will follow.
 - Order the index by ADR id.
@@ -277,6 +289,10 @@ The catalog follows `.highway/library/templates/output/adr-catalog.md`.
 - The first catalog version is `1.0.0`.
 - Adding an ADR increments the minor version.
 - One Discovery id appears on at most one row.
+
+Edit `architectures/architectures.md` in its existing structure, and change only a row's ADR ID cell.
+
+ADR ID cell rule: the architecture catalog ADR ID cell lists every current decision that names the architecture, in id order, separated by a comma and a space. One id is used when only one current decision names it. A superseded or removed decision is not in that cell. An ADR id appears on at most one row. A decision whose ADR catalog Architecture ID cell lists several architectures is the exception: it appears on the row of each architecture it names.
 
 When this decision replaces a matched decision, set that decision's `superseded_by` to this ADR id and its status to `superseded` in the record and the catalog. Keep its file. Remove it from the architecture's Current Decisions and from that architecture's catalog ADR ID cell. Add this ADR id to that list and that cell, in id order. Do not change the architecture's conceptual body. Do not create an architecture.
 

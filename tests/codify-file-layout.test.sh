@@ -58,7 +58,7 @@ for text in \
 	'A file and folder structure is needed.' \
 	'Paths are relative to the automation folder.' \
 	'The test path must be part of the file and folder structure.' \
-	'When the catalog is absent, create it' \
+	'in its existing structure, changing only this row' \
 	'name the same relative path'; do
 	require "$CONFIG" "$text"
 done

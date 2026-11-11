@@ -38,7 +38,7 @@ source "$SCRIPT_DIR/paths.sh"
 SKILL="$HW_SKILLS/highway-implementation/SKILL.md"
 RECORD_TEMPLATE="$(hw_template implementation-record)"
 CATALOG_TEMPLATE="$(hw_template implementation-catalog)"
-CAPABILITY_CATALOG_TEMPLATE="$(hw_template capability-catalog)"
+CAPABILITY_CATALOG_SKELETON="$(hw_template capability-catalog)"
 fail=0
 
 require_text() {
@@ -58,7 +58,7 @@ for text in \
 	require_text "$SKILL" "$text"
 done
 
-require_text "$SKILL" ".highway/library/templates/output/capability-catalog.md"
+require_text "$SKILL" "Edit \`implementations/capabilities.md\` in its existing structure."
 
 for text in \
 	"## Realized Capabilities" \
@@ -70,11 +70,14 @@ done
 
 for text in \
 	"# Capability Catalog" \
-	"CAP plus eight hex digits" \
 	"## Capability Index" \
-	"| ID | Parent | Title | Realized By |" \
+	"| ID | Parent | Title | Realized By |"; do
+	require_text "$CAPABILITY_CATALOG_SKELETON" "$text"
+done
+for text in \
+	"CAP plus eight hex digits" \
 	'no `Next ID` field'; do
-	require_text "$CAPABILITY_CATALOG_TEMPLATE" "$text"
+	require_text "$SKILL" "$text"
 done
 
 fixture_root="$(mktemp -d "${TMPDIR:-/tmp}/capability-catalog-fixture.XXXXXX")"

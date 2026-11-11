@@ -29,11 +29,9 @@ reject() {
 }
 
 ADR_RECORD="$OUTPUT/adr-record.md"
-ADR_CATALOG="$OUTPUT/adr-catalog.md"
+ADR_CATALOG="$(hw_template adr-catalog)"
 ARCH_RECORD="$OUTPUT/architecture-record.md"
-ARCH_CATALOG="$OUTPUT/architecture-catalog.md"
 IMPL_RECORD="$OUTPUT/implementation-record.md"
-IMPL_CATALOG="$OUTPUT/implementation-catalog.md"
 ADR="$SKILLS/highway-adr/SKILL.md"
 ARCH="$SKILLS/highway-architecture/SKILL.md"
 IMPL="$SKILLS/highway-implementation/SKILL.md"
@@ -49,14 +47,13 @@ if printf '%s\n' "$handoff" | grep -Fq -- 'Reference Implementation:'; then
 fi
 
 require "$ADR_CATALOG" '| Architecture ID |'
-require "$ADR_CATALOG" 'or `None` before that architecture exists.'
+require "$ADR" 'or `None` before that architecture exists.'
 
-require "$ARCH_CATALOG" 'ADR11111111, ADR22222222'
-require "$ARCH_CATALOG" 'in id order, separated by a comma and a space'
-require "$ARCH_CATALOG" 'An ADR id appears on at most one row.'
+require "$ARCH" 'in id order, separated by a comma and a space'
+require "$ARCH" 'An ADR id appears on at most one row.'
 
-require "$IMPL_CATALOG" 'More than one row may name the same Architecture ID.'
-reject "$IMPL_CATALOG" 'Each Architecture ID appears on at most one row.'
+require "$IMPL" 'More than one row may name the same Architecture ID.'
+reject "$IMPL" 'Each Architecture ID appears on at most one row.'
 
 for text in \
 	'id: RAXXXXXX' \

@@ -4,7 +4,7 @@ description: "Manages the repository-wide business objective baseline and its st
 usage: "Invoke as /highway-objectives."
 compatibility: all
 metadata:
-  version: 8.1.0
+  version: 8.2.0
 ---
 
 # highway-objectives
@@ -32,13 +32,13 @@ Do not emit Setup's outcome transition. Setup already emitted it.
 - `library/governance/objectives.md` when present.
 - `library/objectives/OBJ*.md` when present.
 - `.highway/library/templates/output/objective-record.md`.
-- `.highway/library/templates/output/objective-catalog.md`.
+- `assets/objective-catalog.md`.
 - The highway-experience skill, activated first.
 - Delegation from `highway-setup`.
 
 ## Outputs
 
-The complete structure is `.highway/library/templates/output/objective-record.md` and `.highway/library/templates/output/objective-catalog.md`.
+The complete structure is `.highway/library/templates/output/objective-record.md` and `assets/objective-catalog.md`.
 
 - Updated Objective records and catalog after a review edit.
 - New Objective records and catalog after the guided flow writes them.
@@ -326,7 +326,7 @@ For each held Objective, write `library/objectives/[ID].md` in the shape require
 - `## Rationale` is the line shown with **Why it matters:**.
 - Do not show the stored records. Do not add a closing line.
 
-Write `library/governance/objectives.md` in the shape required by `.highway/library/templates/output/objective-catalog.md`.
+Write `library/governance/objectives.md` in the shape required by `assets/objective-catalog.md`.
 
 - Order the index by identifier.
 - Do not allocate from `Next ID`.
@@ -358,7 +358,7 @@ No Objective record is written beneath `.highway`.
 - That message does not mention identifiers, hex, sampling, or the catalog.
 - A successful guided write returns `Finished`, emits nothing else, and does not show the stored records.
 - Written records match `.highway/library/templates/output/objective-record.md`.
-- The written catalog matches `.highway/library/templates/output/objective-catalog.md`.
+- The written catalog matches `assets/objective-catalog.md`.
 - Setup receives `Finished` and the person does not see that word.
 
 ## Error Handling

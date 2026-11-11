@@ -53,15 +53,16 @@ require_text() {
 ARCH="$HW_SKILLS/highway-architecture/SKILL.md"
 ADR="$HW_SKILLS/highway-adr/SKILL.md"
 OBJ="$(hw_template objective-catalog)"
-REQ="$(hw_template request-catalog)"
+REQ="$HW_SKILLS/highway-request/SKILL.md"
+IMPL="$HW_SKILLS/highway-implementation/SKILL.md"
 CAP="$(hw_template capability-catalog)"
 
 require_text "$ARCH" "The id is \`RA\` plus those eight hex digits."
 require_text "$ARCH" "Do not name a platform, product, vendor, or specific technology"
 require_text "$ADR" "One Discovery has one ADR."
 require_text "$OBJ" "active or removed"
-require_text "$REQ" "accepted or removed"
-require_text "$CAP" "CAP plus eight hex digits"
+require_text "$REQ" "Status is \`accepted\` or \`removed\`."
+require_text "$IMPL" "CAP plus eight hex digits"
 if grep -Fq 'Next ID:' "$CAP"; then
 	echo "FAIL: $CAP still allocates Next ID"
 	fail=1

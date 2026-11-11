@@ -4,7 +4,7 @@ import { tmpdir } from "node:os";
 import { join, relative } from "node:path";
 import { helpText, parseArgs, USAGE_POINTER, type Options } from "./args.ts";
 import { chainOf, promote, runChain, type ProjectSourceSpec, type StageRun } from "./chain.ts";
-import { changedPaths, diffSnapshots, experienceInvariant, runExpectation, snapshot, storageInvariant } from "./checks.ts";
+import { changedPaths, diffSnapshots, experienceInvariant, runExpectation, showsFailures, snapshot, storageInvariant } from "./checks.ts";
 import { HARNESS_DIR, loadEnv, readFileConfig, REPO_ROOT, resolveConfig, type Config } from "./config.ts";
 import { coverageSection, readInventory, readTreatments } from "./coverage.ts";
 import { copilotDriver, RunStop, type DriveResult, type Driver, type TranscriptEntry, type Warning } from "./driver.ts";
@@ -211,6 +211,8 @@ async function runAttempt(ctx: Context, scenario: Scenario, attempt: number, att
         const f = runExpectation(projectDir, after.keys(), exp);
         if (f) failures.push({ ...where, kind: "assertion", ...f, line: f.line ?? null });
       }
+      const agentText = transcript.filter((e) => e.role === "agent").map((e) => e.text).join("\n");
+      for (const f of showsFailures(agentText, scenario.shows)) failures.push({ ...where, kind: "assertion", ...f, line: null });
     }
     for (const f of failures) printFailure(ctx, f);
 

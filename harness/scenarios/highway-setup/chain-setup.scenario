@@ -35,6 +35,14 @@ say: [accept] Looks good.
 ask: Where would you like to go next?
 say: [decline] That's all for setup.
 writes: library/**
+writes: requests/requests.md
+writes: discoveries/discoveries.md
+writes: adrs/adrs.md
+writes: architectures/architectures.md
+writes: implementations/implementations.md
+writes: implementations/capabilities.md
+writes: code/code.md
+writes: code/integrations.md
 expect: template library/knowledge/profile.md :: profile-record.md
 expect: template library/governance/objectives.md :: objective-catalog.md
 expect: template library/governance/controls.md :: control-catalog.md

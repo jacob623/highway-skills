@@ -4,7 +4,7 @@ description: "Manages the repository-wide nfr baseline."
 usage: "Invoke as /highway-nfrs."
 compatibility: all
 metadata:
-  version: 9.2.0
+  version: 9.3.0
 ---
 
 # highway-nfrs
@@ -34,13 +34,13 @@ Do not emit Setup's operational-expectation transition. Setup already emitted it
 - `library/governance/nfrs.md` when present.
 - `library/governance/nfrs/NFR*.md` when present.
 - `.highway/library/templates/output/nfr-record.md`.
-- `.highway/library/templates/output/nfr-catalog.md`.
+- `assets/nfr-catalog.md`.
 - The highway-experience skill, activated first.
 - Delegation from `highway-setup`.
 
 ## Outputs
 
-The complete structure is `.highway/library/templates/output/nfr-record.md` and `.highway/library/templates/output/nfr-catalog.md`.
+The complete structure is `.highway/library/templates/output/nfr-record.md` and `assets/nfr-catalog.md`.
 
 - Updated NFR records and catalog after a review edit.
 - New NFR records and catalog after the guided flow writes them.
@@ -349,7 +349,7 @@ For each held NFR, write `library/governance/nfrs/[ID].md` in the shape required
 - The rationale is the line shown with **Why it matters:**.
 - Do not show the stored records. Do not add a closing line.
 
-Write `library/governance/nfrs.md` in the shape required by `.highway/library/templates/output/nfr-catalog.md`.
+Write `library/governance/nfrs.md` in the shape required by `assets/nfr-catalog.md`.
 
 - Order the index by identifier.
 - Do not allocate from `Next ID`.
@@ -386,7 +386,7 @@ No NFR record is written beneath `.highway`.
 - That message does not mention identifiers, hex, sampling, or the catalog.
 - A successful guided write returns `Finished`, emits nothing else, and does not show the stored records.
 - Written records match `.highway/library/templates/output/nfr-record.md`.
-- The written catalog matches `.highway/library/templates/output/nfr-catalog.md`.
+- The written catalog matches `assets/nfr-catalog.md`.
 - Setup receives `Finished` and the person does not see that word.
 
 ## Error Handling

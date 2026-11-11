@@ -10,7 +10,7 @@ import type { Scenario } from "../src/scenario.ts";
 const STAGE_FILES = ["library/knowledge/profile.md", "requests/requests.md", "discoveries/discoveries.md", "architectures/architectures.md", "implementations/implementations.md", "code/code.md"];
 
 function scenario(chain: number): Scenario {
-  return { file: `/x/${chain}.scenario`, id: `stage-${chain}`, skill: "highway-setup", through: [], fixture: "empty", chain, smoke: false, web: false, open: "/x", replies: [], writes: [], expects: [], covers: [], reaches: [] };
+  return { file: `/x/${chain}.scenario`, id: `stage-${chain}`, skill: "highway-setup", through: [], fixture: "empty", chain, smoke: false, web: false, open: "/x", replies: [], writes: [], expects: [], covers: [], reaches: [], shows: [] };
 }
 
 function outcome(s: Scenario, status: ScenarioOutcome["status"]): ScenarioOutcome {

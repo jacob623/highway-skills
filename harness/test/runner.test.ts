@@ -137,6 +137,29 @@ test("a failing assertion retries once, prints a block per attempt, and exits 1"
   rmSync(transcripts, { recursive: true });
 });
 
+test("a shows line the agent did not show fails as an assertion with check shows", async () => {
+  const { dir, transcripts, lines } = setup({ "highway-help/help-smoke.scenario": SCENARIO("help-smoke", "shows: Run /highway-setup to get started.\n") });
+  const code = await main(["--smoke", "--transcripts", transcripts, "--no-judge"], { ...deps({}, lines, transcripts), scenariosDir: dir });
+  assert.equal(code, 1);
+  const text = lines.join("\n");
+  assert.match(text, /What: {4}shows -/);
+  assert.match(text, /expected: text "Run \/highway-setup to get started\."; actual: the agent did not show it/);
+  rmSync(dir, { recursive: true });
+  rmSync(transcripts, { recursive: true });
+});
+
+test("a shows line the agent showed passes", async () => {
+  const { dir, transcripts, lines } = setup({ "highway-help/help-smoke.scenario": SCENARIO("help-smoke", "shows: Run /highway-setup to get started.\n") });
+  const showingDriver: Driver = async (o) => {
+    o.log({ turn: 1, role: "agent", text: "Highway needs setup. Run /highway-setup to get started." });
+    return writingDriver(o);
+  };
+  const code = await main(["--smoke", "--transcripts", transcripts, "--no-judge"], { ...deps({ driver: showingDriver }, lines, transcripts), scenariosDir: dir });
+  assert.equal(code, 0, lines.join("\n"));
+  rmSync(dir, { recursive: true });
+  rmSync(transcripts, { recursive: true });
+});
+
 test("a pass on the retry counts as a pass with a flaky warning", async () => {
   const { dir, transcripts, lines } = setup({ "highway-help/help-smoke.scenario": SCENARIO("help-smoke") });
   let calls = 0;

@@ -220,6 +220,7 @@ reaches: close
 | `expect` | `<assertion> <path-glob>[ :: <argument>]` (repeatable) |
 | `covers` | `<hash> <bullet text>` for a bullet the scenario exercises (repeatable) |
 | `reaches` | A `###` step of the skill the conversation reaches (repeatable) |
+| `shows` | Text the agent must show in its messages, checked after a run that ended (repeatable); a miss fails as `assertion` with check `shows` |
 
 In path patterns, `*` matches within one folder and `**` across folders.
 
@@ -248,7 +249,11 @@ paths to remove, one per line. Use an overlay for a variation one scenario needs
 with `Language: Needed`.
 
 Every fixture file that `harness/fixtures/templates.map` maps to an output template must carry
-that template's frontmatter keys, required headings, and table header rows. Check with
+that template's frontmatter keys, required headings, and table header rows. A seeded catalog maps
+to its skeleton in `skills/highway-setup/assets/`, and every stage fixture holds all twelve
+seeded files. A skeleton has no `## File Frontmatter`, `## Body`, or `## Catalog Structure`
+section, so the check reads its parts directly: its leading frontmatter keys, each `## ` heading,
+and each table header row. Check with
 `bash harness/bin/fixture-check.sh [fixture...]`. A scenario whose fixture fails this check is
 reported as blocked and does not run.
 
@@ -369,7 +374,7 @@ The likely cause comes from a fixed table, so the same failure always prints the
 | `experience-order` | The agent showed output before activating highway-experience. | The skills listed as actual; check that the skill's Procedure opens with the activation step. |
 | `turn-limit` | The agent kept going past the turn limit, naming a repeated question when one repeats. | A repeated question usually means a reply does not satisfy that step. Check the reply's kind and text. |
 | `timeout` | The attempt ran past its time limit. | The model may be slow; raise `--timeout`, or look for a stalled step in Recent. |
-| `assertion` | A written file is missing a required part. | If it is a template heading, the template changed after the fixture was promoted, or the skill skipped its template. |
+| `assertion` | A written file is missing a required part. For check `shows`, the agent did not show the expected text. | If it is a template heading, the template changed after the fixture was promoted, or the skill skipped its template. |
 | `fixture-blocked` | The fixture no longer matches its template. | Run `bash harness/bin/fixture-check.sh <fixture>`; promote a fresh chain run or fix the fixture. |
 | `missing-token` | No Copilot token was found. | Set `GITHUB_TOKEN` in `harness/.env`. |
 | `no-access` | The token has no Copilot access. | Check the account's Copilot plan. |

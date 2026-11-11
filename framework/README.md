@@ -153,12 +153,19 @@ being a rule statement.
 
 Output format is a contract, per feature 005 (rename content to library).
 
-Complete skeletons for retained files emitted by skills live under
+Complete skeletons for retained records emitted by skills live under
 `.highway/library/templates/output/`. Each skeleton covers the emitted file's frontmatter and
-body. Request-producing skills use the shared request skeletons at
-`.highway/library/templates/output/request-record.md` and
-`.highway/library/templates/output/request-catalog.md`; every skill that cites either must be
+body. Request-producing skills use the shared request skeleton at
+`.highway/library/templates/output/request-record.md`; every skill that cites it must be
 revalidated when it changes.
+
+The organization catalogs, the findings file, and the storage record are seeded:
+`skills/highway-setup/assets/` holds their skeletons, and highway-setup writes each absent one
+into the project at the start of every run. Skills that write a seeded file edit it in its
+existing structure and state its rules in their own text. The governance catalog templates live
+in the `assets/` of highway-objectives, highway-controls, and highway-nfrs. A rule two skills share
+has one source in `framework/shared-rules/`, and `tests/shared-rules.test.sh` fails when a copy
+differs.
 
 When a shared library artifact changes, identify every `SKILL.md` that cites it, re-run the
 affected skill and library validators, and review the complete emitted structure. A mismatch in

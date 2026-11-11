@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { diffSnapshots, experienceInvariant, runExpectation, snapshot, storageInvariant, writesNothing } from "../src/checks.ts";
+import { diffSnapshots, experienceInvariant, runExpectation, showsFailures, snapshot, storageInvariant, writesNothing } from "../src/checks.ts";
 import type { Expectation } from "../src/scenario.ts";
 
 function project(files: Record<string, string>): string {
@@ -95,4 +95,14 @@ test("the experience invariant requires highway-experience before the first outp
   assert.equal(late[0].check, "experience");
   assert.equal(late[0].actual, "highway-setup");
   assert.equal(experienceInvariant([])[0].actual, "no skill");
+});
+
+test("shows requires each text in the agent's messages, whitespace collapsed", () => {
+  const said = "**Oops... we need to setup your repository.**\n\nHighway needs to gather your organizational preferences and set up\nyour repository.";
+  assert.deepEqual(showsFailures(said, ["**Oops... we need to setup your repository.**", "set up your repository."]), []);
+  const missing = showsFailures(said, ["Run /highway-setup to get started."]);
+  assert.equal(missing.length, 1);
+  assert.equal(missing[0].check, "shows");
+  assert.equal(missing[0].expected, 'text "Run /highway-setup to get started."');
+  assert.equal(missing[0].actual, "the agent did not show it");
 });

@@ -11,7 +11,6 @@ source "$SCRIPT_DIR/paths.sh"
 SKILLS="$HW_SKILLS"
 OUTPUT="$HW_OUTPUT_TEMPLATES"
 RECORD="$OUTPUT/adr-record.md"
-CATALOG="$OUTPUT/adr-catalog.md"
 ADR="$SKILLS/highway-adr/SKILL.md"
 ONBOARDING="$SKILLS/highway-onboarding/SKILL.md"
 ARCHITECTURE="$SKILLS/highway-architecture/SKILL.md"
@@ -64,9 +63,9 @@ for text in 'Selected Option:' 'Reference Architecture Matches:' 'Reference Impl
 	fi
 done
 
-require "$CATALOG" '<accepted, superseded, or removed>'
-require "$CATALOG" '`superseded` has a record at `adrs/<id>.md`'
-reject "$CATALOG" '<accepted or removed>'
+require "$ADR" 'Status is `accepted`, `superseded`, or `removed`.'
+require "$ADR" '`superseded` has a record at `adrs/<id>.md`'
+reject "$ADR" 'Status is `accepted` or `removed`.'
 
 for text in \
 	'`## Context` states the problem this decision responds to and the forces that make it necessary' \

@@ -2,6 +2,8 @@
 # `<glob>\t<template file name>`; the first matching line wins. `*` stays within one folder.
 
 library/knowledge/profile.md	profile-record.md
+library/knowledge/assessment-findings.md	assessment-findings.md
+library/knowledge/storage.md	storage.md
 library/governance/objectives.md	objective-catalog.md
 library/objectives/*.md	objective-record.md
 library/governance/controls.md	control-catalog.md
