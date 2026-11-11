@@ -1,5 +1,22 @@
 <!--
 Sync Impact Report
+Version change: 10.2.0 → 10.3.0 (MINOR), 2026-11-11
+Bump rationale: highway-setup seeds the organization catalogs from its own `assets/`, and the
+governance catalog templates move into their owning skills' `assets/`. P9.1's Observable accepts
+a file in the skill's own `assets/` as the cited template, and accepts an Outputs section that
+names only seeded files, whose structure highway-setup owns. The check only accepts more
+citations, so no conforming skill fails, and no rule is added, removed, or strengthened.
+Changed elements:
+- Version line: 10.2.0 → 10.3.0
+- P9.1 Observable: the cited template may be in the skill's own `assets/`, and an Outputs section
+  that names only seeded files cites the seeded structure
+Unchanged: every rule's keyword and obligation, every tier, the Last Amended date, and every other
+element.
+Self-application review: D1.3 PASS (no Highway Skills Constitution rule sentence is copied);
+D1.4 PASS (this report cites rule IDs); D5.3 PASS (the two changed elements are listed above
+and every unlisted element carries forward).
+
+Sync Impact Report
 Version change: 10.1.0 → 10.2.0 (MINOR), 2026-11-11
 Bump rationale: the storage contract, the Experience Standard, and the Highway Identity move into
 the highway-experience skill's `references/`. P2.6, P10.1's Observable, and the Repository Context
@@ -489,7 +506,7 @@ time.
 
 | ID | Rule | Observable | Tier |
 |---|---|---|---|
-| P9.1 | A skill MUST NOT repeat a shared output template's structure or generic invariants. | The Outputs section names the template, the output location, and the domain meaning the template does not own. | [auto] |
+| P9.1 | A skill MUST NOT repeat a shared output template's structure or generic invariants. | The Outputs section names the template, the output location, and the domain meaning the template does not own. The template is a shared output template or a file in the skill's own `assets/`. An Outputs section that names only files highway-setup seeds cites the structure highway-setup seeded. | [auto] |
 | P9.2 | A skill MUST declare the shape of what it emits. | The Outputs section states the fields, sections, or file structure produced. | [agent-checkable] |
 | P9.3 | A skill MUST emit content in its declared shape. | Every field and ordering in the output appears in the Outputs declaration. | [agent-checkable] |
 | P9.4 | An empty result MUST have a declared form. | The Outputs section states the content emitted when there is nothing to report. | [agent-checkable] |
@@ -667,4 +684,4 @@ every other skill's version. This is the policy referenced by P7.7.
 - **MINOR**: a capability is added while every existing contract element continues to hold.
 - **PATCH**: wording repair with no change to Inputs, Outputs, or Verification.
 
-**Version**: 10.2.0 | **Ratified**: 2026-09-06 | **Last Amended**: 2026-11-11
+**Version**: 10.3.0 | **Ratified**: 2026-09-06 | **Last Amended**: 2026-11-11

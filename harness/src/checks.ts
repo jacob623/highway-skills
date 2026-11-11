@@ -74,6 +74,15 @@ export function writesNothing(diff: SnapshotDiff): CheckFailure[] {
   return all.length === 0 ? [] : [{ check: "writes-nothing", path: "-", expected: "no file changes", actual: all.join(", ") }];
 }
 
+/** `shows:`: each value must appear in the agent's messages. Runs of whitespace compare as one space. */
+export function showsFailures(agentText: string, shows: readonly string[]): CheckFailure[] {
+  const flat = (s: string): string => s.replace(/\s+/g, " ").trim();
+  const said = flat(agentText);
+  return shows
+    .filter((text) => !said.includes(flat(text)))
+    .map((text) => ({ check: "shows", path: "-", expected: `text "${text}"`, actual: "the agent did not show it" }));
+}
+
 export const EXPERIENCE_SKILL = "highway-experience";
 
 /** FR-010: highway-experience must be activated before the first output the person sees. */

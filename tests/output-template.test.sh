@@ -23,14 +23,14 @@ OBJECTIVE_SKILL="$HW_SKILLS/highway-objectives/SKILL.md"
 OBJECTIVE_TEMPLATE="$(hw_template objective-record)"
 NEW_SKILL="$HW_SKILLS/highway-request/SKILL.md"
 REQUEST_TEMPLATE="$(hw_template request-record)"
-CATALOG_TEMPLATE="$(hw_template request-catalog)"
+REQUEST_CATALOG_SKELETON="$(hw_template request-catalog)"
 DEV_SPECS="spec""s"
 FEATURE_CONTRACT_DIR="$(cd "$HW_ROOT" && pwd)/$DEV_SPECS/053-request-solution-constraints/contracts"
 INTAKE_CONTRACT="$FEATURE_CONTRACT_DIR/request-solution-constraints-intake-contract.md"
 RECORD_CONTRACT="$FEATURE_CONTRACT_DIR/request-solution-constraints-record-contract.md"
 DISCOVERY_SKILL="$HW_SKILLS/highway-discovery/SKILL.md"
 DISCOVERY_RECORD_TEMPLATE="$(hw_template discovery-record)"
-DISCOVERY_CATALOG_TEMPLATE="$(hw_template discovery-catalog)"
+DISCOVERY_CATALOG_SKELETON="$(hw_template discovery-catalog)"
 OBJECTIVE_CATALOG_TEMPLATE="$(hw_template objective-catalog)"
 CONTROL_CATALOG_TEMPLATE="$(hw_template control-catalog)"
 NFR_CATALOG_TEMPLATE="$(hw_template nfr-catalog)"
@@ -38,11 +38,10 @@ ADR_SKILL="$HW_SKILLS/highway-adr/SKILL.md"
 ARCHITECTURE_SKILL="$HW_SKILLS/highway-architecture/SKILL.md"
 IMPLEMENTATION_SKILL="$HW_SKILLS/highway-implementation/SKILL.md"
 ONBOARDING_SKILL="$HW_SKILLS/highway-onboarding/SKILL.md"
-ASSESSMENT_SKILL="$HW_SKILLS/highway-assessment/SKILL.md"
 CODIFY_SKILL="$HW_SKILLS/highway-codify/SKILL.md"
 CODIFY_CONFIG_SKILL="$HW_SKILLS/highway-codify-config/SKILL.md"
 ADR_RECORD_TEMPLATE="$(hw_template adr-record)"
-ADR_CATALOG_TEMPLATE="$(hw_template adr-catalog)"
+ADR_CATALOG_SKELETON="$(hw_template adr-catalog)"
 VALIDATE_LIBRARY="$HW_FRAMEWORK/validate-library.sh"
 VALIDATE_SKILL="$HW_FRAMEWORK/validate-skill.sh"
 
@@ -127,13 +126,13 @@ require_file "$CONTROL_TEMPLATE"
 require_file "$PROFILE_TEMPLATE"
 require_file "$OBJECTIVE_TEMPLATE"
 require_file "$REQUEST_TEMPLATE"
-require_file "$CATALOG_TEMPLATE"
+require_file "$REQUEST_CATALOG_SKELETON"
 require_file "$DISCOVERY_SKILL"
 require_file "$DISCOVERY_RECORD_TEMPLATE"
-require_file "$DISCOVERY_CATALOG_TEMPLATE"
+require_file "$DISCOVERY_CATALOG_SKELETON"
 require_file "$ADR_SKILL"
 require_file "$ADR_RECORD_TEMPLATE"
-require_file "$ADR_CATALOG_TEMPLATE"
+require_file "$ADR_CATALOG_SKELETON"
 require_text "$ADR_RECORD_TEMPLATE" "Selected Option: OPTXXXXXX"
 require_text "$ADR_RECORD_TEMPLATE" "Selection Source: User-provided explicit selection"
 require_file "$OBJECTIVE_CATALOG_TEMPLATE"
@@ -225,11 +224,11 @@ if [[ -f "$REQUEST_TEMPLATE" ]]; then
 	require_text "$REQUEST_TEMPLATE" "regulatory_restrictions:"
 	require_text "$REQUEST_TEMPLATE" "## Completeness"
 fi
-if [[ -f "$CATALOG_TEMPLATE" ]]; then
-	require_text "$CATALOG_TEMPLATE" "name: request-catalog"
-	require_text "$CATALOG_TEMPLATE" "Version: 1.0.0"
-	require_text "$CATALOG_TEMPLATE" "accepted or removed"
+if [[ -f "$REQUEST_CATALOG_SKELETON" ]]; then
+	require_text "$REQUEST_CATALOG_SKELETON" "Version: 1.0.0"
+	require_text "$REQUEST_CATALOG_SKELETON" "## Request Index"
 fi
+require_text "$NEW_SKILL" "Status is \`accepted\` or \`removed\`."
 for catalog_pair in \
 	"$OBJECTIVE_CATALOG_TEMPLATE|objective-catalog|OBJXXXXXX|Objective Index" \
 	"$CONTROL_CATALOG_TEMPLATE|control-catalog|CTLXXXXXX|Control Index" \
@@ -250,15 +249,15 @@ require_text "$NFR_SKILL" ".highway/library/templates/output/nfr-record.md"
 require_text "$CONTROL_SKILL" ".highway/library/templates/output/control-record.md"
 require_text "$PROFILE_SKILL" ".highway/library/templates/output/profile-record.md"
 require_text "$OBJECTIVE_SKILL" ".highway/library/templates/output/objective-record.md"
-require_text "$OBJECTIVE_SKILL" ".highway/library/templates/output/objective-catalog.md"
-require_text "$CONTROL_SKILL" ".highway/library/templates/output/control-catalog.md"
-require_text "$NFR_SKILL" ".highway/library/templates/output/nfr-catalog.md"
+require_text "$OBJECTIVE_SKILL" "assets/objective-catalog.md"
+require_text "$CONTROL_SKILL" "assets/control-catalog.md"
+require_text "$NFR_SKILL" "assets/nfr-catalog.md"
 require_text "$NEW_SKILL" ".highway/library/templates/output/request-record.md"
-require_text "$NEW_SKILL" ".highway/library/templates/output/request-catalog.md"
-require_text "$DISCOVERY_SKILL" ".highway/library/templates/output/discovery-catalog.md"
+require_text "$NEW_SKILL" "Edit \`requests/requests.md\` in its existing structure."
+require_text "$DISCOVERY_SKILL" "Edit \`discoveries/discoveries.md\` in its existing structure."
 require_text "$ADR_SKILL" ".highway/library/templates/output/adr-record.md"
-require_text "$ADR_SKILL" ".highway/library/templates/output/adr-catalog.md"
-require_text "$CONTROL_SKILL" ".highway/library/templates/output/control-catalog.md"
+require_text "$ADR_SKILL" "Edit \`adrs/adrs.md\` in its existing structure."
+require_text "$CONTROL_SKILL" "assets/control-catalog.md"
 # Superseded: readiness, sequential allocation, and the previous request/control/discovery transcript locks.
 # The promoted skills cite the shared templates instead.
 
@@ -304,12 +303,6 @@ if [[ -f "$REQUEST_TEMPLATE" ]]; then
 		fail=1
 	fi
 fi
-if [[ -f "$CATALOG_TEMPLATE" ]]; then
-	if ! "$VALIDATE_LIBRARY" "$CATALOG_TEMPLATE" >/dev/null 2>&1; then
-		echo "FAIL: request catalog template does not pass validate-library.sh"
-		fail=1
-	fi
-fi
 # Superseded with highway-clarify: clarification-record.md and clarification-catalog.md.
 if ! "$VALIDATE_SKILL" "$HW_SKILLS/highway-nfrs" >/dev/null 2>&1; then
 	echo "FAIL: highway-nfrs does not pass validate-skill.sh"
@@ -322,11 +315,11 @@ fi
 
 # The current file-emitting skills are the complete set of citing skills for this feature.
 citing_count="$(grep -RIl 'library/templates/output/' "$HW_SKILLS" --include='SKILL.md' | wc -l | tr -d ' ')"
-if [[ "$citing_count" != "13" ]]; then
-	echo "FAIL: expected 13 output-template citing skills, found $citing_count"
+if [[ "$citing_count" != "12" ]]; then
+	echo "FAIL: expected 12 output-template citing skills, found $citing_count"
 	fail=1
 fi
-for citing_skill in "$NFR_SKILL" "$CONTROL_SKILL" "$PROFILE_SKILL" "$OBJECTIVE_SKILL" "$NEW_SKILL" "$DISCOVERY_SKILL" "$ADR_SKILL" "$ARCHITECTURE_SKILL" "$IMPLEMENTATION_SKILL" "$ONBOARDING_SKILL" "$ASSESSMENT_SKILL" "$CODIFY_SKILL" "$CODIFY_CONFIG_SKILL"; do
+for citing_skill in "$NFR_SKILL" "$CONTROL_SKILL" "$PROFILE_SKILL" "$OBJECTIVE_SKILL" "$NEW_SKILL" "$DISCOVERY_SKILL" "$ADR_SKILL" "$ARCHITECTURE_SKILL" "$IMPLEMENTATION_SKILL" "$ONBOARDING_SKILL" "$CODIFY_SKILL" "$CODIFY_CONFIG_SKILL"; do
 	if ! grep -Fq "library/templates/output/" "$citing_skill"; then
 		echo "FAIL: dependent review omitted citing skill $citing_skill"
 		fail=1
@@ -344,7 +337,7 @@ nfr_citation_fixture="$fixture_root/nfr-missing-catalog-citation.md"
 sed '/nfr-catalog\.md/d' "$NFR_SKILL" > "$nfr_citation_fixture"
 if skill_citations_valid "$nfr_citation_fixture" \
 	".highway/library/templates/output/nfr-record.md" \
-	".highway/library/templates/output/nfr-catalog.md"; then
+	"assets/nfr-catalog.md"; then
 	echo "FAIL: missing NFR catalog citation fixture was accepted"
 	fail=1
 fi
@@ -363,7 +356,7 @@ fi
 
 for retained_artifact in request objective control nfr discovery; do
 	cp "$HW_OUTPUT_TEMPLATES/${retained_artifact}-record.md" "$fixture_templates/"
-	cp "$HW_OUTPUT_TEMPLATES/${retained_artifact}-catalog.md" "$fixture_templates/"
+	cp "$(hw_template "${retained_artifact}-catalog")" "$fixture_templates/"
 done
 rm -f "$fixture_templates/objective-catalog.md"
 if template_pair_inventory_valid "$fixture_templates"; then
@@ -372,7 +365,7 @@ if template_pair_inventory_valid "$fixture_templates"; then
 fi
 
 for catalog_fixture in objective control nfr; do
-	source_catalog="$HW_OUTPUT_TEMPLATES/${catalog_fixture}-catalog.md"
+	source_catalog="$(hw_template "${catalog_fixture}-catalog")"
 	case "$catalog_fixture" in
 		objective) catalog_name="objective-catalog"; next_id="OBJXXXXXX"; index_heading="Objective Index" ;;
 		control) catalog_name="control-catalog"; next_id="CTLXXXXXX"; index_heading="Control Index" ;;
@@ -397,7 +390,7 @@ citation_fixture="$fixture_root/objectives-missing-citation.md"
 sed '/objective-catalog\.md/d' "$OBJECTIVE_SKILL" > "$citation_fixture"
 if skill_citations_valid "$citation_fixture" \
 	".highway/library/templates/output/objective-record.md" \
-	".highway/library/templates/output/objective-catalog.md"; then
+	"assets/objective-catalog.md"; then
 	echo "FAIL: missing skill citation fixture was accepted"
 	fail=1
 fi
@@ -412,14 +405,14 @@ fi
 
 control_adapter="$HW_AGENT_COPILOT/highway-controls/SKILL.md"
 if [[ -f "$control_adapter" ]] && ! cmp -s "$CONTROL_SKILL" "$control_adapter"; then
-	grep -Fq '.highway/library/templates/output/control-catalog.md' "$control_adapter" || {
+	grep -Fq 'assets/control-catalog.md' "$control_adapter" || {
 		echo "FAIL: Control adapter is stale relative to the canonical catalog citation"
 		fail=1
 	}
 fi
 
 # Snapshot canonical and generated artifacts before disposable checks complete.
-for protected_file in "$CONTROL_SKILL" "$DISCOVERY_SKILL" "$CONTROL_TEMPLATE" "$DISCOVERY_RECORD_TEMPLATE" "$DISCOVERY_CATALOG_TEMPLATE" "$control_adapter"; do
+for protected_file in "$CONTROL_SKILL" "$DISCOVERY_SKILL" "$CONTROL_TEMPLATE" "$DISCOVERY_RECORD_TEMPLATE" "$DISCOVERY_CATALOG_SKELETON" "$control_adapter"; do
 	if [[ -f "$protected_file" ]]; then
 		before_hash="$(shasum "$protected_file")"
 		[[ "$(shasum "$protected_file")" == "$before_hash" ]] || fail=1

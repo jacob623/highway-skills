@@ -10,5 +10,5 @@ ask: Would you like to explore any of these findings in more detail?
 say: [decline] No, that's all for now.
 ask-pattern: \?
 say: [decline] Stop here.
-writes: .highway/library/knowledge/assessment-findings.md
-expect: template .highway/library/knowledge/assessment-findings.md :: assessment-findings.md
+writes: library/knowledge/assessment-findings.md
+expect: template library/knowledge/assessment-findings.md :: assessment-findings.md

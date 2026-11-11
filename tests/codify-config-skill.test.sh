@@ -14,8 +14,8 @@ CONFIG="$SKILLS/highway-codify-config/SKILL.md"
 CODIFY="$SKILLS/highway-codify/SKILL.md"
 IMPL="$SKILLS/highway-implementation/SKILL.md"
 ONBOARD="$SKILLS/highway-onboarding/SKILL.md"
-PLATFORMS="$OUTPUT/codify-platforms.md"
-STANDARDS_TEMPLATE="$OUTPUT/coding-standards-catalog.md"
+PLATFORMS="$(hw_template codify-platforms)"
+STANDARDS_SKELETON="$(hw_template coding-standards-catalog)"
 STANDARD_TEMPLATE="$OUTPUT/coding-standard.md"
 RECORD="$OUTPUT/codify-record.md"
 TASKS="$OUTPUT/codify-tasks.md"
@@ -63,7 +63,7 @@ for text in \
 	'to finish adding [Platform].' \
 	'You can accept this proposal with these conflicts and resolve them afterward.' \
 	'library/coding-standards/codify-platforms.md' \
-	'coding-standards-catalog.md' \
+	'library/coding-standards/coding-standards.md' \
 	'coding-standard.md' \
 	'### menu' \
 	'### platforms' \
@@ -73,9 +73,9 @@ for text in \
 done
 
 require "$PLATFORMS" '| Platform | Implementation ID | Kind | When to use | When not to use |'
-require "$PLATFORMS" 'library/coding-standards/codify-platforms.md'
+require "$CONFIG" 'The file is `library/coding-standards/codify-platforms.md`.'
 reject "$PLATFORMS" '| Source |'
-require "$STANDARDS_TEMPLATE" "$STANDARDS_HEADER"
+require "$STANDARDS_SKELETON" "$STANDARDS_HEADER"
 if [[ -e "$STANDARDS_CATALOG" ]]; then
 	echo "FAIL: library/coding-standards/coding-standards.md is still seeded"
 	fail=1

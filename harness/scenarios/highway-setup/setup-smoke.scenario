@@ -14,4 +14,24 @@ say: [accept] Looks good.
 ask-pattern: \?
 say: [decline] Let's stop setup here for now.
 writes: library/**
+writes: requests/requests.md
+writes: discoveries/discoveries.md
+writes: adrs/adrs.md
+writes: architectures/architectures.md
+writes: implementations/implementations.md
+writes: implementations/capabilities.md
+writes: code/code.md
+writes: code/integrations.md
 expect: template library/knowledge/profile.md :: profile-record.md
+expect: template requests/requests.md :: request-catalog.md
+expect: template discoveries/discoveries.md :: discovery-catalog.md
+expect: template adrs/adrs.md :: adr-catalog.md
+expect: template architectures/architectures.md :: architecture-catalog.md
+expect: template implementations/implementations.md :: implementation-catalog.md
+expect: template implementations/capabilities.md :: capability-catalog.md
+expect: template code/code.md :: codify-catalog.md
+expect: template code/integrations.md :: codify-integrations.md
+expect: template library/coding-standards/codify-platforms.md :: codify-platforms.md
+expect: template library/coding-standards/coding-standards.md :: coding-standards-catalog.md
+expect: template library/knowledge/assessment-findings.md :: assessment-findings.md
+expect: template library/knowledge/storage.md :: storage.md

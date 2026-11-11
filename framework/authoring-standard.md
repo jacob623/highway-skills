@@ -127,6 +127,24 @@ examined. A slash command such as `/highway-help` and a URL are not absolute pat
 
 `framework/validate-skill.sh` decides this for you and reports it under P2.6.
 
+## Editing a seeded file
+
+Governed by P9.1. highway-setup seeds the organization catalogs, the findings file, and the
+storage record from its own `assets/`, and `hw_seeded` in `framework/lib/paths.sh` lists them. A
+skill that writes one of them does not cite a template for it:
+
+- Place the entry check every such skill shares right after the activation step, exactly as it
+  appears in the other skills, naming the seeded files your skill edits. When one is absent, the
+  skill shows the fixed setup message, asks nothing, and writes nothing.
+- Edit the file in its existing structure, and state its rules (row order, status values, id
+  formats, cell formats) in your skill's own text.
+- In Outputs, say the file keeps the structure highway-setup seeded.
+- A rule two skills share has one source in `framework/shared-rules/`. Copy its `rule:` line into
+  your skill as one whole line; `tests/shared-rules.test.sh` fails when a copy differs.
+
+A file only your skill creates still cites its template, either a shared output template or a
+file in your skill's own `assets/`.
+
 ## Writing the rules inside a skill
 
 Cited rules, not restated. Read the rule text in the constitution.

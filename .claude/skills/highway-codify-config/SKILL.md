@@ -4,7 +4,7 @@ description: "Manages the repository-wide guidance used by highway-codify."
 usage: "Invoke as /highway-codify-config, or with one implementation name."
 compatibility: all
 metadata:
-  version: 3.6.0
+  version: 3.7.0
 ---
 
 # highway-codify-config
@@ -29,13 +29,10 @@ Do not report Status, Summary, Next Action, Blocking Reason, Missing, Complete, 
 
 ## Inputs
 
-- `library/coding-standards/codify-platforms.md` when present.
-- `library/coding-standards/coding-standards.md` and the standard files it names, when present.
+- `library/coding-standards/codify-platforms.md`.
+- `library/coding-standards/coding-standards.md` and the standard files it names.
 - `implementations/implementations.md` and the accepted implementation records.
-- `.highway/library/templates/output/codify-platforms.md`.
-- `.highway/library/templates/output/coding-standards-catalog.md`.
 - `.highway/library/templates/output/coding-standard.md`.
-- `.highway/library/templates/output/capability-catalog.md`.
 - `highway-onboarding`.
 - `highway-implementation`.
 - The highway-experience skill, activated first.
@@ -43,16 +40,23 @@ Do not report Status, Summary, Next Action, Blocking Reason, Missing, Complete, 
 
 ## Outputs
 
-The complete structure is `.highway/library/templates/output/codify-platforms.md`, `.highway/library/templates/output/coding-standards-catalog.md`, and `.highway/library/templates/output/coding-standard.md`.
+The complete structure is `.highway/library/templates/output/coding-standard.md`. `library/coding-standards/codify-platforms.md` and `library/coding-standards/coding-standards.md` keep the structure highway-setup seeded.
 
 - An updated `library/coding-standards/codify-platforms.md` after an accepted platform change.
-- A standard file in `library/coding-standards/`, then an updated `library/coding-standards/coding-standards.md`, after an accepted standard change. The first accepted standard creates the catalog.
+- A standard file in `library/coding-standards/`, then an updated `library/coding-standards/coding-standards.md`, after an accepted standard change.
 - Only the accepted changes after an accepted conflict resolution.
 - Nothing after a cancel.
 
 ## Procedure
 
 Activate the highway-experience skill before any output the person sees, and follow it for Highway's identity, the Experience Standard, and the storage contract.
+
+Before the first question, confirm these seeded files exist: `library/coding-standards/codify-platforms.md`, `library/coding-standards/coding-standards.md`.
+When any is absent, emit the message below exactly, stop, and write nothing.
+
+**Oops... we need to setup your repository.**
+
+Highway needs to gather your organizational preferences and set up your repository. Run /highway-setup to get started.
 
 Emit only the active template. Start at `Entry`. Follow the Highway Experience Standard for attribution and acceptance wording. Write only after `accept`.
 
@@ -116,7 +120,7 @@ Emit this menu exactly, as rendered markdown:
    - **When not to use:**
      1. [Entry]
 
-When the file is absent or has no rows, say no platform is included yet.
+When the file has no rows, say no platform is included yet.
 
 **What would you add, correct, or remove?**
 
@@ -140,7 +144,7 @@ If you'd like to cancel, just say so.
 2. For a standard, capture each capability the documentation describes.
 3. For a platform, capture each automation capability the documentation describes. Do not capture a capability unrelated to automation.
 4. Group captured platform capabilities that perform the same automation. Judge sameness by meaning.
-5. Title that automation under the Title rule in `.highway/library/templates/output/capability-catalog.md`. Put a product name and a handoff, such as a pull request, a comment, or a ticket, in the evidence.
+5. Title that automation. Put a product name and a handoff, such as a pull request, a comment, or a ticket, in the evidence.
 6. For a platform, mark each grouped capability that the implementation's Realized Capabilities do not already mean as a new realized capability. Judge that by meaning.
 7. Do not propose a capability the documentation no longer describes.
 8. When the documentation cannot be read, say: The current documentation could not be read. Add no capability as current. Mark no new realized capability. Continue from the accepted implementation and the catalogs already present.
@@ -226,10 +230,22 @@ If you'd like to cancel, just say so.
 6. Emit this proposal, then the closing question and the cancel line.
 
 - `edit`: emit one consequence sentence. Re-emit this proposal with the change and without the starting-point line. Stay on `platform proposal`.
-- `accept`: write the whole file from `.highway/library/templates/output/codify-platforms.md`, changing only this row. An add appends it, an update replaces it, and a remove drops it. Create `library/coding-standards/` when it is absent. A failed write leaves the file unchanged. Say what failed and stay. After a write, when the proposal listed new realized capabilities, emit: Let's record the new capabilities for [Platform]. Follow `highway-implementation` for [RI id], with those capabilities and the return step `platform written` in `highway-codify-config`. Otherwise go to `platform written`.
+- `accept`: edit `library/coding-standards/codify-platforms.md` in its existing structure, under `platform rules`, changing only this row. An add appends it, an update replaces it, and a remove drops it. A failed write leaves the file unchanged. Say what failed and stay. After a write, when the proposal listed new realized capabilities, emit: Let's record the new capabilities for [Platform]. Follow `highway-implementation` for [RI id], with those capabilities and the return step `platform written` in `highway-codify-config`. Otherwise go to `platform written`.
 - `question`: answer, then re-emit this proposal.
 - `unknown`: re-emit this proposal.
 - `decline`: go to `menu`.
+
+### platform rules
+
+The file is `library/coding-standards/codify-platforms.md`. It lists platforms that can start automation: a pipeline, an orchestrator, a self-service platform, a desired-state or GitOps tool, or an agent that starts the work. It is not a roster of every implementation. A store, a newsletter, a records product, or a backup has no row.
+
+Every row comes from an accepted implementation. There is one row per Implementation ID.
+
+Kind is `agent`, `pipeline`, `orchestrator`, `self-service`, `desired-state`, or blank. A row added by an implementation keeps Kind blank until the person configures it. GitOps is stored as `desired-state`.
+
+When to use and When not to use each hold a list. Entries are separated by `; `. An empty list is a blank cell. A row added by an implementation has both cells blank until the person configures it. A proposal presents each list as an ordered list, one entry per item.
+
+Rows stay in the order they were added. A blank Kind is not chosen as Deployed by or Managed by.
 
 ### platform written
 
@@ -250,7 +266,7 @@ Read `library/coding-standards/coding-standards.md` when present. Emit one item 
    - **Inherits From:**
      1. [Standard Title]
 
-When the file is absent or has no rows, say no coding standard is listed yet.
+When the file has no rows, say no coding standard is listed yet.
 
 **What would you add, correct, or remove?**
 
@@ -334,18 +350,24 @@ If you'd like to cancel, just say so.
 
 - `edit`: emit one consequence sentence. Re-emit this proposal with the change and without the starting-point line. Stay on `standard proposal`.
 - `accept` on an add or update: go to `standard write`.
-- `accept` on a remove: write the catalog without this row. Keep the standard file. Then go to `standard write` step 3.
+- `accept` on a remove: edit the catalog to drop this row. Keep the standard file. Then go to `standard write` step 3.
 - `question`: answer, then re-emit this proposal.
 - `unknown`: re-emit this proposal.
 - `decline`: go to `menu`.
 
 ### standard write
 
+The file is `library/coding-standards/coding-standards.md`. Standard Title names the language, such as Java or YAML, or the platform, such as Kubernetes or Terraform, followed by `Coding Standard`.
+
+When to use, When not to use, and Inherits From each hold a list. Entries are separated by `; `. An empty list is a blank cell. Inherits From names the Standard Titles a standard builds on. A proposal presents each list as an ordered list, one entry per item.
+
+Removing a row leaves its standard file in place. A standard file that no row names is not used.
+
 1. Check the accepted proposal. When a check fails, say its sentence, write nothing, and return to `standard proposal`.
    - The structure has no path: `A file and folder structure is needed.`
    - A path begins with `/` or `code/`: `Paths are relative to the automation folder.`
    - Tests are required and the test path is not in the structure: `The test path must be part of the file and folder structure.`
-2. Write the standard file from `.highway/library/templates/output/coding-standard.md` at its Standard Path, creating `library/coding-standards/` when it is absent. A new Standard Path is `library/coding-standards/[technology in lowercase, with hyphens].md`. Then write `library/coding-standards/coding-standards.md` from `.highway/library/templates/output/coding-standards-catalog.md`, changing only this row. When the catalog is absent, create it with this row only. When the standard file write fails, write no catalog. Say what failed and return to `standard proposal`.
+2. Write the standard file from `.highway/library/templates/output/coding-standard.md` at its Standard Path. A new Standard Path is `library/coding-standards/[technology in lowercase, with hyphens].md`. Then edit `library/coding-standards/coding-standards.md` in its existing structure, changing only this row. When the standard file write fails, write no catalog. Say what failed and return to `standard proposal`.
 3. When the proposal listed conflicts, ask **Would you like help resolving these conflicts?** `accept` goes to `conflicts`. `question` answers, then asks again. `unknown` asks again. `decline` states the consequence of the accepted change in one sentence and goes to `menu`. Otherwise state the consequence of the accepted change in one sentence and go to `menu`.
 
 ### conflicts
@@ -389,7 +411,7 @@ If you'd like to cancel, just say so.
 4. Emit this proposal, then the closing question and the cancel line.
 
 - `edit`: emit one consequence sentence. Re-emit this proposal with the change. Stay on `resolve`.
-- `accept`: write only these changes, each catalog from its template. A failed write leaves that catalog unchanged. Say what failed and stay. After a write, reassess and go to `conflicts`.
+- `accept`: write only these changes, editing each catalog in its existing structure. A failed write leaves that catalog unchanged. Say what failed and stay. After a write, reassess and go to `conflicts`.
 - `question`: answer, then re-emit this proposal.
 - `unknown`: re-emit this proposal.
 - `decline`: go to `menu`.
@@ -406,7 +428,7 @@ If you'd like to cancel, just say so.
 - A platform is added only from an accepted implementation. Any other name offers onboarding, which ends by pointing back here.
 - Accepting a platform writes only its row. Accepting a standard writes its file, then its row. Removing a standard keeps its file.
 - A standard proposal shows its File and Folder Structure as relative paths. Accepting one with no path, a path beginning with `/` or `code/`, or a required test path outside the structure writes nothing and says what is needed.
-- No coding standard is seeded. The first accepted standard creates the catalog with its row.
+- No coding standard is seeded. The first accepted standard adds its row to the seeded catalog.
 - Conflicts quote both entries and name both records. With none, the person is asked what inconsistencies they noticed.
 - A resolution lists each record in bold with lettered changes, writes only those changes, and returns to the reassessed list.
 - A cancel writes nothing and returns to the menu.
@@ -414,7 +436,7 @@ If you'd like to cancel, just say so.
 - On an add, `entry level` proposes one to four classes of automation for each of When to use and When not to use, from what `current` describes, and no task. `use entries` writes each as one condition or one outcome in five words or fewer, and keeps saved entries on an update. Each proposal entry has a blank line, then **Why it matters:** stating its consequence, and the saved catalog does not keep that line.
 - An add or update proposal with no edit yet, for a platform or a standard, shows the starting-point line after the consequence sentence. An edited proposal and a remove do not.
 - A standard add or update follows `standard rules`, then `use entries`. A remove runs neither.
-- `current` groups the automation capabilities the platform documentation describes by meaning. Each group the implementation does not already mean appears once under New Realized Capabilities, titled under the capability catalog Title rule, with the product and the handoff in the evidence. After the write, configuration follows `highway-implementation` to record them, with the return step `platform written`.
+- `current` groups the automation capabilities the platform documentation describes by meaning. Each group the implementation does not already mean appears once under New Realized Capabilities, with the product and the handoff in the evidence. After the write, configuration follows `highway-implementation` to record them, with the return step `platform written`.
 - Each coding rule is one must, one condition, and one outcome in eight words or fewer. The model suggests at most fifteen, and one keeps encoded or encrypted credentials outside the files. A provided rule that does not conform is rewritten, and the opening consequence sentence names the rewrite. Each rule shows **Why it matters:** on the proposal only.
 - A standard write with no conflicts states one consequence sentence and returns to the menu.
 

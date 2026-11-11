@@ -89,7 +89,7 @@ reject "$CONFIG" 'Ground When to use and When not to use in `current`, the imple
 require_in "$IMPL" '### Entry' '1. When the invocation names an accepted implementation, new realized capabilities, and a return step, go to `add capabilities`.'
 require_in "$IMPL" '### add capabilities' '1. Hold the return step for this visit.'
 require_in "$IMPL" '### add capabilities' '3. Leave out a passed capability whose title Realized Capabilities already lists.'
-require_in "$IMPL" '### add capabilities' '4. Derive each capability id as `write` does. When a title breaks the Title rule in `.highway/library/templates/output/capability-catalog.md`, or `write` would ask for a wording change, leave that capability out.'
+require_in "$IMPL" '### add capabilities' '4. Derive each capability id as `write` does. When a title breaks the capability title rule, or `write` would ask for a wording change, leave that capability out.'
 require_in "$IMPL" '### add capabilities' '5. Append each remaining capability to Realized Capabilities, in the order passed, with its Title, Realized By, and Evidence. Change no other byte of the record.'
 require_in "$IMPL" '### add capabilities' '6. Rewrite this Parent'"'"'s rows in `implementations/capabilities.md` as `write` does, with the new capabilities. Leave other Parents unchanged.'
 require_in "$IMPL" '### add capabilities' '7. Write the record and the catalog together. A failed write leaves both unchanged. Say what failed. Go to the held step.'

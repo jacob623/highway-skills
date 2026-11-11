@@ -4,7 +4,7 @@ description: "Assess accepted repository context."
 usage: "Invoke as /highway-assessment."
 compatibility: all
 metadata:
-  version: 5.1.0
+  version: 5.2.0
 ---
 
 # highway-assessment
@@ -31,17 +31,16 @@ Do not report Status, Summary, Next Action, Blocking Reason, Missing, Complete, 
 - Accepted Profile, Objectives, Controls, NFRs, Requests, Discoveries, ADRs, architectures, and implementations when present.
 - Catalogs, read before source records: `adrs/adrs.md`, `architectures/architectures.md`, `implementations/implementations.md`, and `implementations/capabilities.md`.
 - `requests/requests.md`, `discoveries/discoveries.md`, and `code/code.md`, for ready records.
-- `.highway/library/knowledge/assessment-findings.md` when present.
-- `.highway/library/templates/output/assessment-findings.md`.
+- `library/knowledge/assessment-findings.md`.
 - The domain named in the invocation. The default domain is `portfolio`.
 - The highway-experience skill, activated first.
 - A project root containing `.highway/`.
 
 ## Outputs
 
-The complete structure is `.highway/library/templates/output/assessment-findings.md`.
+`library/knowledge/assessment-findings.md` keeps the structure highway-setup seeded.
 
-- A row in `.highway/library/knowledge/assessment-findings.md` before the finding is shown.
+- A row in `library/knowledge/assessment-findings.md` before the finding is shown.
 - An updated row when the person accepts, dismisses, or corrects that finding.
 - A list of up to five findings, the chosen finding, then a summary when no further grounded finding remains.
 - A list of accepted records ready for the next stage, which writes nothing.
@@ -50,6 +49,13 @@ The complete structure is `.highway/library/templates/output/assessment-findings
 ## Procedure
 
 Activate the highway-experience skill before any output the person sees, and follow it for Highway's identity, the Experience Standard, and the storage contract.
+
+Before the first question, confirm these seeded files exist: `library/knowledge/assessment-findings.md`.
+When any is absent, emit the message below exactly, stop, and write nothing.
+
+**Oops... we need to setup your repository.**
+
+Highway needs to gather your organizational preferences and set up your repository. Run /highway-setup to get started.
 
 Emit only the active template. Start at `review`. For ready records, go to `ready records`. For gaps, follow this order: `write` each new finding, then show the findings in `list of findings`, then show the chosen finding in `finding`, then return to `list of findings`. Go to `summary` when no further finding remains. Read catalogs before opening source records. Open a source record only when the catalog row does not answer the question. A conflict between a catalog and a record is reported as uncertainty. Do not repair either file.
 
@@ -63,7 +69,7 @@ A finding has one category and one domain. The categories are Coverage, Consiste
 
 ### Entry
 
-1. Read `.highway/library/knowledge/assessment-findings.md` when it exists.
+1. Read `library/knowledge/assessment-findings.md`.
 2. When its revision cannot be read, stop. Say the findings file could not be read. Write nothing.
 3. Go to `review`.
 
@@ -90,7 +96,15 @@ Classify the latest reply before any other action.
 
 ### write
 
-Write `.highway/library/knowledge/assessment-findings.md` with the columns ID, Category, Domain, Finding, Status, and Disposition. Do not write a fingerprint.
+Edit `library/knowledge/assessment-findings.md` in its existing structure, with the columns ID, Category, Domain, Finding, Status, and Disposition. Do not write a fingerprint.
+
+The table contains one row per retained finding. It has no fingerprint column.
+
+`ID` is `F` plus the eight hex digits derived from the observation. The same observation reuses that id. Rows are ordered by ID. Category is Coverage, Consistency, Dependency, Opportunity, Reuse, or Risk. Domain is `portfolio`, `architectures`, or `implementations`. Status is `Open`, `Accepted`, or `Dismissed`.
+
+`Open` is written before the finding is shown. `Accepted` means the person saved the finding. `Dismissed` means the person discarded it. `Disposition` is `None` when the person has not stated one.
+
+`revision` is a non-negative integer. It increments once after each successful write. A stale revision rejects the write and leaves the file unchanged.
 
 Derive the id from the observation.
 

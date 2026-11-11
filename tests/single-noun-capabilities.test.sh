@@ -15,7 +15,6 @@ ONBOARD="$SKILLS/highway-onboarding/SKILL.md"
 ARCH="$SKILLS/highway-architecture/SKILL.md"
 CONFIG="$SKILLS/highway-codify-config/SKILL.md"
 CODIFY="$SKILLS/highway-codify/SKILL.md"
-CAP="$OUTPUT/capability-catalog.md"
 ARCH_RECORD="$OUTPUT/architecture-record.md"
 fail=0
 
@@ -50,24 +49,24 @@ words_under() {
 }
 
 for text in \
-	'Title is one capability: one noun phrase of five words or fewer.' \
-	'A Title does not contain `and`, `or`, `&`, `/`, `+`, or a comma.' \
+	'a capability title is one noun phrase of five words or fewer.' \
+	'A title does not contain `and`, `or`, `&`, `/`, `+`, or a comma.' \
 	'A title that joins two things is two capabilities, one per part.'; do
-	require "$CAP" "$text"
+	require "$IMPL" "$text"
+	require "$ARCH" "$text"
 done
-reject "$CAP" 'Title is the business capability.'
 
 require "$ARCH_RECORD" 'Capability: <capability title without a capability identifier>'
 reject "$ARCH_RECORD" 'advisory capability text'
 
 for text in \
 	'### capability title' \
-	'1. Each capability title follows the Title rule in `.highway/library/templates/output/capability-catalog.md`.' \
+	'1. Each capability title follows the capability title rule.' \
 	'Do not ask first.' \
 	'3. Shorten a title of six or more words to five words or fewer.' \
 	'If one is later done apart from the other, one joined capability would compound the effect of that change.' \
 	'Follow `capability title` for each capability.' \
-	'4. Derive each capability id as `write` does. When a title breaks the Title rule in `.highway/library/templates/output/capability-catalog.md`, or `write` would ask for a wording change, leave that capability out.'; do
+	'4. Derive each capability id as `write` does. When a title breaks the capability title rule, or `write` would ask for a wording change, leave that capability out.'; do
 	require "$IMPL" "$text"
 done
 reject "$IMPL" 'Each realized capability has a business-readable title'
@@ -82,9 +81,9 @@ reject "$ONBOARD" 'When two activities rely on one technology, propose one capab
 reject "$ONBOARD" 'AI-Assisted Engineering and Planning'
 
 require "$ARCH" 'Follow `capability title` in `highway-implementation`'
-require "$ARCH" '.highway/library/templates/output/capability-catalog.md'
+require "$ARCH" 'Each capability title follows the capability title rule.'
 
-require "$CONFIG" '5. Title that automation under the Title rule in `.highway/library/templates/output/capability-catalog.md`.'
+require "$CONFIG" '5. Title that automation. Put a product name and a handoff'
 reject "$CONFIG" 'one noun phrase of five words or fewer'
 
 for text in \

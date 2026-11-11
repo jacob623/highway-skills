@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # The harness path map selects scenarios from changed paths: a skill's files select that skill, a
 # template selects each skill that names it, shared files and the runner select the smoke set,
-# and generated copies, tests, and specs select nothing. Every shipped library file and every
+# and generated copies, tests, and specs select nothing. Every shipped library file, skill asset, and
 # highway-experience file maps to a skill or is listed as shared.
 set -u
 # Instrument class: executable-behavior
@@ -40,6 +40,7 @@ expect() {
 
 expect .highway/library/templates/output/codify-plan.md skill highway-codify
 expect skills/highway-adr/SKILL.md skill highway-adr
+expect skills/highway-setup/assets/request-catalog.md skill highway-setup
 expect skills/highway-experience/SKILL.md smoke smoke
 expect skills/highway-experience/references/experience-standard.md smoke smoke
 expect skills/highway-experience/references/storage-contract.md smoke smoke
@@ -73,13 +74,13 @@ if [[ "$multi" -lt 2 ]]; then
 	fail=1
 fi
 
-# FR-025: every shipped file under the library and highway-experience maps.
+# FR-025: every shipped file under the library, highway-experience, and a skill's assets/ maps.
 shipped=()
 while IFS= read -r rel; do
 	[[ "$(dist_classify "$rel")" == "include" ]] && shipped+=("$rel")
-done < <(cd "$HW_ROOT" && find "$(hw_rel "$HW_LIBRARY")" "$(hw_rel "$HW_EXPERIENCE")" -type f | LC_ALL=C sort)
+done < <(cd "$HW_ROOT" && { find "$(hw_rel "$HW_LIBRARY")" "$(hw_rel "$HW_EXPERIENCE")" -type f; find "$(hw_rel "$HW_SKILLS")" -path '*/assets/*' -type f; } | LC_ALL=C sort)
 if [[ "${#shipped[@]}" -lt 30 ]]; then
-	echo "FAIL: found only ${#shipped[@]} shipped library and highway-experience files"
+	echo "FAIL: found only ${#shipped[@]} shipped library, highway-experience, and skill asset files"
 	fail=1
 fi
 mapped="$(cd "$HW_ROOT" && bash "$PATH_MAP" "${shipped[@]}")"

@@ -4,7 +4,7 @@ import type { Scenario } from "../src/scenario.ts";
 import { runPathMap, selectAll, selectSmoke, selectTargeted, type SelectDeps } from "../src/select.ts";
 
 function scenario(id: string, skill: string, extra: Partial<Scenario> = {}): Scenario {
-  return { file: `/repo/harness/scenarios/${skill}/${id}.scenario`, id, skill, through: [], fixture: "implementation", smoke: false, web: false, open: "/x", replies: [], writes: [], expects: [], covers: [], reaches: [], ...extra };
+  return { file: `/repo/harness/scenarios/${skill}/${id}.scenario`, id, skill, through: [], fixture: "implementation", smoke: false, web: false, open: "/x", replies: [], writes: [], expects: [], covers: [], reaches: [], shows: [], ...extra };
 }
 
 const scenarios = [

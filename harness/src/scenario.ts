@@ -43,6 +43,7 @@ export interface Scenario {
   expects: Expectation[];
   covers: Cover[];
   reaches: string[];
+  shows: string[];
 }
 
 export class ScenarioError extends Error {
@@ -56,7 +57,7 @@ export class ScenarioError extends Error {
 }
 
 const SINGLE_KEYS = new Set(["id", "skill", "fixture", "chain", "smoke", "web", "open"]);
-const LIST_KEYS = new Set(["through", "ask", "ask-pattern", "say", "writes", "expect", "covers", "reaches"]);
+const LIST_KEYS = new Set(["through", "ask", "ask-pattern", "say", "writes", "expect", "covers", "reaches", "shows"]);
 
 export function parseScenario(text: string, file: string): Scenario {
   const single = new Map<string, { value: string; line: number }>();
@@ -66,6 +67,7 @@ export function parseScenario(text: string, file: string): Scenario {
   const expects: Expectation[] = [];
   const covers: Cover[] = [];
   const reaches: string[] = [];
+  const shows: string[] = [];
   let pendingKey: { key: ReplyKey; line: number } | undefined;
 
   const lines = text.split(/\r?\n/);
@@ -133,6 +135,10 @@ export function parseScenario(text: string, file: string): Scenario {
       case "reaches":
         reaches.push(value);
         break;
+      case "shows":
+        if (value === "") throw new ScenarioError(file, line, `"shows" needs the text the agent must show`);
+        shows.push(value);
+        break;
     }
   });
 
@@ -176,6 +182,7 @@ export function parseScenario(text: string, file: string): Scenario {
     expects,
     covers,
     reaches,
+    shows,
   };
 }
 

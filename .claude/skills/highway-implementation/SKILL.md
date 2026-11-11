@@ -4,7 +4,7 @@ description: "Manages one reference implementation from one accepted reference a
 usage: "Invoke as /highway-implementation with one architecture id."
 compatibility: all
 metadata:
-  version: 7.10.0
+  version: 7.11.0
 ---
 
 # highway-implementation
@@ -39,17 +39,13 @@ Do not report Status, Summary, Next Action, Blocking Reason, Missing, Complete, 
 - `clarifications/clarifications.md` when present, for `CLAR-[RA id]` only.
 - `architectures/architectures.md` and `implementations/implementations.md`.
 - `.highway/library/templates/output/implementation-record.md`.
-- `.highway/library/templates/output/implementation-catalog.md`.
-- `.highway/library/templates/output/capability-catalog.md`.
-- `implementations/capabilities.md` when present.
-- `library/coding-standards/codify-platforms.md` when present.
-- `.highway/library/templates/output/codify-platforms.md`.
+- `implementations/capabilities.md` and `library/coding-standards/codify-platforms.md`.
 - The highway-experience skill, activated first.
 - A project root containing `.highway/`.
 
 ## Outputs
 
-The complete structure is `.highway/library/templates/output/implementation-record.md`, `.highway/library/templates/output/implementation-catalog.md`, and `.highway/library/templates/output/capability-catalog.md`.
+The complete structure is `.highway/library/templates/output/implementation-record.md`. `implementations/implementations.md`, `implementations/capabilities.md`, and `library/coding-standards/codify-platforms.md` keep the structure highway-setup seeded.
 
 - One implementation record at `implementations/[ID].md` after the person accepts the proposed realization.
 - An updated `implementations/implementations.md` written with that record.
@@ -63,6 +59,13 @@ The complete structure is `.highway/library/templates/output/implementation-reco
 ## Procedure
 
 Activate the highway-experience skill before any output the person sees, and follow it for Highway's identity, the Experience Standard, and the storage contract.
+
+Before the first question, confirm these seeded files exist: `implementations/implementations.md`, `implementations/capabilities.md`, `library/coding-standards/codify-platforms.md`.
+When any is absent, emit the message below exactly, stop, and write nothing.
+
+**Oops... we need to setup your repository.**
+
+Highway needs to gather your organizational preferences and set up your repository. Run /highway-setup to get started.
 
 Emit only the active template. Follow this order: `add capabilities` when `highway-codify-config` passes new realized capabilities; `delivery platforms`, with `delivery decline`, when `highway-codify` hands off an accepted implementation; `choose` when no architecture id is supplied; otherwise `start`, which follows `execution`, then `identifier`, `title` when needed, `write`, `platforms`, and `close`. The accepted Reference Architecture remains authoritative. A realization cannot redesign it or override the ADR. A missing Profile, Objective, Control, or NFR continues without invented evidence. A malformed one of those baselines stops the skill and writes nothing. Clarification is read-only. An open finding can inform a risk. It cannot block the proposal.
 
@@ -138,7 +141,7 @@ Read `library/coding-standards/codify-platforms.md` when present. A row with a b
 
 ### capability title
 
-1. Each capability title follows the Title rule in `.highway/library/templates/output/capability-catalog.md`.
+1. Each capability title follows the capability title rule.
 2. Split a title that joins two things into one capability per part, in its place in the list. Do not ask first. Each part keeps every other value of the entry it came from.
 3. Shorten a title of six or more words to five words or fewer. Keep its meaning.
 4. Leave out a part that matches a capability already listed.
@@ -258,9 +261,15 @@ The record follows `.highway/library/templates/output/implementation-record.md`.
 - The architecture is named once, in Architecture Reference.
 - Security Control Realization and NFR Realization project the accepted Controls and NFRs. Do not change those records.
 - Traceability names the Request, Discovery, the decision this realization came from, and this implementation. Do not name the architecture again.
-- Each realized capability title follows the Title rule in `.highway/library/templates/output/capability-catalog.md`, and each capability has one or more Realized By values.
+- Each realized capability title follows the capability title rule, and each capability has one or more Realized By values.
 
-`implementations/capabilities.md` follows `.highway/library/templates/output/capability-catalog.md`.
+Capability title rule: a capability title is one noun phrase of five words or fewer. A hyphenated word counts as one word. Modifiers can precede the noun. A title does not contain `and`, `or`, `&`, `/`, `+`, or a comma. A title that joins two things is two capabilities, one per part. Each part keeps its own words and repeats a shared noun when there is one.
+
+Edit `implementations/capabilities.md` in its existing structure.
+
+The catalog is written with its owning Reference Implementation. It has no `Next ID` field. The columns are ID, Parent, Title, and Realized By.
+
+Parent is the implementation id. Title is one capability and follows the capability title rule. Realized By lists the providers or mechanisms, in alphabetical order. The id is CAP plus eight hex digits derived from the title. The same Parent and title reuse that id. A removed row is not used; rows for one Parent are replaced on each write, and other Parents stay unchanged.
 
 - The columns are ID, Parent, Title, and Realized By.
 - Parent is this `RI` id. Title is the business capability. Realized By lists the providers or mechanisms, in alphabetical order.
@@ -274,7 +283,13 @@ The record follows `.highway/library/templates/output/implementation-record.md`.
 - Emit no timestamp, random value, or environment value.
 - Do not write plans, tasks, source code, or infrastructure definitions.
 
-The catalog follows `.highway/library/templates/output/implementation-catalog.md`.
+Edit `implementations/implementations.md` in its existing structure.
+
+The catalog owns the baseline version and the implementation index. It has no `Next ID` field. The index columns are Implementation ID, Architecture ID, Implementation Title, Implementation Path, and Status.
+
+Each Implementation ID appears once. Rows are ordered by Implementation ID. The Implementation ID is `RI` plus the eight hex digits derived from the title. Architecture ID is the accepted Reference Architecture this implementation realizes. More than one row may name the same Architecture ID. A removed row does not count as a current implementation. Status is `accepted` or `removed`.
+
+`accepted` has a record at `implementations/<id>.md`. `removed` has no record file. A removed row stays in the index, keeps the title that last held that id, and leaves the id taken.
 
 - The index columns are Implementation ID, Architecture ID, Implementation Title, Implementation Path, and Status.
 - Implementation ID is the `RI` id. Architecture ID is the `RA` id. Implementation Path is `implementations/<RI id>.md`. Status is `accepted`.
@@ -292,7 +307,7 @@ Read the accepted implementation's Technology Choice, Runtime Components, and Re
 
 When `highway-onboarding` follows this step, return to `highway-onboarding` after the write. Do not emit the included line or ask the question.
 
-Otherwise write `library/coding-standards/codify-platforms.md` from `.highway/library/templates/output/codify-platforms.md`. Create `library/coding-standards/` when it is absent. Platform is the implementation title. Implementation ID is its `RI` id. Kind is blank. When to use and When not to use are blank. Keep one row for this Implementation ID: when present, replace its Platform and keep its Kind, When to use, and When not to use; otherwise append it. Leave every other row unchanged. A failed write leaves the existing file unchanged. Say what failed, then go to `close`.
+Otherwise edit `library/coding-standards/codify-platforms.md` in its existing structure. Every row comes from an accepted implementation. There is one row per Implementation ID. Rows stay in the order they were added. Platform is the implementation title. Implementation ID is its `RI` id. Kind is blank. When to use and When not to use are blank. Keep one row for this Implementation ID: when present, replace its Platform and keep its Kind, When to use, and When not to use; otherwise append it. Leave every other row unchanged. A failed write leaves the existing file unchanged. Say what failed, then go to `close`.
 
 On success, emit:
 
@@ -323,7 +338,7 @@ This is a realization blueprint. It does not authorize deployment.
 1. Hold the return step for this visit.
 2. Read `implementations/[RI id].md` and `implementations/capabilities.md`. When the implementation is not accepted, say it is not accepted. Write nothing. Go to the held step.
 3. Leave out a passed capability whose title Realized Capabilities already lists.
-4. Derive each capability id as `write` does. When a title breaks the Title rule in `.highway/library/templates/output/capability-catalog.md`, or `write` would ask for a wording change, leave that capability out.
+4. Derive each capability id as `write` does. When a title breaks the capability title rule, or `write` would ask for a wording change, leave that capability out.
 5. Append each remaining capability to Realized Capabilities, in the order passed, with its Title, Realized By, and Evidence. Change no other byte of the record.
 6. Rewrite this Parent's rows in `implementations/capabilities.md` as `write` does, with the new capabilities. Leave other Parents unchanged.
 7. Write the record and the catalog together. A failed write leaves both unchanged. Say what failed. Go to the held step.
@@ -394,7 +409,7 @@ Leaving the preferred delivery platforms for [Title] unset. highway-codify needs
 - The architecture is named once. A technology choice is stated once.
 - The record status is `accepted`. The parent is an `RA` id.
 - `implementations/capabilities.md` is written in the same step, with ID, Parent, Title, and Realized By.
-- Each capability title follows the Title rule in `.highway/library/templates/output/capability-catalog.md`. A title that joins two things becomes two capabilities without a question, and the consequence sentence names the compounding effect.
+- Each capability title follows the capability title rule. A title that joins two things becomes two capabilities without a question, and the consequence sentence names the compounding effect.
 - A capability id is `CAP` plus eight hex digits. The same Parent and title reuse that id. No capability record file is written.
 - The record contains no plans, tasks, source code, or infrastructure definitions.
 - Each id is `RI` plus eight hex digits derived from the title.
@@ -407,7 +422,7 @@ Leaving the preferred delivery platforms for [Title] unset. highway-codify needs
 - The skill does not write an implementation id onto the ADR.
 - An accepted implementation that can start automation, such as an agent that starts the work, gets one row in `library/coding-standards/codify-platforms.md` with blank When to use and When not to use. The person is told it is included and asked whether to configure how highway-codify uses it. A yes emits "Let's configure how highway-codify uses [Platform]." and follows `highway-codify-config` for that platform with the return step `close`. A no goes to `close`. Under `highway-onboarding`, the step returns to onboarding after the write.
 - A store, a newsletter, a records product, or a backup gets no row and no message. Opening, listing, or declining writes no row.
-- An invocation from `highway-codify-config` naming an accepted implementation, new realized capabilities, and a return step goes to `add capabilities`. It appends them to Realized Capabilities and to this Parent's capability rows, changes no other record byte, asks no question, and goes to the held step. A passed title that breaks the Title rule is left out and named.
+- An invocation from `highway-codify-config` naming an accepted implementation, new realized capabilities, and a return step goes to `add capabilities`. It appends them to Realized Capabilities and to this Parent's capability rows, changes no other record byte, asks no question, and goes to the held step. A passed title that breaks the capability title rule is left out and named.
 - An invocation from `highway-codify` naming an accepted implementation and a return step goes to `delivery platforms`. It opens with "Here is the proposed Deployed by, Managed by and Language for [Product Title]", then shows Product Title, Architecture Reference, Deployed by, Managed by, and Language, each field followed by its Why it matters line. Accept stays on the view while a field is Needed. Acceptance rewrites only the three Execution lines, emits "The preferred delivery platforms for [Title] are set. Picking up your highway-codify run.", and goes to the held step.
 - The delivery platforms view holds the record's fields, then the `execution` value for each unset one: Deployed by or Managed by that is `Needed`, empty, or has no row, and Language that is `Needed`, empty, or has no row. A stored `None` is shown as stored. A value the person named in the visit replaces it. This implementation's row is never a candidate.
 - The `start` proposal and the delivery platforms view follow Deployed by, Managed by, and Language each with its Why it matters line from `why it matters`.

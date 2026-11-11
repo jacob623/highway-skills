@@ -1,0 +1,7 @@
+# The setup-needed stop: highway-request in a project with no seeded files.
+id: request-setup-needed
+skill: highway-request
+fixture: empty
+open: /highway-request Popular items sell out before anyone notices, and orders wait for stock, which breaks one-day shipping. The warehouse lead checks stock against reorder points by hand every Monday in a spreadsheet. We want items at or below their reorder point found automatically each week, with one alert to the warehouse lead. Success means no order waits on an item that was below its reorder point on the previous alert. No business constraints. The solution should be scheduled automation, preferably on GitHub Actions, with no new paid vendors.
+shows: **Oops... we need to setup your repository.**
+shows: Highway needs to gather your organizational preferences and set up your repository. Run /highway-setup to get started.

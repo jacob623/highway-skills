@@ -4,7 +4,7 @@ description: "Manages one decision, one reference architecture, and one referenc
 usage: "Invoke as `/highway-onboarding`."
 compatibility: all
 metadata:
-  version: 10.7.0
+  version: 10.8.0
 ---
 
 # highway-onboarding
@@ -32,13 +32,11 @@ Do not report Status, Summary, Next Action, Blocking Reason, Missing, Complete, 
 
 - Accepted Profile, Objectives, Controls, NFRs, ADRs, architectures, and implementations when present.
 - Material the person supplies, including a website when retrieval is available.
-- `adrs/adrs.md` when present.
+- `adrs/adrs.md`.
 - `.highway/library/templates/output/adr-record.md`.
-- `.highway/library/templates/output/adr-catalog.md`.
 - `highway-architecture`.
 - `highway-implementation`.
-- `library/coding-standards/codify-platforms.md` when present.
-- `.highway/library/templates/output/codify-platforms.md`.
+- `library/coding-standards/codify-platforms.md`.
 - The highway-experience skill, activated first.
 - A project root containing `.highway/`.
 
@@ -55,6 +53,13 @@ The complete structure is `.highway/library/templates/output/adr-record.md`, `.h
 ## Procedure
 
 Activate the highway-experience skill before any output the person sees, and follow it for Highway's identity, the Experience Standard, and the storage contract.
+
+Before the first question, confirm these seeded files exist: `adrs/adrs.md`, `architectures/architectures.md`, `implementations/implementations.md`, `implementations/capabilities.md`, `library/coding-standards/codify-platforms.md`.
+When any is absent, emit the message below exactly, stop, and write nothing.
+
+**Oops... we need to setup your repository.**
+
+Highway needs to gather your organizational preferences and set up your repository. Run /highway-setup to get started.
 
 Emit only the active template. Follow the steps in this order: `overview`, `capabilities`, `map`, `mapping`, `orchestrate`, `lineage`, `configure`, then `summary`. Review happens only when the person asks for it from the summary.
 
@@ -243,7 +248,7 @@ Write `adrs/[ID].md` and `adrs/adrs.md` together. A failed write leaves every ex
 - `## Alternatives Considered` lists the provider as `Selected`, then each alternative as `Evaluated` or `Rejected`. Head each alternative by its name, with its definition and reason. Do not write an option id.
 - Each Objective relationship is the Objective id and `advances`. Each Control relationship is the Control id and `bound by`. Each NFR relationship is the NFR id and `satisfies`. A section with no relationship is `None`.
 - `## Reference Architecture Handoff` has Reference Architecture `None` and no implementation entry.
-- The catalog columns are ADR ID, Discovery ID, Request ID, ADR Title, ADR Path, Architecture ID, and Status. Discovery ID is `highway`. Request ID is `onboarding`. ADR Path is `adrs/<ADR id>.md`. Architecture ID is `None` until the architecture is written. Status is `accepted`.
+- Edit `adrs/adrs.md` in its existing structure. The catalog columns are ADR ID, Discovery ID, Request ID, ADR Title, ADR Path, Architecture ID, and Status. Discovery ID is `highway`. Request ID is `onboarding`. ADR Path is `adrs/<ADR id>.md`. Architecture ID is `None` until the architecture is written. Status is `accepted`.
 - Do not allocate from `Next ID`.
 - Do not create a Discovery record.
 

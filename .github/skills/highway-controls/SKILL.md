@@ -4,7 +4,7 @@ description: "Manages the repository-wide control baseline."
 usage: "Invoke as /highway-controls."
 compatibility: all
 metadata:
-  version: 8.1.0
+  version: 8.2.0
 ---
 
 # highway-controls
@@ -33,13 +33,13 @@ Do not emit Setup's safeguard transition. Setup already emitted it.
 - `library/governance/controls.md` when present.
 - `library/governance/controls/CTL*.md` when present.
 - `.highway/library/templates/output/control-record.md`.
-- `.highway/library/templates/output/control-catalog.md`.
+- `assets/control-catalog.md`.
 - The highway-experience skill, activated first.
 - Delegation from `highway-setup`.
 
 ## Outputs
 
-The complete structure is `.highway/library/templates/output/control-record.md` and `.highway/library/templates/output/control-catalog.md`.
+The complete structure is `.highway/library/templates/output/control-record.md` and `assets/control-catalog.md`.
 
 - Updated Control records and catalog after a review edit.
 - New Control records and catalog after the guided flow writes them.
@@ -325,7 +325,7 @@ For each held Control, write `library/governance/controls/[ID].md` in the shape 
 - Do not show the stored records. Do not add a closing line.
 - When the Control came from a recommendation, write `## Recommendation Grounding` with the accepted Profile and the accepted Objective titles that influenced it. Omit that section when the person supplied the Control.
 
-Write `library/governance/controls.md` in the shape required by `.highway/library/templates/output/control-catalog.md`.
+Write `library/governance/controls.md` in the shape required by `assets/control-catalog.md`.
 
 - Order the index by identifier.
 - Do not allocate from `Next ID`.
@@ -357,7 +357,7 @@ No Control record is written beneath `.highway`.
 - That message does not mention identifiers, hex, sampling, or the catalog.
 - A successful guided write returns `Finished`, emits nothing else, and does not show the stored records.
 - Written records match `.highway/library/templates/output/control-record.md`.
-- The written catalog matches `.highway/library/templates/output/control-catalog.md`.
+- The written catalog matches `assets/control-catalog.md`.
 - Setup receives `Finished` and the person does not see that word.
 
 ## Error Handling

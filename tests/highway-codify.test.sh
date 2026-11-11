@@ -32,7 +32,6 @@ CODIFY="$SKILLS/highway-codify/SKILL.md"
 REQUEST="$SKILLS/highway-request/SKILL.md"
 ASSESSMENT="$SKILLS/highway-assessment/SKILL.md"
 RECORD="$OUTPUT/codify-record.md"
-CATALOG="$OUTPUT/codify-catalog.md"
 TASKS="$OUTPUT/codify-tasks.md"
 STANDARDS_CATALOG="$HW_ROOT/library/coding-standards/coding-standards.md"
 SAMPLE_STANDARD="$HW_ROOT/library/coding-standards/terraform.md"
@@ -77,8 +76,8 @@ reject "$MANIFEST" 'include	library/coding-standards	-'
 reject "$CODIFY" '**1. [Implementation ID]:**'
 reject "$CODIFY" 'You can also provide your own.'
 
-require "$CATALOG" 'More than one row may name the same Implementation ID.'
-require "$CATALOG" 'A removed row keeps its id and has no folder.'
+require "$CODIFY" 'More than one row may name the same Implementation ID.'
+require "$CODIFY" 'A removed row keeps its id and has no folder.'
 require "$RECORD" 'id: CDYXXXXXX'
 reject "$RECORD" '## Day'
 for text in \

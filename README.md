@@ -9,7 +9,8 @@ Copilot, Claude Code, Cursor) via generated adapters, so skill content never nee
 duplicated or hand-adapted per agent.
 
 - **Author a skill**: create `skills/<id>/SKILL.md` per [framework/authoring-standard.md](framework/authoring-standard.md).
-- **Create an architecture decision**: invoke `highway-adr` with one completed `DISC######` artifact; the workflow publishes an accepted ADR using the shared `adr-record.md` and `adr-catalog.md` output templates.
+- **Create an architecture decision**: invoke `highway-adr` with one completed `DISC######` artifact; the workflow publishes an accepted ADR using the shared `adr-record.md` output template and adds its row to the seeded `adrs/adrs.md`.
+- **Seed the catalogs**: `/highway-setup` writes every absent organization catalog, the findings file, and the storage record from `skills/highway-setup/assets/` at the start of each run. A skill that edits a seeded file stops and directs the person to `/highway-setup` when it is absent.
 - **Validate a skill**: `framework/validate-skill.sh skills/<id>`
 - **Build the catalog**: `framework/generate-catalog.sh` writes `.highway/catalog/index.json`.
 - **Generate agent adapters**: `framework/generate-agent-adapters.sh` writes
@@ -23,7 +24,8 @@ duplicated or hand-adapted per agent.
   for adaptive Concern, Condition, and Obligation discovery; direct `/highway-controls add` creates one Control.
 - **Run the test suite**: `tests/run-all.sh`
 - **Find a repository location in a script**: source the paths helper,
-  `framework/lib/paths.sh`, and use its `HW_*` variables, `hw_template`, and `hw_doc`.
+  `framework/lib/paths.sh`, and use its `HW_*` variables, `hw_template`, `hw_doc`, and
+  `hw_seeded`.
   Tests source `tests/paths.sh`; harness scripts source `harness/bin/lib/paths.sh`.
 
 Feature 094 full-suite validation allows up to 240 seconds for completion.

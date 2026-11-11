@@ -4,7 +4,7 @@ description: "Manages one discovery for a complete request."
 usage: "Invoke as /highway-discovery with one request id or one discovery id."
 compatibility: all
 metadata:
-  version: 5.1.0
+  version: 5.2.0
 ---
 
 # highway-discovery
@@ -38,13 +38,12 @@ Do not report Status, Summary, Next Action, Blocking Reason, Missing, Complete, 
 - The vendor's current public documentation for each product or feature a generated option names.
 - `requests/requests.md` and `discoveries/discoveries.md`.
 - `.highway/library/templates/output/discovery-record.md`.
-- `.highway/library/templates/output/discovery-catalog.md`.
 - The highway-experience skill, activated first.
 - A project root containing `.highway/`.
 
 ## Outputs
 
-The complete structure is `.highway/library/templates/output/discovery-record.md` and `.highway/library/templates/output/discovery-catalog.md`.
+The complete structure is `.highway/library/templates/output/discovery-record.md`. `discoveries/discoveries.md` keeps the structure highway-setup seeded.
 
 - One Discovery record at `discoveries/[ID].md`, written before the option list is shown.
 - An updated `discoveries/discoveries.md` written with that record.
@@ -54,6 +53,13 @@ The complete structure is `.highway/library/templates/output/discovery-record.md
 ## Procedure
 
 Activate the highway-experience skill before any output the person sees, and follow it for Highway's identity, the Experience Standard, and the storage contract.
+
+Before the first question, confirm these seeded files exist: `discoveries/discoveries.md`.
+When any is absent, emit the message below exactly, stop, and write nothing.
+
+**Oops... we need to setup your repository.**
+
+Highway needs to gather your organizational preferences and set up your repository. Run /highway-setup to get started.
 
 User-visible interaction follows the Highway Experience Standard. Repository ownership stays with the person.
 
@@ -222,7 +228,13 @@ The record follows `.highway/library/templates/output/discovery-record.md`.
 - The matrix totals equal the option scores. Exactly one option is `Recommended`.
 - Do not write a selected option, a rejected option, a decision, or an authorization.
 
-The catalog follows `.highway/library/templates/output/discovery-catalog.md`.
+Edit `discoveries/discoveries.md` in its existing structure.
+
+The catalog owns the baseline version and the Discovery index. It has no `Next ID` field. The index columns are Discovery ID, Request ID, Discovery Title, and Status.
+
+Each Discovery ID appears once. Rows are ordered by Discovery ID. The Discovery ID is `DISC` plus the eight hex digits derived from the title. Request ID is the completed Request this Discovery analyzes. Status is `accepted` or `removed`.
+
+`accepted` has a record at `discoveries/<id>.md`. `removed` has no record file. A removed row stays in the index, keeps the title that last held that id, and leaves the id taken.
 
 - Add one index row with the Discovery ID, Request ID, Discovery Title, and Status `accepted`.
 - Order the index by Discovery id.

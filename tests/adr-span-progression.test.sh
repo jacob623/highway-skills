@@ -13,9 +13,7 @@ OUTPUT="$HW_OUTPUT_TEMPLATES"
 ADR="$SKILLS/highway-adr/SKILL.md"
 ASSESSMENT="$SKILLS/highway-assessment/SKILL.md"
 DISCOVERY="$SKILLS/highway-discovery/SKILL.md"
-ADR_CATALOG="$OUTPUT/adr-catalog.md"
 ADR_RECORD="$OUTPUT/adr-record.md"
-ARCH_CATALOG="$OUTPUT/architecture-catalog.md"
 DISCOVERY_RECORD="$OUTPUT/discovery-record.md"
 fail=0
 
@@ -35,13 +33,13 @@ reject() {
 	fi
 }
 
-require "$ADR_CATALOG" 'RA11111111, RA22222222'
-require "$ADR_CATALOG" 'lists every architecture it names, in id order, separated by a comma and a space.'
-require "$ADR_CATALOG" '`None` means a new architecture will follow.'
+require "$ADR" 'list every RA id in the set, in id order, separated by a comma and a space, in the catalog Architecture ID cell'
+require "$ADR" 'lists every architecture it names, in id order, separated by a comma and a space.'
+require "$ADR" '`None` means a new architecture will follow.'
 require "$ADR_RECORD" 'Reference Architecture: <RA id, or `None`>'
 require "$ADR_RECORD" 'Its Required Architecture Work is `None`.'
-require "$ARCH_CATALOG" 'An ADR id appears on at most one row.'
-require "$ARCH_CATALOG" 'it appears on the row of each architecture it names.'
+require "$ADR" 'An ADR id appears on at most one row.'
+require "$ADR" 'it appears on the row of each architecture it names.'
 require "$DISCOVERY_RECORD" 'Product Claim Checks:'
 require "$DISCOVERY_RECORD" '`product currency`'
 require "$DISCOVERY_RECORD" '`required platform`'
