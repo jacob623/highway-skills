@@ -88,13 +88,13 @@ reject "$TASKS" 'Implement and Use'
 for text in \
 	'### standards' \
 	'**Standards:**' \
-	'/highway-codify-config' \
+	'highway-codify-config' \
 	'library/coding-standards/codify-platforms.md'; do
 	require "$CODIFY" "$text"
 done
 for text in \
 	'### configure' \
-	'/highway-codify configure' \
+	'highway-codify configure' \
 	'library/knowledge/codify-platforms.md' \
 	'the first row was used'; do
 	reject "$CODIFY" "$text"
@@ -104,7 +104,7 @@ for file in "$IMPL" "$ONBOARD"; do
 	require "$file" '**Would you like to configure how highway-codify uses [Platform]?**'
 	require "$file" 'library/coding-standards/codify-platforms.md'
 	reject "$file" 'library/knowledge/codify-platforms.md'
-	reject "$file" '/highway-codify configure'
+	reject "$file" 'highway-codify configure'
 done
 require "$IMPL" 'Follow `highway-codify-config` for [Platform], with the return step `close` in `highway-implementation`.'
 require "$ONBOARD" 'Follow `highway-codify-config` for [Platform], with the return step `configure` in `highway-onboarding`.'

@@ -1,10 +1,10 @@
-# A named platform with no catalog row stays the Provider, and the proposal points to /highway-codify-config.
+# A named platform with no catalog row stays the Provider, and the proposal points to highway-codify-config.
 id: codify-named-platform
 skill: highway-codify
 fixture: implementation
 open: /highway-codify Northwind Restock Alerts Post the weekly restock list to the team chat using Zapier
 ask: What would you add, correct, or remove?
 say: [decline] Leave it for now.
-covers: 509d882c1240 A named platform with no catalog row stays the Provider and the proposal says `/highway-codify-config` can add it. With no row and no named platform, the proposal says a platform is needed and accept stays on `revise`.
+covers: a93e4a08783c A named platform with no catalog row stays the Provider and the proposal says `highway-codify-config` can add it. With no row and no named platform, the proposal says a platform is needed and accept stays on `revise`.
 reaches: provider
 reaches: propose

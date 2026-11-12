@@ -1,10 +1,10 @@
 ---
 name: highway-onboarding
-description: "Manages one decision, one reference architecture, and one reference implementation."
-usage: "Invoke as `/highway-onboarding`."
-compatibility: all
+description: "Manages one decision, one reference architecture, and one reference implementation. Use when the person wants to onboard one capability in a single pass, grounded in accepted setup or architecture records."
+license: Apache-2.0
 metadata:
-  version: 10.10.0
+  version: 10.11.0
+  usage: "Run highway-onboarding."
 ---
 
 # highway-onboarding
@@ -15,7 +15,7 @@ Brings existing platforms into Highway by validating capabilities, mapping them 
 
 ## When to use
 
-- The person invokes `/highway-onboarding`.
+- The person invokes `highway-onboarding`.
 - Accepted Profile, Objectives, Controls, NFRs, or existing architecture records can ground a capability.
 
 ## When not to use
@@ -54,7 +54,7 @@ When any is absent, emit the message below exactly, stop, and write nothing.
 
 **Oops... we need to setup your repository.**
 
-Highway needs to gather your organizational preferences and set up your repository. Run /highway-setup to get started.
+Highway needs to gather your organizational preferences and set up your repository. Run highway-setup to get started.
 
 Emit only the active template. Follow the steps in this order: `overview`, `capabilities`, `map`, `mapping`, `orchestrate`, `lineage`, `configure`, then `summary`. Review happens only when the person asks for it from the summary.
 
@@ -254,11 +254,11 @@ If you'd like to review your Decision, Reference Architecture or Reference Imple
 
 **Where would you like to go next?**
 
-`/highway-assessment` is a good choice. Highway can perform an assessment of your current business context and provide recommendations you can act on today.
+`highway-assessment` is a good choice. Highway can perform an assessment of your current business context and provide recommendations you can act on today.
 
-Run /highway-help to explore what Highway can help you do.
+Run highway-help to explore what Highway can help you do.
 
-[When `highway-codify-config` handed off this onboarding for a platform: Run `/highway-codify-config [Platform]` to finish adding [Platform].]
+[When `highway-codify-config` handed off this onboarding for a platform: Run `highway-codify-config [Platform]` to finish adding [Platform].]
 
 When the person asks to review a record, go to `review`. When they choose a next step, follow that step. Do not start another record.
 
@@ -331,9 +331,9 @@ If this is accurate, just say so.
 - Lineage is shown only after every provider on the queue has an ADR, Reference Architecture, and Reference Implementation, and it lists each of those providers.
 - No inventory file is written.
 - An implementation that can start automation is included in `library/coding-standards/codify-platforms.md` by `highway-implementation`, with blank guidance. The person is asked whether to configure how highway-codify uses it, and any answer continues onboarding. No platform that cannot start automation is asked about.
-- After lineage, each yes, in the order asked, emits "Let's configure how highway-codify uses [Platform]." and follows `highway-codify-config` for that platform with the return step `configure`. The summary follows the last return and has no `/highway-codify-config [Platform]` configure pointer.
+- After lineage, each yes, in the order asked, emits "Let's configure how highway-codify uses [Platform]." and follows `highway-codify-config` for that platform with the return step `configure`. The summary follows the last return and has no `highway-codify-config [Platform]` configure pointer.
 - An onboarding handed off by `highway-codify-config` does not ask to configure that platform, and its summary ends with the line to finish adding that platform.
-- The summary recommends `/highway-assessment`, then `/highway-help`.
+- The summary recommends `highway-assessment`, then `highway-help`.
 
 ## Error Handling
 

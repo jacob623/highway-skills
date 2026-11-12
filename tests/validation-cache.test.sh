@@ -84,7 +84,7 @@ check "VC-4" "the skill validates before it is broken" "$seed_rc" "0"
 check "VC-4" "the passing verdict is recorded" "$(key_count "$cache")" "1"
 
 # Remove a required frontmatter key, mirroring the invalid-skill-missing-usage fixture.
-grep -v '^usage:' "$broken/SKILL.md" >"$broken/SKILL.md.tmp"
+grep -v '^  usage:' "$broken/SKILL.md" >"$broken/SKILL.md.tmp"
 mv "$broken/SKILL.md.tmp" "$broken/SKILL.md"
 
 broken_rc=0

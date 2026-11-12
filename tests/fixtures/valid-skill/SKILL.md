@@ -1,10 +1,10 @@
 ---
 name: valid-skill
-description: "A fully conformant fixture skill used only by the tests to validate the authoring framework."
-usage: "Not invoked directly; used only as fixture input to the test suite."
-compatibility: all
+description: "A fully conformant fixture skill used only by the tests to validate the authoring framework. Use when the tests exercise the validator."
+license: Apache-2.0
 metadata:
   version: 1.0.0
+  usage: "Not invoked directly; used only as fixture input to the test suite."
 ---
 
 ## Purpose

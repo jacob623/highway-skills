@@ -1,10 +1,10 @@
 ---
 name: highway-adr
-description: "Manages one architecture decision for one discovery."
-usage: "Invoke as /highway-adr with one discovery id."
-compatibility: all
+description: "Records one architecture decision for one discovery. Use when a discovery's options are ready and the person wants to choose one and record it as an ADR, or when highway-onboarding hands off a provider decision."
+license: Apache-2.0
 metadata:
-  version: 6.4.0
+  version: 6.5.0
+  usage: "Run highway-adr with one discovery id."
 ---
 
 # highway-adr
@@ -15,9 +15,9 @@ Records one accepted architecture decision for a Discovery after the person sele
 
 ## When to use
 
-- The person invokes `/highway-adr` with one Discovery id and one option id.
-- The person invokes `/highway-adr` with one Discovery id.
-- The person invokes `/highway-adr` without a Discovery id or an option id.
+- The person invokes `highway-adr` with one Discovery id and one option id.
+- The person invokes `highway-adr` with one Discovery id.
+- The person invokes `highway-adr` without a Discovery id or an option id.
 - `highway-onboarding` hands off a provider, the capabilities it serves, and the decision to adopt it.
 
 ## When not to use
@@ -62,7 +62,7 @@ When any is absent, emit the message below exactly, stop, and write nothing.
 
 **Oops... we need to setup your repository.**
 
-Highway needs to gather your organizational preferences and set up your repository. Run /highway-setup to get started.
+Highway needs to gather your organizational preferences and set up your repository. Run highway-setup to get started.
 
 User-visible interaction follows the Highway Experience Standard. Repository ownership stays with the person.
 
@@ -342,9 +342,9 @@ On success, go to `close`.
 
 Suggest exactly one next step.
 
-When no architecture is reused, run `/highway-architecture [ADR id]` to create the Reference Architecture for this decision.
+When no architecture is reused, run `highway-architecture [ADR id]` to create the Reference Architecture for this decision.
 
-When an architecture is reused and the selected option has no current decision with the same exact title and a current implementation, run `/highway-implementation [RA id]` to create the Reference Implementation for that architecture. A new architecture is not required.
+When an architecture is reused and the selected option has no current decision with the same exact title and a current implementation, run `highway-implementation [RA id]` to create the Reference Implementation for that architecture. A new architecture is not required.
 
 When that exact-title decision and its current implementation exist, name that implementation. Do not suggest creating an architecture or another implementation.
 
@@ -354,9 +354,9 @@ Name each architecture in the set with no current implementation: **[Architectur
 
 Then suggest one of these:
 
-- No current implementation in the set: run `/highway-implementation [RA id]` to create the Reference Implementation for **[Architecture title]**, the first architecture in the set.
+- No current implementation in the set: run `highway-implementation [RA id]` to create the Reference Implementation for **[Architecture title]**, the first architecture in the set.
 - Every current implementation is covered: say every implementation in this decision already has an automation for **[Decision title]**. Suggest no codify step.
-- One uncovered: Run `/highway-codify` for **[Implementation title]** to **[Decision title]**.
+- One uncovered: Run `highway-codify` for **[Implementation title]** to **[Decision title]**.
 - Two to five uncovered: emit one numbered line per uncovered implementation, in catalog order, as **1. [Implementation title]**, then ask **Which implementation would you like to codify first?**
 - More than five uncovered: list none. Ask **Which implementation would you like to codify first?** Say they can give its title.
 

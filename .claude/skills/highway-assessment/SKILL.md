@@ -1,10 +1,10 @@
 ---
 name: highway-assessment
-description: "Assess accepted repository context."
-usage: "Invoke as /highway-assessment."
-compatibility: all
+description: "Assesses accepted repository context. Use when the person wants to see how the accepted architectures, implementations, or whole portfolio stand."
+license: Apache-2.0
 metadata:
-  version: 5.3.0
+  version: 5.4.0
+  usage: "Run highway-assessment."
 ---
 
 # highway-assessment
@@ -15,8 +15,8 @@ Surfaces up to five grounded observations at a time from accepted repository kno
 
 ## When to use
 
-- The person invokes `/highway-assessment`.
-- The person invokes `/highway-assessment architectures`, `/highway-assessment implementations`, or `/highway-assessment portfolio`.
+- The person invokes `highway-assessment`.
+- The person invokes `highway-assessment architectures`, `highway-assessment implementations`, or `highway-assessment portfolio`.
 
 ## When not to use
 
@@ -54,7 +54,7 @@ When any is absent, emit the message below exactly, stop, and write nothing.
 
 **Oops... we need to setup your repository.**
 
-Highway needs to gather your organizational preferences and set up your repository. Run /highway-setup to get started.
+Highway needs to gather your organizational preferences and set up your repository. Run highway-setup to get started.
 
 Emit only the active template. Start at `review`. For ready records, go to `ready records`. For gaps, follow this order: `write` each new finding, then show the findings in `list of findings`, then show the chosen finding in `finding`, then return to `list of findings`. Go to `summary` when no further finding remains. Read catalogs before opening source records. Open a source record only when the catalog row does not answer the question. A conflict between a catalog and a record is reported as uncertainty. Do not repair either file.
 
@@ -207,7 +207,7 @@ If you'd like to dismiss this finding or go back to the list of findings, just s
 - `edit`: emit one consequence sentence. Update the written row through `write`. Then re-emit this finding. Stay on `finding`.
 - `accept`: update the written row to Status `Accepted` through `write`. Then go to `list of findings`.
 - `dismiss`: update the written row to Status `Dismissed` through `write`. Then go to `list of findings`.
-- `explore`: update the written row to Status `Accepted` through `write`. Emit exactly: `We'll turn this finding into a request so you can shape it and explore options. You can run /highway-assessment later for more recommendations.` Then continue as `highway-request` at `start` in the same message. Seed that start with the observation, the accepted evidence, and the uncertainty. Do not seed the possible solutions, the complexity, or the cost range. Do not ask the person to name a solution. Do not create the request in this skill.
+- `explore`: update the written row to Status `Accepted` through `write`. Emit exactly: `We'll turn this finding into a request so you can shape it and explore options. You can run highway-assessment later for more recommendations.` Then continue as `highway-request` at `start` in the same message. Seed that start with the observation, the accepted evidence, and the uncertainty. Do not seed the possible solutions, the complexity, or the cost range. Do not ask the person to name a solution. Do not create the request in this skill.
 
 - `question`: answer from accepted evidence. Then re-emit this finding and this question. Stay on `finding`.
 - `unknown`: record that uncertainty on the written row through `write`. Then re-emit this finding. Stay on `finding`.
@@ -263,7 +263,7 @@ When nothing is ready, say no accepted record is ready for the next stage. Then 
 
 **Where would you like to go next?**
 
-Run `/highway-help` to explore what Highway can help you do.
+Run `highway-help` to explore what Highway can help you do.
 
 ## Verification
 
@@ -288,7 +288,7 @@ Run `/highway-help` to explore what Highway can help you do.
 - A question about that finding is answered, then the same finding is shown again.
 - Save for later updates the written row to Status `Accepted`.
 - Discard updates the written row to Status `Dismissed`.
-- Explore a solution now updates the written row to Status `Accepted`, tells the person the finding is becoming a request, says they can run `/highway-assessment` later, and then continues as `highway-request` at `start`. Possible solutions, complexity, and cost are not seeded.
+- Explore a solution now updates the written row to Status `Accepted`, tells the person the finding is becoming a request, says they can run `highway-assessment` later, and then continues as `highway-request` at `start`. Possible solutions, complexity, and cost are not seeded.
 - The id is `F` plus eight hex digits derived from the observation.
 - The same observation reuses that id. A collision with a different observation waits for a wording change.
 - The findings file has no fingerprint column.

@@ -1,10 +1,10 @@
 ---
 name: highway-codify-config
-description: "Manages the repository-wide guidance used by highway-codify."
-usage: "Invoke as /highway-codify-config, or with one implementation name."
-compatibility: all
+description: "Manages the repository-wide guidance used by highway-codify. Use when the person wants to set up or update the platforms highway-codify writes for, or when another highway skill directs the person here."
+license: Apache-2.0
 metadata:
-  version: 3.9.0
+  version: 3.10.0
+  usage: "Run highway-codify-config, or with one implementation name."
 ---
 
 # highway-codify-config
@@ -15,8 +15,8 @@ Configures the platforms Highway considers for automation, the coding standards 
 
 ## When to use
 
-- The person invokes `/highway-codify-config`.
-- The person invokes `/highway-codify-config` with a platform name to add or update that platform.
+- The person invokes `highway-codify-config`.
+- The person invokes `highway-codify-config` with a platform name to add or update that platform.
 - `highway-codify`, `highway-implementation`, or `highway-onboarding` directs the person here.
 
 ## When not to use
@@ -55,7 +55,7 @@ When any is absent, emit the message below exactly, stop, and write nothing.
 
 **Oops... we need to setup your repository.**
 
-Highway needs to gather your organizational preferences and set up your repository. Run /highway-setup to get started.
+Highway needs to gather your organizational preferences and set up your repository. Run highway-setup to get started.
 
 Emit only the active template. Start at `Entry`. Follow the Highway Experience Standard for attribution and acceptance wording. Write only after `accept`.
 
@@ -126,7 +126,7 @@ If you'd like to cancel, just say so.
 
 - A name to add or correct that is an accepted implementation title, compared without regard to case: go to `current`, then `platform proposal`, as an update when it has a row and as an add otherwise.
 - A name to add that is not an accepted implementation: emit `[Platform] is not in the implementation catalog. Highway adds a platform from an accepted implementation.` Then ask **Would you like to onboard [Platform]?**
-  - `accept`: follow `highway-onboarding` from `overview`, for [Platform]. Its summary ends with: Run `/highway-codify-config [Platform]` to finish adding [Platform].
+  - `accept`: follow `highway-onboarding` from `overview`, for [Platform]. Its summary ends with: Run `highway-codify-config [Platform]` to finish adding [Platform].
   - `decline`: emit this list and its question.
   - `question`: answer, then ask **Would you like to onboard [Platform]?** again.
   - `unknown`: ask **Would you like to onboard [Platform]?** again.
@@ -416,7 +416,7 @@ If you'd like to cancel, just say so.
 
 ## Verification
 
-- `/highway-codify-config` shows the three-option menu. A platform name skips the menu and the platform list, and opens that platform's add or update or the onboard question.
+- `highway-codify-config` shows the three-option menu. A platform name skips the menu and the platform list, and opens that platform's add or update or the onboard question.
 - `Classify` tests `edit`, `decline`, `question`, `select`, `unknown`, then `accept`, and the first match wins.
 - Each yes or no question answers a `question` and asks again, asks again after `unknown`, and names where `decline` goes.
 - A return step named by `highway-onboarding` or `highway-implementation` is held for the visit. Declining the menu goes to that step. With none held, declining the menu stops.

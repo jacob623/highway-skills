@@ -16,7 +16,7 @@ TAB="$(printf '\t')"
 
 INSTRUCTION='When any is absent, emit the message below exactly, stop, and write nothing.'
 HEADLINE='**Oops... we need to setup your repository.**'
-BODY='Highway needs to gather your organizational preferences and set up your repository. Run /highway-setup to get started.'
+BODY='Highway needs to gather your organizational preferences and set up your repository. Run highway-setup to get started.'
 
 # `<skill>\t<files>`: the seeded files each skill confirms, in the order its check names them.
 CHECKS="highway-request${TAB}requests/requests.md

@@ -48,7 +48,7 @@ for text in \
 	'**Setup and Usage Instructions** can be found here:' \
 	"If you'd like to review the instructions together, just say so." \
 	'just ask Highway to show your Code Catalog' \
-	'Run /highway-help to explore what Highway can help you do.' \
+	'Run highway-help to explore what Highway can help you do.' \
 	'### catalog' \
 	'When the invocation is the word `catalog`' \
 	'**Which automation would you like to discuss?**' \

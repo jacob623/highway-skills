@@ -1,10 +1,10 @@
 ---
 name: highway-controls
-description: "Manages the repository-wide control baseline."
-usage: "Invoke as /highway-controls."
-compatibility: all
+description: "Manages the repository-wide control baseline. Use when highway-setup delegates the control baseline, after Objectives finish or when setup runs again."
+license: Apache-2.0
 metadata:
-  version: 8.4.0
+  version: 8.5.0
+  usage: "Run highway-controls."
 ---
 
 # highway-controls

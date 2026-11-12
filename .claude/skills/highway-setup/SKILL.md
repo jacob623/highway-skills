@@ -1,10 +1,10 @@
 ---
 name: highway-setup
-description: "Orchestrates initial highway setup through the owning governance skills."
-usage: "Invoke as /highway-setup."
-compatibility: all
+description: "Orchestrates initial highway setup through the owning governance skills. Use when the person sets up highway in a repository for the first time, or runs setup again to revise it."
+license: Apache-2.0
 metadata:
-  version: 10.3.0
+  version: 10.4.0
+  usage: "Run highway-setup."
 ---
 
 # highway-setup
@@ -15,8 +15,8 @@ Seeds the project's catalogs, then orchestrates Profile, Objectives, Controls, a
 
 ## When to use
 
-- The person invokes `/highway-setup` and `library/knowledge/profile.md` is absent.
-- The person invokes `/highway-setup` again after a prior setup run.
+- The person invokes `highway-setup` and `library/knowledge/profile.md` is absent.
+- The person invokes `highway-setup` again after a prior setup run.
 
 ## When not to use
 
@@ -147,13 +147,13 @@ Highway now has organizational context, business objectives, safeguards, and ope
 
 **Where would you like to go next?**
 
-Run `/highway-onboarding` to inform Highway of your current technology landscape. This aids Highway in providing cohesive recommendations.
+Run `highway-onboarding` to inform Highway of your current technology landscape. This aids Highway in providing cohesive recommendations.
 
-Run /highway-help to explore what Highway can help you do.
+Run highway-help to explore what Highway can help you do.
 
 ## Resume
 
-Every `/highway-setup` run starts at Seed, then Profile. Setup stores no checkpoint. Seeding writes only absent files, so a later run keeps every catalog as it is. When `profile.md` already exists, skip the welcome and still delegate Profile, then Objectives, Controls, and NFRs. Each owner reviews what it already holds before returning `Finished`.
+Every `highway-setup` run starts at Seed, then Profile. Setup stores no checkpoint. Seeding writes only absent files, so a later run keeps every catalog as it is. When `profile.md` already exists, skip the welcome and still delegate Profile, then Objectives, Controls, and NFRs. Each owner reviews what it already holds before returning `Finished`.
 
 ## Verification
 
@@ -171,7 +171,7 @@ Every `/highway-setup` run starts at Seed, then Profile. Setup stores no checkpo
 - `Finished` is not shown.
 - An owner that stops without `Finished` ends Setup before the next owner.
 - The conclusion is emitted once, after NFRs returns `Finished`.
-- The conclusion directs the person to `/highway-onboarding` before `/highway-help`.
+- The conclusion directs the person to `highway-onboarding` before `highway-help`.
 - Setup writes no file other than the seeded files.
 
 ## Error Handling

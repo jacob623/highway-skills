@@ -91,7 +91,7 @@ require "$ARCHITECTURE" 'Set the ADR'"'"'s `Reference Architecture` field to thi
 require "$ARCHITECTURE" 'does not name an implementation'
 reject "$ARCHITECTURE" 'adr-record.md'
 require "$ARCHITECTURE" '### name'
-require "$ARCHITECTURE" 'running `/highway-architecture [ADR id]` again will name it.'
+require "$ARCHITECTURE" 'running `highway-architecture [ADR id]` again will name it.'
 require "$ARCHITECTURE" 'Do not call the decision, architecture, and implementation chain complete.'
 require "$ARCHITECTURE" 'is still `None`, go to `name`.'
 reject "$ARCHITECTURE" 'Do not change the ADR, Discovery'

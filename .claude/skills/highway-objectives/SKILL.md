@@ -1,10 +1,10 @@
 ---
 name: highway-objectives
-description: "Manages the repository-wide business objective baseline and its stable traceability references."
-usage: "Invoke as /highway-objectives."
-compatibility: all
+description: "Manages the repository-wide business objective baseline and its stable traceability references. Use when highway-setup delegates the objective baseline, after Profile finishes or when setup runs again."
+license: Apache-2.0
 metadata:
-  version: 8.4.0
+  version: 8.5.0
+  usage: "Run highway-objectives."
 ---
 
 # highway-objectives

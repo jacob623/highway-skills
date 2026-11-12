@@ -57,7 +57,7 @@ passing:
 | 9 | Record Templates in Their Skills | 6 | Complete: `specs/238-standard-alignment-record-templates/` |
 | 10 | Onboarding Handoffs | 8 | Complete: `specs/239-standard-alignment-onboarding-handoffs/` |
 | 11 | Self-Contained Skills | 7 to 10 | Complete: `specs/240-standard-alignment-self-contained-skills/` |
-| 12 | Agent Skills Format Conformance | 6 | |
+| 12 | Agent Skills Format Conformance | 6 | Complete: `specs/241-standard-alignment-format-conformance/` |
 | 13 | Progressive Disclosure | 11 | |
 | 14 | Agent Plugins Package | 11 to 13 | |
 
@@ -74,7 +74,7 @@ Each requirement of the two standards, where Highway stands today, and the phase
 | Agent Skills | `compatibility`, if present: 1 to 500 characters stating real environment requirements | Every skill has `compatibility: all` | 12 |
 | Agent Skills | `metadata`: string keys to string values | Conforms (`version`) | 12 checks it |
 | Agent Skills | `license` (optional, needed for a public release) | Missing | 12 |
-| Agent Skills | `allowed-tools` (optional, experimental) | Not used | 12 decides |
+| Agent Skills | `allowed-tools` (optional, experimental) | Not used. It pre-approves tools rather than restricting them, so declaring it is a consent decision, not a conformance gap | None |
 | Agent Skills | Files a skill uses sit inside its folder (`scripts/`, `references/`, `assets/`) | Skills read templates and guidance from `.highway/` | 7 to 11 |
 | Agent Skills | References are relative to the skill folder, one level deep | Skills name `.highway/` paths | 7 to 11 |
 | Agent Skills | `SKILL.md` under 500 lines and about 5,000 tokens | 1 skill over 500 lines, 7 over 5,000 tokens | 13 |
@@ -1226,9 +1226,7 @@ Runs after Phase 6, when the skills are in their final folders. Independent of P
 1. Frontmatter uses only the standard fields:
    - `usage` moves under `metadata`;
    - `compatibility` states real environment requirements, or is left out;
-   - add `license`;
-   - decide whether to declare `allowed-tools`. It is experimental and support varies, so the
-     storage contract, not this field, stays the rule on which tools a skill uses.
+   - add `license: Apache-2.0`.
 2. Frontmatter parses as strict YAML, so a client with a strict parser loads every skill.
 3. Each `description` says what the skill does and when to use it, with the words a person would use.
 4. Handoff text names the next skill without assuming one way to invoke it.
@@ -1243,6 +1241,25 @@ Runs after Phase 6, when the skills are in their final folders. Independent of P
    and replaces its own frontmatter rules that conflict with it.
 
 Exit: every skill passes the specification's validation in the bash suite.
+
+Status: complete in `specs/241-standard-alignment-format-conformance/`. The suite goes from 85 to
+84 tests, all passing: `frontmatter-lexicon.test.sh` and `dependency-check.test.sh` are retired,
+and `agent-skills-format.test.sh` is added. Beyond the steps above:
+- Every skill's frontmatter is `name`, `description`, `license: Apache-2.0`, and `metadata` with
+  `version` and `usage`. No skill declares `compatibility`, which stays optional at up to 500
+  characters; `allowed-tools` is accepted and declared by none.
+- The validator parses frontmatter with `python3` and PyYAML, through
+  `framework/lib/yaml-frontmatter.sh`, and fails when the line readers read a value differently.
+  The development constitution (3.5.0) adds `python3` to the Declared Toolchain, D3.9, and a
+  Governance paragraph naming the specification as the authority on skill format.
+- The closed word list, `metadata.dependencies` with its check and index field, and
+  `metadata.agent_exceptions` are retired. highway-help prints five lines, without
+  `Dependencies:`, and its listing reads `Help: highway-help <id>`.
+- The Highway Skills Constitution (10.4.0) adds P5.15, `[auto]`, which requires a "Use when"
+  sentence, and P5.16, which ties that sentence to `## When to use`. P5.14 is retired, so it is
+  not reused.
+- Outside `## Example`, skills name skills as `highway-<id>`; `metadata.usage` reads
+  "Run highway-<id> …". Every skill took a MINOR version.
 
 # Phase 13: Progressive Disclosure
 

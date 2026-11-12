@@ -1,10 +1,10 @@
 ---
 name: invalid_skill_bad_id
-description: "Fixture whose directory name is not kebab-case, to test the id failure path."
-usage: "Not invoked directly; used only as fixture input to the test suite."
-compatibility: all
+description: "Fixture whose directory name is not kebab-case, to test the id failure path. Use when the tests exercise the validator."
+license: Apache-2.0
 metadata:
   version: 1.0.0
+  usage: "Not invoked directly; used only as fixture input to the test suite."
 ---
 
 ## Purpose

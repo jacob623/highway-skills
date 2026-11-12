@@ -1,10 +1,10 @@
 ---
 name: highway-codify
-description: "Manages one functional artifact for one accepted implementation."
-usage: "Invoke as /highway-codify with one implementation name."
-compatibility: all
+description: "Manages one functional artifact for one accepted implementation. Use when the person wants working code for an accepted reference implementation, or wants to see the code catalog and discuss one automation."
+license: Apache-2.0
 metadata:
-  version: 14.5.0
+  version: 14.6.0
+  usage: "Run highway-codify with one implementation name."
 ---
 
 # highway-codify
@@ -15,18 +15,18 @@ Suggests actions worth automating for one accepted implementation, checks the ch
 
 ## When to use
 
-- The person invokes `/highway-codify` with an implementation title.
-- The person invokes `/highway-codify` without an implementation title.
-- The person invokes `/highway-codify catalog`, or asks to show the code catalog, to see recent automations and discuss one.
+- The person invokes `highway-codify` with an implementation title.
+- The person invokes `highway-codify` without an implementation title.
+- The person invokes `highway-codify catalog`, or asks to show the code catalog, to see recent automations and discuss one.
 
 ## When not to use
 
 Do not run the automation.
 Do not change the implementation, its architecture, its decision, the request, the assessment finding, Controls, or NFRs.
-Do not change `library/coding-standards/codify-platforms.md`. `/highway-codify-config` changes it.
+Do not change `library/coding-standards/codify-platforms.md`. `highway-codify-config` changes it.
 Do not create a skill for a particular means.
 Do not put lifecycle activities on the implementation record.
-Do not create, edit, or remove a coding standard or a row of `library/coding-standards/coding-standards.md`. `/highway-codify-config` changes them.
+Do not create, edit, or remove a coding standard or a row of `library/coding-standards/coding-standards.md`. `highway-codify-config` changes them.
 Do not report Status, Summary, Next Action, Blocking Reason, Missing, Complete, or Blocked.
 
 ## Inputs
@@ -59,7 +59,7 @@ The complete structure is `assets/codify-record.md`, `assets/codify-plan.md`, `a
 - The files each task list line names, at their relative paths in `code/<folder>/`.
 - One `code/<folder>/README.md` with two parts, produced by the last task.
 - When every task is done, a completion message that names the files path `code/<folder>/` and the README path `code/<folder>/README.md`. When a task could not be finished, a close that names the automation, the task list, and that task. Both say the automation was not run.
-- A read-only code catalog view after `/highway-codify catalog`.
+- A read-only code catalog view after `highway-codify catalog`.
 - No automation when the implementation is missing, not accepted, the proposal is declined, or a write fails.
 
 ## Procedure
@@ -71,13 +71,13 @@ When any is absent, emit the message below exactly, stop, and write nothing.
 
 **Oops... we need to setup your repository.**
 
-Highway needs to gather your organizational preferences and set up your repository. Run /highway-setup to get started.
+Highway needs to gather your organizational preferences and set up your repository. Run highway-setup to get started.
 
 Emit only the active template. `catalog` runs alone. Otherwise follow this order: `choose` when no implementation is named; `record check`; `code project` for a code project, or `rank`, with `codified`, when no action is named; then `suggest`, `draft`, `code tasks` for a code project, `provider`, `standards`, `align`, `govern`, `resume`, `join`, `folder`, `layout`, `propose`, `revise`, `identifier`, `title` when needed, `write`, `index`, `plan`, `check`, `menu`, `review` when chosen, `tasks`, `code`, and `close`. Follow the Highway Experience Standard for attribution and acceptance wording. A current implementation is an accepted row in `implementations/implementations.md`. A removed row does not match and does not block a new automation.
 
 ### Entry
 
-1. When the invocation is the word `configure`, or asks to change platforms or coding standards, say: To configure platforms and coding standards, run /highway-codify-config. Write nothing.
+1. When the invocation is the word `configure`, or asks to change platforms or coding standards, say: To configure platforms and coding standards, run highway-codify-config. Write nothing.
 2. When the invocation is the word `catalog`, or asks to show the code catalog, go to `catalog`. Do not resume a task list or select an implementation.
 3. Read the invocation for an implementation title, a description, an implementation id, and one optional action.
 4. When the invocation names a product in `code/code.md` by title, folder, or `CDY` id and its open feature has an open task, go to `code` at the first open task. When that feature has a plan and no task list, go to `menu`.
@@ -374,7 +374,7 @@ Every path is relative to the product folder and does not begin with `/`, `code/
 
 When a listed standard has no File and Folder Structure, emit before the proposal:
 
-[Standard Title] has no file and folder structure. To add one, run /highway-codify-config.
+[Standard Title] has no file and folder structure. To add one, run highway-codify-config.
 
 Place that standard's files as if it were absent. Apply the match in step 2 of `govern` to each placed path. Add a new match. Do not drop a match already held. Go to `propose`.
 
@@ -447,13 +447,13 @@ An edit that names a different Provider sets it on that task, then goes to `stan
 An edit that changes a method goes to `standards`, then `align`, for that task.
 An edit that adds, removes, or reorders a task's Standards changes only that list, then goes to `align` for that task.
 A Files edit changes only this automation and leaves out a path that is not relative.
-A title not in the coding standards catalog is left out, and the rest of the list is kept. Say: [Title] is not a listed coding standard. To add it, run /highway-codify-config.
+A title not in the coding standards catalog is left out, and the rest of the list is kept. Say: [Title] is not a listed coding standard. To add it, run highway-codify-config.
 A second action is removed. Say it waits for another run.
 The person can switch to another accepted architecture by title. An architecture that is not accepted is not added.
 A preparation-only request stays one self-service action.
 Removing the last task or the last acceptance criterion says at least one is needed.
 An edit that changes the proposed project uses that folder. Say a removed product's folder is taken.
-An edit that would break a listed Control or NFR is not applied. Say: [Title] stays in effect. To change a Control, run /highway-controls. To change an NFR, run /highway-nfrs.
+An edit that would break a listed Control or NFR is not applied. Say: [Title] stays in effect. To change a Control, run highway-controls. To change an NFR, run highway-nfrs.
 - `accept`: go to `identifier` when the proposal has one action, a Provider or a Language standard, at least one task, at least one acceptance criterion, and an accepted architecture. Otherwise stay on `revise`.
 - `unknown`: re-emit the proposal. Stay on `revise`.
 - `question`: answer, then re-emit the proposal. Stay on `revise`.
@@ -677,7 +677,7 @@ To revisit this in the future, just ask Highway to show your Code Catalog. We ca
 
 **Where would you like to go next?**
 
-Run /highway-help to explore what Highway can help you do.
+Run highway-help to explore what Highway can help you do.
 ```
 
 When a task could not be finished, emit:
@@ -716,22 +716,22 @@ The automation was not run.
 - The proposal shows Title, Summary, Description, Acceptance criteria, Diagram, and Tasks, in that order. It shows no components, current state, separate action, day, or means.
 - The diagram is one logical flow, top to bottom, from the Provider. Each arrow leaves the Provider, is one task's action, starts with a verb, and points to that task's target, in task order. No arrow leaves a target.
 - Every task names the same Provider, the platform executing the automation. The implementation being automated is a target. A Shopify proposal can use Cursor when Cursor is included, even though the Shopify records do not name it.
-- A named platform with no catalog row stays the Provider and the proposal says `/highway-codify-config` can add it. With no row and no named platform, the proposal says a platform is needed and accept stays on `revise`.
+- A named platform with no catalog row stays the Provider and the proposal says `highway-codify-config` can add it. With no row and no named platform, the proposal says a platform is needed and accept stays on `revise`.
 - After a selection, a record whose Deployed by or Managed by is `Needed`, empty, or has no row, or whose Language is `Needed`, empty, or has no row, emits the missing critical detail line and "Let's set those details now for [Product Title].", then follows `highway-implementation` with the return step `record check`. It asks no question and holds no platform for one run.
 - A return with the record still incomplete stops and writes nothing.
 - An implementation whose Language names a coding standard is a code project. Until an Establish feature is recorded, `Establish [implementation title]` is the only suggestion, even when an instance is running. Later suggestions come from Realized Capabilities, Realized Interfaces, covered Coverage rows, then NFR Realization, at most five.
 - A code project's Establish proposes the project structure, the build file, the entry point, the configuration, and a health check, plus pipeline tasks when Deployed by is a pipeline. A code task shows Language in place of Provider. The Executor is Deployed by.
 - A code project's product is titled from the implementation, lists only that implementation, and its close says the code was not run.
 - Each task shows Standards as an ordered list, or `No coding standard applies.` A standard whose When not to use matches is dropped. A standard comes before the standards it inherits from, and each inherited standard appears once.
-- A Standards edit re-emits the proposal with one consequence sentence. A title not in the catalog is left out and points to `/highway-codify-config`.
+- A Standards edit re-emits the proposal with one consequence sentence. A title not in the catalog is left out and points to `highway-codify-config`.
 - `align` corrects the method, library, module, or pattern against every standard on the task's list and keeps the Provider.
-- An invocation of the word `configure` points to `/highway-codify-config` and writes nothing.
-- `/highway-codify catalog` lists at most five accepted automations, newest first, with each implementation title and progress, says how many more exist, and writes nothing. A selection shows the files path and the README path.
+- An invocation of the word `configure` points to `highway-codify-config` and writes nothing.
+- `highway-codify catalog` lists at most five accepted automations, newest first, with each implementation title and progress, says how many more exist, and writes nothing. A selection shows the files path and the README path.
 - A new row in `code/code.md` is appended as the last row.
 - The README is headed `## Setup Instructions`, then `## User Guide`.
 - A finished run closes with the completion message, both paths, and the sentence that the automation was not run. A stopped run names the stopped task and does not say the codify stage is complete.
 - Each task is one action against one target and shows Scope, Provider, Method, Standards, Files, and Assumptions.
-- Files lists relative paths placed from the File and Folder Structure of the task's standards. A listed standard with no structure is named before the proposal with a pointer to `/highway-codify-config`. A Files edit changes only this automation. An unfilled placeholder keeps the proposal open.
+- Files lists relative paths placed from the File and Folder Structure of the task's standards. A listed standard with no structure is named before the proposal with a pointer to `highway-codify-config`. A Files edit changes only this automation. An unfilled placeholder keeps the proposal open.
 - A second action waits for another run. Declining writes nothing. Accepting is the only confirmation.
 - Acceptance writes `codify.md`, the product's `metadata.md` with the new Features row, the catalog row, and any new integrations row together, then `plan.md`. It writes no task list, no file the task list names, and no README.
 - The proposal heading is `Here is a proposed starting point for your codify feature:`. `Highway will use this specification to build out the solution.` follows `If this is accurate, just say so.`

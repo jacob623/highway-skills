@@ -1,10 +1,10 @@
 ---
 name: highway-implementation
-description: "Manages one reference implementation from one accepted reference architecture."
-usage: "Invoke as /highway-implementation with one architecture id."
-compatibility: all
+description: "Manages one reference implementation from one accepted reference architecture. Use when a reference architecture is accepted and the person wants the implementation that realizes it, or when another highway skill hands one off."
+license: Apache-2.0
 metadata:
-  version: 7.13.0
+  version: 7.14.0
+  usage: "Run highway-implementation with one architecture id."
 ---
 
 # highway-implementation
@@ -15,8 +15,8 @@ Creates one proposed Reference Implementation from an accepted Reference Archite
 
 ## When to use
 
-- The person invokes `/highway-implementation` with one Reference Architecture id.
-- The person invokes `/highway-implementation` without a Reference Architecture id.
+- The person invokes `highway-implementation` with one Reference Architecture id.
+- The person invokes `highway-implementation` without a Reference Architecture id.
 - `highway-codify-config` names an accepted implementation, new realized capabilities, and a return step.
 - `highway-codify` names an accepted implementation and a return step.
 - `highway-onboarding` hands off an accepted Reference Architecture id, a provider, and the capabilities it serves.
@@ -65,7 +65,7 @@ When any is absent, emit the message below exactly, stop, and write nothing.
 
 **Oops... we need to setup your repository.**
 
-Highway needs to gather your organizational preferences and set up your repository. Run /highway-setup to get started.
+Highway needs to gather your organizational preferences and set up your repository. Run highway-setup to get started.
 
 Emit only the active template. Follow this order: `onboarding` when `highway-onboarding` hands off an accepted Reference Architecture id; `add capabilities` when `highway-codify-config` passes new realized capabilities; `delivery platforms`, with `delivery decline`, when `highway-codify` hands off an accepted implementation; `choose` when no architecture id is supplied; otherwise `start`, which follows `execution`, then `identifier`, `title` when needed, `write`, `platforms`, and `close`. The accepted Reference Architecture remains authoritative. A realization cannot redesign it or override the ADR. A missing Profile, Objective, Control, or NFR continues without invented evidence. A malformed one of those baselines stops the skill and writes nothing. Clarification is read-only. An open finding can inform a risk. It cannot block the proposal.
 
@@ -138,7 +138,7 @@ Read `library/coding-standards/codify-platforms.md` when present. A row with a b
 1. A platforms-catalog row replaces Deployed by or Managed by. Show its title.
 2. When the name has an accepted implementation and no row, emit: Let's configure [Platform]. Follow `highway-codify-config` for [Platform], with the return step `execution` in `highway-implementation`.
 3. When the name has no accepted implementation, emit: Let's onboard [Platform]. Follow `highway-onboarding` for [Platform], with the return step `execution` in `highway-implementation`.
-4. A listed coding-standard title, or None, replaces Language. Any other title is left out. Say: [Title] is not a listed coding standard. To add it, run /highway-codify-config.
+4. A listed coding-standard title, or None, replaces Language. Any other title is left out. Say: [Title] is not a listed coding standard. To add it, run highway-codify-config.
 5. Re-emit the proposal. Stay on `start`.
 
 ### why it matters

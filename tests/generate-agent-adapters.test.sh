@@ -134,7 +134,7 @@ else
 		echo "FAIL: $CURSOR_TARGET is not byte-identical to the Claude Code deliverable"
 		fail=1
 	fi
-	for key in name description usage compatibility metadata; do
+	for key in name description license metadata; do
 		if grep -q "^$key:" "$SKILL_SRC_DIR/SKILL.md" && ! grep -q "^$key:" "$CURSOR_TARGET"; then
 			echo "FAIL: $CURSOR_TARGET is missing source frontmatter key '$key'"
 			fail=1

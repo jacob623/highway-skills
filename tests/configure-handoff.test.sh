@@ -3,7 +3,7 @@
 set -u
 # Instrument class: static-document-contract
 # Artifact classes: source-document
-# Seeded failure probe: restoring "Run `/highway-codify-config [Platform]` to configure it for automation." in highway-onboarding, or "- `decline`: stop. Write nothing." in highway-codify-config, fails this check.
+# Seeded failure probe: restoring "Run `highway-codify-config [Platform]` to configure it for automation." in highway-onboarding, or "- `decline`: stop. Write nothing." in highway-codify-config, fails this check.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=paths.sh
@@ -51,7 +51,7 @@ require_in "$ONBOARD" '### configure' '1. When no platform to configure remains,
 require_in "$ONBOARD" '### configure' '2. Take the first platform to configure. Remove it from the list.'
 require_in "$ONBOARD" '### configure' "3. Emit: Let's configure how highway-codify uses [Platform]."
 require_in "$ONBOARD" '### configure' '4. Follow `highway-codify-config` for [Platform], with the return step `configure` in `highway-onboarding`.'
-require_in "$ONBOARD" '### summary' 'Run `/highway-codify-config [Platform]` to finish adding [Platform].'
+require_in "$ONBOARD" '### summary' 'Run `highway-codify-config [Platform]` to finish adding [Platform].'
 
 lineage="$(line_of "$ONBOARD" '### lineage')"
 configure="$(line_of "$ONBOARD" '### configure')"
@@ -75,9 +75,9 @@ require_in "$IMPL" '### platforms' '- `unknown`: go to `close`.'
 require_in "$CONFIG" '### Entry' '1. When the invocation names a return step, hold it for this visit.'
 require_in "$CONFIG" "$MENU" '- `decline`: when a return step is held, go to that step in its skill. Otherwise stop. Write nothing.'
 
-reject "$ONBOARD" 'Run `/highway-codify-config [Platform]` to configure it for automation.'
+reject "$ONBOARD" 'Run `highway-codify-config [Platform]` to configure it for automation.'
 reject "$ONBOARD" 'Do not emit the configure pointer here.'
-reject "$IMPL" 'Run `/highway-codify-config [Platform]` to configure it.'
+reject "$IMPL" 'Run `highway-codify-config [Platform]` to configure it.'
 reject "$CONFIG" '- `decline`: stop. Write nothing.'
 
 for pair in "$ONBOARD|### configure" "$IMPL|### platforms" "$CONFIG|### Entry" "$CONFIG|$MENU"; do

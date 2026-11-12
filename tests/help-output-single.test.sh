@@ -13,8 +13,14 @@ SKILL="$HW_SKILLS/highway-help/SKILL.md"
 fail=0
 
 single_skills_block="$(awk '/^- Single-Skill mode:/{capture=1} capture && /^- All-Skills mode:/{exit} capture{print}' "$SKILL")"
-if [[ "$single_skills_block" != *"Name:"* || "$single_skills_block" != *"Description:"* || "$single_skills_block" != *"Dependencies:"* || "$single_skills_block" != *"Version:"* || "$single_skills_block" != *"Usage:"* || "$single_skills_block" != *"Example:"* ]]; then
-	echo "FAIL: Single-Skill declaration must preserve the six-field order"
+if [[ "$single_skills_block" != *"Name:"* || "$single_skills_block" != *"Description:"* || "$single_skills_block" != *"Version:"* || "$single_skills_block" != *"Usage:"* || "$single_skills_block" != *"Example:"* ]]; then
+	echo "FAIL: Single-Skill declaration must preserve the five-field order"
+	fail=1
+fi
+# Superseded behavior: a sixth field, Dependencies:, printed metadata.dependencies, which skills no
+# longer declare.
+if [[ "$single_skills_block" == *"Dependencies:"* ]]; then
+	echo "FAIL: Single-Skill declaration must not print Dependencies:"
 	fail=1
 fi
 
@@ -40,4 +46,4 @@ if [[ $fail -ne 0 ]]; then
 	exit 1
 fi
 
-echo "PASS: Single-Skill six-field, empty-catalog, and unknown-identifier contracts remain declared."
+echo "PASS: Single-Skill five-field, empty-catalog, and unknown-identifier contracts remain declared."

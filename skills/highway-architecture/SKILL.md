@@ -1,10 +1,10 @@
 ---
 name: highway-architecture
-description: "Manages one reference architecture from one accepted adr."
-usage: "Invoke as /highway-architecture with one adr id."
-compatibility: all
+description: "Manages one reference architecture from one accepted adr. Use when an ADR is accepted and the person wants the reference architecture that realizes it, or when highway-onboarding hands off an accepted ADR."
+license: Apache-2.0
 metadata:
-  version: 5.5.0
+  version: 5.6.0
+  usage: "Run highway-architecture with one adr id."
 ---
 
 # highway-architecture
@@ -15,8 +15,8 @@ Creates one proposed Reference Architecture from an accepted ADR after the perso
 
 ## When to use
 
-- The person invokes `/highway-architecture` with one ADR id.
-- The person invokes `/highway-architecture` without an ADR id.
+- The person invokes `highway-architecture` with one ADR id.
+- The person invokes `highway-architecture` without an ADR id.
 - `highway-onboarding` hands off an accepted ADR id.
 
 ## When not to use
@@ -60,7 +60,7 @@ When any is absent, emit the message below exactly, stop, and write nothing.
 
 **Oops... we need to setup your repository.**
 
-Highway needs to gather your organizational preferences and set up your repository. Run /highway-setup to get started.
+Highway needs to gather your organizational preferences and set up your repository. Run highway-setup to get started.
 
 Emit only the active template. Follow this order: `onboarding` when `highway-onboarding` hands off an accepted ADR id; `choose` when no ADR id is supplied; otherwise `start`, then `identifier`, `title` when needed, `write`, `name`, and `close`. The ADR remains the decision. Inherit its decision, rationale, alternatives, consequences, and constraints without changing their meaning. Describe the architecture in conceptual terms. A platform, product, vendor, or specific technology stays in the inherited decision and is not part of the architecture. A missing Profile, Objective, Control, or NFR continues without invented evidence. A malformed one of those baselines stops the skill and writes nothing.
 
@@ -272,7 +272,7 @@ On success, go to `name`.
 
 Set the ADR's `Reference Architecture` field to this `RA` id, and that ADR's Architecture ID in `adrs/adrs.md` to the same id, in one write. Change no other ADR or ADR catalog byte. The decision statement, rationale, selected option, and status stay as they were. Do not set an implementation id.
 
-When the ADR cannot be updated, keep the architecture record and catalog. Say the ADR could not be updated to name this architecture, and that running `/highway-architecture [ADR id]` again will name it. Do not call the decision, architecture, and implementation chain complete.
+When the ADR cannot be updated, keep the architecture record and catalog. Say the ADR could not be updated to name this architecture, and that running `highway-architecture [ADR id]` again will name it. Do not call the decision, architecture, and implementation chain complete.
 
 Then go to `close`.
 
@@ -285,7 +285,7 @@ Then go to `close`.
 - **Identifier:** `[RA id]`
 - **ADR:** `[ADR id]`
 
-Run `/highway-implementation [RA id]` to create the Reference Implementation.
+Run `highway-implementation [RA id]` to create the Reference Implementation.
 
 ## Verification
 
@@ -310,7 +310,7 @@ Run `/highway-implementation [RA id]` to create the Reference Implementation.
 - A taken id names the conflicting titles, says a title change is appropriate, and shows a new title. The write waits until the person accepts that title.
 - That message does not mention identifiers, hex, sampling, or the catalog.
 - A failed write leaves existing architecture bytes unchanged.
-- The closing message names `/highway-implementation [RA id]`.
+- The closing message names `highway-implementation [RA id]`.
 - The skill creates no Reference Implementation.
 - A handoff from `highway-onboarding` writes an accepted architecture without a proposal, names it on the ADR and in the ADR catalog, and returns its `RA` id. It asks only the purpose question or the title message, when the title cannot be used. A `decline` writes nothing.
 

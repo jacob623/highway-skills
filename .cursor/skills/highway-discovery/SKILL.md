@@ -1,10 +1,10 @@
 ---
 name: highway-discovery
-description: "Manages one discovery for a complete request."
-usage: "Invoke as /highway-discovery with one request id or one discovery id."
-compatibility: all
+description: "Manages one discovery for a complete request. Use when a request is complete and the person wants to explore options for it, or wants to resume an existing discovery."
+license: Apache-2.0
 metadata:
-  version: 5.4.0
+  version: 5.5.0
+  usage: "Run highway-discovery with one request id or one discovery id."
 ---
 
 # highway-discovery
@@ -15,9 +15,9 @@ Creates one Discovery for a completed Request, checks each named product claim b
 
 ## When to use
 
-- The person invokes `/highway-discovery` with one Request id.
-- The person invokes `/highway-discovery` with one Discovery id.
-- The person invokes `/highway-discovery` without a Request id or a Discovery id.
+- The person invokes `highway-discovery` with one Request id.
+- The person invokes `highway-discovery` with one Discovery id.
+- The person invokes `highway-discovery` without a Request id or a Discovery id.
 
 ## When not to use
 
@@ -58,7 +58,7 @@ When any is absent, emit the message below exactly, stop, and write nothing.
 
 **Oops... we need to setup your repository.**
 
-Highway needs to gather your organizational preferences and set up your repository. Run /highway-setup to get started.
+Highway needs to gather your organizational preferences and set up your repository. Run highway-setup to get started.
 
 User-visible interaction follows the Highway Experience Standard. Repository ownership stays with the person.
 

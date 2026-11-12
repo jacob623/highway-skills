@@ -1,5 +1,23 @@
 <!--
 Sync Impact Report
+Version change: 10.3.0 → 10.4.0 (MINOR), 2026-11-12
+Bump rationale: a skill's description is what an Agent Skills client reads to decide whether to
+activate it, so Principle V gains two rules that make it say when to use the skill. Adding a rule
+is MINOR under the Constitution Versioning Policy; every skill gains the sentence in the same
+change, so no conforming skill fails.
+Changed elements:
+- Version line: 10.3.0 → 10.4.0
+- Last Amended date: 2026-11-11 → 2026-11-12
+- Principle V: rule P5.15 added, tier [auto], decided by rc_check_P5_15
+- Principle V: rule P5.16 added, tier [agent-checkable]
+Rule count: 74 → 76. Tier counts: [auto] 14 → 15, [agent-checkable] 60 → 61, [human-review] 0.
+The new IDs start at P5.15 because P5.14 is retired and a retired ID is never reused.
+Unchanged: every other rule's keyword, obligation, Observable, and tier, and every other element.
+Self-application review: P1.1 PASS (each new rule carries one keyword); P1.3 PASS (each is 25
+words or fewer); P6.4 PASS (no nondeterministic criterion token); P7.3 PASS (no rule text is
+restated elsewhere; the authoring standard cites the IDs).
+
+Sync Impact Report
 Version change: 10.2.0 → 10.3.0 (MINOR), 2026-11-11
 Bump rationale: highway-setup seeds the organization catalogs from its own `assets/`, and the
 governance catalog templates move into their owning skills' `assets/`. P9.1's Observable accepts
@@ -454,6 +472,8 @@ accident.
 | P5.11 | A runtime contract MUST consume a dependent owner's preserved non-success result. | The calling contract keeps that result and uses it. | [agent-checkable] |
 | P5.12 | A runtime contract MUST NOT report a failed mutation as success. | The reported outcome records the failed mutation. | [agent-checkable] |
 | P5.13 | A runtime contract MUST stop for an unexpected failure with actionable user-facing context. | The stop states what the user can do next. | [agent-checkable] |
+| P5.15 | A skill's description MUST contain a sentence beginning "Use when". | The frontmatter `description` has a sentence that starts with "Use when". | [auto] |
+| P5.16 | A description's "Use when" sentence MUST name only scenarios the skill's "When to use" section lists. | Every condition in that sentence matches a "When to use" scenario. | [agent-checkable] |
 Rationale: Development validation verifies that required failure behavior exists in the effective
 shipped runtime contract, whether the behavior is defined by the skill or a separately shipped
 shared runtime contract. The Constitution does not supply omitted runtime behavior.
@@ -684,4 +704,4 @@ every other skill's version. This is the policy referenced by P7.7.
 - **MINOR**: a capability is added while every existing contract element continues to hold.
 - **PATCH**: wording repair with no change to Inputs, Outputs, or Verification.
 
-**Version**: 10.3.0 | **Ratified**: 2026-09-06 | **Last Amended**: 2026-11-11
+**Version**: 10.4.0 | **Ratified**: 2026-09-06 | **Last Amended**: 2026-11-12
