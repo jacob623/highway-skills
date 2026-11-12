@@ -8,12 +8,14 @@ set -u
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=paths.sh
 source "$SCRIPT_DIR/paths.sh"
+# shellcheck source=../framework/lib/flows.sh
+source "$HW_LIB/flows.sh"
 SKILLS="$HW_SKILLS"
-IMPL="$SKILLS/highway-implementation/SKILL.md"
-ONBOARD="$SKILLS/highway-onboarding/SKILL.md"
-ARCH="$SKILLS/highway-architecture/SKILL.md"
-CONFIG="$SKILLS/highway-codify-config/SKILL.md"
-CODIFY="$SKILLS/highway-codify/SKILL.md"
+IMPL="$(fl_skill_text_file "$SKILLS/highway-implementation")"
+ONBOARD="$(fl_skill_text_file "$SKILLS/highway-onboarding")"
+ARCH="$(fl_skill_text_file "$SKILLS/highway-architecture")"
+CONFIG="$(fl_skill_text_file "$SKILLS/highway-codify-config")"
+CODIFY="$(fl_skill_text_file "$SKILLS/highway-codify")"
 ARCH_RECORD="$(hw_template architecture-record)"
 fail=0
 

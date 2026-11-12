@@ -8,7 +8,9 @@ set -u
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=paths.sh
 source "$SCRIPT_DIR/paths.sh"
-CONFIG="$HW_SKILLS/highway-codify-config/SKILL.md"
+# shellcheck source=../framework/lib/flows.sh
+source "$HW_LIB/flows.sh"
+CONFIG="$(fl_skill_text_file "$HW_SKILLS/highway-codify-config")"
 fail=0
 
 section() {
@@ -108,7 +110,7 @@ reject "$CONFIG" 'Each rule contains the word must and names a condition and the
 reject "$CONFIG" 'Then emit the closing question and the cancel line.'
 
 previous=0
-for heading in '### Entry' '### Classify' '### menu' '### platforms' '### current' '### entry level' '### use entries' '### platform proposal' '### platform written' '### standards' '### standard rules' '### rule shape' '### standard proposal' '### standard write' '### conflicts' '### resolve'; do
+for heading in '### Entry' '### Classify' '### menu' '### current' '### entry level' '### use entries' '### platforms' '### platform proposal' '### platform written' '### standards' '### standard rules' '### rule shape' '### standard proposal' '### standard write' '### conflicts' '### resolve'; do
 	line="$(grep -nxF -- "$heading" "$CONFIG" | head -1 | cut -d: -f1)"
 	if [[ -z "$line" ]] || ((line <= previous)); then
 		echo "FAIL: highway-codify-config $heading is missing or out of order"

@@ -41,11 +41,12 @@ The source conforms to Agent Skills. The plugin is a build of that source.
   `tests/`, and the behavioral harness in `harness/` (Phase 3). The framework no longer ships;
   none of it is in the plugin.
 
-Phases 1 to 3 record the decisions: every file under `.highway/` and its resolution. They are
-complete in this document and have no spec of their own.
+Phases 1 to 3 record the decisions: every file under `.highway/` and its resolution. Phase 13 does
+the same for each skill too large for the Agent Skills size guidance. These phases are worked out
+in this document and have no spec of their own.
 
-Phases 4 to 14 carry out those decisions. Each is one speckit spec and leaves the full suite
-passing:
+Phases 4 to 12 and 14 to 16 carry out those decisions. Each is one speckit spec and leaves the full
+suite passing:
 
 | Phase | Spec | Depends on | Status |
 | --- | --- | --- | --- |
@@ -58,8 +59,10 @@ passing:
 | 10 | Onboarding Handoffs | 8 | Complete: `specs/239-standard-alignment-onboarding-handoffs/` |
 | 11 | Self-Contained Skills | 7 to 10 | Complete: `specs/240-standard-alignment-self-contained-skills/` |
 | 12 | Agent Skills Format Conformance | 6 | Complete: `specs/241-standard-alignment-format-conformance/` |
-| 13 | Progressive Disclosure | 11 | |
-| 14 | Agent Plugins Package | 11 to 13 | |
+| 13 | Rationalize the Refactor of Large Skills | 12 | Complete in this document |
+| 14 | Progressive Disclosure | 13 | Complete: `specs/242-standard-alignment-progressive-disclosure/` |
+| 15 | Principle XIV: Agent Skills Alignment | 14 | |
+| 16 | Agent Plugins Package | 11 to 15 | |
 
 ## Conformance map
 
@@ -77,12 +80,12 @@ Each requirement of the two standards, where Highway stands today, and the phase
 | Agent Skills | `allowed-tools` (optional, experimental) | Not used. It pre-approves tools rather than restricting them, so declaring it is a consent decision, not a conformance gap | None |
 | Agent Skills | Files a skill uses sit inside its folder (`scripts/`, `references/`, `assets/`) | Skills read templates and guidance from `.highway/` | 7 to 11 |
 | Agent Skills | References are relative to the skill folder, one level deep | Skills name `.highway/` paths | 7 to 11 |
-| Agent Skills | `SKILL.md` under 500 lines and about 5,000 tokens | 1 skill over 500 lines, 7 over 5,000 tokens | 13 |
+| Agent Skills | `SKILL.md` under 500 lines and about 5,000 tokens | 1 skill over 500 lines, 8 over 5,000 tokens | 13 decides, 14, 15 enforces |
 | Agent Skills | Valid by `skills-ref validate` | Not checked | 12 |
-| Agent Plugins | Root `plugin.json` with the 1.0.0 `$schema` | None | 14 |
-| Agent Plugins | Skills discovered from `skills/<name>/SKILL.md` | Source in `.highway/skills/`; four per-agent copies instead | 6 (source), 14 (plugin) |
+| Agent Plugins | Root `plugin.json` with the 1.0.0 `$schema` | None | 16 |
+| Agent Plugins | Skills discovered from `skills/<name>/SKILL.md` | Source in `.highway/skills/`; four per-agent copies instead | 6 (source), 16 (plugin) |
 | Agent Plugins | Plugin files stay inside the plugin root | Skills read the project's `.highway/` | 7 to 11 |
-| Agent Plugins | Client-specific data only under a reverse-domain extension namespace | Agent rule files and `AGENTS.md` sit beside the skills | 7 removes them, 14 |
+| Agent Plugins | Client-specific data only under a reverse-domain extension namespace | Agent rule files and `AGENTS.md` sit beside the skills | 7 removes them, 16 |
 
 # Phase 1: Rationalize the Shared Files
 
@@ -309,7 +312,7 @@ Resolution: move to highway-adr's `assets/`. highway-adr is the only skill that 
     id; and the catalog row with Discovery ID `highway` and Request ID `onboarding`.
   - The template's onboarding paragraph moves with the template.
   - highway-onboarding drops the template from its inputs and loses its ADR-writing section,
-    which also shrinks it for Phase 13.
+    which also shrinks it for Phase 14.
 - highway-architecture drops the template from its inputs. It never creates an ADR. It reads the
   accepted ADR from the project record `adrs/[ID].md`, and its `name` step sets the existing
   `Reference Architecture` field to the new `RA` id and changes no other byte. Both work from the
@@ -700,7 +703,7 @@ tests/                  the bash suite and its fixtures
 framework/              the authoring framework: generators, validators, lib/, manifests,
                         constitution, authoring standard, word list, README.md, and plugin/
 harness/                the behavioral harness, unchanged
-highway-agent-plugin/   the built plugin (Phase 14)
+highway-agent-plugin/   the built plugin (Phase 16)
 ```
 
 `skills/` holds nothing but skill folders, so it matches `highway-agent-plugin/skills/` exactly and
@@ -803,7 +806,7 @@ highway-experience by name first.
   files, `AGENTS.md`, `.cursor/rules/highway-agent-context.mdc`, `.claude/CLAUDE.md`, and
   `.github/copilot-instructions.md`. The tests and harness selection stop referencing them.
 - Accepted: an agent working in a Highway project with no Highway skill active no longer gets the
-  Highway framing. Agent Plugins has no portable rules; Phase 14 allows client-specific rules as an
+  Highway framing. Agent Plugins has no portable rules; Phase 16 allows client-specific rules as an
   optional extra.
 
 ## `.highway/library/governance/README.md`
@@ -892,7 +895,7 @@ Resolution: split by role. Nothing in it ships.
   - the validators `validate-skill.sh` and `validate-profile.sh`;
   - `lib/`;
   - the manifests `.adapter-manifest`, `.distribution-manifest`, and `.frontmatter-contract`.
-  - Phase 14 replaces `generate-distribution.sh` and `.distribution-manifest` with the plugin
+  - Phase 16 replaces `generate-distribution.sh` and `.distribution-manifest` with the plugin
     build, and stops the per-agent copies.
 - `validate-library.sh` merges into `validate-skill.sh`. The files it checked now sit in skill
   `references/` and `assets/`, so a skill's validation covers them with the same checks.
@@ -1017,7 +1020,7 @@ passing, and the harness tests at 75. Beyond the steps above:
 - The framework no longer ships. Skills ship from `skills/` to `.highway/skills/`, and packaging
   validates them with `framework/validate-skill.sh` from a verification tree: the distribution
   plus `framework/`, with the skills moved back to `skills/`.
-- `framework/README.md` ships as the distribution's `README.md` until Phase 14.
+- `framework/README.md` ships as the distribution's `README.md` until Phase 16.
 - The Highway Skills Constitution is 10.1.0 at `framework/constitution.md`; P2.6 and its check
   name `framework/`. The development constitution is 3.2.0.
 - `harness/bin/path-map.sh --location <skills|framework>` replaces `--location tools`; `tests/`
@@ -1184,7 +1187,7 @@ tests to 85, all passing, and the harness tests stay at 81. Beyond the steps abo
 # Phase 11: Self-Contained Skills
 
 Goal: no skill reads a file outside its own folder, `.highway/` is gone, and the skills are proven
-self-contained before Phase 14 packages them.
+self-contained before Phase 16 packages them.
 
 1. highway-help's index moves to its `assets/index.json`, with each skill's dependencies and
    Example (Phase 2). highway-help stops reading other skills' folders, and the generator checks
@@ -1261,27 +1264,562 @@ and `agent-skills-format.test.sh` is added. Beyond the steps above:
 - Outside `## Example`, skills name skills as `highway-<id>`; `metadata.usage` reads
   "Run highway-<id> …". Every skill took a MINOR version.
 
-# Phase 13: Progressive Disclosure
+# Phase 13: Rationalize the Refactor of Large Skills
 
-Goal: each `SKILL.md` meets the specification's size guidance,
-with detail moved into `references/` that the skill loads only when it needs it.
-Runs after Phase 11, once Phases 7 to 10 have changed the skills; the sizes below are from before
-them and are measured again at the start.
+Each skill below, except highway-request, has a `SKILL.md` over 400 lines or 4,000 tokens. Those
+thresholds chose which skills to refactor. They sit below the specification's 500 lines and about
+5,000 tokens, which are the enforced ceiling (boundary 1), so a refactored skill has room to grow
+before it reaches the ceiling. highway-request is under both
+but close to 4,000 tokens, and it is included so every skill that writes a record follows the same
+pattern. Like Phases 1 to 3, this phase records a resolution for each skill; Phase 14 carries them
+out.
 
-1. Targets: under 500 lines and about 5,000 tokens for each `SKILL.md`.
-   - Over 500 lines: highway-codify (744).
-   - Over 5,000 tokens: highway-codify (about 13,300), highway-implementation (7,400),
-     highway-codify-config (6,600), highway-onboarding (6,300), highway-adr (6,200),
-     highway-discovery (5,900), and highway-nfrs (5,400).
-2. Move step detail, examples, and edge cases into `references/`, one level deep from `SKILL.md`.
-   `SKILL.md` keeps the steps, the decisions, and when to load each reference.
-3. Verification and Error Handling stay in `SKILL.md`, so harness coverage still reads them.
-4. A bash check warns on a `SKILL.md` over either target.
+Measured on 2026-11-12, after Phase 12. Tokens are estimated as characters divided by four,
+rounded to the nearest hundred for a whole file and the nearest ten for a step, since no tokenizer
+is on the Declared Toolchain. Section lines exclude the heading. No skill has a `references/`
+folder yet.
 
-Exit: every `SKILL.md` is under both targets, or has a recorded reason it is not,
-and the harness passes on the affected skills.
+Under both thresholds and not included: highway-profile (280 lines, about 2,800 tokens),
+highway-setup (184, 1,900), highway-help (90, 1,000), and highway-experience (81, 800).
 
-# Phase 14: Agent Plugins Package
+## Cross-skill pattern
+
+Each proposal below splits a skill by flow, never by content type. A flow is the run of steps
+between two points where the person answers or a record is written. A flow file holds every step
+and rule that flow needs, so the model must read it to do the work. Examples and edge cases are
+not moved on their own.
+
+- `SKILL.md` is the router. It keeps the frontmatter, Purpose through Outputs, the Procedure
+  introduction, and each step that picks or sequences a flow: Entry, the `choose` steps, Classify,
+  a handoff from another skill, a menu, and `close`. It names each flow file and the steps it
+  holds. The pointer to a flow is one imperative line with no summary of that flow.
+- `references/proposal.md` holds everything about building, presenting, and revising what the
+  person accepts.
+- `references/record.md` holds everything about writing it once accepted: `identifier`, `title`,
+  `write`, and the catalog edits written with them. Nine of the twelve skills share this flow.
+- A skill with more flows adds one file per flow: one per menu option, or one per stage after the
+  record.
+
+Rules that keep each flow whole:
+
+- A rule lives in the file of the step that applies it. A rule two flows apply stays in `SKILL.md`.
+- A flow file hands off by step name, and `SKILL.md` maps the name to its file. No flow file names
+  another flow file, so references stay one level deep.
+- The Verification checks for a flow's steps move with them. `SKILL.md` keeps the checks for its
+  own steps.
+
+Each estimate counts the moved steps and one pointer line for each file, with all of Verification
+still in `SKILL.md`. Moving each flow's checks lowers it further.
+
+### Boundaries
+
+Each boundary is checked by a script against one skill folder, with no judgment. Phase 15 makes
+them rules of the Highway Skills Constitution. A flow file is a file in `references/` that the
+flows table names. A step is a level-3 heading outside a fenced code block. A step reference is a backticked name after "go to",
+"return to", "follow", "resume at", or "stay on" that contains no `/` or `.` and does not start
+with `highway-`. Tokens are characters divided by four.
+
+1. Size: `SKILL.md` has at most 500 lines and 20,000 characters, the specification's ceiling.
+   So does each flow file.
+2. Place: a flow file is a Markdown file directly in `references/`, with no subfolder.
+3. Granularity: a skill has at most six flow files, and each flow file has at least 25 lines.
+4. Shape: a flow file has no frontmatter and starts with one level-1 heading that names the flow.
+   Its steps are level-3 headings. Its only level-2 heading is `## Verification`, which comes last
+   and holds at least one bullet.
+5. One home per step: each step name appears as a step in exactly one of `SKILL.md` and the
+   skill's flow files.
+6. Router: `Entry` and `Classify`, when the skill has them, are steps in `SKILL.md`. Every other
+   level-2 section stays in `SKILL.md`.
+7. Flows table: in a skill with flow files, the Procedure introduction of `SKILL.md` holds one
+   table with the columns File and Steps, preceded by this sentence: "Before a step in this table, read its file and follow it to
+   the end." It has one row per flow file, and each Steps cell lists exactly that file's steps, in
+   file order.
+8. One pointer: in a skill with a flows table, no line of `SKILL.md` outside the table names a
+   file in `references/`, every file in `references/` has a row, and every row names a file that
+   exists. In a skill without one, such as highway-experience, each file in `references/` is named
+   by a line of `SKILL.md` that begins "Read `references/<file>`".
+9. No chains: a flow file names no file in `references/`.
+10. Handoffs resolve: every step reference in `SKILL.md` or a flow file names a step in one of
+    them.
+11. Cross-skill handoffs resolve: every backticked step followed by "in `highway-<name>`" names a
+    step in that skill's `SKILL.md` or flow files.
+12. One turn, one file: in a flow file, a step reference outside a reply line names a step in that
+    file or in `SKILL.md`. A reply line is a list item that starts with a backticked reply class
+    and a colon. Steps one turn runs through without a reply share a flow file, or live in
+    `SKILL.md`, because a model can skip a flow file it must open mid-turn.
+
+## highway-codify
+
+Breach: 770 lines and about 13,900 tokens. It is also over the specification's 500 lines and
+5,000 tokens, the only skill over both.
+
+Current state:
+- Procedure: 630 lines, about 10,300 tokens, in 34 steps. The largest are `index rules` (about
+  550 tokens), `revise` (450), `catalog` (440), and `close` (430). No single step dominates; the
+  size is the step count.
+- Verification: 54 lines, about 2,200 tokens, the largest of any skill.
+- The other sections: about 1,400 tokens.
+- Bundles four templates in `assets/`: `codify-record.md` (104 lines), `codify-plan.md` (58),
+  `codify-tasks.md` (53), and `codify-metadata.md` (34).
+
+Resolution: accepted as proposed below.
+
+### Proposal
+
+1. Filename: `references/catalog.md`
+   - Sections: `catalog`.
+   - Rationale: `highway-codify catalog` is its own read-only entry and runs alone. Nothing else
+     reaches it.
+2. Filename: `references/suggest.md`
+   - Sections: `rank`, `codified`, `code project`, `suggest`.
+   - Rationale: deciding what to automate ends when the person picks a suggestion. A named action
+     skips this flow and goes straight to the proposal.
+3. Filename: `references/proposal.md`
+   - Sections: `draft`, `code tasks`, `provider`, `standards`, `align`, `govern`, `resume`, `join`,
+     `folder`, `layout`, `propose`, `revise`.
+   - Rationale: everything that shapes the proposal, from the draft through standards, Controls,
+     NFRs, and product placement, to the person's acceptance on `revise`. Items 10 and 11 of
+     `code tasks` govern the README and the close, so they move to `code.md`.
+4. Filename: `references/record.md`
+   - Sections: `identifier`, `title`, `write`, `index`, `index rules`.
+   - Rationale: writing the accepted feature, its product metadata, and the catalog rows together.
+     `code` also applies the rule in step 3 of `index`, so that rule stays in `SKILL.md`.
+5. Filename: `references/plan.md`
+   - Sections: `plan`, `check`, `menu`, `review`.
+   - Rationale: the plan flow ends at the menu, where the person reviews or continues. A feature
+     with a plan and no task list resumes here.
+6. Filename: `references/code.md`
+   - Sections: `tasks`, `code`, `close`, with its completion message.
+   - Rationale: task generation runs straight into coding with no question, and an open task
+     resumes at `code`, so the two form one flow. `tasks` alone is 14 lines.
+
+Stays in `SKILL.md`: Entry, `choose`, `record check`, Classify, Error Handling, and the checks for
+those steps. Estimated `SKILL.md`: about 245 lines and 5,400 tokens. Verification is 2,200 tokens,
+and most of it covers the moved flows, so it gets under the 5,000-token ceiling only when those
+checks move. Moving them brings it to about 4,000.
+
+## highway-implementation
+
+Breach: 456 lines and about 8,600 tokens. It is also over the specification's 5,000 tokens.
+
+Current state:
+- Procedure: 351 lines, about 6,100 tokens, in 17 steps. The largest are `write` (58 lines, about
+  1,270 tokens), `start` (48 lines, 670), `identifier` (450), and `delivery platforms` (440).
+- Verification: 34 lines, about 1,400 tokens.
+- The other sections: about 1,000 tokens.
+- Bundles one template in `assets/`: `implementation-record.md` (131 lines).
+
+Resolution: accepted as proposed below.
+
+### Proposal
+
+1. Filename: `references/proposal.md`
+   - Sections: `start`, `execution`, `field`, `why it matters`, `capability title`.
+   - Rationale: building the proposed realization, including its Deployed by, Managed by, and
+     Language. `execution` is also the return step from highway-codify-config and
+     highway-onboarding, which resume inside this flow.
+2. Filename: `references/record.md`
+   - Sections: `identifier`, `title`, `write`, `platforms`.
+   - Rationale: writing the implementation, its catalog row, its capabilities, and its platforms
+     row. `write` alone is 1,270 tokens.
+3. Filename: `references/amend.md`
+   - Sections: `add capabilities`, `delivery platforms`, `delivery decline`.
+   - Rationale: these handoffs change an accepted implementation rather than create one. Only
+     highway-codify and highway-codify-config reach them, each with a return step.
+
+Stays in `SKILL.md`: Entry, `choose`, `onboarding`, Classify, and `close`. `onboarding` sequences
+the proposal and record flows without emitting them, so it stays with the router. Estimated
+`SKILL.md`: about 200 lines and 4,100 tokens, under the ceiling, and under 4,000 once the moved
+flows' checks move.
+
+## highway-adr
+
+Breach: 406 lines and about 7,700 tokens. It is also over the specification's 5,000 tokens.
+
+Current state:
+- Procedure: 308 lines, about 5,900 tokens, in 11 steps. The largest are `write` (57 lines, about
+  1,670 tokens), `start` (45 lines, 920), `onboarding` (610), and `close` (560).
+- Verification: 31 lines, about 1,000 tokens.
+- The other sections: about 900 tokens.
+- Bundles one template in `assets/`: `adr-record.md` (155 lines).
+
+Resolution: accepted as proposed below.
+
+### Proposal
+
+1. Filename: `references/proposal.md`
+   - Sections: `start`, `span`, and the evidence reading order from the Procedure introduction.
+   - Rationale: building the proposed decision from the selected option. `span` builds the same
+     proposal for a decision that covers several architectures.
+2. Filename: `references/record.md`
+   - Sections: `identifier`, `title`, `write`.
+   - Rationale: writing the ADR and its catalog row. `write` alone is 1,670 tokens, the largest
+     step in any skill.
+
+Stays in `SKILL.md`: Entry, `choose-discovery`, `onboarding`, `choose-option`, Classify, and
+`close`. Estimated `SKILL.md`: about 240 lines and 4,200 tokens, under the ceiling, and under
+4,000 once the moved flows' checks move.
+
+## highway-codify-config
+
+Breach: 453 lines and about 7,000 tokens. It is also over the specification's 5,000 tokens.
+
+Current state:
+- Procedure: 367 lines, about 5,500 tokens, in 20 steps. The largest are `platform proposal` (46
+  lines, about 570 tokens), `standard proposal` (56 lines, 540), `standard write` (440), and
+  `platforms` (400).
+- Verification: 23 lines, about 900 tokens.
+- The other sections: about 700 tokens.
+- Bundles one template in `assets/`: `coding-standard.md` (40 lines).
+
+Resolution: accepted as proposed below.
+
+### Proposal
+
+1. Filename: `references/platforms.md`
+   - Sections: `platforms`, `kind`, `platform proposal`, `platform rules`, `platform written`.
+   - Rationale: the first menu option, from the platform list to the written row.
+2. Filename: `references/standards.md`
+   - Sections: `standards`, `standard rules`, `rule shape`, `standard proposal`, `standard write`.
+   - Rationale: the second menu option, from the standards list to the written standard.
+3. Filename: `references/conflicts.md`
+   - Sections: `conflicts`, `resolve`.
+   - Rationale: the third menu option. `platform written` also hands off to it by step name.
+
+Stays in `SKILL.md`: Entry, Classify, `menu`, and the steps both proposals apply: `current`,
+`entry level`, `use entries`, and `platform entries`. Estimated `SKILL.md`: about 205 lines and
+3,500 tokens.
+
+## highway-discovery
+
+Breach: about 6,200 tokens; 370 lines is under 400. It is also over the specification's 5,000
+tokens.
+
+Current state:
+- Procedure: 273 lines, about 4,600 tokens, in 10 steps. The largest are `start` (about 830
+  tokens), `write` (660), `analyze` (630), and `explore` (480).
+- Verification: 31 lines, about 800 tokens.
+- The other sections: about 800 tokens.
+- Bundles one template in `assets/`: `discovery-record.md` (198 lines).
+
+Resolution: accepted as proposed below.
+
+### Proposal
+
+1. Filename: `references/analysis.md`
+   - Sections: `analyze`, `check`, and the evidence loading order from the Procedure introduction.
+   - Rationale: generating, filtering, and scoring the options for a Request. Discovery writes its
+     options without a proposal to accept, so this flow is named for what it does.
+2. Filename: `references/record.md`
+   - Sections: `identifier`, `title`, `write`.
+   - Rationale: writing the Discovery and its catalog row.
+3. Filename: `references/explore.md`
+   - Sections: `start`, `explore`.
+   - Rationale: a supplied Discovery id enters here directly and writes nothing. The person
+     explores options here until they decide.
+
+Stays in `SKILL.md`: Entry, `choose`, Classify, and the redaction rule, which applies both to
+scoring and to writing. Estimated `SKILL.md`: about 185 lines and 2,900 tokens.
+
+## highway-nfrs
+
+Breach: about 5,400 tokens; 397 lines is under 400. It is also over the specification's 5,000
+tokens.
+
+Current state:
+- Procedure: 313 lines, about 4,300 tokens, in 11 steps. The largest are `recommend` (66 lines,
+  about 1,240 tokens), `queue` (59 lines, 620), `capture` (400), and `write` (370).
+- Verification: 25 lines, about 500 tokens.
+- The other sections: about 600 tokens.
+- Bundles two templates in `assets/`: `nfr-record.md` (34 lines) and `nfr-catalog.md` (27).
+- Its Procedure has the same 11 steps, by name, as highway-objectives and highway-controls.
+
+Resolution: accepted as proposed below.
+
+### Proposal
+
+1. Filename: `references/proposal.md`
+   - Sections: `recommend`, `more`, `queue`, `ask`, `capture`.
+   - Rationale: everything from the first recommendation to the captured NFRs the person
+     accepts. `recommend` alone is 1,240 tokens.
+2. Filename: `references/record.md`
+   - Sections: `identifier`, `title`, `write`.
+   - Rationale: writing the held NFRs and the catalog together.
+
+Stays in `SKILL.md`: Entry, Classify, and `review`. highway-objectives, highway-controls, and
+highway-nfrs have the same steps, so each skill keeps its own copy of the same split; a skill
+cannot read another skill's file. Estimated `SKILL.md`: about 160 lines and 2,200 tokens.
+
+## highway-onboarding
+
+Breach: about 5,300 tokens; 347 lines is under 400. It is also over the specification's 5,000
+tokens.
+
+Current state:
+- Procedure: 256 lines, about 3,600 tokens, in 10 steps. The largest are `orchestrate` (about 680
+  tokens), `capabilities` (600), `map` (550), and `review` (520).
+- Verification: 32 lines, about 1,000 tokens.
+- The other sections: about 700 tokens.
+- Bundles nothing. It hands each record to highway-adr, highway-architecture, and
+  highway-implementation.
+
+Resolution: accepted as proposed below.
+
+### Proposal
+
+1. Filename: `references/proposal.md`
+   - Sections: `overview`, `capabilities`, `map`, `mapping`.
+   - Rationale: building the landscape the person accepts: capabilities, then how each is
+     provided, then the mapping by provider. No record exists yet.
+2. Filename: `references/orchestrate.md`
+   - Sections: `orchestrate`, `lineage`, `configure`.
+   - Rationale: creating each provider's decision, architecture, and implementation through the
+     owning skills, then configuring their platforms.
+
+Stays in `SKILL.md`: Classify, `summary`, `review`, and the queue rules, which both flows apply.
+Estimated `SKILL.md`: about 190 lines and 3,000 tokens.
+
+## highway-architecture
+
+Breach: about 5,300 tokens; 327 lines is under 400. It is also over the specification's 5,000
+tokens.
+
+Current state:
+- Procedure: 235 lines, about 3,800 tokens, in 10 steps. The largest are `write` (48 lines, about
+  1,100 tokens), `start` (52 lines, 560), `identifier` (460), and `onboarding` (390).
+- Verification: 26 lines, about 700 tokens.
+- The other sections: about 800 tokens.
+- Bundles one template in `assets/`: `architecture-record.md` (122 lines).
+
+Resolution: accepted as proposed below.
+
+### Proposal
+
+1. Filename: `references/proposal.md`
+   - Sections: `start`.
+   - Rationale: `start` is the whole proposal flow at 52 lines. `onboarding` builds through it as
+     well, so it follows the same split as highway-adr and highway-implementation.
+2. Filename: `references/record.md`
+   - Sections: `identifier`, `title`, `write`, `name`.
+   - Rationale: writing the architecture and its catalog row, then naming it. `write` alone is
+     1,100 tokens.
+
+Stays in `SKILL.md`: Entry, `choose`, `onboarding`, Classify, and `close`. Estimated `SKILL.md`:
+about 180 lines and 2,900 tokens.
+
+## highway-assessment
+
+Breach: about 4,800 tokens; 309 lines is under 400. It is under the specification's guidance.
+
+Current state:
+- Procedure: 219 lines, about 3,400 tokens, in 8 steps. The largest are `list of findings` (about
+  640 tokens), `ready records` (630), `write` (600), and `finding` (470).
+- Verification: 30 lines, about 800 tokens.
+- The other sections: about 700 tokens.
+- Bundles nothing. It writes to the findings file highway-setup seeds.
+
+Resolution: accepted as proposed below.
+
+### Proposal
+
+1. Filename: `references/findings.md`
+   - Sections: `write`, `list of findings`, `finding`, and the category and trace-chain rules
+     from the Procedure introduction.
+   - Rationale: the gaps option, from writing each new finding through browsing the list and
+     opening one.
+2. Filename: `references/ready-records.md`
+   - Sections: `ready records`.
+   - Rationale: the ready records option. It reads the catalogs only and shares no step with the
+     gaps flow.
+
+Stays in `SKILL.md`: Entry, Classify, `review`, `summary`, and the catalog-first reading rule,
+which both flows apply. Estimated `SKILL.md`: about 175 lines and 2,600 tokens.
+
+## highway-controls
+
+Breach: about 4,500 tokens; 368 lines is under 400. It is under the specification's guidance.
+
+Current state:
+- Procedure: 290 lines, about 3,500 tokens, in 11 steps. The largest are `queue` (57 lines, about
+  590 tokens), `recommend` (46 lines, 580), `write` (400), and `capture` (360).
+- Verification: 20 lines, about 400 tokens.
+- The other sections: about 500 tokens.
+- Bundles two templates in `assets/`: `control-record.md` (47 lines) and `control-catalog.md` (27).
+- Its Procedure has the same 11 steps, by name, as highway-objectives and highway-nfrs.
+
+Resolution: accepted as proposed below.
+
+### Proposal
+
+1. Filename: `references/proposal.md`
+   - Sections: `recommend`, `more`, `queue`, `ask`, `capture`.
+   - Rationale: everything from the first recommendation to the captured Controls the person
+     accepts.
+2. Filename: `references/record.md`
+   - Sections: `identifier`, `title`, `write`.
+   - Rationale: writing the held Controls and the catalog together.
+
+Stays in `SKILL.md`: Entry, Classify, and `review`. highway-objectives, highway-controls, and
+highway-nfrs have the same steps, so each skill keeps its own copy of the same split; a skill
+cannot read another skill's file. Estimated `SKILL.md`: about 150 lines and 2,000 tokens.
+
+## highway-objectives
+
+Breach: about 4,300 tokens; 370 lines is under 400. It is under the specification's guidance.
+
+Current state:
+- Procedure: 292 lines, about 3,400 tokens, in 11 steps. The largest are `queue` (57 lines, about
+  580 tokens), `recommend` (46 lines, 530), `capture` (400), and `write` (370).
+- Verification: 20 lines, about 400 tokens.
+- The other sections: about 500 tokens.
+- Bundles two templates in `assets/`: `objective-record.md` (37 lines) and
+  `objective-catalog.md` (27).
+- Its Procedure has the same 11 steps, by name, as highway-controls and highway-nfrs.
+
+Resolution: accepted as proposed below.
+
+### Proposal
+
+1. Filename: `references/proposal.md`
+   - Sections: `recommend`, `more`, `queue`, `ask`, `capture`.
+   - Rationale: everything from the first recommendation to the captured Objectives the person
+     accepts.
+2. Filename: `references/record.md`
+   - Sections: `identifier`, `title`, `write`.
+   - Rationale: writing the held Objectives and the catalog together.
+
+Stays in `SKILL.md`: Entry, Classify, and `review`. highway-objectives, highway-controls, and
+highway-nfrs have the same steps, so each skill keeps its own copy of the same split; a skill
+cannot read another skill's file. Estimated `SKILL.md`: about 150 lines and 1,900 tokens.
+
+## highway-request
+
+Breach: none. 292 lines and about 3,800 tokens are under both thresholds, but only about 230
+tokens under 4,000.
+
+Current state:
+- Procedure: 211 lines, about 2,900 tokens, in 8 steps. The largest are `start` (72 lines, about
+  1,020 tokens), `close` (30 lines, 470), `write` (320), and `identifier` (240).
+- Verification: 16 lines, about 300 tokens.
+- The other sections: about 500 tokens.
+- Bundles one template in `assets/`: `request-record.md` (83 lines).
+
+Resolution: accepted as proposed below.
+
+### Proposal
+
+1. Filename: `references/proposal.md`
+   - Sections: `start`, and the seven-domain collection order from the Procedure introduction.
+   - Rationale: building the starting point across all seven domains, including Solution
+     Constraints, through to the person's acceptance.
+2. Filename: `references/record.md`
+   - Sections: `identifier`, `title`, `write`.
+   - Rationale: writing the request and its catalog row, the same flow the other record skills
+     move.
+
+Stays in `SKILL.md`: Entry, Classify, `intake`, `close`, and the rule that excludes secrets and
+regulated personal data, which applies both to `intake` and to `start`. Estimated `SKILL.md`:
+about 155 lines and 2,100 tokens.
+
+# Phase 14: Progressive Disclosure
+
+Goal: the twelve skills in Phase 13 follow the cross-skill pattern, each split into the flow files
+its resolution names, and every skill leaves this phase meeting the rules Phase 15 adds to the
+Highway Skills Constitution. Phase 15 then changes the constitution and its checks, not the
+skills. The sizes are measured again at the start.
+
+1. Ceiling: `SKILL.md` and each flow file at most 500 lines and 20,000 characters, about 5,000
+   tokens, the specification's guidance (boundary 1). Phase 13's 400 lines and 4,000 tokens chose
+   the skills to refactor and are not a second limit.
+2. Split each skill as its Phase 13 resolution says: the flow files, the sections that move into
+   each, and what stays in `SKILL.md`.
+   - A moved step keeps its heading and its wording, so every handoff by step name still resolves.
+   - A rule from the Procedure introduction moves with the step that applies it. A rule two flows
+     apply stays in `SKILL.md`, such as the rule in step 3 of highway-codify's `index`, which
+     `index` and `code` both apply. Items 10 and 11 of highway-codify's `code tasks` move to
+     `code.md`, the file of the steps that apply them.
+   - No example or edge case moves on its own.
+3. `SKILL.md` becomes the router (boundaries 6 to 8). Its Procedure introduction gains the sentence
+   "Before a step in this table, read its file and follow it to the end." and the File and Steps
+   table. Nothing else in `SKILL.md` names a flow file, and no flow file names another (boundary 9).
+4. Each flow file starts with one level-1 heading that names the flow and ends with
+   `## Verification`, holding the checks for its steps (boundary 4). `SKILL.md` keeps the checks for
+   its own steps, so its required `## Verification` stays non-empty. Error Handling stays in
+   `SKILL.md`.
+5. The validator judges a flow file as the skill's own instructions. `validate-skill.sh` gives a
+   file the flows table names a third kind, `flow`, exempt only from P7.1, P7.2, and P8.7, which
+   judge `SKILL.md`'s Purpose and version and the links a bundled file may hold. The `reference`
+   exemptions, which drop the rule-shape rules and P2.6, stay for reference documents such as
+   highway-experience's and never cover moved text.
+6. Everything that reads a skill's text reads its flow files:
+   - `harness/bin/inventory.sh` takes steps and Verification bullets from the flow files, so each
+     harness `covers:` hash follows its bullet;
+   - a bash test that asserts a skill's text finds it in the skill folder, with no assertion
+     loosened (D3.5);
+   - the authoring standard documents `references/<flow>.md`, the flows table, and the flow file
+     shape.
+   The adapter generator already copies `references/`, so no change is needed there.
+7. A new bash test, `tests/skill-flow-pattern.test.sh`, checks boundaries 1 to 12 on every skill
+   and fails on any breach. It is evaluated against every skill before it is wired in (D3.4), and
+   a seeded defect fails each boundary (D3.7).
+8. The constitution changes coming in Phase 15, which this phase builds toward:
+   - Principle XIV, with four `[auto]` rules: Size (boundary 1), Layout (boundaries 2 to 4),
+     Routing (boundaries 5 to 8), and Handoff integrity (boundaries 9 to 12);
+   - P5.15 moves into Principle XIV unchanged.
+   The test from step 7 checks the same boundaries those rules will, so a skill that passes it
+   needs no change when Phase 15 enforces them.
+9. Each changed skill takes a MINOR version.
+
+Exit: the twelve skills follow their Phase 13 resolutions, every skill passes
+`skill-flow-pattern.test.sh`, the validator judges every flow file as instructions, and the
+harness passes on the affected skills with each `covers:` hash resolving.
+
+Status: complete in `specs/242-standard-alignment-progressive-disclosure/`. The suite goes from 84
+to 85 tests, all passing: `skill-flow-pattern.test.sh` is added. Beyond the steps above:
+- The twelve skills have 27 flow files. Boundary 12 joined the test after a live run showed a
+  model skipping a flow file it had to open mid-turn. So highway-codify keeps `rank`,
+  `codified`, `code project`, and `suggest` in `SKILL.md` and holds `plan` to `review` in
+  `record.md`, and highway-discovery has one flow file, `options.md`.
+- The harness exit is met as "no worse than the baseline" on GPT-5.6 Luna. Each remaining
+  failure is a model, scenario, or service finding in `harness-model-findings.md`, and every
+  `covers:` hash resolves.
+- `generate-distribution.sh` batches its per-file work, since one bash process forking for each
+  of several hundred files starts failing to fork on macOS.
+
+# Phase 15: Principle XIV: Agent Skills Alignment
+
+Goal: the Highway Skills Constitution gains Principle XIV, which holds every rule that narrows the
+Agent Skills specification, together with the flow pattern from Phase 13, and the bash suite
+enforces it. Runs after Phase 14, once every skill follows the pattern. Before that, the size rule
+alone fails 8 skills.
+
+1. Principle XIV cites the specification and does not restate it. Each rule names the
+   specification clause it narrows, or "None (Highway pattern)" when it narrows none.
+2. Four `[auto]` rules, one per group of Phase 13 boundaries. Each rule's Observable lists the
+   boundaries it checks.
+   - Size, boundary 1: makes the progressive disclosure guidance on `SKILL.md` size, 500 lines
+     and about 5,000 tokens, a hard ceiling, and applies it to each flow file.
+   - Layout, boundaries 2 to 4: narrows the `references/` directory and its focused reference
+     files.
+   - Routing, boundaries 5 to 8: None (Highway pattern).
+   - Handoff integrity, boundaries 9 to 12: boundary 9 narrows the guidance to keep file
+     references one level deep. Boundaries 10 to 12 are Highway pattern.
+3. P5.15 moves into Principle XIV without changing its obligation. It narrows the specification's
+   guidance that a description says what the skill does and when to use it. It keeps its ID, as
+   P13.2 did when it moved into Principle XII, and `rc_check_P5_15` keeps deciding it. P5.16
+   stays in Principle V.
+4. Each new rule has a check in `framework/lib/rule-checks.sh`. Each check is evaluated against
+   every skill before it is wired in. A seeded defect fails it for a skill with `references/` and
+   for one without.
+5. The four rule checks take over from `tests/skill-flow-pattern.test.sh`, which Phase 14 adds.
+   That test retires, or keeps only what the rule checks do not cover.
+6. The constitution takes a MINOR version. Its rule count goes from 76 to 80, and the tests that
+   count rules move with it.
+
+Exit: every skill passes Principle XIV's checks in the bash suite, and a seeded violation of each
+boundary fails it.
+
+# Phase 16: Agent Plugins Package
 
 Goal: the generator builds `highway-agent-plugin/`, one Agent Plugins 1.0 plugin, from the source
 skill folders. That folder is tested as installed and is what the public repository publishes.

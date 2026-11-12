@@ -99,21 +99,30 @@ dist_included_sources() {
 	dist_records | awk -F'\t' '$1 == "include" { print $2 }'
 }
 
-# The path a source occupies in the distribution. The longest record matching the source decides:
+# The path each source occupies in the distribution. Reads sources on stdin, one per line, and
+# emits "source<TAB>destination" in input order. The longest record matching a source decides:
 # its destination replaces the matched part and the rest of the path is appended, so a directory
-# record moves everything beneath it. Echoes the source when that record's destination is '-' or
-# no record matches.
-dist_destination() {
-	local source="$1"
-	dist_records | awk -F'\t' -v s="$source" '
-		($2 == s || index(s, $2 "/") == 1) && length($2) > best_len {
-			best_len = length($2); best_dst = $3
+# record moves everything beneath it. The destination is the source when that record's
+# destination is '-' or no record matches. Like dist_classify_many, it reads the manifest once.
+dist_destination_many() {
+	local manifest
+	manifest="$(dist_manifest_file)"
+	[[ -f "$manifest" ]] || return 1
+	awk -F'\t' -v mf="$manifest" '
+		FILENAME == mf {
+			if ($0 ~ /^[[:space:]]*#/) next
+			if ($0 ~ /^[[:space:]]*$/) next
+			if (NF >= 2) { n++; src[n] = $2; dst[n] = (NF >= 3 ? $3 : "-"); len[n] = length($2) }
+			next
 		}
-		END {
-			if (best_len == 0 || best_dst == "-") print s
-			else print best_dst substr(s, best_len + 1)
+		{
+			best = 0
+			for (i = 1; i <= n; i++) {
+				if (($0 == src[i] || index($0, src[i] "/") == 1) && len[i] > len[best]) best = i
+			}
+			print $0 "\t" ((best == 0 || dst[best] == "-") ? $0 : dst[best] substr($0, len[best] + 1))
 		}
-	'
+	' "$manifest" -
 }
 
 # Repository paths matching no record. Walks top-level entries and descends only where a record

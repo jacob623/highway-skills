@@ -8,10 +8,12 @@ set -u
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=paths.sh
 source "$SCRIPT_DIR/paths.sh"
+# shellcheck source=../framework/lib/flows.sh
+source "$HW_LIB/flows.sh"
 SKILLS="$HW_SKILLS"
-ADR="$SKILLS/highway-adr/SKILL.md"
-ASSESSMENT="$SKILLS/highway-assessment/SKILL.md"
-DISCOVERY="$SKILLS/highway-discovery/SKILL.md"
+ADR="$(fl_skill_text_file "$SKILLS/highway-adr")"
+ASSESSMENT="$(fl_skill_text_file "$SKILLS/highway-assessment")"
+DISCOVERY="$(fl_skill_text_file "$SKILLS/highway-discovery")"
 ADR_RECORD="$(hw_template adr-record)"
 DISCOVERY_RECORD="$(hw_template discovery-record)"
 fail=0

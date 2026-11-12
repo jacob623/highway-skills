@@ -8,6 +8,8 @@ set -u
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=paths.sh
 source "$SCRIPT_DIR/paths.sh"
+# shellcheck source=../framework/lib/flows.sh
+source "$HW_LIB/flows.sh"
 fail=0
 
 require() {
@@ -38,13 +40,13 @@ check_skill() {
 }
 
 check_skill \
-	"$HW_SKILLS/highway-controls/SKILL.md" \
+	"$(fl_skill_text_file "$HW_SKILLS/highway-controls")" \
 	"**Here's what I've captured as your controls:**" \
 	'Put `---` between Controls.' \
 	"**Here's what I've captured as your Control:**"
 
 check_skill \
-	"$HW_SKILLS/highway-nfrs/SKILL.md" \
+	"$(fl_skill_text_file "$HW_SKILLS/highway-nfrs")" \
 	"**Here's what I've captured as your NFRs:**" \
 	'Put `---` between NFRs.' \
 	"**Here's what I've captured as your NFR:**"

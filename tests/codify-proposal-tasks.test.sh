@@ -8,9 +8,11 @@ set -u
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=paths.sh
 source "$SCRIPT_DIR/paths.sh"
+# shellcheck source=../framework/lib/flows.sh
+source "$HW_LIB/flows.sh"
 SKILLS="$HW_SKILLS"
-CODIFY="$SKILLS/highway-codify/SKILL.md"
-ADR="$SKILLS/highway-adr/SKILL.md"
+CODIFY="$(fl_skill_text_file "$SKILLS/highway-codify")"
+ADR="$(fl_skill_text_file "$SKILLS/highway-adr")"
 RECORD="$(hw_template codify-record)"
 TASKS="$(hw_template codify-tasks)"
 fail=0

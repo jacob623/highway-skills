@@ -1,0 +1,608 @@
+highway-adr	step	Entry	Entry
+highway-adr	step	choose-discovery	choose-discovery
+highway-adr	step	onboarding	onboarding
+highway-adr	step	choose-option	choose-option
+highway-adr	step	Classify	Classify
+highway-adr	step	start	start
+highway-adr	step	span	span
+highway-adr	step	identifier	identifier
+highway-adr	step	title	title
+highway-adr	step	write	write
+highway-adr	step	close	close
+highway-adr	verification	af145820d5c0	A Discovery id and an option id open the proposed decision for that option.
+highway-adr	verification	2c7d42d28be0	A Discovery id without an option id lists the options with numbers. Each line shows the option id and its title. A stated number selects that option.
+highway-adr	verification	98fd3cc305c9	An invocation with neither id lists the accepted Discoveries whose Discovery ID is absent from every ADR catalog row. Each line shows the Discovery ID and its title. The list is numbered. A stated number selects that Discovery. A removed ADR row keeps that Discovery off the list.
+highway-adr	verification	cc164ebff877	The proposed decision is accepted before the ADR is written.
+highway-adr	verification	c5c2a34d74e4	One Discovery produces at most one ADR.
+highway-adr	verification	9c3e4a9dabe1	The selected option is the option the person named or numbered.
+highway-adr	verification	dd75c59f0730	The comparison and matches are copied from the Discovery.
+highway-adr	verification	a4987fa418e9	Recommendation Override is written only when the selection differs from the recommendation.
+highway-adr	verification	a8e3b8b6fa07	Context states the problem and the forces. The record states what the decision covers, what it leaves open, and when to revisit it, or `None`.
+highway-adr	verification	9fd441e5bbe1	Alternatives Considered includes the selected option as `Selected`, and each alternative has a definition, one outcome, and a reason.
+highway-adr	verification	cb98e86cc4c9	The handoff does not repeat the selected option or the matches. The handoff contains no implementation entry. Reference Architecture is `None` when no architecture is reused, and the RA id when one is.
+highway-adr	verification	779840633a04	Relationship lines use `advances`, `bound by`, and `satisfies`, or `None`.
+highway-adr	verification	7ea15847db2b	Status is `superseded` in the record and catalog exactly when `superseded_by` names an ADR, and the record file remains.
+highway-adr	verification	881acb690d69	Authorization proceeds to Reference Architecture and does not authorize implementation.
+highway-adr	verification	b0e8a967d62a	Each id is `ADR` plus eight hex digits derived from the title.
+highway-adr	verification	46bfa03d0bdd	A taken id names the conflicting titles, says a title change is appropriate, and shows a new title. The write waits until the person accepts that title.
+highway-adr	verification	9f30ffae292a	That message does not mention identifiers, hex, sampling, or the catalog.
+highway-adr	verification	b8250738b4f2	A failed write leaves existing ADR bytes unchanged.
+highway-adr	verification	efdcaf4d3ed6	The same exact option title uses the existing implementation and does not ask replace or beside. A different option title that matches one architecture asks that question once, inside the proposal.
+highway-adr	verification	ac01b6f6dc12	Replacing a decision sets it to `superseded`, keeps its file, and removes it from the architecture's current decisions. Running beside adds this decision and leaves the earlier one. The architecture record and the architecture catalog show the same current decisions.
+highway-adr	verification	10d3b787e222	The closing message suggests exactly one next step: create the reference architecture, create the reference implementation, or the name of the implementation that already exists.
+highway-adr	verification	9d8dd6d057ce	A span names every architecture in the set and does not ask which architecture to use. Leaving out architectures narrows the set. One remaining architecture asks replace or beside.
+highway-adr	verification	9546598373a7	Accepting a span writes one ADR whose Architecture ID lists every RA id in the set, adds it beside each current decision, supersedes nothing, and creates no architecture.
+highway-adr	verification	0c56e39bb3c1	A span close names each architecture that is not yet implemented and offers codify for one uncovered implementation at a time. A covered implementation is not offered. Opening a recorded span goes to that close and writes nothing.
+highway-adr	verification	1399089e9ddc	The skill does not change the Discovery.
+highway-adr	verification	baf59115905e	A handoff from `highway-onboarding` writes an accepted ADR without a question and returns its id. A taken id adds the provider name to the title without asking. The same title reuses the existing record.
+highway-adr	verification	a094153503c3	An onboarding ADR uses `request: onboarding`, `discovery: highway`, and Discovery ID `highway`, which may appear on more than one catalog row.
+highway-adr	verification	99bd44d857be	An onboarding ADR uses the shared ADR sections. Discovery-only values are `None`, alternatives are headed by name, and the record contains no option id.
+highway-adr	verification	752d176ca8b5	An onboarding handoff does not ask whether a decision replaces or runs beside another, and changes no architecture.
+highway-adr	error	f7b12255ac40	A missing or unknown Discovery stops the skill and writes nothing.
+highway-adr	error	ba443ce844a9	An option that is not in the Discovery returns to `choose-option` and writes nothing.
+highway-adr	error	818c5c7f9929	A second ADR for the same Discovery stops the write and shows the existing decision.
+highway-adr	error	27611af24443	A malformed present Discovery stops the skill and writes nothing.
+highway-adr	error	2f10366f355e	A failed write leaves existing ADR and catalog bytes unchanged.
+highway-architecture	step	Entry	Entry
+highway-architecture	step	choose	choose
+highway-architecture	step	onboarding	onboarding
+highway-architecture	step	Classify	Classify
+highway-architecture	step	start	start
+highway-architecture	step	identifier	identifier
+highway-architecture	step	title	title
+highway-architecture	step	write	write
+highway-architecture	step	name	name
+highway-architecture	step	close	close
+highway-architecture	verification	9cbe0821082c	An ADR id for an accepted ADR opens the proposed architecture.
+highway-architecture	verification	b19b0cffef50	An invocation without an ADR id lists the accepted ADRs whose ADR ID is absent from every architecture catalog row. Each line shows the ADR ID and its title. The list is numbered. A stated number selects that ADR. A removed architecture row keeps that ADR off the list.
+highway-architecture	verification	8dc0fc7258c3	One accepted ADR produces at most one architecture.
+highway-architecture	verification	70a0f3a08916	The architecture title is the decision's purpose, without "Adopt" and without a product. The proposal shows it before acceptance. An empty purpose asks for a title and writes nothing.
+highway-architecture	verification	b2ecd22f95ca	The proposed architecture is accepted before the record is written.
+highway-architecture	verification	30283aa4b446	The architecture does not change the ADR decision.
+highway-architecture	verification	c6c9757ec36c	After the architecture is written, the ADR's Reference Architecture field and its Architecture ID in `adrs/adrs.md` name it, and the ADR does not name an implementation. No other ADR field or ADR catalog cell changes.
+highway-architecture	verification	48e085f97811	When that ADR update fails, the architecture remains and the chain is not called complete. A later invocation for the same ADR names it.
+highway-architecture	verification	888130ac545b	The architecture remains conceptual. It names no platform, product, vendor, or specific technology. It has no Key Technologies section.
+highway-architecture	verification	57deb5ea094f	The record identifier is an `RA` id. The record status is `accepted` after the person accepts the architecture. It does not use an `ARCH` identifier or status `proposed`.
+highway-architecture	verification	50cb0cc0c894	Context states when the architecture applies and what it leaves open. The style states why it was chosen.
+highway-architecture	verification	268a658a1052	Variation, Responsibilities, Information, and each component's responsibility and interface are in the record.
+highway-architecture	verification	65aa03088e1f	Current Decisions lists every current decision that names this architecture, and the catalog ADR ID cell lists those same ids. A decision statement is not copied.
+highway-architecture	verification	779840633a04	Relationship lines use `advances`, `bound by`, and `satisfies`, or `None`.
+highway-architecture	verification	22f47df9fe94	Required capabilities name their component, follow the capability title rule, and have no capability ids.
+highway-architecture	verification	ab5a2b73dab5	Implementation is not authorized.
+highway-architecture	verification	286df27ea00e	Each id is `RA` plus eight hex digits derived from the title.
+highway-architecture	verification	70aed301fbda	The catalog index columns are Architecture ID, ADR ID, Architecture Title, Architecture Path, and Status.
+highway-architecture	verification	46bfa03d0bdd	A taken id names the conflicting titles, says a title change is appropriate, and shows a new title. The write waits until the person accepts that title.
+highway-architecture	verification	9f30ffae292a	That message does not mention identifiers, hex, sampling, or the catalog.
+highway-architecture	verification	ff25c667285d	A failed write leaves existing architecture bytes unchanged.
+highway-architecture	verification	33c86fc43713	The closing message names `highway-implementation [RA id]`.
+highway-architecture	verification	c3485e9fa297	The skill creates no Reference Implementation.
+highway-architecture	verification	8d9343d7c124	A handoff from `highway-onboarding` writes an accepted architecture without a proposal, names it on the ADR and in the ADR catalog, and returns its `RA` id. It asks only the purpose question or the title message, when the title cannot be used. A `decline` writes nothing.
+highway-architecture	error	2dce4cd6464e	A missing or unknown ADR stops the skill and writes nothing.
+highway-architecture	error	f2eafce19262	An ADR that is not accepted stops the skill and writes nothing.
+highway-architecture	error	08e3e057990b	A second architecture for the same ADR stops the write and shows the existing architecture.
+highway-architecture	error	20473014b238	A malformed present Profile, Objective, Control, or NFR baseline stops the skill and writes nothing.
+highway-architecture	error	c713858f6765	A failed write leaves existing architecture and catalog bytes unchanged.
+highway-architecture	error	e61d763f8a1c	A failed ADR update keeps the architecture, says the ADR could not be updated, and does not call the chain complete.
+highway-assessment	step	Entry	Entry
+highway-assessment	step	Classify	Classify
+highway-assessment	step	write	write
+highway-assessment	step	review	review
+highway-assessment	step	list of findings	list of findings
+highway-assessment	step	finding	finding
+highway-assessment	step	ready records	ready records
+highway-assessment	step	summary	summary
+highway-assessment	verification	0d52c41e0155	Assessment opens on **What would you like to review?** with observed gaps first and ready artifacts second. Nothing is written before a choice.
+highway-assessment	verification	9045370c7731	Observed gaps go to the list of findings, which is unchanged.
+highway-assessment	verification	2c8dce47108d	Ready records come from the catalogs, are grouped as requests, discoveries, decisions, architectures, and implementations, and are never written as findings.
+highway-assessment	verification	73daa03caa41	Categories are numbered and records are lettered. Each category shows at most 5 records, labeled by title and the stage it is ready for. A category with nothing ready is omitted.
+highway-assessment	verification	7a57310462b4	The ready view asks which record to advance and always ends with the return line. Returning shows the menu again.
+highway-assessment	verification	fe552767e88d	Advancing a record continues in the skill for its next stage. This skill does not create that record.
+highway-assessment	verification	8e71697f3a89	The default domain is `portfolio`.
+highway-assessment	verification	bf10b0c1587c	Catalogs are read before source records.
+highway-assessment	verification	3dae0128e8be	Findings about providers, reuse, coverage, and dependencies use `implementations/capabilities.md` and its Parent chain.
+highway-assessment	verification	c5fdecd9a00a	The opening heading "Let's see what your repository may be telling us." is shown once, before the first list.
+highway-assessment	verification	e1c2d584d316	The list opens with **Based on what Highway knows, these may be worth visiting:** and shows at most 5 numbered findings, each with a title based on its Finding text, its summary, and its **Solution Complexity:**. The title is not written to the findings file.
+highway-assessment	verification	71dca9b86335	Open findings from earlier runs come before new findings in the list.
+highway-assessment	verification	c40ef48116a6	A new finding is written with Status `Open` before it is shown.
+highway-assessment	verification	f2f4be81cdcc	The list asks **Would you like to explore any of these findings in more detail?** and says the person can dismiss any of them. It offers additional findings only when more remain.
+highway-assessment	verification	061e4f0df384	Dismissing from the list sets each named finding to Status `Dismissed` and shows the list again without them.
+highway-assessment	verification	91a5cbff7213	A finding chosen by number or summary opens with **Based on what Highway knows, this may be something worth visiting:**, then the observation, then several possible solutions, an overall complexity, and a dollar cost range when one is available.
+highway-assessment	verification	94f61f305488	The finding asks **Would you like to explore a solution now?** and says the person can dismiss it or go back to the list of findings.
+highway-assessment	verification	cda5f174345b	Going back, save for later, and discard each return to the list. A saved or discarded finding leaves the list.
+highway-assessment	verification	d4e5ab80fc9e	A question about that finding is answered, then the same finding is shown again.
+highway-assessment	verification	a27ffb79d8f2	Save for later updates the written row to Status `Accepted`.
+highway-assessment	verification	c996a6dba7f3	Discard updates the written row to Status `Dismissed`.
+highway-assessment	verification	277b9389b09e	Explore a solution now updates the written row to Status `Accepted`, tells the person the finding is becoming a request, says they can run `highway-assessment` later, and then continues as `highway-request` at `start`. Possible solutions, complexity, and cost are not seeded.
+highway-assessment	verification	89a06a9774b0	The id is `F` plus eight hex digits derived from the observation.
+highway-assessment	verification	e140be71965c	The same observation reuses that id. A collision with a different observation waits for a wording change.
+highway-assessment	verification	4129b718d6ac	The findings file has no fingerprint column.
+highway-assessment	verification	520c24fb06a0	A stale revision writes nothing.
+highway-assessment	verification	0eb68505f958	The skill creates no owner artifact.
+highway-assessment	verification	5a6fe07b7ba4	This skill does not write a request record.
+highway-assessment	error	a1996f374040	An unreadable findings file stops the skill and writes nothing.
+highway-assessment	error	6e2764b67300	A failed write leaves the findings file unchanged and does not show the finding.
+highway-assessment	error	520c24fb06a0	A stale revision writes nothing.
+highway-assessment	error	656cbe024da7	An unsupported category or status writes nothing.
+highway-assessment	error	b4ce2d22cb79	Missing evidence stays unknown and does not become a finding.
+highway-codify-config	step	Entry	Entry
+highway-codify-config	step	Classify	Classify
+highway-codify-config	step	menu	menu
+highway-codify-config	step	platforms	platforms
+highway-codify-config	step	current	current
+highway-codify-config	step	entry level	entry level
+highway-codify-config	step	use entries	use entries
+highway-codify-config	step	kind	kind
+highway-codify-config	step	platform entries	platform entries
+highway-codify-config	step	platform proposal	platform proposal
+highway-codify-config	step	platform rules	platform rules
+highway-codify-config	step	platform written	platform written
+highway-codify-config	step	standards	standards
+highway-codify-config	step	standard rules	standard rules
+highway-codify-config	step	rule shape	rule shape
+highway-codify-config	step	standard proposal	standard proposal
+highway-codify-config	step	standard write	standard write
+highway-codify-config	step	conflicts	conflicts
+highway-codify-config	step	resolve	resolve
+highway-codify-config	verification	ead9e93b7686	`highway-codify-config` shows the three-option menu. A platform name skips the menu and the platform list, and opens that platform's add or update or the onboard question.
+highway-codify-config	verification	8858d7b0e3f4	`Classify` tests `edit`, `decline`, `question`, `select`, `unknown`, then `accept`, and the first match wins.
+highway-codify-config	verification	50dae9515567	Each yes or no question answers a `question` and asks again, asks again after `unknown`, and names where `decline` goes.
+highway-codify-config	verification	b3e76a6c92e7	A return step named by `highway-onboarding` or `highway-implementation` is held for the visit. Declining the menu goes to that step. With none held, declining the menu stops.
+highway-codify-config	verification	e499699a415f	Picking an option and every edit begin with one consequence sentence.
+highway-codify-config	verification	16c0af5ae46e	Platforms and coding standards views show each catalog with list fields as ordered lists, and ask what to add, correct, or remove.
+highway-codify-config	verification	01f818ef320d	Every proposal shows its fields as bold labels, list fields as ordered lists, then Conflicts, and ends with **What would you add or correct?** and the cancel line.
+highway-codify-config	verification	38c0f631e4a9	A platform is added only from an accepted implementation. Any other name offers onboarding, which ends by pointing back here.
+highway-codify-config	verification	c96d9bb2ecc2	Accepting a platform writes only its row. Accepting a standard writes its file, then its row. Removing a standard keeps its file.
+highway-codify-config	verification	3e63fbd75e85	A standard proposal shows its File and Folder Structure as relative paths. Accepting one with no path, a path beginning with `/` or `code/`, or a required test path outside the structure writes nothing and says what is needed.
+highway-codify-config	verification	09a2a954e407	No coding standard is seeded. The first accepted standard adds its row to the seeded catalog.
+highway-codify-config	verification	26bca2e52b24	Conflicts quote both entries and name both records. With none, the person is asked what inconsistencies they noticed.
+highway-codify-config	verification	13216013039a	A resolution lists each record in bold with lettered changes, writes only those changes, and returns to the reassessed list.
+highway-codify-config	verification	bf9ce1411bc8	A cancel writes nothing and returns to the menu.
+highway-codify-config	verification	a21368a56af0	`current` is read before an add or update, and a removal does not run it.
+highway-codify-config	verification	01a48240a2f3	On an add, `entry level` proposes one to four classes of automation for each of When to use and When not to use, from what `current` describes, and no task. `use entries` writes each as one condition or one outcome in five words or fewer, and keeps saved entries on an update. Each proposal entry has a blank line, then **Why it matters:** stating its consequence, and the saved catalog does not keep that line.
+highway-codify-config	verification	6525cd78beef	An add or update proposal with no edit yet, for a platform or a standard, shows the starting-point line after the consequence sentence. An edited proposal and a remove do not.
+highway-codify-config	verification	47a1a40a5cee	A standard add or update follows `standard rules`, then `use entries`. A remove runs neither.
+highway-codify-config	verification	04fef42d48e1	`current` groups the automation capabilities the platform documentation describes by meaning. Each group the implementation does not already mean appears once under New Realized Capabilities, with the product and the handoff in the evidence. After the write, configuration follows `highway-implementation` to record them, with the return step `platform written`.
+highway-codify-config	verification	3dab97044635	Each coding rule is one must, one condition, and one outcome in eight words or fewer. The model suggests at most fifteen, and one keeps encoded or encrypted credentials outside the files. A provided rule that does not conform is rewritten, and the opening consequence sentence names the rewrite. Each rule shows **Why it matters:** on the proposal only.
+highway-codify-config	verification	ace422ae6d6e	A standard write with no conflicts states one consequence sentence and returns to the menu.
+highway-codify-config	error	5bff93eceff3	A missing template stops the change, names the template path, and writes nothing.
+highway-codify-config	error	4f4f6afabbc7	A failed write leaves the existing file unchanged and keeps the proposal open.
+highway-codify-config	error	762ab1cc675e	A failed standard file write writes no catalog row.
+highway-codify-config	error	efbeb7792950	A standard with no structure path, a path that is not relative, or a required test path outside the structure writes nothing and keeps the proposal open.
+highway-codify-config	error	bd37faa68947	A name that is not an accepted implementation is not added and offers onboarding.
+highway-codify	step	Entry	Entry
+highway-codify	step	catalog	catalog
+highway-codify	step	choose	choose
+highway-codify	step	record check	record check
+highway-codify	step	Classify	Classify
+highway-codify	step	rank	rank
+highway-codify	step	codified	codified
+highway-codify	step	code project	code project
+highway-codify	step	suggest	suggest
+highway-codify	step	draft	draft
+highway-codify	step	code tasks	code tasks
+highway-codify	step	provider	provider
+highway-codify	step	standards	standards
+highway-codify	step	align	align
+highway-codify	step	govern	govern
+highway-codify	step	resume	resume
+highway-codify	step	join	join
+highway-codify	step	folder	folder
+highway-codify	step	layout	layout
+highway-codify	step	propose	propose
+highway-codify	step	revise	revise
+highway-codify	step	identifier	identifier
+highway-codify	step	title	title
+highway-codify	step	write	write
+highway-codify	step	index	index
+highway-codify	step	index rules	index rules
+highway-codify	step	plan	plan
+highway-codify	step	check	check
+highway-codify	step	menu	menu
+highway-codify	step	review	review
+highway-codify	step	tasks	tasks
+highway-codify	step	code	code
+highway-codify	step	close	close
+highway-codify	verification	f840f259ec7b	An exact title selects that accepted implementation, and the title is what the person sees.
+highway-codify	verification	d6438e900c5e	A supplied id selects the matching accepted implementation, and the title is shown afterward.
+highway-codify	verification	df0ebb18f7a2	A list shows a title and the implementation summary. It does not use an id as the label.
+highway-codify	verification	511cec229721	One to five accepted implementations are listed when the person names nothing. More than five lists none until the person gives a title or a description, then at most five.
+highway-codify	verification	1c4c948dfd55	No accepted implementation writes nothing.
+highway-codify	verification	50279644665a	With no named action, the suggestion list appears once before any proposal. It opens with the one Technology Choice, or the implementation title, and says automating these tasks may be worth visiting.
+highway-codify	verification	1f61b8fb8de0	Each suggestion title is an action that starts with a verb, and its one summary sentence expands on it. The list holds at most five items, uses no id as a label, and ends with the invitation to describe another idea.
+highway-codify	verification	405960288b58	With no instance running, `Establish [implementation title]` comes first. Every other suggestion comes from one realized capability, in Realized Capabilities order.
+highway-codify	verification	0d42102601ef	A suggestion already in a product that lists this implementation is left out before the list keeps five: by a recorded feature with the same words, ignoring case, or by a feature sentence or product Summary with that meaning. No product folder is opened. Removed rows and integration rows leave nothing out.
+highway-codify	verification	a328baed3185	The proposal shows **Proposed project:** as `New <folder>` or `Existing <folder>`, then **Rationale:**. Its first sentence is plain language. A standard or integration is cited only when it replaced the decision.
+highway-codify	verification	c05d6527af4a	The person's project edit is written. The folder stays unique, including removed rows, the `CDY` id is in `.highway/metadata.md`, the feature is under `.highway/features/`, and paths are relative to the folder.
+highway-codify	verification	1d823addb999	Each accepted action is the next numbered feature directory in its product, numbered from the last row of the Features table in `.highway/metadata.md`. No features folder is listed. Earlier directories stay.
+highway-codify	verification	fa5ad7c89ce4	Each accepted feature adds one Features row with its number, folder, title, and Summary. A row is never removed.
+highway-codify	verification	2af7b6ac676b	Features keeps an entry only when that feature starts the product, adds an implementation, records an integration, changes the summary, or is open.
+highway-codify	verification	6b5e2f7efb7c	Accepting a proposal that includes an integration writes one row to `code/integrations.md`, and a pair already accepted writes none.
+highway-codify	verification	394212ea3630	A named action skips the suggestion list and opens the proposal for that action.
+highway-codify	verification	2b566cce0a70	Before any proposal, coding standards are checked first and vendor documentation second. Corrections and inconclusive results are named before the proposal and are not saved. The checks keep the selected action.
+highway-codify	verification	35ab7a437429	A standard that cannot be met for the selected action shows no proposal and returns to suggestions.
+highway-codify	verification	fc4c59dcbe37	The proposal shows Title, Summary, Description, Acceptance criteria, Diagram, and Tasks, in that order. It shows no components, current state, separate action, day, or means.
+highway-codify	verification	6f30961050f5	The diagram is one logical flow, top to bottom, from the Provider. Each arrow leaves the Provider, is one task's action, starts with a verb, and points to that task's target, in task order. No arrow leaves a target.
+highway-codify	verification	16622f4387dc	Every task names the same Provider, the platform executing the automation. The implementation being automated is a target. A Shopify proposal can use Cursor when Cursor is included, even though the Shopify records do not name it.
+highway-codify	verification	a93e4a08783c	A named platform with no catalog row stays the Provider and the proposal says `highway-codify-config` can add it. With no row and no named platform, the proposal says a platform is needed and accept stays on `revise`.
+highway-codify	verification	c47da852c65d	After a selection, a record whose Deployed by or Managed by is `Needed`, empty, or has no row, or whose Language is `Needed`, empty, or has no row, emits the missing critical detail line and "Let's set those details now for [Product Title].", then follows `highway-implementation` with the return step `record check`. It asks no question and holds no platform for one run.
+highway-codify	verification	dadab89cb0a1	A return with the record still incomplete stops and writes nothing.
+highway-codify	verification	e5097c411bbe	An implementation whose Language names a coding standard is a code project. Until an Establish feature is recorded, `Establish [implementation title]` is the only suggestion, even when an instance is running. Later suggestions come from Realized Capabilities, Realized Interfaces, covered Coverage rows, then NFR Realization, at most five.
+highway-codify	verification	5b53eac82f36	A code project's Establish proposes the project structure, the build file, the entry point, the configuration, and a health check, plus pipeline tasks when Deployed by is a pipeline. A code task shows Language in place of Provider. The Executor is Deployed by.
+highway-codify	verification	4309df5fe08e	A code project's product is titled from the implementation, lists only that implementation, and its close says the code was not run.
+highway-codify	verification	dc2d04d6117b	Each task shows Standards as an ordered list, or `No coding standard applies.` A standard whose When not to use matches is dropped. A standard comes before the standards it inherits from, and each inherited standard appears once.
+highway-codify	verification	893aa820a7e1	A Standards edit re-emits the proposal with one consequence sentence. A title not in the catalog is left out and points to `highway-codify-config`.
+highway-codify	verification	92309a0a6fec	`align` corrects the method, library, module, or pattern against every standard on the task's list and keeps the Provider.
+highway-codify	verification	3b11e94de59b	An invocation of the word `configure` points to `highway-codify-config` and writes nothing.
+highway-codify	verification	25fc802f29fe	`highway-codify catalog` lists at most five accepted automations, newest first, with each implementation title and progress, says how many more exist, and writes nothing. A selection shows the files path and the README path.
+highway-codify	verification	f7b3f9d3ef52	A new row in `code/code.md` is appended as the last row.
+highway-codify	verification	04aafc1c888f	The README is headed `## Setup Instructions`, then `## User Guide`.
+highway-codify	verification	fe3491ad1b88	A finished run closes with the completion message, both paths, and the sentence that the automation was not run. A stopped run names the stopped task and does not say the codify stage is complete.
+highway-codify	verification	5aeb5f3a3fff	Each task is one action against one target and shows Scope, Provider, Method, Standards, Files, and Assumptions.
+highway-codify	verification	31101bce1a46	Files lists relative paths placed from the File and Folder Structure of the task's standards. A listed standard with no structure is named before the proposal with a pointer to `highway-codify-config`. A Files edit changes only this automation. An unfilled placeholder keeps the proposal open.
+highway-codify	verification	f9cc62afad04	A second action waits for another run. Declining writes nothing. Accepting is the only confirmation.
+highway-codify	verification	f8b67baeb055	Acceptance writes `codify.md`, the product's `metadata.md` with the new Features row, the catalog row, and any new integrations row together, then `plan.md`. It writes no task list, no file the task list names, and no README.
+highway-codify	verification	905ef491ed3e	The proposal heading is `Here is a proposed starting point for your codify feature:`. `Highway will use this specification to build out the solution.` follows `If this is accurate, just say so.`
+highway-codify	verification	ded7741aec3c	The menu offers Review the plan and Continue to code the solution. A feature with a plan and no task list resumes at the menu.
+highway-codify	verification	9809699407cf	Reviewing the plan reads every section, then asks **What would you add, correct, or remove?** and "If this is accurate, just say so." before the menu returns. Accepting emits the menu, and a change regenerates the plan and runs `check`. Continuing to code asks no review question.
+highway-codify	verification	993e375d731b	Continuing emits the building sentence once, then writes the task list ordered by story, each heading with its independent test.
+highway-codify	verification	575724a229f8	The task list follows `codify-tasks.md`. A story's test line comes first only when its first standard says `Tests: required`.
+highway-codify	verification	bf767f40cbdb	Coding starts with no question after the task list is written. Every standard a task names, and each existing file it names, is read before its files are written, and no other automation file is read, the earlier one winning a disagreement, and each task is marked `[X]` before the next begins.
+highway-codify	verification	2c0b10922a8f	A task that cannot be finished stops the run with that task and every later task open. The next run starts at the first open task, redoes no finished task, and runs no check.
+highway-codify	verification	4ff27ebe0e6d	Codify creates, edits, and removes no coding standard and no row of the coding standards catalog.
+highway-codify	verification	86e4936f161e	Acceptance and coding run the automation zero times and leave the implementation, architecture, decision, request, and finding unchanged.
+highway-codify	verification	033fb38019d6	Each id is `CDY` plus eight hex digits derived from the product title. A joined product keeps its id.
+highway-codify	verification	46bfa03d0bdd	A taken id names the conflicting titles, says a title change is appropriate, and shows a new title. The write waits until the person accepts that title.
+highway-codify	verification	9f30ffae292a	That message does not mention identifiers, hex, sampling, or the catalog.
+highway-codify	verification	6b552c6b8284	A failed write leaves no partial folder and leaves existing catalog bytes unchanged.
+highway-codify	error	ac10f4458f68	A missing record, catalog, plan, or task list template stops the skill, names the template path, and writes nothing.
+highway-codify	error	0757f7395dee	Missing Controls and NFRs catalogs leave the proposal with `No Control or NFR applies.`
+highway-codify	error	83795f5d4fa0	A Control or NFR that cannot be met for the selected action returns to `suggest` and writes nothing.
+highway-codify	error	8b150f32ee3b	A missing coding standards catalog leaves every task with `No coding standard applies.` The close says no catalog was found.
+highway-codify	error	23a124cd8241	A standard that cannot be met for the selected action returns to `suggest` and writes nothing.
+highway-codify	error	bfa8a56d79c7	A task that cannot be finished stops coding at that task, leaves it open, and keeps the files finished tasks wrote.
+highway-codify	error	1d64e79cce75	An implementation that is not accepted stops the skill and writes nothing.
+highway-codify	error	15a1cf63744c	No accepted architecture for this automation keeps the proposal open and says so.
+highway-codify	error	6b552c6b8284	A failed write leaves no partial folder and leaves existing catalog bytes unchanged.
+highway-codify	error	9dde8c6abcab	Declining a proposal writes nothing.
+highway-codify	error	210f282c16d8	A folder already in the catalog, including a removed row, is not started. The person names another.
+highway-codify	error	d0c51fb69963	Removing the last task or the last acceptance criterion keeps the proposal open and writes nothing.
+highway-controls	step	Entry	Entry
+highway-controls	step	Classify	Classify
+highway-controls	step	review	review
+highway-controls	step	recommend	recommend
+highway-controls	step	more	more
+highway-controls	step	queue	queue
+highway-controls	step	ask	ask
+highway-controls	step	capture	capture
+highway-controls	step	identifier	identifier
+highway-controls	step	title	title
+highway-controls	step	write	write
+highway-controls	verification	e7dcc140cfab	An existing readable catalog is shown with **What would you add, correct, or remove?**
+highway-controls	verification	29a60f70bb1b	Acceptance of that review returns `Finished` and emits nothing else.
+highway-controls	verification	0bd45886b6ef	A review edit rewrites the affected record and catalog, then shows the updated Controls with the same question.
+highway-controls	verification	02e1f6ca7953	An absent catalog and readable Profile and Objectives begin with a recommendation set.
+highway-controls	verification	1d7abad4cc6a	"Looks good" on a recommendation set adds that set to the queue and does not start capture.
+highway-controls	verification	5f046340751d	A queue message lists the titles just added, then includes the next recommendation set when grounded recommendations remain.
+highway-controls	verification	8f53c3f676dd	A queue message does not ask whether to explore more safeguards.
+highway-controls	verification	e2894fef19e8	Capture starts when the person asks to review the queue.
+highway-controls	verification	cb408ffb3e96	A capture shows every queued Control in one message, with `---` between Controls and one acceptance question.
+highway-controls	verification	882a91cf5ad7	A capture does not accept Controls one at a time.
+highway-controls	verification	1abd5c714bf7	Records and the catalog are written once, after the set is accepted or declined.
+highway-controls	verification	8dfc3331d75c	Each id is `CTL` plus eight hex digits derived from the title.
+highway-controls	verification	cb835f3cf00d	A taken id for a different title names the conflicting titles, says a title change is appropriate, and shows a new title. The write waits until the person accepts that title.
+highway-controls	verification	9f30ffae292a	That message does not mention identifiers, hex, sampling, or the catalog.
+highway-controls	verification	f8638f56fe5d	A successful guided write returns `Finished`, emits nothing else, and does not show the stored records.
+highway-controls	verification	6f688796ff25	Written records match `assets/control-record.md`.
+highway-controls	verification	35d8b65f49d2	The written catalog matches `assets/control-catalog.md`.
+highway-controls	verification	e4b958cc7e16	Setup receives `Finished` and the person does not see that word.
+highway-controls	error	6a7fa87a5c4a	An unreadable catalog or active record stops the skill, leaves every file unchanged, and does not return `Finished`.
+highway-controls	error	f2cfc5a4a92c	A failed review rewrite leaves every file unchanged, says what failed in terms the person can act on, and stays on `review`.
+highway-controls	error	d2155cc09aea	A failed guided write leaves the baseline unchanged, says what failed in terms the person can act on, and stays on `write`.
+highway-controls	error	c80e71482855	An absent or unreadable Profile or Objectives catalog uses `ask` and does not invent organizational facts.
+highway-discovery	step	Entry	Entry
+highway-discovery	step	choose	choose
+highway-discovery	step	Classify	Classify
+highway-discovery	step	analyze	analyze
+highway-discovery	step	check	check
+highway-discovery	step	identifier	identifier
+highway-discovery	step	title	title
+highway-discovery	step	write	write
+highway-discovery	step	start	start
+highway-discovery	step	explore	explore
+highway-discovery	verification	ef901304e9ba	A Request id for a completed Request begins at `analyze`, then `start`.
+highway-discovery	verification	34232d93cb36	A Discovery id shows `start` from the stored options and does not write.
+highway-discovery	verification	4119f1b3f777	An invocation with neither id lists the complete Requests that have no Discovery catalog row, then the accepted Discoveries. Each line shows the id and its title. The list is numbered across both groups. A stated number selects that row. A removed Discovery row keeps that Request off the list.
+highway-discovery	verification	f376cc7b1adb	`start` lists each option with a number, the option id, the title, and one why sentence.
+highway-discovery	verification	a2ddd0ce4896	When a matched architecture has a current implementation, that notice names the implementation, the architecture, and the decision it came from before the options. A wording resemblance does not. The notice does not ask for confirmation.
+highway-discovery	verification	dc5ce3b8636e	The recommended option title is followed by `(Recommended)`.
+highway-discovery	verification	3981044a6ec1	A stated number selects that option.
+highway-discovery	verification	b5e14c2c18c4	`start` asks which option to explore, or whether to see a comparison matrix, then says the person can decide.
+highway-discovery	verification	fab186cb92e0	The comparison matrix has at most 6 columns and includes Operational considerations and Licensing costs. The Option column includes the same number as the list, and that number does not count as a column.
+highway-discovery	verification	facc7ff3f176	After the comparison matrix, the question asks which option to explore, does not offer the matrix again, and says the person can decide.
+highway-discovery	verification	b0bdd30af0e2	A reply that is ready to decide continues as `highway-adr` with this Discovery id. This skill does not create the ADR.
+highway-discovery	verification	e887cc14fb0f	The explored option shows Summary, Request Alignment, Objective Alignment, Control Alignment, NFR Alignment, Benefits, Risks, Assumptions, Dependencies, and Licensing costs.
+highway-discovery	verification	e74398ff4f8b	The explored option ends with its question, then says the person can select this option for the Decision record. Selecting it continues as `highway-adr` with this Discovery id and this option id.
+highway-discovery	verification	a2698ea9ebf8	A named product or feature the vendor no longer offers is removed before scoring and named with its source before the options. An inconclusive check keeps the option and is not confirmation.
+highway-discovery	verification	f43c0ee7c28e	An option that depends on a required platform is held out when accepted evidence does not say that platform supports it. Vendor documentation does not put it back.
+highway-discovery	verification	6924b4cc6935	Opening a Discovery id, or adding an option, does not run the check.
+highway-discovery	verification	12e9a254f8fc	Fewer than two viable options writes nothing.
+highway-discovery	verification	45d2d1701dc3	A new analysis writes every retained option before the option list is shown.
+highway-discovery	verification	d8f2c5fd5bdd	Adding, replacing, or removing an option updates the Discovery file.
+highway-discovery	verification	25f75c333738	The record contains two to five `OPT` ids, one `Recommended` status, and matrix totals that equal the scores.
+highway-discovery	verification	71ba3f9f7ee0	Each Discovery id is `DISC` plus eight hex digits derived from the Discovery title.
+highway-discovery	verification	db5c29e575d4	Each option id is `OPT` plus eight hex digits derived from the option title.
+highway-discovery	verification	46bfa03d0bdd	A taken id names the conflicting titles, says a title change is appropriate, and shows a new title. The write waits until the person accepts that title.
+highway-discovery	verification	9f30ffae292a	That message does not mention identifiers, hex, sampling, or the catalog.
+highway-discovery	verification	9f5c0c3b51b7	Mandatory constraint violations are excluded before scoring.
+highway-discovery	verification	63d4dbf9bed6	Tie-break order is Reference Architecture match, Reference Implementation count, then lower `OPT` id.
+highway-discovery	verification	b8175b889a12	Clarification does not change options, scores, or the recommendation.
+highway-discovery	verification	d71d43fe4c22	A failed write leaves existing Discovery bytes unchanged.
+highway-discovery	verification	9410f64f9b3a	The skill creates no ADR and records no decision.
+highway-discovery	error	96ed4b7f4372	A missing, ambiguous, or incomplete Request stops the skill and writes nothing.
+highway-discovery	error	2f8816e10064	A Discovery id that matches nothing stops the skill and writes nothing.
+highway-discovery	error	e0b20485f0f9	Fewer than two viable options stops the skill and writes nothing.
+highway-discovery	error	20473014b238	A malformed present Profile, Objective, Control, or NFR baseline stops the skill and writes nothing.
+highway-discovery	error	d7182d96c655	A missing optional baseline leaves that relationship empty and continues.
+highway-discovery	error	3b573dda5998	A missing or unreadable Reference Architecture yields no match and continues.
+highway-discovery	error	56f53364767c	A malformed or unreadable Reference Implementation counts as zero and continues.
+highway-discovery	error	9780f60c081c	A failed write leaves existing Discovery and catalog bytes unchanged.
+highway-experience	step	Activated by a skill	Activated by a skill
+highway-experience	step	Invoked directly	Invoked directly
+highway-experience	verification	8af204b0852e	Every other Highway skill activates this skill before its first output.
+highway-experience	verification	953fda7501a5	The activating skill's output follows the Experience Standard.
+highway-experience	verification	c18048907efc	Every repository read and write goes through the storage contract's operations.
+highway-experience	verification	9810f65acedf	A direct invocation shows at most five sentences, names `highway-help`, and writes no file.
+highway-experience	error	af269c00afbb	A reference is missing or unreadable: stop, and say which reference could not be read.
+highway-help	verification	2e3afd6f4aa3	Request help for `highway-help` itself and confirm the response has exactly five fields in the
+highway-help	verification	7376c99ca2fd	Request help with no identifier declared and confirm one block per entry currently in
+highway-help	verification	5677e7c8ed3c	See the checked scenarios recorded by feature 009 (skill id namespace alignment) for the
+highway-help	error	f747c406dc34	Declared identifier matches no entry in `assets/index.json`: abort and print exactly
+highway-help	error	c714effef44e	No skill identifier declared and the index has zero entries: abort the listing and print
+highway-help	error	cd461067ae26	The skill index `assets/index.json` is missing or unreadable: abort and print exactly
+highway-implementation	step	Entry	Entry
+highway-implementation	step	choose	choose
+highway-implementation	step	onboarding	onboarding
+highway-implementation	step	Classify	Classify
+highway-implementation	step	execution	execution
+highway-implementation	step	field	field
+highway-implementation	step	why it matters	why it matters
+highway-implementation	step	capability title	capability title
+highway-implementation	step	start	start
+highway-implementation	step	identifier	identifier
+highway-implementation	step	title	title
+highway-implementation	step	write	write
+highway-implementation	step	platforms	platforms
+highway-implementation	step	close	close
+highway-implementation	step	add capabilities	add capabilities
+highway-implementation	step	delivery platforms	delivery platforms
+highway-implementation	step	delivery decline	delivery decline
+highway-implementation	verification	13b7984192e7	A Reference Architecture id for an accepted architecture opens the proposed realization.
+highway-implementation	verification	d7163a0769a5	An invocation without an id lists every accepted architecture. Each line shows the Architecture ID, its title, and how many current implementations it has. The list is numbered. A stated number selects that architecture. A removed implementation row does not count as current.
+highway-implementation	verification	293cbebab3db	When an architecture already has current implementations, those implementations are shown and a new one can still be proposed.
+highway-implementation	verification	bade6e25b62b	Declining a proposal writes nothing, and existing implementations stay as they were.
+highway-implementation	verification	e153dfa26174	An architecture that is not accepted writes nothing.
+highway-implementation	verification	ecd597581966	One accepted architecture can have more than one current implementation. Creating another leaves the existing ones in place.
+highway-implementation	verification	303be4ba11b9	The proposed realization is accepted before the record is written.
+highway-implementation	verification	741b7639cc40	A contradiction with the architecture writes nothing.
+highway-implementation	verification	a5e67ba147e0	Coverage rows are the architecture's stated responsibilities. Conformance is `compatible` when every row is covered or not applicable, and that record has no gap section and no conflict section. An uncovered responsibility is `incomplete` and states the gap.
+highway-implementation	verification	b1a2f363ed7e	The architecture is named once. A technology choice is stated once.
+highway-implementation	verification	2bcb3a257e50	The record status is `accepted`. The parent is an `RA` id.
+highway-implementation	verification	6f48d74f42ac	`implementations/capabilities.md` is written in the same step, with ID, Parent, Title, and Realized By.
+highway-implementation	verification	45dacd35d527	Each capability title follows the capability title rule. A title that joins two things becomes two capabilities without a question, and the consequence sentence names the compounding effect.
+highway-implementation	verification	4d7589a1017e	A capability id is `CAP` plus eight hex digits. The same Parent and title reuse that id. No capability record file is written.
+highway-implementation	verification	6c7adab23acb	The record contains no plans, tasks, source code, or infrastructure definitions.
+highway-implementation	verification	e5e528da1966	Each id is `RI` plus eight hex digits derived from the title.
+highway-implementation	verification	3221c366d3e1	The implementation title is the decision's product or named mechanism, without "Adopt". The proposal shows it before acceptance. It gains "for" and the purpose only when that title belongs to an implementation of a different architecture.
+highway-implementation	verification	5132f0031dfb	The catalog index columns are Implementation ID, Architecture ID, Implementation Title, Implementation Path, and Status.
+highway-implementation	verification	46bfa03d0bdd	A taken id names the conflicting titles, says a title change is appropriate, and shows a new title. The write waits until the person accepts that title.
+highway-implementation	verification	9f30ffae292a	That message does not mention identifiers, hex, sampling, or the catalog.
+highway-implementation	verification	7127dfcaa07c	A failed write leaves existing implementation, implementation-catalog, and capability-catalog bytes unchanged.
+highway-implementation	verification	0cddfac1ed77	The skill does not change the Reference Architecture, the decision statement, the rationale, the selected option, or the decision status.
+highway-implementation	verification	9dfb094671cb	The skill does not write an implementation id onto the ADR.
+highway-implementation	verification	2ee9d05d3ef0	An accepted implementation that can start automation, such as an agent that starts the work, gets one row in `library/coding-standards/codify-platforms.md` with blank When to use and When not to use. The person is told it is included and asked whether to configure how highway-codify uses it. A yes emits "Let's configure how highway-codify uses [Platform]." and follows `highway-codify-config` for that platform with the return step `close`. A no goes to `close`. Under `onboarding`, the step returns to highway-onboarding after the write, without the included line or the question.
+highway-implementation	verification	f10b9e05c29b	A store, a newsletter, a records product, or a backup gets no row and no message. Opening, listing, or declining writes no row.
+highway-implementation	verification	47102d03c956	An invocation from `highway-codify-config` naming an accepted implementation, new realized capabilities, and a return step goes to `add capabilities`. It appends them to Realized Capabilities and to this Parent's capability rows, changes no other record byte, asks no question, and goes to the held step. A passed title that breaks the capability title rule is left out and named.
+highway-implementation	verification	7ccc32ad30d1	An invocation from `highway-codify` naming an accepted implementation and a return step goes to `delivery platforms`. It opens with "Here is the proposed Deployed by, Managed by and Language for [Product Title]", then shows Product Title, Architecture Reference, Deployed by, Managed by, and Language, each field followed by its Why it matters line. Accept stays on the view while a field is Needed. Acceptance rewrites only the three Execution lines, emits "The preferred delivery platforms for [Title] are set. Picking up your highway-codify run.", and goes to the held step.
+highway-implementation	verification	c8166b3100be	The delivery platforms view holds the record's fields, then the `execution` value for each unset one: Deployed by or Managed by that is `Needed`, empty, or has no row, and Language that is `Needed`, empty, or has no row. A stored `None` is shown as stored. A value the person named in the visit replaces it. This implementation's row is never a candidate.
+highway-implementation	verification	b12b9675ad8d	A handoff from `highway-onboarding` writes an accepted implementation without a proposal and returns its `RI` id to highway-onboarding, never to a step another visit holds. It asks only the title message, when the title cannot be used. A `decline` writes nothing.
+highway-implementation	verification	5c5933019d7b	An onboarded implementation stores Deployed by, Managed by, and Language as `Needed`.
+highway-implementation	verification	a7f762781152	The `start` proposal and the delivery platforms view follow Deployed by, Managed by, and Language each with its Why it matters line from `why it matters`.
+highway-implementation	verification	f463258b345e	A decline writes nothing, emits "Leaving the preferred delivery platforms for [Title] unset. highway-codify needs these details before it can make proposals for [Title].", and asks whether to return. A yes shows the view again. A no goes to the held step.
+highway-implementation	error	206b474f3da3	A missing or unknown architecture stops the skill and writes nothing.
+highway-implementation	error	438cf6709ff5	An architecture that is not accepted stops the skill and writes nothing.
+highway-implementation	error	da87bc3c52a3	A realization that contradicts the architecture stops the write and names the conflict.
+highway-implementation	error	20473014b238	A malformed present Profile, Objective, Control, or NFR baseline stops the skill and writes nothing.
+highway-implementation	error	ae49b3b5883d	A failed write leaves the architecture and every other implementation unchanged, and leaves existing implementation, implementation-catalog, and capability-catalog bytes unchanged.
+highway-implementation	error	9dde8c6abcab	Declining a proposal writes nothing.
+highway-nfrs	step	Entry	Entry
+highway-nfrs	step	Classify	Classify
+highway-nfrs	step	review	review
+highway-nfrs	step	recommend	recommend
+highway-nfrs	step	more	more
+highway-nfrs	step	queue	queue
+highway-nfrs	step	ask	ask
+highway-nfrs	step	capture	capture
+highway-nfrs	step	identifier	identifier
+highway-nfrs	step	title	title
+highway-nfrs	step	write	write
+highway-nfrs	verification	e7dcc140cfab	An existing readable catalog is shown with **What would you add, correct, or remove?**
+highway-nfrs	verification	29a60f70bb1b	Acceptance of that review returns `Finished` and emits nothing else.
+highway-nfrs	verification	b39e34e172d8	A review edit rewrites the affected record and catalog, then shows the updated NFRs with the same question.
+highway-nfrs	verification	80c7dbc2c82f	An absent catalog and readable Profile, Objectives, and Controls begin with a recommendation set.
+highway-nfrs	verification	1d7abad4cc6a	"Looks good" on a recommendation set adds that set to the queue and does not start capture.
+highway-nfrs	verification	5f046340751d	A queue message lists the titles just added, then includes the next recommendation set when grounded recommendations remain.
+highway-nfrs	verification	163b3a804d19	A queue message does not ask whether to explore more operational expectations.
+highway-nfrs	verification	e2894fef19e8	Capture starts when the person asks to review the queue.
+highway-nfrs	verification	390664817287	A capture shows every queued NFR in one message, with `---` between NFRs and one acceptance question.
+highway-nfrs	verification	4e1cbd48a64d	**No system hosting** and **Direct purchase** are recommendations. A limit the person does not select is not captured.
+highway-nfrs	verification	a70fe483b6f1	Each recommendation shows its title, one sentence, and a **Why it matters:** line.
+highway-nfrs	verification	0e43f8549856	An NFR that reflects accepted Controls has a rationale that opens with **Enforces your Safeguard, [Control title],** or **Enforces your Safeguards, [Control titles],** and continues with "by".
+highway-nfrs	verification	8e4db760b7d7	A shown recommendation the person did not select does not reflect its Control. A later set offers that Control again.
+highway-nfrs	verification	340522de2afc	A rationale the person edits is kept as written.
+highway-nfrs	verification	692a5cb51bbe	A capture does not accept NFRs one at a time.
+highway-nfrs	verification	1abd5c714bf7	Records and the catalog are written once, after the set is accepted or declined.
+highway-nfrs	verification	5470a444ce7a	Each id is `NFR` plus eight hex digits derived from the title.
+highway-nfrs	verification	cb835f3cf00d	A taken id for a different title names the conflicting titles, says a title change is appropriate, and shows a new title. The write waits until the person accepts that title.
+highway-nfrs	verification	9f30ffae292a	That message does not mention identifiers, hex, sampling, or the catalog.
+highway-nfrs	verification	f8638f56fe5d	A successful guided write returns `Finished`, emits nothing else, and does not show the stored records.
+highway-nfrs	verification	a6aea9e55074	Written records match `assets/nfr-record.md`.
+highway-nfrs	verification	a5bcf7c69b06	The written catalog matches `assets/nfr-catalog.md`.
+highway-nfrs	verification	e4b958cc7e16	Setup receives `Finished` and the person does not see that word.
+highway-nfrs	error	6a7fa87a5c4a	An unreadable catalog or active record stops the skill, leaves every file unchanged, and does not return `Finished`.
+highway-nfrs	error	f2cfc5a4a92c	A failed review rewrite leaves every file unchanged, says what failed in terms the person can act on, and stays on `review`.
+highway-nfrs	error	d2155cc09aea	A failed guided write leaves the baseline unchanged, says what failed in terms the person can act on, and stays on `write`.
+highway-nfrs	error	436c31ae45c9	An absent or unreadable Profile, Objectives catalog, or Controls catalog uses `ask` and does not invent organizational facts.
+highway-objectives	step	Entry	Entry
+highway-objectives	step	Classify	Classify
+highway-objectives	step	review	review
+highway-objectives	step	recommend	recommend
+highway-objectives	step	more	more
+highway-objectives	step	queue	queue
+highway-objectives	step	ask	ask
+highway-objectives	step	capture	capture
+highway-objectives	step	identifier	identifier
+highway-objectives	step	title	title
+highway-objectives	step	write	write
+highway-objectives	verification	e7dcc140cfab	An existing readable catalog is shown with **What would you add, correct, or remove?**
+highway-objectives	verification	29a60f70bb1b	Acceptance of that review returns `Finished` and emits nothing else.
+highway-objectives	verification	d12695562ab3	A review edit rewrites the affected record and catalog, then shows the updated Objectives with the same question.
+highway-objectives	verification	187502f2700c	An absent catalog and a readable Profile begin with a recommendation set.
+highway-objectives	verification	1d7abad4cc6a	"Looks good" on a recommendation set adds that set to the queue and does not start capture.
+highway-objectives	verification	5f046340751d	A queue message lists the titles just added, then includes the next recommendation set when grounded recommendations remain.
+highway-objectives	verification	59a17070f08b	A queue message does not ask whether to explore more outcomes.
+highway-objectives	verification	e2894fef19e8	Capture starts when the person asks to review the queue.
+highway-objectives	verification	9e2e6c3c4e61	A capture shows every queued Objective in one message, with `---` between Objectives and one acceptance question.
+highway-objectives	verification	0dda98356228	A capture does not accept Objectives one at a time.
+highway-objectives	verification	1abd5c714bf7	Records and the catalog are written once, after the set is accepted or declined.
+highway-objectives	verification	5d4b1ba32ac6	Each id is `OBJ` plus eight hex digits derived from the title.
+highway-objectives	verification	cb835f3cf00d	A taken id for a different title names the conflicting titles, says a title change is appropriate, and shows a new title. The write waits until the person accepts that title.
+highway-objectives	verification	9f30ffae292a	That message does not mention identifiers, hex, sampling, or the catalog.
+highway-objectives	verification	f8638f56fe5d	A successful guided write returns `Finished`, emits nothing else, and does not show the stored records.
+highway-objectives	verification	9bf602e68e30	Written records match `assets/objective-record.md`.
+highway-objectives	verification	43500814e835	The written catalog matches `assets/objective-catalog.md`.
+highway-objectives	verification	e4b958cc7e16	Setup receives `Finished` and the person does not see that word.
+highway-objectives	error	81bdf73ac517	An unreadable catalog or record stops the skill, leaves every file unchanged, and does not return `Finished`.
+highway-objectives	error	f2cfc5a4a92c	A failed review rewrite leaves every file unchanged, says what failed in terms the person can act on, and stays on `review`.
+highway-objectives	error	d2155cc09aea	A failed guided write leaves the baseline unchanged, says what failed in terms the person can act on, and stays on `write`.
+highway-objectives	error	fe2c87f66c52	An absent or unreadable Profile uses `ask` and does not invent organizational facts.
+highway-onboarding	step	Classify	Classify
+highway-onboarding	step	overview	overview
+highway-onboarding	step	capabilities	capabilities
+highway-onboarding	step	map	map
+highway-onboarding	step	mapping	mapping
+highway-onboarding	step	orchestrate	orchestrate
+highway-onboarding	step	lineage	lineage
+highway-onboarding	step	configure	configure
+highway-onboarding	step	summary	summary
+highway-onboarding	step	review	review
+highway-onboarding	verification	ed664230ee32	The overview is shown once, before the first capability list, and opens with the level-3 heading "Let's get to know your technology landscape".
+highway-onboarding	verification	81447a6a9f73	Each proposed capability names what a technology does for the organization. An activity that no technology supports is not proposed. An activity with no named system still yields its technology capability, and `map` asks for the provider.
+highway-onboarding	verification	a372f3b9361a	Each capability is its own numbered item, with its bold title, a blank line, then its description.
+highway-onboarding	verification	a2733c76bc14	The capability starting point includes **AI-Augmented Technology Development:** Using AI systems to assist with research, planning, and implementation of technology solutions.
+highway-onboarding	verification	ff0261baf8b2	A removed AI-Augmented Technology Development line is not placed on the capability queue.
+highway-onboarding	verification	9eab5741ad94	Each capability title follows `capability title` in `highway-implementation`. Two activities that rely on one technology are two capabilities.
+highway-onboarding	verification	17f7674914ba	The AI-Augmented Technology Development provider is the agent platform the session identifies by name. An unidentified name uses the unable-to-infer prompt.
+highway-onboarding	verification	2efbfd6c4b04	The mapping transition is shown once, before the first capability mapping.
+highway-onboarding	verification	562c2cedede5	Each mapping label is bold, followed by a blank line and its value.
+highway-onboarding	verification	c418e937d4e2	The agent platform is not assigned to a capability it does not operate.
+highway-onboarding	verification	9f04ff50274e	The capability starting point is accepted before any platform question.
+highway-onboarding	verification	bf0347942e17	Each capability is mapped before the provider groups are shown.
+highway-onboarding	verification	7aea31a06812	The provider queue starts only after the mapping is accepted.
+highway-onboarding	verification	196516bd44e7	For each provider, onboarding hands the ADR to `highway-adr`, then the Reference Architecture to `highway-architecture`, then the Reference Implementation to `highway-implementation`, once each, without asking the person to accept any of them.
+highway-onboarding	verification	a6362defbc3b	The summary tells the person they can review a Decision, Reference Architecture, or Reference Implementation.
+highway-onboarding	verification	6e7b40c95139	A review that names nothing lists each provider's Decision, Reference Architecture, and Reference Implementation, and asks which to review or whether to review all.
+highway-onboarding	verification	fb50d4972b03	Review all shows one record at a time: for each provider, the Decision, then the Reference Architecture, then the Reference Implementation.
+highway-onboarding	verification	2ac996c62645	Each record is introduced with **Review the [record] Highway has prepared:**
+highway-onboarding	verification	80bc9d647afc	A later provider is introduced with "Review the [provider] records Highway has prepared for you."
+highway-onboarding	verification	ce19e8dcdbc4	A shown record asks **What would you add, correct, or remove?**
+highway-onboarding	verification	42816b8676b9	A failed handoff is followed once more and is named when it still fails. A declined title keeps the earlier records and does not claim onboarding is complete.
+highway-onboarding	verification	278181908af4	No Request or Discovery record is created.
+highway-onboarding	verification	8b486e842706	The Reference Implementation is written only after that architecture record exists.
+highway-onboarding	verification	d46d06fc7871	A failed architecture or implementation does not claim onboarding is complete.
+highway-onboarding	verification	f4a32629d4d2	Lineage is shown only after every provider on the queue has an ADR, Reference Architecture, and Reference Implementation, and it lists each of those providers.
+highway-onboarding	verification	b2ecdd5bcf2f	No inventory file is written.
+highway-onboarding	verification	c30efd11a2d8	An implementation that can start automation is included in `library/coding-standards/codify-platforms.md` by `highway-implementation`, with blank guidance. The person is asked whether to configure how highway-codify uses it, and any answer continues onboarding. No platform that cannot start automation is asked about.
+highway-onboarding	verification	5fc0ca1d2955	After lineage, each yes, in the order asked, emits "Let's configure how highway-codify uses [Platform]." and follows `highway-codify-config` for that platform with the return step `configure`. The summary follows the last return and has no `highway-codify-config [Platform]` configure pointer.
+highway-onboarding	verification	a28a3fa9da45	An onboarding handed off by `highway-codify-config` does not ask to configure that platform, and its summary ends with the line to finish adding that platform.
+highway-onboarding	verification	f83461b63622	The summary recommends `highway-assessment`, then `highway-help`.
+highway-onboarding	error	0e4178509534	An unreadable website continues from accepted repository evidence and says the site could not be read.
+highway-onboarding	error	6c6cc2a9a8f6	A failed ADR write leaves existing ADR bytes unchanged and does not create an architecture.
+highway-onboarding	error	82fcd324511b	A failed architecture or implementation write keeps earlier records and names the record that could not be written.
+highway-onboarding	error	30e6e0dd5f4d	A capability the person says does not exist is removed and is not mapped.
+highway-onboarding	error	71edc2f98220	A provider the person says does not exist is marked `Does not exist` and does not create a provider decision.
+highway-profile	step	Entry	Entry
+highway-profile	step	Classify	Classify
+highway-profile	step	review	review
+highway-profile	step	name	name
+highway-profile	step	offer	offer
+highway-profile	step	Domain order	Domain order
+highway-profile	step	Shared replies	Shared replies
+highway-profile	step	Domain rules	Domain rules
+highway-profile	step	Templates	Templates
+highway-profile	step	write	write
+highway-profile	verification	22d4245eca26	An existing readable `profile.md` is shown with **What would you add, correct, or remove?**
+highway-profile	verification	29a60f70bb1b	Acceptance of that review returns `Finished` and emits nothing else.
+highway-profile	verification	a8697214e987	A review edit rewrites the file and shows the updated body with the same question.
+highway-profile	verification	9fe33e678697	An absent `profile.md` begins at the repository-name template.
+highway-profile	verification	2a54ece3389f	A starting-point message contains no canonical question.
+highway-profile	verification	43d84dcbd48d	The file is written once, after Guiding Principles is captured or declined.
+highway-profile	verification	9ba0756b902e	A successful guided write returns `Finished` and emits nothing else.
+highway-profile	verification	49d80b3c1133	The written file matches `assets/profile-record.md`.
+highway-profile	verification	e4b958cc7e16	Setup receives `Finished` and the person does not see that word.
+highway-profile	error	090df0898b3b	An unreadable `profile.md` stops the skill, leaves the file unchanged, and does not return `Finished`.
+highway-profile	error	95f5cba2aab3	A failed review rewrite leaves the file unchanged, says what failed in terms the person can act on, and stays on `review`.
+highway-profile	error	d807b2ddb403	A failed guided write leaves the file absent, says what failed in terms the person can act on, and stays on `write`.
+highway-profile	error	bb90a482fe87	Unavailable retrieval continues at `identity.ask` without mentioning the missing capability.
+highway-request	step	Entry	Entry
+highway-request	step	Classify	Classify
+highway-request	step	intake	intake
+highway-request	step	start	start
+highway-request	step	identifier	identifier
+highway-request	step	title	title
+highway-request	step	write	write
+highway-request	step	close	close
+highway-request	verification	1dd0aa52156b	An invocation with a business description begins at the request starting point.
+highway-request	verification	ec88400b9d45	The starting point includes Solution Constraints.
+highway-request	verification	ea81cf4edfd0	The starting point shows the title as a level-1 heading and each of the seven domains as a level-2 heading.
+highway-request	verification	7d198b409d30	Solution Constraints are shown by readable name, with `None` for a value that is `unknown` or an empty list. The record keeps its field names and values.
+highway-request	verification	24bf4711575d	"Looks good" on the starting point writes the record and catalog. The person accepts the request once.
+highway-request	verification	311dca8faf6a	No record is written while a domain is missing.
+highway-request	verification	b1aaf3af94de	`allowed_solution_classes` contains one or more values or `unknown`.
+highway-request	verification	74469e59bc6c	Each id is `REQ` plus eight hex digits derived from the title.
+highway-request	verification	cb835f3cf00d	A taken id for a different title names the conflicting titles, says a title change is appropriate, and shows a new title. The write waits until the person accepts that title.
+highway-request	verification	9f30ffae292a	That message does not mention identifiers, hex, sampling, or the catalog.
+highway-request	verification	5c1676e8279a	A secret or regulated personal value is not written.
+highway-request	verification	69a0d1bdfb67	A failed write leaves existing request and catalog bytes unchanged.
+highway-request	verification	a6bc6847571e	The closing message names the record and exactly one next step. One match names `highway-codify` for that title and the one action, and does not state the day. No match names `highway-discovery [ID]`.
+highway-request	verification	6a5c45db5959	The skill creates no Discovery or ADR artifact.
+highway-request	error	57f5176a0cf6	An empty invocation stays on `intake` and writes nothing.
+highway-request	error	12f16469c3b1	A missing record template stops the skill, names the template path, and writes nothing.
+highway-request	error	69a0d1bdfb67	A failed write leaves existing request and catalog bytes unchanged.
+highway-request	error	c91d78e614ce	A secret or regulated personal value is replaced up to three times, then the skill stops and writes nothing.
+highway-request	error	152b5bf6a36a	An invalid Solution Constraints field is replaced up to three times. Further failure leaves existing bytes unchanged.
+highway-setup	step	Seed	Seed
+highway-setup	step	Welcome	Welcome
+highway-setup	step	Profile	Profile
+highway-setup	step	Objectives	Objectives
+highway-setup	step	Controls	Controls
+highway-setup	step	NFRs	NFRs
+highway-setup	step	Conclusion	Conclusion
+highway-setup	verification	59e6d75a226d	Seeding runs before the welcome in every run.
+highway-setup	verification	4b741ddc5685	Seeding writes only absent seeded files, each from its asset.
+highway-setup	verification	3d5249783452	Seeding changes no existing file.
+highway-setup	verification	e61424119268	Seeding emits nothing.
+highway-setup	verification	c661a8d3cf7b	Owner order is Profile, Objectives, Controls, NFRs.
+highway-setup	verification	e7fac8c1c954	The welcome is emitted once, and only when `profile.md` is absent.
+highway-setup	verification	08101d734869	Profile is always delegated.
+highway-setup	verification	b3adb689d21c	Each later owner is delegated only after the previous owner returns `Finished`.
+highway-setup	verification	4591534b1431	The Objectives, Controls, and NFR transitions are each emitted once, directly before that owner's first message.
+highway-setup	verification	cfdb808752a8	Setup does not add a question to an owner's message.
+highway-setup	verification	073a8e82618c	Setup does not add a synthesis between owners.
+highway-setup	verification	283c47d2b553	`Finished` is not shown.
+highway-setup	verification	702632637519	An owner that stops without `Finished` ends Setup before the next owner.
+highway-setup	verification	34a576881ce8	The conclusion is emitted once, after NFRs returns `Finished`.
+highway-setup	verification	fb60f6d67400	The conclusion directs the person to `highway-onboarding` before `highway-help`.
+highway-setup	verification	e884a9b71f9f	Setup writes no file other than the seeded files.
+highway-setup	error	dfd6ba8f7286	A seeded file that cannot be written stops Setup before the welcome. Say which file could not be written and what the person can do next.
+highway-setup	error	a837b4de02d2	An owner that stops without `Finished` ends Setup. The owner's message is the person's explanation. Do not delegate a later owner and do not emit the conclusion.
+highway-setup	error	7c056a9e8b33	An unexpected orchestration failure stops Setup without claiming completion and says what the person can do next.

@@ -12,10 +12,12 @@ set -u
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=paths.sh
 source "$SCRIPT_DIR/paths.sh"
-ADR="$HW_SKILLS/highway-adr/SKILL.md"
-ARCH="$HW_SKILLS/highway-architecture/SKILL.md"
-IMPL="$HW_SKILLS/highway-implementation/SKILL.md"
-ONBOARD="$HW_SKILLS/highway-onboarding/SKILL.md"
+# shellcheck source=../framework/lib/flows.sh
+source "$HW_LIB/flows.sh"
+ADR="$(fl_skill_text_file "$HW_SKILLS/highway-adr")"
+ARCH="$(fl_skill_text_file "$HW_SKILLS/highway-architecture")"
+IMPL="$(fl_skill_text_file "$HW_SKILLS/highway-implementation")"
+ONBOARD="$(fl_skill_text_file "$HW_SKILLS/highway-onboarding")"
 fail=0
 
 # step <file> <heading>: the lines of one ### step.

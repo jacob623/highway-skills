@@ -8,10 +8,12 @@ set -u
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=paths.sh
 source "$SCRIPT_DIR/paths.sh"
-CODIFY="$HW_SKILLS/highway-codify/SKILL.md"
+# shellcheck source=../framework/lib/flows.sh
+source "$HW_LIB/flows.sh"
+CODIFY="$(fl_skill_text_file "$HW_SKILLS/highway-codify")"
 fail=0
 
-propose="$(awk '$0 == "### revise" {p=1; next} $0 == "### identifier" {p=0} p' "$CODIFY")"
+propose="$(awk '$0 == "### revise" {p=1; next} $0 == "### identifier" || /^##? / {p=0} p' "$CODIFY")"
 
 require_line() {
 	local text="$1"

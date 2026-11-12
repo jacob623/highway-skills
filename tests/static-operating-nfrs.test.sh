@@ -8,9 +8,11 @@ set -u
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=paths.sh
 source "$SCRIPT_DIR/paths.sh"
-NFRS="$HW_SKILLS/highway-nfrs/SKILL.md"
-REQUEST="$HW_SKILLS/highway-request/SKILL.md"
-DISCOVERY="$HW_SKILLS/highway-discovery/SKILL.md"
+# shellcheck source=../framework/lib/flows.sh
+source "$HW_LIB/flows.sh"
+NFRS="$(fl_skill_text_file "$HW_SKILLS/highway-nfrs")"
+REQUEST="$(fl_skill_text_file "$HW_SKILLS/highway-request")"
+DISCOVERY="$(fl_skill_text_file "$HW_SKILLS/highway-discovery")"
 fail=0
 
 require() {

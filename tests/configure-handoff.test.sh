@@ -8,9 +8,11 @@ set -u
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=paths.sh
 source "$SCRIPT_DIR/paths.sh"
-ONBOARD="$HW_SKILLS/highway-onboarding/SKILL.md"
-IMPL="$HW_SKILLS/highway-implementation/SKILL.md"
-CONFIG="$HW_SKILLS/highway-codify-config/SKILL.md"
+# shellcheck source=../framework/lib/flows.sh
+source "$HW_LIB/flows.sh"
+ONBOARD="$(fl_skill_text_file "$HW_SKILLS/highway-onboarding")"
+IMPL="$(fl_skill_text_file "$HW_SKILLS/highway-implementation")"
+CONFIG="$(fl_skill_text_file "$HW_SKILLS/highway-codify-config")"
 MENU='### How would you like to configure Highway Codify?'
 fail=0
 
@@ -53,10 +55,11 @@ require_in "$ONBOARD" '### configure' "3. Emit: Let's configure how highway-codi
 require_in "$ONBOARD" '### configure' '4. Follow `highway-codify-config` for [Platform], with the return step `configure` in `highway-onboarding`.'
 require_in "$ONBOARD" '### summary' 'Run `highway-codify-config [Platform]` to finish adding [Platform].'
 
-lineage="$(line_of "$ONBOARD" '### lineage')"
-configure="$(line_of "$ONBOARD" '### configure')"
-summary="$(line_of "$ONBOARD" '### summary')"
-if [[ -z "$lineage" || -z "$configure" || -z "$summary" ]] || ((lineage >= configure || configure >= summary)); then
+ORCHESTRATE="$HW_SKILLS/highway-onboarding/references/orchestrate.md"
+lineage="$(line_of "$ORCHESTRATE" '### lineage')"
+configure="$(line_of "$ORCHESTRATE" '### configure')"
+summary="$(line_of "$HW_SKILLS/highway-onboarding/SKILL.md" '### summary')"
+if [[ -z "$lineage" || -z "$configure" || -z "$summary" ]] || ((lineage >= configure)); then
 	echo 'FAIL: highway-onboarding does not order lineage, configure, then summary'
 	fail=1
 fi

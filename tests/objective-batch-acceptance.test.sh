@@ -8,7 +8,9 @@ set -u
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=paths.sh
 source "$SCRIPT_DIR/paths.sh"
-SKILL="$HW_SKILLS/highway-objectives/SKILL.md"
+# shellcheck source=../framework/lib/flows.sh
+source "$HW_LIB/flows.sh"
+SKILL="$(fl_skill_text_file "$HW_SKILLS/highway-objectives")"
 fail=0
 
 require() {
