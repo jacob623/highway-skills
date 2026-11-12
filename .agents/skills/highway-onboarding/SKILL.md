@@ -4,7 +4,7 @@ description: "Manages one decision, one reference architecture, and one referenc
 usage: "Invoke as `/highway-onboarding`."
 compatibility: all
 metadata:
-  version: 10.8.0
+  version: 10.9.0
 ---
 
 # highway-onboarding
@@ -22,7 +22,6 @@ Brings existing platforms into Highway by validating capabilities, mapping them 
 
 Do not create a technology, platform, provider, or application inventory. `library/coding-standards/codify-platforms.md` lists only platforms that can start automation and is not that inventory.
 Do not create a Request, Discovery, or synthetic `DISC` record.
-Do not use `highway-adr` for this path. That skill requires a Discovery.
 Do not change Profile, Objectives, Controls, or NFRs.
 Do not authorize deployment.
 Do not authorize the agent platform to act on its own.
@@ -33,7 +32,7 @@ Do not report Status, Summary, Next Action, Blocking Reason, Missing, Complete, 
 - Accepted Profile, Objectives, Controls, NFRs, ADRs, architectures, and implementations when present.
 - Material the person supplies, including a website when retrieval is available.
 - `adrs/adrs.md`.
-- `.highway/library/templates/output/adr-record.md`.
+- `highway-adr`.
 - `highway-architecture`.
 - `highway-implementation`.
 - `library/coding-standards/codify-platforms.md`.
@@ -42,12 +41,9 @@ Do not report Status, Summary, Next Action, Blocking Reason, Missing, Complete, 
 
 ## Outputs
 
-The complete structure is `.highway/library/templates/output/adr-record.md`, `.highway/library/templates/output/architecture-record.md`, and `.highway/library/templates/output/implementation-record.md`.
-
-- One accepted ADR per provider group, at `adrs/[ID].md`, with Parent `highway`.
-- One Reference Architecture and one Reference Implementation for that ADR, produced by their owning skills.
+- One accepted ADR, Reference Architecture, and Reference Implementation per provider group, written by `highway-adr`, `highway-architecture`, and `highway-implementation`.
 - One lineage that lists every completed provider, then one summary.
-- One row in `library/coding-standards/codify-platforms.md`, with blank When to use and When not to use, for each implementation that can start automation.
+- One row in `library/coding-standards/codify-platforms.md`, with blank When to use and When not to use, written by `highway-implementation` for each implementation that can start automation.
 - No inventory file. The capability queue and the provider queue are not written.
 
 ## Procedure
@@ -208,61 +204,17 @@ On the first provider, emit this before creating any records. Do not emit it aga
 
 This is how Highway keeps track of your technology landscape.
 
-Take the next provider on the provider queue. Create that provider's ADR, then its Reference Architecture, then its Reference Implementation. Do not ask the person to accept any of them. Emit nothing else until every provider on the queue has its three records.
+Take the next provider on the provider queue. Hand it to each owner in this order, once each. Ask the person nothing yourself. Emit nothing else until every provider on the queue has its three records, except a title question an owner asks.
 
-Build the ADR from accepted Profile, Objectives, Controls, NFRs, and the capabilities this provider serves.
+1. Follow `onboarding` in `highway-adr` with the provider, the capabilities it serves, the decision to adopt this provider for those capabilities, each alternative with why it is weaker for this organization, the rationale grounded in accepted Profile, Objectives, Controls, and NFRs, and what this provider does not cover, or `None`. Hold the ADR id it returns.
+2. Follow `onboarding` in `highway-architecture` with that ADR id. Hold the `RA` id it returns.
+3. Follow `onboarding` in `highway-implementation` with that `RA` id, the provider, and the capabilities it serves. Hold the `RI` id it returns.
 
-- **Provider:** [Provider]
-- **Capabilities:** [Capabilities this provider serves.]
-- **Decision:** [Adopt this provider for those capabilities.]
-- **Alternatives:** [Why each alternative is weaker for this organization.]
-- **Why:** [Rationale grounded in accepted Profile, Objectives, Controls, and NFRs.]
-- **Limitations:** [What this provider does not cover, or `None`.]
+When an owner says its record could not be written, or the ADR could not be updated to name the architecture, follow that owner's `onboarding` once more. When it still fails, keep the ADR and any earlier provider results. Say which record could not be written or named. Do not claim onboarding is complete. When the ADR cannot be written, do not hand off the architecture or the implementation. When the implementation cannot be written, the ADR names the architecture and no implementation exists.
 
-The ADR title is the decision sentence. Derive the id from that title.
+When the person declines a title an owner asks for, keep the earlier records. Say which record was not written. Do not hand off the rest of this provider. Do not claim onboarding is complete.
 
-1. Lowercase the title. Remove hyphens and apostrophes. Split the rest into words.
-2. Take eight letters: the first two of word 1, the first two of word 2, the first two of word 3, and the last two of the last word. When the title has only two words, the third sample is the first two of the last word.
-3. When a word is shorter than two letters, continue into the next word. A one-word title repeats until there are eight letters.
-4. Map each letter. Digits stay as they are.
-
-a 0, b 1, c 2, d 3, e 4, f 5, g 6, h 7, i 8, j 9, k a, l b, m c, n d, o e, p f, q 0, r 1, s 2, t 3, u 4, v 5, w 6, x 7, y 8, z 9.
-
-5. The id is `ADR` plus those eight hex digits.
-
-Compare that id with `adrs/adrs.md`, including removed rows. When the same title already has that id, use the existing record. When the id is taken for a different title, add the provider name to the title and derive the id again. Do not ask.
-
-Write `adrs/[ID].md` and `adrs/adrs.md` together. A failed write leaves every existing ADR byte unchanged. Stay on `orchestrate` for this provider. Do not create the architecture or the implementation.
-
-- `id` is the derived `ADR` id.
-- `request` is `onboarding`.
-- `discovery` is `highway`.
-- `status` is `accepted`.
-- `supersedes` is `None`.
-- `superseded_by` is `None`.
-- The record follows `.highway/library/templates/output/adr-record.md` and uses every section a Discovery-backed ADR uses.
-- Discovery, Request, Recommendation, Recommendation Rationale, Comparison Matrix, Reference Architecture Matches, and Discovery Confidence are `None`. Omit Recommendation Override.
-- `## Context` states the problem and the forces in prose, from the capabilities this provider serves and the accepted evidence.
-- `## Decision` records Selected Option as the provider name, Selection Source as `Accepted onboarding mapping`, the decision, and the rationale.
-- `## Decision Scope` covers those capabilities and leaves open the Limitations, or `None`. `## Revisit When` is the condition that should reopen this decision, or `None`.
-- `## Alternatives Considered` lists the provider as `Selected`, then each alternative as `Evaluated` or `Rejected`. Head each alternative by its name, with its definition and reason. Do not write an option id.
-- Each Objective relationship is the Objective id and `advances`. Each Control relationship is the Control id and `bound by`. Each NFR relationship is the NFR id and `satisfies`. A section with no relationship is `None`.
-- `## Reference Architecture Handoff` has Reference Architecture `None` and no implementation entry.
-- Edit `adrs/adrs.md` in its existing structure. The catalog columns are ADR ID, Discovery ID, Request ID, ADR Title, ADR Path, Architecture ID, and Status. Discovery ID is `highway`. Request ID is `onboarding`. ADR Path is `adrs/<ADR id>.md`. Architecture ID is `None` until the architecture is written. Status is `accepted`.
-- Do not allocate from `Next ID`.
-- Do not create a Discovery record.
-
-When the ADR exists, create the Reference Architecture, then the Reference Implementation. Follow `highway-architecture` and `highway-implementation` for the record shape, identifiers, and catalogs. Do not emit their questions, starting points, or acceptance requests. Do not ask whether a decision replaces or runs beside another. Write both records with status `accepted`.
-
-The architecture uses an `RA` id. Its Current Decisions list is this ADR. Context states when it applies and what it leaves open. The style states why it was chosen. Each component has its responsibility and its interface, or `None`. Information, Variation, and Responsibilities are written. Relationship lines use `advances`, `bound by`, and `satisfies`, or `None`. Each required capability names its component and has no capability id. Do not write Key Technologies. Do not copy the decision statement. The architecture catalog ADR ID cell is this ADR id.
-
-The implementation uses an `RI` id and that `RA` parent. It states the variation choice, or `None`. Coverage rows are the architecture's responsibilities, each covered or not applicable. Conformance agrees with those rows. A compatible record has no gap section and no conflict section. It states the realized interface, how conformance was shown, and the limitations, each or `None`. A technology choice is stated once. The architecture is named once. Its Execution is `Deployed by: Needed`, `Managed by: Needed`, and `Language: Needed`.
-
-After the architecture is written, set the ADR's `Reference Architecture` field to its id and the decision catalog Architecture ID to that same id. Change no other ADR byte. Do not set an implementation id.
-
-When either of those records cannot be written, or the ADR cannot be updated to name the architecture, try that step once more. When it still fails, keep the ADR and any earlier provider results. Say which record could not be written or named. Do not claim onboarding is complete. When the implementation cannot be written, the ADR names the architecture and no implementation exists.
-
-After the implementation exists, follow `platforms` in `highway-implementation` to write the row. When the caller named the return step `execution`, go to `execution` in `highway-implementation` after the platform row is written. Do not ask to configure. Do not continue the queue. When it includes the platform, emit:
+When the caller named the return step `execution`, go to `execution` in `highway-implementation` after `highway-implementation` returns. Do not ask to configure. Do not continue the queue. When `highway-implementation` included the platform, emit:
 
 **[Platform] is included as a platform highway can use in highway-codify proposals**
 
@@ -345,7 +297,7 @@ Before every record, including the first record and the next record for the same
 
 If this is accurate, just say so.
 
-- `edit`: emit one consequence sentence. Update that record. Re-emit the record hand-off, that record, and this question. Stay on `review`.
+- `edit`: emit one consequence sentence. Update that record in its existing structure. Re-emit the record hand-off, that record, and this question. Stay on `review`.
 - `accept`: when another record remains in this review, show the next record. When the next record belongs to a different provider, emit the provider hand-off first. When none remain, return to the summary question.
 - `question`: answer, then re-emit the record hand-off, that record, and this question. Stay on `review`.
 - `unknown`: re-emit the record hand-off, that record, and this question. Stay on `review`.
@@ -366,25 +318,20 @@ If this is accurate, just say so.
 - The capability starting point is accepted before any platform question.
 - Each capability is mapped before the provider groups are shown.
 - The provider queue starts only after the mapping is accepted.
-- For each provider, the ADR is written, then the Reference Architecture, then the Reference Implementation, without asking the person to accept any of them.
+- For each provider, onboarding hands the ADR to `highway-adr`, then the Reference Architecture to `highway-architecture`, then the Reference Implementation to `highway-implementation`, once each, without asking the person to accept any of them.
 - The summary tells the person they can review a Decision, Reference Architecture, or Reference Implementation.
 - A review that names nothing lists each provider's Decision, Reference Architecture, and Reference Implementation, and asks which to review or whether to review all.
 - Review all shows one record at a time: for each provider, the Decision, then the Reference Architecture, then the Reference Implementation.
 - Each record is introduced with **Review the [record] Highway has prepared:**
 - A later provider is introduced with "Review the [provider] records Highway has prepared for you."
 - A shown record asks **What would you add, correct, or remove?**
-- An onboarding ADR uses `request: onboarding`, `discovery: highway`, and Discovery ID `highway`.
-- An onboarding ADR uses the shared ADR sections. Discovery-only values are `None`, alternatives are headed by name, and the record contains no option id.
-- After the architecture is written, the ADR names the architecture and does not name an implementation. A failed ADR update is tried once more and is named when it still fails.
-- Onboarding does not ask whether a decision replaces or runs beside another.
-- The architecture and the implementation use the same sections as any other architecture and implementation.
-- An onboarded implementation stores Deployed by, Managed by, and Language as `Needed`.
+- A failed handoff is followed once more and is named when it still fails. A declined title keeps the earlier records and does not claim onboarding is complete.
 - No Request or Discovery record is created.
 - The Reference Implementation is written only after that architecture record exists.
 - A failed architecture or implementation does not claim onboarding is complete.
 - Lineage is shown only after every provider on the queue has an ADR, Reference Architecture, and Reference Implementation, and it lists each of those providers.
 - No inventory file is written.
-- An implementation that can start automation is included in `library/coding-standards/codify-platforms.md` by `platforms` in `highway-implementation`, with blank guidance. The person is asked whether to configure how highway-codify uses it, and any answer continues onboarding. No platform that cannot start automation is asked about.
+- An implementation that can start automation is included in `library/coding-standards/codify-platforms.md` by `highway-implementation`, with blank guidance. The person is asked whether to configure how highway-codify uses it, and any answer continues onboarding. No platform that cannot start automation is asked about.
 - After lineage, each yes, in the order asked, emits "Let's configure how highway-codify uses [Platform]." and follows `highway-codify-config` for that platform with the return step `configure`. The summary follows the last return and has no `/highway-codify-config [Platform]` configure pointer.
 - An onboarding handed off by `highway-codify-config` does not ask to configure that platform, and its summary ends with the line to finish adding that platform.
 - The summary recommends `/highway-assessment`, then `/highway-help`.

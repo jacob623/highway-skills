@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
-# The harness path map selects scenarios from changed paths: a skill's files select that skill, a
-# template selects each skill that names it, shared files and the runner select the smoke set,
-# and generated copies, tests, and specs select nothing. Every shipped library file, skill asset, and
-# highway-experience file maps to a skill or is listed as shared.
+# The harness path map selects scenarios from changed paths: a skill's files, including its record
+# templates, select that skill, shared files and the runner select the smoke set, and generated copies,
+# tests, and specs select nothing. Every shipped skill asset and highway-experience file maps to a skill
+# or is listed as shared.
 set -u
 # Instrument class: executable-behavior
 # Artifact classes: harness-path-map, harness-selection
-# Seeded failure probe: running the map against a skills folder where no skill names codify-plan.md reports the template as unmapped, and this check fails on it.
+# Seeded failure probe: a shipped path outside every skill maps to nothing, and the shipped-path check reports it.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=paths.sh
@@ -58,29 +58,22 @@ expect .claude/skills/highway-codify/SKILL.md none -
 expect .highway/catalog/index.json none -
 expect framework/constitution.md none -
 
-reason="$(cd "$HW_ROOT" && bash "$PATH_MAP" .highway/library/templates/output/adr-record.md | cut -f4 | grep -F highway-adr)"
-case "$reason" in
-"highway-adr names .highway/library/templates/output/adr-record.md") ;;
-*)
+expect skills/highway-adr/assets/adr-record.md skill highway-adr
+expect skills/highway-architecture/assets/architecture-record.md skill highway-architecture
+expect skills/highway-implementation/assets/implementation-record.md skill highway-implementation
+reason="$(cd "$HW_ROOT" && bash "$PATH_MAP" skills/highway-adr/assets/adr-record.md | cut -f4)"
+if [[ "$reason" != "skills/highway-adr/assets/adr-record.md is part of highway-adr" ]]; then
 	echo "FAIL: the reason for adr-record.md does not name the skill and the template: $reason"
-	fail=1
-	;;
-esac
-
-# A template that several skills name selects each of them.
-multi="$(cd "$HW_ROOT" && bash "$PATH_MAP" .highway/library/templates/output/adr-record.md | cut -f3 | sort -u | grep -c .)"
-if [[ "$multi" -lt 2 ]]; then
-	echo "FAIL: adr-record.md, named by several skills, selects $multi skill(s)"
 	fail=1
 fi
 
-# FR-025: every shipped file under the library, highway-experience, and a skill's assets/ maps.
+# FR-025: every shipped file under highway-experience and a skill's assets/ maps to a skill or the smoke set.
 shipped=()
 while IFS= read -r rel; do
 	[[ "$(dist_classify "$rel")" == "include" ]] && shipped+=("$rel")
-done < <(cd "$HW_ROOT" && { find "$(hw_rel "$HW_LIBRARY")" "$(hw_rel "$HW_EXPERIENCE")" -type f; find "$(hw_rel "$HW_SKILLS")" -path '*/assets/*' -type f; } | LC_ALL=C sort)
+done < <(cd "$HW_ROOT" && { find "$(hw_rel "$HW_EXPERIENCE")" -type f; find "$(hw_rel "$HW_SKILLS")" -path '*/assets/*' -type f; } | LC_ALL=C sort)
 if [[ "${#shipped[@]}" -lt 30 ]]; then
-	echo "FAIL: found only ${#shipped[@]} shipped library, highway-experience, and skill asset files"
+	echo "FAIL: found only ${#shipped[@]} shipped highway-experience and skill asset files"
 	fail=1
 fi
 mapped="$(cd "$HW_ROOT" && bash "$PATH_MAP" "${shipped[@]}")"
@@ -88,7 +81,11 @@ if [[ "$(printf '%s\n' "$mapped" | cut -f1 | sort -u | grep -c .)" -ne "${#shipp
 	echo "FAIL: the path map did not print a line for every shipped path"
 	fail=1
 fi
-unmapped="$(printf '%s\n' "$mapped" | awk -F "$TAB" '$2 == "unmapped" { print $1 }')"
+# selects_nothing <map lines>: each path whose line selects neither a skill nor the smoke set.
+selects_nothing() {
+	printf '%s\n' "$1" | awk -F "$TAB" '$2 != "skill" && $2 != "smoke" { print $1 }'
+}
+unmapped="$(selects_nothing "$mapped")"
 if [[ -n "$unmapped" ]]; then
 	while IFS= read -r rel; do
 		echo "FAIL: shipped path $rel maps to no skill and is not listed in harness/selection/shared.txt"
@@ -96,12 +93,10 @@ if [[ -n "$unmapped" ]]; then
 	fail=1
 fi
 
-# Seeded probe: with no skill naming the template, it is reported unmapped.
-empty_skills="$(mktemp -d)"
-probe="$(cd "$HW_ROOT" && bash "$PATH_MAP" --skills-dir "$empty_skills" .highway/library/templates/output/adr-record.md | cut -f2)"
-rm -rf "$empty_skills"
-if [[ "$probe" != "unmapped" ]]; then
-	echo "FAIL: a template no skill names maps to '$probe', expected unmapped"
+# Seeded probe: a shipped path outside every skill is reported.
+probe="$(selects_nothing "$(cd "$HW_ROOT" && bash "$PATH_MAP" shared/templates/example-record.md)")"
+if [[ -z "$probe" ]]; then
+	echo "FAIL: probe: a shipped path outside every skill was not reported"
 	fail=1
 fi
 

@@ -209,6 +209,11 @@ d="$tmp_root/p91"; write_base_skill "$d"
 sed -i.bak 's/^A confirmation message\.$/A file at library\/governance\/example.md./' "$d/SKILL.md" && rm -f "$d/SKILL.md.bak"
 assert_reports "P9.1 uncited file output" "P9.1" "$d"
 
+# The shared template folder is gone, so citing a template there does not satisfy the rule.
+d="$tmp_root/p91-shared"; write_base_skill "$d"
+sed -i.bak 's/^A confirmation message\.$/A file at library\/governance\/example.md following `.highway\/library\/templates\/output\/example-record.md`./' "$d/SKILL.md" && rm -f "$d/SKILL.md.bak"
+assert_reports "P9.1 shared-folder citation" "P9.1" "$d"
+
 # The rule governs decision criteria, not prose. The same token outside the sections that state
 # when a skill applies must not be flagged, or every skill describing its own output fails.
 d="$tmp_root/p64-ok"; write_base_skill "$d"

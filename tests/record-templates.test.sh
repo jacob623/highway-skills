@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-# Each single-reader record template lives in the assets/ of the skill that creates the record, the
-# skill names it there, and the skill validator checks every complete template in a skill's assets/.
+# Each record template lives in the assets/ of the skill that creates the record, the skill names it
+# there, the shared .highway/library/ folder is gone, and the skill validator checks every complete
+# template in a skill's assets/.
 set -u
 # Instrument class: mixed (static-document-contract and executed-behavior)
 # Artifact classes: source-document, disposable-fixture
@@ -32,8 +33,10 @@ nfr-record highway-nfrs
 objective-record highway-objectives
 discovery-record highway-discovery
 request-record highway-request
-profile-record highway-profile"
-MOVED="$(printf '%s\n' "$OWNERS" | cut -d' ' -f1 | paste -sd'|' -)"
+profile-record highway-profile
+adr-record highway-adr
+architecture-record highway-architecture
+implementation-record highway-implementation"
 
 # 1. Each template is in its owner's assets/, hw_template finds it there, and the owner names it.
 while read -r name owner; do
@@ -48,23 +51,19 @@ done <<EOF
 $OWNERS
 EOF
 
-# 2. Only the three shared record templates remain in the shared folder.
-remaining="$(cd "$HW_OUTPUT_TEMPLATES" && find . -type f | sed 's#^\./##' | LC_ALL=C sort | paste -sd' ' -)"
-if [[ "$remaining" != "adr-record.md architecture-record.md implementation-record.md" ]]; then
-	report "the shared template folder holds '$remaining'"
+# 2. The shared library folder is gone.
+if [[ -n "$(find "$HW_HIGHWAY" -maxdepth 1 -name library)" ]]; then
+	report ".highway/library/ still exists"
 fi
 
-# 3. No skill names a moved template, or the framework-tree knowledge folder, under .highway/.
+# 3. No skill names a path under .highway/library/.
 while IFS= read -r hit; do
-	report "$hit names a moved template under .highway/library/templates/"
-done < <(grep -RlE "templates/output/($MOVED)[.]md" "$HW_SKILLS" --include=SKILL.md)
-while IFS= read -r hit; do
-	report "$hit names .highway/library/knowledge/"
-done < <(grep -RlF '.highway/library/knowledge/' "$HW_SKILLS" --include=SKILL.md)
+	report "$hit names .highway/library/"
+done < <(grep -RlF '.highway/library/' "$HW_SKILLS" --include=SKILL.md)
 
-# 4. The distribution ships each moved template inside its skill, not under .highway/.
-if grep -Eq "templates/output/($MOVED)[.]md" "$MANIFEST"; then
-	report "the distribution manifest lists a moved template under .highway/"
+# 4. The distribution ships each template inside its skill and lists nothing under .highway/library.
+if grep -Fq '.highway/library' "$MANIFEST"; then
+	report "the distribution manifest lists .highway/library"
 fi
 
 # 5. The skill validator checks complete templates in assets/ and skips skeletons.

@@ -70,7 +70,7 @@ VC_ENVIRONMENT_HASH=""
 
 # Prints a hash of every input validation consults other than the skill itself.
 #
-# Editing any governance document, any validator library, or any library content changes this and
+# Editing any governance document or any validator library changes this and
 # so invalidates every skill's record at once. That is the intended behavior: a constitution
 # change can turn a previously valid skill invalid.
 #
@@ -92,7 +92,7 @@ vc_environment_hash() {
 			hw_at "$root" "$(hw_doc constitution)"
 			hw_at "$root" "$(hw_doc frontmatter-lexicon)"
 			hw_at "$root" "$(hw_doc experience-standard)"
-			find "$(hw_at "$root" "$HW_LIB")" "$(hw_at "$root" "$HW_LIBRARY")" -type f 2>/dev/null
+			find "$(hw_at "$root" "$HW_LIB")" -type f 2>/dev/null
 		} | sort | vc_hash_list | vc_hash_stdin
 	)"
 	printf '%s' "$VC_ENVIRONMENT_HASH"

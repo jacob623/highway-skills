@@ -9,11 +9,10 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=paths.sh
 source "$SCRIPT_DIR/paths.sh"
 SKILLS="$HW_SKILLS"
-OUTPUT="$HW_OUTPUT_TEMPLATES"
 CODIFY="$SKILLS/highway-codify/SKILL.md"
 IMPL="$SKILLS/highway-implementation/SKILL.md"
 ONBOARD="$SKILLS/highway-onboarding/SKILL.md"
-RI_RECORD="$OUTPUT/implementation-record.md"
+RI_RECORD="$(hw_template implementation-record)"
 CDY_RECORD="$(hw_template codify-record)"
 fail=0
 
@@ -177,8 +176,8 @@ done
 limit "$IMPL" "$D" 400
 limit "$IMPL" "$DD" 250
 
-require "$ONBOARD" 'Its Execution is `Deployed by: Needed`, `Managed by: Needed`, and `Language: Needed`.'
-require "$ONBOARD" '- An onboarded implementation stores Deployed by, Managed by, and Language as `Needed`.'
+require "$IMPL" 'Execution is `Deployed by: Needed`, `Managed by: Needed`, and `Language: Needed`.'
+require "$IMPL" '- An onboarded implementation stores Deployed by, Managed by, and Language as `Needed`.'
 reject "$ONBOARD" 'When the caller named the return step `provider` in `highway-codify`'
 
 require "$RI_RECORD" 'Language: <Standard Title, None, or Needed>'

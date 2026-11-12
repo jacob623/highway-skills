@@ -6,4 +6,4 @@ metadata:
 
 ## Inputs
 
-- `.highway/library/knowledge/profile.md` as behavior-influencing context.
+- `library/knowledge/profile.md` as behavior-influencing context.

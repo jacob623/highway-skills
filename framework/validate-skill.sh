@@ -147,7 +147,7 @@ if [[ -n "$agent_exceptions" ]]; then
 	done <<< "$agent_exceptions"
 fi
 
-# --- Dependency checks (metadata.dependencies -> .highway/library/) -----------------------
+# --- Dependency checks (metadata.dependencies -> .highway/) -------------------------------
 
 dependency_findings="$(dc_validate_dependencies "$skill_file" "$HW_ROOT")"
 if [[ -n "$dependency_findings" ]]; then

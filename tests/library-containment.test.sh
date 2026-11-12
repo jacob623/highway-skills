@@ -87,7 +87,7 @@ fi
 
 # --- Nothing the skill writes lands inside the framework -----------------------------------------
 
-if [[ -d "$HW_LIBRARY/governance/controls" ]]; then
+if [[ -n "$(find "$HW_HIGHWAY" -type d -path "*/governance/controls" 2>/dev/null)" ]]; then
 	echo "FAIL: Control files were written under the framework root, where Highway's rules reach them"
 	fail=1
 fi

@@ -9,7 +9,7 @@ Copilot, Claude Code, Cursor) via generated adapters, so skill content never nee
 duplicated or hand-adapted per agent.
 
 - **Author a skill**: create `skills/<id>/SKILL.md` per [framework/authoring-standard.md](framework/authoring-standard.md).
-- **Create an architecture decision**: invoke `highway-adr` with one completed `DISC######` artifact; the workflow publishes an accepted ADR using the shared `adr-record.md` output template and adds its row to the seeded `adrs/adrs.md`.
+- **Create an architecture decision**: invoke `highway-adr` with one completed `DISC######` artifact; the workflow publishes an accepted ADR using its own `assets/adr-record.md` template and adds its row to the seeded `adrs/adrs.md`.
 - **Seed the catalogs**: `/highway-setup` writes every absent organization catalog, the findings file, and the storage record from `skills/highway-setup/assets/` at the start of each run. A skill that edits a seeded file stops and directs the person to `/highway-setup` when it is absent.
 - **Validate a skill**: `framework/validate-skill.sh skills/<id>`
 - **Build the catalog**: `framework/generate-catalog.sh` writes `.highway/catalog/index.json`.

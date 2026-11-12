@@ -1,9 +1,8 @@
 import { spawnSync } from "node:child_process";
-import { existsSync, mkdirSync, mkdtempSync, readdirSync, rmSync, writeFileSync } from "node:fs";
-import { tmpdir } from "node:os";
+import { existsSync, readdirSync } from "node:fs";
 import { join, relative } from "node:path";
 import { HARNESS_DIR, REPO_ROOT } from "./config.ts";
-import { isStage, location, resolveFixture } from "./project.ts";
+import { isStage, resolveFixture } from "./project.ts";
 import type { Selection } from "./report.ts";
 import { readScenario, ScenarioError, type Scenario } from "./scenario.ts";
 
@@ -35,16 +34,16 @@ export function loadScenarios(dir = SCENARIOS_DIR): Loaded {
 
 export interface MapLine {
   path: string;
-  kind: "skill" | "smoke" | "scenario" | "fixture" | "none" | "unmapped";
+  kind: "skill" | "smoke" | "scenario" | "fixture" | "none";
   target: string;
   reason: string;
 }
 
-export type PathMapper = (paths: readonly string[], skillsDir?: string) => MapLine[];
+export type PathMapper = (paths: readonly string[]) => MapLine[];
 
-export const runPathMap: PathMapper = (paths, skillsDir) => {
+export const runPathMap: PathMapper = (paths) => {
   if (paths.length === 0) return [];
-  const args = [join(HARNESS_DIR, "bin", "path-map.sh"), ...(skillsDir ? ["--skills-dir", skillsDir] : []), ...paths];
+  const args = [join(HARNESS_DIR, "bin", "path-map.sh"), ...paths];
   const result = spawnSync("bash", args, { encoding: "utf8", cwd: REPO_ROOT });
   if (result.status !== 0) throw new Error(`path-map.sh failed: ${result.stderr}`);
   return result.stdout
@@ -78,21 +77,6 @@ export function changedSince(ref: string): ChangedFiles {
   }
   for (const path of git(["ls-files", "--others", "--exclude-standard"]).split("\n").filter(Boolean)) present.add(path);
   return { present: [...present].sort(), deleted: [...deleted].sort() };
-}
-
-/** Writes the ref's SKILL.md files to a temporary skills folder, so deleted paths map as they did. */
-export function skillsAtRef(ref: string): string {
-  const dir = mkdtempSync(join(tmpdir(), "harness-skills-"));
-  const skills = location("skills");
-  const files = git(["ls-tree", "-r", "--name-only", ref, skills])
-    .split("\n")
-    .filter((p) => p.endsWith("/SKILL.md"));
-  for (const file of files) {
-    const id = file.slice(skills.length + 1).split("/")[0];
-    mkdirSync(join(dir, id), { recursive: true });
-    writeFileSync(join(dir, id, "SKILL.md"), git(["show", `${ref}:${file}`]));
-  }
-  return dir;
 }
 
 function fixtureStage(name: string): string | undefined {
@@ -133,10 +117,9 @@ export interface TargetedResult {
 export interface SelectDeps {
   mapper: PathMapper;
   changed: (ref: string) => ChangedFiles;
-  skillsAt: (ref: string) => string;
 }
 
-const defaultDeps: SelectDeps = { mapper: runPathMap, changed: changedSince, skillsAt: skillsAtRef };
+const defaultDeps: SelectDeps = { mapper: runPathMap, changed: changedSince };
 
 /** FR-023: the union of --changed-since, --paths, and --skills, keeping every reason. */
 export function selectTargeted(scenarios: readonly Scenario[], input: TargetedInput, deps: SelectDeps = defaultDeps): TargetedResult {
@@ -150,7 +133,7 @@ export function selectTargeted(scenarios: readonly Scenario[], input: TargetedIn
   const apply = (lines: MapLine[], source: string): void => {
     for (const line of lines) {
       const hits = scenariosForLine(line, scenarios);
-      if (line.kind === "none" || line.kind === "unmapped") notes.push(`${source}: ${line.path} selects nothing (${line.reason})`);
+      if (line.kind === "none") notes.push(`${source}: ${line.path} selects nothing (${line.reason})`);
       else if (hits.length === 0) notes.push(`${source}: ${line.path} selects ${line.kind} ${line.target}, which has no scenario`);
       for (const s of hits) add(s, `${source}: ${line.reason}`);
     }
@@ -171,14 +154,7 @@ export function selectTargeted(scenarios: readonly Scenario[], input: TargetedIn
     const ref = input.changedSince;
     const changed = deps.changed(ref);
     apply(deps.mapper(changed.present), `changed since ${ref}`);
-    if (changed.deleted.length > 0) {
-      const skillsDir = deps.skillsAt(ref);
-      try {
-        apply(deps.mapper(changed.deleted, skillsDir), `deleted since ${ref}`);
-      } finally {
-        rmSync(skillsDir, { recursive: true, force: true });
-      }
-    }
+    if (changed.deleted.length > 0) apply(deps.mapper(changed.deleted), `deleted since ${ref}`);
   }
 
   const selection = scenarios.filter((s) => reasons.has(s.id)).map((s) => ({ scenario: s.id, file: relative(REPO_ROOT, s.file), reasons: reasons.get(s.id)! }));

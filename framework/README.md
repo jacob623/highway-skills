@@ -80,8 +80,7 @@ Deferred and unchecked rules do not affect exit status. Enforcing a subset of th
 intended state, so unverified must not read as failed. The output format is a contract, per
 feature 003 (constitution enforcement).
 
-Also checks every `metadata.dependencies` entry against `.highway/library/` (see
-`framework/validate-library.sh` below): a missing path or a stale pinned version is reported as an
+Also checks every `metadata.dependencies` entry against `.highway/`: a missing path or a stale pinned version is reported as an
 `ERROR: [DEPENDENCY] ...` finding, per feature 004 (shared content library).
 
 #### Validation cache
@@ -94,7 +93,8 @@ validation.
 
 The cache key is a hash of the skill's `SKILL.md` combined with a hash of **every validator
 input**: `validate-skill.sh` itself, `.frontmatter-contract`, the constitution, the frontmatter
-lexicon, the Experience Standard, and every file under `framework/lib/` and `.highway/library/`.
+lexicon, the Experience Standard, and every file under `framework/lib/`. A skill's own `assets/`
+are part of that skill's side of the key.
 Change any of them and the key changes, so a recorded verdict can never outlive the thing that
 decided it. Three properties are deliberate and should be preserved by anyone editing this:
 
@@ -139,7 +139,7 @@ no namespace prefix of its own.
 
 ### `framework/validate-library.sh <library-file>`
 
-Validates one shared library file (template or knowledge) under `.highway/library/`, the same way
+Validates one library file (template or knowledge), the same way
 `validate-skill.sh` validates a skill: minimal frontmatter (`name`, `description`,
 `metadata.version`) plus the constitution's rule-content checks. A template file is exempt from
 the four checks that key on MUST/SHOULD keyword text (P1.1, P1.3, P7.4, P7.5), reported N/A rather
@@ -161,11 +161,10 @@ skeletons have none of those headings and are not checked this way;
 
 Output format is a contract, per feature 005 (rename content to library).
 
-A record that one skill creates has its complete template in that skill's `assets/`, such as
-`skills/highway-request/assets/request-record.md`. The three records several skills read, the
-ADR, the reference architecture, and the reference implementation, keep their templates under
-`.highway/library/templates/output/`; every skill that cites one must be revalidated when it
-changes.
+Every record has its complete template in the `assets/` of the one skill that creates it, such as
+`skills/highway-request/assets/request-record.md` or `skills/highway-adr/assets/adr-record.md`.
+highway-onboarding creates no record itself: it hands each provider's ADR, reference architecture,
+and reference implementation to highway-adr, highway-architecture, and highway-implementation.
 
 The organization catalogs, the findings file, and the storage record are seeded:
 `skills/highway-setup/assets/` holds their skeletons, and highway-setup writes each absent one
@@ -239,7 +238,7 @@ template or document to its folder (development constitution D2.5).
 | `lib/rule-checks.sh` | One check per enforceable rule, the rule-id-to-check registry, and the template rule-exemption list. |
 | `lib/schema-validate.sh` | Identity and frontmatter shape checks, plus the eight required body sections, for a skill. |
 | `lib/library-schema.sh` | Minimal frontmatter shape checks (`name`, `description`) for a shared library file. |
-| `lib/dependency-check.sh` | Resolves a skill's `metadata.dependencies` entries against `.highway/library/` and flags a missing path or version mismatch. |
+| `lib/dependency-check.sh` | Resolves a skill's `metadata.dependencies` entries against `.highway/` and flags a missing path or version mismatch. |
 | `lib/distribution.sh` | Classifies a repository path as included in or excluded from the user-facing distribution, and maps it to its destination, by reading `.distribution-manifest`. |
 | `lib/validation-cache.sh` | Content-addressed record of successful skill validations, keyed on the skill plus every validator input. |
 

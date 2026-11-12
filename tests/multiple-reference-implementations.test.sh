@@ -9,7 +9,6 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=paths.sh
 source "$SCRIPT_DIR/paths.sh"
 SKILLS="$HW_SKILLS"
-OUTPUT="$HW_OUTPUT_TEMPLATES"
 fail=0
 
 require() {
@@ -28,15 +27,14 @@ reject() {
 	fi
 }
 
-ADR_RECORD="$OUTPUT/adr-record.md"
+ADR_RECORD="$(hw_template adr-record)"
 ADR_CATALOG="$(hw_template adr-catalog)"
-ARCH_RECORD="$OUTPUT/architecture-record.md"
-IMPL_RECORD="$OUTPUT/implementation-record.md"
+ARCH_RECORD="$(hw_template architecture-record)"
+IMPL_RECORD="$(hw_template implementation-record)"
 ADR="$SKILLS/highway-adr/SKILL.md"
 ARCH="$SKILLS/highway-architecture/SKILL.md"
 IMPL="$SKILLS/highway-implementation/SKILL.md"
 DISCOVERY="$SKILLS/highway-discovery/SKILL.md"
-ONBOARDING="$SKILLS/highway-onboarding/SKILL.md"
 
 require "$ADR_RECORD" 'Reference Architecture: <RA id, or `None`>'
 require "$ADR_RECORD" 'The handoff contains no implementation entry.'
@@ -116,9 +114,9 @@ require "$IMPL" 'Conformance is `compatible`'
 reject "$IMPL" 'at most one implementation'
 reject "$IMPL" 'Reference Implementation field'
 
-require "$ONBOARDING" 'Do not set an implementation id.'
-require "$ONBOARDING" 'does not name an implementation'
-require "$ONBOARDING" 'Do not ask whether a decision replaces or runs beside another.'
+require "$ARCH" 'Do not set an implementation id.'
+require "$ARCH" 'does not name an implementation'
+require "$ADR" 'Do not ask whether a decision replaces or runs beside another.'
 
 if [[ "$fail" -ne 0 ]]; then
 	exit 1

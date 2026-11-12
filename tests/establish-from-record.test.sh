@@ -9,13 +9,12 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=paths.sh
 source "$SCRIPT_DIR/paths.sh"
 SKILLS="$HW_SKILLS"
-OUTPUT="$HW_OUTPUT_TEMPLATES"
 IMPL="$SKILLS/highway-implementation/SKILL.md"
 ONBOARD="$SKILLS/highway-onboarding/SKILL.md"
 CODIFY="$SKILLS/highway-codify/SKILL.md"
 CONFIG="$SKILLS/highway-codify-config/SKILL.md"
 PLATFORMS="$(hw_template codify-platforms)"
-RECORD="$OUTPUT/implementation-record.md"
+RECORD="$(hw_template implementation-record)"
 fail=0
 
 section() {

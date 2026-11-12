@@ -23,3 +23,4 @@ expect: template adrs/adrs.md :: adr-catalog.md
 expect: template adrs/ADR*.md :: adr-record.md
 expect: template architectures/architectures.md :: architecture-catalog.md
 expect: template architectures/RA*.md :: architecture-record.md
+expect: row adrs/adrs.md :: | RA

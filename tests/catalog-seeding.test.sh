@@ -22,7 +22,7 @@ BODY='Highway needs to gather your organizational preferences and set up your re
 CHECKS="highway-request${TAB}requests/requests.md
 highway-discovery${TAB}discoveries/discoveries.md
 highway-adr${TAB}adrs/adrs.md architectures/architectures.md
-highway-architecture${TAB}architectures/architectures.md
+highway-architecture${TAB}adrs/adrs.md architectures/architectures.md
 highway-implementation${TAB}implementations/implementations.md implementations/capabilities.md library/coding-standards/codify-platforms.md
 highway-onboarding${TAB}adrs/adrs.md architectures/architectures.md implementations/implementations.md implementations/capabilities.md library/coding-standards/codify-platforms.md
 highway-codify${TAB}code/code.md code/integrations.md

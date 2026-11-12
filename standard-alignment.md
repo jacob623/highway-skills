@@ -1161,6 +1161,26 @@ that changes behavior.
 Exit: `.highway/library/templates/` is empty, onboarding produces the same records as before, and
 the full suite and harness pass.
 
+Status: complete in `specs/239-standard-alignment-onboarding-handoffs/`. The suite went from 84
+tests to 85, all passing, and the harness tests stay at 81. Beyond the steps above:
+- Each owner's `onboarding` step is reached from a sentence before its Entry list, reuses its own
+  `identifier` and `write`, and returns its id. highway-architecture and highway-implementation ask
+  their own title question only when a title cannot be used; a decline stops that provider.
+  highway-onboarding retries a failed handoff once and still applies review edits itself.
+- highway-architecture's `name` sets the ADR catalog Architecture ID with the Reference
+  Architecture field, and its entry check names `adrs/adrs.md`. highway-adr exempts the Discovery
+  ID `highway` from its one-row rule.
+- `.highway/library/` is gone, with `HW_LIBRARY`, `HW_OUTPUT_TEMPLATES`, the P9.1 branch for the
+  shared folder, and the path map's library arm, `--skills-dir`, and `unmapped` kind. The harness
+  selection no longer rebuilds the skills at a ref for deleted paths.
+- `tests/onboarding-handoffs.test.sh` checks the handoff contract, and
+  `tests/record-templates.test.sh` covers all 14 record templates. The onboarding smoke and
+  architecture chain scenarios check the three records and the ADR catalog Architecture ID, and
+  `implementation-onboards-platform` covers the execution chain; a live run needs a token.
+- highway-adr, highway-architecture, highway-implementation, and highway-onboarding each took a
+  MINOR version. Neither constitution changed; the development constitution's mentions of
+  `.highway/library/` go with `.highway/` in Phase 11.
+
 # Phase 11: Self-Contained Skills
 
 Goal: no skill reads a file outside its own folder, `.highway/` is gone, and the skills are proven
