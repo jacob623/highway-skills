@@ -106,7 +106,6 @@ hw_doc() {
 	case "${1:-}" in
 	constitution) printf '%s\n' "$HW_FRAMEWORK/constitution.md" ;;
 	authoring-standard) printf '%s\n' "$HW_FRAMEWORK/authoring-standard.md" ;;
-	frontmatter-lexicon) printf '%s\n' "$HW_FRAMEWORK/frontmatter-lexicon.txt" ;;
 	experience-standard) printf '%s\n' "$HW_EXPERIENCE/references/experience-standard.md" ;;
 	storage) printf '%s\n' "$HW_EXPERIENCE/references/storage-contract.md" ;;
 	highway-identity) printf '%s\n' "$HW_EXPERIENCE/references/highway-identity.md" ;;

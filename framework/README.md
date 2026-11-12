@@ -46,7 +46,8 @@ saying whether it is decided automatically, by an agent, or by a human reviewer.
 
 - `framework/constitution.md` — the rules
 - `framework/authoring-standard.md` — how to satisfy them when writing a skill
-- `framework/frontmatter-lexicon.txt` — the closed word list for frontmatter descriptions
+- [Agent Skills specification](https://agentskills.io/specification) — the authority on skill
+  format; `framework/.frontmatter-contract` declares the frontmatter fields it permits
 
 Rule ids are stable. A retired id is never reused, so a citation stays meaningful.
 
@@ -80,9 +81,12 @@ Deferred and unchecked rules do not affect exit status. Enforcing a subset of th
 intended state, so unverified must not read as failed. The output format is a contract, per
 feature 003 (constitution enforcement).
 
-Also checks every `metadata.dependencies` entry against the skill's own folder: a missing path,
-a path that leaves the folder, or a stale pinned version is reported as an
-`ERROR: [DEPENDENCY] ...` finding, per feature 004 (shared content library).
+Frontmatter is parsed with a strict YAML parser (`lib/yaml-frontmatter.sh`, which runs `python3`
+with the PyYAML module) before any field check. A block that does not parse, a repeated key, a
+field the Agent Skills specification does not define, a value that is not a string, or a value the
+line readers in `lib/frontmatter.sh` read differently from the parser is an `ERROR: [SCHEMA] ...`
+finding. Without `python3` and PyYAML the validator stops with
+`ERROR: [SCHEMA] the YAML parser is unavailable: ...`.
 
 #### Bundled files
 
@@ -112,8 +116,8 @@ takes validating all twelve skills from roughly 5.4 s to 0.44 s. Pass `--no-cach
 validation.
 
 The cache key is a hash of the skill's `SKILL.md` combined with a hash of **every validator
-input**: `validate-skill.sh` itself, `.frontmatter-contract`, the constitution, the frontmatter
-lexicon, the Experience Standard, and every file under `framework/lib/`. A skill's own `assets/`
+input**: `validate-skill.sh` itself, `.frontmatter-contract`, the constitution, the Experience
+Standard, and every file under `framework/lib/`. A skill's own `assets/`
 and `references/` are part of that skill's side of the key, and so is its folder name, which its
 `name` must match. Where the skills folder sits is not.
 Change any of them and the key changes, so a recorded verdict can never outlive the thing that
@@ -122,8 +126,8 @@ decided it. Three properties are deliberate and should be preserved by anyone ed
 - **Only successes are recorded.** A failing skill is re-validated and re-reported every time.
 - **The full report is stored and replayed**, so a cache hit is byte-identical to a full run.
   Callers parse this output; a hit must not be quieter than a miss.
-- **The cache disables itself** when `CONSTITUTION_FILE`, `EXPERIENCE_FILE`,
-  `FRONTMATTER_CONTRACT_FILE` or `FRONTMATTER_LEXICON_FILE` is set, because those overrides
+- **The cache disables itself** when `CONSTITUTION_FILE`, `EXPERIENCE_FILE`, or
+  `FRONTMATTER_CONTRACT_FILE` is set, because those overrides
   repoint validation at documents the key does not describe. It also disables itself if the cache
   directory would resolve inside the repository, or is not writable.
 
@@ -135,7 +139,7 @@ previously-cached skill still fails with its original error.
 
 Iterates `skills/*/SKILL.md`, validates each via `validate-skill.sh`, and writes highway-help's
 `skills/highway-help/assets/index.json`: one entry per skill with its `id`, `name`,
-`description`, `usage`, `version`, `dependencies`, and `example`, which is everything highway-help
+`description`, `usage` (from `metadata.usage`), `version`, and `example`, which is everything highway-help
 prints. Unchanged skill sources produce a byte-identical file.
 
 - **Exit 0**: index written.
@@ -235,15 +239,14 @@ template or document to its folder (development constitution D2.5).
 | File | Responsibility |
 |---|---|
 | `lib/paths.sh` | The paths helper described above. |
-| `lib/frontmatter.sh` | Reads the YAML frontmatter block and body of a `SKILL.md`, including `metadata.dependencies`. |
+| `lib/frontmatter.sh` | Reads the YAML frontmatter block and body of a `SKILL.md` with line readers, for the generators and rule checks. |
+| `lib/yaml-frontmatter.sh` | Parses a `SKILL.md` frontmatter block with a strict YAML parser (`python3` with PyYAML), the only use of `python3` in the framework. |
 | `lib/frontmatter-contract.sh` | Reads the permitted frontmatter keys and value constraints from `.frontmatter-contract`. |
-| `lib/frontmatter-lexicon.sh` | Checks frontmatter description words against `frontmatter-lexicon.txt`. |
 | `lib/constitution.sh` | Parses the rule inventory, rule fields, and token lists from the constitution. |
 | `lib/body-scan.sh` | Annotates each body line with its section, fenced-block state, and list membership, so no check parses Markdown for itself. |
 | `lib/rule-checks.sh` | One check per enforceable rule, the rule-id-to-check registry, and the bundled-file rule-exemption lists. |
-| `lib/schema-validate.sh` | Identity and frontmatter shape checks, plus the eight required body sections, for a skill. |
+| `lib/schema-validate.sh` | Identity and frontmatter checks over the parsed frontmatter (fields, types, lengths, agreement with the line readers), plus the eight required body sections, for a skill. |
 | `lib/library-schema.sh` | Minimal frontmatter shape checks (`name`, `description`) for a complete template a skill bundles. |
-| `lib/dependency-check.sh` | Resolves a skill's `metadata.dependencies` entries inside the skill's own folder and flags a missing path, a path leaving the folder, or a version mismatch. |
 | `lib/distribution.sh` | Classifies a repository path as included in or excluded from the user-facing distribution, and maps it to its destination, by reading `.distribution-manifest`. |
 | `lib/validation-cache.sh` | Content-addressed record of successful skill validations, keyed on the skill plus every validator input. |
 
@@ -266,5 +269,7 @@ id namespace alignment) for the full contract. Procedure:
 
 ## Requirements
 
-Bash and standard command-line utilities, as shipped with macOS and Linux. Nothing to install, no
-package manager, no runtime.
+Bash and standard command-line utilities, as shipped with macOS and Linux, plus `python3` with the
+PyYAML module (`python3 -c 'import yaml'` exits 0), which the validator uses only to parse skill
+frontmatter strictly. No package manager and no network access. The skills themselves need none of
+this: the framework does not ship.

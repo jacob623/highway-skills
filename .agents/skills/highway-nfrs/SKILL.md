@@ -1,10 +1,10 @@
 ---
 name: highway-nfrs
-description: "Manages the repository-wide nfr baseline."
-usage: "Invoke as /highway-nfrs."
-compatibility: all
+description: "Manages the repository-wide nfr baseline. Use when highway-setup delegates the nfr baseline, after Controls finish or when setup runs again."
+license: Apache-2.0
 metadata:
-  version: 9.5.0
+  version: 9.6.0
+  usage: "Run highway-nfrs."
 ---
 
 # highway-nfrs

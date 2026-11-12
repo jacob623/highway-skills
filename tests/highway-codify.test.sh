@@ -88,12 +88,13 @@ for text in \
 	require "$RECORD" "$text"
 done
 
-require "$REQUEST" 'Run `/highway-codify` for **[Implementation title]** to **[action]**.'
-require "$REQUEST" 'Run `/highway-discovery [ID]` to evaluate candidate solutions against your objectives, safeguards, and operational expectations.'
+require "$REQUEST" 'Run `highway-codify` for **[Implementation title]** to **[action]**.'
+require "$REQUEST" 'Run `highway-discovery [ID]` to evaluate candidate solutions against your objectives, safeguards, and operational expectations.'
 require "$REQUEST" 'Do not state the day.'
 
 require "$ASSESSMENT" 'continue as `highway-request` at `start`'
-reject "$ASSESSMENT" '/highway-codify'
+reject "$ASSESSMENT" 'Run `highway-codify`'
+reject "$ASSESSMENT" 'run highway-codify'
 
 if [[ "$fail" -ne 0 ]]; then
 	exit 1

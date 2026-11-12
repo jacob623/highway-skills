@@ -118,17 +118,23 @@ if ! grep -q "\"id\": \"$TMP_ID\"" "$CATALOG_JSON"; then
 	fail=1
 fi
 
-for field in name description usage version dependencies example; do
+for field in name description usage version example; do
 	if ! grep -q "\"$field\":" "$CATALOG_JSON"; then
 		echo "FAIL: assets/index.json entry missing field '$field'"
 		fail=1
 	fi
 done
 
-# highway-help's own entry carries what it prints: no dependencies, and its Example invocation.
+# highway-help's own entry carries what it prints: its usage from metadata.usage, and its Example
+# invocation. Superseded behavior: each entry listed a dependencies array, which skills no longer
+# declare.
 help_entry="$(awk '/"id": "highway-help"/{f=1} f{print} f && /^    }/{exit}' "$CATALOG_JSON")"
-if [[ "$help_entry" != *'"dependencies": []'* ]]; then
-	echo "FAIL: highway-help's entry does not list an empty dependencies array"
+if [[ "$help_entry" == *'"dependencies"'* ]]; then
+	echo "FAIL: highway-help's entry still carries a dependencies field"
+	fail=1
+fi
+if [[ "$help_entry" != *'"usage": "Run highway-help for all skills'* ]]; then
+	echo "FAIL: highway-help's entry does not carry its metadata.usage"
 	fail=1
 fi
 if [[ "$help_entry" != *'"example": "/highway-help highway-help"'* ]]; then

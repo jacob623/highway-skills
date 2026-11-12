@@ -21,6 +21,7 @@ rc_registry() {
 		P4.2	rc_check_P4_2	N2
 		P5.2	rc_check_P5_2	N2
 		P5.3	rc_check_P5_3	N2
+		P5.15	rc_check_P5_15	N4
 		P6.4	rc_check_P6_4	-
 		P7.1	rc_check_P7_1	-
 		P7.2	rc_check_P7_2	-
@@ -216,6 +217,23 @@ rc_check_P5_3() {
 	')"
 	[[ -n "$out" ]] && { printf '%s\n' "$out"; found=1; }
 	return $found
+}
+
+# --- P5.15: the description says when to use the skill ---------------------------------
+
+# Only a SKILL.md carries the description a client reads to decide activation; a template in
+# assets/ has a description of the record it shapes. An empty description is the schema check's
+# finding, not a second one here.
+rc_check_P5_15() {
+	local file="$1" description
+	[[ "$(basename "$file")" == "SKILL.md" ]] || return 2
+	description="$(fm_get "$file" description || true)"
+	[[ -z "$description" ]] && return 0
+	if [[ ! "$description" =~ (^|[.!?][[:space:]]+)Use\ when[[:space:]] ]]; then
+		echo 'description has no sentence beginning "Use when"'
+		return 1
+	fi
+	return 0
 }
 
 # --- P7.1: a Purpose section holds exactly one sentence -----------------------------------

@@ -1,10 +1,10 @@
 ---
 name: highway-profile
-description: "Manages the repository-wide organizational Profile and its contextual guidance."
-usage: "Invoke as /highway-profile."
-compatibility: all
+description: "Manages the repository-wide organizational Profile and its contextual guidance. Use when highway-setup delegates the Profile, at the start of setup or when setup runs again."
+license: Apache-2.0
 metadata:
-  version: 14.3.0
+  version: 14.4.0
+  usage: "Run highway-profile."
 ---
 
 # highway-profile

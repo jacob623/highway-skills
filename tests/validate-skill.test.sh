@@ -53,7 +53,7 @@ assert_exit_nonzero_naming "$FIXTURES/invalid-skill-name-mismatch" "does not mat
 assert_exit_nonzero_naming "$FIXTURES/invalid-skill-relative-link" "is a relative path"
 assert_exit_nonzero_naming "$FIXTURES/invalid-skill-nondeterministic-criterion" "decision criterion references"
 assert_exit_nonzero_naming "$FIXTURES/invalid-skill-undeclared-key" "undeclared top-level key 'licence'"
-assert_exit_nonzero_naming "$FIXTURES/invalid-skill-duplicate-key" "duplicate top-level key 'description'"
+assert_exit_nonzero_naming "$FIXTURES/invalid-skill-duplicate-key" "duplicate key 'description' in frontmatter"
 
 # Every skill-shaped artifact in the repository that is meant to be valid must pass, so that an
 # author copying one inherits a conforming skill (SC-001).
@@ -96,7 +96,7 @@ assert_single_failure "$FIXTURES/invalid-skill-short-description" "SCHEMA"
 # A no-op re-run must reproduce the identical failure (the fixture is unaffected by having been
 # checked before).
 assert_exit_nonzero_naming "$FIXTURES/invalid-skill-undeclared-key" "undeclared top-level key 'licence'"
-assert_exit_nonzero_naming "$FIXTURES/invalid-skill-duplicate-key" "duplicate top-level key 'description'"
+assert_exit_nonzero_naming "$FIXTURES/invalid-skill-duplicate-key" "duplicate key 'description' in frontmatter"
 
 # A malformed frontmatter contract manifest (a duplicate scope/key row) is reported as an error
 # and blocks every per-skill check (FR-003). Uses FRONTMATTER_CONTRACT_FILE to point at a

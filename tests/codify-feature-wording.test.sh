@@ -72,7 +72,7 @@ require_in propose '**Here is a proposed starting point for your codify feature:
 require_in propose '**Controls and NFRs:**'
 require_in propose '**Conflicts:**'
 require_in propose 'Highway will use this specification to build out the solution.'
-require_in revise 'stays in effect. To change a Control, run /highway-controls. To change an NFR, run /highway-nfrs.'
+require_in revise 'stays in effect. To change a Control, run highway-controls. To change an NFR, run highway-nfrs.'
 require_in write 'Do not write `codify-tasks.md` here.'
 require_in write '**Controls and NFRs:**'
 require_in index 'On success, go to `plan`'

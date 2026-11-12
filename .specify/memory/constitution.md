@@ -1,5 +1,27 @@
 <!--
 Sync Impact Report
+Version change: 3.4.0 → 3.5.0 (MINOR), 2026-11-12
+Bump rationale: skills follow the Agent Skills specification, and the validator proves it. D3.9 is
+added, `python3` joins the Declared Toolchain, and the Governance section names the specification
+as the authority on skill format. A rule and a toolchain entry are added; no obligation is
+removed, redefined, or strengthened, so no conforming work fails.
+Changed elements:
+- Version line: 3.4.0 → 3.5.0
+- Last Amended date: 2026-11-11 → 2026-11-12
+- Principle III: rule D3.9 added, tier [auto]
+- Enforcement Map: a D3.9 row naming agent-skills-format.test.sh
+- Declared Toolchain: `python3` added, with a note restricting it to
+  `framework/lib/yaml-frontmatter.sh` and PyYAML
+- Governance: a paragraph naming the Agent Skills specification as the authority on skill format
+D2.4 review: adding `python3` is a change to the Declared Toolchain made by this amendment, so the
+change adds no interpreter absent from it. The framework does not ship, so `python3` is a
+development dependency only; no shipped skill needs it.
+Unchanged: every other rule, Observable, keyword, and tier; the Harness Toolchain; every gate.
+Self-application review: D1.3 PASS (no Highway Skills Constitution rule sentence is copied, and
+the specification is cited, not restated); D1.4 PASS (this report cites rule IDs); D5.3 PASS (the
+six changed elements are listed above and every unlisted element carries forward).
+
+Sync Impact Report
 Version change: 3.3.0 → 3.4.0 (MINOR), 2026-11-11
 Bump rationale: every skill reads only its own folder, and `.highway/` is removed. highway-help's
 index moves into its own `assets/`, the library validator merges into the skill validator, and
@@ -480,6 +502,7 @@ table cannot silently go stale.
 | D4.6 | adapter-coverage.test.sh | Asserts no catalog entry, adapter file, adapter manifest row, or distribution manifest row names a skill with no source directory |
 | D4.7 | adapter-coverage.test.sh | Regenerates into a temporary tree and asserts no diff against the committed artifacts |
 | D3.7 | constitution-inventory.test.sh | Executes each mapped test's declared probe per artifact class and requires a non-zero exit; requires a zero exit when the same probe is invoked neutralised |
+| D3.9 | agent-skills-format.test.sh | Seeds a violation of each Agent Skills specification rule into a copy of a conforming skill and requires `framework/validate-skill.sh` to reject it; also requires every skill to pass |
 
 ## Core Principles
 
@@ -511,8 +534,12 @@ only to users.
 excluded:
 
 > `awk`, `basename`, `cat`, `comm`, `cp`, `cut`, `date`, `diff`, `dirname`, `find`, `grep`,
-> `head`, `mkdir`, `mktemp`, `mv`, `rm`, `sed`, `sha256sum`, `shasum`, `sort`, `tail`, `tr`,
-> `uniq`, `wc`, `xargs`
+> `head`, `mkdir`, `mktemp`, `mv`, `python3`, `rm`, `sed`, `sha256sum`, `shasum`, `sort`, `tail`,
+> `tr`, `uniq`, `wc`, `xargs`
+
+`python3` is declared with the PyYAML module and is invoked only by
+`framework/lib/yaml-frontmatter.sh`, to parse skill frontmatter as a client's strict YAML parser
+reads it. No other script invokes it, and it runs without network access.
 
 Version control is not on this list. The toolchain must run in a distributed tree, which is not a
 repository.
@@ -541,6 +568,7 @@ is the worked example.
 | D3.6 | A test MUST be observed failing for the behavior it claims to cover before that behavior is marked complete. | The failing run and its message are recorded before the implementation that makes it pass. | [agent-checkable] |
 | D3.7 | A registered `[auto]` check MUST be able to fail for every class of artifact in its declared scope. | The check declares its scope as artifact classes, and a seeded defect in one artifact of each class produces a non-zero exit. | [auto] |
 | D3.8 | A static document-contract test MUST NOT be recorded as the evidence satisfying a behavioral requirement. | Each test declares its instrument class; runtime-behavior coverage names executed-behavior evidence separately. | [agent-checkable] |
+| D3.9 | The skill validator MUST enforce every rule of the Agent Skills specification. | A seeded violation of each rule makes `framework/validate-skill.sh` exit non-zero. | [auto] |
 | D5.3 | A superseding document MUST name every element it changes. | Each changed field is listed; unlisted elements carry forward unchanged. | [agent-checkable] |
 | D7.3 | A completion report MUST state requirement coverage separately from check results. | The report makes the suite result and the requirement coverage two distinct claims. | [agent-checkable] |
 
@@ -646,6 +674,11 @@ This document governs development activity only. Where it and the Highway Skills
 apply, they apply to different artifacts and cannot conflict; if an apparent conflict arises, the
 Highway Skills Constitution prevails for artifact content and this document prevails for process.
 
+The [Agent Skills specification](https://agentskills.io/specification) is the authority on skill
+format: the frontmatter fields, their types and limits, and the folder layout. Neither this
+document nor the Highway Skills Constitution restates it; D3.9 requires the skill validator to
+enforce it, and Highway's own rules may only narrow it.
+
 ### Versioning Policy
 
 - **MAJOR**: a principle is removed or redefined, or an obligation is strengthened so that
@@ -658,4 +691,4 @@ Highway Skills Constitution prevails for artifact content and this document prev
 This document is subject to D1.3, D1.4, and D5.3. Every amendment records a review against those
 rule IDs.
 
-**Version**: 3.4.0 | **Ratified**: 2026-09-08 | **Last Amended**: 2026-11-11
+**Version**: 3.5.0 | **Ratified**: 2026-09-08 | **Last Amended**: 2026-11-12

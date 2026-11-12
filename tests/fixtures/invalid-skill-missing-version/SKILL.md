@@ -1,9 +1,9 @@
 ---
 name: invalid-skill-missing-version
-description: "Fixture that omits metadata.version to test the version failure path."
-usage: "Not invoked directly; used only as fixture input to the test suite."
-compatibility: all
-metadata: {}
+description: "Fixture that omits metadata.version to test the version failure path. Use when the tests exercise the validator."
+license: Apache-2.0
+metadata:
+  usage: "Not invoked directly; used only as fixture input to the test suite."
 ---
 
 ## Purpose

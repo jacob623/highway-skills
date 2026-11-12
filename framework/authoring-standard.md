@@ -32,33 +32,41 @@ exactly, byte-for-byte (see the `name` row below).
 
 ## Required frontmatter
 
+A skill's frontmatter follows the [Agent Skills specification](https://agentskills.io/specification),
+which is the authority on skill format; Highway narrows it where the table says so.
+
 ```yaml
 ---
 name: skill-id
-description: "One-line purpose AND when to use (<= 500 characters)."
-usage: "One-line guidance on how to invoke/use the skill (<= 500 characters)."
-compatibility: all # or one of: github-copilot | claude-code | cursor | codex
+description: "What the skill does. Use when <the scenarios in ## When to use>."
+license: Apache-2.0
 metadata:
   version: 1.0.0
-  # agent_exceptions: # optional, only for a declared, isolated agent-specific deviation
-  #   - agent: cursor
-  #     deviation: "Exact, isolated deviation for this agent only."
+  usage: "Run skill-id with <its arguments>."
 ---
 ```
 
+The block MUST parse as YAML, and every value in it, including every `metadata` value, MUST be a
+string. `framework/validate-skill.sh` parses it with a strict YAML parser and checks that the
+line readers in `framework/lib/frontmatter.sh` read the same values.
+
 | Field | Required | Governing rule | Notes |
 |---|---|---|---|
-| `name` | Yes | SCHEMA | MUST equal the directory-derived id exactly, byte-for-byte (case, whitespace, and punctuation all count). Enforced by `sv_validate_name`. |
-| `description` | Yes | — | Non-empty, <= 500 characters. Sole carrier of applicability in the generated catalog. Keep "when not to use" detail in the body. |
-| `usage` | Yes | — | Non-empty, <= 500 characters. One-line guidance on how to invoke/use the skill; carried into the generated catalog for discovery (the help skill's all-skills listing). |
-| `compatibility` | No | — | One of `all`, `github-copilot`, `claude-code`, `cursor`, `codex`. Defaults to `all`. |
+| `name` | Yes | SCHEMA | At most 64 characters, kebab-case, and equal to the directory-derived id exactly, byte-for-byte. Enforced by `sv_validate_id` and `sv_validate_name`. |
+| `description` | Yes | SCHEMA, P5.15, P5.16 | 1–1,024 characters. States what the skill does and contains a sentence beginning "Use when" drawn from `## When to use`. A client reads it to decide whether to activate the skill. |
+| `license` | Yes | SCHEMA | `Apache-2.0` for every Highway skill. The specification makes it optional; Highway requires it. |
+| `compatibility` | No | SCHEMA | 1–500 characters naming an environment requirement. No Highway skill declares it. |
+| `allowed-tools` | No | SCHEMA | Accepted by the validator. No Highway skill declares it: it pre-approves tools rather than restricting them. |
 | `metadata.version` | Yes | P7.2 | Semantic version. See the Skill Versioning Policy in the constitution's Governance section. |
-| `metadata.agent_exceptions` | No | P2.2 | List of `{agent, deviation}`, each naming one supported agent. |
-| `metadata.dependencies` | No | DEPENDENCY | List of `{path, version}` pins to files in the skill's own folder; each path is relative to the folder, must stay inside it and exist, and its target's `metadata.version` must match the pinned `version`, enforced by `dc_validate_dependencies`. |
+| `metadata.usage` | Yes | SCHEMA | 1–500 characters. How to run the skill, naming it without an agent's prefix (`/`, `$`, or a plugin namespace). Carried into highway-help's index. |
+
+No other field is permitted. Outside `## Example`, a skill names another skill, or itself, as
+`highway-<id>` with no invocation prefix, because each agent invokes a plugin's skills its own
+way; `## Example` may show one agent's invocation.
 
 The permitted key set, required/optional status, and value constraints above are declared once in
-`framework/.frontmatter-contract` (see `contracts/frontmatter-contract-shape.md`); this table
-restates that manifest for authoring convenience and MUST NOT drift from it (`P7.3`).
+`framework/.frontmatter-contract`; this table restates that manifest for authoring convenience and
+MUST NOT drift from it (`P7.3`).
 
 ## Required body sections
 

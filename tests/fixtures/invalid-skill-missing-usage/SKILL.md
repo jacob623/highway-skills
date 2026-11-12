@@ -1,7 +1,7 @@
 ---
 name: invalid-skill-missing-usage
-description: "Fixture that omits the usage frontmatter field to test the usage failure path."
-compatibility: all
+description: "Fixture that omits the usage frontmatter field to test the usage failure path. Use when the tests exercise the validator."
+license: Apache-2.0
 metadata:
   version: 1.0.0
 ---

@@ -52,7 +52,7 @@ require "$ADR" 'Which architecture should this decision use?'
 require "$ADR" 'Does this decision replace'
 require "$ADR" 'in id order, separated by a comma and a space'
 require "$ADR" '**Which implementation would you like to codify first?**'
-require "$ADR" 'Run `/highway-codify` for **[Implementation title]** to **[Decision title]**.'
+require "$ADR" 'Run `highway-codify` for **[Implementation title]** to **[Decision title]**.'
 require "$ADR" 'is not yet implemented.'
 require "$ADR" 'One Discovery has one ADR.'
 
@@ -68,7 +68,8 @@ require "$ASSESSMENT" "If you'd like to see more records, just say so."
 require "$ASSESSMENT" "If you'd like to return to the main menu, just say so."
 require "$ASSESSMENT" 'continue as `highway-codify`'
 require "$ASSESSMENT" 'Do not write a ready record to the findings file.'
-reject "$ASSESSMENT" '/highway-codify'
+reject "$ASSESSMENT" 'Run `highway-codify`'
+reject "$ASSESSMENT" 'run highway-codify'
 
 require "$DISCOVERY" "If you'd like to select this option for the Decision record, just say so."
 require "$DISCOVERY" '- `adopt`: selects the option being explored for the Decision record.'

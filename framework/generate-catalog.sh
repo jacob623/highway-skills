@@ -23,17 +23,6 @@ json_escape() {
 	sed -e 's/\\/\\\\/g' -e 's/"/\\"/g'
 }
 
-# Prints the JSON array of a skill's metadata.dependencies as "<path>@<version>" strings.
-dependencies_json() {
-	local out="" path version
-	while IFS='|' read -r path version; do
-		[[ -z "$path" ]] && continue
-		[[ -n "$out" ]] && out="$out, "
-		out="$out\"$(printf '%s@%s' "$path" "$version" | json_escape)\""
-	done <<< "$(fm_get_dependencies "$1")"
-	printf '[%s]' "$out"
-}
-
 # Prints the first line under "## Example" that is one inline code span, without its backticks.
 example_of() {
 	awk '
@@ -71,9 +60,8 @@ for ((i = 0; i < skill_count; i++)); do
 	skill_file="$dir/SKILL.md"
 	name="$(fm_get "$skill_file" name || true)"
 	description="$(fm_get "$skill_file" description || true)"
-	usage="$(fm_get "$skill_file" usage || true)"
+	usage="$(fm_get_nested "$skill_file" metadata usage || true)"
 	version="$(fm_get_nested "$skill_file" metadata version || true)"
-	dependencies="$(dependencies_json "$skill_file")"
 	example="$(example_of "$skill_file")"
 
 	entry=$(cat <<-ENTRY
@@ -83,7 +71,6 @@ for ((i = 0; i < skill_count; i++)); do
 		      "description": "$(printf '%s' "$description" | json_escape)",
 		      "usage": "$(printf '%s' "$usage" | json_escape)",
 		      "version": "$(printf '%s' "$version" | json_escape)",
-		      "dependencies": $dependencies,
 		      "example": "$(printf '%s' "$example" | json_escape)"
 		    }
 	ENTRY

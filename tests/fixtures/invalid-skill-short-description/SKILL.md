@@ -1,10 +1,10 @@
 ---
 name: invalid-skill-short-description
-description: "x"
-usage: "Not invoked directly; used only as fixture input to the test suite."
-compatibility: all
+description: ""
+license: Apache-2.0
 metadata:
   version: 1.0.0
+  usage: "Not invoked directly; used only as fixture input to the test suite."
 ---
 
 ## Purpose

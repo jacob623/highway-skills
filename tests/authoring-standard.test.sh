@@ -68,12 +68,19 @@ for section in "${SV_REQUIRED_SECTIONS[@]}"; do
 	fi
 done
 
-# --- metadata.dependencies is documented and the manifest is cited (feature 045) ------------
+# --- every manifest field is documented and the manifest is cited (feature 045) -------------
+# Superseded behavior: the standard was required to document metadata.dependencies, which skills
+# no longer declare.
 
-if ! grep -qF '`metadata.dependencies`' "$STANDARD"; then
-	echo "FAIL: the authoring standard does not document metadata.dependencies"
-	fail=1
-fi
+while IFS=$'\t' read -r scope key _required _constraint; do
+	[[ -z "$key" ]] && continue
+	label="$key"
+	[[ "$scope" == "metadata" ]] && label="metadata.$key"
+	if ! grep -qF "\`$label\`" "$STANDARD"; then
+		echo "FAIL: the authoring standard does not document the frontmatter field $label"
+		fail=1
+	fi
+done < <(awk -F'\t' '!/^#/ && NF > 0' "$HW_FRAMEWORK/.frontmatter-contract")
 
 if ! grep -qF '.frontmatter-contract' "$STANDARD"; then
 	echo "FAIL: the authoring standard does not cite framework/.frontmatter-contract"

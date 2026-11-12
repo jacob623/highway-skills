@@ -25,11 +25,11 @@ write_base_skill() {
 	cat >"$dir/SKILL.md" <<'EOF'
 ---
 name: Seed Skill
-description: "Conforming baseline that each case mutates to seed exactly one violation."
-usage: "Not invoked directly; used only as a seed fixture for rule-checks.test.sh."
-compatibility: all
+description: "Conforming baseline that each case mutates to seed exactly one violation. Use when a test seeds one violation."
+license: Apache-2.0
 metadata:
   version: 1.0.0
+  usage: "Not invoked directly; used only as a seed fixture for rule-checks.test.sh."
 ---
 
 ## Purpose
@@ -111,8 +111,14 @@ assert_reports "P1.3 over 25 words" "P1.3" "$d"
 # --- P7.2: version missing ---------------------------------------------------------------------------
 
 d="$tmp_root/p72"; write_base_skill "$d"
-sed -i.bak 's/^  version: 1\.0\.0$/  license: none/' "$d/SKILL.md" && rm -f "$d/SKILL.md.bak"
+sed -i.bak '/^  version: 1\.0\.0$/d' "$d/SKILL.md" && rm -f "$d/SKILL.md.bak"
 assert_reports "P7.2 missing version" "P7.2" "$d"
+
+# --- P5.15: description without a "Use when" sentence ---------------------------------------------
+
+d="$tmp_root/p515"; write_base_skill "$d"
+sed -i.bak 's/ Use when a test seeds one violation\."$/"/' "$d/SKILL.md" && rm -f "$d/SKILL.md.bak"
+assert_reports "P5.15 no Use when" "P5.15" "$d"
 
 # --- P7.4: more than 12 MUST-level rules ---------------------------------------------------------------
 

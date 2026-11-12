@@ -39,7 +39,8 @@ if [[ "$all_skills_block" == *"Usage:"* ]]; then
 	fail=1
 fi
 
-if ! printf '%s\n' "$all_skills_flat" | grep -Eq 'Name:.*Description:.*Help: /highway-help <id>'; then
+# Superseded behavior: the command read "/highway-help <id>", a prefix only some agents use.
+if ! printf '%s\n' "$all_skills_flat" | grep -Eq 'Name:.*Description:.*Help: highway-help <id>'; then
 	echo "FAIL: All-Skills declaration must include the copyable help command"
 	fail=1
 fi

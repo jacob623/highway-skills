@@ -126,11 +126,11 @@ write_seeded_skill() {
 	SEED="$seed" ID="$id" awk '{ if ($0 == "@SEED@") print ENVIRON["SEED"]; else { gsub(/@ID@/, ENVIRON["ID"]); print } }' >"$dir/SKILL.md" <<'EOF'
 ---
 name: @ID@
-description: "Conforming baseline that each case mutates to seed exactly one violation."
-usage: "Not invoked directly; used only as a seed fixture for rule-checks.test.sh."
-compatibility: all
+description: "Conforming baseline that each case mutates to seed exactly one violation. Use when a test seeds one violation."
+license: Apache-2.0
 metadata:
   version: 1.0.0
+  usage: "Not invoked directly; used only as a seed fixture for rule-checks.test.sh."
 ---
 
 ## Purpose

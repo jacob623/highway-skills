@@ -3,5 +3,5 @@ id: codify-catalog-empty
 skill: highway-codify
 fixture: implementation
 open: /highway-codify catalog
-covers: 0f12977d85f6 `/highway-codify catalog` lists at most five accepted automations, newest first, with each implementation title and progress, says how many more exist, and writes nothing. A selection shows the files path and the README path.
+covers: 25fc802f29fe `highway-codify catalog` lists at most five accepted automations, newest first, with each implementation title and progress, says how many more exist, and writes nothing. A selection shows the files path and the README path.
 reaches: catalog

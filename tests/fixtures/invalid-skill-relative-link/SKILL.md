@@ -1,10 +1,10 @@
 ---
 name: invalid-skill-relative-link
-description: "Fixture whose body carries a relative Markdown link target, to test the P8.7 failure path."
-usage: "Not invoked directly; used only as fixture input to the test suite."
-compatibility: all
+description: "Fixture whose body carries a relative Markdown link target, to test the P8.7 failure path. Use when the tests exercise the validator."
+license: Apache-2.0
 metadata:
   version: 1.0.0
+  usage: "Not invoked directly; used only as fixture input to the test suite."
 ---
 
 ## Purpose

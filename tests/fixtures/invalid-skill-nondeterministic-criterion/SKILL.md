@@ -1,10 +1,10 @@
 ---
 name: invalid-skill-nondeterministic-criterion
-description: "Fixture whose decision criteria depend on when they are read, to test the P6.4 failure path."
-usage: "Not invoked directly; used only as fixture input to the test suite."
-compatibility: all
+description: "Fixture whose decision criteria depend on when they are read, to test the P6.4 failure path. Use when the tests exercise the validator."
+license: Apache-2.0
 metadata:
   version: 1.0.0
+  usage: "Not invoked directly; used only as fixture input to the test suite."
 ---
 
 ## Purpose

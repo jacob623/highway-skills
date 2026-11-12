@@ -4,8 +4,8 @@
 # Requires frontmatter.sh to be sourced first.
 #
 # A template's required frontmatter is smaller than a skill's: name, description,
-# metadata.version only -- no compatibility, since that field is agent/adapter-specific and
-# does not apply to a template (FR-014).
+# metadata.version only. A template is not a skill, so the Agent Skills fields such as license
+# do not apply to it.
 
 # Usage: ls_validate_name <name>
 ls_validate_name() {
@@ -18,8 +18,8 @@ ls_validate_name() {
 }
 
 # Usage: ls_validate_description <description>
-# Reuses the same 500-character threshold sv_validate_description already applies to skills
-# (research.md Decision 6): no unstated, undecided number for library files.
+# A template's description is held to 500 characters, half a skill's 1,024: it describes one
+# record shape, not when to activate a skill.
 ls_validate_description() {
 	local desc="$1" ok=0
 	if [[ -z "$desc" ]]; then

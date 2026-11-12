@@ -1,10 +1,10 @@
 ---
 name: invalid-skill-missing-example
-description: "Fixture that omits the ## Example body section to test the section failure path."
-usage: "Not invoked directly; used only as fixture input to the test suite."
-compatibility: all
+description: "Fixture that omits the ## Example body section to test the section failure path. Use when the tests exercise the validator."
+license: Apache-2.0
 metadata:
   version: 1.0.0
+  usage: "Not invoked directly; used only as fixture input to the test suite."
 ---
 
 ## Purpose

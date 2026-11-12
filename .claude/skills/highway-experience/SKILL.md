@@ -1,10 +1,10 @@
 ---
 name: highway-experience
-description: "Holds highway identity, the experience standard, and the storage contract. Loaded by every other highway skill; not for a request unrelated to highway."
-usage: "Loaded by every other highway skill. Invoke as `/highway-experience` directly for a summary of highway."
-compatibility: all
+description: "Holds highway identity, the experience standard, and the storage contract. Use when another highway skill loads it as its first step, or when the person asks what highway is. Not for a request unrelated to highway."
+license: Apache-2.0
 metadata:
-  version: 1.0.0
+  version: 1.1.0
+  usage: "Loaded by every other highway skill. Run highway-experience directly for a summary of highway."
 ---
 
 # highway-experience
@@ -16,7 +16,7 @@ Gives every Highway skill one shared source for Highway's identity, the Experien
 ## When to use
 
 - Another Highway skill activates it as the first step of its Procedure.
-- The person invokes `/highway-experience` to learn what Highway is.
+- The person invokes `highway-experience` to learn what Highway is.
 
 ## When not to use
 
@@ -32,7 +32,7 @@ Gives every Highway skill one shared source for Highway's identity, the Experien
 ## Outputs
 
 - When activated by a skill: nothing of its own. The activating skill's output follows these references.
-- When invoked directly: a summary of what Highway is, in at most five sentences, ending with `/highway-help`.
+- When invoked directly: a summary of what Highway is, in at most five sentences, ending with `highway-help`.
 
 ## Procedure
 
@@ -56,7 +56,7 @@ Show nothing of its own. Return to the activating skill.
 
 Read `references/highway-identity.md` and `references/experience-standard.md`.
 
-Summarize what Highway is and why it exists, in at most five sentences. End with `/highway-help` as the next action.
+Summarize what Highway is and why it exists, in at most five sentences. End with `highway-help` as the next action.
 
 Start no workflow. Write no file.
 
@@ -65,7 +65,7 @@ Start no workflow. Write no file.
 - Every other Highway skill activates this skill before its first output.
 - The activating skill's output follows the Experience Standard.
 - Every repository read and write goes through the storage contract's operations.
-- A direct invocation shows at most five sentences, names `/highway-help`, and writes no file.
+- A direct invocation shows at most five sentences, names `highway-help`, and writes no file.
 
 ## Error Handling
 

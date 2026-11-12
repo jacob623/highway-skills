@@ -16,8 +16,8 @@ source "$SCRIPT_DIR/lib/paths.sh"
 source "$HW_LIB/frontmatter.sh"
 # shellcheck source=lib/frontmatter-contract.sh
 source "$HW_LIB/frontmatter-contract.sh"
-# shellcheck source=lib/frontmatter-lexicon.sh
-source "$HW_LIB/frontmatter-lexicon.sh"
+# shellcheck source=lib/yaml-frontmatter.sh
+source "$HW_LIB/yaml-frontmatter.sh"
 # shellcheck source=lib/schema-validate.sh
 source "$HW_LIB/schema-validate.sh"
 # shellcheck source=lib/constitution.sh
@@ -26,8 +26,6 @@ source "$HW_LIB/constitution.sh"
 source "$HW_LIB/body-scan.sh"
 # shellcheck source=lib/rule-checks.sh
 source "$HW_LIB/rule-checks.sh"
-# shellcheck source=lib/dependency-check.sh
-source "$HW_LIB/dependency-check.sh"
 # shellcheck source=lib/validation-cache.sh
 source "$HW_LIB/validation-cache.sh"
 # shellcheck source=lib/library-schema.sh
@@ -115,47 +113,18 @@ collect() {
 # --- Schema-level checks (identity and frontmatter shape) ---------------------------------
 
 collect "$(sv_validate_id "$id")"
-collect "$(sv_validate_name "$(fm_get "$skill_file" name || true)" "$id")"
 
-description_value="$(fm_get "$skill_file" description || true)"
-description_errors="$(sv_validate_description "$description_value" "$HW_ROOT")"
-collect "$description_errors"
-# The lexicon check is skipped once the length/presence check for a field has already failed, so
-# a single nonsense field (e.g. an over-length placeholder) is reported once, not once per
-# concern (mirrors the existing presence_failed skip-pattern for body-section rule checks below).
-if [[ -z "$description_errors" ]]; then
-	collect "$(fl_check_field "$HW_ROOT" "description" "$description_value")"
-fi
-
-usage_value="$(fm_get "$skill_file" usage || true)"
-usage_errors="$(sv_validate_usage "$usage_value" "$HW_ROOT")"
-collect "$usage_errors"
-if [[ -z "$usage_errors" ]]; then
-	collect "$(fl_check_field "$HW_ROOT" "usage" "$usage_value")"
-fi
-
-collect "$(sv_validate_compatibility "$(fm_get "$skill_file" compatibility || true)" "$HW_ROOT")"
-collect "$(sv_validate_required_keys "$skill_file" "$HW_ROOT")"
-collect "$(sv_validate_closed_key_set "$skill_file" "$HW_ROOT")"
-collect "$(sv_validate_duplicate_keys "$skill_file")"
-
-agent_exceptions="$(fm_get_agent_exceptions "$skill_file")"
-if [[ -n "$agent_exceptions" ]]; then
-	collect "$(printf '%s\n' "$agent_exceptions" | sv_validate_agent_exceptions "$HW_ROOT")"
-	while IFS='|' read -r _agent deviation; do
-		[[ -z "$_agent" && -z "$deviation" ]] && continue
-		collect "$(fl_check_field "$HW_ROOT" "metadata.agent_exceptions[].deviation" "$deviation")"
-	done <<< "$agent_exceptions"
-fi
-
-# --- Dependency checks (metadata.dependencies -> the skill's own folder) ------------------
-
-dependency_findings="$(dc_validate_dependencies "$skill_file")"
-if [[ -n "$dependency_findings" ]]; then
-	while IFS= read -r finding; do
-		[[ -z "$finding" ]] && continue
-		collect "ERROR: [DEPENDENCY] $finding"
-	done <<< "$dependency_findings"
+# Frontmatter is judged as a client's strict YAML parser reads it. A block that does not parse is
+# reported once, and the field checks that would only repeat it are skipped.
+parsed="$(yf_parse "$skill_file")"
+if [[ $? -ne 0 ]]; then
+	collect "$parsed"
+else
+	collect "$(sv_validate_name "$(yf_value "$parsed" top name)" "$id")"
+	collect "$(sv_validate_closed_key_set "$parsed" "$HW_ROOT")"
+	collect "$(sv_validate_string_types "$parsed")"
+	collect "$(sv_validate_fields "$parsed" "$HW_ROOT")"
+	collect "$(sv_validate_agreement "$parsed" "$skill_file")"
 fi
 
 # Required-section findings are tagged with the rule that owns each section.

@@ -20,12 +20,12 @@
 # that somehow resolves inside the tree is refused rather than used.
 #
 # The cache also refuses to operate when any document override is set. An override repoints
-# validation at a different constitution, lexicon, or manifest, so a key derived from the
+# validation at a different constitution, experience standard, or manifest, so a key derived from the
 # repository's own documents would name a verdict that was never reached under them.
 vc_dir() {
 	local repo_root="$1" base dir
 	if [[ -n "${CONSTITUTION_FILE:-}" || -n "${EXPERIENCE_FILE:-}" \
-		|| -n "${FRONTMATTER_CONTRACT_FILE:-}" || -n "${FRONTMATTER_LEXICON_FILE:-}" ]]; then
+		|| -n "${FRONTMATTER_CONTRACT_FILE:-}" ]]; then
 		return 0
 	fi
 	base="${TMPDIR:-/tmp}"
@@ -75,9 +75,8 @@ VC_ENVIRONMENT_HASH=""
 # change can turn a previously valid skill invalid.
 #
 # Every file under these directories is hashed regardless of extension. An earlier draft filtered
-# to `*.sh` and `*.md` and silently excluded two real inputs -- the frontmatter lexicon, which is a
-# `.txt`, and the contract manifest, which is a dotfile -- either of which could have changed a
-# verdict without changing the key.
+# to `*.sh` and `*.md` and silently excluded a real input -- the contract manifest, which is a
+# dotfile -- which could have changed a verdict without changing the key.
 vc_environment_hash() {
 	local root="$1"
 	if [[ -n "$VC_ENVIRONMENT_HASH" ]]; then
@@ -89,7 +88,6 @@ vc_environment_hash() {
 			printf '%s\n' "$(hw_at "$root" "$HW_FRAMEWORK")/validate-skill.sh"
 			printf '%s\n' "$(hw_at "$root" "$HW_FRAMEWORK")/.frontmatter-contract"
 			hw_at "$root" "$(hw_doc constitution)"
-			hw_at "$root" "$(hw_doc frontmatter-lexicon)"
 			hw_at "$root" "$(hw_doc experience-standard)"
 			find "$(hw_at "$root" "$HW_LIB")" -type f 2>/dev/null
 		} | sort | vc_hash_list | vc_hash_stdin

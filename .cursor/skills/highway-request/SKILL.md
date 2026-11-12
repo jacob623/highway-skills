@@ -1,10 +1,10 @@
 ---
 name: highway-request
-description: "Manages one business request and its accepted artifact."
-usage: "Invoke as /highway-request with the business change."
-compatibility: all
+description: "Manages one business request and its accepted artifact. Use when the person has a business problem, idea, or desired change to record as a request."
+license: Apache-2.0
 metadata:
-  version: 5.4.0
+  version: 5.5.0
+  usage: "Run highway-request with the business change."
 ---
 
 # highway-request
@@ -15,8 +15,8 @@ Collects one business request from the invocation.
 
 ## When to use
 
-- The person invokes `/highway-request` with a business problem, idea, or desired change.
-- The person invokes `/highway-request` and the description is still to be supplied.
+- The person invokes `highway-request` with a business problem, idea, or desired change.
+- The person invokes `highway-request` and the description is still to be supplied.
 
 ## When not to use
 
@@ -52,7 +52,7 @@ When any is absent, emit the message below exactly, stop, and write nothing.
 
 **Oops... we need to setup your repository.**
 
-Highway needs to gather your organizational preferences and set up your repository. Run /highway-setup to get started.
+Highway needs to gather your organizational preferences and set up your repository. Run highway-setup to get started.
 
 Emit only the active template. Follow this order: `intake` when the invocation has no description; otherwise `start`, then `identifier`, `title` when needed, `write`, and `close`. Follow the Highway Experience Standard for attribution and acceptance wording. Use accepted Profile, Objectives, Controls, and NFRs as grounding. Do not ask for facts those records already answer. Do not treat an example as the person's evidence.
 
@@ -251,7 +251,7 @@ The action is Desired Change. When it states a second action, keep the first and
 
 When one implementation matches, name it by title. Do not mention discovery. Do not state the day. Emit:
 
-Run `/highway-codify` for **[Implementation title]** to **[action]**.
+Run `highway-codify` for **[Implementation title]** to **[action]**.
 
 When two to five match, list them by title and short description. Do not use an id as the label. After the person picks one, emit the one-match line and say the others wait for another run.
 
@@ -259,7 +259,7 @@ When more than five match, list none. Say the person can give a title or a descr
 
 When no accepted implementation matches, emit:
 
-Run `/highway-discovery [ID]` to evaluate candidate solutions against your objectives, safeguards, and operational expectations.
+Run `highway-discovery [ID]` to evaluate candidate solutions against your objectives, safeguards, and operational expectations.
 
 Do not continue into codify in the same message. Do not rewrite the request.
 
@@ -277,7 +277,7 @@ Do not continue into codify in the same message. Do not rewrite the request.
 - That message does not mention identifiers, hex, sampling, or the catalog.
 - A secret or regulated personal value is not written.
 - A failed write leaves existing request and catalog bytes unchanged.
-- The closing message names the record and exactly one next step. One match names `/highway-codify` for that title and the one action, and does not state the day. No match names `/highway-discovery [ID]`.
+- The closing message names the record and exactly one next step. One match names `highway-codify` for that title and the one action, and does not state the day. No match names `highway-discovery [ID]`.
 - The skill creates no Discovery or ADR artifact.
 
 ## Error Handling
