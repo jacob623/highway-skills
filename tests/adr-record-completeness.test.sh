@@ -9,10 +9,8 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=paths.sh
 source "$SCRIPT_DIR/paths.sh"
 SKILLS="$HW_SKILLS"
-OUTPUT="$HW_OUTPUT_TEMPLATES"
-RECORD="$OUTPUT/adr-record.md"
+RECORD="$(hw_template adr-record)"
 ADR="$SKILLS/highway-adr/SKILL.md"
-ONBOARDING="$SKILLS/highway-onboarding/SKILL.md"
 ARCHITECTURE="$SKILLS/highway-architecture/SKILL.md"
 IMPLEMENTATION="$SKILLS/highway-implementation/SKILL.md"
 fail=0
@@ -83,13 +81,15 @@ for text in \
 	'Selection Source as `Accepted onboarding mapping`' \
 	'Head each alternative by its name' \
 	'Do not write an option id.' \
-	'set the ADR'"'"'s `Reference Architecture` field to its id' \
-	'does not name an implementation'; do
-	require "$ONBOARDING" "$text"
+	'Do not ask whether a decision replaces or runs beside another.' \
+	'Discovery ID `highway`'; do
+	require "$ADR" "$text"
 done
 
-require "$ARCHITECTURE" "Do not change the ADR, except its Reference Architecture field."
-require "$ARCHITECTURE" '.highway/library/templates/output/adr-record.md'
+require "$ARCHITECTURE" "Do not change the ADR or its catalog row, except its Reference Architecture field and its Architecture ID."
+require "$ARCHITECTURE" 'Set the ADR'"'"'s `Reference Architecture` field to this `RA` id, and that ADR'"'"'s Architecture ID in `adrs/adrs.md` to the same id'
+require "$ARCHITECTURE" 'does not name an implementation'
+reject "$ARCHITECTURE" 'adr-record.md'
 require "$ARCHITECTURE" '### name'
 require "$ARCHITECTURE" 'running `/highway-architecture [ADR id]` again will name it.'
 require "$ARCHITECTURE" 'Do not call the decision, architecture, and implementation chain complete.'

@@ -4,7 +4,7 @@ description: "Manages one reference implementation from one accepted reference a
 usage: "Invoke as /highway-implementation with one architecture id."
 compatibility: all
 metadata:
-  version: 7.11.0
+  version: 7.12.0
 ---
 
 # highway-implementation
@@ -19,6 +19,7 @@ Creates one proposed Reference Implementation from an accepted Reference Archite
 - The person invokes `/highway-implementation` without a Reference Architecture id.
 - `highway-codify-config` names an accepted implementation, new realized capabilities, and a return step.
 - `highway-codify` names an accepted implementation and a return step.
+- `highway-onboarding` hands off an accepted Reference Architecture id, a provider, and the capabilities it serves.
 
 ## When not to use
 
@@ -38,16 +39,16 @@ Do not report Status, Summary, Next Action, Blocking Reason, Missing, Complete, 
 - Accepted Profile, Objectives, Controls, and NFRs when present.
 - `clarifications/clarifications.md` when present, for `CLAR-[RA id]` only.
 - `architectures/architectures.md` and `implementations/implementations.md`.
-- `.highway/library/templates/output/implementation-record.md`.
+- `assets/implementation-record.md`.
 - `implementations/capabilities.md` and `library/coding-standards/codify-platforms.md`.
 - The highway-experience skill, activated first.
 - A project root containing `.highway/`.
 
 ## Outputs
 
-The complete structure is `.highway/library/templates/output/implementation-record.md`. `implementations/implementations.md`, `implementations/capabilities.md`, and `library/coding-standards/codify-platforms.md` keep the structure highway-setup seeded.
+The complete structure is `assets/implementation-record.md`. `implementations/implementations.md`, `implementations/capabilities.md`, and `library/coding-standards/codify-platforms.md` keep the structure highway-setup seeded.
 
-- One implementation record at `implementations/[ID].md` after the person accepts the proposed realization.
+- One implementation record at `implementations/[ID].md` after the person accepts the proposed realization, or when `highway-onboarding` hands off an accepted Reference Architecture id.
 - An updated `implementations/implementations.md` written with that record.
 - An updated `implementations/capabilities.md` written with that record.
 - One row in `library/coding-standards/codify-platforms.md`, with blank When to use and When not to use, when the accepted implementation can start automation.
@@ -67,11 +68,13 @@ When any is absent, emit the message below exactly, stop, and write nothing.
 
 Highway needs to gather your organizational preferences and set up your repository. Run /highway-setup to get started.
 
-Emit only the active template. Follow this order: `add capabilities` when `highway-codify-config` passes new realized capabilities; `delivery platforms`, with `delivery decline`, when `highway-codify` hands off an accepted implementation; `choose` when no architecture id is supplied; otherwise `start`, which follows `execution`, then `identifier`, `title` when needed, `write`, `platforms`, and `close`. The accepted Reference Architecture remains authoritative. A realization cannot redesign it or override the ADR. A missing Profile, Objective, Control, or NFR continues without invented evidence. A malformed one of those baselines stops the skill and writes nothing. Clarification is read-only. An open finding can inform a risk. It cannot block the proposal.
+Emit only the active template. Follow this order: `onboarding` when `highway-onboarding` hands off an accepted Reference Architecture id; `add capabilities` when `highway-codify-config` passes new realized capabilities; `delivery platforms`, with `delivery decline`, when `highway-codify` hands off an accepted implementation; `choose` when no architecture id is supplied; otherwise `start`, which follows `execution`, then `identifier`, `title` when needed, `write`, `platforms`, and `close`. The accepted Reference Architecture remains authoritative. A realization cannot redesign it or override the ADR. A missing Profile, Objective, Control, or NFR continues without invented evidence. A malformed one of those baselines stops the skill and writes nothing. Clarification is read-only. An open finding can inform a risk. It cannot block the proposal.
 
 One accepted architecture can have more than one current implementation. A current implementation is an accepted implementation-catalog row for that architecture. A removed row does not count and does not block a new one. Creating another leaves every existing implementation in place and does not change the decision or the architecture.
 
 ### Entry
+
+When `highway-onboarding` hands off an accepted `RA` id, a provider, and the capabilities it serves, go to `onboarding`.
 
 1. When the invocation names an accepted implementation, new realized capabilities, and a return step, go to `add capabilities`.
 2. When the invocation names an accepted implementation and a return step, and names no realized capabilities, go to `delivery platforms`.
@@ -97,6 +100,17 @@ Otherwise emit one numbered line per accepted architecture, starting at 1, in ar
 - A Reference Architecture id, a listed architecture title, or its number: follow Entry from case 4.
 - `unknown`: re-emit this list. Stay on `choose`.
 - `decline`: stop. Write nothing.
+
+### onboarding
+
+`highway-onboarding` hands off one accepted `RA` id, the provider, and the capabilities it serves. Write the implementation as accepted without asking the person, except for the question in step 4. Emit nothing else. This visit returns only to `highway-onboarding`. Do not go to a step another `highway-implementation` visit holds.
+
+1. Resolve the architecture as Entry does from case 5. When Entry would stop, return to `highway-onboarding` and say why. Do not show current implementations.
+2. Build the realization as `start` does, without emitting it. Do not follow `execution`. The technology choice is the provider. Follow `capability title` for each capability the provider serves. When the realization would contradict the architecture, write nothing. Return to `highway-onboarding` and say the implementation could not be written.
+3. Execution is `Deployed by: Needed`, `Managed by: Needed`, and `Language: Needed`.
+4. Derive the title and the id as `identifier` does. Ask only the `title` message, when `identifier` would go to `title`. Write nothing until the person gives a usable title. A `decline` writes nothing and returns to `highway-onboarding` without an implementation.
+5. When `identifier` reuses the existing record, go to step 6. Otherwise write as `write` does. A failed write leaves every existing implementation and capability-catalog byte unchanged. Return to `highway-onboarding` and say the implementation could not be written.
+6. Follow `platforms`. Return the `RI` id to `highway-onboarding`, and whether `platforms` included the platform.
 
 ### Classify
 
@@ -247,7 +261,7 @@ Do not write until the id is free or the existing record is reused.
 
 Write `implementations/[ID].md`, `implementations/implementations.md`, and `implementations/capabilities.md` together. Write none of them until all are valid. A failed write leaves every existing implementation and capability-catalog byte unchanged. Say what failed in terms the person can act on. Stay on `write`.
 
-The record follows `.highway/library/templates/output/implementation-record.md`.
+The record follows `assets/implementation-record.md`.
 
 - `id` is the derived `RI` id.
 - `architecture` is the Reference Architecture id.
@@ -303,9 +317,9 @@ On success, go to `platforms`.
 
 ### platforms
 
-Read the accepted implementation's Technology Choice, Runtime Components, and Realized By. It can start automation when they describe a pipeline, an orchestrator, a self-service platform, a desired-state or GitOps tool, or an agent that starts the work. A store, a newsletter, a records product, or a backup cannot. When it cannot, write nothing, say nothing, and go to `close`.
+When `onboarding` follows this step, return to `highway-onboarding` instead of going to `close`. Do not emit the included line or ask the question.
 
-When `highway-onboarding` follows this step, return to `highway-onboarding` after the write. Do not emit the included line or ask the question.
+Read the accepted implementation's Technology Choice, Runtime Components, and Realized By. It can start automation when they describe a pipeline, an orchestrator, a self-service platform, a desired-state or GitOps tool, or an agent that starts the work. A store, a newsletter, a records product, or a backup cannot. When it cannot, write nothing, say nothing, and go to `close`.
 
 Otherwise edit `library/coding-standards/codify-platforms.md` in its existing structure. Every row comes from an accepted implementation. There is one row per Implementation ID. Rows stay in the order they were added. Platform is the implementation title. Implementation ID is its `RI` id. Kind is blank. When to use and When not to use are blank. Keep one row for this Implementation ID: when present, replace its Platform and keep its Kind, When to use, and When not to use; otherwise append it. Leave every other row unchanged. A failed write leaves the existing file unchanged. Say what failed, then go to `close`.
 
@@ -420,11 +434,13 @@ Leaving the preferred delivery platforms for [Title] unset. highway-codify needs
 - A failed write leaves existing implementation, implementation-catalog, and capability-catalog bytes unchanged.
 - The skill does not change the Reference Architecture, the decision statement, the rationale, the selected option, or the decision status.
 - The skill does not write an implementation id onto the ADR.
-- An accepted implementation that can start automation, such as an agent that starts the work, gets one row in `library/coding-standards/codify-platforms.md` with blank When to use and When not to use. The person is told it is included and asked whether to configure how highway-codify uses it. A yes emits "Let's configure how highway-codify uses [Platform]." and follows `highway-codify-config` for that platform with the return step `close`. A no goes to `close`. Under `highway-onboarding`, the step returns to onboarding after the write.
+- An accepted implementation that can start automation, such as an agent that starts the work, gets one row in `library/coding-standards/codify-platforms.md` with blank When to use and When not to use. The person is told it is included and asked whether to configure how highway-codify uses it. A yes emits "Let's configure how highway-codify uses [Platform]." and follows `highway-codify-config` for that platform with the return step `close`. A no goes to `close`. Under `onboarding`, the step returns to highway-onboarding after the write, without the included line or the question.
 - A store, a newsletter, a records product, or a backup gets no row and no message. Opening, listing, or declining writes no row.
 - An invocation from `highway-codify-config` naming an accepted implementation, new realized capabilities, and a return step goes to `add capabilities`. It appends them to Realized Capabilities and to this Parent's capability rows, changes no other record byte, asks no question, and goes to the held step. A passed title that breaks the capability title rule is left out and named.
 - An invocation from `highway-codify` naming an accepted implementation and a return step goes to `delivery platforms`. It opens with "Here is the proposed Deployed by, Managed by and Language for [Product Title]", then shows Product Title, Architecture Reference, Deployed by, Managed by, and Language, each field followed by its Why it matters line. Accept stays on the view while a field is Needed. Acceptance rewrites only the three Execution lines, emits "The preferred delivery platforms for [Title] are set. Picking up your highway-codify run.", and goes to the held step.
 - The delivery platforms view holds the record's fields, then the `execution` value for each unset one: Deployed by or Managed by that is `Needed`, empty, or has no row, and Language that is `Needed`, empty, or has no row. A stored `None` is shown as stored. A value the person named in the visit replaces it. This implementation's row is never a candidate.
+- A handoff from `highway-onboarding` writes an accepted implementation without a proposal and returns its `RI` id to highway-onboarding, never to a step another visit holds. It asks only the title message, when the title cannot be used. A `decline` writes nothing.
+- An onboarded implementation stores Deployed by, Managed by, and Language as `Needed`.
 - The `start` proposal and the delivery platforms view follow Deployed by, Managed by, and Language each with its Why it matters line from `why it matters`.
 - A decline writes nothing, emits "Leaving the preferred delivery platforms for [Title] unset. highway-codify needs these details before it can make proposals for [Title].", and asks whether to return. A yes shows the view again. A no goes to the held step.
 

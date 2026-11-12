@@ -5,7 +5,7 @@ description: "Reference fixture for explicit Profile Repository Context particip
 
 ## Inputs
 
-- `.highway/library/knowledge/profile.md` as declared Profile Repository Context.
+- `library/knowledge/profile.md` as declared Profile Repository Context.
 - workflow-specific request, which remains authoritative for this execution.
 
 ## Behavior

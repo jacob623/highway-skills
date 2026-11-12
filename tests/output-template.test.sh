@@ -254,7 +254,7 @@ require_text "$NFR_SKILL" "assets/nfr-catalog.md"
 require_text "$NEW_SKILL" "assets/request-record.md"
 require_text "$NEW_SKILL" "Edit \`requests/requests.md\` in its existing structure."
 require_text "$DISCOVERY_SKILL" "Edit \`discoveries/discoveries.md\` in its existing structure."
-require_text "$ADR_SKILL" ".highway/library/templates/output/adr-record.md"
+require_text "$ADR_SKILL" "assets/adr-record.md"
 require_text "$ADR_SKILL" "Edit \`adrs/adrs.md\` in its existing structure."
 require_text "$CONTROL_SKILL" "assets/control-catalog.md"
 # Superseded: readiness, sequential allocation, and the previous request/control/discovery transcript locks.
@@ -290,18 +290,23 @@ for owner_template in "highway-nfrs|$NFR_TEMPLATE" "highway-controls|$CONTROL_TE
 	fi
 done
 
-# Only the skills that share a record template still cite the shared template folder.
+# No skill cites the shared template folder. The record owners cite their own assets, and
+# highway-onboarding, which hands its records to them, cites no record template.
 citing_count="$(grep -RIl 'library/templates/output/' "$HW_SKILLS" --include='SKILL.md' | wc -l | tr -d ' ')"
-if [[ "$citing_count" != "4" ]]; then
-	echo "FAIL: expected 4 output-template citing skills, found $citing_count"
+if [[ "$citing_count" != "0" ]]; then
+	echo "FAIL: expected no output-template citing skills, found $citing_count"
 	fail=1
 fi
-for citing_skill in "$ADR_SKILL" "$ARCHITECTURE_SKILL" "$IMPLEMENTATION_SKILL" "$ONBOARDING_SKILL"; do
-	if ! grep -Fq "library/templates/output/" "$citing_skill"; then
-		echo "FAIL: dependent review omitted citing skill $citing_skill"
+for pair in "$ADR_SKILL adr-record" "$ARCHITECTURE_SKILL architecture-record" "$IMPLEMENTATION_SKILL implementation-record"; do
+	if ! grep -Fq "assets/${pair##* }.md" "${pair% *}"; then
+		echo "FAIL: ${pair% *} does not cite assets/${pair##* }.md"
 		fail=1
 	fi
 done
+if grep -Eq '(adr|architecture|implementation)-record[.]md' "$ONBOARDING_SKILL"; then
+	echo "FAIL: highway-onboarding still cites a record template"
+	fail=1
+fi
 
 # Disposable probes independently reject missing templates, incomplete catalog metadata, missing
 # citations, and duplicated structural declarations without changing canonical files.

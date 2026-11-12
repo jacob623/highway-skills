@@ -9,11 +9,10 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=paths.sh
 source "$SCRIPT_DIR/paths.sh"
 SKILLS="$HW_SKILLS"
-OUTPUT="$HW_OUTPUT_TEMPLATES"
 ARCH="$SKILLS/highway-architecture/SKILL.md"
 IMPL="$SKILLS/highway-implementation/SKILL.md"
-ARCH_RECORD="$OUTPUT/architecture-record.md"
-IMPL_RECORD="$OUTPUT/implementation-record.md"
+ARCH_RECORD="$(hw_template architecture-record)"
+IMPL_RECORD="$(hw_template implementation-record)"
 fail=0
 
 require() {

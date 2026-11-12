@@ -67,7 +67,7 @@ if ((words > 250)); then
 	fail=1
 fi
 
-require_in "$IMPL" '### platforms' 'When `highway-onboarding` follows this step, return to `highway-onboarding` after the write. Do not emit the included line or ask the question.'
+require_in "$IMPL" '### platforms' 'When `onboarding` follows this step, return to `highway-onboarding` instead of going to `close`. Do not emit the included line or ask the question.'
 require_in "$IMPL" '### platforms' "- \`accept\`, or a yes: emit: Let's configure how highway-codify uses [Platform]. Follow \`highway-codify-config\` for [Platform], with the return step \`close\` in \`highway-implementation\`."
 require_in "$IMPL" '### platforms' '- `decline`, or a no: go to `close`.'
 require_in "$IMPL" '### platforms' '- `unknown`: go to `close`.'

@@ -37,8 +37,6 @@ hw_paths_init() {
 	HW_FIXTURES="$HW_TESTS/fixtures"
 	HW_HIGHWAY="$HW_ROOT/.highway"
 	HW_CATALOG="$HW_HIGHWAY/catalog"
-	HW_LIBRARY="$HW_HIGHWAY/library"
-	HW_OUTPUT_TEMPLATES="$HW_LIBRARY/templates/output"
 	HW_HARNESS="$HW_ROOT/harness"
 
 	HW_AGENT_COPILOT="$HW_ROOT/.github/skills"
@@ -51,9 +49,9 @@ hw_paths_init() {
 hw_template() {
 	case "${1:-}" in
 	adr-catalog) printf '%s\n' "$HW_SETUP/assets/adr-catalog.md" ;;
-	adr-record) printf '%s\n' "$HW_OUTPUT_TEMPLATES/adr-record.md" ;;
+	adr-record) printf '%s\n' "$HW_SKILLS/highway-adr/assets/adr-record.md" ;;
 	architecture-catalog) printf '%s\n' "$HW_SETUP/assets/architecture-catalog.md" ;;
-	architecture-record) printf '%s\n' "$HW_OUTPUT_TEMPLATES/architecture-record.md" ;;
+	architecture-record) printf '%s\n' "$HW_SKILLS/highway-architecture/assets/architecture-record.md" ;;
 	assessment-findings) printf '%s\n' "$HW_SETUP/assets/assessment-findings.md" ;;
 	capability-catalog) printf '%s\n' "$HW_SETUP/assets/capability-catalog.md" ;;
 	codify-catalog) printf '%s\n' "$HW_SETUP/assets/codify-catalog.md" ;;
@@ -70,7 +68,7 @@ hw_template() {
 	discovery-catalog) printf '%s\n' "$HW_SETUP/assets/discovery-catalog.md" ;;
 	discovery-record) printf '%s\n' "$HW_SKILLS/highway-discovery/assets/discovery-record.md" ;;
 	implementation-catalog) printf '%s\n' "$HW_SETUP/assets/implementation-catalog.md" ;;
-	implementation-record) printf '%s\n' "$HW_OUTPUT_TEMPLATES/implementation-record.md" ;;
+	implementation-record) printf '%s\n' "$HW_SKILLS/highway-implementation/assets/implementation-record.md" ;;
 	nfr-catalog) printf '%s\n' "$HW_SKILLS/highway-nfrs/assets/nfr-catalog.md" ;;
 	nfr-record) printf '%s\n' "$HW_SKILLS/highway-nfrs/assets/nfr-record.md" ;;
 	objective-catalog) printf '%s\n' "$HW_SKILLS/highway-objectives/assets/objective-catalog.md" ;;

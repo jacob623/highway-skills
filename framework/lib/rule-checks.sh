@@ -328,7 +328,7 @@ rc_check_P8_7() {
 	return $found
 }
 
-# --- P9.1: file-emitting skills cite a complete shared output template ---------------------
+# --- P9.1: file-emitting skills cite a complete output template in their assets/ -----------------
 # A skill with no declared file path is not subject to this rule. A cited file under the skill's own
 # assets/ counts as a template, and Outputs naming only files highway-setup seeds needs none: the
 # seeded skeleton is the shape. The semantic comparison of a cited template with a produced artifact
@@ -344,10 +344,6 @@ rc_check_P9_1() {
 
 	if [[ -z "$outputs_without_links" || "$outputs_without_links" != *\.md* ]]; then
 		return 2
-	fi
-
-	if printf '%s\n' "$outputs_without_links" | grep -Eq '\.highway/library/templates/output/[^[:space:]`]+\.md'; then
-		return 0
 	fi
 
 	local cited dir
@@ -371,7 +367,7 @@ $(printf '%s\n' "$outputs_without_links" | grep -oE '[A-Za-z0-9_./<>-]+\.md')
 EOF
 	((only_seeded)) && return 0
 
-	echo "Outputs section emits a file but cites no complete template under .highway/library/templates/output/ or the skill's assets/, and names a file highway-setup does not seed"
+	echo "Outputs section emits a file but cites no complete template in the skill's assets/, and names a file highway-setup does not seed"
 	return 1
 }
 

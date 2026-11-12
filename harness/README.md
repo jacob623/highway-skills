@@ -299,8 +299,7 @@ Targeted runs map each changed path to scenarios with `harness/bin/path-map.sh`:
 
 | Changed path | Selects |
 |---|---|
-| `skills/<skill>/...` | Every scenario of that skill, including scenarios that pass through it |
-| A library file a skill names | Every scenario of each skill whose `SKILL.md` contains the full path |
+| `skills/<skill>/...`, including its `assets/` record templates | Every scenario of that skill, including scenarios that pass through it |
 | A shared file listed as `smoke` in `harness/selection/shared.txt`, including every file under `skills/highway-experience/` | The smoke set |
 | `harness/src/`, `harness/package*.json`, `harness/harness.config.json` | The smoke set |
 | A scenario file | That scenario |
@@ -309,7 +308,7 @@ Targeted runs map each changed path to scenarios with `harness/bin/path-map.sh`:
 | Generated agent copies, tests, specs, the catalog, `framework/`, `tests/`, and other files | Nothing |
 
 For `--changed-since <ref>`, changed paths come from `git diff --name-status <ref>` plus untracked
-files. A deleted skill file is resolved against the skill list at `<ref>`. An empty selection
+files. A deleted file maps by its path, as a present one does. An empty selection
 prints why and exits 0.
 
 The path map reads every location from the framework's paths helper, `framework/lib/paths.sh`,
@@ -330,7 +329,7 @@ beside the old tag. Retag it by replacing the old hash and text with the new one
 | Check | Fails when | How to fix |
 |---|---|---|
 | `harness-placement.test.sh` | `harness/` is not excluded in `framework/.distribution-manifest`, run output, `node_modules`, or `.env` is not gitignored, or the development constitution lacks the harness toolchain | Restore the manifest line, the `.gitignore` entries, or the constitution paragraph |
-| `harness-path-map.test.sh` | A shipped library or highway-experience file maps to no skill and is not in `harness/selection/shared.txt`, or a mapping rule changed | Name the file in the skill that reads it, or add it to `shared.txt` as `smoke` or `none` |
+| `harness-path-map.test.sh` | A shipped skill asset or highway-experience file maps to no skill and is not in `harness/selection/shared.txt`, or a mapping rule changed | Move the file into the skill that reads it, or add it to `shared.txt` as `smoke` or `none` |
 | `harness-fixtures.test.sh` | A fixture file lacks a part of its current template, or an overlay names no stage | Promote a fresh chain run, or fix the fixture by hand |
 | `harness-coverage.test.sh` | A highway-codify bullet has no scenario tag, invariant, or waiver | Retag the reworded bullet, add a scenario, or add a treatment |
 | `harness-scenarios.test.sh` | A scenario breaks the format, names an unknown skill, fixture, or step, expects a file outside its `writes:`, or a skill has no or two smoke scenarios, or a chain position is missing or repeated | Fix the line named in the message |

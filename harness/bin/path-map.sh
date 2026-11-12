@@ -1,10 +1,9 @@
 #!/usr/bin/env bash
 # Path map: what a changed path selects.
 #
-# Usage: path-map.sh [--skills-dir <dir>] <path>...
+# Usage: path-map.sh <path>...
 #        path-map.sh --location <skills|framework>
-#   Paths are repository-relative. --skills-dir reads SKILL.md files from another tree, such as the
-#   target branch's skills for a deleted path.
+#   Paths are repository-relative.
 #   --location prints the repository-relative skills or framework location and exits.
 #
 # Prints `<path>\t<kind>\t<target>\t<reason>` for each selection a path makes:
@@ -13,8 +12,6 @@
 #   scenario <id>    that scenario
 #   fixture <name>   every scenario starting from that fixture (a stage includes its overlays)
 #   none -           nothing; the reason says why
-#   unmapped -       a shipped library file no skill names and harness/selection/shared.txt does
-#                    not list (harness-path-map.test.sh fails on it)
 #
 # Bash 3.2 and the Declared Toolchain only. This is the single implementation; the runner calls it.
 set -eu
@@ -22,14 +19,12 @@ set -eu
 HERE="$(cd "$(dirname "$0")" && pwd)"
 # shellcheck source=lib/paths.sh
 . "$HERE/lib/paths.sh"
-SKILLS_DIR="$HW_SKILLS"
 SHARED="$HW_HARNESS/selection/shared.txt"
 # shellcheck source=lib/scenario.sh
 . "$HW_HARNESS/bin/lib/scenario.sh"
 
 REL_SKILLS="$(hw_rel "$HW_SKILLS")"
 REL_HARNESS="$(hw_rel "$HW_HARNESS")"
-REL_LIBRARY="$(hw_rel "$HW_LIBRARY")"
 REL_CATALOG="$(hw_rel "$HW_CATALOG")"
 REL_FRAMEWORK="$(hw_rel "$HW_FRAMEWORK")"
 REL_TESTS="$(hw_rel "$HW_TESTS")"
@@ -50,11 +45,6 @@ if [ "${1:-}" = "--location" ]; then
 	exit 0
 fi
 
-if [ "${1:-}" = "--skills-dir" ]; then
-	SKILLS_DIR="$2"
-	shift 2
-fi
-
 emit() {
 	printf '%s\t%s\t%s\t%s\n' "$1" "$2" "$3" "$4"
 }
@@ -73,16 +63,6 @@ shared_kind() {
 			return 0
 		fi
 	done <"$SHARED"
-}
-
-# skills_naming <repo-relative path>: each skill whose SKILL.md names the path.
-skills_naming() {
-	for f in "$SKILLS_DIR"/*/SKILL.md; do
-		[ -f "$f" ] || continue
-		if grep -qF -- "$1" "$f"; then
-			basename "$(dirname "$f")"
-		fi
-	done
 }
 
 for path in "$@"; do
@@ -126,16 +106,6 @@ for path in "$@"; do
 	"$REL_SKILLS"/*/*)
 		rest="${path#"$REL_SKILLS"/}"
 		emit "$path" skill "${rest%%/*}" "$path is part of ${rest%%/*}"
-		;;
-	"$REL_LIBRARY"/*)
-		found=0
-		for skill in $(skills_naming "$path"); do
-			emit "$path" skill "$skill" "$skill names $path"
-			found=1
-		done
-		if [ "$found" -eq 0 ]; then
-			emit "$path" unmapped - "no skill names $path and harness/selection/shared.txt does not list it"
-		fi
 		;;
 	"${REL_CLAUDE%%/*}"/* | "${REL_CURSOR%%/*}"/* | "${REL_COPILOT%%/*}"/* | "${REL_CODEX%%/*}"/*)
 		emit "$path" none - "generated agent copy; its source selects scenarios"

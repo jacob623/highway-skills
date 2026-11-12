@@ -18,7 +18,6 @@ const scenarios = [
 const fakeDeps = (changed: { present: string[]; deleted: string[] }): SelectDeps => ({
   mapper: runPathMap,
   changed: () => changed,
-  skillsAt: () => "/nonexistent",
 });
 
 test("a skill's template selects every scenario of that skill, including pass-through scenarios", () => {
@@ -28,7 +27,7 @@ test("a skill's template selects every scenario of that skill, including pass-th
 });
 
 test("--skills and --paths combine as a union and keep both reasons", () => {
-  const r = selectTargeted(scenarios, { paths: [".highway/library/templates/output/adr-record.md"], skills: ["highway-codify"] });
+  const r = selectTargeted(scenarios, { paths: ["skills/highway-adr/assets/adr-record.md"], skills: ["highway-codify"] });
   const ids = r.selection.map((s) => s.scenario);
   assert.ok(ids.includes("adr-smoke"));
   assert.ok(ids.includes("codify-plan-review"));

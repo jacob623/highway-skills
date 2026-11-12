@@ -15,7 +15,7 @@ source "$SCRIPT_DIR/paths.sh"
 VALIDATE="$HW_FRAMEWORK/validate-skill.sh"
 FIXTURES="$HW_FIXTURES"
 
-TARGET_REL="library/knowledge/dep-check-target-$$.md"
+TARGET_REL="dep-check-target-$$.md"
 TARGET_FILE="$HW_HIGHWAY/$TARGET_REL"
 TMP_SKILLS_DIR="$(mktemp -d)"
 
@@ -27,7 +27,6 @@ cleanup() {
 }
 trap cleanup EXIT
 
-mkdir -p "$(dirname "$TARGET_FILE")"
 cat >"$TARGET_FILE" <<-'EOF'
 	---
 	name: Dependency Target Fixture

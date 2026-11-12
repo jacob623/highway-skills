@@ -4,7 +4,7 @@ description: "Manages one architecture decision for one discovery."
 usage: "Invoke as /highway-adr with one discovery id."
 compatibility: all
 metadata:
-  version: 6.2.0
+  version: 6.3.0
 ---
 
 # highway-adr
@@ -18,6 +18,7 @@ Records one accepted architecture decision for a Discovery after the person sele
 - The person invokes `/highway-adr` with one Discovery id and one option id.
 - The person invokes `/highway-adr` with one Discovery id.
 - The person invokes `/highway-adr` without a Discovery id or an option id.
+- `highway-onboarding` hands off a provider, the capabilities it serves, and the decision to adopt it.
 
 ## When not to use
 
@@ -32,22 +33,22 @@ Do not report Status, Summary, Next Action, Blocking Reason, Missing, Complete, 
 
 - One Discovery id that matches one row in `discoveries/discoveries.md`, when the person supplies one.
 - One option id contained in that Discovery, when the person supplies one.
+- A provider, the capabilities it serves, the decision, the alternatives, the rationale, and the limitations, when `highway-onboarding` hands them off.
 - The Discovery record at `discoveries/[ID].md`.
 - `clarifications/clarifications.md` when present, for `CLAR-[REQ id]` and `CLAR-[DISC id]` only.
 - Accepted Profile, Objectives, Controls, and NFRs when present.
 - `discoveries/discoveries.md` and `adrs/adrs.md`.
 - `architectures/architectures.md`, `implementations/implementations.md`, and the accepted architecture and implementation records they name.
 - `code/code.md` and the accepted `code/<folder>/.highway/features/<number>-<action>/codify.md` records it names, when closing a span.
-- `.highway/library/templates/output/adr-record.md`.
-- `.highway/library/templates/output/architecture-record.md` when this decision reuses or replaces an architecture.
+- `assets/adr-record.md`.
 - The highway-experience skill, activated first.
 - A project root containing `.highway/`.
 
 ## Outputs
 
-The complete structure is `.highway/library/templates/output/adr-record.md`. `adrs/adrs.md` and `architectures/architectures.md` keep the structure highway-setup seeded.
+The complete structure is `assets/adr-record.md`. `adrs/adrs.md` and `architectures/architectures.md` keep the structure highway-setup seeded.
 
-- One ADR at `adrs/[ID].md` after the person accepts the proposed decision.
+- One ADR at `adrs/[ID].md` after the person accepts the proposed decision, or when `highway-onboarding` hands off a provider.
 - An updated `adrs/adrs.md` written with that record.
 - A closing message that names the ADR and exactly one next step.
 - The architecture record's current-decision list and the architecture catalog, updated in the same write when this decision reuses or replaces an architecture, or runs beside each architecture in a span.
@@ -66,13 +67,15 @@ Highway needs to gather your organizational preferences and set up your reposito
 
 User-visible interaction follows the Highway Experience Standard. Repository ownership stays with the person.
 
-Emit only the active template. Follow this order: `choose-discovery` when no Discovery id is supplied; `choose-option` when no option is supplied; otherwise `start`, or `span` when it applies, then `identifier`, `title` when needed, `write`, and `close`. Discovery owns the options, scores, recommendation, and matches. Copy those values. Do not change them. The person owns the selection. Do not select an option from the recommendation, a score, or alphabetical order.
+Emit only the active template. Follow this order: `onboarding` when `highway-onboarding` hands off a provider; `choose-discovery` when no Discovery id is supplied; `choose-option` when no option is supplied; otherwise `start`, or `span` when it applies, then `identifier`, `title` when needed, `write`, and `close`. Discovery owns the options, scores, recommendation, and matches. Copy those values. Do not change them. The person owns the selection. Do not select an option from the recommendation, a score, or alphabetical order.
 
 Read evidence in this order: Discovery, Clarification for that Discovery, the Request, Clarification for that Request, Profile, Objectives, Controls, NFRs. A missing Clarification continues without it. An open finding can inform a risk. It cannot select or reject an option. Do not change Clarification.
 
-One Discovery has one ADR. When `adrs/adrs.md` already has an ADR for that Discovery id, show that decision and write nothing.
+One Discovery has one ADR. The onboarding Discovery ID `highway` is not a Discovery and is exempt. When `adrs/adrs.md` already has an ADR for that Discovery id, show that decision and write nothing.
 
 ### Entry
+
+When `highway-onboarding` hands off a provider, go to `onboarding`.
 
 1. Read the invocation for one Discovery id and one option id.
 2. When neither is present, go to `choose-discovery`.
@@ -96,6 +99,28 @@ Otherwise emit one numbered line per waiting Discovery, starting at 1, in Discov
 - A Discovery id, a listed Discovery title, or its number: follow Entry from case 3.
 - `unknown`: re-emit this list. Stay on `choose-discovery`.
 - `decline`: stop. Write nothing.
+
+### onboarding
+
+`highway-onboarding` hands off one provider, the capabilities it serves, the decision to adopt it for them, each alternative with why it is weaker for this organization, the rationale grounded in accepted Profile, Objectives, Controls, and NFRs, and the limitations, or `None`. Write the ADR as accepted without asking the person. Emit nothing. Read no Discovery, Request, or Clarification.
+
+1. The ADR title is the decision sentence. Derive the id as `identifier` does.
+2. When the same title already has that id, return that id to `highway-onboarding`. Write nothing.
+3. When the id is taken for a different title, add the provider name to the title and derive the id again. Do not ask.
+4. Write `adrs/[ID].md` and `adrs/adrs.md` together, as `write` does, with the values below in place of the Discovery values. Do not go to `close`.
+5. On success, return the ADR id to `highway-onboarding`. A failed write leaves every existing ADR byte unchanged. Return to `highway-onboarding` and say the ADR could not be written.
+
+- `request` is `onboarding`. `discovery` is `highway`. `status` is `accepted`. `supersedes` is `None`. `superseded_by` is `None`.
+- The record uses every section a Discovery-backed ADR uses.
+- Discovery, Request, Recommendation, Recommendation Rationale, Comparison Matrix, Reference Architecture Matches, and Discovery Confidence are `None`. Omit Recommendation Override.
+- `## Context` states the problem and the forces in prose, from the capabilities this provider serves and the accepted evidence.
+- `## Decision` records Selected Option as the provider name, Selection Source as `Accepted onboarding mapping`, the decision, and the rationale.
+- `## Decision Scope` covers those capabilities and leaves open the limitations, or `None`. `## Revisit When` is the condition that should reopen this decision, or `None`.
+- `## Alternatives Considered` lists the provider as `Selected`, then each alternative as `Evaluated` or `Rejected`. Head each alternative by its name, with its definition and reason. Do not write an option id.
+- `## Reference Architecture Handoff` has Reference Architecture `None` and no implementation entry.
+- The catalog row has Discovery ID `highway`, Request ID `onboarding`, Architecture ID `None`, and Status `accepted`.
+- Do not ask whether a decision replaces or runs beside another. Do not change an architecture record or the architecture catalog.
+- Do not create a Discovery record.
 
 ### choose-option
 
@@ -253,7 +278,7 @@ Do not write until the id is free or the existing record is reused.
 
 Write `adrs/[ID].md` and `adrs/adrs.md` together. Write neither file until both are valid. A failed write leaves every existing ADR byte unchanged. Say what failed in terms the person can act on. Stay on `write`.
 
-The record follows `.highway/library/templates/output/adr-record.md`.
+The record follows `assets/adr-record.md`.
 
 - `id` is the derived `ADR` id.
 - `request` is the Discovery's Request id.
@@ -279,7 +304,7 @@ Edit `adrs/adrs.md` in its existing structure.
 
 The catalog owns the baseline version and the ADR index. It has no `Next ID` field. The index columns are ADR ID, Discovery ID, Request ID, ADR Title, ADR Path, Architecture ID, and Status.
 
-Each ADR ID appears once. Rows are ordered by ADR ID. The ADR ID is `ADR` plus the eight hex digits derived from the title. Discovery ID is the Discovery this decision records. Each Discovery ID appears on at most one row. Architecture ID is the one reference architecture this decision names, or `None` before that architecture exists. A decision that runs beside the current decision of several architectures lists every architecture it names, in id order, separated by a comma and a space. `None` means a new architecture will follow. Status is `accepted`, `superseded`, or `removed`.
+Each ADR ID appears once. Rows are ordered by ADR ID. The ADR ID is `ADR` plus the eight hex digits derived from the title. Discovery ID is the Discovery this decision records. Each Discovery ID appears on at most one row, except `highway`, which every onboarding ADR uses. Architecture ID is the one reference architecture this decision names, or `None` before that architecture exists. A decision that runs beside the current decision of several architectures lists every architecture it names, in id order, separated by a comma and a space. `None` means a new architecture will follow. Status is `accepted`, `superseded`, or `removed`.
 
 `accepted` has a record at `adrs/<id>.md`. `superseded` has a record at `adrs/<id>.md` whose `superseded_by` names the replacing ADR, and its id stays taken. `removed` has no record file. A removed row stays in the index, keeps the title that last held that id, and leaves the id taken.
 
@@ -288,7 +313,7 @@ Each ADR ID appears once. Rows are ordered by ADR ID. The ADR ID is `ADR` plus t
 - Do not allocate from `Next ID`.
 - The first catalog version is `1.0.0`.
 - Adding an ADR increments the minor version.
-- One Discovery id appears on at most one row.
+- One Discovery id appears on at most one row, except `highway`.
 
 Edit `architectures/architectures.md` in its existing structure, and change only a row's ADR ID cell.
 
@@ -365,6 +390,10 @@ A named or numbered uncovered implementation gives the one-uncovered line for it
 - Accepting a span writes one ADR whose Architecture ID lists every RA id in the set, adds it beside each current decision, supersedes nothing, and creates no architecture.
 - A span close names each architecture that is not yet implemented and offers codify for one uncovered implementation at a time. A covered implementation is not offered. Opening a recorded span goes to that close and writes nothing.
 - The skill does not change the Discovery.
+- A handoff from `highway-onboarding` writes an accepted ADR without a question and returns its id. A taken id adds the provider name to the title without asking. The same title reuses the existing record.
+- An onboarding ADR uses `request: onboarding`, `discovery: highway`, and Discovery ID `highway`, which may appear on more than one catalog row.
+- An onboarding ADR uses the shared ADR sections. Discovery-only values are `None`, alternatives are headed by name, and the record contains no option id.
+- An onboarding handoff does not ask whether a decision replaces or runs beside another, and changes no architecture.
 
 ## Error Handling
 

@@ -1,0 +1,33 @@
+# The proposal names a platform Highway has not onboarded. Onboarding hands its decision,
+# architecture, and implementation to their owners, then the original visit resumes at execution.
+id: implementation-onboards-platform
+skill: highway-implementation
+through: highway-onboarding
+through: highway-adr
+through: highway-architecture
+fixture: architecture
+open: /highway-implementation for the Scheduled Restock Alert Service architecture. A scheduled job runs every Monday, calls the order service stock query with a read-only token, and emails the warehouse lead. It is not a code project, so Language is None. It is not running yet.
+ask: What would you add, correct, or remove?
+say: [edit] Deployed by and Managed by are Jenkins. We build, deploy, and run scheduled jobs with Jenkins on our own build servers.
+ask: What would you add, correct, or remove?
+say: [accept] Looks good.
+ask: What would you add, correct, or remove?
+say: [accept] Looks good.
+ask: What would you add, correct, or remove?
+say: [accept] Looks good.
+ask: What would you add, correct, or remove?
+say: [accept] Looks good.
+ask-pattern: Would you like to configure how highway-codify uses
+say: [decline] Not now.
+ask-pattern: \?
+say: [decline] Not now.
+writes: adrs/**
+writes: architectures/**
+writes: implementations/**
+writes: library/coding-standards/codify-platforms.md
+expect: template adrs/ADR*.md :: adr-record.md
+expect: template architectures/RA*.md :: architecture-record.md
+expect: template implementations/RI*.md :: implementation-record.md
+expect: row adrs/adrs.md :: | highway |
+expect: row implementations/implementations.md :: | RA22140b24 |
+expect: row library/coding-standards/codify-platforms.md :: Jenkins

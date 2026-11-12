@@ -142,8 +142,8 @@ skill that writes one of them does not cite a template for it:
 - A rule two skills share has one source in `framework/shared-rules/`. Copy its `rule:` line into
   your skill as one whole line; `tests/shared-rules.test.sh` fails when a copy differs.
 
-A file only your skill creates cites its template in your skill's own `assets/`. A record several
-skills read cites its shared template under `.highway/library/templates/output/`.
+A record your skill creates cites its template in your skill's own `assets/`. When another skill
+needs that record, it hands the work to your skill rather than writing the record itself.
 `framework/validate-skill.sh` checks every complete template in your `assets/`, a file with a
 `## File Frontmatter`, `## Body`, or `## Catalog Structure` heading, as it checks a library
 template.

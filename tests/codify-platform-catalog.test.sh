@@ -49,7 +49,8 @@ for text in \
 	require "$IMPL" "$text"
 done
 
-require "$ONBOARD" 'follow `platforms` in `highway-implementation`'
+require "$ONBOARD" 'Follow `onboarding` in `highway-implementation`'
+require "$IMPL" '6. Follow `platforms`.'
 
 for text in \
 	'When the invocation is the word `configure`' \

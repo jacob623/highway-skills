@@ -9,11 +9,10 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=paths.sh
 source "$SCRIPT_DIR/paths.sh"
 SKILLS="$HW_SKILLS"
-OUTPUT="$HW_OUTPUT_TEMPLATES"
 ADR="$SKILLS/highway-adr/SKILL.md"
 ASSESSMENT="$SKILLS/highway-assessment/SKILL.md"
 DISCOVERY="$SKILLS/highway-discovery/SKILL.md"
-ADR_RECORD="$OUTPUT/adr-record.md"
+ADR_RECORD="$(hw_template adr-record)"
 DISCOVERY_RECORD="$(hw_template discovery-record)"
 fail=0
 
