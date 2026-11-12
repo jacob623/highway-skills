@@ -29,19 +29,16 @@ if [[ -n "$probe_class" ]] && [[ "$DECLARED_CLASSES" != *" $probe_class "* ]]; t
 fi
 
 ACTIVATION="Activate the highway-experience skill before any output the person sees, and follow it for Highway's identity, the Experience Standard, and the storage contract."
-OLD_PATHS='\.highway/governance/|\.highway/library/knowledge/highway-identity\.md'
 EXPERIENCE_ID="$(basename "$HW_EXPERIENCE")"
 
-# activation_problems <skills folder>: one line per Highway skill that names an old path, or, other
-# than highway-experience, whose first Procedure line is not the activation sentence.
+# activation_problems <skills folder>: one line per Highway skill, other than highway-experience,
+# whose first Procedure line is not the activation sentence. Old paths under the removed project
+# folder are checked by self-contained-skills.test.sh.
 activation_problems() {
 	local f id first
 	for f in "$1"/highway-*/SKILL.md; do
 		[[ -f "$f" ]] || continue
 		id="$(basename "$(dirname "$f")")"
-		if grep -qE "$OLD_PATHS" "$f"; then
-			echo "$id names an old path: $(grep -nE "$OLD_PATHS" "$f" | head -n 1)"
-		fi
 		[[ "$id" == "$EXPERIENCE_ID" ]] && continue
 		first="$(awk '$0 == "## Procedure" { p = 1; next } p && /^## / { exit } p && NF { print; exit }' "$f")"
 		if [[ "$first" != "$ACTIVATION" ]]; then
@@ -129,8 +126,6 @@ fi
 source "$HW_LIB/distribution.sh"
 DIST_MANIFEST="$HW_FRAMEWORK/.distribution-manifest"
 for rel in \
-	.highway/instructions \
-	.highway/governance \
 	framework/generate-instructions.sh \
 	framework/.instruction-manifest \
 	AGENTS.md \
@@ -146,7 +141,7 @@ for rel in \
 		fail=1
 	fi
 done
-if [[ "$(dist_classify "$(hw_rel "$SKILL")")" != "include" ]]; then
+if [[ "$(dist_classify "$(hw_rel "$HW_AGENT_CODEX")/$EXPERIENCE_ID/SKILL.md")" != "include" ]]; then
 	echo "FAIL: highway-experience does not ship"
 	fail=1
 fi

@@ -4,7 +4,7 @@ description: "Manages the repository-wide guidance used by highway-codify."
 usage: "Invoke as /highway-codify-config, or with one implementation name."
 compatibility: all
 metadata:
-  version: 3.8.0
+  version: 3.9.0
 ---
 
 # highway-codify-config
@@ -36,7 +36,6 @@ Do not report Status, Summary, Next Action, Blocking Reason, Missing, Complete, 
 - `highway-onboarding`.
 - `highway-implementation`.
 - The highway-experience skill, activated first.
-- A project root containing `.highway/`.
 
 ## Outputs
 
@@ -72,10 +71,9 @@ A cancel writes nothing and returns to `menu`.
 
 ### Entry
 
-1. When `.highway/` cannot be found, stop. Say the project root cannot be located. Write nothing.
-2. When the invocation names a return step, hold it for this visit.
-3. When the invocation names a platform, go to `platforms` with that name as an add or update. Do not show the menu.
-4. Otherwise go to `menu`.
+1. When the invocation names a return step, hold it for this visit.
+2. When the invocation names a platform, go to `platforms` with that name as an add or update. Do not show the menu.
+3. Otherwise go to `menu`.
 
 ### Classify
 
@@ -442,7 +440,6 @@ If you'd like to cancel, just say so.
 
 ## Error Handling
 
-- A missing `.highway/` root stops the skill and writes nothing.
 - A missing template stops the change, names the template path, and writes nothing.
 - A failed write leaves the existing file unchanged and keeps the proposal open.
 - A failed standard file write writes no catalog row.

@@ -87,7 +87,6 @@ vc_environment_hash() {
 	VC_ENVIRONMENT_HASH="$(
 		{
 			printf '%s\n' "$(hw_at "$root" "$HW_FRAMEWORK")/validate-skill.sh"
-			printf '%s\n' "$(hw_at "$root" "$HW_FRAMEWORK")/validate-library.sh"
 			printf '%s\n' "$(hw_at "$root" "$HW_FRAMEWORK")/.frontmatter-contract"
 			hw_at "$root" "$(hw_doc constitution)"
 			hw_at "$root" "$(hw_doc frontmatter-lexicon)"
@@ -100,13 +99,20 @@ vc_environment_hash() {
 
 # Prints the record key for one skill file.
 vc_key() {
-	local skill_file="$1" root="$2" skill_hash env_hash
-	# The skill's assets/ are inputs too: validate-skill.sh checks the complete templates there.
+	local skill_file="$1" root="$2" skill_dir skill_hash env_hash
+	skill_dir="$(dirname "$skill_file")"
+	# The skill's assets/ and references/ are inputs too: validate-skill.sh checks the files there.
+	# Each path is kept relative to the skills folder: the verdict depends on the skill's folder
+	# name, which its name must match, but not on where the skills folder sits.
 	skill_hash="$(
 		{
 			printf '%s\n' "$skill_file"
-			find "$(dirname "$skill_file")/assets" -type f 2>/dev/null | LC_ALL=C sort
-		} | vc_hash_list | awk '{print $1}' | vc_hash_stdin
+			find "$skill_dir/assets" "$skill_dir/references" -type f 2>/dev/null | LC_ALL=C sort
+		} | vc_hash_list | awk -v p="$(dirname "$skill_dir")/" '{
+			path = $2
+			if (index(path, p) == 1) path = substr(path, length(p) + 1)
+			print $1, path
+		}' | vc_hash_stdin
 	)"
 	env_hash="$(vc_environment_hash "$root")"
 	printf '%s%s' "$skill_hash" "$env_hash" | vc_hash_stdin

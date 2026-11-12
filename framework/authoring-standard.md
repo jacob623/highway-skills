@@ -54,7 +54,7 @@ metadata:
 | `compatibility` | No | — | One of `all`, `github-copilot`, `claude-code`, `cursor`, `codex`. Defaults to `all`. |
 | `metadata.version` | Yes | P7.2 | Semantic version. See the Skill Versioning Policy in the constitution's Governance section. |
 | `metadata.agent_exceptions` | No | P2.2 | List of `{agent, deviation}`, each naming one supported agent. |
-| `metadata.dependencies` | No | DEPENDENCY | List of `{path, version}` pins into the shared content library; each path must exist and its target's `metadata.version` must match the pinned `version`, enforced by `dc_validate_dependencies`. |
+| `metadata.dependencies` | No | DEPENDENCY | List of `{path, version}` pins to files in the skill's own folder; each path is relative to the folder, must stay inside it and exist, and its target's `metadata.version` must match the pinned `version`, enforced by `dc_validate_dependencies`. |
 
 The permitted key set, required/optional status, and value constraints above are declared once in
 `framework/.frontmatter-contract` (see `contracts/frontmatter-contract-shape.md`); this table
@@ -145,8 +145,9 @@ skill that writes one of them does not cite a template for it:
 A record your skill creates cites its template in your skill's own `assets/`. When another skill
 needs that record, it hands the work to your skill rather than writing the record itself.
 `framework/validate-skill.sh` checks every complete template in your `assets/`, a file with a
-`## File Frontmatter`, `## Body`, or `## Catalog Structure` heading, as it checks a library
-template.
+`## File Frontmatter`, `## Body`, or `## Catalog Structure` heading, and every file in your
+`references/`. Name each bundled file in your `SKILL.md` by its relative path, such as
+`references/<file>.md`, one level deep; your skill reads nothing outside its own folder.
 
 ## Writing the rules inside a skill
 

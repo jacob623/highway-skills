@@ -90,8 +90,9 @@ reject "$STORAGE" 'Every run uses Local.'
 
 # shellcheck source=../lib/distribution.sh
 source "$HW_LIB/distribution.sh"
-if [[ "$(dist_classify "$(hw_rel "$STORAGE")")" != "include" ]]; then
-	echo "FAIL: $(hw_rel "$STORAGE") does not ship"
+SHIPPED_STORAGE="$(hw_rel "$HW_AGENT_CODEX")/highway-experience/references/storage-contract.md"
+if [[ "$(dist_classify "$SHIPPED_STORAGE")" != "include" ]]; then
+	echo "FAIL: $SHIPPED_STORAGE does not ship"
 	fail=1
 fi
 
@@ -112,8 +113,8 @@ if ! rc_registry | awk -F'\t' '$1 == "P2.6" && $2 == "rc_check_P2_6" && $3 == "-
 	echo "FAIL: P2.6 is not registered to rc_check_P2_6"
 	fail=1
 fi
-if ! rc_library_exempt_ids | grep -qx 'P2.6'; then
-	echo "FAIL: P2.6 is not library-exempt"
+if ! rc_bundled_exempt_ids | grep -qx 'P2.6'; then
+	echo "FAIL: P2.6 is not exempt for bundled files"
 	fail=1
 fi
 
@@ -219,9 +220,10 @@ done
 
 # --- highway-help ---------------------------------------------------------------------------------
 
-require "$HELP" '- `.highway/catalog/index.json` — read for'
-require "$HELP" "\`ERROR: the skill catalog '.highway/catalog/index.json' is missing or unreadable\`"
+require "$HELP" '- `assets/index.json` — the skill index'
+require "$HELP" "\`ERROR: the skill index 'assets/index.json' is missing or unreadable\`"
 reject "$HELP" 'framework/'
+reject "$HELP" 'skills/'
 
 # --- highway-codify numbers from the Features table ------------------------------------------------
 

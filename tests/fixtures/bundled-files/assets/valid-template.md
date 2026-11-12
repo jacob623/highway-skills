@@ -5,6 +5,6 @@ metadata:
   version: 1.0.0
 ---
 
-## Output Shape
+## Body
 Fill in the section below with the skill's own output. Example placeholder text: "The result
 MUST be reported before the process exits." Replace this entire block with real content.

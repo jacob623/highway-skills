@@ -20,7 +20,11 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/paths.sh"
 # shellcheck source=../framework/lib/distribution.sh
 source "$HW_LIB/distribution.sh"
-SHIPPED_SKILLS="$(dist_destination "$(hw_rel "$HW_SKILLS")")"
+SHIPPED_SKILLS="$(hw_rel "$HW_AGENT_CODEX")"
+# Probes are seeded in a folder that ships, so the generator classifies them as included.
+PROBE_DIR="$HW_AGENT_CODEX/highway-help"
+# Assembled so this file does not name the folder the distribution must not hold.
+HIDDEN_ROOT=".""highway"
 GEN="$HW_FRAMEWORK/generate-distribution.sh"
 fail=0
 
@@ -76,7 +80,7 @@ if [[ -n "$probe_class" ]]; then
 	trap cleanup_probe EXIT
 	case "$probe_class" in
 		source-document)
-			dev_probe="$HW_CATALOG/distribution-devref-probe-$$.md"
+			dev_probe="$PROBE_DIR/distribution-devref-probe-$$.md"
 			if [[ "$neutralise" -eq 0 ]]; then
 				printf 'see the spec at %s/001-multi-agent-skill-suite/spec.md\n' "$DEV_DIR" >"$dev_probe"
 			fi
@@ -131,16 +135,16 @@ fi
 WORK="$(mktemp -d)"
 cleanup_probes() {
 	rm -f "$HW_ROOT"/distribution-probe-*.md \
-		"$HW_CATALOG"/distribution-devref-probe-*.md \
-		"$HW_CATALOG"/distribution-link-probe-*.md \
-		"$HW_CATALOG"/distribution-reject-probe-*.md
+		"$PROBE_DIR"/distribution-devref-probe-*.md \
+		"$PROBE_DIR"/distribution-link-probe-*.md \
+		"$PROBE_DIR"/distribution-reject-probe-*.md
 }
 cleanup() { cleanup_probes; rm -rf "$WORK"; }
 trap cleanup EXIT
 
-# A killed packaging run can leave a link probe in the included catalog. Remove it before the
+# A killed packaging run can leave a link probe in the included highway-help folder. Remove it before the
 # first build so the next run reports its own behavior rather than stale state from an earlier run.
-stale_link_probe="$HW_CATALOG/distribution-link-probe-stale.md"
+stale_link_probe="$PROBE_DIR/distribution-link-probe-stale.md"
 printf 'see [the missing file](stale-probe-target.md)\n' >"$stale_link_probe"
 cleanup_probes
 if [[ -e "$stale_link_probe" ]]; then
@@ -195,7 +199,7 @@ rm -f "$probe_path"
 # keeps the seeded probe real without exempting this file from a check that should cover it.
 DEV_DIR="spec""s"
 
-dev_probe="$HW_CATALOG/distribution-devref-probe-$$.md"
+dev_probe="$PROBE_DIR/distribution-devref-probe-$$.md"
 printf 'see the spec at %s/001-multi-agent-skill-suite/spec.md\n' "$DEV_DIR" >"$dev_probe"
 if "$GEN" "$WORK/p2" >"$WORK/p2.log" 2>&1; then
 	echo "FAIL: a development-only reference in a distributed file did not stop packaging"
@@ -208,7 +212,7 @@ rm -f "$dev_probe"
 
 # --- Probe: an unresolvable cross-reference is caught ---
 
-link_probe="$HW_CATALOG/distribution-link-probe-$$.md"
+link_probe="$PROBE_DIR/distribution-link-probe-$$.md"
 printf 'see [the missing file](no-such-file-%s.md)\n' "$$" >"$link_probe"
 if "$GEN" "$WORK/p3" >"$WORK/p3.log" 2>&1; then
 	echo "FAIL: an unresolvable cross-reference did not stop packaging"
@@ -221,7 +225,7 @@ rm -f "$link_probe"
 
 # --- Probe: a rejected candidate is removed rather than left behind (FR-011) ---
 
-reject_probe="$HW_CATALOG/distribution-reject-probe-$$.md"
+reject_probe="$PROBE_DIR/distribution-reject-probe-$$.md"
 printf 'see %s/001-multi-agent-skill-suite/spec.md\n' "$DEV_DIR" >"$reject_probe"
 "$GEN" "$WORK/p4" >/dev/null 2>&1
 rm -f "$reject_probe"
@@ -248,16 +252,14 @@ if [[ -d "$dist" ]]; then
 		echo "FAIL: the distribution's README.md is not framework/README.md"
 		fail=1
 	fi
-	for gone in framework tests skills; do
+	for gone in framework tests skills "$HIDDEN_ROOT"; do
 		if [[ -e "$dist/$gone" ]]; then
 			echo "FAIL: the distribution contains $gone/"
 			fail=1
 		fi
 	done
-	shipped_tools="$(cd "$dist" && find .highway/tools -type f ! -name .distribution-record 2>/dev/null)"
-	if [[ -n "$shipped_tools" ]]; then
-		echo "FAIL: the distribution ships framework files under .highway/tools:"
-		printf '%s\n' "$shipped_tools" | sed 's/^/    /'
+	if [[ ! -f "$dist/.distribution-record" ]]; then
+		echo "FAIL: the distribution has no .distribution-record at its root"
 		fail=1
 	fi
 fi

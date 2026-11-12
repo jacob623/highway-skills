@@ -4,7 +4,7 @@ description: "Manages the repository-wide control baseline."
 usage: "Invoke as /highway-controls."
 compatibility: all
 metadata:
-  version: 8.3.0
+  version: 8.4.0
 ---
 
 # highway-controls
@@ -27,7 +27,6 @@ Do not emit Setup's safeguard transition. Setup already emitted it.
 
 ## Inputs
 
-- Project root containing `.highway/`.
 - `library/knowledge/profile.md` when present.
 - `library/governance/objectives.md` and `library/objectives/` when present.
 - `library/governance/controls.md` when present.
@@ -336,8 +335,6 @@ Write `library/governance/controls.md` in the shape required by `assets/control-
 - Emit no timestamp, random value, or environment value.
 - An empty held set writes the catalog with version `1.0.0` and no index rows.
 - A removed Control keeps its catalog row with status `removed`.
-
-No Control record is written beneath `.highway`.
 
 ## Verification
 

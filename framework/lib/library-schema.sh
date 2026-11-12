@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
-# Minimal frontmatter checks for a shared library file (template, knowledge, or governance).
+# Minimal frontmatter checks for a complete template a skill bundles in its assets/.
 # Every finding is tagged [SCHEMA], mirroring lib/schema-validate.sh's convention for skills.
 # Requires frontmatter.sh to be sourced first.
 #
-# A library file's required frontmatter is smaller than a skill's: name, description,
+# A template's required frontmatter is smaller than a skill's: name, description,
 # metadata.version only -- no compatibility, since that field is agent/adapter-specific and
-# does not apply to shared library content (FR-014).
+# does not apply to a template (FR-014).
 
 # Usage: ls_validate_name <name>
 ls_validate_name() {

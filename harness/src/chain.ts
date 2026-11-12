@@ -49,13 +49,13 @@ function filesUnder(root: string): string[] {
   return out.sort();
 }
 
-/** A candidate snapshot holds the project files the distribution does not supply. */
-export function saveCandidate(projectDir: string, distDir: string, dest: string): number {
+/** A candidate snapshot holds the project files the base skills do not supply. */
+export function saveCandidate(projectDir: string, baseDir: string, dest: string): number {
   rmSync(dest, { recursive: true, force: true });
   mkdirSync(dest, { recursive: true });
   let n = 0;
   for (const rel of filesUnder(projectDir)) {
-    if (existsSync(join(distDir, rel))) continue;
+    if (existsSync(join(baseDir, rel))) continue;
     mkdirSync(dirname(join(dest, rel)), { recursive: true });
     cpSync(join(projectDir, rel), join(dest, rel));
     n++;
@@ -67,7 +67,7 @@ export function saveCandidate(projectDir: string, distDir: string, dest: string)
  * FR-021 and FR-027: stage 1 from an empty project, each later stage from the previous stage's
  * output, one at a time. A failed stage stops the chain. Candidates are saved only when all pass.
  */
-export async function runChain(chain: readonly Scenario[], runStage: StageRunner, distDir: string, candidatesDir: string): Promise<ChainResult> {
+export async function runChain(chain: readonly Scenario[], runStage: StageRunner, baseDir: string, candidatesDir: string): Promise<ChainResult> {
   const outcomes: ScenarioOutcome[] = [];
   const kept: string[] = [];
   try {
@@ -84,7 +84,7 @@ export async function runChain(chain: readonly Scenario[], runStage: StageRunner
     const candidates: string[] = [];
     STAGES.forEach((name, i) => {
       const dest = join(candidatesDir, name);
-      saveCandidate(kept[i], distDir, dest);
+      saveCandidate(kept[i], baseDir, dest);
       candidates.push(dest);
     });
     return { outcomes, candidates };

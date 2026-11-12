@@ -17,21 +17,21 @@ function outcome(s: Scenario, status: ScenarioOutcome["status"]): ScenarioOutcom
   return { scenario: s.id, file: s.file, skill: s.skill, status, reasons: [], attempts: [], warnings: [] };
 }
 
-function dist(): string {
-  const dir = mkdtempSync(join(tmpdir(), "harness-dist-"));
-  mkdirSync(join(dir, ".highway"), { recursive: true });
-  writeFileSync(join(dir, ".highway", "README.md"), "dist");
+function base(): string {
+  const dir = mkdtempSync(join(tmpdir(), "harness-base-"));
+  mkdirSync(join(dir, ".github", "skills", "highway-help"), { recursive: true });
+  writeFileSync(join(dir, ".github", "skills", "highway-help", "SKILL.md"), "skill");
   return dir;
 }
 
-/** Each stage copies the previous output (or the distribution) and adds its own file. */
-function fakeStages(distDir: string, failAt?: number): { runner: StageRunner; sources: string[] } {
+/** Each stage copies the previous output (or the base skills) and adds its own file. */
+function fakeStages(baseDir: string, failAt?: number): { runner: StageRunner; sources: string[] } {
   const sources: string[] = [];
   const runner: StageRunner = async (s, source, stage) => {
     sources.push(source.fromDir ? "previous" : source.fixture ?? "?");
     if (stage === failAt) return { outcome: outcome(s, "fail") };
     const dir = mkdtempSync(join(tmpdir(), `harness-stage-${stage}-`));
-    cpSync(source.fromDir ?? distDir, dir, { recursive: true });
+    cpSync(source.fromDir ?? baseDir, dir, { recursive: true });
     const file = join(dir, STAGE_FILES[stage - 1]);
     mkdirSync(join(file, ".."), { recursive: true });
     writeFileSync(file, `stage ${stage}`);
@@ -47,32 +47,32 @@ test("chainOf orders positions and requires each of 1 to 6 once", () => {
 });
 
 test("stage 1 starts empty, later stages start from the previous output, and candidates hold only project files", async () => {
-  const distDir = dist();
+  const baseDir = base();
   const folder = mkdtempSync(join(tmpdir(), "harness-run-"));
-  const { runner, sources } = fakeStages(distDir);
-  const result = await runChain([1, 2, 3, 4, 5, 6].map(scenario), runner, distDir, join(folder, "candidates"));
+  const { runner, sources } = fakeStages(baseDir);
+  const result = await runChain([1, 2, 3, 4, 5, 6].map(scenario), runner, baseDir, join(folder, "candidates"));
   assert.equal(result.failedStage, undefined);
   assert.deepEqual(sources, ["empty", "previous", "previous", "previous", "previous", "previous"]);
   assert.deepEqual(readdirSync(join(folder, "candidates")).sort(), ["architecture", "discovery", "implementation", "request", "setup"]);
   assert.ok(existsSync(join(folder, "candidates", "implementation", "implementations", "implementations.md")));
   assert.ok(existsSync(join(folder, "candidates", "implementation", "library", "knowledge", "profile.md")));
-  assert.ok(!existsSync(join(folder, "candidates", "setup", ".highway")));
+  assert.ok(!existsSync(join(folder, "candidates", "setup", ".github")));
   assert.ok(!existsSync(join(folder, "candidates", "implementation", "code")));
-  rmSync(distDir, { recursive: true });
+  rmSync(baseDir, { recursive: true });
   rmSync(folder, { recursive: true });
 });
 
 test("a failed stage stops the chain and saves no candidate", async () => {
-  const distDir = dist();
+  const baseDir = base();
   const folder = mkdtempSync(join(tmpdir(), "harness-run-"));
-  const { runner, sources } = fakeStages(distDir, 3);
-  const result = await runChain([1, 2, 3, 4, 5, 6].map(scenario), runner, distDir, join(folder, "candidates"));
+  const { runner, sources } = fakeStages(baseDir, 3);
+  const result = await runChain([1, 2, 3, 4, 5, 6].map(scenario), runner, baseDir, join(folder, "candidates"));
   assert.equal(result.failedStage, 3);
   assert.equal(result.outcomes.length, 3);
   assert.equal(sources.length, 3);
   assert.deepEqual(result.candidates, []);
   assert.ok(!existsSync(join(folder, "candidates")));
-  rmSync(distDir, { recursive: true });
+  rmSync(baseDir, { recursive: true });
   rmSync(folder, { recursive: true });
 });
 
@@ -108,15 +108,15 @@ test("promote refuses a run folder without all five candidates and changes nothi
   rmSync(fixtures, { recursive: true });
 });
 
-test("saveCandidate skips distribution files", () => {
-  const distDir = dist();
+test("saveCandidate skips the base skills", () => {
+  const baseDir = base();
   const project = mkdtempSync(join(tmpdir(), "harness-project-"));
-  cpSync(distDir, project, { recursive: true });
+  cpSync(baseDir, project, { recursive: true });
   mkdirSync(join(project, "requests"));
   writeFileSync(join(project, "requests", "requests.md"), "r");
   const dest = join(project, "..", `cand-${Date.now()}`);
-  assert.equal(saveCandidate(project, distDir, dest), 1);
+  assert.equal(saveCandidate(project, baseDir, dest), 1);
   rmSync(dest, { recursive: true });
   rmSync(project, { recursive: true });
-  rmSync(distDir, { recursive: true });
+  rmSync(baseDir, { recursive: true });
 });

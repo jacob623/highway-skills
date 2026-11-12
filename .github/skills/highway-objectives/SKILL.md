@@ -4,7 +4,7 @@ description: "Manages the repository-wide business objective baseline and its st
 usage: "Invoke as /highway-objectives."
 compatibility: all
 metadata:
-  version: 8.3.0
+  version: 8.4.0
 ---
 
 # highway-objectives
@@ -27,7 +27,6 @@ Do not emit Setup's outcome transition. Setup already emitted it.
 
 ## Inputs
 
-- Project root containing `.highway/`.
 - `library/knowledge/profile.md` when present.
 - `library/governance/objectives.md` when present.
 - `library/objectives/OBJ*.md` when present.
@@ -337,8 +336,6 @@ Write `library/governance/objectives.md` in the shape required by `assets/object
 - Emit no timestamp, random value, or environment value.
 - An empty held set writes the catalog with version `1.0.0` and no index rows.
 - A removed Objective keeps its catalog row with status `removed`.
-
-No Objective record is written beneath `.highway`.
 
 ## Verification
 

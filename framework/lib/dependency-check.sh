@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Checks a skill's metadata.dependencies entries against the shared content files they name.
+# Checks a skill's metadata.dependencies entries against the files they name. Each path is relative
+# to the skill's own folder, because a skill reads nothing outside it.
 # Requires frontmatter.sh to be sourced first.
 #
 # Two failure outcomes, both printed with no rule-id prefix (validate-skill.sh tags them
@@ -7,16 +8,22 @@
 # target's current metadata.version. See
 # feature 004 (shared content library).
 
-[[ -n "${HW_ROOT:-}" ]] || source "$(dirname "${BASH_SOURCE[0]}")/paths.sh"
-
-# Usage: dc_validate_dependencies <skill_file> <root>
+# Usage: dc_validate_dependencies <skill_file>
 # Prints zero or more finding messages (one per line). Returns 1 if any were printed, else 0.
 dc_validate_dependencies() {
-	local skill_file="$1" root="$2" found=0
-	local path version target_file target_version
+	local skill_file="$1" found=0
+	local path version target_file target_version skill_dir
+	skill_dir="$(dirname "$skill_file")"
 	while IFS='|' read -r path version; do
 		[[ -z "$path" ]] && continue
-		target_file="$(hw_at "$root" "$HW_HIGHWAY")/$path"
+		case "/$path/" in
+		//* | */../*)
+			echo "dependency '$path' leaves the skill's folder"
+			found=1
+			continue
+			;;
+		esac
+		target_file="$skill_dir/$path"
 		if [[ ! -f "$target_file" ]]; then
 			echo "dependency '$path' does not exist"
 			found=1

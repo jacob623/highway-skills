@@ -10,14 +10,14 @@ content is never duplicated or hand-adapted per agent.
 skills/            Skill sources, one directory per skill
 framework/         Validators, generators, and the rules every skill is validated against
 tests/             The bash test suite for the framework
-.highway/
-├── library/       Shared reference material skills draw on
-└── catalog/       The generated index of available skills
 ```
 
-`skills/highway-experience/` holds Highway's identity, the Experience Standard, and the storage
-contract under `references/`. Every other Highway skill activates it as the first step of its
-Procedure, so no always-on instruction file is needed.
+Each skill is self-contained: it reads only its own folder. Whatever it needs beyond `SKILL.md`
+sits beside it in `references/`, `assets/`, or `scripts/`, named by a relative path one level
+deep. `skills/highway-experience/` holds Highway's identity, the Experience Standard, and the
+storage contract under `references/`. Every other Highway skill activates it as the first step of
+its Procedure, so no always-on instruction file is needed. highway-help reads the generated index
+of every skill from its own `assets/index.json`.
 
 The framework is POSIX shell (`bash`, `awk`, `sed`, `grep`) only, with no network calls and no
 language runtime to install.
@@ -33,8 +33,8 @@ framework/generate-agent-adapters.sh
 ```
 
 The validator reports one line per rule that failed, each naming the rule id that decided it. The
-catalog generator refreshes the index; the adapter generator writes the per-agent copies. Run all
-three after any change to a skill.
+catalog generator refreshes highway-help's index; the adapter generator writes the per-agent
+copies. Run all three after any change to a skill.
 
 Both generators refuse to overwrite a file they did not produce, naming it rather than replacing
 it. If you see that message, the file was hand-edited — move it aside if regenerating is safe.
@@ -80,8 +80,28 @@ Deferred and unchecked rules do not affect exit status. Enforcing a subset of th
 intended state, so unverified must not read as failed. The output format is a contract, per
 feature 003 (constitution enforcement).
 
-Also checks every `metadata.dependencies` entry against `.highway/`: a missing path or a stale pinned version is reported as an
+Also checks every `metadata.dependencies` entry against the skill's own folder: a missing path,
+a path that leaves the folder, or a stale pinned version is reported as an
 `ERROR: [DEPENDENCY] ...` finding, per feature 004 (shared content library).
+
+#### Bundled files
+
+The validator also checks the files a skill bundles, against the constitution's rules only, since
+a bundled file emits nothing. A finding names the file, as
+`ERROR: [<tag>] assets/<file>: ...` or `ERROR: [<tag>] references/<file>: ...`, and fails the
+skill; the coverage summary still describes `SKILL.md`.
+
+- A complete template in `assets/`, meaning a file with a `## File Frontmatter`, `## Body`, or
+  `## Catalog Structure` heading, needs `name`, `description`, and `metadata.version`. It is exempt
+  from the four checks that key on MUST/SHOULD keyword text (P1.1, P1.3, P7.4, P7.5), since its
+  placeholder text can legitimately contain those words without being a rule statement.
+- A file in `references/` has no frontmatter. It is exempt from the same four checks, because a
+  reference such as the Experience Standard defines rules for others in table rows, and from P7.1
+  and P7.2, which judge a `SKILL.md` Purpose and a frontmatter version. Its citations and the
+  remaining rules are checked.
+- Seeded skeletons in highway-setup's `assets/` have none of the template headings and are not
+  checked this way; `tests/catalog-seeding.test.sh` compares each one with its reference copy in
+  `tests/fixtures/catalog-seeding/skeletons/`.
 
 #### Validation cache
 
@@ -94,7 +114,8 @@ validation.
 The cache key is a hash of the skill's `SKILL.md` combined with a hash of **every validator
 input**: `validate-skill.sh` itself, `.frontmatter-contract`, the constitution, the frontmatter
 lexicon, the Experience Standard, and every file under `framework/lib/`. A skill's own `assets/`
-are part of that skill's side of the key.
+and `references/` are part of that skill's side of the key, and so is its folder name, which its
+`name` must match. Where the skills folder sits is not.
 Change any of them and the key changes, so a recorded verdict can never outlive the thing that
 decided it. Three properties are deliberate and should be preserved by anyone editing this:
 
@@ -112,12 +133,15 @@ previously-cached skill still fails with its original error.
 
 ### `framework/generate-catalog.sh`
 
-Iterates `skills/*/SKILL.md`, validates each via `validate-skill.sh`, and writes
-`.highway/catalog/index.json`. Unchanged skill sources produce a byte-identical file.
+Iterates `skills/*/SKILL.md`, validates each via `validate-skill.sh`, and writes highway-help's
+`skills/highway-help/assets/index.json`: one entry per skill with its `id`, `name`,
+`description`, `usage`, `version`, `dependencies`, and `example`, which is everything highway-help
+prints. Unchanged skill sources produce a byte-identical file.
 
-- **Exit 0**: catalog written.
-- **Exit 1**: at least one skill under `skills/` is invalid; the catalog is **not** written (no
-  partial catalog), and the failing skill's `id` is named in the error output.
+- **Exit 0**: index written.
+- **Exit 1**: at least one skill under `skills/` is invalid, including one whose `name` differs
+  from its folder; the index is **not** written (no partial index), and the failing skill's `id`
+  is named in the error output.
 
 ### `framework/generate-agent-adapters.sh`
 
@@ -137,29 +161,7 @@ no namespace prefix of its own.
   `.cursor/skills/`, or `.agents/skills/` — those are external tooling used to build this
   repository, not part of this suite. The generator removes no file at all.
 
-### `framework/validate-library.sh <library-file>`
-
-Validates one library file (template or knowledge), the same way
-`validate-skill.sh` validates a skill: minimal frontmatter (`name`, `description`,
-`metadata.version`) plus the constitution's rule-content checks. A template file is exempt from
-the four checks that key on MUST/SHOULD keyword text (P1.1, P1.3, P7.4, P7.5), reported N/A rather
-than skipped, since a template's placeholder text can legitimately contain those words without
-being a rule statement.
-
-- **Exit 0**: no check failed.
-- **Exit 1**: at least one check failed, or the file is not located under
-  `library/templates/`, `library/knowledge/`, or `library/governance/` (tagged
-  `[LIBRARY-TYPE]`).
-
-`validate-library.sh --asset <file>` checks a template that lives in a skill's `assets/`: it skips
-the location check and treats the file as a template. `validate-skill.sh` runs it on every complete
-template in the skill's `assets/`, meaning a file with a `## File Frontmatter`, `## Body`, or
-`## Catalog Structure` heading, and reports a finding as `ERROR: [<tag>] assets/<file>: ...`. Seeded
-skeletons have none of those headings and are not checked this way;
-`tests/catalog-seeding.test.sh` compares each one with its reference copy in
-`tests/fixtures/catalog-seeding/skeletons/`.
-
-Output format is a contract, per feature 005 (rename content to library).
+### Records, templates, and seeded files
 
 Every record has its complete template in the `assets/` of the one skill that creates it, such as
 `skills/highway-request/assets/request-record.md` or `skills/highway-adr/assets/adr-record.md`.
@@ -174,24 +176,27 @@ in the `assets/` of highway-objectives, highway-controls, and highway-nfrs. A ru
 has one source in `framework/shared-rules/`, and `tests/shared-rules.test.sh` fails when a copy
 differs.
 
-When a shared library artifact changes, identify every `SKILL.md` that cites it, re-run the
-affected skill and library validators, and review the complete emitted structure. A mismatch in
+When a bundled file changes, identify every `SKILL.md` that cites it, re-run the skill validator
+on each, and review the complete emitted structure. A mismatch in
 frontmatter or body is reported under D8.1; transient messages are not retained file artifacts.
 
 ### `framework/generate-distribution.sh <target-directory>`
 
 Produces the user-facing distribution from this repository, then verifies it before accepting it.
 What ships is read from `framework/.distribution-manifest`, never hard-coded in the script, so the
-path set has exactly one declaration. Artifacts are copied rather than regenerated. Skills ship
-under `.highway/skills/`; the framework and the test suite do not ship, except this file, which
-ships as the distribution's `README.md`.
+path set has exactly one declaration. Artifacts are copied rather than regenerated. Each skill
+folder ships whole in every agent tree (`.github/skills/`, `.claude/skills/`, `.cursor/skills/`,
+`.agents/skills/`); the skill sources, the framework, and the test suite do not ship, except this
+file, which ships as the distribution's `README.md`. The generator records what it wrote in
+`.distribution-record` at the distribution's root.
 
 Three verifications must all pass, or no distribution is produced:
 
 1. No distributed file references a development-only location.
 2. Every documentation cross-reference resolves to a path inside the distribution.
 3. Every distributed skill passes `framework/validate-skill.sh` run from a verification tree: the
-   distribution, plus this repository's `framework/`, with the skills moved back to `skills/`. So
+   distribution, plus this repository's `framework/`, with the skills copied from `.agents/skills/`
+   to `skills/`. So
    the check proves the shipped skills validate using only distribution contents and the
    framework.
 
@@ -208,7 +213,7 @@ non-zero if any test fails.
 ## Paths helper
 
 `framework/lib/paths.sh` is the one declaration of where every repository location lives: the
-skills, highway-experience, framework, tests, fixtures, catalog, library, harness, and agent
+skills, highway-experience, highway-help's index, framework, tests, fixtures, harness, and agent
 trees, as `HW_*` variables, plus each output template and each framework or highway-experience
 document by name. Moving a location means editing its line there and nothing else.
 
@@ -235,10 +240,10 @@ template or document to its folder (development constitution D2.5).
 | `lib/frontmatter-lexicon.sh` | Checks frontmatter description words against `frontmatter-lexicon.txt`. |
 | `lib/constitution.sh` | Parses the rule inventory, rule fields, and token lists from the constitution. |
 | `lib/body-scan.sh` | Annotates each body line with its section, fenced-block state, and list membership, so no check parses Markdown for itself. |
-| `lib/rule-checks.sh` | One check per enforceable rule, the rule-id-to-check registry, and the template rule-exemption list. |
+| `lib/rule-checks.sh` | One check per enforceable rule, the rule-id-to-check registry, and the bundled-file rule-exemption lists. |
 | `lib/schema-validate.sh` | Identity and frontmatter shape checks, plus the eight required body sections, for a skill. |
-| `lib/library-schema.sh` | Minimal frontmatter shape checks (`name`, `description`) for a shared library file. |
-| `lib/dependency-check.sh` | Resolves a skill's `metadata.dependencies` entries against `.highway/` and flags a missing path or version mismatch. |
+| `lib/library-schema.sh` | Minimal frontmatter shape checks (`name`, `description`) for a complete template a skill bundles. |
+| `lib/dependency-check.sh` | Resolves a skill's `metadata.dependencies` entries inside the skill's own folder and flags a missing path, a path leaving the folder, or a version mismatch. |
 | `lib/distribution.sh` | Classifies a repository path as included in or excluded from the user-facing distribution, and maps it to its destination, by reading `.distribution-manifest`. |
 | `lib/validation-cache.sh` | Content-addressed record of successful skill validations, keyed on the skill plus every validator input. |
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Each record template lives in the assets/ of the skill that creates the record, the skill names it
-# there, the shared .highway/library/ folder is gone, and the skill validator checks every complete
-# template in a skill's assets/.
+# there, and the skill validator checks every complete template in a skill's assets/. That no shared
+# folder remains, and no skill or manifest names one, is checked by self-contained-skills.test.sh.
 set -u
 # Instrument class: mixed (static-document-contract and executed-behavior)
 # Artifact classes: source-document, disposable-fixture
@@ -14,7 +14,6 @@ source "$SCRIPT_DIR/paths.sh"
 # shellcheck source=../framework/lib/validation-cache.sh
 source "$HW_LIB/validation-cache.sh"
 VALIDATE_SKILL="$HW_FRAMEWORK/validate-skill.sh"
-MANIFEST="$HW_FRAMEWORK/.distribution-manifest"
 fail=0
 
 report() {
@@ -51,22 +50,7 @@ done <<EOF
 $OWNERS
 EOF
 
-# 2. The shared library folder is gone.
-if [[ -n "$(find "$HW_HIGHWAY" -maxdepth 1 -name library)" ]]; then
-	report ".highway/library/ still exists"
-fi
-
-# 3. No skill names a path under .highway/library/.
-while IFS= read -r hit; do
-	report "$hit names .highway/library/"
-done < <(grep -RlF '.highway/library/' "$HW_SKILLS" --include=SKILL.md)
-
-# 4. The distribution ships each template inside its skill and lists nothing under .highway/library.
-if grep -Fq '.highway/library' "$MANIFEST"; then
-	report "the distribution manifest lists .highway/library"
-fi
-
-# 5. The skill validator checks complete templates in assets/ and skips skeletons.
+# 2. The skill validator checks complete templates in assets/ and skips skeletons.
 probe_root="$(mktemp -d)"
 trap 'rm -rf "$probe_root"' EXIT
 request_template="$(hw_template request-record)"
@@ -87,13 +71,15 @@ elif printf '%s\n' "$out" | grep -Fq 'assets/'; then
 	report "highway-setup's skeletons were checked as templates"
 fi
 
-# 6. The cache key covers assets/: same content anywhere gives one key, a changed asset another.
-cp -R "$HW_SKILLS/highway-request" "$probe_root/same"
-cp -R "$HW_SKILLS/highway-request" "$probe_root/changed"
-printf '\n' >>"$probe_root/changed/$asset_rel"
-key_same="$(vc_key "$probe_root/same/SKILL.md" "$HW_ROOT")"
+# 3. The cache key covers assets/: the same skill folder anywhere gives one key, a changed asset
+#    another.
+mkdir -p "$probe_root/same" "$probe_root/changed"
+cp -R "$HW_SKILLS/highway-request" "$probe_root/same/highway-request"
+cp -R "$HW_SKILLS/highway-request" "$probe_root/changed/highway-request"
+printf '\n' >>"$probe_root/changed/highway-request/$asset_rel"
+key_same="$(vc_key "$probe_root/same/highway-request/SKILL.md" "$HW_ROOT")"
 key_source="$(vc_key "$HW_SKILLS/highway-request/SKILL.md" "$HW_ROOT")"
-key_changed="$(vc_key "$probe_root/changed/SKILL.md" "$HW_ROOT")"
+key_changed="$(vc_key "$probe_root/changed/highway-request/SKILL.md" "$HW_ROOT")"
 [[ "$key_same" == "$key_source" ]] || report "two identical copies of a skill get different cache keys"
 [[ "$key_changed" != "$key_source" ]] || report "probe: a changed asset did not change the cache key"
 

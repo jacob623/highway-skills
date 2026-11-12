@@ -22,12 +22,8 @@ grep -Fq 'library/knowledge/profile.md' "$SKILL" || {
 	echo 'FAIL: Profile skill omits the retained user-owned artifact path'
 	fail=1
 }
-if grep -Fq '.highway/library/knowledge/' "$SKILL"; then
-	echo 'FAIL: Profile skill still names .highway/library/knowledge/'
-	fail=1
-fi
 if grep -Fq 'profile-record.md' "$MANIFEST"; then
-	echo 'FAIL: distribution manifest still lists profile-record.md under .highway/; it ships inside highway-profile'
+	echo 'FAIL: distribution manifest lists profile-record.md on its own; it ships inside highway-profile'
 	fail=1
 fi
 

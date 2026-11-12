@@ -2,9 +2,10 @@
 # Path map: what a changed path selects.
 #
 # Usage: path-map.sh <path>...
-#        path-map.sh --location <skills|framework>
+#        path-map.sh --location <skills|framework|agent-skills>
 #   Paths are repository-relative.
-#   --location prints the repository-relative skills or framework location and exits.
+#   --location prints a repository-relative location and exits: the skill sources, the framework,
+#   or the folder the harness agent discovers skills in.
 #
 # Prints `<path>\t<kind>\t<target>\t<reason>` for each selection a path makes:
 #   skill <id>       every scenario of that skill, including scenarios passing through it
@@ -25,7 +26,6 @@ SHARED="$HW_HARNESS/selection/shared.txt"
 
 REL_SKILLS="$(hw_rel "$HW_SKILLS")"
 REL_HARNESS="$(hw_rel "$HW_HARNESS")"
-REL_CATALOG="$(hw_rel "$HW_CATALOG")"
 REL_FRAMEWORK="$(hw_rel "$HW_FRAMEWORK")"
 REL_TESTS="$(hw_rel "$HW_TESTS")"
 REL_COPILOT="$(hw_rel "$HW_AGENT_COPILOT")"
@@ -37,6 +37,7 @@ if [ "${1:-}" = "--location" ]; then
 	case "${2:-}" in
 	skills) printf '%s\n' "$REL_SKILLS" ;;
 	framework) printf '%s\n' "$REL_FRAMEWORK" ;;
+	agent-skills) printf '%s\n' "$REL_COPILOT" ;;
 	*)
 		printf 'path-map: unknown location: %s\n' "${2:-}" >&2
 		exit 2
@@ -109,9 +110,6 @@ for path in "$@"; do
 		;;
 	"${REL_CLAUDE%%/*}"/* | "${REL_CURSOR%%/*}"/* | "${REL_COPILOT%%/*}"/* | "${REL_CODEX%%/*}"/*)
 		emit "$path" none - "generated agent copy; its source selects scenarios"
-		;;
-	"$REL_CATALOG"/*)
-		emit "$path" none - "generated catalog"
 		;;
 	"$REL_FRAMEWORK"/*)
 		emit "$path" none - "framework scripts and documents; the bash suite covers them"

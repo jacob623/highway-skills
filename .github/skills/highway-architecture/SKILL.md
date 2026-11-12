@@ -4,7 +4,7 @@ description: "Manages one reference architecture from one accepted adr."
 usage: "Invoke as /highway-architecture with one adr id."
 compatibility: all
 metadata:
-  version: 5.4.0
+  version: 5.5.0
 ---
 
 # highway-architecture
@@ -40,7 +40,6 @@ Do not report Status, Summary, Next Action, Blocking Reason, Missing, Complete, 
 - `assets/architecture-record.md`.
 - `highway-implementation`.
 - The highway-experience skill, activated first.
-- A project root containing `.highway/`.
 
 ## Outputs
 

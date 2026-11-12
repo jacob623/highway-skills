@@ -4,7 +4,7 @@ description: "Manages one architecture decision for one discovery."
 usage: "Invoke as /highway-adr with one discovery id."
 compatibility: all
 metadata:
-  version: 6.3.0
+  version: 6.4.0
 ---
 
 # highway-adr
@@ -42,7 +42,6 @@ Do not report Status, Summary, Next Action, Blocking Reason, Missing, Complete, 
 - `code/code.md` and the accepted `code/<folder>/.highway/features/<number>-<action>/codify.md` records it names, when closing a span.
 - `assets/adr-record.md`.
 - The highway-experience skill, activated first.
-- A project root containing `.highway/`.
 
 ## Outputs
 

@@ -1,8 +1,8 @@
 # Feature 077 onboarding fixtures
 
 These fixtures exercise the Controls and NFR onboarding contracts in isolated, disposable trees.
-Governance records remain root-level user-owned content under `library/governance/`; `.highway`
-contains only skill contracts, templates, generators, and tests.
+Governance records remain root-level user-owned content under `library/governance/`; each skill
+folder holds only its own contract and the files it bundles.
 
 The focused tests verify collection and review state transitions through contract assertions and
 byte-snapshot probes. Review decisions are held in memory until `Review Complete`; cancellation

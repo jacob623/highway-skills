@@ -4,7 +4,7 @@ description: "Manages the repository-wide organizational Profile and its context
 usage: "Invoke as /highway-profile."
 compatibility: all
 metadata:
-  version: 14.2.0
+  version: 14.3.0
 ---
 
 # highway-profile
@@ -26,7 +26,6 @@ Do not report Status, Summary, Next Action, Blocking Reason, Missing, Complete, 
 
 ## Inputs
 
-- Project root containing `.highway/`.
 - `library/knowledge/profile.md` when present.
 - `assets/profile-record.md`.
 - The highway-experience skill, activated first.
