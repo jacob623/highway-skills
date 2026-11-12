@@ -15,8 +15,6 @@ PATH_MAP="$HW_HARNESS/bin/path-map.sh"
 # Assembled rather than written literally, because shipped-tree-independence.test.sh scans this file
 # for development-folder tokens.
 SPEC_DIR="spec""s"
-# shellcheck source=../lib/distribution.sh
-source "$HW_LIB/distribution.sh"
 fail=0
 TAB="$(printf '\t')"
 
@@ -45,8 +43,6 @@ expect skills/highway-experience/SKILL.md smoke smoke
 expect skills/highway-experience/references/experience-standard.md smoke smoke
 expect skills/highway-experience/references/storage-contract.md smoke smoke
 expect skills/highway-experience/references/highway-identity.md smoke smoke
-expect .highway/governance/storage.md none -
-expect .highway/instructions/highway-agent-context.md none -
 expect harness/src/runner.ts smoke smoke
 expect harness/harness.config.json smoke smoke
 expect harness/scenarios/highway-codify/codify-plan-review.scenario scenario codify-plan-review
@@ -55,7 +51,7 @@ expect harness/fixtures/overlays/code-project/overlay.txt fixture code-project
 expect "$SPEC_DIR/232-behavioral-test-harness/spec.md" none -
 expect tests/run-all.sh none -
 expect .claude/skills/highway-codify/SKILL.md none -
-expect .highway/catalog/index.json none -
+expect skills/highway-help/assets/index.json skill highway-help
 expect framework/constitution.md none -
 
 expect skills/highway-adr/assets/adr-record.md skill highway-adr
@@ -67,11 +63,12 @@ if [[ "$reason" != "skills/highway-adr/assets/adr-record.md is part of highway-a
 	fail=1
 fi
 
-# FR-025: every shipped file under highway-experience and a skill's assets/ maps to a skill or the smoke set.
+# FR-025: every file under highway-experience and a skill's assets/ maps to a skill or the smoke set.
+# Each ships inside its skill folder in every agent tree.
 shipped=()
 while IFS= read -r rel; do
-	[[ "$(dist_classify "$rel")" == "include" ]] && shipped+=("$rel")
-done < <(cd "$HW_ROOT" && { find "$(hw_rel "$HW_EXPERIENCE")" -type f; find "$(hw_rel "$HW_SKILLS")" -path '*/assets/*' -type f; } | LC_ALL=C sort)
+	shipped+=("$rel")
+done < <(cd "$HW_ROOT" && { find "$(hw_rel "$HW_EXPERIENCE")" -type f ! -name '.*'; find "$(hw_rel "$HW_SKILLS")" -path '*/assets/*' -type f ! -name '.*'; } | LC_ALL=C sort)
 if [[ "${#shipped[@]}" -lt 30 ]]; then
 	echo "FAIL: found only ${#shipped[@]} shipped highway-experience and skill asset files"
 	fail=1

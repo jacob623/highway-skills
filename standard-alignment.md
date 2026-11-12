@@ -55,8 +55,8 @@ passing:
 | 7 | highway-experience | 6 | Complete: `specs/236-standard-alignment-experience/` |
 | 8 | Catalog Seeding | 7 | Complete: `specs/237-standard-alignment-catalog-seeding/` |
 | 9 | Record Templates in Their Skills | 6 | Complete: `specs/238-standard-alignment-record-templates/` |
-| 10 | Onboarding Handoffs | 8 | |
-| 11 | Self-Contained Skills | 7 to 10 | |
+| 10 | Onboarding Handoffs | 8 | Complete: `specs/239-standard-alignment-onboarding-handoffs/` |
+| 11 | Self-Contained Skills | 7 to 10 | Complete: `specs/240-standard-alignment-self-contained-skills/` |
 | 12 | Agent Skills Format Conformance | 6 | |
 | 13 | Progressive Disclosure | 11 | |
 | 14 | Agent Plugins Package | 11 to 13 | |
@@ -1198,6 +1198,25 @@ self-contained before Phase 14 packages them.
 
 Exit: `.highway/` does not exist, no skill reads a file outside its own folder, and the full suite
 and harness pass.
+
+Status: complete in `specs/240-standard-alignment-self-contained-skills/`. The suite stays at 85
+tests, all passing: `validate-library.test.sh` and `library-containment.test.sh` are retired, and
+`bundled-files.test.sh` and `self-contained-skills.test.sh` are added. The harness tests went from
+81 to 82. Beyond the steps above:
+- highway-help's index entries carry `dependencies` and `example`, and highway-help reads only
+  `assets/index.json`. A skill's `metadata.dependencies` resolve in its own folder, and a path that
+  leaves it is an error.
+- `bs_scan` scanned nothing in a file without frontmatter, so references had never been checked.
+  With real scanning, references are exempt from the rule-shape rules (P1.1, P1.3, P7.4, P7.5) and
+  P7.1, which judge a skill's own instructions; citations and the remaining rules apply.
+- The validation cache key now includes the skill's folder name, so a cached verdict is no longer
+  replayed for a copy whose `name` differs from its folder.
+- Skill sources no longer ship on their own: each agent tree carries every skill folder whole, and
+  the distribution's verification tree takes its skills from `.agents/skills/`. The harness copies
+  `skills/` into `.github/skills/`, and fixtures may not hold agent skill folders.
+- Every skill took a MINOR version. The development constitution went to 3.4.0: the Shipped
+  artifact definition, D1.5, and Principle VIII (now Bundled File Dependency Review) name bundled
+  files, and the Skill Content Gate triggers on `skills/` alone.
 
 # Phase 12: Agent Skills Format Conformance
 

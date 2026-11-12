@@ -17,9 +17,11 @@ source "$SCRIPT_DIR/paths.sh"
 # adapter-coverage, and an abandoned link probe failed distribution-packaging, each time naming a
 # defect that did not exist and sending the reader to the wrong file.
 rm -rf "$HW_ROOT"/distribution-probe-*.md \
-	"$HW_CATALOG"/distribution-devref-probe-*.md \
-	"$HW_CATALOG"/distribution-link-probe-*.md \
-	"$HW_CATALOG"/distribution-reject-probe-*.md \
+	"$HW_AGENT_CODEX"/highway-help/distribution-devref-probe-*.md \
+	"$HW_AGENT_CODEX"/highway-help/distribution-link-probe-*.md \
+	"$HW_AGENT_CODEX"/highway-help/distribution-reject-probe-*.md \
+	"$HW_AGENT_CODEX"/highway-help/shipped-tree-*probe-*.tmp \
+	"$HW_HARNESS"/fixtures/overlays/probe-agent-skills-* \
 	"$HW_SKILLS"/test-adapter-fixture-* \
 	"$HW_AGENT_COPILOT"/test-adapter-fixture-* \
 	"$HW_AGENT_CLAUDE"/test-adapter-fixture-* \

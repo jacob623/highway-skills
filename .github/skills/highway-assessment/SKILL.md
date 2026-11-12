@@ -4,7 +4,7 @@ description: "Assess accepted repository context."
 usage: "Invoke as /highway-assessment."
 compatibility: all
 metadata:
-  version: 5.2.0
+  version: 5.3.0
 ---
 
 # highway-assessment
@@ -34,7 +34,6 @@ Do not report Status, Summary, Next Action, Blocking Reason, Missing, Complete, 
 - `library/knowledge/assessment-findings.md`.
 - The domain named in the invocation. The default domain is `portfolio`.
 - The highway-experience skill, activated first.
-- A project root containing `.highway/`.
 
 ## Outputs
 

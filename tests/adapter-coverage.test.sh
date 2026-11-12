@@ -31,7 +31,7 @@ source "$SCRIPT_DIR/paths.sh"
 source "$HW_LIB/distribution.sh"
 fail=0
 
-CATALOG="$HW_CATALOG/index.json"
+CATALOG="$HW_HELP_INDEX"
 ADAPTER_MANIFEST="$HW_FRAMEWORK/.adapter-manifest"
 DIST_MANIFEST="$HW_FRAMEWORK/.distribution-manifest"
 
@@ -293,7 +293,6 @@ if [[ -n "$probe_class" ]]; then
 				sed -i.bak "s/^description: .*/description: probe-perturbed-$$ description/" "$SRC_FILE" && rm -f "$SRC_FILE.bak"
 			fi
 			currency_tmp="$(mktemp -d)"
-			cp -R "$HW_HIGHWAY" "$(hw_at "$currency_tmp" "$HW_HIGHWAY")"
 			cp -R "$HW_SKILLS" "$(hw_at "$currency_tmp" "$HW_SKILLS")"
 			cp -R "$HW_FRAMEWORK" "$(hw_at "$currency_tmp" "$HW_FRAMEWORK")"
 			(
@@ -353,7 +352,6 @@ cleanup() {
 trap cleanup EXIT
 
 CURRENCY_TMP="$(mktemp -d)"
-cp -R "$HW_HIGHWAY" "$(hw_at "$CURRENCY_TMP" "$HW_HIGHWAY")"
 cp -R "$HW_SKILLS" "$(hw_at "$CURRENCY_TMP" "$HW_SKILLS")"
 cp -R "$HW_FRAMEWORK" "$(hw_at "$CURRENCY_TMP" "$HW_FRAMEWORK")"
 (
@@ -362,8 +360,8 @@ cp -R "$HW_FRAMEWORK" "$(hw_at "$CURRENCY_TMP" "$HW_FRAMEWORK")"
 	"$(hw_at "$CURRENCY_TMP" "$HW_FRAMEWORK")/generate-agent-adapters.sh"
 ) >/dev/null 2>&1
 
-if ! diff "$HW_CATALOG/index.json" "$(hw_at "$CURRENCY_TMP" "$HW_CATALOG")/index.json" >/dev/null 2>&1; then
-	echo "FAIL: .highway/catalog/index.json is stale; regenerating from current sources produces a different file"
+if ! diff "$HW_HELP_INDEX" "$(hw_at "$CURRENCY_TMP" "$HW_HELP_INDEX")" >/dev/null 2>&1; then
+	echo "FAIL: highway-help's assets/index.json is stale; regenerating from current sources produces a different file"
 	fail=1
 fi
 

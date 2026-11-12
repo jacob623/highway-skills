@@ -1,5 +1,29 @@
 <!--
 Sync Impact Report
+Version change: 3.3.0 → 3.4.0 (MINOR), 2026-11-11
+Bump rationale: every skill reads only its own folder, and `.highway/` is removed. highway-help's
+index moves into its own `assets/`, the library validator merges into the skill validator, and
+skills ship only in the agent trees. The shared library's remaining files are the files skills
+bundle, so the definitions, D1.5, D8.1, and Principle VIII's title name bundled files. No
+obligation is removed, redefined in meaning, or strengthened, and every Observable is unchanged,
+so no conforming work fails.
+Changed elements:
+- Version line: 3.3.0 → 3.4.0
+- Definitions: Shipped artifact names the agent trees, each skill folder with its bundled files,
+  and `framework/README.md`
+- Enforcement Map, D1.2 note: the verification tree takes the skills from `.agents/skills/`
+- D1.5 rule: "a skill or a file it bundles"
+- Principle VIII title: Bundled File Dependency Review; D8.1 rule: "a skill's bundled file";
+  the rationale names bundled files
+- Skill Content Gate trigger: a file under `skills/`
+Unchanged: every Observable, keyword, and tier; the Declared Toolchain; every other row and gate;
+the D8.1 id; the Last Amended date (already 2026-11-11). Earlier reports below keep the paths that
+were current when they were written.
+Self-application review: D1.3 PASS (no Highway Skills Constitution rule sentence is copied);
+D1.4 PASS (this report cites rule IDs); D5.3 PASS (the six changed elements are listed above and
+every unlisted element carries forward).
+
+Sync Impact Report
 Version change: 3.2.0 → 3.3.0 (MINOR), 2026-11-11
 Bump rationale: Highway's identity, the Experience Standard, and the storage contract move into
 the highway-experience skill under `skills/`, and the always-on instructions are removed with
@@ -408,7 +432,7 @@ Highway Skills Constitution.
 
 | Term | Definition |
 |---|---|
-| **Shipped artifact** | Any file included in the packaged distribution: `skills/` (shipped as `.highway/skills/`), `.highway/library/`, `.highway/catalog/`, the generated agent adapter trees, and `framework/README.md` (shipped as `README.md`). |
+| **Shipped artifact** | Any file included in the packaged distribution: the generated agent adapter trees, each holding every skill folder with the files it bundles, and `framework/README.md` (shipped as `README.md`). |
 | **Development artifact** | Any file excluded from the packaged distribution: `.specify/`, `specs/`, and the `speckit-*` agent skills. |
 | **Generated artifact** | A file produced by a script under `framework/` and recorded in a manifest. |
 | **Live documentation** | A document that describes current behavior: tool READMEs, the authoring standard, the root README. |
@@ -447,7 +471,7 @@ table cannot silently go stale.
 | Rule | Enforced by | Note |
 |---|---|---|
 | D1.1 | shipped-tree-independence.test.sh | Scans the distributed path set for the prohibited tokens; seeds a probe to prove it can fail |
-| D1.2 | distribution-packaging.test.sh | Runs `framework/validate-skill.sh` from a verification tree: the distribution plus `framework/`, with the skills moved back to `skills/` and the development directories absent |
+| D1.2 | distribution-packaging.test.sh | Runs `framework/validate-skill.sh` from a verification tree: the distribution plus `framework/`, with the skills copied from `.agents/skills/` to `skills/` and the development directories absent |
 | D2.5 | path-construction.test.sh | Scans every script under `framework/`, `tests/`, and `harness/bin/` for a path built from a root variable, a climb from the script's folder, or a named template or document joined to its folder; seeds a probe to prove it can fail |
 | D4.1 | generate-agent-adapters.test.sh | Asserts the generator refuses to overwrite a target that was hand-edited after it was produced |
 | D4.2 | generate-catalog.test.sh | Asserts re-running with unchanged inputs produces byte-identical output |
@@ -467,7 +491,7 @@ table cannot silently go stale.
 | D1.2 | The packaged tree MUST validate with development artifacts absent. | `validate-skill.sh` exits 0 against a copy of the tree from which `.specify/` and `specs/` have been removed. | [auto] |
 | D1.3 | This document MUST NOT restate rule text defined in the Highway Skills Constitution. | Rules are cited by ID; no rule sentence is duplicated. | [agent-checkable] |
 | D1.4 | A document in this repository MUST NOT restate rule text defined in a constitution. | The document cites rule IDs in place of rule text. | [agent-checkable] |
-| D1.5 | A plan that creates or modifies a skill or library file MUST record a Constitution Check against the Highway Skills Constitution. | The plan names rule IDs drawn from that document. | [agent-checkable] |
+| D1.5 | A plan that creates or modifies a skill or a file it bundles MUST record a Constitution Check against the Highway Skills Constitution. | The plan names rule IDs drawn from that document. | [agent-checkable] |
 | D1.6 | The distributed path set MUST be declared in exactly one place. | Each check that needs the set reads that one declaration. | [agent-checkable] |
 
 Rationale: A defect that crosses this boundary is invisible in the development tree and visible
@@ -568,14 +592,15 @@ Trees created by test fixtures are not declared agent trees.
 Rationale: D6.2 is scoped to the containing tree so that a reference valid in development but
 dangling in the package is a FAIL.
 
-### VIII. Shared Library Dependency Review
+### VIII. Bundled File Dependency Review
 
 | ID | Rule | Observable | Tier |
 |---|---|---|---|
-| D8.1 | A change to a shared library artifact MUST be followed by re-validation of every skill that cites it. | Each citing skill is identified and re-checked; its complete emitted frontmatter and body still match the changed artifact, or a mismatch is reported. | [agent-checkable] |
+| D8.1 | A change to a skill's bundled file MUST be followed by re-validation of every skill that cites it. | Each citing skill is identified and re-checked; its complete emitted frontmatter and body still match the changed artifact, or a mismatch is reported. | [agent-checkable] |
 
-Rationale: Shared artifacts are dependencies of the skills that cite them; reviewing only the
-changed file leaves dependent output contracts able to drift silently.
+Rationale: Bundled files, such as the record templates in a skill's `assets/`, are dependencies of
+the skills that cite them; reviewing only the changed file leaves dependent output contracts able
+to drift silently.
 
 ## Principle Precedence
 
@@ -603,7 +628,7 @@ A gate applies only when its trigger evaluates true. A gate whose trigger is fal
 | **Generator Gate** | The change touches a `generate-*.sh` script. | D4.1–D4.4 |
 | **Correspondence Gate** | The change adds, removes, or modifies a directory under `skills/`, or any other input to a declared generator. | D4.5–D4.7 |
 | **Validation Gate** | The change adds or modifies a validation check. | D3.4, D3.5 |
-| **Skill Content Gate** | The change creates or modifies a file under `skills/` or `.highway/library/`. | Delegated to the Highway Skills Constitution per D1.5 |
+| **Skill Content Gate** | The change creates or modifies a file under `skills/`. | Delegated to the Highway Skills Constitution per D1.5 |
 
 ## Constitution Check Output Shape
 
@@ -633,4 +658,4 @@ Highway Skills Constitution prevails for artifact content and this document prev
 This document is subject to D1.3, D1.4, and D5.3. Every amendment records a review against those
 rule IDs.
 
-**Version**: 3.3.0 | **Ratified**: 2026-09-08 | **Last Amended**: 2026-11-11
+**Version**: 3.4.0 | **Ratified**: 2026-09-08 | **Last Amended**: 2026-11-11

@@ -22,7 +22,7 @@ source "$SCRIPT_DIR/lib/paths.sh"
 # shellcheck source=lib/distribution.sh
 source "$HW_LIB/distribution.sh"
 
-RECORD_REL=".highway/tools/.distribution-record"
+RECORD_REL=".distribution-record"
 
 if [[ $# -ne 1 ]]; then
 	echo "ERROR: usage: framework/generate-distribution.sh <target-directory>" >&2
@@ -151,17 +151,17 @@ verify_cross_references() {
 }
 
 # Builds a verification tree outside the target: the distribution, plus this repository's
-# framework, with the skills moved back from where they ship to where the framework reads them.
-# The repository has no development directories in it, so the tree proves the skills validate
-# using only distribution contents and the framework. Prints the tree's root.
+# framework, with the skills copied from the cross-agent tree they ship in to where the framework
+# reads them. The repository has no development directories in it, so the tree proves the skills
+# validate using only distribution contents and the framework. Prints the tree's root.
 build_verification_tree() {
 	local tree shipped_skills
 	tree="$(mktemp -d "${TMPDIR:-/tmp}/highway-verify.XXXXXX")" || return 1
 	cp -R "$TARGET/." "$tree/"
-	shipped_skills="$(dist_destination "$(hw_rel "$HW_SKILLS")")"
+	shipped_skills="$(hw_rel "$HW_AGENT_CODEX")"
 	if [[ -d "$tree/$shipped_skills" ]]; then
 		mkdir -p "$(dirname "$(hw_at "$tree" "$HW_SKILLS")")"
-		mv "$tree/$shipped_skills" "$(hw_at "$tree" "$HW_SKILLS")"
+		cp -R "$tree/$shipped_skills" "$(hw_at "$tree" "$HW_SKILLS")"
 	fi
 	cp -R "$HW_FRAMEWORK" "$(hw_at "$tree" "$HW_FRAMEWORK")"
 	printf '%s\n' "$tree"

@@ -57,13 +57,22 @@ rc_template_exempt_ids() {
 	printf '%s\n' P1.1 P1.3 P7.4 P7.5
 }
 
-# Prints the rule ids every library file is exempt from, regardless of library type. P8.7's
-# subject is a skill, which is copied into each agent adapter tree; a library file is never
-# copied, so a relative link in one resolves. P2.6 limits what an agent does while following a
-# skill, and a library file is content a skill reads or copies. Reported N/A with a condition by
-# the caller, not skipped silently.
-# Usage: rc_library_exempt_ids
-rc_library_exempt_ids() {
+# Prints the rule ids a reference is exempt from, beyond rc_bundled_exempt_ids. The rule-shape
+# rules judge a skill's own instructions; a reference such as the Experience Standard defines
+# rules for others in table rows that exceed them. P7.1 judges a SKILL.md Purpose, and P7.2 a
+# frontmatter version, which a reference does not have.
+# Usage: rc_reference_exempt_ids
+rc_reference_exempt_ids() {
+	rc_template_exempt_ids
+	printf '%s\n' P7.1 P7.2
+}
+
+# Prints the rule ids every file a skill bundles is exempt from, template or reference. P8.7's
+# subject is a skill's own text; a bundled file is copied with its skill folder, so a relative
+# link inside the folder still resolves. P2.6 limits what an agent does while following a skill,
+# and a bundled file is content a skill reads or copies.
+# Usage: rc_bundled_exempt_ids
+rc_bundled_exempt_ids() {
 	printf '%s
 ' P8.7 P6.4 P2.6
 }

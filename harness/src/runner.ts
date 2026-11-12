@@ -10,7 +10,7 @@ import { coverageSection, readInventory, readTreatments } from "./coverage.ts";
 import { copilotDriver, RunStop, type DriveResult, type Driver, type TranscriptEntry, type Warning } from "./driver.ts";
 import { errorText, formatFailure, type Failure, type FailureKind } from "./failure.ts";
 import { copilotAsk, makeFallbackPicker, runJudge, type Ask, type JudgeFile } from "./judge.ts";
-import { buildDistribution, createProject, removeProject, type BuildResult } from "./project.ts";
+import { buildSkills, createProject, removeProject, type BuildResult } from "./project.ts";
 import { createRedactor, type Redactor } from "./redact.ts";
 import { keyText } from "./replies.ts";
 import { exitCode, runId, summaryText, writeRunReports, type AttemptResult, type Run, type RunType, type ScenarioOutcome, type Selection } from "./report.ts";
@@ -70,7 +70,7 @@ export function fixtureCheck(fixtures: readonly string[]): Map<string, string[]>
 export const defaultDeps: RunnerDeps = {
   driver: copilotDriver,
   makeAsk: copilotAsk,
-  build: buildDistribution,
+  build: buildSkills,
   fixtureCheck,
   out: (line) => process.stdout.write(line + "\n"),
   now: () => new Date(),
@@ -93,7 +93,7 @@ interface Context {
   config: Config;
   deps: RunnerDeps;
   redact: Redactor;
-  distDir: string;
+  baseDir: string;
   workRoot: string;
   total: number;
   ask?: Ask;
@@ -139,7 +139,7 @@ async function runAttempt(ctx: Context, scenario: Scenario, attempt: number, att
   writeFileSync(logFile, "");
   const transcript: TranscriptEntry[] = [];
 
-  const projectDir = createProject({ distDir: ctx.distDir, fixture: source.fixture ?? scenario.fixture, fromDir: source.fromDir }, ctx.workRoot, `${scenario.id}-${attempt}`);
+  const projectDir = createProject({ baseDir: ctx.baseDir, fixture: source.fixture ?? scenario.fixture, fromDir: source.fromDir }, ctx.workRoot, `${scenario.id}-${attempt}`);
   mkdirSync(join(ctx.workRoot, "homes"), { recursive: true });
   const copilotHome = mkdtempSync(join(ctx.workRoot, "homes", `${scenario.id}-${attempt}-`));
   const before = snapshot(projectDir);
@@ -418,14 +418,14 @@ export async function main(argv: readonly string[], deps: RunnerDeps = defaultDe
   const workRoot = mkdtempSync(join(tmpdir(), "highway-harness-"));
   try {
     const built = deps.build(workRoot);
-    if (!built.ok) return runFailure({ kind: "build-failed", check: "distribution", detail: built.tail });
+    if (!built.ok) return runFailure({ kind: "build-failed", check: "skills", detail: built.tail });
 
     const ctx: Context = {
       run,
       config,
       deps,
       redact,
-      distDir: built.dir,
+      baseDir: built.dir,
       workRoot,
       total: selection.length,
       ask: config.judge ? deps.makeAsk(config.token, config.judgeModel) : undefined,

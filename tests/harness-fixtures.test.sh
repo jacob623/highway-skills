@@ -5,7 +5,7 @@
 set -u
 # Instrument class: static-document-contract
 # Artifact classes: harness-fixture, output-template
-# Seeded failure probe: removing a required heading from a copy of a stage's implementation record makes template-check.sh fail on it, and a fixture with that copy fails this check.
+# Seeded failure probe: removing a required heading from a copy of a stage's implementation record makes template-check.sh fail on it, and a fixture with that copy fails this check. An overlay holding an agent skill folder fails the fixture check.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=paths.sh
@@ -56,7 +56,20 @@ if [[ -n "$record" ]]; then
 	rm -f "$probe"
 fi
 
+# Seeded probe: an overlay holding an agent skill folder fails, because the harness supplies the skills.
+probe_overlay="$FIXTURES/overlays/probe-agent-skills-$$"
+trap 'rm -rf "$probe_overlay"' EXIT
+mkdir -p "$probe_overlay/$(hw_rel "$HW_AGENT_COPILOT")/highway-help"
+printf 'stage: setup\n' >"$probe_overlay/overlay.txt"
+printf 'probe\n' >"$probe_overlay/$(hw_rel "$HW_AGENT_COPILOT")/highway-help/SKILL.md"
+if out="$(bash "$HW_HARNESS/bin/fixture-check.sh" "probe-agent-skills-$$")" \
+	|| [[ "$out" != *"the harness supplies the skills"* ]]; then
+	echo "FAIL: fixture-check.sh did not reject an overlay holding $(hw_rel "$HW_AGENT_COPILOT")/"
+	fail=1
+fi
+rm -rf "$probe_overlay"
+
 if [[ "$fail" -ne 0 ]]; then
 	exit 1
 fi
-echo "PASS: every harness fixture matches its current output template"
+echo "PASS: every harness fixture matches its current output template, and none holds a skill folder"

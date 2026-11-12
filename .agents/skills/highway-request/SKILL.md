@@ -4,7 +4,7 @@ description: "Manages one business request and its accepted artifact."
 usage: "Invoke as /highway-request with the business change."
 compatibility: all
 metadata:
-  version: 5.3.0
+  version: 5.4.0
 ---
 
 # highway-request
@@ -33,7 +33,6 @@ Do not show Current Domain, Completed Domains, or Remaining Domains.
 - `requests/requests.md` and `requests/REQ*.md` when present.
 - `assets/request-record.md`.
 - The highway-experience skill, activated first.
-- A project root containing `.highway/`.
 
 ## Outputs
 
@@ -66,7 +65,6 @@ Exclude a secret or regulated personal data. Ask for a business-relevant replace
 1. Read the invocation. A handoff from `highway-assessment` is invocation context.
 2. When it names a business problem, idea, desired change, or a seeded assessment finding, go to `start`. Do not carry assessment solution examples into the request. The close names the next skill after the request is accepted.
 3. When it does not, go to `intake`.
-4. When `.highway/` cannot be found, stop. Say the project root cannot be located. Write nothing.
 
 ### Classify
 
@@ -285,7 +283,6 @@ Do not continue into codify in the same message. Do not rewrite the request.
 ## Error Handling
 
 - An empty invocation stays on `intake` and writes nothing.
-- A missing `.highway/` root stops the skill and writes nothing.
 - A missing record template stops the skill, names the template path, and writes nothing.
 - A failed write leaves existing request and catalog bytes unchanged.
 - A secret or regulated personal value is replaced up to three times, then the skill stops and writes nothing.

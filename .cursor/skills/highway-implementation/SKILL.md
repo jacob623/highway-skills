@@ -4,7 +4,7 @@ description: "Manages one reference implementation from one accepted reference a
 usage: "Invoke as /highway-implementation with one architecture id."
 compatibility: all
 metadata:
-  version: 7.12.0
+  version: 7.13.0
 ---
 
 # highway-implementation
@@ -42,7 +42,6 @@ Do not report Status, Summary, Next Action, Blocking Reason, Missing, Complete, 
 - `assets/implementation-record.md`.
 - `implementations/capabilities.md` and `library/coding-standards/codify-platforms.md`.
 - The highway-experience skill, activated first.
-- A project root containing `.highway/`.
 
 ## Outputs
 

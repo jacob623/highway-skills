@@ -34,7 +34,7 @@ const LIKELY_CAUSE: Record<FailureKind, string> = {
   "fixture-blocked": "The scenario's fixture no longer matches its template. Promote a fresh chain run or fix the fixture.",
   "missing-token": "No Copilot token was found. Set GITHUB_TOKEN in harness/.env.",
   "no-access": "The token has no Copilot access. Check the account's Copilot plan.",
-  "build-failed": "The distribution build failed; the last lines of its output follow.",
+  "build-failed": "The skill copy failed; its error follows.",
   "rate-limit": "Copilot kept rate limiting after 3 retries. Lower --parallel or wait.",
   allowance: "The premium-request allowance is used up. Wait for the reset or raise the limit.",
   "chain-stage": "A chain stage failed, so later stages and every scenario were skipped.",

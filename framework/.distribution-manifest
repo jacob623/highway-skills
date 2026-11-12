@@ -84,12 +84,8 @@ include	.agents/skills/highway-codify	-
 include	.agents/skills/highway-codify-config	-
 include	.agents/skills/highway-experience	-
 
-# --- Skills: authored at the root, shipped under .highway/ ---
-include	skills	.highway/skills
-
-# --- The .highway directory: excluded by default so each child is a deliberate decision ---
-exclude	.highway	-
-include	.highway/catalog	-
+# --- Skill sources: each skill folder ships whole in every agent tree above, so the sources do not ---
+exclude	skills	-
 
 # --- Organization library: highway-setup seeds it in a project at run time, so no organization file ships ---
 exclude	library	-

@@ -4,7 +4,7 @@ description: "Manages one discovery for a complete request."
 usage: "Invoke as /highway-discovery with one request id or one discovery id."
 compatibility: all
 metadata:
-  version: 5.3.0
+  version: 5.4.0
 ---
 
 # highway-discovery
@@ -39,7 +39,6 @@ Do not report Status, Summary, Next Action, Blocking Reason, Missing, Complete, 
 - `requests/requests.md` and `discoveries/discoveries.md`.
 - `assets/discovery-record.md`.
 - The highway-experience skill, activated first.
-- A project root containing `.highway/`.
 
 ## Outputs
 

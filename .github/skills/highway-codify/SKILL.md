@@ -4,7 +4,7 @@ description: "Manages one functional artifact for one accepted implementation."
 usage: "Invoke as /highway-codify with one implementation name."
 compatibility: all
 metadata:
-  version: 14.4.0
+  version: 14.5.0
 ---
 
 # highway-codify
@@ -46,7 +46,6 @@ Do not report Status, Summary, Next Action, Blocking Reason, Missing, Complete, 
 - `assets/codify-tasks.md`.
 - `assets/codify-metadata.md`.
 - The highway-experience skill, activated first.
-- A project root containing `.highway/`.
 
 ## Outputs
 
@@ -78,18 +77,17 @@ Emit only the active template. `catalog` runs alone. Otherwise follow this order
 
 ### Entry
 
-1. When `.highway/` cannot be found, stop. Say the project root cannot be located. Write nothing.
-2. When the invocation is the word `configure`, or asks to change platforms or coding standards, say: To configure platforms and coding standards, run /highway-codify-config. Write nothing.
-3. When the invocation is the word `catalog`, or asks to show the code catalog, go to `catalog`. Do not resume a task list or select an implementation.
-4. Read the invocation for an implementation title, a description, an implementation id, and one optional action.
-5. When the invocation names a product in `code/code.md` by title, folder, or `CDY` id and its open feature has an open task, go to `code` at the first open task. When that feature has a plan and no task list, go to `menu`.
-6. When an implementation id matches one accepted implementation, select it and show its title.
-7. When an exact title matches one accepted implementation, select it. Compare without regard to case.
-8. After a selection, go to `record check`.
-9. When a description is present, go to `choose` and suggest at most five matches.
-10. When nothing is named and one to five accepted implementations exist, go to `choose` and list each one.
-11. When nothing is named and more than five accepted implementations exist, go to `choose` and list none.
-12. When no accepted implementation exists, say so. Write nothing.
+1. When the invocation is the word `configure`, or asks to change platforms or coding standards, say: To configure platforms and coding standards, run /highway-codify-config. Write nothing.
+2. When the invocation is the word `catalog`, or asks to show the code catalog, go to `catalog`. Do not resume a task list or select an implementation.
+3. Read the invocation for an implementation title, a description, an implementation id, and one optional action.
+4. When the invocation names a product in `code/code.md` by title, folder, or `CDY` id and its open feature has an open task, go to `code` at the first open task. When that feature has a plan and no task list, go to `menu`.
+5. When an implementation id matches one accepted implementation, select it and show its title.
+6. When an exact title matches one accepted implementation, select it. Compare without regard to case.
+7. After a selection, go to `record check`.
+8. When a description is present, go to `choose` and suggest at most five matches.
+9. When nothing is named and one to five accepted implementations exist, go to `choose` and list each one.
+10. When nothing is named and more than five accepted implementations exist, go to `choose` and list none.
+11. When no accepted implementation exists, say so. Write nothing.
 
 ### catalog
 
@@ -752,7 +750,6 @@ The automation was not run.
 
 ## Error Handling
 
-- A missing `.highway/` root stops the skill and writes nothing.
 - A missing record, catalog, plan, or task list template stops the skill, names the template path, and writes nothing.
 - Missing Controls and NFRs catalogs leave the proposal with `No Control or NFR applies.`
 - A Control or NFR that cannot be met for the selected action returns to `suggest` and writes nothing.

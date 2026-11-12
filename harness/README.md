@@ -14,9 +14,9 @@ The harness is a development tool. `harness/` is excluded from the distribution,
 
 For each attempt, the runner builds a new project in a temporary folder:
 
-1. The distribution output from `framework/generate-distribution.sh`, built once per run. It
-   supplies `.highway/`, `.github/skills/`, `.claude/`, `.cursor/`, and `.agents/`, exactly as a
-   user's repository would have them.
+1. The base, built once per run: a copy of every skill folder in `skills/`, with its bundled
+   files, in `.github/skills/`, where the Copilot agent discovers skills. That is what installing
+   the skills gives an agent; the project holds nothing from `framework/`, `tests/`, or `harness/`.
 2. The scenario's fixture on top: a stage snapshot from `harness/fixtures/stages/`, or an overlay
    from `harness/fixtures/overlays/` applied to its stage. `empty` adds nothing.
 
@@ -143,7 +143,7 @@ alone. Defaults for the model, parallelism, limits, and transcript folder come f
 |---|---|
 | 0 | Every gated check passed, or the selection was empty |
 | 1 | A scenario failed or was blocked, or a chain stage failed |
-| 2 | The run could not start or was stopped: an invalid switch, a missing token, no Copilot access, a failed distribution build, a persistent rate limit, or a used-up premium-request allowance |
+| 2 | The run could not start or was stopped: an invalid switch, a missing token, no Copilot access, a failed skill copy, a persistent rate limit, or a used-up premium-request allowance |
 
 Exit 2 takes precedence over exit 1.
 
@@ -241,7 +241,9 @@ agent asked, so it can trail the step the agent was actually in.
 
 Stage fixtures are full project snapshots for the Northwind Outfitters example: `setup`,
 `request`, `discovery`, `architecture`, and `implementation`. Each later stage holds every earlier
-stage's files. Fixtures hold project files only. `.highway/` comes from the distribution.
+stage's files. Fixtures hold project files only: the base supplies the skills, so the fixture check
+fails a fixture holding `.github/skills/`, `.claude/skills/`, `.cursor/skills/`, or `.agents/skills/`.
+A chain stage's snapshot leaves out every path the base supplies.
 
 An overlay is a folder under `harness/fixtures/overlays/<name>/` with `overlay.txt` holding
 `stage: <stage>`. Its files replace or add to the stage's files, and an optional `.delete` lists
@@ -313,8 +315,9 @@ prints why and exits 0.
 
 The path map reads every location from the framework's paths helper, `framework/lib/paths.sh`,
 through `harness/bin/lib/paths.sh`, which each `harness/bin/` script sources.
-`path-map.sh --location <skills|framework>` prints the skills or framework location, which the runner uses
-to find skills at a ref and to build the distribution.
+`path-map.sh --location <skills|framework|agent-skills>` prints the skills, framework, or agent
+skill location, which the runner uses to find skills at a ref and to build the base.
+`skills/highway-help/assets/index.json`, highway-help's generated index, selects highway-help.
 
 Coverage is printed in each run report per skill: each bullet's treatment, the reply kinds
 exercised, and the steps reached and not reached. When a bullet is reworded, its hash changes.
@@ -377,7 +380,7 @@ The likely cause comes from a fixed table, so the same failure always prints the
 | `fixture-blocked` | The fixture no longer matches its template. | Run `bash harness/bin/fixture-check.sh <fixture>`; promote a fresh chain run or fix the fixture. |
 | `missing-token` | No Copilot token was found. | Set `GITHUB_TOKEN` in `harness/.env`. |
 | `no-access` | The token has no Copilot access. | Check the account's Copilot plan. |
-| `build-failed` | The distribution build failed. | The block shows the last lines of `generate-distribution.sh` output. |
+| `build-failed` | The skill copy failed. | The block shows its error. |
 | `rate-limit` | Copilot kept rate limiting after 3 retries. | Lower `--parallel`, or wait and rerun. |
 | `allowance` | The premium-request allowance is used up. | Wait for the reset, or raise the limit. |
 | `chain-stage` | A chain stage failed, so later stages and every scenario were skipped. | Diagnose the failed stage's own block above it. |

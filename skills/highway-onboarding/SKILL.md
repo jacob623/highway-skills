@@ -4,7 +4,7 @@ description: "Manages one decision, one reference architecture, and one referenc
 usage: "Invoke as `/highway-onboarding`."
 compatibility: all
 metadata:
-  version: 10.9.0
+  version: 10.10.0
 ---
 
 # highway-onboarding
@@ -37,7 +37,6 @@ Do not report Status, Summary, Next Action, Blocking Reason, Missing, Complete, 
 - `highway-implementation`.
 - `library/coding-standards/codify-platforms.md`.
 - The highway-experience skill, activated first.
-- A project root containing `.highway/`.
 
 ## Outputs
 

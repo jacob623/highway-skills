@@ -62,7 +62,7 @@ for category in $expected_categories; do
 done
 
 case "$fixture_dir" in
-  "$HW_SKILLS"/*|"$HW_HIGHWAY"/*) fail "fixtures are inside a shipped/runtime path" ;;
+  "$HW_SKILLS"/*|"$HW_AGENT_COPILOT"/*|"$HW_AGENT_CLAUDE"/*|"$HW_AGENT_CURSOR"/*|"$HW_AGENT_CODEX"/*) fail "fixtures are inside a shipped/runtime path" ;;
 esac
 
 if grep -Eq 'profile-convergence|rubric' "$source_skill"; then

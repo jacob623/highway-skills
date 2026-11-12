@@ -72,7 +72,7 @@ require_in "$IMPL" '### platforms' "- \`accept\`, or a yes: emit: Let's configur
 require_in "$IMPL" '### platforms' '- `decline`, or a no: go to `close`.'
 require_in "$IMPL" '### platforms' '- `unknown`: go to `close`.'
 
-require_in "$CONFIG" '### Entry' '2. When the invocation names a return step, hold it for this visit.'
+require_in "$CONFIG" '### Entry' '1. When the invocation names a return step, hold it for this visit.'
 require_in "$CONFIG" "$MENU" '- `decline`: when a return step is held, go to that step in its skill. Otherwise stop. Write nothing.'
 
 reject "$ONBOARD" 'Run `/highway-codify-config [Platform]` to configure it for automation.'

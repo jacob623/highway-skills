@@ -4,7 +4,7 @@ description: "Orchestrates initial highway setup through the owning governance s
 usage: "Invoke as /highway-setup."
 compatibility: all
 metadata:
-  version: 10.2.0
+  version: 10.3.0
 ---
 
 # highway-setup
@@ -27,7 +27,6 @@ Do not show `Finished` to the person.
 
 ## Inputs
 
-- Project root containing `.highway/`.
 - `highway-profile`.
 - `highway-objectives`.
 - `highway-controls`.

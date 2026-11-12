@@ -1,0 +1,148 @@
+{
+  "entries": [
+    {
+      "id": "highway-adr",
+      "name": "highway-adr",
+      "description": "Manages one architecture decision for one discovery.",
+      "usage": "Invoke as /highway-adr with one discovery id.",
+      "version": "6.4.0",
+      "dependencies": [],
+      "example": "/highway-adr DISC3f2a9c10 OPTa91c2b04"
+    },
+    {
+      "id": "highway-architecture",
+      "name": "highway-architecture",
+      "description": "Manages one reference architecture from one accepted adr.",
+      "usage": "Invoke as /highway-architecture with one adr id.",
+      "version": "5.5.0",
+      "dependencies": [],
+      "example": "/highway-architecture ADRb7c41e20"
+    },
+    {
+      "id": "highway-assessment",
+      "name": "highway-assessment",
+      "description": "Assess accepted repository context.",
+      "usage": "Invoke as /highway-assessment.",
+      "version": "5.3.0",
+      "dependencies": [],
+      "example": "/highway-assessment portfolio"
+    },
+    {
+      "id": "highway-codify-config",
+      "name": "highway-codify-config",
+      "description": "Manages the repository-wide guidance used by highway-codify.",
+      "usage": "Invoke as /highway-codify-config, or with one implementation name.",
+      "version": "3.9.0",
+      "dependencies": [],
+      "example": "/highway-codify-config"
+    },
+    {
+      "id": "highway-codify",
+      "name": "highway-codify",
+      "description": "Manages one functional artifact for one accepted implementation.",
+      "usage": "Invoke as /highway-codify with one implementation name.",
+      "version": "14.5.0",
+      "dependencies": [],
+      "example": "/highway-codify Restart the worker"
+    },
+    {
+      "id": "highway-controls",
+      "name": "highway-controls",
+      "description": "Manages the repository-wide control baseline.",
+      "usage": "Invoke as /highway-controls.",
+      "version": "8.4.0",
+      "dependencies": [],
+      "example": "/highway-setup"
+    },
+    {
+      "id": "highway-discovery",
+      "name": "highway-discovery",
+      "description": "Manages one discovery for a complete request.",
+      "usage": "Invoke as /highway-discovery with one request id or one discovery id.",
+      "version": "5.4.0",
+      "dependencies": [],
+      "example": "/highway-discovery REQ3f2a9c10"
+    },
+    {
+      "id": "highway-experience",
+      "name": "highway-experience",
+      "description": "Holds highway identity, the experience standard, and the storage contract. Loaded by every other highway skill; not for a request unrelated to highway.",
+      "usage": "Loaded by every other highway skill. Invoke as `/highway-experience` directly for a summary of highway.",
+      "version": "1.0.0",
+      "dependencies": [],
+      "example": "/highway-experience"
+    },
+    {
+      "id": "highway-help",
+      "name": "highway-help",
+      "description": "Prints registration details for one named skill, or a discovery listing of every registered skill when none is named.",
+      "usage": "Invoke as `/highway-help` for all skills, or `/highway-help <skill-id>` for one named skill's registration details.",
+      "version": "3.3.0",
+      "dependencies": [],
+      "example": "/highway-help highway-help"
+    },
+    {
+      "id": "highway-implementation",
+      "name": "highway-implementation",
+      "description": "Manages one reference implementation from one accepted reference architecture.",
+      "usage": "Invoke as /highway-implementation with one architecture id.",
+      "version": "7.13.0",
+      "dependencies": [],
+      "example": "/highway-implementation RAb7c41e20"
+    },
+    {
+      "id": "highway-nfrs",
+      "name": "highway-nfrs",
+      "description": "Manages the repository-wide nfr baseline.",
+      "usage": "Invoke as /highway-nfrs.",
+      "version": "9.5.0",
+      "dependencies": [],
+      "example": "/highway-setup"
+    },
+    {
+      "id": "highway-objectives",
+      "name": "highway-objectives",
+      "description": "Manages the repository-wide business objective baseline and its stable traceability references.",
+      "usage": "Invoke as /highway-objectives.",
+      "version": "8.4.0",
+      "dependencies": [],
+      "example": "/highway-setup"
+    },
+    {
+      "id": "highway-onboarding",
+      "name": "highway-onboarding",
+      "description": "Manages one decision, one reference architecture, and one reference implementation.",
+      "usage": "Invoke as `/highway-onboarding`.",
+      "version": "10.10.0",
+      "dependencies": [],
+      "example": "/highway-onboarding"
+    },
+    {
+      "id": "highway-profile",
+      "name": "highway-profile",
+      "description": "Manages the repository-wide organizational Profile and its contextual guidance.",
+      "usage": "Invoke as /highway-profile.",
+      "version": "14.3.0",
+      "dependencies": [],
+      "example": "/highway-setup"
+    },
+    {
+      "id": "highway-request",
+      "name": "highway-request",
+      "description": "Manages one business request and its accepted artifact.",
+      "usage": "Invoke as /highway-request with the business change.",
+      "version": "5.4.0",
+      "dependencies": [],
+      "example": "/highway-request We need a consistent way for finance reviewers to reduce manual invoice comparison time."
+    },
+    {
+      "id": "highway-setup",
+      "name": "highway-setup",
+      "description": "Orchestrates initial highway setup through the owning governance skills.",
+      "usage": "Invoke as /highway-setup.",
+      "version": "10.3.0",
+      "dependencies": [],
+      "example": "/highway-setup"
+    }
+  ]
+}

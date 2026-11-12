@@ -59,7 +59,7 @@ limit() {
 	done
 }
 
-require_in "$CODIFY" '### Entry' '8. After a selection, go to `record check`.'
+require_in "$CODIFY" '### Entry' '7. After a selection, go to `record check`.'
 require_in "$CODIFY" '### choose' 'A number, a title, or a description selects one. Show the title. Go to `record check`.'
 require "$CODIFY" '`choose` when no implementation is named; `record check`; `code project` for a code project, or `rank`, with `codified`, when no action is named; then `suggest`, `draft`, `code tasks` for a code project, `provider`, `standards`,'
 

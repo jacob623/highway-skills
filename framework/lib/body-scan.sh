@@ -20,7 +20,9 @@ bs_scan() {
 		{
 			line = $0
 
-			# Frontmatter: count delimiters, emit nothing until the block closes.
+			# Frontmatter: count delimiters, emit nothing until the block closes. A file whose first
+			# line opens no block, such as a reference, has no frontmatter.
+			if (NR == 1 && line !~ /^---[[:space:]]*$/) delim = 2
 			if (delim < 2 && line ~ /^---[[:space:]]*$/) { delim++; next }
 			if (delim < 2) next
 

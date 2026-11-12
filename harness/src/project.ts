@@ -1,5 +1,5 @@
 import { spawnSync } from "node:child_process";
-import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync } from "node:fs";
 import { join, normalize, resolve, sep } from "node:path";
 import { HARNESS_DIR, REPO_ROOT } from "./config.ts";
 
@@ -11,7 +11,7 @@ export const FIXTURES_DIR = join(HARNESS_DIR, "fixtures");
 export type BuildResult = { ok: true; dir: string } | { ok: false; tail: string };
 
 /** A repository-relative location from the paths helper, read through `path-map.sh --location`. */
-export function location(name: "skills" | "framework"): string {
+export function location(name: "skills" | "framework" | "agent-skills"): string {
   const result = spawnSync("bash", [join(HARNESS_DIR, "bin", "path-map.sh"), "--location", name], {
     encoding: "utf8",
     cwd: REPO_ROOT,
@@ -20,16 +20,24 @@ export function location(name: "skills" | "framework"): string {
   return result.stdout.trim();
 }
 
-/** Builds the distribution once per run into <workRoot>/dist (FR-005). */
-export function buildDistribution(workRoot: string): BuildResult {
-  const dir = join(workRoot, "dist");
-  const result = spawnSync("bash", [join(REPO_ROOT, location("framework"), "generate-distribution.sh"), dir], {
-    encoding: "utf8",
-    cwd: REPO_ROOT,
-  });
-  if (result.status === 0) return { ok: true, dir };
-  const output = `${result.stdout ?? ""}${result.stderr ?? ""}${result.error ? String(result.error) : ""}`;
-  return { ok: false, tail: output.trimEnd().split("\n").slice(-15).join("\n") };
+/**
+ * Builds the base project once per run into <workRoot>/base: a copy of every skill folder in
+ * skills/, in the folder the agent discovers skills in, and nothing else (FR-014).
+ */
+export function buildSkills(workRoot: string): BuildResult {
+  const dir = join(workRoot, "base");
+  try {
+    const source = join(REPO_ROOT, location("skills"));
+    const target = join(dir, location("agent-skills"));
+    mkdirSync(target, { recursive: true });
+    for (const name of readdirSync(source).sort()) {
+      if (!existsSync(join(source, name, "SKILL.md"))) continue;
+      cpSync(join(source, name), join(target, name), { recursive: true, filter: (src) => !/[\\/]\.[^\\/]*$/.test(src) });
+    }
+    return { ok: true, dir };
+  } catch (err) {
+    return { ok: false, tail: String(err) };
+  }
 }
 
 export interface ResolvedFixture {
@@ -75,17 +83,17 @@ function insideRoot(root: string, rel: string): string {
 }
 
 export interface ProjectSource {
-  distDir: string;
+  baseDir: string;
   /** A fixture name, or a directory holding a previous chain stage's output. */
   fixture?: string;
   fromDir?: string;
 }
 
-/** A new temporary project per attempt: the distribution, then the fixture or previous stage (FR-005). */
+/** A new temporary project per attempt: the base skills, then the fixture or previous stage (FR-005). */
 export function createProject(source: ProjectSource, workRoot: string, label: string): string {
   mkdirSync(join(workRoot, "projects"), { recursive: true });
   const dir = mkdtempSync(join(workRoot, "projects", `${label}-`));
-  cpSync(source.distDir, dir, { recursive: true });
+  cpSync(source.baseDir, dir, { recursive: true });
   if (source.fromDir) {
     cpSync(source.fromDir, dir, { recursive: true });
     return dir;

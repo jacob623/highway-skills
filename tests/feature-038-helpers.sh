@@ -71,7 +71,6 @@ feature_038_source_path() {
 		github) printf '%s\n' '.github/skills/' ;;
 		claude) printf '%s\n' '.claude/skills/' ;;
 		cursor) printf '%s\n' '.cursor/skills/' ;;
-		catalog) printf '%s\n' '.highway/catalog/' ;;
 		*) echo "unknown Feature 038 source key: $1" >&2; return 1 ;;
 	esac
 }

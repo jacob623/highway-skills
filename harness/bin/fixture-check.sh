@@ -102,9 +102,11 @@ for fixture in "$@"; do
 		fi
 	fi
 
-	if [ -d "$(hw_at "$view" "$HW_HIGHWAY")" ]; then
-		problem "$fixture" .highway "fixtures hold project files only; the distribution supplies .highway/"
-	fi
+	for agent_skills in "$HW_AGENT_COPILOT" "$HW_AGENT_CLAUDE" "$HW_AGENT_CURSOR" "$HW_AGENT_CODEX"; do
+		if [ -d "$(hw_at "$view" "$agent_skills")" ]; then
+			problem "$fixture" "$(hw_rel "$agent_skills")" "fixtures hold project files only; the harness supplies the skills"
+		fi
+	done
 	while IFS= read -r rel; do
 		template="$(template_for "$rel")"
 		[ -n "$template" ] || continue

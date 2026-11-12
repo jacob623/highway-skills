@@ -11,8 +11,13 @@ duplicated or hand-adapted per agent.
 - **Author a skill**: create `skills/<id>/SKILL.md` per [framework/authoring-standard.md](framework/authoring-standard.md).
 - **Create an architecture decision**: invoke `highway-adr` with one completed `DISC######` artifact; the workflow publishes an accepted ADR using its own `assets/adr-record.md` template and adds its row to the seeded `adrs/adrs.md`.
 - **Seed the catalogs**: `/highway-setup` writes every absent organization catalog, the findings file, and the storage record from `skills/highway-setup/assets/` at the start of each run. A skill that edits a seeded file stops and directs the person to `/highway-setup` when it is absent.
-- **Validate a skill**: `framework/validate-skill.sh skills/<id>`
-- **Build the catalog**: `framework/generate-catalog.sh` writes `.highway/catalog/index.json`.
+- **Keep each skill self-contained**: a skill reads only its own folder. Its templates, references,
+  and scripts sit beside its `SKILL.md` in `assets/`, `references/`, and `scripts/`, named by a
+  relative path one level deep; `tests/self-contained-skills.test.sh` enforces it.
+- **Validate a skill**: `framework/validate-skill.sh skills/<id>` checks the `SKILL.md` and every
+  complete template and reference the skill bundles.
+- **Build highway-help's index**: `framework/generate-catalog.sh` writes
+  `skills/highway-help/assets/index.json`.
 - **Generate agent adapters**: `framework/generate-agent-adapters.sh` writes
   `.github/skills/`, `.claude/skills/`, `.cursor/skills/`, and `.agents/skills/` from the skills under
   `skills/`.

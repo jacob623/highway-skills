@@ -53,9 +53,9 @@ function deps(overrides: Partial<RunnerDeps>, lines: string[], transcripts: stri
     driver: writingDriver,
     makeAsk: () => async () => "none",
     build: (workRoot) => {
-      const dir = join(workRoot, "dist");
-      mkdirSync(join(dir, ".highway"), { recursive: true });
-      writeFileSync(join(dir, ".highway", "README.md"), "dist\n");
+      const dir = join(workRoot, "base");
+      mkdirSync(join(dir, ".github", "skills", "highway-help"), { recursive: true });
+      writeFileSync(join(dir, ".github", "skills", "highway-help", "SKILL.md"), "skill\n");
       return { ok: true, dir };
     },
     fixtureCheck: () => new Map(),

@@ -4,7 +4,7 @@ description: "Manages the repository-wide nfr baseline."
 usage: "Invoke as /highway-nfrs."
 compatibility: all
 metadata:
-  version: 9.4.0
+  version: 9.5.0
 ---
 
 # highway-nfrs
@@ -27,7 +27,6 @@ Do not emit Setup's operational-expectation transition. Setup already emitted it
 
 ## Inputs
 
-- Project root containing `.highway/`.
 - `library/knowledge/profile.md` when present.
 - `library/governance/objectives.md` and `library/objectives/` when present.
 - `library/governance/controls.md` and `library/governance/controls/` when present.
@@ -360,8 +359,6 @@ Write `library/governance/nfrs.md` in the shape required by `assets/nfr-catalog.
 - Emit no timestamp, random value, or environment value.
 - An empty held set writes the catalog with version `1.0.0` and no index rows.
 - A removed NFR keeps its catalog row with status `removed`.
-
-No NFR record is written beneath `.highway`.
 
 ## Verification
 

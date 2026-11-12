@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
-# Builds catalog/index.json from skills/*/SKILL.md frontmatter, per feature 006 (help skill),
-# which supersedes feature 001 (multi-agent skill suite) by adding "usage". The output depends
-# only on the skill sources, so unchanged sources produce a byte-identical catalog (D4.2).
+# Builds highway-help's assets/index.json from skills/*/SKILL.md: one entry per skill with every
+# value highway-help prints, so highway-help reads nothing outside its own folder. The output
+# depends only on the skill sources, so unchanged sources produce a byte-identical index (D4.2).
 #
 # Usage: framework/generate-catalog.sh
-# Exit 0: catalog written.
-# Exit 1: at least one skill under skills/ is invalid; the catalog is NOT written (no partial
-#         catalog), and the failing skill's id is named in the error output.
+# Exit 0: index written.
+# Exit 1: at least one skill under skills/ is invalid; the index is NOT written (no partial
+#         index), and the failing skill's id is named in the error output. A name that differs
+#         from its folder is such a failure, through validate-skill.sh.
 set -u
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -16,11 +17,29 @@ source "$SCRIPT_DIR/lib/paths.sh"
 source "$HW_LIB/frontmatter.sh"
 
 SKILLS_DIR="$HW_SKILLS"
-CATALOG_DIR="$HW_CATALOG"
-CATALOG_JSON="$CATALOG_DIR/index.json"
+CATALOG_JSON="$HW_HELP_INDEX"
 
 json_escape() {
 	sed -e 's/\\/\\\\/g' -e 's/"/\\"/g'
+}
+
+# Prints the JSON array of a skill's metadata.dependencies as "<path>@<version>" strings.
+dependencies_json() {
+	local out="" path version
+	while IFS='|' read -r path version; do
+		[[ -z "$path" ]] && continue
+		[[ -n "$out" ]] && out="$out, "
+		out="$out\"$(printf '%s@%s' "$path" "$version" | json_escape)\""
+	done <<< "$(fm_get_dependencies "$1")"
+	printf '[%s]' "$out"
+}
+
+# Prints the first line under "## Example" that is one inline code span, without its backticks.
+example_of() {
+	awk '
+		/^## / { inside = ($0 ~ /^## Example[[:space:]]*$/); next }
+		inside && /^`[^`]+`[[:space:]]*$/ { sub(/[[:space:]]*$/, ""); print substr($0, 2, length($0) - 2); exit }
+	' "$1"
 }
 
 shopt -s nullglob
@@ -53,10 +72,9 @@ for ((i = 0; i < skill_count; i++)); do
 	name="$(fm_get "$skill_file" name || true)"
 	description="$(fm_get "$skill_file" description || true)"
 	usage="$(fm_get "$skill_file" usage || true)"
-	compatibility="$(fm_get "$skill_file" compatibility || true)"
-	[[ -z "$compatibility" ]] && compatibility="all"
 	version="$(fm_get_nested "$skill_file" metadata version || true)"
-	source_path="skills/$id/SKILL.md"
+	dependencies="$(dependencies_json "$skill_file")"
+	example="$(example_of "$skill_file")"
 
 	entry=$(cat <<-ENTRY
 		    {
@@ -64,9 +82,9 @@ for ((i = 0; i < skill_count; i++)); do
 		      "name": "$(printf '%s' "$name" | json_escape)",
 		      "description": "$(printf '%s' "$description" | json_escape)",
 		      "usage": "$(printf '%s' "$usage" | json_escape)",
-		      "compatibility": "$(printf '%s' "$compatibility" | json_escape)",
 		      "version": "$(printf '%s' "$version" | json_escape)",
-		      "source_path": "$(printf '%s' "$source_path" | json_escape)"
+		      "dependencies": $dependencies,
+		      "example": "$(printf '%s' "$example" | json_escape)"
 		    }
 	ENTRY
 	)
@@ -78,7 +96,7 @@ for ((i = 0; i < skill_count; i++)); do
 	fi
 done
 
-mkdir -p "$CATALOG_DIR"
+mkdir -p "$(dirname "$CATALOG_JSON")"
 
 {
 	echo "{"

@@ -58,8 +58,8 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/paths.sh"
 GENERATE="$HW_FRAMEWORK/generate-catalog.sh"
 FIXTURES="$HW_FIXTURES"
-CATALOG_JSON="$HW_CATALOG/index.json"
-CATALOG_MD="$HW_CATALOG/index.md"
+CATALOG_JSON="$HW_HELP_INDEX"
+CATALOG_MD="$(dirname "$HW_HELP_INDEX")/index.md"
 
 TMP_ID="test-catalog-fixture-$$"
 SKILL_DIR="$HW_SKILLS/$TMP_ID"
@@ -103,30 +103,41 @@ fi
 rm -f /tmp/generate-catalog.$$.log
 
 if ! grep -q '"entries"' "$CATALOG_JSON"; then
-	echo "FAIL: catalog/index.json missing top-level key 'entries'"
+	echo "FAIL: assets/index.json missing top-level key 'entries'"
 	fail=1
 fi
-for key in generated_at overlap_flags; do
+for key in generated_at overlap_flags compatibility source_path; do
 	if grep -q "\"$key\"" "$CATALOG_JSON"; then
-		echo "FAIL: catalog/index.json has removed key '$key'"
+		echo "FAIL: assets/index.json has removed key '$key'"
 		fail=1
 	fi
 done
 
 if ! grep -q "\"id\": \"$TMP_ID\"" "$CATALOG_JSON"; then
-	echo "FAIL: catalog/index.json has no entry for '$TMP_ID'"
+	echo "FAIL: assets/index.json has no entry for '$TMP_ID'"
 	fail=1
 fi
 
-for field in name description usage compatibility version source_path; do
+for field in name description usage version dependencies example; do
 	if ! grep -q "\"$field\":" "$CATALOG_JSON"; then
-		echo "FAIL: catalog/index.json entry missing field '$field'"
+		echo "FAIL: assets/index.json entry missing field '$field'"
 		fail=1
 	fi
 done
 
+# highway-help's own entry carries what it prints: no dependencies, and its Example invocation.
+help_entry="$(awk '/"id": "highway-help"/{f=1} f{print} f && /^    }/{exit}' "$CATALOG_JSON")"
+if [[ "$help_entry" != *'"dependencies": []'* ]]; then
+	echo "FAIL: highway-help's entry does not list an empty dependencies array"
+	fail=1
+fi
+if [[ "$help_entry" != *'"example": "/highway-help highway-help"'* ]]; then
+	echo "FAIL: highway-help's entry does not carry its Example invocation"
+	fail=1
+fi
+
 if [[ -e "$CATALOG_MD" ]]; then
-	echo "FAIL: catalog/index.md exists; the generator writes catalog/index.json only"
+	echo "FAIL: assets/index.md exists; the generator writes assets/index.json only"
 	fail=1
 fi
 
@@ -155,7 +166,26 @@ fi
 rm -f /tmp/generate-catalog-invalid.$$.log
 catalog_after_invalid="$(cat "$CATALOG_JSON" 2>/dev/null || true)"
 if [[ "$catalog_before_invalid" != "$catalog_after_invalid" ]]; then
-	echo "FAIL: catalog/index.json was modified despite generation failing (partial catalog written)"
+	echo "FAIL: assets/index.json was modified despite generation failing (partial catalog written)"
+	fail=1
+fi
+
+# --- Part 4: a name that differs from its folder aborts generation (FR-002) ---
+rm -rf "$SKILL_DIR"
+mkdir -p "$SKILL_DIR"
+cp "$FIXTURES/valid-skill/SKILL.md" "$SKILL_DIR/SKILL.md"
+catalog_before_mismatch="$(cat "$CATALOG_JSON" 2>/dev/null || true)"
+if "$GENERATE" >/tmp/generate-catalog-mismatch.$$.log 2>&1; then
+	echo "FAIL: framework/generate-catalog.sh exited 0 with a skill whose name differs from its folder"
+	fail=1
+fi
+if ! grep -q "$TMP_ID" /tmp/generate-catalog-mismatch.$$.log; then
+	echo "FAIL: the name-folder failure did not name the skill '$TMP_ID'"
+	fail=1
+fi
+rm -f /tmp/generate-catalog-mismatch.$$.log
+if [[ "$catalog_before_mismatch" != "$(cat "$CATALOG_JSON" 2>/dev/null || true)" ]]; then
+	echo "FAIL: assets/index.json was modified despite a name-folder mismatch"
 	fail=1
 fi
 

@@ -131,7 +131,6 @@ check "VC-5" "an edited skill is recorded under a new key" "$(key_count "$cache"
 source "$HW_LIB/validation-cache.sh"
 tree="$WORK/tree"
 mkdir -p "$tree"
-cp -R "$HW_HIGHWAY" "$(hw_at "$tree" "$HW_HIGHWAY")"
 cp -R "$HW_FRAMEWORK" "$(hw_at "$tree" "$HW_FRAMEWORK")"
 copied_root="$tree"
 
@@ -211,6 +210,53 @@ if [[ -e "$HW_ROOT/highway-validation-cache" ]]; then
 	rm -rf "$HW_ROOT/highway-validation-cache"
 	fail=1
 fi
+
+# --- VC-10: editing a bundled file changes the skill's key -----------------------------------
+#
+# validate-skill.sh checks a skill's assets/ and references/, so a stale verdict must not be
+# replayed after either changes.
+
+bundled="$WORK/valid-skill"
+cp -R "$VALID_FIXTURE" "$bundled"
+mkdir -p "$bundled/assets" "$bundled/references"
+printf '# Reference\n\nBackground material.\n' >"$bundled/references/note.md"
+printf '# Asset\n' >"$bundled/assets/note.md"
+VC_ENVIRONMENT_HASH=""
+key_bundled="$(vc_key "$bundled/SKILL.md" "$HW_ROOT")"
+printf 'An added line.\n' >>"$bundled/references/note.md"
+if [[ "$(vc_key "$bundled/SKILL.md" "$HW_ROOT")" == "$key_bundled" ]]; then
+	echo "FAIL: VC-10 -- editing references/ left the key unchanged"
+	fail=1
+fi
+key_bundled="$(vc_key "$bundled/SKILL.md" "$HW_ROOT")"
+printf 'An added line.\n' >>"$bundled/assets/note.md"
+if [[ "$(vc_key "$bundled/SKILL.md" "$HW_ROOT")" == "$key_bundled" ]]; then
+	echo "FAIL: VC-10 -- editing assets/ left the key unchanged"
+	fail=1
+fi
+
+# --- VC-11: the folder name is part of the key; the folder's location is not ------------------
+#
+# A skill's name must match its folder, so a verdict recorded under one folder name must not be
+# replayed for the same content under another.
+
+renamed="$WORK/renamed-skill"
+cp -R "$VALID_FIXTURE" "$renamed"
+moved="$WORK/elsewhere/valid-skill"
+mkdir -p "$WORK/elsewhere"
+cp -R "$VALID_FIXTURE" "$moved"
+key_fixture="$(vc_key "$VALID_FIXTURE/SKILL.md" "$HW_ROOT")"
+check "VC-11" "the same folder name elsewhere keeps its key" \
+	"$(vc_key "$moved/SKILL.md" "$HW_ROOT")" "$key_fixture"
+if [[ "$(vc_key "$renamed/SKILL.md" "$HW_ROOT")" == "$key_fixture" ]]; then
+	echo "FAIL: VC-11 -- a renamed folder kept its key"
+	fail=1
+fi
+home="$(fresh_home)"
+TMPDIR="$home" bash "$VALIDATE" "$VALID_FIXTURE" >/dev/null 2>&1
+rc=0
+TMPDIR="$home" bash "$VALIDATE" "$renamed" >/dev/null 2>&1 || rc=$?
+check "VC-11" "a name that differs from its folder fails on a populated cache" "$rc" "1"
 
 # --- Report ----------------------------------------------------------------------------------
 

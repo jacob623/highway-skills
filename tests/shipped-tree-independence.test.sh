@@ -42,8 +42,8 @@ fi
 # The distributed path set comes from .distribution-manifest, which declares it once (D1.6).
 # Classification is per file rather than per directory because the two differ: the framework
 # directory is excluded but its README is included, and the excluded packaging tooling
-# necessarily contains the very tokens this check searches for. Probes are seeded in the catalog,
-# an included directory.
+# necessarily contains the very tokens this check searches for. Probes are seeded in highway-help's
+# cross-agent copy, an included directory.
 #
 # The test directory is then added back deliberately. The manifest excludes it, because its
 # fixtures are non-conformant on purpose and must not reach a user, but feature 010 chose to scan
@@ -84,7 +84,7 @@ if [[ -n "$probe_class" ]]; then
 	probe_path=""
 	case "$probe_class" in
 		source-document)
-			probe_path="$HW_CATALOG/shipped-tree-cliprobe-$$.tmp"
+			probe_path="$HW_AGENT_CODEX/highway-help/shipped-tree-cliprobe-$$.tmp"
 			;;
 		disposable-fixture)
 			probe_path="$HW_FIXTURES/shipped-tree-cliprobe-$$.tmp"
@@ -106,7 +106,7 @@ if [[ -n "$violations" ]]; then
 fi
 
 # The check must be capable of failing: seed a violation and confirm it is detected.
-probe="$HW_CATALOG/shipped-tree-probe-$$.tmp"
+probe="$HW_AGENT_CODEX/highway-help/shipped-tree-probe-$$.tmp"
 printf 'see specs/001-multi-agent-skill-suite/spec.md for details\n' >"$probe"
 probe_hits="$(find_violations "$SELF" | grep -c "shipped-tree-probe-$$" | tr -d ' ')"
 rm -f "$probe"

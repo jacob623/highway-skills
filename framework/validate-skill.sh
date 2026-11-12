@@ -30,6 +30,8 @@ source "$HW_LIB/rule-checks.sh"
 source "$HW_LIB/dependency-check.sh"
 # shellcheck source=lib/validation-cache.sh
 source "$HW_LIB/validation-cache.sh"
+# shellcheck source=lib/library-schema.sh
+source "$HW_LIB/library-schema.sh"
 
 use_cache=1
 if [[ ${1:-} == "--no-cache" ]]; then
@@ -48,9 +50,8 @@ id="$(basename "$skill_dir")"
 constitution="$(con_file "$HW_ROOT")"
 
 # A skill is subject to both shipping governance documents: the constitution governs its text, the
-# experience standard governs what it emits. validate-library.sh deliberately loads only the
-# former -- library content emits nothing, so experience rules would judge it against obligations
-# it cannot have.
+# experience standard governs what it emits. Its bundled files are judged by the former only (see
+# the bundled file checks below).
 GOVERNANCE_DOCS=("$constitution")
 experience_standard="$(con_experience_file "$HW_ROOT")"
 if [[ -f "$experience_standard" ]]; then
@@ -147,9 +148,9 @@ if [[ -n "$agent_exceptions" ]]; then
 	done <<< "$agent_exceptions"
 fi
 
-# --- Dependency checks (metadata.dependencies -> .highway/) -------------------------------
+# --- Dependency checks (metadata.dependencies -> the skill's own folder) ------------------
 
-dependency_findings="$(dc_validate_dependencies "$skill_file" "$HW_ROOT")"
+dependency_findings="$(dc_validate_dependencies "$skill_file")"
 if [[ -n "$dependency_findings" ]]; then
 	while IFS= read -r finding; do
 		[[ -z "$finding" ]] && continue
@@ -221,27 +222,57 @@ while IFS= read -r rule_line; do
 	esac
 done <<< "$(for doc in "${GOVERNANCE_DOCS[@]}"; do con_rules "$doc"; done)"
 
-# --- Asset template checks -----------------------------------------------------------------
+# --- Bundled file checks -------------------------------------------------------------------
 
-# A file in the skill's assets/ with a template section is a complete template and gets the checks
-# validate-library.sh applies to a template; a file without one, such as a seeded skeleton, does not.
+# A file the skill bundles is judged by the constitution's rules, never the experience standard's:
+# it emits nothing. A complete template (a file in assets/ with a template section) also needs a
+# name and description; a reference has no frontmatter, so it skips those. A file in assets/
+# without a template section, such as a seeded skeleton, is not judged as a template.
 # Findings fail the skill but leave the verdict lines, which describe SKILL.md, unchanged.
-for asset_file in "$skill_dir"/assets/*.md; do
-	[[ -f "$asset_file" ]] || continue
-	grep -Eq '^## (File Frontmatter|Body|Catalog Structure)[[:space:]]*$' "$asset_file" || continue
-	asset_name="assets/$(basename "$asset_file")"
-	if asset_errors="$("$HW_FRAMEWORK/validate-library.sh" --asset "$asset_file" 2>&1 >/dev/null)"; then
-		continue
+bundled_exempt="$(rc_bundled_exempt_ids)"
+template_exempt="$(rc_template_exempt_ids)"
+reference_exempt="$(rc_reference_exempt_ids)"
+constitution_rules="$(con_rules "$constitution")"
+
+# check_bundled <file> <template|reference>
+check_bundled() {
+	local file="$1" kind="$2" rel exempt="$bundled_exempt" rule_line rule_id rest tier check_fn findings observable finding
+	rel="$(basename "$(dirname "$file")")/$(basename "$file")"
+	if [[ "$kind" == "template" ]]; then
+		exempt="$exempt"$'\n'"$template_exempt"
+		collect "$({ ls_validate_name "$(fm_get "$file" name || true)"
+			ls_validate_description "$(fm_get "$file" description || true)"; } \
+			| sed -E "s#^ERROR: \[([^]]+)\] #ERROR: [\1] $rel: #")"
+	else
+		exempt="$exempt"$'\n'"$reference_exempt"
 	fi
-	asset_errors="$(printf '%s\n' "$asset_errors" | grep '^ERROR: ')"
-	if [[ -z "$asset_errors" ]]; then
-		collect "ERROR: [ASSET] $asset_name: the template check failed without a finding"
-		continue
-	fi
-	collect "$(printf '%s\n' "$asset_errors" | sed -E "s#^ERROR: \[([^]]+)\] #ERROR: [\1] $asset_name: #")"
-	while IFS= read -r rule_id; do
-		[[ -n "$rule_id" && " $failed_rules " != *" $rule_id "* ]] && failed_rules="$failed_rules $rule_id"
-	done <<< "$(printf '%s\n' "$asset_errors" | sed -nE 's/^ERROR: \[([A-Z][0-9]+\.[0-9]+)\].*/\1/p')"
+	while IFS= read -r rule_line; do
+		rule_id="${rule_line%%	*}"
+		rest="${rule_line#*	}"
+		tier="${rest%%	*}"
+		[[ "$tier" == "auto" ]] || continue
+		printf '%s\n' "$exempt" | grep -qx "$rule_id" && continue
+		check_fn="$(rc_check_fn "$rule_id")"
+		[[ -n "$check_fn" ]] || continue
+		findings="$("$check_fn" "$file")"
+		[[ $? -eq 1 ]] || continue
+		[[ " $failed_rules " == *" $rule_id "* ]] || failed_rules="$failed_rules $rule_id"
+		observable="$(con_rule_field "$constitution" "$rule_id" observable)"
+		while IFS= read -r finding; do
+			[[ -z "$finding" ]] && continue
+			collect "ERROR: [$rule_id] $rel: $finding ($observable)"
+		done <<< "$findings"
+	done <<< "$constitution_rules"
+}
+
+for bundled_file in "$skill_dir"/assets/*.md; do
+	[[ -f "$bundled_file" ]] || continue
+	grep -Eq '^## (File Frontmatter|Body|Catalog Structure)[[:space:]]*$' "$bundled_file" || continue
+	check_bundled "$bundled_file" template
+done
+for bundled_file in "$skill_dir"/references/*.md; do
+	[[ -f "$bundled_file" ]] || continue
+	check_bundled "$bundled_file" reference
 done
 
 # --- Report --------------------------------------------------------------------------------
