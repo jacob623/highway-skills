@@ -82,7 +82,7 @@ check_root() {
 		*) cat "$root/$f" ;;
 		esac | grep -nF "$TOKEN" | grep -vE "$CODE_PRODUCT" | sed "s#^#$f:#"
 	done < <(cd "$root" && find framework tests harness README.md "$DEV_CONSTITUTION" \
-		\( -name node_modules -o -name .git \) -prune -o -type f -print 2>/dev/null | LC_ALL=C sort)
+		\( -name node_modules -o -name .git -o -path harness/runs \) -prune -o -type f -print 2>/dev/null | LC_ALL=C sort)
 }
 
 report() {

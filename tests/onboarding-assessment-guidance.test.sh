@@ -8,8 +8,10 @@ set -u
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=paths.sh
 source "$SCRIPT_DIR/paths.sh"
-ONBOARDING="$HW_SKILLS/highway-onboarding/SKILL.md"
-ASSESSMENT="$HW_SKILLS/highway-assessment/SKILL.md"
+# shellcheck source=../framework/lib/flows.sh
+source "$HW_LIB/flows.sh"
+ONBOARDING="$(fl_skill_text_file "$HW_SKILLS/highway-onboarding")"
+ASSESSMENT="$(fl_skill_text_file "$HW_SKILLS/highway-assessment")"
 fail=0
 
 require() {

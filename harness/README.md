@@ -109,7 +109,7 @@ Run from the repository root with `node harness/src/cli.ts [switches]`, or
 | Run | Example | What runs |
 |---|---|---|
 | Full | `node harness/src/cli.ts` | The six-stage chain, then every scenario |
-| Smoke | `node harness/src/cli.ts --smoke` | One smoke scenario per skill (15) |
+| Smoke | `node harness/src/cli.ts --smoke` | One smoke scenario per skill (16) |
 | Targeted | `node harness/src/cli.ts --changed-since origin/main` | Scenarios affected by changed files |
 | Targeted | `node harness/src/cli.ts --paths skills/highway-codify/assets/codify-plan.md` | Scenarios affected by these paths |
 | Targeted | `node harness/src/cli.ts --skills highway-codify` | Every scenario of these skills |
@@ -276,7 +276,9 @@ fixtures like any other scenario.
 
 ### Covering, checking as an invariant, or waiving a bullet
 
-Each Verification and Error Handling bullet of a skill has a 12-character hash. List them with:
+Each Verification and Error Handling bullet of a skill has a 12-character hash. The inventory
+reads `SKILL.md` and each flow file its flows table names, so a step or bullet keeps its hash when
+it moves into a flow file. List them with:
 
 ```bash
 bash harness/bin/inventory.sh highway-codify
@@ -402,6 +404,6 @@ The first live run confirms how the Copilot SDK behaves with Highway. Record eac
 - [ ] Usage events report tokens and cost, and the run report totals them.
 - [ ] Skill questions arrive as ended turns, `ask_user` requests, or both, and both are answered.
 - [ ] Permission requests carry the kinds and paths the policy expects.
-- [ ] A smoke run (`--smoke`) runs 15 scenarios with run type `smoke`.
+- [ ] A smoke run (`--smoke`) runs 16 scenarios with run type `smoke`.
 - [ ] A full run's chain passes, and `--promote` replaces the stage fixtures only where the
       chain's output changed.

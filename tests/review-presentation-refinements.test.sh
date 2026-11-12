@@ -8,8 +8,10 @@ set -u
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=paths.sh
 source "$SCRIPT_DIR/paths.sh"
+# shellcheck source=../framework/lib/flows.sh
+source "$HW_LIB/flows.sh"
 SKILLS="$HW_SKILLS"
-REQUEST="$SKILLS/highway-request/SKILL.md"
+REQUEST="$(fl_skill_text_file "$SKILLS/highway-request")"
 fail=0
 
 require() {
@@ -29,7 +31,7 @@ reject() {
 }
 
 for pair in "highway-objectives:Objective" "highway-controls:Control" "highway-nfrs:NFR"; do
-	skill="$SKILLS/${pair%%:*}/SKILL.md"
+	skill="$(fl_skill_text_file "$SKILLS/${pair%%:*}")"
 	noun="${pair#*:}"
 	require "$skill" '1. **[Title]:** [Statement]'
 	require "$skill" '   **Why it matters:** [Rationale]'
@@ -37,7 +39,7 @@ for pair in "highway-objectives:Objective" "highway-controls:Control" "highway-n
 	require "$skill" "Put \`---\` between ${noun}s."
 	require "$skill" "A number in the reply refers to the $noun with that number in the review just shown."
 done
-require "$SKILLS/highway-objectives/SKILL.md" '   **Success looks like:**'
+require "$(fl_skill_text_file "$SKILLS/highway-objectives")" '   **Success looks like:**'
 
 require "$REQUEST" 'otherwise `start`, then `identifier`,'
 require "$REQUEST" '**Here is a proposed starting point for your request:**'

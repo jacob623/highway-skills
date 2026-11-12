@@ -30,6 +30,8 @@ source "$HW_LIB/rule-checks.sh"
 source "$HW_LIB/validation-cache.sh"
 # shellcheck source=lib/library-schema.sh
 source "$HW_LIB/library-schema.sh"
+# shellcheck source=lib/flows.sh
+source "$HW_LIB/flows.sh"
 
 use_cache=1
 if [[ ${1:-} == "--no-cache" ]]; then
@@ -201,9 +203,12 @@ done <<< "$(for doc in "${GOVERNANCE_DOCS[@]}"; do con_rules "$doc"; done)"
 bundled_exempt="$(rc_bundled_exempt_ids)"
 template_exempt="$(rc_template_exempt_ids)"
 reference_exempt="$(rc_reference_exempt_ids)"
+flow_exempt="$(rc_flow_exempt_ids)"
 constitution_rules="$(con_rules "$constitution")"
 
-# check_bundled <file> <template|reference>
+# check_bundled <file> <template|reference|flow>
+# A flow file is a file in references/ that the flows table names: steps moved out of SKILL.md,
+# judged as SKILL.md's instructions are, so only rc_flow_exempt_ids apply.
 check_bundled() {
 	local file="$1" kind="$2" rel exempt="$bundled_exempt" rule_line rule_id rest tier check_fn findings observable finding
 	rel="$(basename "$(dirname "$file")")/$(basename "$file")"
@@ -212,6 +217,8 @@ check_bundled() {
 		collect "$({ ls_validate_name "$(fm_get "$file" name || true)"
 			ls_validate_description "$(fm_get "$file" description || true)"; } \
 			| sed -E "s#^ERROR: \[([^]]+)\] #ERROR: [\1] $rel: #")"
+	elif [[ "$kind" == "flow" ]]; then
+		exempt="$flow_exempt"
 	else
 		exempt="$exempt"$'\n'"$reference_exempt"
 	fi
@@ -239,9 +246,14 @@ for bundled_file in "$skill_dir"/assets/*.md; do
 	grep -Eq '^## (File Frontmatter|Body|Catalog Structure)[[:space:]]*$' "$bundled_file" || continue
 	check_bundled "$bundled_file" template
 done
+flow_files="$(fl_files "$skill_dir")"
 for bundled_file in "$skill_dir"/references/*.md; do
 	[[ -f "$bundled_file" ]] || continue
-	check_bundled "$bundled_file" reference
+	if printf '%s\n' "$flow_files" | grep -qxF "references/$(basename "$bundled_file")"; then
+		check_bundled "$bundled_file" flow
+	else
+		check_bundled "$bundled_file" reference
+	fi
 done
 
 # --- Report --------------------------------------------------------------------------------

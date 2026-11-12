@@ -9,6 +9,8 @@ set -u
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=paths.sh
 source "$SCRIPT_DIR/paths.sh"
+# shellcheck source=../framework/lib/flows.sh
+source "$HW_LIB/flows.sh"
 fail=0
 
 probe_class=""
@@ -50,11 +52,11 @@ require_text() {
 	fi
 }
 
-ARCH="$HW_SKILLS/highway-architecture/SKILL.md"
-ADR="$HW_SKILLS/highway-adr/SKILL.md"
+ARCH="$(fl_skill_text_file "$HW_SKILLS/highway-architecture")"
+ADR="$(fl_skill_text_file "$HW_SKILLS/highway-adr")"
 OBJ="$(hw_template objective-catalog)"
-REQ="$HW_SKILLS/highway-request/SKILL.md"
-IMPL="$HW_SKILLS/highway-implementation/SKILL.md"
+REQ="$(fl_skill_text_file "$HW_SKILLS/highway-request")"
+IMPL="$(fl_skill_text_file "$HW_SKILLS/highway-implementation")"
 CAP="$(hw_template capability-catalog)"
 
 require_text "$ARCH" "The id is \`RA\` plus those eight hex digits."

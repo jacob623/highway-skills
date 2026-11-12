@@ -8,11 +8,13 @@ set -u
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=paths.sh
 source "$SCRIPT_DIR/paths.sh"
+# shellcheck source=../framework/lib/flows.sh
+source "$HW_LIB/flows.sh"
 SKILLS="$HW_SKILLS"
 RECORD="$(hw_template adr-record)"
-ADR="$SKILLS/highway-adr/SKILL.md"
-ARCHITECTURE="$SKILLS/highway-architecture/SKILL.md"
-IMPLEMENTATION="$SKILLS/highway-implementation/SKILL.md"
+ADR="$(fl_skill_text_file "$SKILLS/highway-adr")"
+ARCHITECTURE="$(fl_skill_text_file "$SKILLS/highway-architecture")"
+IMPLEMENTATION="$(fl_skill_text_file "$SKILLS/highway-implementation")"
 fail=0
 
 require() {

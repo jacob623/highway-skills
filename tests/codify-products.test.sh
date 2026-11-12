@@ -8,9 +8,11 @@ set -u
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=paths.sh
 source "$SCRIPT_DIR/paths.sh"
+# shellcheck source=../framework/lib/flows.sh
+source "$HW_LIB/flows.sh"
 SKILLS="$HW_SKILLS"
-CODIFY="$SKILLS/highway-codify/SKILL.md"
-ADR="$SKILLS/highway-adr/SKILL.md"
+CODIFY="$(fl_skill_text_file "$SKILLS/highway-codify")"
+ADR="$(fl_skill_text_file "$SKILLS/highway-adr")"
 CATALOG="$(hw_template codify-catalog)"
 RECORD="$(hw_template codify-record)"
 TASKS="$(hw_template codify-tasks)"
@@ -93,7 +95,8 @@ require_in revise 'Stay on `revise`.'
 require_in write '.highway/metadata.md'
 require_in write '.highway/features/'
 require_in index 'code/integrations.md'
-require_in index 'starts the product, adds an implementation, records an integration, changes the summary, or is open'
+require_in index "3. Apply the Features rule to this feature's entry."
+require "$CODIFY" 'The Features rule: in Features, add `<number>-<action> | one sentence` when this feature starts the product, adds an implementation, records an integration, changes the summary, or is open.'
 require_in index 'When an accepted row already has that From, To, and Kind, write no second row.'
 
 for text in \

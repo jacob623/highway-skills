@@ -8,11 +8,13 @@ set -u
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=paths.sh
 source "$SCRIPT_DIR/paths.sh"
+# shellcheck source=../framework/lib/flows.sh
+source "$HW_LIB/flows.sh"
 SKILLS="$HW_SKILLS"
 PROFILE="$SKILLS/highway-profile/SKILL.md"
-OBJECTIVES="$SKILLS/highway-objectives/SKILL.md"
-CONTROLS="$SKILLS/highway-controls/SKILL.md"
-NFRS="$SKILLS/highway-nfrs/SKILL.md"
+OBJECTIVES="$(fl_skill_text_file "$SKILLS/highway-objectives")"
+CONTROLS="$(fl_skill_text_file "$SKILLS/highway-controls")"
+NFRS="$(fl_skill_text_file "$SKILLS/highway-nfrs")"
 fail=0
 
 require() {

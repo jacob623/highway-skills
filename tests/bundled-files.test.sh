@@ -75,6 +75,41 @@ assert_pass references valid-reference.md
 assert_pass references valid-policy.md
 assert_single_failure references invalid-bad-citation.md P3.5
 
+# Flow files: a file the flows table names is judged as SKILL.md's instructions are, exempt only
+# from P7.1, P7.2, and P8.7. The flow-skill fixture passes with no Purpose or version in its flow
+# files; a script named in a flow file fails P2.6, and the same line in a reference the table does
+# not name passes.
+flow_copy() {
+	local dir="$WORK/$1/flow-skill"
+	mkdir -p "$WORK/$1"
+	cp -R "$HW_FIXTURES/flow-skill" "$dir"
+	printf '%s\n' "$dir"
+}
+SEED='Run `framework/check.sh` before writing.'
+dir="$(flow_copy flow-clean)"
+if ! out="$("$VALIDATE" --no-cache "$dir" 2>&1)"; then
+	echo "FAIL: the flow-skill fixture failed. Output:"
+	printf '%s\n' "$out" | sed 's/^/    /'
+	fail=1
+fi
+dir="$(flow_copy flow-seeded)"
+printf '\n%s\n' "$SEED" >>"$dir/references/proposal.md"
+if out="$("$VALIDATE" --no-cache "$dir" 2>&1)"; then
+	echo "FAIL: a script named in a flow file passed; expected [P2.6]"
+	fail=1
+elif ! printf '%s\n' "$out" | grep -q '^ERROR: \[P2\.6\] references/proposal\.md: '; then
+	echo "FAIL: the finding for a script in a flow file is not [P2.6] on references/proposal.md:"
+	printf '%s\n' "$out" | grep '^ERROR: ' | sed 's/^/    /'
+	fail=1
+fi
+dir="$(flow_copy flow-reference)"
+printf '# Notes\n\n%s\n' "$SEED" >"$dir/references/notes.md"
+if ! out="$("$VALIDATE" --no-cache "$dir" 2>&1)"; then
+	echo "FAIL: a script named in a reference the flows table does not name failed. Output:"
+	printf '%s\n' "$out" | grep '^ERROR: ' | sed 's/^/    /'
+	fail=1
+fi
+
 # Every shipped skill's bundled files pass.
 for skill_dir in "$HW_SKILLS"/*/; do
 	if ! out="$("$VALIDATE" --no-cache "$skill_dir" 2>&1)"; then

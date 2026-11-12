@@ -26,6 +26,25 @@ if ! bash "$HARNESS/bin/inventory.sh" >"$WORK/inventory"; then
 	exit 1
 fi
 
+# Flow files: the inventory lists every step and Verification bullet of each file the flows table
+# names, and a bullet's id is the same hash of its text it had in SKILL.md, so a moved bullet keeps
+# its `covers:` tag.
+if ! bash "$HARNESS/bin/inventory.sh" --skills-dir "$HW_FIXTURES" flow-skill >"$WORK/flow-inventory"; then
+	echo "FAIL: harness/bin/inventory.sh failed on the flow-skill fixture"
+	fail=1
+fi
+for step in start revise identifier write; do
+	grep -q "^flow-skill${TAB}step${TAB}${step}${TAB}" "$WORK/flow-inventory" || { echo "FAIL: the inventory omits flow file step $step"; fail=1; }
+done
+moved='The record'"'"'s number was free before `write`.'
+if command -v sha256sum >/dev/null 2>&1; then
+	want="$(printf '%s' "$moved" | sha256sum | cut -c1-12)"
+else
+	want="$(printf '%s' "$moved" | shasum -a 256 | cut -c1-12)"
+fi
+grep -qF "flow-skill${TAB}verification${TAB}${want}${TAB}${moved}" "$WORK/flow-inventory" \
+	|| { echo "FAIL: the flow file bullet \"$moved\" is not listed with id $want"; fail=1; }
+
 # Scenario tags: `<skill>\t<hash>\t<text>` for the primary skill and each pass-through skill.
 : >"$WORK/tags"
 : >"$WORK/no-writes"

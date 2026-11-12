@@ -9,6 +9,8 @@ set -u
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=paths.sh
 source "$SCRIPT_DIR/paths.sh"
+# shellcheck source=../framework/lib/flows.sh
+source "$HW_LIB/flows.sh"
 fail=0
 
 # Prints the value of the one `<key>: ` line in a source, or nothing when there is not exactly one.
@@ -55,7 +57,7 @@ for src in "${sources[@]}"; do
 			fail=1
 			continue
 		fi
-		out="$(check_holds "$name" "$skill" "$file" "$rule")"
+		out="$(check_holds "$name" "$skill" "$(fl_skill_text_file "$HW_SKILLS/$skill")" "$rule")"
 		if [[ -n "$out" ]]; then
 			echo "FAIL: $out"
 			fail=1
@@ -64,7 +66,7 @@ for src in "${sources[@]}"; do
 done
 
 # highway-codify-config titles no capability, so it neither states the rule nor names a capability template.
-CONFIG="$HW_SKILLS/highway-codify-config/SKILL.md"
+CONFIG="$(fl_skill_text_file "$HW_SKILLS/highway-codify-config")"
 if grep -Fq 'Capability title rule' "$CONFIG" || grep -Fq 'capability-catalog.md' "$CONFIG"; then
 	echo "FAIL: highway-codify-config states the capability title rule or names a capability template"
 	fail=1
@@ -75,8 +77,8 @@ probe="$(mktemp)"
 trap 'rm -f "$probe"' EXIT
 src="$HW_SHARED_RULES/capability-title.txt"
 rule="$(source_value "$src" rule)"
-sed 's/one noun phrase of five words or fewer/one noun phrase of six words or fewer/' \
-	"$HW_SKILLS/highway-architecture/SKILL.md" >"$probe"
+fl_skill_text "$HW_SKILLS/highway-architecture" |
+	sed 's/one noun phrase of five words or fewer/one noun phrase of six words or fewer/' >"$probe"
 if [[ -z "$(check_holds capability-title probe "$probe" "$rule")" ]]; then
 	echo "FAIL: probe: a skill copy with one changed word of the capability title rule was not caught"
 	fail=1

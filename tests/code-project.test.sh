@@ -8,10 +8,12 @@ set -u
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=paths.sh
 source "$SCRIPT_DIR/paths.sh"
+# shellcheck source=../framework/lib/flows.sh
+source "$HW_LIB/flows.sh"
 SKILLS="$HW_SKILLS"
-CODIFY="$SKILLS/highway-codify/SKILL.md"
-IMPL="$SKILLS/highway-implementation/SKILL.md"
-ONBOARD="$SKILLS/highway-onboarding/SKILL.md"
+CODIFY="$(fl_skill_text_file "$SKILLS/highway-codify")"
+IMPL="$(fl_skill_text_file "$SKILLS/highway-implementation")"
+ONBOARD="$(fl_skill_text_file "$SKILLS/highway-onboarding")"
 RI_RECORD="$(hw_template implementation-record)"
 CDY_RECORD="$(hw_template codify-record)"
 fail=0
@@ -102,10 +104,19 @@ for text in \
 	"6. A code task's Standards are the Language standard, each standard it inherits, then each standard whose Technology appears on its own in the Technology Choice \`Choice:\`." \
 	"7. The Language standard places the source files. The pipeline's platform standard places only the pipeline files." \
 	"8. The diagram starts at the Executor. Each code task's arrow points to the product." \
-	"9. A new product's title is the implementation title. After Establish, each action joins the product whose Features hold the Establish feature. No other implementation joins it, and it joins no other product." \
-	'10. Setup Instructions say how to build, configure, and run the product. User Guide says how to use its interfaces.' \
-	'11. The close says `The code was not run.` in place of `The automation was not run.`'; do
+	"9. A new product's title is the implementation title. After Establish, each action joins the product whose Features hold the Establish feature. No other implementation joins it, and it joins no other product."; do
 	require_in "$CODIFY" "$T" "$text"
+done
+
+code_intro="$(awk '/^### /{exit} p; /^# /{p=1}' "$SKILLS/highway-codify/references/code.md")"
+for text in \
+	'For a code project, these rules apply in this flow:' \
+	'- Setup Instructions say how to build, configure, and run the product. User Guide says how to use its interfaces.' \
+	'- The close says `The code was not run.` in place of `The automation was not run.`'; do
+	printf '%s\n' "$code_intro" | grep -Fxq -- "$text" || {
+		echo "FAIL: highway-codify references/code.md introduction omits: $text"
+		fail=1
+	}
 done
 
 P='### provider'
@@ -118,8 +129,8 @@ require_in "$CODIFY" '### join' 'When this implementation, or an implementation 
 require_in "$CODIFY" '### folder' 'For a code project, `code tasks` decides the title.'
 require_in "$CODIFY" '### layout' 'For a code project, `code tasks` decides the folders.'
 require_in "$CODIFY" '### propose' 'For a code project, `code tasks` decides the diagram and the **Language:** line.'
-require_in "$CODIFY" '### code' 'For a code project, `code tasks` decides both parts.'
-require_in "$CODIFY" '### close' 'For a code project, `code tasks` decides the not-run line.'
+require_in "$CODIFY" '### code' 'For a code project, the code project rules at the start of this flow decide both parts.'
+require_in "$CODIFY" '### close' 'For a code project, the code project rules at the start of this flow decide the not-run line.'
 require_in "$CODIFY" '### revise' 'a Provider or a Language standard, at least one task'
 require "$CODIFY" "writing the product's own code when the implementation names a Language."
 require "$CODIFY" '- A return with the record still incomplete stops and writes nothing.'

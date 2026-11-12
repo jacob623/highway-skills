@@ -6,7 +6,9 @@
 #   With no skill named, every skill under the skills directory is listed.
 #
 # kind is `step`, `verification`, or `error`. A step's id is its `###` heading text under
-# `## Procedure`. A bullet is a `- ` line directly under `## Verification` or `## Error Handling`;
+# `## Procedure`, or any `###` heading in a flow file the skill's flows table names; flow files are
+# read after SKILL.md, in table order. A bullet is a `- ` line directly under `## Verification` or
+# `## Error Handling`;
 # its id is the first 12 hex digits of SHA-256 over its text with runs of spaces and tabs collapsed
 # and the ends trimmed. Lines inside fenced blocks are ignored.
 #
@@ -17,6 +19,8 @@ set -eu
 HERE="$(cd "$(dirname "$0")" && pwd)"
 # shellcheck source=lib/paths.sh
 . "$HERE/lib/paths.sh"
+# shellcheck source=../../framework/lib/flows.sh
+. "$HW_LIB/flows.sh"
 SKILLS_DIR="$HW_SKILLS"
 
 if [ "${1:-}" = "--skills-dir" ]; then
@@ -71,6 +75,34 @@ for skill in "$@"; do
 			printf "%s\t%s\n", kind, text
 		}
 	' "$file" >"$WORK/items"
+
+	# Each flow file the flows table names, in table order: every step, and the bullets under its
+	# closing `## Verification`.
+	while IFS= read -r flow; do
+		[ -n "$flow" ] && [ -f "$SKILLS_DIR/$skill/$flow" ] || continue
+		awk '
+			/^[ \t]*```/ { fence = !fence; next }
+			fence { next }
+			/^## / { section = $0; next }
+			{
+				line = $0
+				sub(/\r$/, "", line)
+			}
+			line ~ /^### / {
+				text = substr(line, 5)
+				gsub(/[ \t]+/, " ", text); sub(/^ /, "", text); sub(/ $/, "", text)
+				printf "step\t%s\n", text
+				next
+			}
+			section == "## Verification" && line ~ /^- / {
+				text = substr(line, 3)
+				gsub(/[ \t]+/, " ", text); sub(/^ /, "", text); sub(/ $/, "", text)
+				printf "verification\t%s\n", text
+			}
+		' "$SKILLS_DIR/$skill/$flow" >>"$WORK/items"
+	done <<EOF
+$(fl_files "$SKILLS_DIR/$skill")
+EOF
 
 	# Pass 2: hash every bullet in one batch, then join.
 	: >"$WORK/hashes"

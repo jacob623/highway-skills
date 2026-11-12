@@ -35,7 +35,9 @@ fi
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=paths.sh
 source "$SCRIPT_DIR/paths.sh"
-SKILL="$HW_SKILLS/highway-implementation/SKILL.md"
+# shellcheck source=../framework/lib/flows.sh
+source "$HW_LIB/flows.sh"
+SKILL="$(fl_skill_text_file "$HW_SKILLS/highway-implementation")"
 RECORD_TEMPLATE="$(hw_template implementation-record)"
 CATALOG_TEMPLATE="$(hw_template implementation-catalog)"
 CAPABILITY_CATALOG_SKELETON="$(hw_template capability-catalog)"

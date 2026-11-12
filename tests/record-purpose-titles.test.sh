@@ -8,9 +8,11 @@ set -u
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=paths.sh
 source "$SCRIPT_DIR/paths.sh"
+# shellcheck source=../framework/lib/flows.sh
+source "$HW_LIB/flows.sh"
 SKILLS="$HW_SKILLS"
-ARCH="$SKILLS/highway-architecture/SKILL.md"
-IMPL="$SKILLS/highway-implementation/SKILL.md"
+ARCH="$(fl_skill_text_file "$SKILLS/highway-architecture")"
+IMPL="$(fl_skill_text_file "$SKILLS/highway-implementation")"
 ARCH_RECORD="$(hw_template architecture-record)"
 IMPL_RECORD="$(hw_template implementation-record)"
 fail=0

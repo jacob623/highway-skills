@@ -1,5 +1,5 @@
 {
-  "model": "claude-sonnet-4.5",
+  "model": "gpt-5.6-luna",
   "parallel": 4,
   "maxTurns": 40,
   "timeoutMinutes": 20,

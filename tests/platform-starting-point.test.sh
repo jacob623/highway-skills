@@ -8,8 +8,10 @@ set -u
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=paths.sh
 source "$SCRIPT_DIR/paths.sh"
-CONFIG="$HW_SKILLS/highway-codify-config/SKILL.md"
-IMPL="$HW_SKILLS/highway-implementation/SKILL.md"
+# shellcheck source=../framework/lib/flows.sh
+source "$HW_LIB/flows.sh"
+CONFIG="$(fl_skill_text_file "$HW_SKILLS/highway-codify-config")"
+IMPL="$(fl_skill_text_file "$HW_SKILLS/highway-implementation")"
 fail=0
 
 section() {

@@ -157,6 +157,50 @@ needs that record, it hands the work to your skill rather than writing the recor
 `references/`. Name each bundled file in your `SKILL.md` by its relative path, such as
 `references/<file>.md`, one level deep; your skill reads nothing outside its own folder.
 
+## Splitting a large skill
+
+A `SKILL.md` stays within 500 lines and 20,000 characters, about 5,000 tokens. A skill over either
+limit becomes a router. `SKILL.md` keeps the frontmatter, every required section, `Entry`,
+`Classify`, and each rule more than one flow applies. Its other steps move into flow files in
+`references/`, so an agent reads only the flow it is in.
+
+End the Procedure introduction with this sentence and the flows table:
+
+```markdown
+Before a step in this table, read its file and follow it to the end.
+
+| File | Steps |
+|---|---|
+| `references/proposal.md` | `start`, `revise` |
+| `references/record.md` | `identifier`, `write` |
+```
+
+A flow file:
+
+- Has no frontmatter and starts with one `# Title` line.
+- May open with rules that only its own steps apply.
+- Holds its steps as `###` headings, in the order the table lists them.
+- Ends with `## Verification`, its only level-2 heading. It holds the bullets that check only its
+  steps. A bullet that checks steps in more than one file stays in `SKILL.md`.
+
+A skill has at most six flow files, each at least 25 lines, directly in `references/`. Each step
+has one home. A step reached by "go to" moves with its flow. A step that only states a rule other
+steps follow stays in `SKILL.md` when steps in more than one file apply it. A flow file names no
+other flow file; the table is the one pointer to each. Every step a handoff names exists in the
+skill it names.
+
+Steps one turn runs through share a file. In a flow file, a handoff outside a reply line names a
+step in that file or in `SKILL.md`. A reply line is a list item that starts with a backticked reply
+class and a colon, such as ``- `accept`: go to `identifier`.`` A model can skip a flow file it must
+open mid-turn. When two flows hand off to each other within a turn and cannot share a file within
+the limits, keep their shared steps in `SKILL.md`.
+
+Moving a step changes none of its words. The move is a minor version bump.
+
+`framework/validate-skill.sh` judges a file the table names as a flow file, exempt only from P7.1,
+P7.2, and P8.7. `tests/skill-flow-pattern.test.sh` checks the limits and the pattern.
+`framework/lib/flows.sh` is the one reader of the table.
+
 ## Writing the rules inside a skill
 
 Cited rules, not restated. Read the rule text in the constitution.

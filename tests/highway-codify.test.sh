@@ -8,6 +8,8 @@ set -u
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=paths.sh
 source "$SCRIPT_DIR/paths.sh"
+# shellcheck source=../framework/lib/flows.sh
+source "$HW_LIB/flows.sh"
 SKILLS="$HW_SKILLS"
 fail=0
 
@@ -27,9 +29,9 @@ reject() {
 	fi
 }
 
-CODIFY="$SKILLS/highway-codify/SKILL.md"
-REQUEST="$SKILLS/highway-request/SKILL.md"
-ASSESSMENT="$SKILLS/highway-assessment/SKILL.md"
+CODIFY="$(fl_skill_text_file "$SKILLS/highway-codify")"
+REQUEST="$(fl_skill_text_file "$SKILLS/highway-request")"
+ASSESSMENT="$(fl_skill_text_file "$SKILLS/highway-assessment")"
 RECORD="$(hw_template codify-record)"
 TASKS="$(hw_template codify-tasks)"
 STANDARDS_CATALOG="$HW_ROOT/library/coding-standards/coding-standards.md"

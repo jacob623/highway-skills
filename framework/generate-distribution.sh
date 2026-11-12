@@ -30,13 +30,18 @@ if [[ $# -ne 1 ]]; then
 fi
 TARGET="$1"
 
-sha256_of() {
-	local file="$1"
-	if command -v sha256sum >/dev/null 2>&1; then
-		sha256sum "$file" | awk '{print $1}'
-	else
-		shasum -a 256 "$file" | awk '{print $1}'
-	fi
+# Work over the distribution's files runs in batches, never one subprocess per file: on macOS, one
+# bash process that forks a few thousand times starts failing to fork, and the loops below would
+# then pass on empty output.
+
+# Prints "path<TAB>sha256" for every file in the target but the record, sorted by path. find's
+# `-exec … +` keeps each hashing batch within the command-line argument limit.
+hash_tree() {
+	local hasher=(shasum -a 256)
+	command -v sha256sum >/dev/null 2>&1 && hasher=(sha256sum)
+	(cd "$TARGET" && find . -type f ! -path "./$RECORD_REL" -exec "${hasher[@]}" {} +) \
+		| awk '{ h = $1; p = substr($0, length(h) + 3); sub(/^\.\//, "", p); print p "\t" h }' \
+		| sort -t $'\t' -k1,1
 }
 
 # Every repository file that could possibly be included, as repository-relative paths.
@@ -57,11 +62,6 @@ candidate_files() {
 		| sed "s|^$HW_ROOT/||" | sort
 }
 
-# Files inside the distribution, as distribution-relative paths.
-dist_files() {
-	find "$TARGET" -type f 2>/dev/null | sed "s|^$TARGET/||" | sort
-}
-
 # --- Refuse to overwrite a target this generator did not produce (FR-013, D4.3) ---
 
 check_no_drift() {
@@ -75,20 +75,23 @@ check_no_drift() {
 		return 1
 	fi
 
-	local rel expected actual
-	while IFS= read -r rel; do
-		[[ "$rel" == "$RECORD_REL" ]] && continue
-		expected="$(awk -F'\t' -v p="$rel" '$1 == p { print $2; exit }' "$record")"
-		if [[ -z "$expected" ]]; then
-			echo "ERROR: '$TARGET/$rel' is not listed in $RECORD_REL -- refusing to overwrite. Remove it manually if it is safe to regenerate." >&2
-			return 1
-		fi
-		actual="$(sha256_of "$TARGET/$rel")"
-		if [[ "$actual" != "$expected" ]]; then
-			echo "ERROR: '$TARGET/$rel' was modified outside framework/generate-distribution.sh -- refusing to overwrite. Restore it from the generator's output or remove it manually." >&2
-			return 1
-		fi
-	done < <(dist_files)
+	local problem rel
+	problem="$(hash_tree | awk -F'\t' -v rec="$record" '
+		FILENAME == rec { want[$1] = $2; next }
+		!($1 in want) { print "unlisted\t" $1; exit }
+		want[$1] != $2 { print "modified\t" $1; exit }
+	' "$record" -)"
+	rel="${problem#*$'\t'}"
+	case "$problem" in
+	unlisted*)
+		echo "ERROR: '$TARGET/$rel' is not listed in $RECORD_REL -- refusing to overwrite. Remove it manually if it is safe to regenerate." >&2
+		return 1
+		;;
+	modified*)
+		echo "ERROR: '$TARGET/$rel' was modified outside framework/generate-distribution.sh -- refusing to overwrite. Restore it from the generator's output or remove it manually." >&2
+		return 1
+		;;
+	esac
 	return 0
 }
 
@@ -110,36 +113,32 @@ verify_no_development_paths() {
 # in-page anchors and absolute URLs. Mirrors the extraction in lib/rule-checks.sh so there is one
 # link-parsing behavior rather than two that can diverge.
 verify_cross_references() {
-	local failures="" checked=0 file rel line_no target resolved dir
-	while IFS= read -r rel; do
-		case "$rel" in
-		*.md) ;;
-		*) continue ;;
+	local failures="" checked=0 rel line_no target resolved dir
+	while IFS=$'\t' read -r rel line_no target; do
+		[[ -z "$target" ]] && continue
+		case "$target" in
+		'#'*) continue ;;
+		[a-zA-Z]*:*) continue ;;
 		esac
-		file="$TARGET/$rel"
-		dir="$(dirname "$file")"
-		while IFS=$'\t' read -r line_no target; do
-			[[ -z "$target" ]] && continue
-			case "$target" in
-			'#'*) continue ;;
-			[a-zA-Z]*:*) continue ;;
-			esac
-			target="${target%%#*}"
-			[[ -z "$target" ]] && continue
-			checked=$((checked + 1))
-			resolved="$dir/$target"
-			if [[ ! -e "$resolved" ]]; then
-				failures="$failures
+		target="${target%%#*}"
+		[[ -z "$target" ]] && continue
+		checked=$((checked + 1))
+		dir="$TARGET/$rel"
+		dir="${dir%/*}"
+		resolved="$dir/$target"
+		if [[ ! -e "$resolved" ]]; then
+			failures="$failures
     $rel:$line_no: link target $target does not exist in the distribution"
-			fi
-		done < <(awk '{
+		fi
+	done < <(cd "$TARGET" && find . -type f -name '*.md' -exec awk '{
 			t = $0
 			while (match(t, /\]\([^)]*\)/)) {
-				print NR "\t" substr(t, RSTART + 2, RLENGTH - 3)
+				f = FILENAME
+				sub(/^\.\//, "", f)
+				print f "\t" FNR "\t" substr(t, RSTART + 2, RLENGTH - 3)
 				t = substr(t, RSTART + RLENGTH)
 			}
-		}' "$file")
-	done < <(dist_files)
+		}' {} + | sort -s -t $'\t' -k1,1)
 
 	if [[ -n "$failures" ]]; then
 		echo "  FAIL: cross-references do not resolve within the distribution"
@@ -180,7 +179,7 @@ verify_skill_validation() {
 
 	for skill_md in "$(hw_at "$tree" "$HW_SKILLS")"/*/SKILL.md; do
 		[[ -f "$skill_md" ]] || continue
-		skill_dir="$(dirname "$skill_md")"
+		skill_dir="${skill_md%/*}"
 		output="$(env -u CONSTITUTION_FILE "$validator" "$skill_dir" 2>&1)"
 		rc=$?
 		if [[ $rc -ne 0 ]]; then
@@ -218,25 +217,19 @@ echo "producing distribution at $TARGET"
 mkdir -p "$TARGET"
 
 included=0
-while IFS=$'\t' read -r class rel; do
-	[[ "$class" == "include" ]] || continue
-	dest="$(dist_destination "$rel")"
-	mkdir -p "$TARGET/$(dirname "$dest")"
+while IFS=$'\t' read -r rel dest; do
+	dir="$TARGET/$dest"
+	dir="${dir%/*}"
+	[[ -d "$dir" ]] || mkdir -p "$dir"
 	cp "$HW_ROOT/$rel" "$TARGET/$dest"
 	included=$((included + 1))
-done < <(candidate_files | dist_classify_many)
+done < <(candidate_files | dist_classify_many | awk -F'\t' '$1 == "include" { print $2 }' | dist_destination_many)
 echo "  included $included paths from framework/.distribution-manifest"
 
 # Written last so it records the finished tree. Excluded from its own listing.
-# Hash each file independently so the record generation does not exceed the platform's
-# command-line argument limit when the distribution contains many files.
 record="$TARGET/$RECORD_REL"
-mkdir -p "$(dirname "$record")"
-: >"$record"
-while IFS= read -r rel; do
-	[[ "$rel" == "$RECORD_REL" ]] && continue
-	printf '%s\t%s\n' "$rel" "$(sha256_of "$TARGET/$rel")" >>"$record"
-done < <(dist_files)
+mkdir -p "${record%/*}"
+hash_tree >"$record"
 
 # --- Verify, and reject rather than warn (FR-011) ---
 

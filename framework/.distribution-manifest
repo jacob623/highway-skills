@@ -103,6 +103,7 @@ exclude	.gitignore	-
 exclude	.specify	-
 exclude	specs	-
 exclude	harness	-
+exclude	harness-model-findings.md	-
 exclude	README.md	-
 exclude	governance-plan.md	-
 exclude	nfr-plan.md	-

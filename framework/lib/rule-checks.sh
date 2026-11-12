@@ -78,6 +78,14 @@ rc_bundled_exempt_ids() {
 ' P8.7 P6.4 P2.6
 }
 
+# Prints the rule ids a flow file is exempt from. A flow file holds steps moved out of SKILL.md, so
+# every rule that judges a skill's instructions judges it too. P7.1 and P7.2 judge the Purpose and
+# the version, which the router SKILL.md carries for the whole skill; P8.7's subject is SKILL.md.
+# Usage: rc_flow_exempt_ids
+rc_flow_exempt_ids() {
+	printf '%s\n' P7.1 P7.2 P8.7
+}
+
 # --- P1.1: each normative line carries exactly one keyword -------------------------------
 
 rc_check_P1_1() {

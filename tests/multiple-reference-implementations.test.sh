@@ -8,6 +8,8 @@ set -u
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=paths.sh
 source "$SCRIPT_DIR/paths.sh"
+# shellcheck source=../framework/lib/flows.sh
+source "$HW_LIB/flows.sh"
 SKILLS="$HW_SKILLS"
 fail=0
 
@@ -31,11 +33,10 @@ ADR_RECORD="$(hw_template adr-record)"
 ADR_CATALOG="$(hw_template adr-catalog)"
 ARCH_RECORD="$(hw_template architecture-record)"
 IMPL_RECORD="$(hw_template implementation-record)"
-ADR="$SKILLS/highway-adr/SKILL.md"
-ARCH="$SKILLS/highway-architecture/SKILL.md"
-IMPL="$SKILLS/highway-implementation/SKILL.md"
-DISCOVERY="$SKILLS/highway-discovery/SKILL.md"
-
+ADR="$(fl_skill_text_file "$SKILLS/highway-adr")"
+ARCH="$(fl_skill_text_file "$SKILLS/highway-architecture")"
+IMPL="$(fl_skill_text_file "$SKILLS/highway-implementation")"
+DISCOVERY="$(fl_skill_text_file "$SKILLS/highway-discovery")"
 require "$ADR_RECORD" 'Reference Architecture: <RA id, or `None`>'
 require "$ADR_RECORD" 'The handoff contains no implementation entry.'
 handoff="$(sed -n '/^## Reference Architecture Handoff$/,/^```$/p' "$ADR_RECORD")"

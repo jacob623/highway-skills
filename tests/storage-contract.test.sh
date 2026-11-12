@@ -8,10 +8,12 @@ set -u
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=paths.sh
 source "$SCRIPT_DIR/paths.sh"
+# shellcheck source=../framework/lib/flows.sh
+source "$HW_LIB/flows.sh"
 VALIDATE="$HW_FRAMEWORK/validate-skill.sh"
 STORAGE="$(hw_doc storage)"
 CONSTITUTION="$(hw_doc constitution)"
-CODIFY="$HW_SKILLS/highway-codify/SKILL.md"
+CODIFY="$(fl_skill_text_file "$HW_SKILLS/highway-codify")"
 HELP="$HW_SKILLS/highway-help/SKILL.md"
 METADATA="$(hw_template codify-metadata)"
 fail=0
@@ -203,8 +205,16 @@ expect_pass 'GitHub' 'The proposal names GitHub Actions as the pipeline.'
 expect_pass 'no timestamp' 'Emit no timestamp, random value, or environment value.'
 expect_pass 'fenced content' "$(printf '%s\n' 'The pipeline file reads:' '' '```yaml' 'steps:' '  - run: git push' '  - run: ./build.sh' '```')"
 
-# Every shipped skill passes the check.
-for skill in "$HW_SKILLS"/*/SKILL.md; do
+# Every shipped skill, and each of its flow files, passes the check.
+skill_files=()
+for skill_dir in "$HW_SKILLS"/*/; do
+	[[ -f "$skill_dir/SKILL.md" ]] || continue
+	skill_files+=("${skill_dir%/}/SKILL.md")
+	while IFS= read -r flow; do
+		[[ -n "$flow" ]] && skill_files+=("${skill_dir%/}/$flow")
+	done <<<"$(fl_files "${skill_dir%/}")"
+done
+for skill in "${skill_files[@]}"; do
 	if ! type rc_check_P2_6 >/dev/null 2>&1; then
 		echo "FAIL: rc_check_P2_6 is not defined"
 		fail=1
