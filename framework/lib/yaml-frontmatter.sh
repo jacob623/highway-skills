@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-# Parses a SKILL.md frontmatter block with a strict YAML parser: python3 with PyYAML, the only
-# use of python3 in the framework (development constitution, Declared Toolchain). The line
+# Parses a SKILL.md frontmatter block with a strict YAML parser: python3 with PyYAML. This and
+# lib/plugin-manifest.sh are the only callers of python3 (development constitution, Declared
+# Toolchain). The line
 # readers in lib/frontmatter.sh stay the fast path; the validator compares the two.
 
 # The program prints one line per field: scope<TAB>key<TAB>type<TAB>value. scope is "top" or

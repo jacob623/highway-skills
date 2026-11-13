@@ -22,6 +22,10 @@ duplicated or hand-adapted per agent.
   `.github/skills/`, `.claude/skills/`, `.cursor/skills/`, and `.agents/skills/` from the skills under
   `skills/`.
   A skill's bundled files, such as `references/<name>.md`, are copied beside its `SKILL.md`.
+- **Build the plugin**: `framework/generate-agent-plugin.sh` writes `highway-agent-plugin/`, an
+  [Agent Plugins](https://agent-plugins.org) 1.0.0 plugin of every skill, from `skills/` and
+  `framework/plugin/`. `framework/validate-plugin.sh highway-agent-plugin` checks it, and the
+  behavioral harness installs it into each test agent's home.
 - **Share Highway's guidance**: `skills/highway-experience/` holds Highway's identity, the
   Experience Standard, and the storage contract as references. Every other Highway skill opens its
   Procedure by activating it. Highway ships no always-on instruction file.

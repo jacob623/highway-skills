@@ -7,6 +7,7 @@ import { emptyUsage, RunStop, type DriveOptions, type DriveResult, type Driver }
 import { main, type RunnerDeps } from "../src/runner.ts";
 
 const TOKEN = "ghp_" + "t".repeat(36);
+const PLUGIN = { dir: "/repo/highway-agent-plugin", name: "highway", skills: 16 };
 
 function scenarioDir(files: Record<string, string>): string {
   const dir = mkdtempSync(join(tmpdir(), "harness-scenarios-"));
@@ -54,9 +55,8 @@ function deps(overrides: Partial<RunnerDeps>, lines: string[], transcripts: stri
     makeAsk: () => async () => "none",
     build: (workRoot) => {
       const dir = join(workRoot, "base");
-      mkdirSync(join(dir, ".github", "skills", "highway-help"), { recursive: true });
-      writeFileSync(join(dir, ".github", "skills", "highway-help", "SKILL.md"), "skill\n");
-      return { ok: true, dir };
+      mkdirSync(dir, { recursive: true });
+      return { ok: true, dir, plugin: PLUGIN };
     },
     fixtureCheck: () => new Map(),
     out: (line) => lines.push(line),
@@ -244,6 +244,31 @@ test("a scenario whose last attempt fails only with service errors is blocked", 
   assert.match(text, /"kind":"service-error"/);
   assert.match(text, /blocked 1/);
   assert.doesNotMatch(text, /^FAIL help-smoke: /m);
+  rmSync(dir, { recursive: true });
+  rmSync(transcripts, { recursive: true });
+});
+
+test("each attempt gets the run's plugin, and a failed install fails the scenario without stopping the run", async () => {
+  const { dir, transcripts, lines } = setup({ "highway-help/help-smoke.scenario": SCENARIO("help-smoke") });
+  const seen: unknown[] = [];
+  const installDriver: Driver = async (o) => {
+    seen.push(o.plugin);
+    return {
+      ...ended(o, 0),
+      outcome: "error",
+      skillsInvoked: [],
+      skillsBeforeOutput: [],
+      error: { kind: "plugin-install", message: "plugin highway: 15 of 16 skills installed" },
+    };
+  };
+  const code = await main(["--smoke", "--transcripts", transcripts, "--no-judge"], { ...deps({ driver: installDriver }, lines, transcripts), scenariosDir: dir });
+  assert.equal(code, 1);
+  assert.deepEqual(seen, [PLUGIN, PLUGIN]);
+  const text = lines.join("\n");
+  assert.match(text, /"kind":"plugin-install"/);
+  assert.match(text, /15 of 16 skills installed/);
+  assert.match(text, /Likely cause: The plugin did not install or load from highway-agent-plugin\//);
+  assert.doesNotMatch(text, /"kind":"experience-order"/);
   rmSync(dir, { recursive: true });
   rmSync(transcripts, { recursive: true });
 });

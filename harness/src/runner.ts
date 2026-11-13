@@ -10,7 +10,7 @@ import { coverageSection, readInventory, readTreatments } from "./coverage.ts";
 import { copilotDriver, RunStop, type DriveResult, type Driver, type TranscriptEntry, type Warning } from "./driver.ts";
 import { errorText, formatFailure, type Failure, type FailureKind } from "./failure.ts";
 import { copilotAsk, makeFallbackPicker, runJudge, type Ask, type JudgeFile } from "./judge.ts";
-import { buildSkills, createProject, removeProject, type BuildResult } from "./project.ts";
+import { buildPlugin, createProject, removeProject, type BuildResult, type PluginSource } from "./project.ts";
 import { createRedactor, type Redactor } from "./redact.ts";
 import { keyText } from "./replies.ts";
 import { exitCode, runId, summaryText, writeRunReports, type AttemptResult, type Run, type RunType, type ScenarioOutcome, type Selection } from "./report.ts";
@@ -70,7 +70,7 @@ export function fixtureCheck(fixtures: readonly string[]): Map<string, string[]>
 export const defaultDeps: RunnerDeps = {
   driver: copilotDriver,
   makeAsk: copilotAsk,
-  build: buildSkills,
+  build: buildPlugin,
   fixtureCheck,
   out: (line) => process.stdout.write(line + "\n"),
   now: () => new Date(),
@@ -94,6 +94,7 @@ interface Context {
   deps: RunnerDeps;
   redact: Redactor;
   baseDir: string;
+  plugin: PluginSource;
   workRoot: string;
   total: number;
   ask?: Ask;
@@ -156,6 +157,7 @@ async function runAttempt(ctx: Context, scenario: Scenario, attempt: number, att
         scenario,
         projectDir,
         copilotHome,
+        plugin: ctx.plugin,
         token: ctx.config.token!,
         model: ctx.config.model,
         maxTurns: ctx.config.maxTurns,
@@ -423,7 +425,7 @@ export async function main(argv: readonly string[], deps: RunnerDeps = defaultDe
   const workRoot = mkdtempSync(join(tmpdir(), "highway-harness-"));
   try {
     const built = deps.build(workRoot);
-    if (!built.ok) return runFailure({ kind: "build-failed", check: "skills", detail: built.tail });
+    if (!built.ok) return runFailure({ kind: "build-failed", check: "plugin", detail: built.tail });
 
     const ctx: Context = {
       run,
@@ -431,6 +433,7 @@ export async function main(argv: readonly string[], deps: RunnerDeps = defaultDe
       deps,
       redact,
       baseDir: built.dir,
+      plugin: built.plugin,
       workRoot,
       total: selection.length,
       ask: config.judge ? deps.makeAsk(config.token, config.judgeModel) : undefined,

@@ -1,0 +1,148 @@
+---
+name: highway-request
+description: "Manages one business request and its accepted artifact. Use when the person has a business problem, idea, or desired change to record as a request."
+license: Apache-2.0
+metadata:
+  version: 5.6.0
+  usage: "Run highway-request with the business change."
+---
+
+# highway-request
+
+## Purpose
+
+Collects one business request from the invocation.
+
+## When to use
+
+- The person invokes `highway-request` with a business problem, idea, or desired change.
+- The person invokes `highway-request` and the description is still to be supplied.
+
+## When not to use
+
+Do not create Discovery, ADR, Architecture, Implementation, Control, NFR, or Objective records.
+Do not change the status of an existing request.
+Do not choose a solution or an architecture while shaping the request. The close may name an accepted implementation. Do not write an implementation.
+Do not report Status, Summary, Next Action, Blocking Reason, Missing, Complete, or Blocked.
+Do not show Current Domain, Completed Domains, or Remaining Domains.
+
+## Inputs
+
+- The person's invocation text.
+- Accepted Profile, Objectives, Controls, and NFRs when present.
+- `requests/requests.md` and `requests/REQ*.md` when present.
+- `assets/request-record.md`.
+- The highway-experience skill, activated first.
+
+## Outputs
+
+The complete structure is `assets/request-record.md`. `requests/requests.md` keeps the structure highway-setup seeded.
+
+- One request record at `requests/[ID].md` after the complete proposal is accepted.
+- An updated `requests/requests.md` written with that record.
+- A closing message that names the record and exactly one next step.
+- No request artifact when the proposal is not accepted or a write fails.
+
+## Procedure
+
+Activate the highway-experience skill before any output the person sees, and follow it for Highway's identity, the Experience Standard, and the storage contract.
+
+Before the first question, confirm these seeded files exist: `requests/requests.md`.
+When any is absent, emit the message below exactly, stop, and write nothing.
+
+**Oops... we need to setup your repository.**
+
+Highway needs to gather your organizational preferences and set up your repository. Run highway-setup to get started.
+
+Emit only the active template. Follow this order: `intake` when the invocation has no description; otherwise `start`, then `identifier`, `title` when needed, `write`, and `close`. Follow the Highway Experience Standard for attribution and acceptance wording. Use accepted Profile, Objectives, Controls, and NFRs as grounding. Do not ask for facts those records already answer. Do not treat an example as the person's evidence.
+
+Exclude a secret or regulated personal data. Ask for a business-relevant replacement. After three blocked replacements, stop and write nothing.
+
+Before a step in this table, read its file and follow it to the end.
+
+| File | Steps |
+| --- | --- |
+| `references/proposal.md` | `start` |
+| `references/record.md` | `identifier`, `title`, `write` |
+
+### Entry
+
+1. Read the invocation. A handoff from `highway-assessment` is invocation context.
+2. When it names a business problem, idea, desired change, or a seeded assessment finding, go to `start`. Do not carry assessment solution examples into the request. The close names the next skill after the request is accepted.
+3. When it does not, go to `intake`.
+
+### Classify
+
+Classify the latest reply before any other action.
+
+- `edit`: adds, removes, corrects, splits, combines, or replaces substance.
+- `accept`: affirms the current block and adds no fact.
+- `unknown`: the person says they do not know.
+- `question`: the person asks for an explanation.
+- `decline`: the person stops, cancels, or pauses the request.
+
+On `start`, "looks good" is `accept`.
+
+### intake
+
+**What business problem, idea, or change should this request cover?**
+
+If you don't know, say "I don't know" and we'll work through it together.
+
+- `own` or `edit`: use that description. Go to `start`.
+- `unknown`: re-emit this template. Stay on `intake`.
+- `question`: answer in one sentence. Re-emit this template. Stay on `intake`.
+- `decline`: stop. Write nothing.
+
+### close
+
+**Request created**
+
+- **Request record:** `requests/[ID].md`
+- **Title:** [Title]
+- **Identifier:** `[ID]`
+- **Status:** accepted
+
+Read `implementations/implementations.md`. A match is an accepted row. A removed row does not match. Open an accepted implementation record to read its summary and its realized capability titles.
+
+When Entry recorded a handoff from `highway-assessment`, the match set is the accepted implementations named by that finding's accepted evidence. Do not add other matches.
+
+Otherwise compare the accepted request title and Desired Change, without regard to case. An exact implementation title selects that one implementation. Otherwise a realized capability title that appears in full in that text is a match. Otherwise an implementation title that appears in full in that text, or that text appearing in full in the summary, is a match. Put exact titles first, then capability titles, then summary matches. Within each group, keep catalog order.
+
+The action is Desired Change. When it states a second action, keep the first and say the other waits for another run.
+
+When one implementation matches, name it by title. Do not mention discovery. Do not state the day. Emit:
+
+Run `highway-codify` for **[Implementation title]** to **[action]**.
+
+When two to five match, list them by title and short description. Do not use an id as the label. After the person picks one, emit the one-match line and say the others wait for another run.
+
+When more than five match, list none. Say the person can give a title or a description. Then suggest at most five by the same order.
+
+When no accepted implementation matches, emit:
+
+Run `highway-discovery [ID]` to evaluate candidate solutions against your objectives, safeguards, and operational expectations.
+
+Do not continue into codify in the same message. Do not rewrite the request.
+
+## Verification
+
+- An invocation with a business description begins at the request starting point.
+- Solution Constraints are shown by readable name, with `None` for a value that is `unknown` or an empty list. The record keeps its field names and values.
+- "Looks good" on the starting point writes the record and catalog. The person accepts the request once.
+- No record is written while a domain is missing.
+- A secret or regulated personal value is not written.
+- The closing message names the record and exactly one next step. One match names `highway-codify` for that title and the one action, and does not state the day. No match names `highway-discovery [ID]`.
+- The skill creates no Discovery or ADR artifact.
+
+## Error Handling
+
+- An empty invocation stays on `intake` and writes nothing.
+- A missing record template stops the skill, names the template path, and writes nothing.
+- A failed write leaves existing request and catalog bytes unchanged.
+- A secret or regulated personal value is replaced up to three times, then the skill stops and writes nothing.
+- An invalid Solution Constraints field is replaced up to three times. Further failure leaves existing bytes unchanged.
+
+## Example
+
+`/highway-request We need a consistent way for finance reviewers to reduce manual invoice comparison time.`

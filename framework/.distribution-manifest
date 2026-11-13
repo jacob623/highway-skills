@@ -87,6 +87,9 @@ include	.agents/skills/highway-experience	-
 # --- Skill sources: each skill folder ships whole in every agent tree above, so the sources do not ---
 exclude	skills	-
 
+# --- The Agent Plugins build of the skills: published as its own repository root (Phase 18), never in this distribution ---
+exclude	highway-agent-plugin	-
+
 # --- Organization library: highway-setup seeds it in a project at run time, so no organization file ships ---
 exclude	library	-
 

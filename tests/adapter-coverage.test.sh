@@ -7,6 +7,9 @@
 #   D4.6  no artifact names an absent skill  -- an orphan ships a skill nobody can maintain
 #   D4.7  artifacts match current sources    -- a stale one reports confidently and wrongly
 #
+# D4.7 covers every declared generator's output: the catalog, the adapters, and the Agent Plugins
+# build in highway-agent-plugin/.
+#
 # The distribution manifest classifies adapters by exact path: the agent directories are excluded
 # by default and each skill's adapters are included by a more specific row. A skill added without
 # those rows still ships its source, and its adapters are silently dropped -- the paths are
@@ -186,6 +189,11 @@ skill_currency_ok() {
 			ok=1
 		fi
 	done < <(adapter_files "$skill_id")
+	if [[ -d "$HW_PLUGIN_SKILLS/$skill_id" ]] \
+		&& ! diff -r "$HW_PLUGIN_SKILLS/$skill_id" "$(hw_at "$currency_root" "$HW_PLUGIN_SKILLS")/$skill_id" >/dev/null 2>&1; then
+		echo "FAIL: $(hw_rel "$HW_PLUGIN_SKILLS")/$skill_id is stale; regenerating the plugin produces a different skill folder"
+		ok=1
+	fi
 	return $ok
 }
 
@@ -299,6 +307,7 @@ if [[ -n "$probe_class" ]]; then
 				cd "$currency_tmp" || exit 1
 				"$(hw_at "$currency_tmp" "$HW_FRAMEWORK")/generate-catalog.sh"
 				"$(hw_at "$currency_tmp" "$HW_FRAMEWORK")/generate-agent-adapters.sh"
+				"$(hw_at "$currency_tmp" "$HW_FRAMEWORK")/generate-agent-plugin.sh"
 			) >/dev/null 2>&1
 			if skill_currency_ok "$SKILL_ID" "$currency_tmp" >/dev/null 2>&1; then
 				exit 0
@@ -358,6 +367,7 @@ cp -R "$HW_FRAMEWORK" "$(hw_at "$CURRENCY_TMP" "$HW_FRAMEWORK")"
 	cd "$CURRENCY_TMP" || exit 1
 	"$(hw_at "$CURRENCY_TMP" "$HW_FRAMEWORK")/generate-catalog.sh"
 	"$(hw_at "$CURRENCY_TMP" "$HW_FRAMEWORK")/generate-agent-adapters.sh"
+	"$(hw_at "$CURRENCY_TMP" "$HW_FRAMEWORK")/generate-agent-plugin.sh"
 ) >/dev/null 2>&1
 
 if ! diff "$HW_HELP_INDEX" "$(hw_at "$CURRENCY_TMP" "$HW_HELP_INDEX")" >/dev/null 2>&1; then
@@ -370,5 +380,10 @@ for skill_dir in "$HW_SKILLS"/*/; do
 	skill_id="$(basename "$skill_dir")"
 	skill_currency_ok "$skill_id" "$CURRENCY_TMP" || fail=1
 done
+
+if ! diff -r "$HW_PLUGIN" "$(hw_at "$CURRENCY_TMP" "$HW_PLUGIN")" >/dev/null 2>&1; then
+	echo "FAIL: $(hw_rel "$HW_PLUGIN")/ is stale; regenerating it from current sources produces a different folder"
+	fail=1
+fi
 
 exit $fail

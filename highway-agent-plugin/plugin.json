@@ -1,0 +1,9 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "highway",
+  "version": "0.1.0",
+  "description": "Highway: Git-native governance, architecture, traceability, and platform engineering skills that carry business intent through decisions, architectures, and implementations to working code.",
+  "homepage": "https://github.com/jacob623/highway-skills",
+  "repository": "https://github.com/jacob623/highway-skills",
+  "license": "Apache-2.0"
+}

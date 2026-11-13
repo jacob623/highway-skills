@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { classifyError, FAILURE_KINDS, formatFailure, likelyCause, retryServiceError, type Failure } from "../src/failure.ts";
+import { classifyError, EXIT_2_KINDS, FAILURE_KINDS, formatFailure, likelyCause, retryServiceError, type Failure } from "../src/failure.ts";
 import { createRedactor, REDACTED } from "../src/redact.ts";
 
 const redact = createRedactor({ GITHUB_TOKEN: "ghp_secretsecretsecretsecretsecret1234" });
@@ -88,6 +88,12 @@ test("a Copilot -32603 error is a service error with its own cause", () => {
   assert.ok(FAILURE_KINDS.includes("service-error"));
   assert.match(likelyCause({ kind: "service-error" }), /Copilot service/);
   assert.match(likelyCause({ kind: "service-error" }), /retried once/);
+});
+
+test("a failed plugin install fails the scenario and does not stop the run", () => {
+  assert.ok(FAILURE_KINDS.includes("plugin-install"));
+  assert.ok(!EXIT_2_KINDS.has("plugin-install"));
+  assert.match(likelyCause({ kind: "plugin-install" }), /did not install or load from highway-agent-plugin\//);
 });
 
 test("a service error is retried once; any other error is rethrown", async () => {
