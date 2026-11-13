@@ -3,7 +3,7 @@ name: highway-discovery
 description: "Manages one discovery for a complete request. Use when a request is complete and the person wants to explore options for it, or wants to resume an existing discovery."
 license: Apache-2.0
 metadata:
-  version: 5.6.0
+  version: 5.7.0
   usage: "Run highway-discovery with one request id or one discovery id."
 ---
 
@@ -74,7 +74,7 @@ Before a step in this table, read its file and follow it to the end.
 
 ### Entry
 
-1. Read the invocation for one Request id or one Discovery id.
+1. Read the invocation for one Request id or one Discovery id. When it has neither, and contains the exact title of one Discovery that is ready to explore, as `choose` defines it, that Discovery's id is present. Otherwise, when it contains the exact title of one Request that is ready to analyze, that Request's id is present. Compare without regard to case.
 2. When both are present, go to `choose`.
 3. When one Request id is present, resolve it. When it matches no request, stop. Say the Request was not found. Write nothing. When its `## Completeness` is not `Complete`, stop. Say the Request is incomplete. Write nothing. Otherwise go to `analyze`.
 4. When one Discovery id is present, resolve it. When it matches no Discovery, stop. Say the Discovery was not found. Write nothing. Otherwise load its options and go to `start`. Do not write. Do not run the check.

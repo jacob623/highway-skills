@@ -3,7 +3,7 @@ name: highway-codify
 description: "Manages one functional artifact for one accepted implementation. Use when the person wants working code for an accepted reference implementation, or wants to see the code catalog and discuss one automation."
 license: Apache-2.0
 metadata:
-  version: 14.7.0
+  version: 14.8.0
   usage: "Run highway-codify with one implementation name."
 ---
 
@@ -125,7 +125,7 @@ A number, a title, or a description selects one. Show the title. Go to `record c
 [Product Title] is the selected implementation title. Read its record's Execution. Read `library/coding-standards/codify-platforms.md` and `library/coding-standards/coding-standards.md` when present. Write nothing.
 
 1. The record is incomplete when Deployed by or Managed by is `Needed`, empty, or names a platform with no row.
-2. The record is incomplete when Language is `Needed`, empty, or names a standard with no row.
+2. The record is incomplete when Language is `Needed`, empty, or names a standard with no row. Language `None` names no standard and is complete.
 3. When `highway-implementation` returned here and the record is still incomplete, stop.
 4. When the record is incomplete, emit:
 

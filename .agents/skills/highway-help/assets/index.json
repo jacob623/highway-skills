@@ -5,7 +5,7 @@
       "name": "highway-adr",
       "description": "Records one architecture decision for one discovery. Use when a discovery's options are ready and the person wants to choose one and record it as an ADR, or when highway-onboarding hands off a provider decision.",
       "usage": "Run highway-adr with one discovery id.",
-      "version": "6.6.0",
+      "version": "6.7.0",
       "example": "/highway-adr DISC3f2a9c10 OPTa91c2b04"
     },
     {
@@ -13,7 +13,7 @@
       "name": "highway-architecture",
       "description": "Manages one reference architecture from one accepted adr. Use when an ADR is accepted and the person wants the reference architecture that realizes it, or when highway-onboarding hands off an accepted ADR.",
       "usage": "Run highway-architecture with one adr id.",
-      "version": "5.7.0",
+      "version": "5.8.0",
       "example": "/highway-architecture ADRb7c41e20"
     },
     {
@@ -37,7 +37,7 @@
       "name": "highway-codify",
       "description": "Manages one functional artifact for one accepted implementation. Use when the person wants working code for an accepted reference implementation, or wants to see the code catalog and discuss one automation.",
       "usage": "Run highway-codify with one implementation name.",
-      "version": "14.7.0",
+      "version": "14.8.0",
       "example": "/highway-codify Restart the worker"
     },
     {
@@ -45,7 +45,7 @@
       "name": "highway-controls",
       "description": "Manages the repository-wide control baseline. Use when highway-setup delegates the control baseline, after Objectives finish or when setup runs again.",
       "usage": "Run highway-controls.",
-      "version": "8.6.0",
+      "version": "8.7.0",
       "example": "/highway-setup"
     },
     {
@@ -53,7 +53,7 @@
       "name": "highway-discovery",
       "description": "Manages one discovery for a complete request. Use when a request is complete and the person wants to explore options for it, or wants to resume an existing discovery.",
       "usage": "Run highway-discovery with one request id or one discovery id.",
-      "version": "5.6.0",
+      "version": "5.7.0",
       "example": "/highway-discovery REQ3f2a9c10"
     },
     {
@@ -61,7 +61,7 @@
       "name": "highway-experience",
       "description": "Holds highway identity, the experience standard, and the storage contract. Use when another highway skill loads it as its first step, or when the person asks what highway is. Not for a request unrelated to highway.",
       "usage": "Loaded by every other highway skill. Run highway-experience directly for a summary of highway.",
-      "version": "1.1.0",
+      "version": "1.2.0",
       "example": "/highway-experience"
     },
     {
@@ -77,7 +77,7 @@
       "name": "highway-implementation",
       "description": "Manages one reference implementation from one accepted reference architecture. Use when a reference architecture is accepted and the person wants the implementation that realizes it, or when another highway skill hands one off.",
       "usage": "Run highway-implementation with one architecture id.",
-      "version": "7.15.0",
+      "version": "7.16.0",
       "example": "/highway-implementation RAb7c41e20"
     },
     {
@@ -85,7 +85,7 @@
       "name": "highway-nfrs",
       "description": "Manages the repository-wide nfr baseline. Use when highway-setup delegates the nfr baseline, after Controls finish or when setup runs again.",
       "usage": "Run highway-nfrs.",
-      "version": "9.7.0",
+      "version": "9.8.0",
       "example": "/highway-setup"
     },
     {
@@ -93,7 +93,7 @@
       "name": "highway-objectives",
       "description": "Manages the repository-wide business objective baseline and its stable traceability references. Use when highway-setup delegates the objective baseline, after Profile finishes or when setup runs again.",
       "usage": "Run highway-objectives.",
-      "version": "8.6.0",
+      "version": "8.7.0",
       "example": "/highway-setup"
     },
     {
@@ -101,7 +101,7 @@
       "name": "highway-onboarding",
       "description": "Manages one decision, one reference architecture, and one reference implementation. Use when the person wants to onboard one capability in a single pass, grounded in accepted setup or architecture records.",
       "usage": "Run highway-onboarding.",
-      "version": "10.12.0",
+      "version": "10.13.0",
       "example": "/highway-onboarding"
     },
     {
@@ -109,7 +109,7 @@
       "name": "highway-profile",
       "description": "Manages the repository-wide organizational Profile and its contextual guidance. Use when highway-setup delegates the Profile, at the start of setup or when setup runs again.",
       "usage": "Run highway-profile.",
-      "version": "14.4.0",
+      "version": "14.5.0",
       "example": "/highway-setup"
     },
     {

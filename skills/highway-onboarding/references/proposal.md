@@ -79,7 +79,7 @@ For each capability, we'll identify the platforms, services, processes, or peopl
 
 [observed platform, or `Unknown`]
 
-When the capability title is AI-Augmented Technology Development and the session identifies the agent platform by name, that name is the provider. Cursor, VS Code, Claude, and Codex are names the session may identify. Do not guess a name. When no name is identified, the provider is `Unknown`. A corrected name replaces the provider. Do not assign this provider to a capability the platform does not operate.
+When the capability title is AI-Augmented Technology Development and the session identifies the agent platform by name, that name is the provider. Cursor, VS Code, GitHub Copilot, Claude, and Codex are names the session may identify. Do not guess a name. When no name is identified, the provider is `Unknown`. A corrected name replaces the provider. Do not assign this provider to a capability the platform does not operate.
 
 When the provider is `Unknown`, emit this line immediately above the question:
 
@@ -91,8 +91,19 @@ If this is accurate, just say so.
 
 - `edit`: emit one consequence sentence. Apply the edit and re-emit this block. When the person says the capability does not exist, remove it from the capability queue and do not include it in the mapping. When the person says the provider does not exist, set the provider to `Does not exist`. Stay on `map` until the person accepts a block whose provider is known or `Does not exist`.
 - `accept`: when the provider is `Unknown`, re-emit this block, including the unable-to-infer line. Otherwise remove this capability from the capability queue. A provider marked `Does not exist` does not enter the provider queue. When the queue still has a capability, re-enter `map`. When it is empty, go to `mapping`.
-- `unknown`: re-emit this block, including the unable-to-infer line. Stay on `map`.
+- `unknown`: when the provider is `Unknown`, emit the provider question below instead of this block. Otherwise re-emit this block. Stay on `map`.
 - `question`: answer, then re-emit this block. Stay on `map`.
+- `decline`: stop. Write nothing.
+
+The provider question:
+
+**Who builds or runs [Capability title] today?**
+
+If no one does, just say so and I'll mark the provider as Does not exist.
+
+- A named person, team, platform, or service: it is the provider. Re-emit this block with it. Stay on `map`.
+- No one, or `unknown`: set the provider to `Does not exist`. Re-emit this block. Stay on `map`.
+- `question`: answer, then re-emit the provider question. Stay on `map`.
 - `decline`: stop. Write nothing.
 
 ### mapping
@@ -130,6 +141,7 @@ If this is accurate, just say so.
 - A removed AI-Augmented Technology Development line is not placed on the capability queue.
 - Each capability title follows `capability title` in `highway-implementation`. Two activities that rely on one technology are two capabilities.
 - The AI-Augmented Technology Development provider is the agent platform the session identifies by name. An unidentified name uses the unable-to-infer prompt.
+- An `unknown` reply on an `Unknown` provider asks who builds or runs the capability today. A named provider replaces `Unknown`. No one, or a second `unknown`, marks the provider `Does not exist`.
 - The mapping transition is shown once, before the first capability mapping.
 - Each mapping label is bold, followed by a blank line and its value.
 - The agent platform is not assigned to a capability it does not operate.

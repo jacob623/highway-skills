@@ -231,6 +231,23 @@ test("a fixture that fails validation blocks its scenario", async () => {
   rmSync(transcripts, { recursive: true });
 });
 
+test("a scenario whose last attempt fails only with service errors is blocked", async () => {
+  const { dir, transcripts, lines } = setup({ "highway-help/help-smoke.scenario": SCENARIO("help-smoke") });
+  const serviceDriver: Driver = async (o) => ({
+    ...(await writingDriver(o)),
+    outcome: "error",
+    error: { kind: "service-error", message: "No response was returned. Send your message again to retry. (code -32603)" },
+  });
+  const code = await main(["--smoke", "--transcripts", transcripts, "--no-judge"], { ...deps({ driver: serviceDriver }, lines, transcripts), scenariosDir: dir });
+  assert.equal(code, 1);
+  const text = lines.join("\n");
+  assert.match(text, /"kind":"service-error"/);
+  assert.match(text, /blocked 1/);
+  assert.doesNotMatch(text, /^FAIL help-smoke: /m);
+  rmSync(dir, { recursive: true });
+  rmSync(transcripts, { recursive: true });
+});
+
 test("a targeted run that selects nothing exits 0 and says so", async () => {
   const { dir, transcripts, lines } = setup({ "highway-help/help-smoke.scenario": SCENARIO("help-smoke") });
   const code = await main(["--paths", "tests/run-all.sh"], { ...deps({}, lines, transcripts), scenariosDir: dir });

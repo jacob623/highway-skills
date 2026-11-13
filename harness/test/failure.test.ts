@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { classifyError, FAILURE_KINDS, formatFailure, likelyCause, type Failure } from "../src/failure.ts";
+import { classifyError, FAILURE_KINDS, formatFailure, likelyCause, retryServiceError, type Failure } from "../src/failure.ts";
 import { createRedactor, REDACTED } from "../src/redact.ts";
 
 const redact = createRedactor({ GITHUB_TOKEN: "ghp_secretsecretsecretsecretsecret1234" });
@@ -74,4 +74,36 @@ test("errors are classified by message", () => {
   assert.equal(classifyError(new Error("You have exceeded your premium request allowance")), "allowance");
   assert.equal(classifyError(new Error("401 Unauthorized")), "no-access");
   assert.equal(classifyError(new Error("socket hang up")), "unclassified");
+});
+
+test("a Copilot -32603 error is a service error with its own cause", () => {
+  const error = Object.assign(new Error("No response was returned. Send your message again to retry."), { code: -32603 });
+  assert.equal(classifyError(error), "service-error");
+  assert.equal(classifyError(new Error("Request failed (code -32603)")), "service-error");
+  assert.ok(FAILURE_KINDS.includes("service-error"));
+  assert.match(likelyCause({ kind: "service-error" }), /Copilot service/);
+  assert.match(likelyCause({ kind: "service-error" }), /retried once/);
+});
+
+test("a service error is retried once; any other error is rethrown", async () => {
+  const serviceError = new Error("No response was returned. Send your message again to retry. (code -32603)");
+  let calls = 0;
+  const retries: unknown[] = [];
+  const value = await retryServiceError(async () => {
+    calls += 1;
+    if (calls === 1) throw serviceError;
+    return "ok";
+  }, (e) => retries.push(e));
+  assert.equal(value, "ok");
+  assert.equal(calls, 2);
+  assert.deepEqual(retries, [serviceError]);
+
+  calls = 0;
+  await assert.rejects(retryServiceError(async () => { calls += 1; throw serviceError; }, () => {}), serviceError);
+  assert.equal(calls, 2);
+
+  calls = 0;
+  const other = new Error("socket hang up");
+  await assert.rejects(retryServiceError(async () => { calls += 1; throw other; }, () => assert.fail("no retry")), other);
+  assert.equal(calls, 1);
 });

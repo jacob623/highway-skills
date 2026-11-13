@@ -3,7 +3,7 @@ name: highway-objectives
 description: "Manages the repository-wide business objective baseline and its stable traceability references. Use when highway-setup delegates the objective baseline, after Profile finishes or when setup runs again."
 license: Apache-2.0
 metadata:
-  version: 8.6.0
+  version: 8.7.0
   usage: "Run highway-objectives."
 ---
 
@@ -61,7 +61,7 @@ Before a step in this table, read its file and follow it to the end.
 
 ### Entry
 
-1. Read `library/governance/objectives.md` and each record it indexes.
+1. Read `library/governance/objectives.md`. Then read each record it indexes at `library/objectives/[ID].md`, with "Read a file".
 2. If the catalog and every indexed record are present and readable, go to `review`.
 3. If the catalog is absent, go to `recommend` when `profile.md` is readable. Otherwise go to `ask`.
 4. If the catalog or an indexed record is unreadable, or a catalog row has no record, stop. Say the Objectives could not be read. Leave every file unchanged. Do not return `Finished`.

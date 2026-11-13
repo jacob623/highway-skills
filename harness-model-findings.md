@@ -92,24 +92,6 @@ list. The architecture and discovery `Entry` steps are worded the same way (to c
 **Owner**: skill or scenario. Either `Entry` resolves a title that matches exactly one waiting
 record, or the scenarios open with an id, or they script the list question.
 
-### F2: Pasted material with an unreachable URL falls back to asking
-
-**Evidence**:
-- profile-smoke and setup-smoke answer the offer question with an overview paragraph containing
-  `https://northwind.example`.
-- Luna then asks "What does northwind-highway do?", which the paragraph already answered.
-- In setup-smoke, the catch-all reply is `[decline] Let's stop setup here for now.`, so setup
-  stops. No file is written, and every `expect: template` fails.
-
-**Skill text**: highway-profile `offer` has branches for "A URL or document", "The person has
-nothing", and "Retrieval is unavailable: go to `identity.ask`". There is no branch for an overview
-pasted as text. The fictional URL cannot be retrieved, so the literal path is `identity.ask`, even
-though the same step says "Use supplied material across every later domain. Do not ask the person
-to repeat it."
-
-**Owner**: skill (add an inline-text branch, or say which branch wins when a URL fails but text
-was supplied). Possibly the scenario too (use text without a URL).
-
 ### F3: A catch-all reply loops on a re-ask
 
 **Evidence**:
@@ -131,20 +113,6 @@ re-emit this list. Stay on `choose-discovery`."
 - Should a catch-all ever be `[unknown]` when the skill's answer is to re-ask?
 - Should the harness model fallback be allowed to spend a reply keyed to a different question?
 
-### F4: More review rounds than the script expects
-
-**Evidence**:
-- codify-config-smoke: after declining standards, Luna shows a `### Platforms` entry review with
-  "What would you add, correct, or remove?" The script has no reply for it.
-- onboarding-smoke: the script answers three review questions. Luna asks a fourth, on the
-  per-capability map (both attempts).
-- profile-smoke: Luna reviews domain by domain; the script runs out after two reviews.
-
-**Owner**: to investigate.
-- Compare the skill text with the number of reviews each step requires.
-- If the skill requires these reviews, the scripts are short.
-- If not, the model is adding rounds, and the skill text should make the count explicit.
-
 ### F5: The model starts on a different branch than the script
 
 **Evidence**:
@@ -156,19 +124,17 @@ re-emit this list. Stay on `choose-discovery`."
 **Owner**: skill or scenario. Find the `Classify` branch the fixture state should select, and
 whether the skill text makes it deterministic for that state.
 
-### F6: A false "Oops... we need to setup your repository"
+**Diagnosis (spec 243)**: each failing scenario's fixture state was compared with the text that
+selects its first branch.
 
-**Evidence**: codify-smoke attempt 1, request-smoke attempt 1, and implementation-smoke attempt 2
-reply only with "Oops... we need to setup your repository. … Run highway-setup to get started."
-Each starts from a seeded fixture where setup is complete. The other attempt of codify and
-request passes.
-
-**Skill text**: the readiness check in highway-experience's storage contract, and each skill's
-`Entry`.
-
-**Owner**: skill (highway-experience). Find which file or condition Luna judged missing.
-`attempt-N.raw.jsonl` shows the files it read before deciding. The failure is nondeterministic,
-which suggests the condition is ambiguous.
+| Scenario | Category | Diagnosis | Resolution |
+| --- | --- | --- | --- |
+| discovery-smoke | Scenario, after F1 | The script expects the analyze-or-explore question, which `choose` asks only when both ids are supplied, and a review that `start` does not have. | Script: decline at `start`'s option question. |
+| chain-discovery | Scenario | The same two expectations. Luna listed the Request, analyzed it, wrote it, and reached `start`. | Script: select 1, then decline at `start`. |
+| chain-architecture | Scenario | The fixture's ADR title is its Selected Option, so `identifier` asks **What should this architecture be called?**. The script has no reply. | Script: answer the purpose question. |
+| chain-setup | Skill | Governance `queue` asked the empty-queue question while `recommend` asked the queue-has-titles question for the same state. The script also had one Profile review where Profile asks four. | Skill: `queue` asks the queue-has-titles question in objectives, controls, and nfrs. Script: four Profile accepts. |
+| nfrs-smoke | Service (F10) | `glob` reported `library/governance/nfrs.md` missing, so `review` was skipped. | Exact paths are read, not searched (F10). |
+| codify-configure | Model | Copilot invoked highway-codify-config directly for "/highway-codify configure". highway-codify was never loaded. | Recorded. Scenario unchanged. |
 
 ### F7: An empty reply after accepting
 
@@ -176,109 +142,8 @@ which suggests the condition is ambiguous.
 review, and the agent's turn-3 reply is empty. No record holding the person's addition is written,
 so `expect: contains … two-factor` and `… two seconds` fail.
 
-**Owner**: to investigate.
-- Check `attempt-1.raw.jsonl` for tool calls after the reply.
-- Find whether the write was attempted and failed, or never attempted.
-- Check whether the turn ended early (`maxTurns`, timeout, or the model stopping).
-
-### F8: Copilot service errors
-
-**Evidence**: controls-smoke attempt 2 and objectives-smoke attempt 2 end with "session error: No
-response was returned. Send your message again to retry. (code -32603)" right after the final
-"Looks good."
-
-**Owner**: service. Retry, or check whether a long final write (catalog plus records) pushes a
-response past a service limit. It may share a cause with F7.
-
-### F9: Procedure text shown to the person, and a stricter field check
-
-**Evidence**:
-- implementation-smoke attempt 1 ends its first reply with the skill's reply classes, shown to
-  the person ("- `unknown`: re-emit this block. Stay on `start`. - `question`: answer, then
-  re-emit this block…").
-- After "Looks good.", Luna answers "Deployed by and Managed by are still **Needed**" instead of
-  asking "Would you like to return and provide these details now?" as the script expects.
-
-**Owner**: skill.
-- Make the reply-class lists unmistakably instructions, not output.
-- Check what `start` says to do when the person accepts a proposal that has `Needed` fields.
-
-### F10: Objectives catalog judged to point at a missing record
-
-**Evidence**: objectives-smoke attempt 1 replies "The Objectives could not be read because the
-catalog references a missing record for **Ship Orders Within One Day**." The record exists at
-`library/objectives/OBJ27e16808.md` in `harness/fixtures/stages/setup`.
-
-**Skill text**: highway-objectives reads `library/governance/objectives.md` and writes records to
-`library/objectives/[ID].md`. Controls and NFRs keep their records under `library/governance/`
-(`library/governance/controls/*.md`, `library/governance/nfrs/*.md`).
-
-**Owner**: skill or storage layout. The likely cause is the model guessing
-`library/governance/objectives/` by analogy. Confirm in `attempt-1.raw.jsonl`, then decide between
-aligning the layout and naming the record path in the read step.
-
-**Post-change run**: objectives-smoke attempt 2 says "`library/objectives/OBJ27e16808.md` is
-missing". nfrs-smoke attempt 1 says "active entry `NFRe124ce38` has no readable record under
-`library/governance/nfrs/`". In nfrs, `attempt-1.raw.jsonl` shows the cause. Copilot's `glob` tool,
-called with pattern `library/governance/nfrs/NFR*.md` and an absolute `paths`, returned "No files
-matched the pattern." The record exists, and attempt 2 read it with `view`. So F10 is at least
-partly a tool result the model trusts over the catalog. It is not only a guessed path.
-
-### F11: highway-experience read as a file, not activated
-
-**Evidence**: nfrs-smoke attempt 1 of the post-change run. The model invoked `highway-nfrs`, then
-opened `.github/skills/highway-experience/SKILL.md` and its references with the `view` tool. It
-never invoked the `highway-experience` skill. The harness check "highway-experience activated before
-the first output" failed (kind `experience-order`). No baseline attempt shows this.
-
-**Skill text**: the first Procedure line of every skill, "Activate the highway-experience skill
-before any output the person sees, …", unchanged by spec 242.
-
-**Owner**: to investigate. Decide whether reading the skill's files counts as activation. If it
-does, the harness check should accept it. If not, the line should name the skill tool.
-
-The affected run below shows it again in controls-smoke attempt 1 and chain-request attempt 1.
-
-**Decision for spec 242**: accepted as model behavior, not a split regression. nfrs-smoke counts
-as no worse.
-
-### F12: Shell commands despite the storage contract
-
-**Evidence**: affected run `20261112-171321Z-targeted-49ab958`:
-- codify-integration attempt 1 runs `find . -maxdepth 4 -type f | sort | sed -n '1,160p'`.
-- codify-plan-review attempt 2 finishes the whole path, then runs `ruby -e 'require "yaml"; …'` to
-  check the workflow file it wrote.
-- profile-smoke attempt 2 runs `mkdir -p library/knowledge`.
-
-The harness rejects each one (`rejected-request`).
-
-**Skill text**: highway-experience's storage contract allows four operations and no shell.
-
-**Owner**: skill (highway-experience) or harness. Check whether the contract says plainly enough
-that the agent may not run a shell to list, verify, or create folders.
-
-### F13: An exact message loses its formatting
-
-**Evidence**: request-setup-needed, both attempts, shows "Oops... we need to setup your
-repository." without the bold markers. The check expects
-`**Oops... we need to setup your repository.**`, so it fails.
-
-**Owner**: scenario or skill. Decide whether the check compares the formatting, or whether the
-skill marks the line as exact including its emphasis.
-
-### F14: A scenario has no reply for the decline's return question
-
-**Evidence**: rerun `20261112-182131Z-targeted-49ab958`. codify-platform-no-row (both attempts)
-and codify-not-running (attempt 2) follow highway-implementation's `delivery decline`. It asks
-"Would you like to return and provide these details now?", as its text says. Neither script has a
-reply for it, so the run fails. In rerun `20261112-181837Z-targeted-49ab958`, platform-no-row
-attempt 1 fails the same way. The attempts that pass skip the question.
-
-**Skill text**: `delivery decline` in highway-implementation's `references/amend.md`, which this
-change did not alter.
-
-**Owner**: scenario. Add a `[decline]` reply for the return question, or decide that a decline
-from highway-codify returns without asking.
+**Owner**: skill and harness. Spec 243's final runs show the empty reply is what `review`
+`accept` asks for, and that Copilot answers it with -32603. See F7 under Harness Failures.
 
 ### F15: A refused edit does not re-show the proposal
 
@@ -293,56 +158,26 @@ sits below it as a separate line and does not say to re-emit.
 
 **Owner**: skill (highway-codify). Say that a refused edit still re-emits the proposal.
 
-### S1: A handoff inside one turn crosses into a flow file the model does not open
-
-This one comes from the spec 242 split, not from the model alone.
-
-**Evidence**: codify-plan-review attempt 1. After the person accepts, the model runs `identifier`,
-`write`, and `index` from `references/record.md`. `index` ends "On success, go to `plan` without
-asking a question." `plan`, `check`, `menu`, and `review` are in `references/plan.md`, which the
-model never opens. It writes `plan.md` from the template, skips `check` and the menu, and closes
-with "The proposal and plan are saved. The automation was not run." The script's
-"Would you like to:" never comes, so no task list is written. Attempt 2 opens `plan.md` and
-follows the menu.
-
-**Skill text**: the router's "Before a step in this table, read its file and follow it to the
-end." A handoff that crosses files *between* turns works in every transcript. This one crosses
-files *within* a turn, with no question in between.
-
-**Owner**: spec 242. Options include keeping a turn-internal handoff inside one flow file (move
-`plan`, `check`, `menu`, and `review` into `record.md`, or `index` into `plan.md`), or naming the
-file at the handoff. The second breaks boundary 9 as written.
-
-**Resolution**: steps one turn runs through now share a flow file or live in `SKILL.md`. A new
-boundary 12 in `tests/skill-flow-pattern.test.sh` fails on any flow file handoff, outside a reply
-line, into another flow file. An audit of all 12 split skills found five such handoffs:
-- codify: `index` to `plan`. `plan`, `check`, `menu`, and `review` moved into `record.md`.
-- codify: `code project` to `draft`, and `align` and `govern` to `suggest`. `suggest.md` and
-  `proposal.md` hand off to each other and exceed 20,000 characters together. So `rank`,
-  `codified`, `code project`, and `suggest` went back into `SKILL.md`.
-- discovery: `analyze` to `identifier`, and `write` to `start`. Its three flow files merged
-  into `references/options.md`.
-
 ## Questions for research
 
 1. Does the previous model (`claude-sonnet-4.5`) pass these scenarios at the same commit? If so,
    which failures does Luna alone show?
-2. For each F1, F2, F4, and F5 case, does the skill text say what Luna did? If it does, the
-   scenario is wrong; if not, the skill is ambiguous.
-3. Should scenarios be model-portable, with no reliance on a model inferring past the text? Should
+2. Should scenarios be model-portable, with no reliance on a model inferring past the text? Should
    catch-all replies be restricted (F3)?
-4. Is F6 one ambiguous readiness condition, and which one?
-5. Are F7 and F8 one problem, a final turn too long for the service?
+3. Does Copilot return -32603 for every turn whose correct reply is empty (F7)?
 
 ## Possible spec scope
 
-- **Skill clarity**: title resolution in `Entry` (F1); pasted material in `offer` (F2); the
-  `Classify` branch for each fixture state (F5); the readiness condition (F6); reply-class lists
-  as instructions (F9); the objectives record path (F10).
-- **Scenario portability**: open with ids or script the list questions (F1); match review counts
-  to the skills (F4); no catch-all that a skill answers by re-asking (F3).
-- **Harness**: the model fallback must not spend a reply keyed to another question (F3); a clearer
-  report for an empty agent turn (F7).
+- **Skill clarity**: a closing line where a skill now emits nothing (F7); keep every template
+  heading and table header row (F18); the onboarding `orchestrate` announcement (F19); a refused
+  edit re-shows the proposal (F15); a bare `/highway-codify` reaches `choose` (F5).
+- **Scenario portability**: remove the remaining catch-alls (F3); `contains` on a pattern with a
+  fixture record (F16); replies for an `Unknown` provider (F21).
+- **Harness**: judge only the text after the last in-turn answer (F17); stop reporting an empty
+  final turn as a service block (F7).
+- **Model behavior to watch**: the occasional missed title (F1); Copilot routing for
+  codify-configure (F5); absolute paths that lose the temporary folder (F20); a proposal shown
+  without its question (F22).
 - **Exit criterion**: the smoke set passes on GPT-5.6 Luna and on the previous model.
 
 ## Baseline for spec 242
@@ -454,3 +289,302 @@ Every other codify and discovery scenario passes in both runs. No scenario fails
 passed in Option B. discovery-smoke attempt 1 of run 1 runs `analyze` through `write` and on to
 `start` in one turn, writes the Discovery, and shows the option list. That is the path merged
 into `references/options.md`.
+
+## Final runs for spec 243
+
+Three runs on `gpt-5.6-luna` after every spec 243 change, the full suite (86 of 86), and two
+generator runs with no change. Transcripts are under
+`specs/243-harness-failure-resolutions/harness/`, which is gitignored. The token value appears
+in none of the 285 captured files.
+
+| Run | Selection | Passed | Flaky | Failed | Blocked |
+| --- | --- | --- | --- | --- | --- |
+| `20261113-051531Z-smoke-fe522b4` | `--smoke` (16) | 11 | 2 | 4 | 1 |
+| `20261113-052407Z-targeted-fe522b4` | `--changed-since main` (48) | 38 | 7 | 9 | 1 |
+| `20261113-054508Z-targeted-fe522b4` | `--skills highway-request` (3) | 3 | 0 | 0 | 0 |
+
+Smoke went from 6 of 16 passing (spec 242 post-change) to 11 of 16. The affected run went from
+33 of 50 to 38 of 48. Every failing attempt is matched to a finding below.
+
+| Scenario | Run | Attempt 1 | Attempt 2 | Findings |
+| --- | --- | --- | --- | --- |
+| controls-smoke | smoke | service-error | service-error (blocked) | F7 |
+| discovery-smoke | smoke, changed | assertion (Candidate and Example tables dropped) | same | F18 |
+| nfrs-smoke | smoke, changed | service-error or assertion (`contains` on the fixture's NFR) | assertion, same | F7, F16 |
+| objectives-smoke | smoke | service-error | assertion (`contains` on the fixture's objective) | F7, F16 |
+| objectives-smoke | changed | service-error | service-error (blocked) | F7 |
+| setup-smoke | smoke | unmatched-question (an answered in-turn question re-matched) | assertion (asset reads at a wrong absolute path) | F17, F20 |
+| setup-smoke | changed | assertion (Identity block shown without its question) | rejected-request (catalog write at a wrong absolute path) | F22, F20 |
+| onboarding-smoke | smoke | unmatched-question (accept on an `Unknown` provider re-emits) | pass | F21 |
+| onboarding-smoke | changed | assertion (onboarding ADR drops `## Decision Confidence`) | same | F18 |
+| controls-smoke | changed | service-error | assertion (`contains` on the fixture's control) | F7, F16 |
+| chain-discovery | changed | assertion (Comparison Matrix dropped) | assertion (Example table dropped) | F18 |
+| chain-implementation | changed | assertion (stops after the orchestrate line) | same | F19 |
+| implementation-onboards-platform | changed | unmatched-question (provider question) | assertion (stops after the orchestrate line) | F21, F19 |
+| codify-configure | changed | unmatched-question | same | F5 |
+
+Flaky first attempts: adr-smoke (listed Discoveries despite the exact title, F1; its `\?` catch-all
+then drew the same question again, F3, the only F3 case in these runs), codify-config-smoke (F7),
+codify-controls-conflict (F15), codify-no-architecture (the plan menu, which the script does not
+key), codify-needed-language and codify-no-governance (an unscripted clarifying question),
+codify-folder-taken (showed the "plan is complete" menu without writing the plan), and chain-codify
+(a bare `/highway-codify` entered `catalog` instead of `choose`, F5). None of the
+unscripted-question attempts involved a catch-all reply.
+
+# Harness Failures
+
+Resolved findings are removed: S1 in spec 242, and F2, F4, F6, F9, F10, F11, F12, F13, and F14 in
+spec 243. F8 is reopened and merged into F7: its -32603 errors come from turns the skill leaves
+empty. The run tables above keep their ids as a record. Each resolution is in spec 243's `research.md`;
+the confirming run ids are in the final runs section above.
+
+## F3: A catch-all reply loops on a re-ask
+
+**Skill**: highway-adr, highway-architecture, highway-codify, highway-codify-config, highway-discovery, highway-implementation, highway-onboarding, highway-profile
+
+**Runs**:
+
+- Baseline smoke `20261112-162017Z-smoke-49ab958`: adr-smoke, architecture-smoke, codify-config-smoke, discovery-smoke, onboarding-smoke, profile-smoke
+- Post-change smoke `20261112-170628Z-smoke-49ab958`: adr-smoke, codify-config-smoke, discovery-smoke, implementation-smoke, onboarding-smoke, profile-smoke, setup-smoke
+- Affected run, Option B `20261112-171321Z-targeted-49ab958`: chain-architecture, chain-discovery, chain-implementation, codify-config-smoke, codify-named-platform, codify-standards, discovery-smoke, implementation-smoke, onboarding-smoke, profile-smoke
+- S1 rerun 1 `20261112-181837Z-targeted-49ab958`: chain-discovery, discovery-smoke
+- S1 rerun 2 `20261112-182131Z-targeted-49ab958`: chain-discovery, discovery-smoke
+- Final changed `20261113-052407Z-targeted-fe522b4`: adr-smoke attempt 1
+
+**Category**: Scenario
+
+**Confirmed**: Yes
+
+**Basis**: The catch-all reply is one the skill answers by asking again. Spec 243 removed the
+catch-all from the 13 scenarios it rewrote. In the final runs it looped once: adr-smoke's
+`ask-pattern: \?` answered "Which Discovery would you like to decide?" with "Yes, go ahead.", and
+the list came back.
+
+**Proposed resolution**: Remove the catch-all from the 11 scenarios that still hold one:
+adr-smoke, architecture-smoke, assessment-smoke, chain-request, codify-choose,
+codify-control-unmet, codify-standard-unmet, controls-smoke, nfrs-smoke, objectives-smoke, and
+request-smoke. Key each reply to the question the script expects. In the harness, never spend a
+reply keyed to another question on the fallback, and report a question repeated after a
+catch-all as its own failure kind that names the question.
+
+## F5: The model starts on a different branch than the script
+
+**Skill**: highway-codify
+
+**Runs**:
+
+- Baseline smoke `20261112-162017Z-smoke-49ab958`: discovery-smoke, nfrs-smoke
+- Post-change smoke `20261112-170628Z-smoke-49ab958`: discovery-smoke
+- Affected run, Option B `20261112-171321Z-targeted-49ab958`: chain-architecture, chain-discovery, chain-setup, codify-configure, discovery-smoke
+- S1 rerun 1 `20261112-181837Z-targeted-49ab958`: chain-discovery, codify-configure, discovery-smoke
+- S1 rerun 2 `20261112-182131Z-targeted-49ab958`: chain-discovery, discovery-smoke
+- Final changed `20261113-052407Z-targeted-fe522b4`: codify-configure (both attempts), chain-codify attempt 1
+
+**Category**: Model
+
+**Confirmed**: Yes
+
+**Basis**: Spec 243 diagnosed each case (the table under F5 in Findings) and fixed the skill and
+script cases; chain-setup and chain-architecture now pass. Two cases remain:
+- codify-configure: Copilot invokes highway-codify-config directly for "/highway-codify configure",
+  so highway-codify's `Entry` step 1 never runs. Skill text cannot change that.
+- chain-codify attempt 1: a bare `/highway-codify` should reach `choose` (`Entry` step 9). Luna
+  entered `catalog` instead, which `Entry` step 2 reserves for the word `catalog` or a request to
+  show the code catalog, and `catalog` correctly asked nothing.
+
+**Proposed resolution**: For codify-configure, retire the scenario or open it with prose that names
+highway-codify, so Copilot loads it. For a bare invocation, say in `Entry` step 2 that an
+invocation naming nothing is not a catalog request.
+
+## F7: An empty reply after accepting, reported as a service error (reopens F8)
+
+**Skill**: highway-controls, highway-nfrs, highway-objectives, highway-codify-config
+
+**Runs**:
+
+- Baseline smoke `20261112-162017Z-smoke-49ab958`: controls-smoke, nfrs-smoke, objectives-smoke
+- Post-change smoke `20261112-170628Z-smoke-49ab958`: controls-smoke, nfrs-smoke, objectives-smoke
+- Affected run, Option B `20261112-171321Z-targeted-49ab958`: controls-smoke, nfrs-smoke, objectives-smoke
+- Final smoke `20261113-051531Z-smoke-fe522b4`: codify-config-smoke attempt 1, controls-smoke, nfrs-smoke, objectives-smoke
+- Final changed `20261113-052407Z-targeted-fe522b4`: controls-smoke, nfrs-smoke, objectives-smoke
+
+**Category**: Skill
+
+**Confirmed**: Yes
+
+**Basis**: F8 is merged here. Each governance skill's `review` says, for `accept`: "return
+`Finished`. Emit nothing else." So the empty turn after "Looks good." is what the skill asks for.
+The record holding the person's addition is written on the edit, in turn 2, as `review` says; the
+`contains` failure that follows is F16. All nine -32603 errors ("No response was returned") in the
+final runs came on a turn the skill leaves empty: eight governance `accept`s, and one
+highway-codify-config `decline` ("stop. Write nothing."). The harness resend never produced a reply,
+because the correct reply is still empty. So -32603 here is Copilot's answer to an empty reply,
+not an outage, and spec 243's `blocked` report hides that.
+
+**Proposed resolution**: Fix in the skill. When no caller holds a return step, `review` `accept`
+and highway-codify-config's `decline` emit one closing line, such as "Your NFRs are recorded.", so
+the turn is never empty. Keep "Emit nothing else" for the return to highway-setup. Then confirm
+that -32603 stops. If it does not, revisit the harness retry and the `blocked` report.
+
+## F15: A refused edit does not re-show the proposal
+
+**Skill**: highway-codify
+
+**Runs**:
+
+- S1 rerun 2 `20261112-182131Z-targeted-49ab958`: codify-controls-conflict
+
+**Category**: Model
+
+**Confirmed**: Yes
+
+**Basis**: `edit` says to re-show the proposal, and Luna stops after the refusal. The refusal line could repeat it.
+
+**Proposed resolution**: Fix in the skill, in highway-codify `references/proposal.md`. End the refusal line with "Then re-emit the proposal and stay on `revise`", so the instruction sits where Luna stops reading.
+
+## F16: `contains` on a pattern checks the fixture's own record
+
+**Skill**: highway-controls, highway-nfrs, highway-objectives
+
+**Runs**:
+
+- Final smoke `20261113-051531Z-smoke-fe522b4`: nfrs-smoke, objectives-smoke
+- Final changed `20261113-052407Z-targeted-fe522b4`: controls-smoke, nfrs-smoke
+
+**Category**: Scenario
+
+**Confirmed**: Yes
+
+**Basis**: `contains` requires every file matching its pattern to hold the text. The `setup` fixture already holds one record, such as `NFRe124ce38.md`. The skill writes the added item as a new record, as it should, so the fixture's record never holds the new text. The new record's title is chosen by the model, so no fixed text identifies it in the catalog.
+
+**Proposed resolution**: Fix in the harness. Add an assertion that passes when any file matching the pattern holds the text, and use it in the three scenarios. Keep `contains` meaning every file, so no existing check is weakened.
+
+## F17: A question answered inside the turn is matched again at the end
+
+**Skill**: highway-setup, through highway-objectives
+
+**Runs**:
+
+- Final smoke `20261113-051531Z-smoke-fe522b4`: setup-smoke attempt 1
+
+**Category**: Harness
+
+**Confirmed**: Yes
+
+**Basis**: Luna asked every question of the turn through the input tool, and the harness answered each one. The turn ended with "Understood.", but the driver judges the whole turn's text, and it found the objectives question it had already answered, with its reply used.
+
+**Proposed resolution**: Fix in the harness. At the end of a turn, judge only the text after the last question answered inside that turn.
+
+## F18: A required section or table is dropped from the record
+
+**Skill**: highway-discovery, highway-adr (through highway-onboarding)
+
+**Runs**:
+
+- Final smoke `20261113-051531Z-smoke-fe522b4`: discovery-smoke
+- Final changed `20261113-052407Z-targeted-fe522b4`: chain-discovery, discovery-smoke, onboarding-smoke
+
+**Category**: Model
+
+**Confirmed**: Yes
+
+**Basis**: The template check requires every heading and table header row. Luna drops them in two ways:
+- Where there is no content. The Discovery template's placeholders read "<empty when no candidates are excluded>" and "…or `None`". Luna writes "No candidates were eliminated." or `None` and drops the table. The onboarding ADR, where Discovery Confidence is `None`, drops `## Decision Confidence`, although highway-adr says the record uses every section.
+- Where there is content. chain-discovery attempt 1 dropped the Candidate Solution Comparison Matrix table, which scores each option.
+
+**Proposed resolution**: Fix in the skill. In the write step of highway-discovery and highway-adr, say to keep every template heading and table header row, and to write `None` under one that has no content.
+
+## F21: An accept on an `Unknown` provider has no scripted reply
+
+**Skill**: highway-onboarding
+
+**Runs**:
+
+- Final smoke `20261113-051531Z-smoke-fe522b4`: onboarding-smoke attempt 1
+- Final changed `20261113-052407Z-targeted-fe522b4`: implementation-onboards-platform attempt 1
+
+**Category**: Scenario
+
+**Confirmed**: Yes
+
+**Basis**: Onboarding sometimes proposes a capability whose provider is `Unknown`, such as Online Commerce or Reorder Point Check. `accept` re-emits that block, so generic accepts loop (onboarding-smoke). In implementation-onboards-platform, Luna asked the new provider question on an `accept`, which the skill reserves for an `unknown` reply, and the script has no reply for it.
+
+**Proposed resolution**: Fix the scenarios. Before the generic accepts, add `ask-pattern: unable to infer a platform` with `[unknown] I don't know.`, then `ask-pattern: Who builds or runs` with "No one.", so the provider becomes `Does not exist`. Do not script a provider name the scenario has no basis for.
+
+# Research Harness Failures
+
+These need more evidence before a fix is chosen: an investigation, or more runs to see whether
+they recur.
+
+## F1: A name in the opening is not used to pick the record
+
+**Skill**: highway-adr, highway-architecture, highway-discovery, highway-implementation
+
+**Runs**:
+
+- Baseline smoke `20261112-162017Z-smoke-49ab958`: adr-smoke, architecture-smoke, discovery-smoke
+- Post-change smoke `20261112-170628Z-smoke-49ab958`: adr-smoke, discovery-smoke, implementation-smoke
+- Affected run, Option B `20261112-171321Z-targeted-49ab958`: implementation-smoke
+- S1 rerun 1 `20261112-181837Z-targeted-49ab958`: discovery-smoke
+- Final changed `20261113-052407Z-targeted-fe522b4`: adr-smoke attempt 1
+
+**Category**: Model
+
+**Confirmed**: Yes
+
+**Basis**: Spec 243 added the exact-title step to `Entry` in all four skills. In the final runs,
+adr-smoke, architecture-smoke, and implementation-smoke pass, and discovery-smoke reaches `start`.
+adr-smoke attempt 1 of the changed run still listed the Discoveries for the exact title
+"Weekly Order Restock Alerts Options", then attempt 2 selected it.
+
+**Proposed resolution**: No skill change. The text already says what to do; one attempt in the
+final runs ignored it. Watch for it in later runs, and keep the titles in the scenarios.
+
+## F19: Onboarding stops after its announcement
+
+**Skill**: highway-onboarding
+
+**Runs**:
+
+- Final changed `20261113-052407Z-targeted-fe522b4`: chain-implementation (both attempts), implementation-onboards-platform attempt 2
+
+**Category**: Model
+
+**Confirmed**: Yes
+
+**Basis**: Luna emits `orchestrate`'s "Highway will now create your decision, reference architecture and implementation records." and ends the turn before any handoff. `orchestrate` says to emit nothing else until every provider has its records. onboarding-smoke continued past the same line in both runs.
+
+**Proposed resolution**: Investigate before changing the skill. Try placing the handoff instruction before the announcement in `orchestrate`, so the line is not the last thing the step says, and compare the two runs.
+
+## F20: An absolute path loses its temporary folder
+
+**Skill**: highway-setup
+
+**Runs**:
+
+- Final smoke `20261113-051531Z-smoke-fe522b4`: setup-smoke attempt 2
+- Final changed `20261113-052407Z-targeted-fe522b4`: setup-smoke attempt 2
+
+**Category**: Model
+
+**Confirmed**: Yes
+
+**Basis**: The session starts with the correct project path. The wrong path, `/var/folders/…/projects/setup-smoke-2-…/` without the `T/highway-harness-…/` segment, first appears in the model's own tool arguments. The harness rejected the reads of setup's assets and the write of `requests/requests.md` as outside the project, so `library/knowledge/storage.md` and the catalogs were not written. The storage contract already says "Every path is relative to the repository root."
+
+**Proposed resolution**: No skill or harness change. Luna broke an existing rule, and the harness rejection is correct. Watch for it in later runs.
+
+## F22: A proposal is shown without its question
+
+**Skill**: highway-profile, through highway-setup
+
+**Runs**:
+
+- Final changed `20261113-052407Z-targeted-fe522b4`: setup-smoke attempt 1
+
+**Category**: Model
+
+**Confirmed**: Yes
+
+**Basis**: Luna showed the Identity proposal and ended the turn without "What would you add, correct, or remove?". A message with no question ends the conversation, so no Profile was written. Every other Profile proposal in the final runs carried the question.
+
+**Proposed resolution**: No change yet. Watch for it in later runs.

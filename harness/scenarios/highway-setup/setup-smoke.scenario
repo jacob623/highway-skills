@@ -11,7 +11,13 @@ ask-pattern: Do you already have something I can use
 say: [edit] Northwind Outfitters (https://northwind.example) is an online retailer of outdoor clothing and camping gear run by a team of twelve. We want to ship every order within one business day and grow repeat customers by a fifth this year. We plan to automate routine warehouse work and keep a small, managed stack. We protect customer data before adding features and prefer services we already run.
 ask: What would you add, correct, or remove?
 say: [accept] Looks good.
-ask-pattern: \?
+ask: What would you add, correct, or remove?
+say: [accept] Looks good.
+ask: What would you add, correct, or remove?
+say: [accept] Looks good.
+ask: What would you add, correct, or remove?
+say: [accept] Looks good.
+ask-pattern: Which of these outcomes would you like to pursue
 say: [decline] Let's stop setup here for now.
 writes: library/**
 writes: requests/requests.md

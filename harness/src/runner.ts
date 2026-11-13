@@ -290,6 +290,7 @@ async function runScenario(ctx: Context, scenario: Scenario, index: number, reas
     print(ctx, `${label} FAIL ${scenario.id} (attempt ${attempt}) -> ${out.result.failures[0]?.kind ?? "unclassified"}`);
   }
   const last = attempts[attempts.length - 1];
+  if (last.failures.length > 0 && last.failures.every((f) => f.kind === "service-error")) return { outcome: outcome("blocked", last.failures[0]) };
   return { outcome: outcome("fail", last.failures[0]) };
 }
 

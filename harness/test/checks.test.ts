@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { diffSnapshots, experienceInvariant, runExpectation, showsFailures, snapshot, storageInvariant, writesNothing } from "../src/checks.ts";
+import { diffSnapshots, experienceInvariant, isExperienceSkillRead, runExpectation, showsFailures, snapshot, storageInvariant, writesNothing } from "../src/checks.ts";
 import type { Expectation } from "../src/scenario.ts";
 
 function project(files: Record<string, string>): string {
@@ -105,4 +105,17 @@ test("shows requires each text in the agent's messages, whitespace collapsed", (
   assert.equal(missing[0].check, "shows");
   assert.equal(missing[0].expected, 'text "Run /highway-setup to get started."');
   assert.equal(missing[0].actual, "the agent did not show it");
+});
+
+test("shows does not compare emphasis, and keeps underscores inside words", () => {
+  const said = "Oops... we need to *setup* your repository. Use __snake_case__ names.";
+  assert.deepEqual(showsFailures(said, ["**Oops... we need to setup your repository.**", "Use snake_case names."]), []);
+  assert.equal(showsFailures("Use snakecase names.", ["Use snake_case names."]).length, 1);
+});
+
+test("a read of highway-experience/SKILL.md is an experience activation", () => {
+  assert.ok(isExperienceSkillRead("/tmp/p/.github/skills/highway-experience/SKILL.md"));
+  assert.ok(isExperienceSkillRead("highway-experience/SKILL.md"));
+  assert.ok(!isExperienceSkillRead("/tmp/p/.github/skills/highway-experience/references/storage-contract.md"));
+  assert.ok(!isExperienceSkillRead("/tmp/p/.github/skills/not-highway-experience/SKILL.md"));
 });

@@ -3,7 +3,7 @@ name: highway-controls
 description: "Manages the repository-wide control baseline. Use when highway-setup delegates the control baseline, after Objectives finish or when setup runs again."
 license: Apache-2.0
 metadata:
-  version: 8.6.0
+  version: 8.7.0
   usage: "Run highway-controls."
 ---
 
@@ -64,7 +64,7 @@ Before a step in this table, read its file and follow it to the end.
 
 ### Entry
 
-1. Read `library/governance/controls.md` and each active record it indexes.
+1. Read `library/governance/controls.md`. Then read each active record it indexes at `library/governance/controls/[ID].md`, with "Read a file".
 2. If the catalog is present and readable, and every active row has a readable record, go to `review`.
 3. If the catalog is absent, go to `recommend` when `profile.md` and `library/governance/objectives.md` are readable. Otherwise go to `ask`.
 4. If the catalog is unreadable, or an active row has no readable record, stop. Say the Controls could not be read. Leave every file unchanged. Do not return `Finished`.

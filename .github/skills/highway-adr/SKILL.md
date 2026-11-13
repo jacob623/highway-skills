@@ -3,7 +3,7 @@ name: highway-adr
 description: "Records one architecture decision for one discovery. Use when a discovery's options are ready and the person wants to choose one and record it as an ADR, or when highway-onboarding hands off a provider decision."
 license: Apache-2.0
 metadata:
-  version: 6.6.0
+  version: 6.7.0
   usage: "Run highway-adr with one discovery id."
 ---
 
@@ -81,7 +81,7 @@ Before a step in this table, read its file and follow it to the end.
 
 When `highway-onboarding` hands off a provider, go to `onboarding`.
 
-1. Read the invocation for one Discovery id and one option id.
+1. Read the invocation for one Discovery id and one option id. When it has no Discovery id and contains the exact title of one waiting Discovery, as `choose-discovery` defines it, that Discovery's id is present. Compare without regard to case.
 2. When neither is present, go to `choose-discovery`.
 3. When a Discovery id is present, resolve it. When it matches no Discovery, stop. Say the Discovery was not found. Write nothing.
 4. When that Discovery already has an ADR, show the recorded decision. Write nothing. When its catalog Architecture ID cell names more than one architecture, go to `close`.

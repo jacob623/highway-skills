@@ -3,7 +3,7 @@ name: highway-nfrs
 description: "Manages the repository-wide nfr baseline. Use when highway-setup delegates the nfr baseline, after Controls finish or when setup runs again."
 license: Apache-2.0
 metadata:
-  version: 9.7.0
+  version: 9.8.0
   usage: "Run highway-nfrs."
 ---
 
@@ -65,7 +65,7 @@ Before a step in this table, read its file and follow it to the end.
 
 ### Entry
 
-1. Read `library/governance/nfrs.md` and each active record it indexes.
+1. Read `library/governance/nfrs.md`. Then read each active record it indexes at `library/governance/nfrs/[ID].md`, with "Read a file".
 2. If the catalog is present and readable, and every active row has a readable record, go to `review`.
 3. If the catalog is absent, go to `recommend` when `profile.md`, `library/governance/objectives.md`, and `library/governance/controls.md` are readable. Otherwise go to `ask`.
 4. If the catalog is unreadable, or an active row has no readable record, stop. Say the NFRs could not be read. Leave every file unchanged. Do not return `Finished`.

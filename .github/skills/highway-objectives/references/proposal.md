@@ -84,7 +84,7 @@ Based on [Name]'s profile, here are additional recommended business outcomes tha
 
 1. **[Title]:** [One sentence.]
 
-**Which of these outcomes would you like to pursue, or what would you like to focus on?**
+**Would you like to select any of these outcomes, modify them, or are you ready to review the selected objectives?**
 
 You can select some, all or provide your own outcome.
 
@@ -165,6 +165,7 @@ Do not develop one Objective at a time. Do not emit a bridge.
 
 - "Looks good" on a recommendation set adds that set to the queue and does not start capture.
 - A queue message lists the titles just added, then includes the next recommendation set when grounded recommendations remain.
+- Once the queue holds a title, every recommendation set asks whether to select, modify, or review the selected objectives.
 - A queue message does not ask whether to explore more outcomes.
 - Capture starts when the person asks to review the queue.
 - A capture shows every queued Objective in one message, with `---` between Objectives and one acceptance question.

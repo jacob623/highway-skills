@@ -116,7 +116,7 @@ Compare the plan with the accepted proposal, the standards, the Controls, the NF
 2. When accepted material answers a question, record the answer as a decision. Ask nothing.
 3. A story with no Done when, a repeated story title, or an applied Control or NFR that no story names is a gap. Walk stories in plan order, then the applied titles in proposal order. When accepted material answers a gap, record the answer and ask nothing.
 4. Ask the first five, one at a time. Write each answer into the plan. Record each later gap as an assumption.
-5. When none qualify, go to `menu`. Do not say the check ran.
+5. When none qualify, go to `menu`. Do not show the plan until the person selects 1. Do not say the check ran.
 
 After the last answer, go to `menu`.
 

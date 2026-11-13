@@ -3,7 +3,7 @@ name: highway-onboarding
 description: "Manages one decision, one reference architecture, and one reference implementation. Use when the person wants to onboard one capability in a single pass, grounded in accepted setup or architecture records."
 license: Apache-2.0
 metadata:
-  version: 10.12.0
+  version: 10.13.0
   usage: "Run highway-onboarding."
 ---
 

@@ -84,7 +84,7 @@ Based on [Name]'s profile and accepted objectives, here are additional recommend
 
 1. **[Title]:** [One sentence.]
 
-**Which of these safeguards would you like to establish, or what would you like to focus on?**
+**Would you like to select any of these safeguards, modify them, or are you ready to review the selected Controls?**
 
 You can select some, all or provide your own safeguards.
 
@@ -162,6 +162,7 @@ Do not develop one Control at a time. Do not emit a bridge.
 
 - "Looks good" on a recommendation set adds that set to the queue and does not start capture.
 - A queue message lists the titles just added, then includes the next recommendation set when grounded recommendations remain.
+- Once the queue holds a title, every recommendation set asks whether to select, modify, or review the selected Controls.
 - A queue message does not ask whether to explore more safeguards.
 - Capture starts when the person asks to review the queue.
 - A capture shows every queued Control in one message, with `---` between Controls and one acceptance question.

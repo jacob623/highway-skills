@@ -15,8 +15,8 @@ ask: Which ADR would you like to turn into a Reference Architecture?
 say: [select] 1
 ask: What would you add, correct, or remove?
 say: [accept] Looks good.
-ask-pattern: \?
-say: [accept] Yes, go ahead.
+ask: What should this architecture be called?
+say: Weekly Restock Alerts
 writes: adrs/**
 writes: architectures/**
 expect: template adrs/adrs.md :: adr-catalog.md

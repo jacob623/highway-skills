@@ -41,6 +41,8 @@
 
 If this is accurate, just say so.
 
+Classify the reply:
+
 - `edit`: follow `field` for each named field, with the return step `delivery platforms` in `highway-implementation`. Re-emit this view.
 - `accept`: when Deployed by, Managed by, or Language is Needed, name that field and re-emit this view. Otherwise rewrite the three Execution lines with the held fields. Change no other byte. A failed write leaves the record unchanged. Say what failed. Re-emit this view. On success, emit: The preferred delivery platforms for [Title] are set. Picking up your highway-codify run. Go to the held step.
 - `decline`: go to `delivery decline`.
@@ -56,6 +58,8 @@ Write nothing. Emit:
 Leaving the preferred delivery platforms for [Title] unset. highway-codify needs these details before it can make proposals for [Title].
 
 **Would you like to return and provide these details now?**
+
+Classify the reply:
 
 - A yes: re-emit the `delivery platforms` view.
 - A no, or `decline`: go to the held step.

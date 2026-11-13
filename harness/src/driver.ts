@@ -1,7 +1,8 @@
 import { realpathSync } from "node:fs";
 import { isAbsolute, resolve, sep } from "node:path";
 import { CopilotClient, type CopilotSession, type PermissionRequest, type PermissionRequestResult } from "@github/copilot-sdk";
-import { classifyError, errorText, type FailureKind } from "./failure.ts";
+import { EXPERIENCE_SKILL, isExperienceSkillRead } from "./checks.ts";
+import { classifyError, errorText, retryServiceError, type FailureKind } from "./failure.ts";
 import { decide, keyText, lastQuestion } from "./replies.ts";
 import type { Scenario } from "./scenario.ts";
 
@@ -265,6 +266,10 @@ export const copilotDriver: Driver = async (options) => {
           onPermissionRequest: (request) => {
             const decision = permissionPolicy(request, projectDir, scenario.web);
             if (decision.rejection) rejected.push(decision.rejection);
+            if (!decision.rejection && request.kind === "read" && !outputSeen && !skillsBeforeOutput.includes(EXPERIENCE_SKILL)) {
+              const r = request as unknown as Record<string, unknown>;
+              if (isExperienceSkillRead(String(r.resolvedPath ?? r.path ?? ""))) skillsBeforeOutput.push(EXPERIENCE_SKILL);
+            }
             log({ turn, role: "permission", text: decision.summary });
             return decision.result;
           },
@@ -329,7 +334,12 @@ export const copilotDriver: Driver = async (options) => {
         timer = setTimeout(() => fail(new Timeout("attempt time limit")), remaining);
       });
       try {
-        await Promise.race([withRateLimit(() => session!.sendAndWait({ prompt }, remaining), sleep), timeout]);
+        const send = (): Promise<unknown> => withRateLimit(() => session!.sendAndWait({ prompt }, Math.max(1, deadline - Date.now())), sleep);
+        const retried = retryServiceError(send, () => {
+          log({ turn, role: "system", text: "retrying turn after service error" });
+          turnMessages = [];
+        });
+        await Promise.race([retried, timeout]);
       } catch (error) {
         if (error instanceof Timeout || /timeout|timed out/i.test(errorText(error))) return result("timeout");
         throw error;

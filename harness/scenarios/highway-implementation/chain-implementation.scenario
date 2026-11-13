@@ -6,12 +6,10 @@ through: highway-codify-config
 fixture: architecture
 chain: 5
 open: /highway-onboarding We build, deploy, and run scheduled jobs for every repository with GitHub Actions on GitHub-hosted runners.
-ask: What would you add, correct, or remove?
-say: [accept] Looks good.
-ask: What would you add, correct, or remove?
-say: [accept] Looks good.
-ask: What would you add, correct, or remove?
-say: [accept] Looks good.
+ask-pattern: Here are the capabilities Highway believes you have today
+say: [edit] Remove AI-Augmented Technology Development.
+ask: What should this architecture be called?
+say: Repository Build and Scheduled Job Pipelines
 ask-pattern: Would you like to configure how highway-codify uses
 say: [accept] Yes.
 ask: What would you add or correct?
@@ -20,12 +18,26 @@ ask: What would you add or correct?
 say: [accept] Looks good.
 ask-pattern: Would you like to configure coding standards for
 say: [decline] Not now.
+ask-pattern: If you'd like to cancel
+say: [decline] Nothing else.
+ask-pattern: How would you like to configure Highway Codify
+say: [decline] Nothing else for now.
 ask: Where would you like to go next?
 say: /highway-implementation for the Scheduled Restock Alert Service architecture. A GitHub Actions scheduled workflow, deployed and managed by GitHub Actions, runs every Monday, calls the order service stock query with a read-only token, and emails the warehouse lead. It is not a code project, so Language is None. An instance is running.
+ask-pattern: Would you like to configure how highway-codify uses
+say: [decline] Not now.
 ask: What would you add, correct, or remove?
 say: [accept] Looks good.
-ask-pattern: \?
-say: [decline] Not now.
+ask: What would you add, correct, or remove?
+say: [accept] Looks good.
+ask: What would you add, correct, or remove?
+say: [accept] Looks good.
+ask: What would you add, correct, or remove?
+say: [accept] Looks good.
+ask: What would you add, correct, or remove?
+say: [accept] Looks good.
+ask: What would you add, correct, or remove?
+say: [accept] Looks good.
 writes: adrs/**
 writes: architectures/**
 writes: implementations/**

@@ -10,8 +10,10 @@ ask-pattern: Would you like to configure coding standards for
 say: [decline] Not now.
 ask-pattern: Would you like help resolving these conflicts
 say: [decline] Not now.
-ask-pattern: \?
-say: [unknown] I don't know.
+ask-pattern: If you'd like to cancel
+say: [decline] Nothing else.
+ask-pattern: How would you like to configure Highway Codify
+say: [decline] Nothing else for now.
 writes: library/coding-standards/**
 expect: template library/coding-standards/codify-platforms.md :: codify-platforms.md
 expect: row library/coding-standards/codify-platforms.md :: GitHub Actions
