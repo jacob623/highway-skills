@@ -32,6 +32,10 @@ rc_registry() {
 		P8.7	rc_check_P8_7	-
 		P9.1	rc_check_P9_1	N4
 		P9.5	rc_check_P9_5	N3
+		P14.1	rc_check_P14_1	N4
+		P14.2	rc_check_P14_2	N4
+		P14.3	rc_check_P14_3	N4
+		P14.4	rc_check_P14_4	N4
 	EOF
 }
 
@@ -468,4 +472,258 @@ rc_check_P9_5() {
 		return 1
 	fi
 	return 0
+}
+
+# --- Principle XIV: the flow pattern -------------------------------------------------------
+# P14.1 to P14.4 each judge a whole skill folder from its SKILL.md, reading the flows table only
+# through flows.sh. A file that is not SKILL.md is not applicable (N4), so a breach is reported
+# once per skill and never again when a flow file, reference, or template is judged. A
+# cross-skill handoff resolves against the skill folders beside this one. Each finding ends with
+# the Phase 13 boundary it breaks.
+
+declare -F fl_files >/dev/null || source "$HW_LIB/flows.sh"
+
+RC_P14_MAX_LINES=500
+RC_P14_MAX_CHARS=20000
+RC_P14_MAX_FLOWS=6
+RC_P14_MIN_FLOW_LINES=25
+
+# Prints `local\t<step>` or `cross\t<skill>\t<step>` for every step reference in a file.
+rc_p14_step_refs() {
+	awk '
+		/^[ \t]*```/ { fence = !fence; next }
+		fence { next }
+		{
+			line = $0
+			while (match(tolower(line), /(go to|return to|follow|resume at|stay on) `[^`]+`/)) {
+				hit = substr(line, RSTART, RLENGTH)
+				rest = substr(line, RSTART + RLENGTH)
+				line = rest
+				name = hit
+				sub(/^[^`]*`/, "", name)
+				sub(/`$/, "", name)
+				if (name ~ /[\/.]/ || name ~ /^highway-/) continue
+				if (match(rest, /^ in `highway-[a-z0-9-]+`/)) {
+					target = substr(rest, RSTART + 5, RLENGTH - 6)
+					printf "cross\t%s\t%s\n", target, name
+				} else {
+					printf "local\t%s\n", name
+				}
+			}
+		}
+	' "$1"
+}
+
+# Prints every step a file hands off to outside a reply line, so within one turn.
+rc_p14_turn_refs() {
+	awk '
+		/^[ \t]*```/ { fence = !fence; next }
+		fence || /^[ \t]*- `[^`]+`:/ { next }
+		{
+			line = $0
+			while (match(tolower(line), /(go to|return to|follow|resume at) `[^`]+`/)) {
+				hit = substr(line, RSTART, RLENGTH)
+				rest = substr(line, RSTART + RLENGTH)
+				line = rest
+				name = hit
+				sub(/^[^`]*`/, "", name)
+				sub(/`$/, "", name)
+				if (name ~ /[\/.]/ || name ~ /^highway-/ || rest ~ /^ in `highway-/) continue
+				print name
+			}
+		}
+	' "$1"
+}
+
+# Prints every step name of a skill folder: SKILL.md, then each flow file.
+rc_p14_skill_steps() {
+	local dir="$1" f
+	fl_steps "$dir/SKILL.md"
+	while IFS= read -r f; do
+		[[ -n "$f" && -f "$dir/$f" ]] && fl_steps "$dir/$f"
+	done <<< "$(fl_files "$dir")"
+}
+
+# Prints its input and returns 1 when there is any, so a check ends `rc_p14_verdict "$out"`.
+rc_p14_verdict() {
+	[[ -n "$1" ]] || return 0
+	printf '%s\n' "$1"
+	return 1
+}
+
+# --- P14.1: SKILL.md and each flow file stay within the size limits (boundary 1) ------------
+
+rc_check_P14_1() {
+	local file="$1" dir f lines chars out
+	[[ "$(basename "$file")" == "SKILL.md" ]] || return 2
+	dir="$(dirname "$file")"
+	out="$(
+		for f in SKILL.md $(fl_files "$dir"); do
+			[[ -f "$dir/$f" ]] || continue
+			lines="$(wc -l < "$dir/$f" | tr -d ' ')"
+			chars="$(wc -c < "$dir/$f" | tr -d ' ')"
+			[[ "$lines" -le "$RC_P14_MAX_LINES" ]] || echo "$f has $lines lines, limit is $RC_P14_MAX_LINES (boundary 1)"
+			[[ "$chars" -le "$RC_P14_MAX_CHARS" ]] || echo "$f has $chars characters, limit is $RC_P14_MAX_CHARS (boundary 1)"
+		done
+	)"
+	rc_p14_verdict "$out"
+}
+
+# --- P14.2: flow files keep their place, number, length, and shape (boundaries 2 to 4) -------
+# A skill with no flow files has nothing out of place.
+
+rc_check_P14_2() {
+	local file="$1" dir files f lines count out
+	[[ "$(basename "$file")" == "SKILL.md" ]] || return 2
+	dir="$(dirname "$file")"
+	files="$(fl_files "$dir")"
+	[[ -n "$files" ]] || return 0
+	out="$(
+		while IFS= read -r f; do
+			[[ "$f" =~ ^references/[^/]+\.md$ ]] || echo "$f is not a Markdown file directly in references/ (boundary 2)"
+		done <<< "$files"
+
+		count="$(printf '%s\n' "$files" | wc -l | tr -d ' ')"
+		[[ "$count" -le "$RC_P14_MAX_FLOWS" ]] || echo "the skill has $count flow files, limit is $RC_P14_MAX_FLOWS (boundary 3)"
+		while IFS= read -r f; do
+			[[ -f "$dir/$f" ]] || continue
+			lines="$(wc -l < "$dir/$f" | tr -d ' ')"
+			[[ "$lines" -ge "$RC_P14_MIN_FLOW_LINES" ]] || echo "$f has $lines lines, minimum is $RC_P14_MIN_FLOW_LINES (boundary 3)"
+		done <<< "$files"
+
+		while IFS= read -r f; do
+			[[ -f "$dir/$f" ]] || continue
+			awk -v f="$f" '
+				NR == 1 && !/^# / { print f " does not start with a level-1 heading (boundary 4)" }
+				/^[ \t]*```/ { fence = !fence; next }
+				fence { next }
+				/^# / { h1++ }
+				/^## / {
+					if ($0 != "## Verification") print f " has level-2 heading \"" $0 "\" (boundary 4)"
+					else verif = 1
+					next
+				}
+				verif && /^#/ { print f " has a heading after ## Verification (boundary 4)" }
+				verif && /^- / { bullets++ }
+				END {
+					if (h1 != 1) print f " has " h1 + 0 " level-1 headings, expected 1 (boundary 4)"
+					if (!verif) print f " has no ## Verification (boundary 4)"
+					else if (!bullets) print f " has an empty ## Verification (boundary 4)"
+				}
+			' "$dir/$f"
+		done <<< "$files"
+	)"
+	rc_p14_verdict "$out"
+}
+
+# --- P14.3: SKILL.md is the one route to each step (boundaries 5 to 8) -----------------------
+
+rc_check_P14_3() {
+	local file="$1" dir md table files f name count out
+	[[ "$(basename "$file")" == "SKILL.md" ]] || return 2
+	dir="$(dirname "$file")"
+	md="$file"
+	table="$(fl_table "$dir")"
+	files="$(fl_files "$dir")"
+	out="$(
+		rc_p14_skill_steps "$dir" | sort | uniq -d | while IFS= read -r name; do
+			echo "step $name is a step in more than one place (boundary 5)"
+		done
+
+		if [[ -n "$files" ]]; then
+			while IFS= read -r f; do
+				[[ -f "$dir/$f" ]] || continue
+				fl_steps "$dir/$f" | grep -Ex 'Entry|Classify' | while IFS= read -r name; do
+					echo "step $name is in $f, not SKILL.md (boundary 6)"
+				done
+			done <<< "$files"
+
+			count="$(grep -c '^|[ 	]*File[ 	]*|[ 	]*Steps[ 	]*|[ 	]*$' "$md")"
+			[[ "$count" -eq 1 ]] || echo "SKILL.md has $count File and Steps tables, expected 1 (boundary 7)"
+			while IFS= read -r f; do
+				[[ -f "$dir/$f" ]] || continue
+				if [[ "$(printf '%s\n' "$table" | awk -F'\t' -v f="$f" '$1 == f { print $2 }')" != "$(fl_steps "$dir/$f")" ]]; then
+					echo "the Steps cell for $f does not list its steps in file order (boundary 7)"
+				fi
+			done <<< "$files"
+
+			awk -v sentence="$FL_SENTENCE" '
+				$0 == sentence { s = 1; next }
+				s == 1 && /^\|/ { next }
+				s == 1 && $0 != "" && !/^\|/ { s = 2 }
+				/references\// { print "SKILL.md line " NR " names a file in references/ outside the flows table (boundary 8)" }
+			' "$md"
+			for f in "$dir"/references/*; do
+				[[ -f "$f" ]] || continue
+				printf '%s\n' "$files" | grep -qxF "references/$(basename "$f")" \
+					|| echo "references/$(basename "$f") has no row in the flows table (boundary 8)"
+			done
+			while IFS= read -r f; do
+				[[ -f "$dir/$f" ]] || echo "the flows table names $f, which does not exist (boundary 8)"
+			done <<< "$files"
+		else
+			grep -q '^|[ 	]*File[ 	]*|[ 	]*Steps[ 	]*|' "$md" \
+				&& echo "SKILL.md has a File and Steps table not preceded by the flows sentence (boundary 7)"
+			for f in "$dir"/references/*; do
+				[[ -f "$f" ]] || continue
+				grep -q "^Read \`references/$(basename "$f")\`" "$md" \
+					|| echo "references/$(basename "$f") is not named by a line beginning \"Read \`references/$(basename "$f")\`\" (boundary 8)"
+			done
+		fi
+	)"
+	rc_p14_verdict "$out"
+}
+
+# --- P14.4: step references resolve one file reference from SKILL.md (boundaries 9 to 12) ----
+
+rc_check_P14_4() {
+	local file="$1" dir root files f g others steps cross_steps kind target name out
+	[[ "$(basename "$file")" == "SKILL.md" ]] || return 2
+	dir="$(dirname "$file")"
+	root="$(dirname "$dir")"
+	files="$(fl_files "$dir")"
+	steps="$(rc_p14_skill_steps "$dir")"
+	out="$(
+		if [[ -n "$files" ]]; then
+			while IFS= read -r f; do
+				[[ -f "$dir/$f" ]] || continue
+				grep -q 'references/' "$dir/$f" && echo "$f names a file in references/ (boundary 9)"
+			done <<< "$files"
+		fi
+
+		for f in SKILL.md $files; do
+			[[ -f "$dir/$f" ]] || continue
+			while IFS="$(printf '\t')" read -r kind target name; do
+				[[ -n "$kind" ]] || continue
+				if [[ "$kind" == "local" ]]; then
+					printf '%s\n' "$steps" | grep -qxF "$target" \
+						|| echo "$f hands off to \`$target\`, which is not a step of this skill (boundary 10)"
+					continue
+				fi
+				if [[ ! -f "$root/$target/SKILL.md" ]]; then
+					echo "$f hands off to \`$name\` in \`$target\`, which is not a skill (boundary 11)"
+					continue
+				fi
+				if [[ "$target" == "$(basename "$dir")" ]]; then
+					cross_steps="$steps"
+				else
+					cross_steps="$(rc_p14_skill_steps "$root/$target")"
+				fi
+				printf '%s\n' "$cross_steps" | grep -qxF "$name" \
+					|| echo "$f hands off to \`$name\` in \`$target\`, which is not a step of that skill (boundary 11)"
+			done <<< "$(rc_p14_step_refs "$dir/$f")"
+		done
+
+		if [[ -n "$files" ]]; then
+			while IFS= read -r f; do
+				[[ -f "$dir/$f" ]] || continue
+				others="$(while IFS= read -r g; do [[ "$g" != "$f" && -f "$dir/$g" ]] && fl_steps "$dir/$g"; done <<< "$files")"
+				rc_p14_turn_refs "$dir/$f" | sort -u | while IFS= read -r name; do
+					printf '%s\n' "$others" | grep -qxF "$name" \
+						&& echo "$f hands off to \`$name\` in another flow file outside a reply line (boundary 12)"
+				done
+			done <<< "$files"
+		fi
+	)"
+	rc_p14_verdict "$out"
 }

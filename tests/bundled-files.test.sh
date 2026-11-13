@@ -19,12 +19,18 @@ trap 'rm -rf "$WORK"' EXIT
 fail=0
 
 # make_skill <folder> <fixture>: a valid skill holding only <fixture>, at <folder>/<fixture>. Prints its path.
+# A reference is named by a SKILL.md line beginning "Read `references/<file>`", as P14.3 requires of
+# a skill without a flows table.
 make_skill() {
 	local folder="$1" fixture="$2" id dir
 	id="bundled-${fixture%.md}"
 	dir="$WORK/$id"
 	mkdir -p "$dir/$folder"
-	sed "s/^name: .*/name: $id/" "$HW_FIXTURES/valid-skill/SKILL.md" >"$dir/SKILL.md"
+	sed "s/^name: .*/name: $id/" "$HW_FIXTURES/valid-skill/SKILL.md" \
+		| awk -v ref="$([[ "$folder" == references ]] && printf 'references/%s' "$fixture")" '
+			{ print }
+			ref != "" && /^None\.$/ && !done { print ""; print "Read `" ref "` for the bundled material."; done = 1 }
+		' >"$dir/SKILL.md"
 	cp "$FIXTURES/$folder/$fixture" "$dir/$folder/$fixture"
 	printf '%s\n' "$dir"
 }
@@ -78,7 +84,8 @@ assert_single_failure references invalid-bad-citation.md P3.5
 # Flow files: a file the flows table names is judged as SKILL.md's instructions are, exempt only
 # from P7.1, P7.2, and P8.7. The flow-skill fixture passes with no Purpose or version in its flow
 # files; a script named in a flow file fails P2.6, and the same line in a reference the table does
-# not name passes.
+# not name is judged as a reference, so it draws no P2.6 finding. P14.3 does not allow a reference
+# without a row beside flow files, so that skill's only finding is P14.3's.
 flow_copy() {
 	local dir="$WORK/$1/flow-skill"
 	mkdir -p "$WORK/$1"
@@ -104,9 +111,12 @@ elif ! printf '%s\n' "$out" | grep -q '^ERROR: \[P2\.6\] references/proposal\.md
 fi
 dir="$(flow_copy flow-reference)"
 printf '# Notes\n\n%s\n' "$SEED" >"$dir/references/notes.md"
-if ! out="$("$VALIDATE" --no-cache "$dir" 2>&1)"; then
-	echo "FAIL: a script named in a reference the flows table does not name failed. Output:"
-	printf '%s\n' "$out" | grep '^ERROR: ' | sed 's/^/    /'
+out="$("$VALIDATE" --no-cache "$dir" 2>&1)"
+findings="$(printf '%s\n' "$out" | grep '^ERROR: ' || true)"
+if [[ "$(printf '%s\n' "$findings" | grep -c '^ERROR: ')" -ne 1 ]] \
+	|| [[ "$findings" != "ERROR: [P14.3] references/notes.md has no row in the flows table (boundary 8)"* ]]; then
+	echo "FAIL: a reference the flows table does not name drew a finding other than P14.3's missing row. Output:"
+	printf '%s\n' "$findings" | sed 's/^/    /'
 	fail=1
 fi
 

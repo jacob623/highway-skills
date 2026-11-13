@@ -1,5 +1,32 @@
 <!--
 Sync Impact Report
+Version change: 10.4.0 → 10.5.0 (MINOR), 2026-11-13
+Bump rationale: Principle XIV is added. It holds the rules that narrow the Agent Skills
+specification: P5.15, moved unchanged, and four [auto] rules covering the twelve flow pattern
+boundaries. Adding a principle and rules is MINOR under the Constitution Versioning Policy; every
+skill already follows the pattern, so no conforming skill fails. The flow pattern test Phase 14 added
+is retired: rc_check_P14_1 to rc_check_P14_4 decide every boundary it checked, and each of its twelve
+seeded breaches is reproduced unchanged in tests/rule-checks.test.sh (D3.5).
+Changed elements:
+- Version line: 10.4.0 → 10.5.0
+- Last Amended date: 2026-11-12 → 2026-11-13
+- Definitions: Flow file, Flows table, Step, Step reference, and Reply line added
+- Principle V: P5.15 moved out; its ID, keyword, obligation, Observable, and tier are unchanged
+- Principle XIV: added, with P5.15 and rules P14.1 to P14.4, tier [auto], decided by
+  rc_check_P14_1 to rc_check_P14_4, and the specification clause each rule narrows
+- Principle Precedence: rank 12, XIV. Agent Skills Alignment
+- Self-Application: P5.15 remains individually addressable within Principle XIV
+Rule count: 76 → 80. Tier counts: [auto] 15 → 19, [agent-checkable] 61, [human-review] 0.
+Unchanged: every other rule's keyword, obligation, Observable, and tier, every other rank, and every
+other element.
+Self-application review: P1.1 PASS (each new rule carries one keyword); P1.2 PASS (each states one
+obligation; its Observable lists the conditions); P1.3 PASS (each is 25 words or fewer); P1.4 PASS
+(each Observable names a count, a heading, or a file a script can find); P6.4 and P6.6 PASS (no
+criterion names a clock, random value, or preference, and each verdict depends only on the skill
+folder and the skills its handoffs name); P7.3 PASS (the specification is cited, not restated, and
+the authoring standard cites the IDs).
+
+Sync Impact Report
 Version change: 10.3.0 → 10.4.0 (MINOR), 2026-11-12
 Bump rationale: a skill's description is what an Agent Skills client reads to decide whether to
 activate it, so Principle V gains two rules that make it say when to use the skill. Adding a rule
@@ -332,6 +359,11 @@ document and in every skill governed by it.
 | **MUST**, **MUST NOT** | An absolute obligation. A conforming artifact satisfies it in every case. Non-satisfaction is a FAIL. |
 | **SHOULD** | An obligation that applies unless the artifact contains a written exception naming the condition that displaces it. Absent that written exception, SHOULD is evaluated as MUST. |
 | **Skill** | A single file, `SKILL.md`, plus its directory, that instructs an agent how to perform one category of task. |
+| **Flow file** | A file in a skill's `references/` that the skill's flows table names. |
+| **Flows table** | The File and Steps table in `SKILL.md` directly after the sentence "Before a step in this table, read its file and follow it to the end." |
+| **Step** | A level-3 heading in `SKILL.md` or a flow file, outside a fenced block. |
+| **Step reference** | A backticked name after "go to", "return to", "follow", "resume at", or "stay on" that contains no `/` or `.` and does not start with `highway-`. |
+| **Reply line** | A list item that starts with a backticked reply class and a colon. |
 | **Development Validator** | A maintainer, compliance check, or development tool that evaluates a shipped artifact against this constitution. |
 | **Normative rule** | A line containing MUST, MUST NOT, or SHOULD that states an obligation. |
 | **MUST-level rule** | A normative rule whose keyword is MUST or MUST NOT. The hyphenated token `MUST-level` names this category and is not itself a keyword occurrence. |
@@ -472,7 +504,6 @@ accident.
 | P5.11 | A runtime contract MUST consume a dependent owner's preserved non-success result. | The calling contract keeps that result and uses it. | [agent-checkable] |
 | P5.12 | A runtime contract MUST NOT report a failed mutation as success. | The reported outcome records the failed mutation. | [agent-checkable] |
 | P5.13 | A runtime contract MUST stop for an unexpected failure with actionable user-facing context. | The stop states what the user can do next. | [agent-checkable] |
-| P5.15 | A skill's description MUST contain a sentence beginning "Use when". | The frontmatter `description` has a sentence that starts with "Use when". | [auto] |
 | P5.16 | A description's "Use when" sentence MUST name only scenarios the skill's "When to use" section lists. | Every condition in that sentence matches a "When to use" scenario. | [agent-checkable] |
 Rationale: Development validation verifies that required failure behavior exists in the effective
 shipped runtime contract, whether the behavior is defined by the skill or a separately shipped
@@ -588,6 +619,31 @@ without making validator mechanics part of the shipped skill.
 Rationale: Development validation checks owner mutation, readiness, declared-result, orchestration,
 acceptance, and persistence boundaries without becoming a runtime authority.
 
+### XIV. Agent Skills Alignment
+
+The [Agent Skills specification](https://agentskills.io/specification) defines the skill format.
+The rules below narrow it for Highway skills without restating it. Each is decided once per skill,
+from its `SKILL.md`, and names the clause it narrows below the table.
+
+| ID | Rule | Observable | Tier |
+|---|---|---|---|
+| P5.15 | A skill's description MUST contain a sentence beginning "Use when". | The frontmatter `description` has a sentence that starts with "Use when". | [auto] |
+| P14.1 | A `SKILL.md` or flow file MUST NOT exceed 500 lines or 20,000 characters. | `SKILL.md` and each flow file have at most 500 lines and at most 20,000 characters (boundary 1). | [auto] |
+| P14.2 | A skill's flow files MUST keep the layout this rule's Observable states. | Each flow file is a Markdown file directly in `references/` (boundary 2). A skill has at most 6 flow files, each at least 25 lines (boundary 3). Each flow file has no frontmatter, starts with its only level-1 heading, holds its steps as level-3 headings, and ends with `## Verification`, its only level-2 heading, holding at least one bullet (boundary 4). | [auto] |
+| P14.3 | A skill's `SKILL.md` MUST be the one route to each of its steps. | Each step is a step in exactly one file (boundary 5). `Entry` and `Classify` are steps of `SKILL.md` (boundary 6). A skill with flow files has one flows table, whose Steps cell lists each flow file's steps in file order; a File and Steps table without the flows table's sentence fails (boundary 7). No `SKILL.md` line outside the flows table names a file in `references/`, each file in `references/` has a row, and each row names a file that exists. Without a flows table, each file in `references/` is named by a `SKILL.md` line beginning "Read `references/<file>`" (boundary 8). | [auto] |
+| P14.4 | A skill's step references MUST resolve one file reference from `SKILL.md`. | No flow file names a file in `references/` (boundary 9). Each step reference names a step of the skill (boundary 10). A step reference followed by `` in `highway-<name>` `` names a skill beside this one and a step of it (boundary 11). In a flow file, a step reference outside a reply line names a step of that file or of `SKILL.md` (boundary 12). | [auto] |
+
+Specification clauses narrowed:
+- P5.15: `SKILL.md` format, `description` field.
+- P14.1: Progressive disclosure.
+- P14.2: Optional directories, `references/`.
+- P14.3: None (Highway pattern).
+- P14.4: File references, for boundary 9. Boundaries 10 to 12: None (Highway pattern).
+
+Rationale: an Agent Skills client loads `SKILL.md` when a skill activates and opens a flow file
+only when a step needs it. These rules keep each load small and every step reachable from the file
+that names it.
+
 ## Principle Precedence
 
 When two rules conflict, the rule belonging to the higher-ranked principle prevails. This
@@ -606,6 +662,7 @@ ordering is total: every pair of principles has a defined winner.
 | 9 | III. Grounding in Approved Authority Sources | Governs provenance of a rule already stated. |
 | 10 | X. Experience Compliance | Validates conformity with the Experience Standard. |
 | 11 | XI. Repository Context | Governs declared context dependencies and ownership during development validation. |
+| 12 | XIV. Agent Skills Alignment | Governs how a skill's files are laid out for an Agent Skills client. |
 
 **Security override**: a rule tagged security-affecting outranks every rule in every principle,
 including rank 1 rules that are not security-affecting.
@@ -682,7 +739,8 @@ This constitution is itself subject to P1.1 through P1.4 (clarity), P6.4 and P6.
 against those rule IDs. Rules P7.4 and P7.5 state limits on skills and do not apply to this document.
 This amendment review confirms P10.1 remains the generic Experience delegation rule, P13.1 is retired,
 P13.2 remains individually addressable within Principle XII, and owner mutation and orchestration
-rules remain development-time contract checks.
+rules remain development-time contract checks. P5.15 remains individually addressable within
+Principle XIV.
 
 ### Constitution Versioning Policy
 
@@ -704,4 +762,4 @@ every other skill's version. This is the policy referenced by P7.7.
 - **MINOR**: a capability is added while every existing contract element continues to hold.
 - **PATCH**: wording repair with no change to Inputs, Outputs, or Verification.
 
-**Version**: 10.4.0 | **Ratified**: 2026-09-06 | **Last Amended**: 2026-11-12
+**Version**: 10.5.0 | **Ratified**: 2026-09-06 | **Last Amended**: 2026-11-13

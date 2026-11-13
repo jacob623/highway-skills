@@ -198,7 +198,7 @@ the limits, keep their shared steps in `SKILL.md`.
 Moving a step changes none of its words. The move is a minor version bump.
 
 `framework/validate-skill.sh` judges a file the table names as a flow file, exempt only from P7.1,
-P7.2, and P8.7. `tests/skill-flow-pattern.test.sh` checks the limits and the pattern.
+P7.2, and P8.7. The validator checks the limits and the pattern under P14.1 to P14.4.
 `framework/lib/flows.sh` is the one reader of the table.
 
 ## Writing the rules inside a skill

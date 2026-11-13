@@ -57,13 +57,38 @@ vc_hash_file() {
 	fi
 }
 
-# Hashes a newline-separated list of paths read from stdin.
+# Succeeds when $1 is a SHA-256 hash: 64 lowercase hex characters.
+vc_is_hash() {
+	[[ "$1" =~ ^[0-9a-f]{64}$ ]]
+}
+
+# Hashes each existing file in a newline-separated list of paths read from stdin, printing one
+# `<hash>  <path>` line per file. A path that names no file is skipped. The paths are passed as
+# arguments rather than through xargs, which fails in some sandboxes. Prints nothing and returns 1
+# unless every file was hashed: a failure that still printed would leave inputs out of the key and
+# let two skills share one.
 vc_hash_list() {
+	local paths=() path out
+	while IFS= read -r path; do
+		[[ -f "$path" ]] && paths+=("$path")
+	done
+	[[ ${#paths[@]} -gt 0 ]] || return 1
 	if command -v sha256sum >/dev/null 2>&1; then
-		xargs sha256sum
+		out="$(sha256sum "${paths[@]}" 2>/dev/null)" || return 1
 	else
-		xargs shasum -a 256
+		out="$(shasum -a 256 "${paths[@]}" 2>/dev/null)" || return 1
 	fi
+	[[ "$(printf '%s\n' "$out" | grep -cE '^[0-9a-f]{64} ')" -eq ${#paths[@]} ]] || return 1
+	printf '%s\n' "$out"
+}
+
+# Prints each other skill a cross-skill handoff in this skill names, once. Its steps decide the
+# Handoff integrity rule, so its files are inputs to this skill's verdict.
+vc_handoff_targets() {
+	local skill_dir="$1"
+	cat "$skill_dir/SKILL.md" "$skill_dir"/references/*.md 2>/dev/null \
+		| grep -oE 'in `highway-[a-z0-9-]+`' | sed -E 's/^in `//; s/`$//' \
+		| grep -vxF "$(basename "$skill_dir")" | LC_ALL=C sort -u
 }
 
 VC_ENVIRONMENT_HASH=""
@@ -77,43 +102,59 @@ VC_ENVIRONMENT_HASH=""
 # Every file under these directories is hashed regardless of extension. An earlier draft filtered
 # to `*.sh` and `*.md` and silently excluded a real input -- the contract manifest, which is a
 # dotfile -- which could have changed a verdict without changing the key.
+#
+# Prints nothing and returns 1 when any input cannot be hashed. A failure is not memoised.
 vc_environment_hash() {
-	local root="$1"
+	local root="$1" listing hash
 	if [[ -n "$VC_ENVIRONMENT_HASH" ]]; then
 		printf '%s' "$VC_ENVIRONMENT_HASH"
 		return 0
 	fi
-	VC_ENVIRONMENT_HASH="$(
+	listing="$(
 		{
 			printf '%s\n' "$(hw_at "$root" "$HW_FRAMEWORK")/validate-skill.sh"
 			printf '%s\n' "$(hw_at "$root" "$HW_FRAMEWORK")/.frontmatter-contract"
 			hw_at "$root" "$(hw_doc constitution)"
 			hw_at "$root" "$(hw_doc experience-standard)"
 			find "$(hw_at "$root" "$HW_LIB")" -type f 2>/dev/null
-		} | sort | vc_hash_list | vc_hash_stdin
-	)"
-	printf '%s' "$VC_ENVIRONMENT_HASH"
+		} | sort | vc_hash_list
+	)" || return 1
+	hash="$(printf '%s\n' "$listing" | vc_hash_stdin)"
+	vc_is_hash "$hash" || return 1
+	VC_ENVIRONMENT_HASH="$hash"
+	printf '%s' "$hash"
 }
 
-# Prints the record key for one skill file.
+# Prints the record key for one skill file, or nothing and returns 1 when any input cannot be
+# hashed. A caller with no key validates in full and records nothing.
 vc_key() {
-	local skill_file="$1" root="$2" skill_dir skill_hash env_hash
+	local skill_file="$1" root="$2" skill_dir skills_root listing skill_hash env_hash key
 	skill_dir="$(dirname "$skill_file")"
+	skills_root="$(dirname "$skill_dir")"
 	# The skill's assets/ and references/ are inputs too: validate-skill.sh checks the files there.
-	# Each path is kept relative to the skills folder: the verdict depends on the skill's folder
-	# name, which its name must match, but not on where the skills folder sits.
-	skill_hash="$(
+	# So are the SKILL.md and references/ of each skill a handoff names. Each path is kept relative
+	# to the skills folder: the verdict depends on the skill's folder name, which its name must
+	# match, but not on where the skills folder sits.
+	listing="$(
 		{
 			printf '%s\n' "$skill_file"
 			find "$skill_dir/assets" "$skill_dir/references" -type f 2>/dev/null | LC_ALL=C sort
-		} | vc_hash_list | awk -v p="$(dirname "$skill_dir")/" '{
-			path = $2
-			if (index(path, p) == 1) path = substr(path, length(p) + 1)
-			print $1, path
-		}' | vc_hash_stdin
-	)"
-	env_hash="$(vc_environment_hash "$root")"
-	printf '%s%s' "$skill_hash" "$env_hash" | vc_hash_stdin
+			vc_handoff_targets "$skill_dir" | while IFS= read -r target; do
+				printf '%s\n' "$skills_root/$target/SKILL.md"
+				find "$skills_root/$target/references" -type f 2>/dev/null | LC_ALL=C sort
+			done
+		} | vc_hash_list
+	)" || return 1
+	skill_hash="$(printf '%s\n' "$listing" | awk -v p="$skills_root/" '{
+		path = $2
+		if (index(path, p) == 1) path = substr(path, length(p) + 1)
+		print $1, path
+	}' | vc_hash_stdin)"
+	env_hash="$(vc_environment_hash "$root")" || return 1
+	vc_is_hash "$skill_hash" && vc_is_hash "$env_hash" || return 1
+	key="$(printf '%s%s' "$skill_hash" "$env_hash" | vc_hash_stdin)"
+	vc_is_hash "$key" || return 1
+	printf '%s' "$key"
 }
 
 # Replays a recorded report on stdout and returns 0, or returns 1 on a miss.

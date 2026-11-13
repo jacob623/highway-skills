@@ -31,8 +31,8 @@ require_text 'A correctness-critical contract choice between two or more actions
 require_text 'P1.1-P1.4, P6.4, P6.6, and P7.3'
 require_text 'P10.1 remains the generic Experience delegation rule'
 
-if [[ "$(grep -cE '^\| P[0-9]+[A-Z]?\.[0-9]+ ' "$CONSTITUTION")" -ne 76 ]]; then
-	echo 'FAIL: Constitution rule inventory must contain 76 rules'
+if [[ "$(grep -cE '^\| P[0-9]+[A-Z]?\.[0-9]+ ' "$CONSTITUTION")" -ne 80 ]]; then
+	echo 'FAIL: Constitution rule inventory must contain 80 rules'
 	fail=1
 fi
 

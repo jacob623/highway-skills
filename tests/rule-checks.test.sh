@@ -273,6 +273,130 @@ d="$tmp_root/p26"; write_base_skill "$d"
 printf '\n## Notes\nCommit the result with `git commit`.\n' >>"$d/SKILL.md"
 assert_reports "P2.6 git command" "P2.6" "$d"
 
+# --- Principle XIV: the flow pattern ----------------------------------------------------------------
+# Each of the twelve Phase 13 boundaries is seeded into a fresh copy of the flow-skill fixture, which
+# has flow files, and must fail exactly the rule that holds it. Each rule is also seeded into the base
+# skill, which has no references/. These run with the cache off: they prove the rules, and
+# validation-cache.test.sh proves the cache.
+
+FLOW_FIXTURE="$HW_FIXTURES/flow-skill"
+
+# assert_p14 <case-name> <rule> <skill-dir> <exact|includes>
+# exact: the FAILED coverage group is that rule alone. includes: it is among those failed.
+assert_p14() {
+	local name="$1" rule="$2" dir="$3" mode="$4" out rc failed
+	out="$("$VALIDATE" --no-cache "$dir" 2>&1)"
+	rc=$?
+	failed="$(printf '%s\n' "$out" | sed -n 's/^FAILED:    //p')"
+	if [[ $rc -eq 0 || "$out" != *"ERROR: [$rule]"* ]]; then
+		echo "FAIL[$name]: expected a finding tagged [$rule]. Got:"
+		printf '%s\n' "$out" | grep '^ERROR:' | sed 's/^/    /'
+		fail=1
+		return
+	fi
+	if [[ "$mode" == "exact" && "$failed" != "$rule" ]]; then
+		echo "FAIL[$name]: expected only $rule to fail; FAILED lists: $failed"
+		fail=1
+	elif [[ " $failed " != *" $rule "* ]]; then
+		echo "FAIL[$name]: rule $rule was not listed in the FAILED coverage group"
+		fail=1
+	fi
+}
+
+# assert_p14_pass <case-name> <skill-dir>: valid, with every Principle XIV rule checked.
+assert_p14_pass() {
+	local name="$1" dir="$2" out rule
+	if ! out="$("$VALIDATE" --no-cache "$dir" 2>&1)"; then
+		echo "FAIL[$name]: expected the unseeded copy to pass. Got:"
+		printf '%s\n' "$out" | grep '^ERROR:' | sed 's/^/    /'
+		fail=1
+		return
+	fi
+	for rule in P14.1 P14.2 P14.3 P14.4; do
+		if [[ " $(printf '%s\n' "$out" | sed -n 's/^CHECKED:   //p') " != *" $rule "* ]]; then
+			echo "FAIL[$name]: $rule is not listed under CHECKED"
+			fail=1
+		fi
+	done
+}
+
+# Copies the fixture and applies boundary seed <n>; prints the copy's folder. Seed 0 is unseeded.
+p14_seed_copy() {
+	local n="$1" copy="$tmp_root/p14-seed-$1/flow-skill"
+	mkdir -p "$(dirname "$copy")"
+	cp -R "$FLOW_FIXTURE" "$copy"
+	case "$n" in
+		1) awk 'NR == 2 { for (i = 0; i < 500; i++) print "Padding line." } { print }' "$copy/references/proposal.md" > "$copy/p" && mv "$copy/p" "$copy/references/proposal.md" ;;
+		2) mkdir -p "$copy/references/sub" && mv "$copy/references/record.md" "$copy/references/sub/record.md" \
+			&& sed 's#`references/record.md`#`references/sub/record.md`#' "$copy/SKILL.md" > "$copy/s" && mv "$copy/s" "$copy/SKILL.md" ;;
+		3) grep -v '^$' "$copy/references/record.md" > "$copy/r" && mv "$copy/r" "$copy/references/record.md" ;;
+		4) awk '/^## Verification/ { print "## Notes"; print ""; print "A note."; print "" } { print }' "$copy/references/record.md" > "$copy/r" && mv "$copy/r" "$copy/references/record.md" ;;
+		5) awk '/^### close/ { print "### write"; print ""; print "Write again."; print "" } { print }' "$copy/SKILL.md" > "$copy/s" && mv "$copy/s" "$copy/SKILL.md" ;;
+		6) awk '/^### start/ { print "### Classify"; print ""; print "Classify again."; print "" } { print }' "$copy/references/proposal.md" > "$copy/p" && mv "$copy/p" "$copy/references/proposal.md" \
+			&& awk '/^### Classify/ { skip = 1; next } skip && /^### / { skip = 0 } !skip' "$copy/SKILL.md" > "$copy/s" && mv "$copy/s" "$copy/SKILL.md" \
+			&& sed 's#| `start`, `revise` |#| `Classify`, `start`, `revise` |#' "$copy/SKILL.md" > "$copy/s" && mv "$copy/s" "$copy/SKILL.md" \
+			&& sed 's#Go to `Classify`.#Go to `start`.#' "$copy/SKILL.md" > "$copy/s" && mv "$copy/s" "$copy/SKILL.md" ;;
+		7) sed 's#| `start`, `revise` |#| `revise`, `start` |#' "$copy/SKILL.md" > "$copy/s" && mv "$copy/s" "$copy/SKILL.md" ;;
+		8) sed 's#^Confirm the record and stop.#Confirm `references/record.md` and stop.#' "$copy/SKILL.md" > "$copy/s" && mv "$copy/s" "$copy/SKILL.md" ;;
+		9) awk '/^## Verification/ { print "See `references/proposal.md`."; print "" } { print }' "$copy/references/record.md" > "$copy/r" && mv "$copy/r" "$copy/references/record.md" ;;
+		10) sed 's#^Confirm the record and stop.#Confirm the record, then go to `nowhere`.#' "$copy/SKILL.md" > "$copy/s" && mv "$copy/s" "$copy/SKILL.md" ;;
+		11) sed 's#^Confirm the record and stop.#Confirm the record, then follow `nowhere` in `highway-adr`.#' "$copy/SKILL.md" > "$copy/s" && mv "$copy/s" "$copy/SKILL.md" ;;
+		12) sed 's#^3. Return to `close`.#3. Go to `revise`.#' "$copy/references/record.md" > "$copy/r" && mv "$copy/r" "$copy/references/record.md" ;;
+	esac
+	echo "$copy"
+}
+
+# Inserts the lines of $2 before `## Verification` in the base skill at $1. The text travels through
+# the environment because awk -v rejects a value holding a newline.
+p14_insert_before_verification() {
+	P14_TEXT="$2" awk '/^## Verification$/ { print ENVIRON["P14_TEXT"]; print "" } { print }' "$1/SKILL.md" > "$1/s" \
+		&& mv "$1/s" "$1/SKILL.md"
+}
+
+assert_p14_pass "P14 unseeded skill with flow files" "$(p14_seed_copy 0)"
+d="$tmp_root/p14-base"; write_base_skill "$d"
+assert_p14_pass "P14 unseeded skill without references" "$d"
+
+for n in 1 2 3 4 5 6 7 8 9 10 11 12; do
+	case "$n" in
+		1) rule="P14.1" ;;
+		2 | 3 | 4) rule="P14.2" ;;
+		5 | 6 | 7 | 8) rule="P14.3" ;;
+		*) rule="P14.4" ;;
+	esac
+	assert_p14 "P14 boundary $n" "$rule" "$(p14_seed_copy "$n")" exact
+done
+
+d="$tmp_root/p14-1"; write_base_skill "$d"
+awk '{ print } /^None\.$/ && !done { for (i = 0; i < 500; i++) print "Padding line."; done = 1 }' "$d/SKILL.md" > "$d/s" && mv "$d/s" "$d/SKILL.md"
+assert_p14 "P14.1 without references" "P14.1" "$d" includes
+
+d="$tmp_root/p14-2"; write_base_skill "$d"
+p14_insert_before_verification "$d" "## Procedure
+
+Before a step in this table, read its file and follow it to the end.
+
+| File | Steps |
+| --- | --- |
+| \`references/sub/flow.md\` | \`start\` |"
+assert_p14 "P14.2 without references" "P14.2" "$d" includes
+
+d="$tmp_root/p14-3"; write_base_skill "$d"
+p14_insert_before_verification "$d" "## Procedure
+
+| File | Steps |
+| --- | --- |
+| \`references/flow.md\` | \`start\` |"
+assert_p14 "P14.3 without references" "P14.3" "$d" includes
+
+d="$tmp_root/p14-4"; write_base_skill "$d"
+p14_insert_before_verification "$d" "## Procedure
+
+### Entry
+
+Go to \`nowhere\`."
+assert_p14 "P14.4 without references" "P14.4" "$d" includes
+
 # --- Every enforced rule has a seeded case above ------------------------------------------------------------------------------
 
 # shellcheck source=../lib/rule-checks.sh
