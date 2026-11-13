@@ -258,6 +258,76 @@ rc=0
 TMPDIR="$home" bash "$VALIDATE" "$renamed" >/dev/null 2>&1 || rc=$?
 check "VC-11" "a name that differs from its folder fails on a populated cache" "$rc" "1"
 
+# --- VC-12: two skills validated one after the other each get their own verdict ----------------
+
+FLOW_FIXTURE="$HW_FIXTURES/flow-skill"
+home="$(fresh_home)"
+first="$(TMPDIR="$home" bash "$VALIDATE" "$VALID_FIXTURE" 2>/dev/null | tail -1)"
+second="$(TMPDIR="$home" bash "$VALIDATE" "$FLOW_FIXTURE" 2>/dev/null | tail -1)"
+check "VC-12" "the first report names its own skill" "${first%% is valid*}" "OK: skill 'valid-skill'"
+check "VC-12" "the second report names its own skill" "${second%% is valid*}" "OK: skill 'flow-skill'"
+
+# --- VC-13, VC-14: a hashing step that fails is never a key ------------------------------------
+#
+# A shim earlier on PATH stands in for a tool that fails, as xargs does in some sandboxes. Before
+# this was fixed, the failure left every input unhashed, every skill shared one key, and the first
+# recorded success was replayed for every skill after it.
+
+shim="$WORK/shim-xargs"
+mkdir -p "$shim"
+printf '#!/bin/sh\nexit 1\n' >"$shim/xargs"
+chmod +x "$shim/xargs"
+home="$(fresh_home)"
+PATH="$shim:$PATH" TMPDIR="$home" bash "$VALIDATE" "$VALID_FIXTURE" >/dev/null 2>&1
+rc=0
+PATH="$shim:$PATH" TMPDIR="$home" bash "$VALIDATE" "$INVALID_FIXTURE" >/dev/null 2>&1 || rc=$?
+check "VC-13" "an invalid skill fails after a valid one is cached, with xargs failing" "$rc" "1"
+
+shim="$WORK/shim-hash"
+mkdir -p "$shim"
+printf '#!/bin/sh\nexit 1\n' >"$shim/sha256sum"
+printf '#!/bin/sh\nexit 1\n' >"$shim/shasum"
+chmod +x "$shim/sha256sum" "$shim/shasum"
+home="$(fresh_home)"
+cache="$(cache_dir_of "$home")"
+rc=0
+out="$(PATH="$shim:$PATH" TMPDIR="$home" bash "$VALIDATE" "$VALID_FIXTURE" 2>/dev/null)" || rc=$?
+check "VC-14" "a failing hasher still validates in full" "$rc" "0"
+check "VC-14" "a failing hasher records nothing" "$(key_count "$cache")" "0"
+if [[ "$out" != "$cold_out" ]]; then
+	echo "FAIL: VC-14 -- a failing hasher changed the report"
+	fail=1
+fi
+rc=0
+PATH="$shim:$PATH" TMPDIR="$home" bash "$VALIDATE" "$INVALID_FIXTURE" >/dev/null 2>&1 || rc=$?
+check "VC-14" "an invalid skill still fails with a failing hasher" "$rc" "1"
+
+# --- VC-15: a change to a skill a handoff names revalidates the skill holding the handoff ------
+#
+# P14.4 reads the steps of the skill a cross-skill handoff names, so that skill is an input to the
+# verdict. Renaming the step must not leave the old success to be replayed.
+
+xskills="$WORK/xskills"
+mkdir -p "$xskills"
+cp -R "$FLOW_FIXTURE" "$xskills/flow-skill"
+cp -R "$FLOW_FIXTURE" "$xskills/highway-zeta"
+sed 's/^name: flow-skill$/name: highway-zeta/' "$FLOW_FIXTURE/SKILL.md" >"$xskills/highway-zeta/SKILL.md"
+sed 's#^Confirm the record and stop.#Confirm the record, then follow `close` in `highway-zeta`.#' \
+	"$FLOW_FIXTURE/SKILL.md" >"$xskills/flow-skill/SKILL.md"
+home="$(fresh_home)"
+rc=0
+TMPDIR="$home" bash "$VALIDATE" "$xskills/flow-skill" >/dev/null 2>&1 || rc=$?
+check "VC-15" "the handoff resolves before the step is renamed" "$rc" "0"
+sed 's/^### close$/### finish/' "$FLOW_FIXTURE/SKILL.md" \
+	| sed 's/^name: flow-skill$/name: highway-zeta/' >"$xskills/highway-zeta/SKILL.md"
+rc=0
+err="$(TMPDIR="$home" bash "$VALIDATE" "$xskills/flow-skill" 2>&1 >/dev/null)" || rc=$?
+check "VC-15" "the skill holding the handoff fails once its target step is renamed" "$rc" "1"
+if [[ "$err" != *"ERROR: [P14.4]"* ]]; then
+	echo "FAIL: VC-15 -- the renamed step was not reported under P14.4"
+	fail=1
+fi
+
 # --- Report ----------------------------------------------------------------------------------
 
 if (( fail != 0 )); then

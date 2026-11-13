@@ -95,6 +95,9 @@ cp "$FIXTURES/valid-skill/SKILL.md" "$SKILL_SRC_DIR/SKILL.md"
 # The fixture's frontmatter name is authored to match the fixture's own directory id
 # (`valid-skill`); rewrite it to this temp skill's id so it still satisfies sv_validate_name.
 sed -i.bak "s/^name: .*/name: $TMP_ID/" "$SKILL_SRC_DIR/SKILL.md" && rm -f "$SKILL_SRC_DIR/SKILL.md.bak"
+# P14.3: a skill without a flows table names each reference on a line beginning "Read `references/".
+awk '{ print } /^None\.$/ && !done { print ""; print "Read `references/sample.md` for the bundled reference."; done = 1 }' \
+	"$SKILL_SRC_DIR/SKILL.md" >"$SKILL_SRC_DIR/SKILL.md.tmp" && mv "$SKILL_SRC_DIR/SKILL.md.tmp" "$SKILL_SRC_DIR/SKILL.md"
 mkdir -p "$SKILL_SRC_DIR/references"
 printf 'Bundled reference for the adapter fixture.\n' >"$SKILL_SRC_DIR/references/sample.md"
 

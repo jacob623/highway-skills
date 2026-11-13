@@ -61,7 +61,7 @@ suite passing:
 | 12 | Agent Skills Format Conformance | 6 | Complete: `specs/241-standard-alignment-format-conformance/` |
 | 13 | Rationalize the Refactor of Large Skills | 12 | Complete in this document |
 | 14 | Progressive Disclosure | 13 | Complete: `specs/242-standard-alignment-progressive-disclosure/` |
-| 15 | Principle XIV: Agent Skills Alignment | 14 | |
+| 15 | Principle XIV: Agent Skills Alignment | 14 | Complete: `specs/245-standard-alignment-principle-xiv/` |
 | 16 | Agent Plugins Package | 11 to 15 | |
 
 ## Conformance map
@@ -1818,6 +1818,23 @@ alone fails 8 skills.
 
 Exit: every skill passes Principle XIV's checks in the bash suite, and a seeded violation of each
 boundary fails it.
+
+Status: complete in `specs/245-standard-alignment-principle-xiv/`. The constitution is 10.5.0 with
+80 rules; P14.1 to P14.4 are Size, Layout, Routing, and Handoff integrity. The suite goes from 87 to
+86 tests, all passing: `skill-flow-pattern.test.sh` retires, and each of its twelve seeded breaches
+is reproduced unchanged in `rule-checks.test.sh`, where it fails exactly its rule. No skill changed.
+Beyond the steps above:
+- The constitution defines flow file, flows table, step, step reference, and reply line, and ranks
+  Principle XIV 12th in Principle Precedence.
+- A cross-skill handoff resolves against the skill folders beside the one validated, so a
+  verification tree is judged against its own skills.
+- The validation cache key no longer goes through `xargs`, which failed in a sandbox and gave every
+  skill one key. It covers the skills a handoff names, and with no key the validator runs in full
+  and records nothing.
+- Two tests build a skill that bundles a reference, so the reference is now named by a line
+  beginning "Read `references/<file>`". `bundled-files.test.sh` puts a reference beside flow files
+  without a row in the table, which P14.3 forbids. That case now asserts that P14.3's missing row
+  is its only finding, which still proves the file is judged as a reference, with no P2.6 finding.
 
 # Phase 16: Agent Plugins Package
 
