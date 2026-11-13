@@ -37,6 +37,9 @@ hw_paths_init() {
 	HW_TESTS="$HW_ROOT/tests"
 	HW_FIXTURES="$HW_TESTS/fixtures"
 	HW_HARNESS="$HW_ROOT/harness"
+	HW_PLUGIN="$HW_ROOT/highway-agent-plugin"
+	HW_PLUGIN_SKILLS="$HW_PLUGIN/skills"
+	HW_PLUGIN_SOURCE="$HW_FRAMEWORK/plugin"
 
 	HW_AGENT_COPILOT="$HW_ROOT/.github/skills"
 	HW_AGENT_CLAUDE="$HW_ROOT/.claude/skills"

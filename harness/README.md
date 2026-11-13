@@ -14,30 +14,41 @@ The harness is a development tool. `harness/` is excluded from the distribution,
 
 For each attempt, the runner builds a new project in a temporary folder:
 
-1. The base, built once per run: a copy of every skill folder in `skills/`, with its bundled
-   files, in `.github/skills/`, where the Copilot agent discovers skills. That is what installing
-   the skills gives an agent; the project holds nothing from `framework/`, `tests/`, or `harness/`.
+1. The base, made once per run: an empty folder. The skills are not copied into the project; each
+   attempt installs the Agent Plugins build, `highway-agent-plugin/`, into its own Copilot home,
+   as a person installs the plugin. The project holds nothing from `framework/`, `tests/`,
+   `harness/`, or the plugin.
 2. The scenario's fixture on top: a stage snapshot from `harness/fixtures/stages/`, or an overlay
    from `harness/fixtures/overlays/` applied to its stage. `empty` adds nothing.
 
 The project is snapshotted before the conversation starts and compared with its state afterward.
 
+Before any scenario runs, the runner checks the plugin with
+`framework/generate-agent-plugin.sh --check`. A missing or stale plugin stops the run with
+`build-failed` and exit 2, so a run never tests skills older than their sources.
+
 ### The Copilot driver and its permissions
 
 The driver is GitHub Copilot through `@github/copilot-sdk`, local runtime. Each attempt gets its
 own client, its own temporary Copilot home, and one session whose working directory is the test
-project. Config discovery is on, so the session finds the project's skills the same way the
-Copilot CLI does. Session storage and telemetry are off.
+project. Before the session starts, the client installs `highway-agent-plugin/` into that home
+with its plugin install, enabling the plugin if it is not enabled. The transcript's first
+`system` entry names the plugin and the number of skills installed, and the install's deprecation
+warning when it gives one. The attempt fails with `plugin-install`, and no session starts, when
+the install throws, installs fewer skills than the plugin holds, reports a manifest warning, or
+leaves the plugin disabled. Config discovery is on, so the session finds the installed skills the
+same way the Copilot CLI does. Session storage and telemetry are off.
 
 Every permission request is decided by a fixed policy:
 
 | Request | Decision | Ends the attempt |
 |---|---|---|
 | Read inside the project | approved | no |
+| Read of the installed plugin, under `<Copilot home>/installed-plugins/` | approved | no |
 | Write inside the project | approved | no |
-| Read outside the project | rejected | no |
+| Read anywhere else | rejected | no |
 | Web (URL) access | approved when the scenario says `web: yes`, otherwise rejected | no |
-| Write outside the project | rejected | yes |
+| Write outside the project, including the installed plugin | rejected | yes |
 | Shell command | rejected | yes |
 | Memory | rejected | yes |
 | Any other tool | rejected | no |
@@ -150,7 +161,7 @@ alone. Defaults for the model, parallelism, limits, and transcript folder come f
 |---|---|
 | 0 | Every gated check passed, or the selection was empty |
 | 1 | A scenario failed or was blocked, or a chain stage failed |
-| 2 | The run could not start or was stopped: an invalid switch, a missing token, no Copilot access, a failed skill copy, a persistent rate limit, or a used-up premium-request allowance |
+| 2 | The run could not start or was stopped: an invalid switch, a missing token, no Copilot access, a missing or stale plugin, a persistent rate limit, or a used-up premium-request allowance |
 
 Exit 2 takes precedence over exit 1.
 
@@ -249,8 +260,8 @@ agent asked, so it can trail the step the agent was actually in.
 
 Stage fixtures are full project snapshots for the Northwind Outfitters example: `setup`,
 `request`, `discovery`, `architecture`, and `implementation`. Each later stage holds every earlier
-stage's files. Fixtures hold project files only: the base supplies the skills, so the fixture check
-fails a fixture holding `.github/skills/`, `.claude/skills/`, `.cursor/skills/`, or `.agents/skills/`.
+stage's files. Fixtures hold project files only: the installed plugin supplies the skills, so the
+fixture check fails a fixture holding `.github/skills/`, `.claude/skills/`, `.cursor/skills/`, or `.agents/skills/`.
 A chain stage's snapshot leaves out every path the base supplies.
 
 An overlay is a folder under `harness/fixtures/overlays/<name>/` with `overlay.txt` holding
@@ -317,7 +328,7 @@ Targeted runs map each changed path to scenarios with `harness/bin/path-map.sh`:
 | A scenario file | That scenario |
 | A stage fixture | Every scenario that starts from that stage, directly or through an overlay |
 | An overlay | Every scenario that uses that overlay |
-| Generated agent copies, tests, specs, the catalog, `framework/`, `tests/`, and other files | Nothing |
+| Generated agent copies, `highway-agent-plugin/`, tests, specs, the catalog, `framework/`, `tests/`, and other files | Nothing |
 
 For `--changed-since <ref>`, changed paths come from `git diff --name-status <ref>` plus untracked
 files. A deleted file maps by its path, as a present one does. An empty selection
@@ -325,8 +336,8 @@ prints why and exits 0.
 
 The path map reads every location from the framework's paths helper, `framework/lib/paths.sh`,
 through `harness/bin/lib/paths.sh`, which each `harness/bin/` script sources.
-`path-map.sh --location <skills|framework|agent-skills>` prints the skills, framework, or agent
-skill location, which the runner uses to find skills at a ref and to build the base.
+`path-map.sh --location <skills|framework|plugin>` prints the skills, framework, or plugin
+location, which the runner uses to find skills at a ref, to check the plugin, and to install it.
 `skills/highway-help/assets/index.json`, highway-help's generated index, selects highway-help.
 
 Coverage is printed in each run report per skill: each bullet's treatment, the reply kinds
@@ -391,11 +402,12 @@ The likely cause comes from a fixed table, so the same failure always prints the
 | `fixture-blocked` | The fixture no longer matches its template. | Run `bash harness/bin/fixture-check.sh <fixture>`; promote a fresh chain run or fix the fixture. |
 | `missing-token` | No Copilot token was found. | Set `GITHUB_TOKEN` in `harness/.env`. |
 | `no-access` | The token has no Copilot access. | Check the account's Copilot plan. |
-| `build-failed` | The skill copy failed. | The block shows its error. |
+| `build-failed` | `highway-agent-plugin/` is missing or differs from its sources, or the base project could not be made. | The block shows the DRIFT lines; run `framework/generate-agent-plugin.sh`. |
 | `rate-limit` | Copilot kept rate limiting after 3 retries. | Lower `--parallel`, or wait and rerun. |
 | `allowance` | The premium-request allowance is used up. | Wait for the reset, or raise the limit. |
 | `chain-stage` | A chain stage failed, so later stages and every scenario were skipped. | Diagnose the failed stage's own block above it. |
 | `service-error` | The Copilot service returned no response (code -32603); the turn was retried once and failed again. | Not a skill failure. A scenario whose last attempt has only this kind is `blocked`; rerun it. |
+| `plugin-install` | The plugin did not install or load from `highway-agent-plugin/`. | The attempt's first `system` entry names what the install reported; run `framework/validate-plugin.sh highway-agent-plugin`. |
 | `unclassified` | The raw error follows. | Read the raw error; add a kind to `harness/src/failure.ts` if it recurs. |
 
 A blocked scenario counts as a failure for the exit code. Scenarios not run because the run

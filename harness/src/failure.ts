@@ -18,6 +18,7 @@ export const FAILURE_KINDS = [
   "allowance",
   "chain-stage",
   "service-error",
+  "plugin-install",
   "unclassified",
 ] as const;
 export type FailureKind = (typeof FAILURE_KINDS)[number];
@@ -37,11 +38,12 @@ const LIKELY_CAUSE: Record<FailureKind, string> = {
   "fixture-blocked": "The scenario's fixture no longer matches its template. Promote a fresh chain run or fix the fixture.",
   "missing-token": "No Copilot token was found. Set GITHUB_TOKEN in harness/.env.",
   "no-access": "The token has no Copilot access. Check the account's Copilot plan.",
-  "build-failed": "The skill copy failed; its error follows.",
+  "build-failed": "highway-agent-plugin/ is missing or differs from its sources, or the base project could not be made; the output follows. Run framework/generate-agent-plugin.sh.",
   "rate-limit": "Copilot kept rate limiting after 3 retries. Lower --parallel or wait.",
   allowance: "The premium-request allowance is used up. Wait for the reset or raise the limit.",
   "chain-stage": "A chain stage failed, so later stages and every scenario were skipped.",
   "service-error": "The Copilot service returned no response (code -32603). The turn was retried once and failed again; this is not a skill failure.",
+  "plugin-install": "The plugin did not install or load from highway-agent-plugin/. The attempt's transcript names what the install reported.",
   unclassified: "The raw error follows.",
 };
 

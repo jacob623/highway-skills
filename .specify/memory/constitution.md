@@ -1,5 +1,30 @@
 <!--
 Sync Impact Report
+Version change: 3.5.0 → 3.6.0 (MINOR), 2026-11-13
+Bump rationale: the repository builds `highway-agent-plugin/`, an Agent Plugins 1.0.0 plugin of
+the skills, with a new generator and validator. The generator joins the declared generators, so
+D4.7 covers the plugin, and `python3` gains one more caller, to read `plugin.json` with its
+standard-library `json` module. A generator and a toolchain caller are added; no obligation is
+removed, redefined, or strengthened. The plugin is built in the same change, so D4.7 passes and no
+conforming work fails.
+Changed elements:
+- Version line: 3.5.0 → 3.6.0
+- Last Amended date: 2026-11-12 → 2026-11-13
+- Declared generators, under Principle IV: `generate-agent-plugin.sh` is added
+- Declared Toolchain note: `python3` is also invoked by `framework/lib/plugin-manifest.sh`, with
+  the standard-library `json` module
+- Enforcement Map, D4.7 note: the regeneration includes `generate-agent-plugin.sh` and compares
+  `highway-agent-plugin/`
+D2.4 review: no interpreter or module is added. `json` ships with every `python3`, and PyYAML stays
+the only installed module.
+Unchanged: every rule's text, Observable, keyword, and tier; the Definitions, including Shipped
+artifact (the plugin is outside the distribution until Phase 17 makes it the delivery model); every
+other Enforcement Map row; the Harness Toolchain; every gate.
+Self-application review: D1.3 PASS (no Highway Skills Constitution rule sentence is copied, and the
+Agent Plugins specification is cited, not restated); D1.4 PASS (this report cites rule IDs); D5.3
+PASS (the five changed elements are listed above and every unlisted element carries forward).
+
+Sync Impact Report
 Version change: 3.4.0 → 3.5.0 (MINOR), 2026-11-12
 Bump rationale: skills follow the Agent Skills specification, and the validator proves it. D3.9 is
 added, `python3` joins the Declared Toolchain, and the Governance section names the specification
@@ -500,7 +525,7 @@ table cannot silently go stale.
 | D4.3 | distribution-packaging.test.sh | Asserts refusal to overwrite an untracked directory and a modified file, naming each |
 | D4.5 | adapter-coverage.test.sh | Asserts every skill present has a catalog entry, an adapter in each declared agent tree, an adapter manifest row for each adapter, and an included distribution manifest row for each adapter |
 | D4.6 | adapter-coverage.test.sh | Asserts no catalog entry, adapter file, adapter manifest row, or distribution manifest row names a skill with no source directory |
-| D4.7 | adapter-coverage.test.sh | Regenerates into a temporary tree and asserts no diff against the committed artifacts |
+| D4.7 | adapter-coverage.test.sh | Regenerates into a temporary tree and asserts no diff against the committed artifacts, including `highway-agent-plugin/` from `generate-agent-plugin.sh` |
 | D3.7 | constitution-inventory.test.sh | Executes each mapped test's declared probe per artifact class and requires a non-zero exit; requires a zero exit when the same probe is invoked neutralised |
 | D3.9 | agent-skills-format.test.sh | Seeds a violation of each Agent Skills specification rule into a copy of a conforming skill and requires `framework/validate-skill.sh` to reject it; also requires every skill to pass |
 
@@ -539,7 +564,9 @@ excluded:
 
 `python3` is declared with the PyYAML module and is invoked only by
 `framework/lib/yaml-frontmatter.sh`, to parse skill frontmatter as a client's strict YAML parser
-reads it. No other script invokes it, and it runs without network access.
+reads it, and by `framework/lib/plugin-manifest.sh`, to read `plugin.json` with the
+standard-library `json` module as a client's strict JSON parser reads it. No other script invokes
+it, and it runs without network access.
 
 Version control is not on this list. The toolchain must run in a distributed tree, which is not a
 repository.
@@ -602,7 +629,7 @@ skill that has no source and cannot be maintained. Neither is expressible as "no
 because adapters are never pruned and manifest rows are hand-maintained.
 
 **Declared generators** (referenced by D4.7): `generate-catalog.sh`,
-`generate-agent-adapters.sh`. No declared generator writes a
+`generate-agent-adapters.sh`, `generate-agent-plugin.sh`. No declared generator writes a
 generation timestamp. `generate-distribution.sh` is
 excluded — it takes a target directory and writes outside the repository, so it produces no
 committed artifact to compare against.
@@ -691,4 +718,4 @@ enforce it, and Highway's own rules may only narrow it.
 This document is subject to D1.3, D1.4, and D5.3. Every amendment records a review against those
 rule IDs.
 
-**Version**: 3.5.0 | **Ratified**: 2026-09-08 | **Last Amended**: 2026-11-12
+**Version**: 3.6.0 | **Ratified**: 2026-09-08 | **Last Amended**: 2026-11-13

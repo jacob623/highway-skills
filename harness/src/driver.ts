@@ -1,8 +1,9 @@
 import { realpathSync } from "node:fs";
-import { isAbsolute, resolve, sep } from "node:path";
+import { isAbsolute, join, resolve, sep } from "node:path";
 import { CopilotClient, type CopilotSession, type PermissionRequest, type PermissionRequestResult } from "@github/copilot-sdk";
 import { EXPERIENCE_SKILL, isExperienceSkillRead } from "./checks.ts";
 import { classifyError, errorText, retryServiceError, type FailureKind } from "./failure.ts";
+import type { PluginSource } from "./project.ts";
 import { decide, keyText, lastQuestion, nextUnused, normalize, spentReply, textAfterAnswers } from "./replies.ts";
 import type { Scenario } from "./scenario.ts";
 
@@ -61,6 +62,7 @@ export interface DriveOptions {
   scenario: Scenario;
   projectDir: string;
   copilotHome: string;
+  plugin: PluginSource;
   token: string;
   model: string;
   maxTurns: number;
@@ -113,8 +115,12 @@ export interface PolicyDecision {
 
 const SHELL_FEEDBACK = "Shell commands are not available in this session. Highway skills read and write files only.";
 
-/** FR-008: reads and writes inside the project; URLs only with `web: yes`; everything else rejected. */
-export function permissionPolicy(request: PermissionRequest, projectDir: string, web: boolean): PolicyDecision {
+/**
+ * FR-008: reads and writes inside the project; URLs only with `web: yes`; everything else rejected.
+ * Reads are also approved inside each read root, where the installed plugin's skills sit; a write
+ * there is an outside write.
+ */
+export function permissionPolicy(request: PermissionRequest, projectDir: string, web: boolean, readRoots: readonly string[] = []): PolicyDecision {
   const r = request as unknown as Record<string, unknown>;
   const approve: PermissionRequestResult = { kind: "approve-once" };
   const reject = (kind: string, detail: string, fatal: boolean, feedback: string): PolicyDecision => ({
@@ -125,8 +131,14 @@ export function permissionPolicy(request: PermissionRequest, projectDir: string,
   switch (request.kind) {
     case "read": {
       const path = String(r.resolvedPath ?? r.path ?? "");
-      if (insideProject(projectDir, path)) return { result: approve, summary: `approved read: ${path}` };
-      return reject("read", path, false, "Reads outside the project are not available in this session.");
+      if (insideProject(projectDir, path) || readRoots.some((root) => insideProject(root, path))) {
+        return { result: approve, summary: `approved read: ${path}` };
+      }
+      const feedback =
+        readRoots.length > 0
+          ? "Reads are available inside the project and the installed plugin only. Check that the path was copied exactly."
+          : "Reads outside the project are not available in this session.";
+      return reject("read", path, false, feedback);
     }
     case "write": {
       const path = String(r.resolvedPath ?? r.fileName ?? "");
@@ -145,6 +157,61 @@ export function permissionPolicy(request: PermissionRequest, projectDir: string,
     default:
       return reject(String(request.kind), String(r.toolName ?? r.intention ?? request.kind), false, "This tool is not available in this session.");
   }
+}
+
+/** The part of the client's plugin RPC an install uses. */
+export interface PluginRpc {
+  install(params: { source: string; workingDirectory?: string }): Promise<{
+    plugin: { name: string; enabled: boolean };
+    skillsInstalled: number;
+    warnings?: string[];
+    deprecationWarning?: string;
+  }>;
+  enable(params: { names: string[]; workingDirectory?: string }): Promise<void>;
+  list(): Promise<{ plugins: { name: string; enabled: boolean }[] }>;
+}
+
+export type InstallOutcome = { ok: true; summary: string; notes: string[] } | { ok: false; message: string };
+
+/**
+ * FR-013 and FR-021: installs the plugin into the attempt's agent home through the client's plugin
+ * install. A throw, a warning, a skill count short of the build's, or a plugin left disabled fails
+ * the attempt. A deprecation warning is only noted: every local-path install carries one.
+ */
+export async function installPlugin(rpc: PluginRpc, plugin: PluginSource, projectDir: string): Promise<InstallOutcome> {
+  let installed: Awaited<ReturnType<PluginRpc["install"]>>;
+  try {
+    installed = await rpc.install({ source: plugin.dir, workingDirectory: projectDir });
+  } catch (error) {
+    return { ok: false, message: `plugin ${plugin.name}: the install failed: ${errorText(error)}` };
+  }
+  const problems: string[] = [];
+  const name = installed.plugin.name;
+  if (name !== plugin.name) problems.push(`installed as ${name}`);
+  if (installed.skillsInstalled !== plugin.skills) problems.push(`${installed.skillsInstalled} of ${plugin.skills} skills installed`);
+  for (const warning of installed.warnings ?? []) problems.push(`warning: ${warning}`);
+  if (!installed.plugin.enabled) {
+    try {
+      await rpc.enable({ names: [name], workingDirectory: projectDir });
+      const listed = await rpc.list();
+      if (!listed.plugins.some((p) => p.name === name && p.enabled)) problems.push("the plugin is still disabled after enabling it");
+    } catch (error) {
+      problems.push(`enabling the plugin failed: ${errorText(error)}`);
+    }
+  }
+  if (problems.length > 0) return { ok: false, message: `plugin ${plugin.name}: ${problems.join("; ")}` };
+  return {
+    ok: true,
+    summary: `installed plugin ${name} (${installed.skillsInstalled} skills)`,
+    notes: installed.deprecationWarning ? [installed.deprecationWarning] : [],
+  };
+}
+
+/** A skill's own name: a plugin skill may be reported as `<plugin>:<skill>`. */
+export function skillName(data: Record<string, unknown>): string {
+  const name = String(data.name ?? data.skillName ?? "skill");
+  const plugin = typeof data.pluginName === "string" ? data.pluginName : "";
+  return plugin !== "" && name.startsWith(`${plugin}:`) ? name.slice(plugin.length + 1) : name;
 }
 
 export type StopKind = "rate-limit" | "allowance" | "no-access";
@@ -266,6 +333,13 @@ export const copilotDriver: Driver = async (options) => {
 
   try {
     await withRateLimit(() => client.start(), sleep);
+    const installed = await installPlugin(client.rpc.plugins, options.plugin, projectDir);
+    if (!installed.ok) {
+      log({ turn, role: "system", text: installed.message });
+      return result("error", { error: { kind: "plugin-install", message: installed.message } });
+    }
+    log({ turn, role: "system", text: [installed.summary, ...installed.notes].join("\n") });
+    const readRoots = [join(options.copilotHome, "installed-plugins")];
     session = await withRateLimit(
       () =>
         client.createSession({
@@ -276,7 +350,7 @@ export const copilotDriver: Driver = async (options) => {
           enableSessionStore: false,
           enableSessionTelemetry: false,
           onPermissionRequest: (request) => {
-            const decision = permissionPolicy(request, projectDir, scenario.web);
+            const decision = permissionPolicy(request, projectDir, scenario.web, readRoots);
             if (decision.rejection) rejected.push(decision.rejection);
             if (!decision.rejection && request.kind === "read" && !outputSeen && !skillsBeforeOutput.includes(EXPERIENCE_SKILL)) {
               const r = request as unknown as Record<string, unknown>;
@@ -320,7 +394,7 @@ export const copilotDriver: Driver = async (options) => {
           usage = addUsage(usage, usageFrom(data));
           break;
         case "skill.invoked": {
-          const name = String(data.name ?? data.skillName ?? "skill");
+          const name = skillName(data);
           skillsInvoked.push(name);
           if (!outputSeen) skillsBeforeOutput.push(name);
           log({ turn, role: "skill", text: `invoked ${name}` });

@@ -36,7 +36,8 @@ The source conforms to Agent Skills. The plugin is a build of that source.
 - Plugin: the generator builds `highway-agent-plugin/` from the source skill folders. It holds
   `plugin.json`, `skills/`, and the files the public repository needs, and nothing else.
 - Publishing: `highway-agent-plugin/` is pushed to a public repository whose root is the plugin
-  root. Nothing outside that folder is published.
+  root (Phase 18). Nothing outside that folder is published. Until Phase 18, the folder is copied
+  to the public repository by hand.
 - Framework: the generators, validators, and constitution live in `framework/`, the bash tests in
   `tests/`, and the behavioral harness in `harness/` (Phase 3). The framework no longer ships;
   none of it is in the plugin.
@@ -45,7 +46,7 @@ Phases 1 to 3 record the decisions: every file under `.highway/` and its resolut
 the same for each skill too large for the Agent Skills size guidance. These phases are worked out
 in this document and have no spec of their own.
 
-Phases 4 to 12 and 14 to 16 carry out those decisions. Each is one speckit spec and leaves the full
+Phases 4 to 12 and 14 to 18 carry out those decisions. Each is one speckit spec and leaves the full
 suite passing:
 
 | Phase | Spec | Depends on | Status |
@@ -62,7 +63,9 @@ suite passing:
 | 13 | Rationalize the Refactor of Large Skills | 12 | Complete in this document |
 | 14 | Progressive Disclosure | 13 | Complete: `specs/242-standard-alignment-progressive-disclosure/` |
 | 15 | Principle XIV: Agent Skills Alignment | 14 | Complete: `specs/245-standard-alignment-principle-xiv/` |
-| 16 | Agent Plugins Package | 11 to 15 | |
+| 16 | Agent Plugins Package | 11 to 15 | Complete except step 3: `specs/246-agent-plugins-package/` |
+| 17 | Retire the Agent Adapters and the Distribution | 16 | |
+| 18 | Publish the Plugin | 17 | |
 
 ## Conformance map
 
@@ -83,7 +86,7 @@ Each requirement of the two standards, where Highway stands today, and the phase
 | Agent Skills | `SKILL.md` under 500 lines and about 5,000 tokens | 1 skill over 500 lines, 8 over 5,000 tokens | 13 decides, 14, 15 enforces |
 | Agent Skills | Valid by `skills-ref validate` | Not checked | 12 |
 | Agent Plugins | Root `plugin.json` with the 1.0.0 `$schema` | None | 16 |
-| Agent Plugins | Skills discovered from `skills/<name>/SKILL.md` | Source in `.highway/skills/`; four per-agent copies instead | 6 (source), 16 (plugin) |
+| Agent Plugins | Skills discovered from `skills/<name>/SKILL.md` | Source in `.highway/skills/`; four per-agent copies instead | 6 (source), 16 (plugin), 17 (removes the copies) |
 | Agent Plugins | Plugin files stay inside the plugin root | Skills read the project's `.highway/` | 7 to 11 |
 | Agent Plugins | Client-specific data only under a reverse-domain extension namespace | Agent rule files and `AGENTS.md` sit beside the skills | 7 removes them, 16 |
 
@@ -895,8 +898,8 @@ Resolution: split by role. Nothing in it ships.
   - the validators `validate-skill.sh` and `validate-profile.sh`;
   - `lib/`;
   - the manifests `.adapter-manifest`, `.distribution-manifest`, and `.frontmatter-contract`.
-  - Phase 16 replaces `generate-distribution.sh` and `.distribution-manifest` with the plugin
-    build, and stops the per-agent copies.
+  - Phase 16 adds the plugin build. Phase 17 replaces `generate-distribution.sh` and
+    `.distribution-manifest` with it, and removes the per-agent copies.
 - `validate-library.sh` merges into `validate-skill.sh`. The files it checked now sit in skill
   `references/` and `assets/`, so a skill's validation covers them with the same checks.
 - Dropped:
@@ -1020,7 +1023,7 @@ passing, and the harness tests at 75. Beyond the steps above:
 - The framework no longer ships. Skills ship from `skills/` to `.highway/skills/`, and packaging
   validates them with `framework/validate-skill.sh` from a verification tree: the distribution
   plus `framework/`, with the skills moved back to `skills/`.
-- `framework/README.md` ships as the distribution's `README.md` until Phase 16.
+- `framework/README.md` ships as the distribution's `README.md` until Phase 17.
 - The Highway Skills Constitution is 10.1.0 at `framework/constitution.md`; P2.6 and its check
   name `framework/`. The development constitution is 3.2.0.
 - `harness/bin/path-map.sh --location <skills|framework>` replaces `--location tools`; `tests/`
@@ -1839,7 +1842,9 @@ Beyond the steps above:
 # Phase 16: Agent Plugins Package
 
 Goal: the generator builds `highway-agent-plugin/`, one Agent Plugins 1.0 plugin, from the source
-skill folders. That folder is tested as installed and is what the public repository publishes.
+skill folders. That folder is tested as installed. The per-agent skill copies and the distribution
+are left in place and keep working, so the plugin is proved before anything it replaces is removed
+(Phase 17).
 
 1. The generator builds `highway-agent-plugin/`:
    - `plugin.json` with the 1.0.0 `$schema`, name `highway`, description, version, license, and
@@ -1849,23 +1854,85 @@ skill folders. That folder is tested as installed and is what the public reposit
    - the public repository's `README.md` and `LICENSE`, copied from `framework/plugin/`;
    - nothing else: no specs, tests, harness, tooling, or path into this private repository.
 2. The build is reproducible: the same sources always build the same bytes, with no timestamps.
-3. The plugin layout replaces the distribution manifest. What ships is exactly `plugin.json`,
-   `skills/`, and the public `README.md` and `LICENSE`.
-4. The generator stops emitting the per-agent skill copies into the distribution.
-5. Client-specific extras are optional and sit outside the portable core:
+3. Client-specific extras are optional and sit outside the portable core:
    - always-on instructions and rules, under the client's reverse-domain extension namespace
      or its own plugin format;
    - a Claude Code manifest, if Claude Code needs one to install the plugin.
-6. `highway-agent-plugin/` is committed and regenerated, never edited by hand. Bash checks:
+4. `highway-agent-plugin/` is committed and regenerated, never edited by hand. Bash checks:
    - validate `plugin.json` and the plugin layout against the specification;
    - run the Agent Skills validation from Phase 12 on every skill in `skills/`;
    - fail when the folder differs from a fresh build;
-   - fail when the folder holds anything outside the shipped set.
-7. Publishing pushes `highway-agent-plugin/` to the public repository, with the folder as its
-   root. The spec decides the mechanism, such as a subtree split or a release job that copies
-   the folder. Each release bumps `version` in `plugin.json`.
-8. The harness installs the built plugin into the test project, the same way a person would.
+   - fail when the folder holds anything outside the shipped set: `plugin.json`, `skills/`, and
+     the public `README.md` and `LICENSE`.
+5. The harness installs the built plugin into the test project, the same way a person would.
+6. Until Phase 18, the plugin reaches the public repository by a manual copy of
+   `highway-agent-plugin/`. This phase adds no publishing mechanism.
 
 Exit: the built plugin loads in an agent that supports Agent Plugins, every skill in it passes
-Agent Skills validation, the harness passes from that install, and the folder holds only the
-shipped set.
+Agent Skills validation, the harness passes from that install, the folder holds only the shipped
+set, and the per-agent copies and the distribution still build and pass as before.
+
+Status: complete in `specs/246-agent-plugins-package/`, except step 3, which a later spec takes
+up. The plugin is version 0.1.0, and the suite goes from 86 to 87 tests, all passing. The
+development constitution is 3.6.0: `generate-agent-plugin.sh` is a declared generator, so D4.7
+compares `highway-agent-plugin/` with a fresh build, and `python3` may read `plugin.json` with
+its standard `json` module. Beyond the steps above:
+- `framework/validate-plugin.sh` checks the manifest and layout against the specification, then
+  runs the skill validator on each skill. `framework/generate-agent-plugin.sh --check` reports
+  each stale, missing, or extra file.
+- The distribution manifest excludes `highway-agent-plugin/`, so the plugin does not ship in the
+  distribution before Phase 17.
+- Each harness attempt installs the plugin into its own Copilot home through the client's plugin
+  install, and the test project holds no skill folder. A stale plugin stops the run, and an
+  install that is short of skills or warns fails the attempt as `plugin-install`. Copilot says
+  direct installs from a local path are deprecated; the harness records the notice and does not
+  fail on it.
+- The harness model stays GPT-5.6 Luna. Gemini 3.8 Flash is not among the models the harness
+  token can use.
+- Two smoke runs installed the plugin in all 40 attempts with 16 skills each, and no load failure
+  occurred. They passed 15 and 13 of 16. Each failure is recorded in
+  `harness-model-findings.md`: Runs lines on F1, F18, F20, and F25, and new findings F26 to F28.
+  The first run found that a rejected read still said reads outside the project are unavailable,
+  which led one attempt to a shell command. That message now names the installed plugin.
+
+# Phase 17: Retire the Agent Adapters and the Distribution
+
+Goal: the plugin is the only delivery model. The per-agent skill copies, the generator that
+writes them, and the distribution are removed. This runs only after Phase 16 has proved the
+plugin works as installed.
+
+1. `framework/generate-agent-adapters.sh` and `framework/.adapter-manifest` are removed, along
+   with the Highway skill copies in `.github/skills/`, `.claude/skills/`, `.cursor/skills/`, and
+   `.agents/skills/`. Development tooling in those folders, such as the speckit skills, is not
+   Highway output and stays.
+2. The plugin layout replaces the distribution manifest. `framework/generate-distribution.sh` and
+   `framework/.distribution-manifest` are removed. What ships is exactly what Phase 16's plugin
+   holds.
+3. Every test, check, and document that reads the adapters or the distribution reads the plugin
+   instead, or retires with a recorded reason (D3.5): the adapter coverage and packaging tests,
+   the Development Constitution's packaging rules and Enforcement Map, the shipped-tree checks,
+   and the authoring standard.
+4. The harness runs only from the plugin install. No path into a per-agent copy remains.
+5. Generated content in the source skill folders, such as highway-help's `assets/index.json`,
+   is unaffected. Its generator stays.
+
+Exit: no Highway skill copy exists outside `skills/` and `highway-agent-plugin/skills/`, no
+generator writes one, the full suite passes, and the harness passes from the plugin install.
+
+# Phase 18: Publish the Plugin
+
+Goal: a release pushes `highway-agent-plugin/` to the public repository, replacing the manual
+copy used since Phase 16.
+
+1. Publishing pushes `highway-agent-plugin/` to the public repository, with the folder as its
+   root. The spec decides the mechanism, such as a subtree split or a release job that copies
+   the folder.
+2. Each release bumps `version` in `plugin.json`.
+3. Nothing outside `highway-agent-plugin/` is published, and a publish fails when the folder
+   differs from a fresh build.
+4. The spec reconciles the public repository with the history of manual copies, so the first
+   automated publish replaces nothing it should keep.
+
+Exit: one release command or job publishes the plugin, the public repository's root matches
+`highway-agent-plugin/` byte for byte, and the published plugin installs in an agent that
+supports Agent Plugins.

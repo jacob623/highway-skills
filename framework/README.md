@@ -7,9 +7,10 @@ content is never duplicated or hand-adapted per agent.
 ## Layout
 
 ```text
-skills/            Skill sources, one directory per skill
-framework/         Validators, generators, and the rules every skill is validated against
-tests/             The bash test suite for the framework
+skills/                Skill sources, one directory per skill
+framework/             Validators, generators, and the rules every skill is validated against
+tests/                 The bash test suite for the framework
+highway-agent-plugin/  The Agent Plugins build of the skills, generated from skills/
 ```
 
 Each skill is self-contained: it reads only its own folder. Whatever it needs beyond `SKILL.md`
@@ -30,14 +31,17 @@ Create `skills/<id>/SKILL.md`, then check it and publish it to your agents:
 framework/validate-skill.sh skills/<id>
 framework/generate-catalog.sh
 framework/generate-agent-adapters.sh
+framework/generate-agent-plugin.sh
 ```
 
 The validator reports one line per rule that failed, each naming the rule id that decided it. The
 catalog generator refreshes highway-help's index; the adapter generator writes the per-agent
-copies. Run all three after any change to a skill.
+copies; the plugin generator rebuilds `highway-agent-plugin/`. Run all four after any change to a
+skill.
 
-Both generators refuse to overwrite a file they did not produce, naming it rather than replacing
-it. If you see that message, the file was hand-edited — move it aside if regenerating is safe.
+Every generator refuses to overwrite a file or folder it did not produce, naming it rather than
+replacing it. If you see that message, the file was hand-edited — move it aside if regenerating is
+safe.
 
 ## The rules a skill is validated against
 
@@ -165,6 +169,41 @@ no namespace prefix of its own.
   `.cursor/skills/`, or `.agents/skills/` — those are external tooling used to build this
   repository, not part of this suite. The generator removes no file at all.
 
+### `framework/generate-agent-plugin.sh [--check]`
+
+Builds `highway-agent-plugin/`, an [Agent Plugins](https://agent-plugins.org) 1.0.0 plugin of the
+skills. The folder holds exactly `plugin.json`, `README.md`, and `LICENSE`, copied from
+`framework/plugin/`, and `skills/<id>/` for each skill under `skills/`, with every file except
+dotfiles. Two builds from unchanged sources are byte-identical. The generator owns the folder
+whole: each build replaces it.
+
+- **Exit 0**: the plugin was written.
+- **Exit 1**: a skill fails validation, or `highway-agent-plugin/` exists but its `plugin.json`
+  is missing or does not name `highway` (refuses to overwrite, names the folder). Nothing is
+  written.
+
+With `--check`, it builds into a temporary folder and compares that with `highway-agent-plugin/`
+without writing in the repository. It prints one `DRIFT<TAB><differs|missing|extra><TAB><path>`
+line per difference and exits 1, or exits 0 when there is none. The harness runs it before every
+run, so it never tests a stale plugin.
+
+The plugin is not part of the distribution below. To change its manifest, README, or license, edit
+the file in `framework/plugin/` and rebuild.
+
+### `framework/validate-plugin.sh <plugin-dir>`
+
+Validates a plugin folder against Agent Plugins 1.0.0, then validates each of its skills with
+`framework/validate-skill.sh`. It prints one line per finding, `ERROR: [MANIFEST]`,
+`ERROR: [LAYOUT]`, or `ERROR: [SKILL]`, each naming the field or path and the specification
+clause, then `OK` or `FAIL` with a count. The manifest checks cover the closed set of fields, the
+1.0.0 `$schema`, the name rules, each field's type, the `author` sub-fields, and `extensions`; a
+file that is not JSON or repeats a key fails. The layout checks reject a symbolic link anywhere in
+the folder, a `skills` entry that is not a folder, and a skill folder with no `SKILL.md`.
+
+- **Exit 0**: no finding.
+- **Exit 1**: at least one finding.
+- **Exit 2**: a usage error, or `python3` is unavailable.
+
 ### Records, templates, and seeded files
 
 Every record has its complete template in the `assets/` of the one skill that creates it, such as
@@ -217,8 +256,8 @@ non-zero if any test fails.
 ## Paths helper
 
 `framework/lib/paths.sh` is the one declaration of where every repository location lives: the
-skills, highway-experience, highway-help's index, framework, tests, fixtures, harness, and agent
-trees, as `HW_*` variables, plus each output template and each framework or highway-experience
+skills, highway-experience, highway-help's index, framework, tests, fixtures, harness, agent
+trees, and the plugin and its sources, as `HW_*` variables, plus each output template and each framework or highway-experience
 document by name. Moving a location means editing its line there and nothing else.
 
 - Framework scripts source it directly. Tests source `tests/paths.sh` and harness scripts source
@@ -240,7 +279,8 @@ template or document to its folder (development constitution D2.5).
 |---|---|
 | `lib/paths.sh` | The paths helper described above. |
 | `lib/frontmatter.sh` | Reads the YAML frontmatter block and body of a `SKILL.md` with line readers, for the generators and rule checks. |
-| `lib/yaml-frontmatter.sh` | Parses a `SKILL.md` frontmatter block with a strict YAML parser (`python3` with PyYAML), the only use of `python3` in the framework. |
+| `lib/yaml-frontmatter.sh` | Parses a `SKILL.md` frontmatter block with a strict YAML parser (`python3` with PyYAML). |
+| `lib/plugin-manifest.sh` | Checks a `plugin.json` against the Agent Plugins 1.0.0 manifest rules, reading it with `python3`'s standard-library `json` module and rejecting a repeated key. |
 | `lib/frontmatter-contract.sh` | Reads the permitted frontmatter keys and value constraints from `.frontmatter-contract`. |
 | `lib/constitution.sh` | Parses the rule inventory, rule fields, and token lists from the constitution. |
 | `lib/body-scan.sh` | Annotates each body line with its section, fenced-block state, and list membership, so no check parses Markdown for itself. |
@@ -270,6 +310,7 @@ id namespace alignment) for the full contract. Procedure:
 ## Requirements
 
 Bash and standard command-line utilities, as shipped with macOS and Linux, plus `python3` with the
-PyYAML module (`python3 -c 'import yaml'` exits 0), which the validator uses only to parse skill
-frontmatter strictly. No package manager and no network access. The skills themselves need none of
+PyYAML module (`python3 -c 'import yaml'` exits 0). The skill validator uses it only to parse
+skill frontmatter strictly, and the plugin validator only to read `plugin.json`. No package
+manager and no network access. The skills themselves need none of
 this: the framework does not ship.

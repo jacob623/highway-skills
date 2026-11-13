@@ -311,6 +311,44 @@ codify-open-plan failed both attempts on unchanged `Entry` step 4 text, then pas
 so it is counted under F1 and not as a regression. Every other failing attempt is matched to a
 finding above.
 
+## Plugin install smoke for spec 246
+
+Two smoke runs on `gpt-5.6-luna`, from the Agent Plugins build. Each attempt installed
+`highway-agent-plugin/` into its own Copilot home through the client's plugin install, and the
+test project held no skill folder. Before them, the full suite passed 87 of 87 and the harness
+unit tests 102 of 102. Transcripts are under `specs/246-agent-plugins-package/harness/`, which is
+gitignored. The token value appears in none of the 128 captured files.
+
+| Run | Selection | Passed | Flaky | Failed | Blocked |
+| --- | --- | --- | --- | --- | --- |
+| `20261113-141852Z-smoke-be6a1d0` | `--smoke` (16) | 15 | 3 | 1 | 0 |
+| `20261113-142757Z-smoke-be6a1d0` | `--smoke` (16) | 13 | 1 | 3 | 0 |
+
+Passed includes flaky. No load failure occurred. All 40 attempts installed the plugin with 16
+skills, every skill reported `source: plugin`, and no attempt failed with `plugin-install`.
+Every install gave Copilot's notice that direct installs from a local path are deprecated. The
+harness records it and does not fail on it.
+
+The first run found one harness defect from this spec. A rejected read still said "Reads outside
+the project are not available in this session." even though reads of the installed plugin are
+allowed. In setup-smoke, after three reads at a wrongly copied plugin path were rejected, Luna
+asked to `cat` the files instead. The message now reads "Reads are available inside the project
+and the installed plugin only. Check that the path was copied exactly." In the second run, 16
+reads at a wrongly copied plugin path were rejected. No attempt turned to the shell after them,
+and most of those attempts passed.
+
+| Scenario | Run 1 attempt 1 | Run 1 attempt 2 | Run 2 attempt 1 | Run 2 attempt 2 | Findings |
+| --- | --- | --- | --- | --- | --- |
+| adr-smoke | unmatched-question ("If this proposal is accurate, should I accept it?" through the input tool) | pass | pass | | F25 |
+| codify-smoke | pass | | unmatched-question (a "no restock needed" email question through the input tool) | rejected-request (write at `/var/folders/…/0000gn/code/…`) | F25, F20 |
+| discovery-smoke | assertion (Example Realization Matrix without its header row) | same | same, and the constraint table without its header row | Example Realization Matrix only | F18 |
+| implementation-smoke | pass | | unmatched-question (lists the Reference Architectures for an exact title) | same, and experience-order | F1, F27 |
+| objectives-smoke | pass | | assertion (`contains-any … :: repeat` against "Grow Repeat Customers") | pass | F28 |
+| onboarding-smoke | assertion (no capability proposed but AI-Augmented; no record written) | pass | pass | | F26 |
+| setup-smoke | rejected-request (`cat` of plugin files after wrongly copied reads) | pass | pass | | F20 |
+
+Every other scenario passed its first attempt in both runs.
+
 # Harness Failures
 
 Resolved findings are removed: S1 in spec 242; F2, F4, F6, F9, F10, F11, F12, F13, and F14 in
@@ -328,12 +366,19 @@ confirming run ids are in the final runs sections above.
 - Final smoke `20261113-051531Z-smoke-fe522b4`: discovery-smoke
 - Final changed `20261113-052407Z-targeted-fe522b4`: chain-discovery, discovery-smoke, onboarding-smoke
 - Spec 244 final `20261113-064237Z-targeted-42a0569`: discovery-smoke (both attempts)
+- Plugin install smoke (GPT-5.6 Luna) `20261113-141852Z-smoke-be6a1d0`: discovery-smoke (both attempts)
+- Plugin install smoke (GPT-5.6 Luna) `20261113-142757Z-smoke-be6a1d0`: discovery-smoke (both attempts)
 
 **Category**: Skill
 
 **Confirmed**: Yes
 
 **Basis**: The template check requires every heading and table header row. Spec 244 added to the write step of highway-discovery and highway-adr: "Keep every heading and table header row of `assets/<template>`, in order, even when a section has no content. Write `None` under a section with no content, after its table header row when it has one." In its final run, chain-discovery and the onboarding ADR keep every section, and the Comparison Matrix is kept. One case remains: both discovery-smoke attempts wrote `## Example Realization Matrix` as `None` alone, with no `| Product | Purpose | Key Capabilities | Estimated Cost |` row. The template's own placeholder above that table reads "<optional advisory comparison of available examples, or `None`>", which Luna reads as replacing the table. Templates are fixed, so the skill text has to name it.
+
+Spec 246's plugin runs show the same case in all four discovery-smoke attempts. Each attempt read
+`references/options.md` from the installed plugin, so the plugin is not the cause. In the second
+run's attempt 1, the constraint table also lost its `| Candidate ID | Candidate Title | … |`
+header row.
 
 **Proposed resolution**: Fix in the skill, in highway-discovery `references/options.md`. After the keep-every-heading bullet, name the case: "Under `## Example Realization Matrix`, keep its header row even when there are no examples. Write `None` after it."
 
@@ -371,6 +416,22 @@ confirming run ids are in the final runs sections above.
 
 **Proposed resolution**: Fix in the harness. In `showsFailures`, strip backticks along with `*` and `_`, with a unit test that a backticked skill name matches its plain `shows:` text. Do not change the skill to forbid formatting.
 
+## F28: `contains-any` does not ignore case
+
+**Skill**: highway-objectives
+
+**Runs**:
+
+- Plugin install smoke (GPT-5.6 Luna) `20261113-142757Z-smoke-be6a1d0`: objectives-smoke (attempt 1)
+
+**Category**: Harness
+
+**Confirmed**: Yes
+
+**Basis**: objectives-smoke adds "grow repeat customers by a fifth within a year" and expects `contains-any library/objectives/*.md :: repeat`. Luna wrote `OBJ61142437.md` titled "Grow Repeat Customers by a Fifth", with a Statement about "returning customers". The objective is the one the person asked for, but `runExpectation` in `harness/src/checks.ts` compares with `includes`, so `Repeat` does not match `repeat`. Attempt 2 passed. `ask:` already ignores case, and `contains-any` checks that a fact reached the record, not its capitalization.
+
+**Proposed resolution**: Fix in the harness. Compare `contains-any` ignoring case in `harness/src/checks.ts`, add a unit test for a capitalized match, and say in `harness/README.md` that the comparison ignores case. No scenario changes.
+
 # Research Harness Failures
 
 These need more evidence before a fix is chosen: an investigation, or more runs to see whether
@@ -388,6 +449,7 @@ they recur.
 - S1 rerun 1 `20261112-181837Z-targeted-49ab958`: discovery-smoke
 - Final changed `20261113-052407Z-targeted-fe522b4`: adr-smoke attempt 1
 - Spec 244 final `20261113-064237Z-targeted-42a0569`: codify-open-plan (both attempts)
+- Plugin install smoke (GPT-5.6 Luna) `20261113-142757Z-smoke-be6a1d0`: implementation-smoke (both attempts)
 
 **Category**: Model
 
@@ -404,6 +466,11 @@ has a plan and no task list. `Entry` step 4 says to go to `menu`. Both attempts 
 action grounded in this implementation is already codified." Step 4 did not change in spec 244,
 and two reruns on the same text, `20261113-070538Z-targeted-42a0569` and
 `20261113-070734Z-targeted-42a0569`, passed.
+
+In spec 246's second plugin run, implementation-smoke opened with the exact title
+"Scheduled Restock Alert Service". Both attempts listed RA22140b24 and RA34f8fb1c and asked "Which
+Reference Architecture would you like to realize?". The first plugin run's attempt took the
+title.
 
 **Proposed resolution**: No skill change. The text already says what to do, and the reruns follow
 it. Watch for it in later runs, and keep the titles in the scenarios. If codify-open-plan fails
@@ -437,6 +504,8 @@ Not seen in spec 244's final runs: chain-implementation and implementation-onboa
 - Final smoke `20261113-051531Z-smoke-fe522b4`: setup-smoke attempt 2
 - Final changed `20261113-052407Z-targeted-fe522b4`: setup-smoke attempt 2
 - Spec 244 final `20261113-064237Z-targeted-42a0569`: chain-architecture attempt 1, codify-controls-conflict attempt 1
+- Plugin install smoke (GPT-5.6 Luna) `20261113-141852Z-smoke-be6a1d0`: setup-smoke (attempt 1)
+- Plugin install smoke (GPT-5.6 Luna) `20261113-142757Z-smoke-be6a1d0`: codify-smoke (attempt 2)
 
 **Category**: Model
 
@@ -444,7 +513,17 @@ Not seen in spec 244's final runs: chain-implementation and implementation-onboa
 
 **Basis**: The session starts with the correct project path. The wrong path, `/var/folders/…/projects/setup-smoke-2-…/` without the `T/highway-harness-…/` segment, first appears in the model's own tool arguments. The harness rejected the reads of setup's assets and the write of `requests/requests.md` as outside the project, so `library/knowledge/storage.md` and the catalogs were not written. The storage contract already says "Every path is relative to the repository root." In spec 244's final run it moved to other skills: chain-architecture wrote its record to `/var/folders/…/0000gnT/projects/chain-architecture-1-…/architectures/RA64140b32.md` (the `/T/highway-harness-…` segment collapsed), and codify-controls-conflict wrote its plan to `/var/folders/…/0000gn/code/northwind-restock-alerts/…` (the whole project prefix dropped). Both passed attempt 2.
 
-**Proposed resolution**: No skill or harness change. Luna broke an existing rule, and the harness rejection is correct. Watch for it in later runs. It now shows once or twice per run across skills; if it keeps that rate, investigate whether the harness can give the session a shorter project path.
+From spec 246, the skills are read from the installed plugin, at
+`<work root>/homes/<attempt>/installed-plugins/_direct/highway-agent-plugin-<hash>/skills/…`.
+That path is outside the project and longer than the project path. The runtime gives Luna the
+correct path, and Luna drops the `homes/<attempt>/` segment in its own tool arguments: 5 rejected
+reads in the first plugin run and 16 in the second, always to the same wrong root. setup-smoke
+then asked to `cat` the files, which failed the attempt. codify-smoke wrote its metadata to
+`/var/folders/…/0000gn/code/…`, with the whole project prefix dropped. After the rejection message
+was corrected to name the installed plugin, no attempt turned to the shell, and most attempts
+with a rejected read passed.
+
+**Proposed resolution**: No skill change. Luna broke an existing rule, and the harness rejection is correct. Watch for it in later runs. It now shows in several attempts per run, mostly on plugin paths. Investigate whether the harness can give each attempt a shorter Copilot home and project path, such as a short folder directly under the temporary folder, and compare the rejected-read count across two runs.
 
 ## F22: A proposal is shown without its question
 
@@ -482,12 +561,14 @@ Not seen in spec 244's final runs: setup-smoke and chain-setup pass, and every P
 
 ## F25: A question the skill does not ask, put through the input tool
 
-**Skill**: highway-codify, highway-implementation (through highway-codify)
+**Skill**: highway-codify, highway-implementation (through highway-codify), highway-adr
 
 **Runs**:
 
 - Final changed `20261113-052407Z-targeted-fe522b4`: codify-needed-language attempt 1, codify-no-governance attempt 1
 - Spec 244 final `20261113-064237Z-targeted-42a0569`: codify-needed-language attempt 1
+- Plugin install smoke (GPT-5.6 Luna) `20261113-141852Z-smoke-be6a1d0`: adr-smoke (attempt 1)
+- Plugin install smoke (GPT-5.6 Luna) `20261113-142757Z-smoke-be6a1d0`: codify-smoke (attempt 1)
 
 **Category**: Model
 
@@ -495,4 +576,41 @@ Not seen in spec 244's final runs: setup-smoke and chain-setup pass, and every P
 
 **Basis**: Luna sometimes writes its own question and sends it through the input tool with choices, instead of the skill's question. In spec 243: "What coding standard should Language use for Northwind Restock Alerts?" (codify-needed-language) and "should the workflow send an empty restock email or skip the email?" (codify-no-governance). In spec 244, codify-needed-language asked "Is this accurate?" with "Yes, set these details (Recommended)", "I want to correct a field", and "Leave the details unset", where highway-implementation's proposal asks "What would you add, correct, or remove?". The script has no reply, so the attempt fails with `unmatched-question`. Each case passed attempt 2.
 
+Spec 246's plugin runs add two. adr-smoke asked "If this proposal is accurate, should I accept
+it?" with Accept, Edit, Ask a question, and Decline, after the option was chosen. codify-smoke
+asked "should the workflow send the warehouse lead an explicit 'no restock needed' email?" with
+two choices, the same question codify-no-governance asked in spec 243.
+
 **Proposed resolution**: Investigate before changing anything. Check whether highway-experience's experience standard says a skill's question is asked in its own words and not through a choice list. If it does, this is a model rule break to watch. If it does not, decide whether it should.
+
+## F26: Onboarding proposes no capability from the Profile or the opening
+
+**Skill**: highway-onboarding
+
+**Runs**:
+
+- Plugin install smoke (GPT-5.6 Luna) `20261113-141852Z-smoke-be6a1d0`: onboarding-smoke (attempt 1)
+
+**Category**: Skill
+
+**Confirmed**: Yes
+
+**Basis**: onboarding-smoke opens with "We build, deploy, and run scheduled jobs for every repository with GitHub Actions on GitHub-hosted runners." In attempt 1, Luna read the storage record and the catalogs but not the Profile, `library/knowledge/profile.md`. Its capability list held only the AI-Augmented Technology Development line, and nothing from the opening. The script removed that line as written. Luna then re-emitted an empty list, took "Looks good." as accept, and said "Onboarding is now complete" without writing an ADR, Reference Architecture, or Reference Implementation. Attempt 2 read the Profile, proposed the build and deployment capability, and passed. `capabilities` in `references/proposal.md` says to build the list "from accepted repository context" and does not name the Profile or the opening.
+
+**Proposed resolution**: Investigate before changing the skill. Check whether naming the sources in `capabilities` (the accepted Profile's business activities, and an activity the opening names) keeps Luna from skipping the Profile across two runs. Also decide what onboarding says when the capability queue is empty, rather than reporting completion with no records.
+
+## F27: Output before highway-experience is activated
+
+**Skill**: highway-implementation
+
+**Runs**:
+
+- Plugin install smoke (GPT-5.6 Luna) `20261113-142757Z-smoke-be6a1d0`: implementation-smoke (attempt 2)
+
+**Category**: Model
+
+**Confirmed**: Yes
+
+**Basis**: Luna invoked highway-implementation, read the catalogs, and listed the Reference Architectures without invoking highway-experience or reading its `SKILL.md`. The harness reported `experience-order`. Every other attempt in both plugin runs activated highway-experience first, from the installed plugin, so the plugin install does not hide the skill. The same attempt also failed on F1.
+
+**Proposed resolution**: No skill or harness change. highway-implementation's Procedure opens with the activation step, and Luna skipped it once in 40 attempts. Watch for it in later runs; if it recurs, compare the opening of the skills that show it.
