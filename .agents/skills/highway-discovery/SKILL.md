@@ -3,7 +3,7 @@ name: highway-discovery
 description: "Manages one discovery for a complete request. Use when a request is complete and the person wants to explore options for it, or wants to resume an existing discovery."
 license: Apache-2.0
 metadata:
-  version: 5.7.0
+  version: 5.8.0
   usage: "Run highway-discovery with one request id or one discovery id."
 ---
 

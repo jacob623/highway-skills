@@ -8,8 +8,6 @@ ask: Which option would you like to select?
 say: [select] 1
 ask: What would you add, correct, or remove?
 say: [accept] Looks good.
-ask-pattern: \?
-say: [accept] Yes, go ahead.
 writes: adrs/adrs.md
 writes: adrs/*.md
 expect: template adrs/adrs.md :: adr-catalog.md

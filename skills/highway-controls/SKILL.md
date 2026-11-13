@@ -3,7 +3,7 @@ name: highway-controls
 description: "Manages the repository-wide control baseline. Use when highway-setup delegates the control baseline, after Objectives finish or when setup runs again."
 license: Apache-2.0
 metadata:
-  version: 8.7.0
+  version: 8.8.0
   usage: "Run highway-controls."
 ---
 
@@ -44,6 +44,7 @@ The complete structure is `assets/control-record.md` and `assets/control-catalog
 - New Control records and catalog after the guided flow writes them.
 - `Finished` returned to `highway-setup` after review acceptance or a successful guided write.
 - `Finished` is not shown to the person.
+- One closing line after review acceptance or a successful guided write, when the person ran this skill directly.
 
 ## Procedure
 
@@ -51,7 +52,7 @@ Activate the highway-experience skill before any output the person sees, and fol
 
 User-visible interaction follows the Highway Experience Standard. Repository ownership stays with the person.
 
-Emit only the active template. Follow this order: `review` when the catalog exists; otherwise `recommend`, then `queue` or `ask`, then `capture`, then `identifier`, `title` when needed, and `write`. Follow the Highway Experience Standard for attribution and acceptance wording. Use the accepted Organization Name from the Profile. Use Repository Name when no Organization Name is accepted. Do not ask for Profile or Objective facts already accepted.
+Emit only the active template. Follow this order: `review` when the catalog exists; otherwise `recommend`, then `queue` or `ask`, then `capture`, then `identifier`, `title` when needed, and `write`. Both paths end at `close`. Follow the Highway Experience Standard for attribution and acceptance wording. Use the accepted Organization Name from the Profile. Use Repository Name when no Organization Name is accepted. Do not ask for Profile or Objective facts already accepted.
 
 A Control is an enforceable safeguard: what must remain true. Do not write an Objective, a metric, or an implementation plan.
 
@@ -105,7 +106,7 @@ When no active Control is recorded, emit: No controls are recorded yet.
 Then emit the validation block.
 
 - `edit`: emit one consequence sentence. Apply the edit to the named Control. Preserve every Control the person left unchanged. An added safeguard becomes a new record. A removed Control deletes that record file and keeps its catalog row with status `removed`, so the id stays taken. Derive the id before writing. When the id is taken for a different title, go to `title` and do not write yet. Otherwise rewrite the affected records and the catalog. Show the updated Controls and emit the validation block. Stay on `review`.
-- `accept`: return `Finished`. Emit nothing else.
+- `accept`: go to `close`.
 - `unknown`: show the Controls and emit the validation block. Stay on `review`.
 - `question`: answer in one sentence. Show the Controls and emit the validation block. Stay on `review`.
 
@@ -115,10 +116,23 @@ Validation block:
 
 If this is accurate, just say so.
 
+### close
+
+When `highway-setup` delegated this skill, return `Finished`. Emit nothing else.
+
+Otherwise emit one line and stop. When at least one Control is active, emit:
+
+Your Controls are recorded.
+
+When no Control is active, emit:
+
+No Controls are recorded yet. Run highway-controls when you have one to add.
+
 ## Verification
 
 - An existing readable catalog is shown with **What would you add, correct, or remove?**
-- Acceptance of that review returns `Finished` and emits nothing else.
+- Acceptance of that review goes to `close`.
+- Run by `highway-setup`, `close` returns `Finished` and emits nothing else. Run directly, it emits one closing line and no question.
 - A review edit rewrites the affected record and catalog, then shows the updated Controls with the same question.
 - An absent catalog and readable Profile and Objectives begin with a recommendation set.
 - Records and the catalog are written once, after the set is accepted or declined.

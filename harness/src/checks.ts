@@ -151,6 +151,10 @@ export function runExpectation(projectDir: string, files: Iterable<string>, exp:
   if (exp.assertion === "exists") return undefined;
 
   const arg = exp.argument ?? "";
+  if (exp.assertion === "contains-any") {
+    if (matches.some((rel) => readFileSync(join(projectDir, rel), "utf8").includes(arg))) return undefined;
+    return fail(`text "${arg}" in at least one file`, `no file among ${matches.join(", ")} contains it`);
+  }
   for (const rel of matches) {
     const full = join(projectDir, rel);
     if (exp.assertion === "template") {

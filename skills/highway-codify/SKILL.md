@@ -3,7 +3,7 @@ name: highway-codify
 description: "Manages one functional artifact for one accepted implementation. Use when the person wants working code for an accepted reference implementation, or wants to see the code catalog and discuss one automation."
 license: Apache-2.0
 metadata:
-  version: 14.8.0
+  version: 14.9.0
   usage: "Run highway-codify with one implementation name."
 ---
 
@@ -89,7 +89,7 @@ Before a step in this table, read its file and follow it to the end.
 ### Entry
 
 1. When the invocation is the word `configure`, or asks to change platforms or coding standards, say: To configure platforms and coding standards, run highway-codify-config. Write nothing.
-2. When the invocation is the word `catalog`, or asks to show the code catalog, go to `catalog`. Do not resume a task list or select an implementation.
+2. When the invocation is the word `catalog`, or asks to show the code catalog, go to `catalog`. Do not resume a task list or select an implementation. An invocation that names nothing is not a catalog request.
 3. Read the invocation for an implementation title, a description, an implementation id, and one optional action.
 4. When the invocation names a product in `code/code.md` by title, folder, or `CDY` id and its open feature has an open task, go to `code` at the first open task. When that feature has a plan and no task list, go to `menu`.
 5. When an implementation id matches one accepted implementation, select it and show its title.

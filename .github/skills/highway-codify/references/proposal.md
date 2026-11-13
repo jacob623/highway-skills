@@ -225,7 +225,7 @@ The person can switch to another accepted architecture by title. An architecture
 A preparation-only request stays one self-service action.
 Removing the last task or the last acceptance criterion says at least one is needed.
 An edit that changes the proposed project uses that folder. Say a removed product's folder is taken.
-An edit that would break a listed Control or NFR is not applied. Say: [Title] stays in effect. To change a Control, run highway-controls. To change an NFR, run highway-nfrs.
+An edit that would break a listed Control or NFR is not applied. Say: [Title] stays in effect. To change a Control, run highway-controls. To change an NFR, run highway-nfrs. Then re-emit the proposal and stay on `revise`.
 - `accept`: go to `identifier` when the proposal has one action, a Provider or a Language standard, at least one task, at least one acceptance criterion, and an accepted architecture. Otherwise stay on `revise`.
 - `unknown`: re-emit the proposal. Stay on `revise`.
 - `question`: answer, then re-emit the proposal. Stay on `revise`.

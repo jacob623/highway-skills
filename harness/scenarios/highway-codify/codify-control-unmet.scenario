@@ -3,7 +3,7 @@ id: codify-control-unmet
 skill: highway-codify
 fixture: codify-controls-nfrs
 open: /highway-codify Northwind Restock Alerts Email the restock list to the store manager
-ask-pattern: \?
+ask-pattern: different action|explore any of these options
 say: [decline] Never mind.
 covers: 83795f5d4fa0 A Control or NFR that cannot be met for the selected action returns to `suggest` and writes nothing.
 reaches: govern

@@ -248,6 +248,23 @@ test("a scenario whose last attempt fails only with service errors is blocked", 
   rmSync(transcripts, { recursive: true });
 });
 
+test("a question asked again after its reply was spent fails as repeated-question, naming both", async () => {
+  const { dir, transcripts, lines } = setup({ "highway-help/help-smoke.scenario": SCENARIO("help-smoke") });
+  const repeatingDriver: Driver = async (o) => ({
+    ...(await writingDriver(o)),
+    outcome: "repeated-question",
+    unmatched: "Which Discovery would you like to decide?",
+    respent: { question: "Which Discovery would you like to decide?", reply: "Yes, go ahead." },
+  });
+  const code = await main(["--smoke", "--transcripts", transcripts, "--no-judge"], { ...deps({ driver: repeatingDriver }, lines, transcripts), scenariosDir: dir });
+  assert.equal(code, 1);
+  const text = lines.join("\n");
+  assert.match(text, /"kind":"repeated-question"/);
+  assert.match(text, /"Which Discovery would you like to decide\?" asked again after the reply "Yes, go ahead\."/);
+  rmSync(dir, { recursive: true });
+  rmSync(transcripts, { recursive: true });
+});
+
 test("a targeted run that selects nothing exits 0 and says so", async () => {
   const { dir, transcripts, lines } = setup({ "highway-help/help-smoke.scenario": SCENARIO("help-smoke") });
   const code = await main(["--paths", "tests/run-all.sh"], { ...deps({}, lines, transcripts), scenariosDir: dir });

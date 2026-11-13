@@ -59,6 +59,19 @@ test("heading, field, row, and contains are structural", () => {
   rmSync(dir, { recursive: true });
 });
 
+test("contains-any passes when one matching file holds the text; contains still needs every file", () => {
+  const dir = project({ "nfrs/NFRa.md": "Pages load fast.\n", "nfrs/NFRb.md": "Pages load within two seconds.\n" });
+  const files = [...snapshot(dir).keys()];
+  assert.equal(runExpectation(dir, files, exp("contains-any", "nfrs/*.md", "two seconds")), undefined);
+  assert.equal(runExpectation(dir, files, exp("contains", "nfrs/*.md", "two seconds"))?.actual, "nfrs/NFRa.md does not contain it");
+  const none = runExpectation(dir, files, exp("contains-any", "nfrs/*.md", "three seconds"));
+  assert.equal(none?.check, "contains-any");
+  assert.equal(none?.expected, 'text "three seconds" in at least one file');
+  assert.equal(none?.actual, "no file among nfrs/NFRa.md, nfrs/NFRb.md contains it");
+  assert.equal(runExpectation(dir, files, exp("contains-any", "other/*.md", "two seconds"))?.actual, "no file");
+  rmSync(dir, { recursive: true });
+});
+
 test("template uses the structural template check", () => {
   const good = `---\nproduct: CDY1\n---\n\n# T\n\n## Stories\n\n## Edge Cases\n\n## Functional Requirements\n\n## Decisions\n`;
   const dir = project({ "code/w/plan.md": good, "code/x/plan.md": PLAN });

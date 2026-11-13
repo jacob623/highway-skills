@@ -8,7 +8,7 @@ ask: What would you like to review?
 say: [select] 1
 ask: Would you like to explore any of these findings in more detail?
 say: [decline] No, that's all for now.
-ask-pattern: \?
+ask: Where would you like to go next?
 say: [decline] Stop here.
 writes: library/knowledge/assessment-findings.md
 expect: template library/knowledge/assessment-findings.md :: assessment-findings.md

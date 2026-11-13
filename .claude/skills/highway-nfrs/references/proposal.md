@@ -150,7 +150,7 @@ If you're not sure, just say "I don't know," and we'll work through it together.
 - `own` or `edit`: add that expectation to the queue. Go to `queue`.
 - `unknown`: re-emit this template. Stay on `ask`.
 - `question`: answer in one sentence. Re-emit this template. Stay on `ask`.
-- `decline`: write the empty catalog described in `write`. Return `Finished`. Emit nothing else.
+- `decline`: write the empty catalog described in `write`. Go to `close`.
 
 ### capture
 

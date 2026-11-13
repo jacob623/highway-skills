@@ -13,6 +13,11 @@ test("every failure kind has a fixed likely cause, and the same failure prints t
   }
 });
 
+test("repeated-question is a failure kind with its own cause", () => {
+  assert.ok((FAILURE_KINDS as readonly string[]).includes("repeated-question"));
+  assert.match(likelyCause({ kind: "repeated-question" }), /already spent/);
+});
+
 test("turn-limit names a repeated question", () => {
   assert.match(likelyCause({ kind: "turn-limit", repeated: { question: "Proceed?", count: 4 } }), /repeated the question "Proceed\?" 4 times/);
 });

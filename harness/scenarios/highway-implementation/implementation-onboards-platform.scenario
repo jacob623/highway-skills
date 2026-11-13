@@ -9,6 +9,14 @@ fixture: architecture
 open: /highway-implementation for the Scheduled Restock Alert Service architecture. A scheduled job runs every Monday, calls the order service stock query with a read-only token, and emails the warehouse lead. It is not a code project, so Language is None. It is not running yet.
 ask-pattern: Here are the capabilities Highway believes you have today
 say: [edit] Remove AI-Augmented Technology Development.
+ask-pattern: unable to infer a platform
+say: [unknown] I don't know.
+ask-pattern: Who builds or runs
+say: No one.
+ask-pattern: unable to infer a platform
+say: [unknown] I don't know.
+ask-pattern: Who builds or runs
+say: No one.
 ask: What should this architecture be called?
 say: Self-Hosted Build and Scheduled Job Automation
 ask: What would you add, correct, or remove?

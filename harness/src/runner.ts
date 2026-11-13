@@ -118,6 +118,10 @@ function driveFailures(drive: DriveResult): { kind: FailureKind; check: string; 
   switch (drive.outcome) {
     case "unmatched-question":
       return [{ kind: "unmatched-question", check: "reply", expected: "a keyed reply for the question", actual: drive.unmatched ?? drive.lastMessage.slice(-200) }];
+    case "repeated-question": {
+      const question = drive.respent?.question ?? drive.unmatched ?? "";
+      return [{ kind: "repeated-question", check: "reply", expected: "a different question after the reply was spent", actual: `"${question}" asked again after the reply "${drive.respent?.reply ?? ""}"` }];
+    }
     case "turn-limit":
       return [{ kind: "turn-limit", check: "turns", expected: "the conversation ends within the turn limit", actual: `${drive.turns} turns` }];
     case "timeout":

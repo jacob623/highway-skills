@@ -8,6 +8,7 @@ Thumbs.db
 rollout-plan.md
 specs/242-standard-alignment-progressive-disclosure/harness/*
 specs/243-harness-failure-resolutions/harness/*
+specs/244-harness-failure-followups/harness/*
 
 # Behavioral test harness: run output, dependencies, and secrets
 harness/runs/

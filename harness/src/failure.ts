@@ -3,6 +3,7 @@ import type { Cover } from "./scenario.ts";
 
 export const FAILURE_KINDS = [
   "unmatched-question",
+  "repeated-question",
   "rejected-request",
   "outside-writes",
   "experience-order",
@@ -26,6 +27,7 @@ export const EXIT_2_KINDS: ReadonlySet<FailureKind> = new Set(["missing-token", 
 
 const LIKELY_CAUSE: Record<FailureKind, string> = {
   "unmatched-question": "The skill's question changed, or the agent left the workflow at this step. Compare the question with the scenario's ask: lines.",
+  "repeated-question": "The agent asked again a question whose reply was already spent: the skill re-asks after that reply's class. Key a reply the skill accepts, or find why the answer did not move it on.",
   "rejected-request": "The agent tried to run a shell command, use memory, or write outside the project, which the storage contract forbids.",
   "outside-writes": "The agent changed a file outside the scenario's writes: patterns. Check the skill's output paths.",
   "experience-order": "The agent showed output before activating highway-experience. Check that the skill's Procedure opens with the activation step.",

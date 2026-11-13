@@ -8,6 +8,14 @@ chain: 5
 open: /highway-onboarding We build, deploy, and run scheduled jobs for every repository with GitHub Actions on GitHub-hosted runners.
 ask-pattern: Here are the capabilities Highway believes you have today
 say: [edit] Remove AI-Augmented Technology Development.
+ask-pattern: unable to infer a platform
+say: [unknown] I don't know.
+ask-pattern: Who builds or runs
+say: No one.
+ask-pattern: unable to infer a platform
+say: [unknown] I don't know.
+ask-pattern: Who builds or runs
+say: No one.
 ask: What should this architecture be called?
 say: Repository Build and Scheduled Job Pipelines
 ask-pattern: Would you like to configure how highway-codify uses

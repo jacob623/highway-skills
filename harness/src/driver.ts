@@ -3,7 +3,7 @@ import { isAbsolute, resolve, sep } from "node:path";
 import { CopilotClient, type CopilotSession, type PermissionRequest, type PermissionRequestResult } from "@github/copilot-sdk";
 import { EXPERIENCE_SKILL, isExperienceSkillRead } from "./checks.ts";
 import { classifyError, errorText, retryServiceError, type FailureKind } from "./failure.ts";
-import { decide, keyText, lastQuestion } from "./replies.ts";
+import { decide, keyText, lastQuestion, nextUnused, normalize, spentReply, textAfterAnswers } from "./replies.ts";
 import type { Scenario } from "./scenario.ts";
 
 export interface TranscriptEntry {
@@ -35,7 +35,7 @@ export interface Usage {
   cost: number;
 }
 
-export type DriveOutcome = "ended" | "unmatched-question" | "turn-limit" | "timeout" | "error";
+export type DriveOutcome = "ended" | "unmatched-question" | "repeated-question" | "turn-limit" | "timeout" | "error";
 
 export interface DriveResult {
   outcome: DriveOutcome;
@@ -48,6 +48,8 @@ export interface DriveResult {
   /** Skills invoked before the first output the person sees; every skill invoked when nothing was shown. */
   skillsBeforeOutput: string[];
   unmatched?: string;
+  /** The unmatched question was answered earlier in the attempt with this reply. */
+  respent?: { question: string; reply: string };
   repeated?: { question: string; count: number };
   error?: { kind: FailureKind; message: string };
   lastMessage: string;
@@ -205,12 +207,21 @@ export const copilotDriver: Driver = async (options) => {
   let usage = emptyUsage();
   let turn = 0;
   let turnMessages: string[] = [];
+  let answeredAt = 0;
   let unmatched: string | undefined;
+  let respent: DriveResult["respent"];
+  const answered = new Map<string, string>();
+
+  const noReply = (question: string): void => {
+    unmatched = question;
+    const reply = spentReply(question, answered);
+    if (reply !== undefined) respent = { question, reply };
+  };
 
   const pickReply = async (message: string, question: string): Promise<number | undefined> => {
     const decision = decide(message, scenario.replies, used);
     if (decision.type === "reply") return decision.index;
-    const candidates = decision.type === "fallback" ? decision.candidates : scenario.replies.map((_, i) => i).filter((i) => !used.has(i));
+    const candidates = decision.type === "fallback" ? decision.candidates : nextUnused(scenario.replies, used);
     if (candidates.length === 0) return undefined;
     const picked = await options.pickFallback(message, candidates);
     if (picked !== undefined) {
@@ -246,6 +257,7 @@ export const copilotDriver: Driver = async (options) => {
       skillsInvoked,
       skillsBeforeOutput,
       unmatched,
+      respent,
       repeated,
       lastMessage: turnMessages.join("\n\n"),
       ...extra,
@@ -279,12 +291,14 @@ export const copilotDriver: Driver = async (options) => {
             log({ turn, role: "question", text: [question, ...(request.choices ?? []).map((c, i) => `${i + 1}. ${c}`)].join("\n") });
             const index = await pickReply(question, lastQuestion(question));
             if (index === undefined) {
-              unmatched = lastQuestion(question);
+              noReply(lastQuestion(question));
               log({ turn, role: "answer", text: "(no keyed reply; the scenario fails here)" });
               return { answer: "Stop here.", wasFreeform: true };
             }
             used.add(index);
             const answer = scenario.replies[index].say;
+            answered.set(normalize(lastQuestion(question)), answer);
+            answeredAt = turnMessages.length;
             log({ turn, role: "answer", text: answer });
             return { answer, wasFreeform: !(request.choices ?? []).includes(answer) };
           },
@@ -318,14 +332,16 @@ export const copilotDriver: Driver = async (options) => {
       }
     });
 
+    const stuck = (): DriveResult => result(respent ? "repeated-question" : "unmatched-question");
     let message = scenario.open;
     while (true) {
-      if (unmatched) return result("unmatched-question");
+      if (unmatched) return stuck();
       if (turn >= options.maxTurns) return result("turn-limit");
       const remaining = deadline - Date.now();
       if (remaining <= 0) return result("timeout");
       turn++;
       turnMessages = [];
+      answeredAt = 0;
       log({ turn, role: "user", text: message });
 
       const prompt = message;
@@ -338,6 +354,7 @@ export const copilotDriver: Driver = async (options) => {
         const retried = retryServiceError(send, () => {
           log({ turn, role: "system", text: "retrying turn after service error" });
           turnMessages = [];
+          answeredAt = 0;
         });
         await Promise.race([retried, timeout]);
       } catch (error) {
@@ -347,21 +364,22 @@ export const copilotDriver: Driver = async (options) => {
         clearTimeout(timer);
       }
 
-      const text = turnMessages.join("\n\n");
-      log({ turn, role: "agent", text });
-      if (unmatched) return result("unmatched-question");
+      log({ turn, role: "agent", text: turnMessages.join("\n\n") });
+      if (unmatched) return stuck();
 
+      const text = textAfterAnswers(turnMessages, answeredAt);
       const decision = decide(text, scenario.replies, used);
       if (decision.type === "end") return result("ended");
       const question = lastQuestion(text);
       askedCount.set(question, (askedCount.get(question) ?? 0) + 1);
       const index = decision.type === "reply" ? decision.index : await pickReply(text, question);
       if (index === undefined) {
-        unmatched = question;
-        return result("unmatched-question");
+        noReply(question);
+        return stuck();
       }
       used.add(index);
       message = scenario.replies[index].say;
+      answered.set(normalize(question), message);
     }
   } catch (error) {
     if (error instanceof RunStop) throw error;

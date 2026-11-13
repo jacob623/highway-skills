@@ -18,7 +18,7 @@ STAGES="setup request discovery architecture implementation"
 KEYS=" id skill through fixture chain smoke web open ask ask-pattern say writes expect covers reaches shows "
 SINGLE=" id skill fixture chain smoke web open "
 KINDS=" accept edit question unknown decline select "
-ASSERTIONS=" exists absent heading field row contains template "
+ASSERTIONS=" exists absent heading field row contains contains-any template "
 TAB="$(printf '\t')"
 # shellcheck source=../../../harness/bin/lib/scenario.sh
 . "$HARNESS/bin/lib/scenario.sh"

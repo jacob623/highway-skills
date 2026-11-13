@@ -3,7 +3,7 @@ name: highway-codify-config
 description: "Manages the repository-wide guidance used by highway-codify. Use when the person wants to set up or update the platforms highway-codify writes for, or when another highway skill directs the person here."
 license: Apache-2.0
 metadata:
-  version: 3.11.0
+  version: 3.12.0
   usage: "Run highway-codify-config, or with one implementation name."
 ---
 
@@ -113,7 +113,7 @@ Emit this menu exactly, as rendered markdown:
 - `select` 3: emit `Resolving conflicts makes highway's choice of platform and coding standards predictable.` Go to `conflicts`.
 - `question`: answer, then re-emit the menu.
 - `unknown`: re-emit the menu.
-- `decline`: when a return step is held, go to that step in its skill. Otherwise stop. Write nothing.
+- `decline`: when a return step is held, go to that step in its skill. Otherwise emit `Your platforms and coding standards are up to date.` Write nothing. Stop.
 
 ### current
 

@@ -41,6 +41,12 @@ test("rejects a say with no key, an unknown key, and a bad chain", () => {
   assert.throws(() => parseScenario(EXAMPLE + "ask: dangling\n", "x"), /no "say"/);
 });
 
+test("contains-any parses and needs an argument", () => {
+  const s = parseScenario(EXAMPLE + "expect: contains-any library/governance/nfrs/*.md :: two seconds\n", "x");
+  assert.deepEqual(s.expects.at(-1), { assertion: "contains-any", path: "library/governance/nfrs/*.md", argument: "two seconds", line: 17 });
+  assert.throws(() => parseScenario(EXAMPLE + "expect: contains-any library/x.md\n", "x"), /needs an argument/);
+});
+
 test("shows is repeatable and needs text", () => {
   const s = parseScenario(EXAMPLE + "shows: **Oops... we need to setup your repository.**\nshows: Run /highway-setup to get started.\n", "x");
   assert.deepEqual(s.shows, ["**Oops... we need to setup your repository.**", "Run /highway-setup to get started."]);

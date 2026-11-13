@@ -3,7 +3,7 @@ name: highway-adr
 description: "Records one architecture decision for one discovery. Use when a discovery's options are ready and the person wants to choose one and record it as an ADR, or when highway-onboarding hands off a provider decision."
 license: Apache-2.0
 metadata:
-  version: 6.7.0
+  version: 6.8.0
   usage: "Run highway-adr with one discovery id."
 ---
 
@@ -115,7 +115,7 @@ Otherwise emit one numbered line per waiting Discovery, starting at 1, in Discov
 5. On success, return the ADR id to `highway-onboarding`. A failed write leaves every existing ADR byte unchanged. Return to `highway-onboarding` and say the ADR could not be written.
 
 - `request` is `onboarding`. `discovery` is `highway`. `status` is `accepted`. `supersedes` is `None`. `superseded_by` is `None`.
-- The record uses every section a Discovery-backed ADR uses.
+- The record keeps every heading of a Discovery-backed ADR, as `write` says, including `## Decision Confidence`.
 - Discovery, Request, Recommendation, Recommendation Rationale, Comparison Matrix, Reference Architecture Matches, and Discovery Confidence are `None`. Omit Recommendation Override.
 - `## Context` states the problem and the forces in prose, from the capabilities this provider serves and the accepted evidence.
 - `## Decision` records Selected Option as the provider name, Selection Source as `Accepted onboarding mapping`, the decision, and the rationale.

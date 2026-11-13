@@ -5,7 +5,7 @@
       "name": "highway-adr",
       "description": "Records one architecture decision for one discovery. Use when a discovery's options are ready and the person wants to choose one and record it as an ADR, or when highway-onboarding hands off a provider decision.",
       "usage": "Run highway-adr with one discovery id.",
-      "version": "6.7.0",
+      "version": "6.8.0",
       "example": "/highway-adr DISC3f2a9c10 OPTa91c2b04"
     },
     {
@@ -29,7 +29,7 @@
       "name": "highway-codify-config",
       "description": "Manages the repository-wide guidance used by highway-codify. Use when the person wants to set up or update the platforms highway-codify writes for, or when another highway skill directs the person here.",
       "usage": "Run highway-codify-config, or with one implementation name.",
-      "version": "3.11.0",
+      "version": "3.12.0",
       "example": "/highway-codify-config"
     },
     {
@@ -37,7 +37,7 @@
       "name": "highway-codify",
       "description": "Manages one functional artifact for one accepted implementation. Use when the person wants working code for an accepted reference implementation, or wants to see the code catalog and discuss one automation.",
       "usage": "Run highway-codify with one implementation name.",
-      "version": "14.8.0",
+      "version": "14.9.0",
       "example": "/highway-codify Restart the worker"
     },
     {
@@ -45,7 +45,7 @@
       "name": "highway-controls",
       "description": "Manages the repository-wide control baseline. Use when highway-setup delegates the control baseline, after Objectives finish or when setup runs again.",
       "usage": "Run highway-controls.",
-      "version": "8.7.0",
+      "version": "8.8.0",
       "example": "/highway-setup"
     },
     {
@@ -53,7 +53,7 @@
       "name": "highway-discovery",
       "description": "Manages one discovery for a complete request. Use when a request is complete and the person wants to explore options for it, or wants to resume an existing discovery.",
       "usage": "Run highway-discovery with one request id or one discovery id.",
-      "version": "5.7.0",
+      "version": "5.8.0",
       "example": "/highway-discovery REQ3f2a9c10"
     },
     {
@@ -85,7 +85,7 @@
       "name": "highway-nfrs",
       "description": "Manages the repository-wide nfr baseline. Use when highway-setup delegates the nfr baseline, after Controls finish or when setup runs again.",
       "usage": "Run highway-nfrs.",
-      "version": "9.8.0",
+      "version": "9.9.0",
       "example": "/highway-setup"
     },
     {
@@ -93,7 +93,7 @@
       "name": "highway-objectives",
       "description": "Manages the repository-wide business objective baseline and its stable traceability references. Use when highway-setup delegates the objective baseline, after Profile finishes or when setup runs again.",
       "usage": "Run highway-objectives.",
-      "version": "8.7.0",
+      "version": "8.8.0",
       "example": "/highway-setup"
     },
     {
