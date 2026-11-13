@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { diffSnapshots, experienceInvariant, runExpectation, showsFailures, snapshot, storageInvariant, writesNothing } from "../src/checks.ts";
+import { diffSnapshots, experienceInvariant, isExperienceSkillRead, runExpectation, showsFailures, snapshot, storageInvariant, writesNothing } from "../src/checks.ts";
 import type { Expectation } from "../src/scenario.ts";
 
 function project(files: Record<string, string>): string {
@@ -59,6 +59,19 @@ test("heading, field, row, and contains are structural", () => {
   rmSync(dir, { recursive: true });
 });
 
+test("contains-any passes when one matching file holds the text; contains still needs every file", () => {
+  const dir = project({ "nfrs/NFRa.md": "Pages load fast.\n", "nfrs/NFRb.md": "Pages load within two seconds.\n" });
+  const files = [...snapshot(dir).keys()];
+  assert.equal(runExpectation(dir, files, exp("contains-any", "nfrs/*.md", "two seconds")), undefined);
+  assert.equal(runExpectation(dir, files, exp("contains", "nfrs/*.md", "two seconds"))?.actual, "nfrs/NFRa.md does not contain it");
+  const none = runExpectation(dir, files, exp("contains-any", "nfrs/*.md", "three seconds"));
+  assert.equal(none?.check, "contains-any");
+  assert.equal(none?.expected, 'text "three seconds" in at least one file');
+  assert.equal(none?.actual, "no file among nfrs/NFRa.md, nfrs/NFRb.md contains it");
+  assert.equal(runExpectation(dir, files, exp("contains-any", "other/*.md", "two seconds"))?.actual, "no file");
+  rmSync(dir, { recursive: true });
+});
+
 test("template uses the structural template check", () => {
   const good = `---\nproduct: CDY1\n---\n\n# T\n\n## Stories\n\n## Edge Cases\n\n## Functional Requirements\n\n## Decisions\n`;
   const dir = project({ "code/w/plan.md": good, "code/x/plan.md": PLAN });
@@ -105,4 +118,17 @@ test("shows requires each text in the agent's messages, whitespace collapsed", (
   assert.equal(missing[0].check, "shows");
   assert.equal(missing[0].expected, 'text "Run /highway-setup to get started."');
   assert.equal(missing[0].actual, "the agent did not show it");
+});
+
+test("shows does not compare emphasis, and keeps underscores inside words", () => {
+  const said = "Oops... we need to *setup* your repository. Use __snake_case__ names.";
+  assert.deepEqual(showsFailures(said, ["**Oops... we need to setup your repository.**", "Use snake_case names."]), []);
+  assert.equal(showsFailures("Use snakecase names.", ["Use snake_case names."]).length, 1);
+});
+
+test("a read of highway-experience/SKILL.md is an experience activation", () => {
+  assert.ok(isExperienceSkillRead("/tmp/p/.github/skills/highway-experience/SKILL.md"));
+  assert.ok(isExperienceSkillRead("highway-experience/SKILL.md"));
+  assert.ok(!isExperienceSkillRead("/tmp/p/.github/skills/highway-experience/references/storage-contract.md"));
+  assert.ok(!isExperienceSkillRead("/tmp/p/.github/skills/not-highway-experience/SKILL.md"));
 });

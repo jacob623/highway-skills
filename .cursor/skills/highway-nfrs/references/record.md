@@ -44,7 +44,7 @@ Do not write until every held NFR has a free id or reuses its existing record.
 
 Resolve every id in `identifier` before writing. Write the held NFRs and the catalog together. Write no record until this step. A failed write leaves the baseline as it was before the step. Say what failed in terms the person can act on. Stay on `write`. Do not return `Finished`.
 
-On success, emit nothing. Return `Finished`.
+On success, go to `close`.
 
 For each held NFR, write `library/governance/nfrs/[ID].md` in the shape required by `assets/nfr-record.md`.
 
@@ -55,7 +55,7 @@ For each held NFR, write `library/governance/nfrs/[ID].md` in the shape required
 - `controls` lists the accepted Control ids that influenced this expectation, including every Control its rationale names. Use `[]` when none did.
 - The statement is the statement shown with the title.
 - The rationale is the line shown with **Why it matters:**.
-- Do not show the stored records. Do not add a closing line.
+- Do not show the stored records.
 
 Write `library/governance/nfrs.md` in the shape required by `assets/nfr-catalog.md`.
 
@@ -74,4 +74,4 @@ Write `library/governance/nfrs.md` in the shape required by `assets/nfr-catalog.
 - Each id is `NFR` plus eight hex digits derived from the title.
 - A taken id for a different title names the conflicting titles, says a title change is appropriate, and shows a new title. The write waits until the person accepts that title.
 - That message does not mention identifiers, hex, sampling, or the catalog.
-- A successful guided write returns `Finished`, emits nothing else, and does not show the stored records.
+- A successful guided write goes to `close` and does not show the stored records.

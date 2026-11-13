@@ -44,7 +44,7 @@ Do not write until every held Control has a free id or reuses its existing recor
 
 Resolve every id in `identifier` before writing. Write the held Controls and the catalog together. Write no record until this step. A failed write leaves the baseline as it was before the step. Say what failed in terms the person can act on. Stay on `write`. Do not return `Finished`.
 
-On success, emit nothing. Return `Finished`.
+On success, go to `close`.
 
 For each held Control, write `library/governance/controls/[ID].md` in the shape required by `assets/control-record.md`.
 
@@ -55,7 +55,7 @@ For each held Control, write `library/governance/controls/[ID].md` in the shape 
 - `nfrs` is `[]`.
 - The statement is the statement shown with the title.
 - The rationale is the line shown with **Why it matters:**.
-- Do not show the stored records. Do not add a closing line.
+- Do not show the stored records.
 - When the Control came from a recommendation, write `## Recommendation Grounding` with the accepted Profile and the accepted Objective titles that influenced it. Omit that section when the person supplied the Control.
 
 Write `library/governance/controls.md` in the shape required by `assets/control-catalog.md`.
@@ -75,4 +75,4 @@ Write `library/governance/controls.md` in the shape required by `assets/control-
 - Each id is `CTL` plus eight hex digits derived from the title.
 - A taken id for a different title names the conflicting titles, says a title change is appropriate, and shows a new title. The write waits until the person accepts that title.
 - That message does not mention identifiers, hex, sampling, or the catalog.
-- A successful guided write returns `Finished`, emits nothing else, and does not show the stored records.
+- A successful guided write goes to `close` and does not show the stored records.

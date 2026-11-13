@@ -3,7 +3,7 @@ name: highway-objectives
 description: "Manages the repository-wide business objective baseline and its stable traceability references. Use when highway-setup delegates the objective baseline, after Profile finishes or when setup runs again."
 license: Apache-2.0
 metadata:
-  version: 8.6.0
+  version: 8.8.0
   usage: "Run highway-objectives."
 ---
 
@@ -43,6 +43,7 @@ The complete structure is `assets/objective-record.md` and `assets/objective-cat
 - New Objective records and catalog after the guided flow writes them.
 - `Finished` returned to `highway-setup` after review acceptance or a successful guided write.
 - `Finished` is not shown to the person.
+- One closing line after review acceptance or a successful guided write, when the person ran this skill directly.
 
 ## Procedure
 
@@ -50,7 +51,7 @@ Activate the highway-experience skill before any output the person sees, and fol
 
 User-visible interaction follows the Highway Experience Standard. Repository ownership stays with the person.
 
-Emit only the active template. Follow this order: `review` when the catalog exists; otherwise `recommend`, then `queue` or `ask`, then `capture`, then `identifier`, `title` when needed, and `write`. Follow the Highway Experience Standard for attribution and acceptance wording. Use the accepted Organization Name from the Profile. Use Repository Name when no Organization Name is accepted. Do not ask for Profile facts already accepted.
+Emit only the active template. Follow this order: `review` when the catalog exists; otherwise `recommend`, then `queue` or `ask`, then `capture`, then `identifier`, `title` when needed, and `write`. Both paths end at `close`. Follow the Highway Experience Standard for attribution and acceptance wording. Use the accepted Organization Name from the Profile. Use Repository Name when no Organization Name is accepted. Do not ask for Profile facts already accepted.
 
 Before a step in this table, read its file and follow it to the end.
 
@@ -61,7 +62,7 @@ Before a step in this table, read its file and follow it to the end.
 
 ### Entry
 
-1. Read `library/governance/objectives.md` and each record it indexes.
+1. Read `library/governance/objectives.md`. Then read each record it indexes at `library/objectives/[ID].md`, with "Read a file".
 2. If the catalog and every indexed record are present and readable, go to `review`.
 3. If the catalog is absent, go to `recommend` when `profile.md` is readable. Otherwise go to `ask`.
 4. If the catalog or an indexed record is unreadable, or a catalog row has no record, stop. Say the Objectives could not be read. Leave every file unchanged. Do not return `Finished`.
@@ -103,7 +104,7 @@ When the catalog has no records, emit: No objectives are recorded yet.
 Then emit the validation block.
 
 - `edit`: emit one consequence sentence. Apply the edit to the named Objective. Preserve every Objective the person left unchanged. An added outcome becomes a new record. A removed outcome deletes that record file and keeps its catalog row with status `removed`, so the id stays taken. Derive the id before writing. When the id is taken for a different title, go to `title` and do not write yet. Otherwise rewrite the affected records and the catalog. Show the updated Objectives and emit the validation block. Stay on `review`.
-- `accept`: return `Finished`. Emit nothing else.
+- `accept`: go to `close`.
 - `unknown`: show the Objectives and emit the validation block. Stay on `review`.
 - `question`: answer in one sentence. Show the Objectives and emit the validation block. Stay on `review`.
 
@@ -113,10 +114,23 @@ Validation block:
 
 If this is accurate, just say so.
 
+### close
+
+When `highway-setup` delegated this skill, return `Finished`. Emit nothing else.
+
+Otherwise emit one line and stop. When at least one Objective is active, emit:
+
+Your Objectives are recorded.
+
+When no Objective is active, emit:
+
+No Objectives are recorded yet. Run highway-objectives when you have one to add.
+
 ## Verification
 
 - An existing readable catalog is shown with **What would you add, correct, or remove?**
-- Acceptance of that review returns `Finished` and emits nothing else.
+- Acceptance of that review goes to `close`.
+- Run by `highway-setup`, `close` returns `Finished` and emits nothing else. Run directly, it emits one closing line and no question.
 - A review edit rewrites the affected record and catalog, then shows the updated Objectives with the same question.
 - An absent catalog and a readable Profile begin with a recommendation set.
 - Records and the catalog are written once, after the set is accepted or declined.

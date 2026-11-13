@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 export const REPLY_KINDS = ["accept", "edit", "question", "unknown", "decline", "select"] as const;
 export type ReplyKind = (typeof REPLY_KINDS)[number];
 
-export const ASSERTIONS = ["exists", "absent", "heading", "field", "row", "contains", "template"] as const;
+export const ASSERTIONS = ["exists", "absent", "heading", "field", "row", "contains", "contains-any", "template"] as const;
 export type Assertion = (typeof ASSERTIONS)[number];
 
 export type ReplyKey = { type: "text"; text: string } | { type: "pattern"; pattern: string };

@@ -93,6 +93,7 @@ The Discovery title is `Options for [request title]` unless the person supplied 
 
 The record follows `assets/discovery-record.md`.
 
+- Keep every heading and table header row of `assets/discovery-record.md`, in order, even when a section has no content. Write `None` under a section with no content, after its table header row when it has one.
 - `id` is the derived `DISC` id.
 - `request` is the Request id.
 - `status` is `accepted`.

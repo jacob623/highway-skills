@@ -8,10 +8,9 @@ ask: What would you add, correct, or remove?
 say: [edit] Add a Control: every staff account signs in with two-factor authentication, because a stolen password would expose customer orders.
 ask: What would you add, correct, or remove?
 say: [accept] Looks good.
-ask-pattern: \?
-say: [accept] Yes, that's right.
 writes: library/governance/controls.md
 writes: library/governance/controls/*.md
 expect: template library/governance/controls.md :: control-catalog.md
 expect: template library/governance/controls/*.md :: control-record.md
-expect: contains library/governance/controls/*.md :: two-factor
+expect: contains-any library/governance/controls/*.md :: two-factor
+shows: Your Controls are recorded.

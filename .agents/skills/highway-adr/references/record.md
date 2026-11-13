@@ -46,6 +46,7 @@ Write `adrs/[ID].md` and `adrs/adrs.md` together. Write neither file until both 
 
 The record follows `assets/adr-record.md`.
 
+- Keep every heading and table header row of `assets/adr-record.md`, in order, even when a section has no content. Write `None` under a section with no content, after its table header row when it has one.
 - `id` is the derived `ADR` id.
 - `request` is the Discovery's Request id.
 - `discovery` is the Discovery id.

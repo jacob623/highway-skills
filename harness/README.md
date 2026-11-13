@@ -57,10 +57,16 @@ A scenario's replies are keyed by the question the skill asks:
 Replies are used in file order, and each is used once, so the same question can get a different
 reply each time it is asked. After each agent turn, the driver sends the first unused reply whose
 key appears in the message. When no key appears and the message asks something, the judge model
-picks the fitting reply in a new session that sees only the agent's last message and the unused
-replies. That pick records a **paraphrased question** warning with the expected and actual
-question. When the fallback answers "none", the attempt fails as `unmatched-question`. A message
-that asks nothing ends the conversation. `--no-judge` does not turn the fallback off.
+decides, in a new session that sees only the agent's last message, whether the earliest unused
+reply answers it. No later reply is offered, so a reply written for a later question is never
+spent early. That pick records a **paraphrased question** warning with the expected and actual
+question. When the fallback answers "none", the attempt fails as `unmatched-question`, or as
+`repeated-question` when the same question was already answered in the attempt. A message that
+asks nothing ends the conversation. `--no-judge` does not turn the fallback off.
+
+A question the agent asks through the input tool is answered inside the turn. At the end of that
+turn, only the text after the last such answer is judged, so an answered question is not matched
+again.
 
 ### Checks, in order
 
@@ -69,6 +75,7 @@ that asks nothing ends the conversation. `--no-judge` does not turn the fallback
    with no `writes:` must write nothing), no shell, memory, or outside-write request was made, and
    highway-experience was activated before the first output the person sees. The first output is
    the first question sent to the person, or the first top-level message that requests no tool.
+   An approved read of `highway-experience/SKILL.md` counts as its activation.
 3. **Judge** (advisory): a new session with the same model, or `--judge-model`, reads the
    finished transcript, the written files, and the text of the bullets the scenario covers. It
    answers met or not met for each bullet, with a quote. A met verdict without a quote, or with a
@@ -220,7 +227,7 @@ reaches: close
 | `expect` | `<assertion> <path-glob>[ :: <argument>]` (repeatable) |
 | `covers` | `<hash> <bullet text>` for a bullet the scenario exercises (repeatable) |
 | `reaches` | A `###` step of the skill the conversation reaches (repeatable) |
-| `shows` | Text the agent must show in its messages, checked after a run that ended (repeatable); a miss fails as `assertion` with check `shows` |
+| `shows` | Text the agent must show in its messages, checked after a run that ended (repeatable); whitespace is collapsed and emphasis (`*` runs, and `_` runs at a word boundary) is not compared, superseding the exact comparison; a miss fails as `assertion` with check `shows` |
 
 In path patterns, `*` matches within one folder and `**` across folders.
 
@@ -231,7 +238,8 @@ In path patterns, `*` matches within one folder and `**` across folders.
 | `heading` | heading line | each match has that line |
 | `field` | `Name=Value` | a line `Name: Value`, `**Name:** Value`, or `- **Name:** Value` exists |
 | `row` | cell text | a table row contains the text |
-| `contains` | text | the text appears |
+| `contains` | text | the text appears in every match |
+| `contains-any` | text | the text appears in at least one match |
 | `template` | template file name | the structural template check passes |
 
 A reported "step" in results and failure blocks is the skill step of the last keyed question the
@@ -373,6 +381,7 @@ The likely cause comes from a fixed table, so the same failure always prints the
 | Kind | Likely cause | What to check |
 |---|---|---|
 | `unmatched-question` | The skill's question changed, or the agent left the workflow at this step. | Compare the last question in Recent with the scenario's `ask:` lines and the skill's bold question text. |
+| `repeated-question` | The agent asked again a question whose reply was already spent; the skill re-asks after that reply's class. | What names the question and the spent reply. Key a reply the skill accepts, or find why the answer did not move the skill on. |
 | `rejected-request` | The agent tried to run a shell command, use memory, or write outside the project. | The Rejected line names the request. Find the skill step that led the agent there. |
 | `outside-writes` | The agent changed a file outside the scenario's `writes:` patterns. | The path in What; compare it with the skill's output paths and the scenario's `writes:`. |
 | `experience-order` | The agent showed output before activating highway-experience. | The skills listed as actual; check that the skill's Procedure opens with the activation step. |
@@ -386,6 +395,7 @@ The likely cause comes from a fixed table, so the same failure always prints the
 | `rate-limit` | Copilot kept rate limiting after 3 retries. | Lower `--parallel`, or wait and rerun. |
 | `allowance` | The premium-request allowance is used up. | Wait for the reset, or raise the limit. |
 | `chain-stage` | A chain stage failed, so later stages and every scenario were skipped. | Diagnose the failed stage's own block above it. |
+| `service-error` | The Copilot service returned no response (code -32603); the turn was retried once and failed again. | Not a skill failure. A scenario whose last attempt has only this kind is `blocked`; rerun it. |
 | `unclassified` | The raw error follows. | Read the raw error; add a kind to `harness/src/failure.ts` if it recurs. |
 
 A blocked scenario counts as a failure for the exit code. Scenarios not run because the run

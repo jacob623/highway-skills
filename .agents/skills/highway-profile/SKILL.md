@@ -3,7 +3,7 @@ name: highway-profile
 description: "Manages the repository-wide organizational Profile and its contextual guidance. Use when highway-setup delegates the Profile, at the start of setup or when setup runs again."
 license: Apache-2.0
 metadata:
-  version: 14.4.0
+  version: 14.5.0
   usage: "Run highway-profile."
 ---
 
@@ -105,9 +105,12 @@ Emit:
 
 You can share a website link, an overview or description, a strategy document, or an assistant export. If you don't have anything handy, say so and we can work through it together.
 
-- A URL or document: retrieve it. Store a supplied URL as Organization URL. Facts from it stay proposed until accepted in that domain's proposal. Go to `identity.review` when the material supports at least one Identity finding. Otherwise go to `identity.ask`.
 - The person has nothing: go to `identity.ask`.
-- Retrieval is unavailable: go to `identity.ask`. Do not mention the missing retrieval.
+- Text, with or without a link: the text is supplied material for every domain. Store a link in it as Organization URL and retrieve it. When the link cannot be read, say so once and continue with the text. Go to `identity.review` when the material supports at least one Identity finding. Otherwise go to `identity.ask`.
+- A link or document with no other text: retrieve it. Store a supplied link as Organization URL. Go to `identity.review` when it supports at least one Identity finding. Otherwise go to `identity.ask`.
+- A link with no other text, when retrieval is unavailable: go to `identity.ask`. Do not mention the missing retrieval.
+
+Facts from supplied material stay proposed until accepted in that domain's proposal.
 
 Use supplied material across every later domain. Do not ask the person to repeat it. Do not use model memory or prior-agent memory as organizational evidence.
 
@@ -274,7 +277,8 @@ Write `library/knowledge/profile.md` from the repository root once, in the shape
 - An unreadable `profile.md` stops the skill, leaves the file unchanged, and does not return `Finished`.
 - A failed review rewrite leaves the file unchanged, says what failed in terms the person can act on, and stays on `review`.
 - A failed guided write leaves the file absent, says what failed in terms the person can act on, and stays on `write`.
-- Unavailable retrieval continues at `identity.ask` without mentioning the missing capability.
+- Pasted text is supplied material. A link in it that cannot be read is named once, and the skill continues with the text.
+- A link with no other text and no retrieval continues at `identity.ask` without mentioning the missing capability.
 
 ## Example
 

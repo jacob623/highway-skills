@@ -106,7 +106,7 @@ Based on [Name]'s profile, accepted objectives, and accepted controls, here are 
 
    **Why it matters:** [Rationale]
 
-**Which of these operational expectations would you like to establish, or what would you like to focus on?**
+**Would you like to select any of these operational expectations, modify them, or are you ready to review the selected NFRs?**
 
 You can select some, all or provide your own operational expectation.
 
@@ -150,7 +150,7 @@ If you're not sure, just say "I don't know," and we'll work through it together.
 - `own` or `edit`: add that expectation to the queue. Go to `queue`.
 - `unknown`: re-emit this template. Stay on `ask`.
 - `question`: answer in one sentence. Re-emit this template. Stay on `ask`.
-- `decline`: write the empty catalog described in `write`. Return `Finished`. Emit nothing else.
+- `decline`: write the empty catalog described in `write`. Go to `close`.
 
 ### capture
 
@@ -184,6 +184,7 @@ Do not develop one NFR at a time. Do not emit a bridge.
 
 - "Looks good" on a recommendation set adds that set to the queue and does not start capture.
 - A queue message lists the titles just added, then includes the next recommendation set when grounded recommendations remain.
+- Once the queue holds a title, every recommendation set asks whether to select, modify, or review the selected NFRs.
 - A queue message does not ask whether to explore more operational expectations.
 - Capture starts when the person asks to review the queue.
 - A capture shows every queued NFR in one message, with `---` between NFRs and one acceptance question.

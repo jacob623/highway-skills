@@ -39,6 +39,8 @@ If this is accurate, just say so.
 
 The new title is a small change the person can recognize. Its derived id must be free. Do not mention identifiers, hex, sampling, or the catalog.
 
+Classify the reply:
+
 - `accept`: replace the held title. Return to `identifier`.
 - `edit`: use the person's title. Return to `identifier`.
 - `question`: answer in one sentence. Re-emit this message.
@@ -117,6 +119,8 @@ On success, emit:
 **[Platform] is included as a platform highway can use in highway-codify proposals**
 
 **Would you like to configure how highway-codify uses [Platform]?**
+
+Classify the reply:
 
 - `accept`, or a yes: emit: Let's configure how highway-codify uses [Platform]. Follow `highway-codify-config` for [Platform], with the return step `close` in `highway-implementation`.
 - `decline`, or a no: go to `close`.

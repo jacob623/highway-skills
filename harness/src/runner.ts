@@ -118,6 +118,10 @@ function driveFailures(drive: DriveResult): { kind: FailureKind; check: string; 
   switch (drive.outcome) {
     case "unmatched-question":
       return [{ kind: "unmatched-question", check: "reply", expected: "a keyed reply for the question", actual: drive.unmatched ?? drive.lastMessage.slice(-200) }];
+    case "repeated-question": {
+      const question = drive.respent?.question ?? drive.unmatched ?? "";
+      return [{ kind: "repeated-question", check: "reply", expected: "a different question after the reply was spent", actual: `"${question}" asked again after the reply "${drive.respent?.reply ?? ""}"` }];
+    }
     case "turn-limit":
       return [{ kind: "turn-limit", check: "turns", expected: "the conversation ends within the turn limit", actual: `${drive.turns} turns` }];
     case "timeout":
@@ -290,6 +294,7 @@ async function runScenario(ctx: Context, scenario: Scenario, index: number, reas
     print(ctx, `${label} FAIL ${scenario.id} (attempt ${attempt}) -> ${out.result.failures[0]?.kind ?? "unclassified"}`);
   }
   const last = attempts[attempts.length - 1];
+  if (last.failures.length > 0 && last.failures.every((f) => f.kind === "service-error")) return { outcome: outcome("blocked", last.failures[0]) };
   return { outcome: outcome("fail", last.failures[0]) };
 }
 

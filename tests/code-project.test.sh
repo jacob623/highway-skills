@@ -68,7 +68,7 @@ require "$CODIFY" '`choose` when no implementation is named; `record check`; `co
 R='### record check'
 for text in \
 	'1. The record is incomplete when Deployed by or Managed by is `Needed`, empty, or names a platform with no row.' \
-	'2. The record is incomplete when Language is `Needed`, empty, or names a standard with no row.' \
+	'2. The record is incomplete when Language is `Needed`, empty, or names a standard with no row. Language `None` names no standard and is complete.' \
 	'3. When `highway-implementation` returned here and the record is still incomplete, stop.' \
 	"**[Product Title]'s implementation record is missing critical detail required for highway-codify proposals.**" \
 	"Let's set those details now for [Product Title]." \

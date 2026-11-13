@@ -44,7 +44,7 @@ Do not write until every held Objective has a free id or reuses its existing rec
 
 Resolve every id in `identifier` before writing. Write the held Objectives and the catalog together. Write no record until this step. A failed write leaves the baseline as it was before the step. Say what failed in terms the person can act on. Stay on `write`. Do not return `Finished`.
 
-On success, emit nothing. Return `Finished`.
+On success, go to `close`.
 
 For each held Objective, write `library/objectives/[ID].md` in the shape required by `assets/objective-record.md`.
 
@@ -56,7 +56,7 @@ For each held Objective, write `library/objectives/[ID].md` in the shape require
 - `## Statement` is the statement shown with the title.
 - `## Success Measures` are the measures shown under **Success looks like:**.
 - `## Rationale` is the line shown with **Why it matters:**.
-- Do not show the stored records. Do not add a closing line.
+- Do not show the stored records.
 
 Write `library/governance/objectives.md` in the shape required by `assets/objective-catalog.md`.
 
@@ -75,4 +75,4 @@ Write `library/governance/objectives.md` in the shape required by `assets/object
 - Each id is `OBJ` plus eight hex digits derived from the title.
 - A taken id for a different title names the conflicting titles, says a title change is appropriate, and shows a new title. The write waits until the person accepts that title.
 - That message does not mention identifiers, hex, sampling, or the catalog.
-- A successful guided write returns `Finished`, emits nothing else, and does not show the stored records.
+- A successful guided write goes to `close` and does not show the stored records.

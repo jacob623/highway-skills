@@ -3,7 +3,7 @@ name: highway-architecture
 description: "Manages one reference architecture from one accepted adr. Use when an ADR is accepted and the person wants the reference architecture that realizes it, or when highway-onboarding hands off an accepted ADR."
 license: Apache-2.0
 metadata:
-  version: 5.7.0
+  version: 5.8.0
   usage: "Run highway-architecture with one adr id."
 ---
 
@@ -77,7 +77,7 @@ Before a step in this table, read its file and follow it to the end.
 
 When `highway-onboarding` hands off an accepted ADR id, go to `onboarding`.
 
-1. Read the invocation for one ADR id.
+1. Read the invocation for one ADR id. When it has no ADR id and contains the exact title of one waiting ADR, as `choose` defines it, that ADR's id is present. Compare without regard to case.
 2. When none is present, go to `choose`.
 3. When an ADR id is present, resolve it. When it matches no ADR, stop. Say the ADR was not found. Write nothing.
 4. When that ADR status is not `accepted`, stop. Say the ADR is not accepted. Write nothing.

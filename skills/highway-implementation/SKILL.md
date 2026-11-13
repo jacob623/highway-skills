@@ -3,7 +3,7 @@ name: highway-implementation
 description: "Manages one reference implementation from one accepted reference architecture. Use when a reference architecture is accepted and the person wants the implementation that realizes it, or when another highway skill hands one off."
 license: Apache-2.0
 metadata:
-  version: 7.15.0
+  version: 7.16.0
   usage: "Run highway-implementation with one architecture id."
 ---
 
@@ -85,7 +85,7 @@ When `highway-onboarding` hands off an accepted `RA` id, a provider, and the cap
 
 1. When the invocation names an accepted implementation, new realized capabilities, and a return step, go to `add capabilities`.
 2. When the invocation names an accepted implementation and a return step, and names no realized capabilities, go to `delivery platforms`.
-3. Read the invocation for one Reference Architecture id.
+3. Read the invocation for one Reference Architecture id. When it has none and contains the exact title of one accepted architecture, that architecture's id is present. Compare without regard to case.
 4. When none is present, go to `choose`.
 5. When an id is present, resolve it. When it matches no architecture, stop. Say the architecture was not found. Write nothing.
 6. When that architecture status is not `accepted`, stop. Say the architecture is not accepted. Write nothing.
@@ -103,6 +103,8 @@ Otherwise emit one numbered line per accepted architecture, starting at 1, in ar
 **1. [Architecture ID]:** [Architecture Title] — [count] current implementations
 
 **Which Reference Architecture would you like to realize?**
+
+Classify the reply:
 
 - A Reference Architecture id, a listed architecture title, or its number: follow Entry from case 4.
 - `unknown`: re-emit this list. Stay on `choose`.
@@ -144,8 +146,8 @@ Read `library/coding-standards/codify-platforms.md` when present. A row with a b
 ### field
 
 1. A platforms-catalog row replaces Deployed by or Managed by. Show its title.
-2. When the name has an accepted implementation and no row, emit: Let's configure [Platform]. Follow `highway-codify-config` for [Platform], with the return step `execution` in `highway-implementation`.
-3. When the name has no accepted implementation, emit: Let's onboard [Platform]. Follow `highway-onboarding` for [Platform], with the return step `execution` in `highway-implementation`.
+2. When the name has an accepted implementation and no row, emit "Let's configure [Platform]." Then follow `highway-codify-config` for [Platform], with the return step `execution` in `highway-implementation`.
+3. When the name has no accepted implementation, emit "Let's onboard [Platform]." Then follow `highway-onboarding` for [Platform], with the return step `execution` in `highway-implementation`.
 4. A listed coding-standard title, or None, replaces Language. Any other title is left out. Say: [Title] is not a listed coding standard. To add it, run highway-codify-config.
 5. Re-emit the proposal. Stay on `start`.
 

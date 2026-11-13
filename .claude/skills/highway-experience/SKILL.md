@@ -3,7 +3,7 @@ name: highway-experience
 description: "Holds highway identity, the experience standard, and the storage contract. Use when another highway skill loads it as its first step, or when the person asks what highway is. Not for a request unrelated to highway."
 license: Apache-2.0
 metadata:
-  version: 1.1.0
+  version: 1.2.0
   usage: "Loaded by every other highway skill. Run highway-experience directly for a summary of highway."
 ---
 

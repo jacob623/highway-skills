@@ -4,10 +4,10 @@ skill: highway-codify
 through: highway-implementation
 fixture: codify-needed-language
 open: /highway-codify Northwind Restock Alerts
-ask-pattern: \?
-say: [unknown] I don't know yet.
-ask-pattern: \?
+ask: What would you add, correct, or remove?
 say: [decline] Let's stop here.
+ask: Would you like to return and provide these details now?
+say: [decline] No.
 covers: c47da852c65d After a selection, a record whose Deployed by or Managed by is `Needed`, empty, or has no row, or whose Language is `Needed`, empty, or has no row, emits the missing critical detail line and "Let's set those details now for [Product Title].", then follows `highway-implementation` with the return step `record check`. It asks no question and holds no platform for one run.
 covers: dadab89cb0a1 A return with the record still incomplete stops and writes nothing.
 reaches: record check

@@ -1,6 +1,6 @@
 # Highway Storage Contract
 
-Version `1.1.0`.
+Version `1.2.0`.
 
 ## Scope
 
@@ -47,10 +47,16 @@ operation, a skill reads that file with "Read a file".
 
 A skill lists a folder only when no index or record already holds the answer.
 
+"Read a file" and "Check a file exists" act on the exact path. A search or pattern tool does not decide whether a file exists. A file is absent only when one of those two operations reports it absent at its path.
+
+A folder is created by writing a file in it.
+
 ## What a skill does not do
 
 - Run a script.
+- Run a shell command.
 - Run a `git` command.
+- Decide that a file is absent from a search or pattern result.
 - Use a path that starts at the filesystem root or the home folder.
 - Decide anything from a file's modified, created, or accessed time.
 

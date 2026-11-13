@@ -3,6 +3,7 @@ import type { Cover } from "./scenario.ts";
 
 export const FAILURE_KINDS = [
   "unmatched-question",
+  "repeated-question",
   "rejected-request",
   "outside-writes",
   "experience-order",
@@ -16,6 +17,7 @@ export const FAILURE_KINDS = [
   "rate-limit",
   "allowance",
   "chain-stage",
+  "service-error",
   "unclassified",
 ] as const;
 export type FailureKind = (typeof FAILURE_KINDS)[number];
@@ -25,6 +27,7 @@ export const EXIT_2_KINDS: ReadonlySet<FailureKind> = new Set(["missing-token", 
 
 const LIKELY_CAUSE: Record<FailureKind, string> = {
   "unmatched-question": "The skill's question changed, or the agent left the workflow at this step. Compare the question with the scenario's ask: lines.",
+  "repeated-question": "The agent asked again a question whose reply was already spent: the skill re-asks after that reply's class. Key a reply the skill accepts, or find why the answer did not move it on.",
   "rejected-request": "The agent tried to run a shell command, use memory, or write outside the project, which the storage contract forbids.",
   "outside-writes": "The agent changed a file outside the scenario's writes: patterns. Check the skill's output paths.",
   "experience-order": "The agent showed output before activating highway-experience. Check that the skill's Procedure opens with the activation step.",
@@ -38,6 +41,7 @@ const LIKELY_CAUSE: Record<FailureKind, string> = {
   "rate-limit": "Copilot kept rate limiting after 3 retries. Lower --parallel or wait.",
   allowance: "The premium-request allowance is used up. Wait for the reset or raise the limit.",
   "chain-stage": "A chain stage failed, so later stages and every scenario were skipped.",
+  "service-error": "The Copilot service returned no response (code -32603). The turn was retried once and failed again; this is not a skill failure.",
   unclassified: "The raw error follows.",
 };
 
@@ -142,7 +146,19 @@ export function classifyError(error: unknown): FailureKind {
   if (/premium[- ]request|quota|allowance|usage limit/.test(text)) return "allowance";
   if (/\b429\b|rate[- ]?limit|too many requests/.test(text)) return "rate-limit";
   if (/\b(401|403)\b|unauthori[sz]ed|forbidden|not (?:enabled|entitled)|no copilot access|copilot.*(?:access|subscription)/.test(text)) return "no-access";
+  if (/-32603|no response was returned/.test(text)) return "service-error";
   return "unclassified";
+}
+
+/** F8: runs the call again once when it fails with a service error; any other error, or a second failure, is thrown. */
+export async function retryServiceError<T>(call: () => Promise<T>, onRetry: (error: unknown) => void): Promise<T> {
+  try {
+    return await call();
+  } catch (error) {
+    if (classifyError(error) !== "service-error") throw error;
+    onRetry(error);
+    return await call();
+  }
 }
 
 export function errorText(error: unknown): string {

@@ -3,7 +3,7 @@ name: highway-nfrs
 description: "Manages the repository-wide nfr baseline. Use when highway-setup delegates the nfr baseline, after Controls finish or when setup runs again."
 license: Apache-2.0
 metadata:
-  version: 9.7.0
+  version: 9.9.0
   usage: "Run highway-nfrs."
 ---
 
@@ -45,6 +45,7 @@ The complete structure is `assets/nfr-record.md` and `assets/nfr-catalog.md`.
 - New NFR records and catalog after the guided flow writes them.
 - `Finished` returned to `highway-setup` after review acceptance or a successful guided write.
 - `Finished` is not shown to the person.
+- One closing line after review acceptance or a successful guided write, when the person ran this skill directly.
 
 ## Procedure
 
@@ -52,7 +53,7 @@ Activate the highway-experience skill before any output the person sees, and fol
 
 User-visible interaction follows the Highway Experience Standard. Repository ownership stays with the person.
 
-Emit only the active template. Follow this order: `review` when the catalog exists; otherwise `recommend`, then `queue` or `ask`, then `capture`, then `identifier`, `title` when needed, and `write`. Follow the Highway Experience Standard for attribution and acceptance wording. Use the accepted Organization Name from the Profile. Use Repository Name when no Organization Name is accepted. Do not ask for Profile, Objective, or Control facts already accepted.
+Emit only the active template. Follow this order: `review` when the catalog exists; otherwise `recommend`, then `queue` or `ask`, then `capture`, then `identifier`, `title` when needed, and `write`. Both paths end at `close`. Follow the Highway Experience Standard for attribution and acceptance wording. Use the accepted Organization Name from the Profile. Use Repository Name when no Organization Name is accepted. Do not ask for Profile, Objective, or Control facts already accepted.
 
 An NFR is an operational expectation: how a solution needs to behave. Do not write an enforceable safeguard, an Objective, or an implementation plan.
 
@@ -65,7 +66,7 @@ Before a step in this table, read its file and follow it to the end.
 
 ### Entry
 
-1. Read `library/governance/nfrs.md` and each active record it indexes.
+1. Read `library/governance/nfrs.md`. Then read each active record it indexes at `library/governance/nfrs/[ID].md`, with "Read a file".
 2. If the catalog is present and readable, and every active row has a readable record, go to `review`.
 3. If the catalog is absent, go to `recommend` when `profile.md`, `library/governance/objectives.md`, and `library/governance/controls.md` are readable. Otherwise go to `ask`.
 4. If the catalog is unreadable, or an active row has no readable record, stop. Say the NFRs could not be read. Leave every file unchanged. Do not return `Finished`.
@@ -108,7 +109,7 @@ Do not insert **No system hosting** or **Direct purchase** when that title is ab
 Then emit the validation block.
 
 - `edit`: emit one consequence sentence. Apply the edit to the named NFR. Preserve every NFR the person left unchanged. An added expectation becomes a new record. Write its rationale with the `recommend` rationale rule. A removed NFR deletes that record file and keeps its catalog row with status `removed`, so the id stays taken. Derive the id before writing. When the id is taken for a different title, go to `title` and do not write yet. Otherwise rewrite the affected records and the catalog. Show the updated NFRs and emit the validation block. Stay on `review`.
-- `accept`: return `Finished`. Emit nothing else.
+- `accept`: go to `close`.
 - `unknown`: show the NFRs and emit the validation block. Stay on `review`.
 - `question`: answer in one sentence. Show the NFRs and emit the validation block. Stay on `review`.
 
@@ -118,10 +119,23 @@ Validation block:
 
 If this is accurate, just say so.
 
+### close
+
+When `highway-setup` delegated this skill, return `Finished`. Emit nothing else.
+
+Otherwise emit one line and stop. When at least one NFR is active, emit:
+
+Your NFRs are recorded.
+
+When no NFR is active, emit:
+
+No NFRs are recorded yet. Run highway-nfrs when you have one to add.
+
 ## Verification
 
 - An existing readable catalog is shown with **What would you add, correct, or remove?**
-- Acceptance of that review returns `Finished` and emits nothing else.
+- Acceptance of that review goes to `close`.
+- Run by `highway-setup`, `close` returns `Finished` and emits nothing else. Run directly, it emits one closing line and no question.
 - A review edit rewrites the affected record and catalog, then shows the updated NFRs with the same question.
 - An absent catalog and readable Profile, Objectives, and Controls begin with a recommendation set.
 - Records and the catalog are written once, after the set is accepted or declined.

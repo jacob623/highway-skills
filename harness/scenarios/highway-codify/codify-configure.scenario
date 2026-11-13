@@ -2,6 +2,7 @@
 id: codify-configure
 skill: highway-codify
 fixture: implementation
-open: /highway-codify configure
+open: Use highway-codify with the word configure.
 covers: 3b11e94de59b An invocation of the word `configure` points to `highway-codify-config` and writes nothing.
 reaches: Entry
+shows: To configure platforms and coding standards, run highway-codify-config.

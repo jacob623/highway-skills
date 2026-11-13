@@ -65,7 +65,7 @@ for text in \
 	'**Language:**' \
 	'Follow `highway-codify-config`' \
 	'return step `execution`' \
-	'Follow `highway-onboarding`'; do
+	'Then follow `highway-onboarding` for [Platform]'; do
 	require "$IMPL" "$text"
 done
 

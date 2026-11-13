@@ -42,8 +42,10 @@ When a proposed realization contradicts the architecture, name the requirement, 
 
 If this is accurate, just say so.
 
+Classify the reply:
+
 - `edit`: when the edit names Deployed by, Managed by, or Language, follow `field`. Otherwise follow `capability title` for each capability it adds or corrects, then emit one consequence sentence, or the one `capability title` gave. A new title is a supplied title. Re-emit this block with the edit applied. Stay on `start`.
-- `accept`: when Deployed by or Managed by is Needed, name that field and stay on `start`. When a stated responsibility is neither covered nor marked not applicable, name it and stay on `start`. Otherwise go to `identifier`.
+- `accept`: when Deployed by or Managed by is Needed, name that field and re-emit this block. When a stated responsibility is neither covered nor marked not applicable, name it and re-emit this block. In both cases stay on `start`. Otherwise go to `identifier`.
 - `unknown`: re-emit this block. Stay on `start`.
 - `question`: answer, then re-emit this block. Stay on `start`.
 - `decline`: stop. Write nothing.
