@@ -1,5 +1,5 @@
 import { cpSync, existsSync, mkdirSync, readdirSync, rmSync, statSync } from "node:fs";
-import { dirname, join, relative, sep } from "node:path";
+import { basename, dirname, join, relative, sep } from "node:path";
 import { FIXTURES_DIR, STAGES } from "./project.ts";
 import type { ScenarioOutcome } from "./report.ts";
 import type { Scenario } from "./scenario.ts";
@@ -65,9 +65,10 @@ export function saveCandidate(projectDir: string, baseDir: string, dest: string)
 
 /**
  * FR-021 and FR-027: stage 1 from an empty project, each later stage from the previous stage's
- * output, one at a time. A failed stage stops the chain. Candidates are saved only when all pass.
+ * output, one at a time. A failed stage stops the chain. Candidates are saved only when all pass,
+ * and only when there is a folder to save them in (a run with --transcripts).
  */
-export async function runChain(chain: readonly Scenario[], runStage: StageRunner, baseDir: string, candidatesDir: string): Promise<ChainResult> {
+export async function runChain(chain: readonly Scenario[], runStage: StageRunner, baseDir: string, candidatesDir?: string): Promise<ChainResult> {
   const outcomes: ScenarioOutcome[] = [];
   const kept: string[] = [];
   try {
@@ -82,6 +83,7 @@ export async function runChain(chain: readonly Scenario[], runStage: StageRunner
       fromDir = run.projectDir;
     }
     const candidates: string[] = [];
+    if (candidatesDir === undefined) return { outcomes, candidates };
     STAGES.forEach((name, i) => {
       const dest = join(candidatesDir, name);
       saveCandidate(kept[i], baseDir, dest);
@@ -93,8 +95,18 @@ export async function runChain(chain: readonly Scenario[], runStage: StageRunner
   }
 }
 
-/** `--promote <run folder>`: replace the five stage fixtures with the run's candidates. */
+/** The agent a run folder's name carries: `<stamp>-<type>-<agent>-<commit>`; Copilot's carries none. */
+export function runFolderAgent(runFolder: string): string {
+  const match = /^\d{8}-\d{6}Z-(?:full|smoke|targeted)-(?:([a-z0-9][a-z0-9-]*)-)?(?:[0-9a-f]{1,7}|nocommit)$/.exec(basename(runFolder));
+  return match?.[1] ?? "copilot";
+}
+
+/** `--promote <run folder>`: replace the five stage fixtures with the run's candidates (FR-021). */
 export function promote(runFolder: string, fixturesDir = FIXTURES_DIR): string[] {
+  const agent = runFolderAgent(runFolder);
+  if (agent !== "copilot") {
+    throw new Error(`fixtures are promoted only from Copilot runs until Phase 16 (Agent hardening); ${basename(runFolder)} is a ${agent} run`);
+  }
   const candidatesDir = join(runFolder, "candidates");
   const missing = STAGES.filter((s) => !existsSync(join(candidatesDir, s)) || !statSync(join(candidatesDir, s)).isDirectory());
   if (missing.length > 0) throw new Error(`${runFolder} has no candidate snapshot for ${missing.join(", ")}; only a passing full run saves candidates`);

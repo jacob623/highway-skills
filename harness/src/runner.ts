@@ -2,30 +2,33 @@ import { spawnSync } from "node:child_process";
 import { appendFileSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, relative } from "node:path";
+import { AGENTS, type Agent, type Registry } from "./agents.ts";
 import { helpText, parseArgs, USAGE_POINTER, type Options } from "./args.ts";
 import { chainOf, promote, runChain, type ProjectSourceSpec, type StageRun } from "./chain.ts";
 import { changedPaths, diffSnapshots, experienceInvariant, runExpectation, showsFailures, snapshot, storageInvariant } from "./checks.ts";
 import { HARNESS_DIR, loadEnv, readFileConfig, REPO_ROOT, resolveConfig, type Config } from "./config.ts";
 import { coverageSection, readInventory, readTreatments } from "./coverage.ts";
-import { copilotDriver, RunStop, type DriveResult, type Driver, type TranscriptEntry, type Warning } from "./driver.ts";
-import { errorText, formatFailure, type Failure, type FailureKind } from "./failure.ts";
-import { copilotAsk, makeFallbackPicker, runJudge, type Ask, type JudgeFile } from "./judge.ts";
+import { emptyUsage, RunStop, type DriveResult, type TranscriptEntry, type Warning } from "./driver.ts";
+import { errorText, type Failure, type FailureKind } from "./failure.ts";
+import { makeFallbackPicker, runJudge, type Ask, type JudgeFile } from "./judge.ts";
 import { buildPlugin, createProject, removeProject, type BuildResult, type PluginSource } from "./project.ts";
 import { createRedactor, type Redactor } from "./redact.ts";
 import { keyText } from "./replies.ts";
-import { exitCode, runId, summaryText, writeRunReports, type AttemptResult, type Run, type RunType, type ScenarioOutcome, type Selection } from "./report.ts";
+import { exitCode, runId, writeRunReports, type AttemptResult, type Run, type RunType, type ScenarioOutcome, type Selection } from "./report.ts";
+import { OrderedLog, pathRewriter, renderBlock, renderBlockedBlock, renderRunBlock, renderSummary, type TurnFiles } from "./runlog.ts";
 import type { Scenario } from "./scenario.ts";
 import { loadScenarios, selectAll, selectSmoke, selectTargeted } from "./select.ts";
 
 export interface RunnerDeps {
-  driver: Driver;
-  makeAsk: (token: string, model: string) => Ask;
+  agents: Registry;
   build: (workRoot: string) => BuildResult;
   fixtureCheck: (fixtures: readonly string[]) => Map<string, string[]>;
+  /** Standard output: the run log only (FR-022). */
   out: (line: string) => void;
+  /** Standard error: progress notes. */
+  err: (line: string) => void;
   now: () => Date;
   commit: () => string;
-  versions: () => { sdk: string; cli: string };
   env: () => Record<string, string | undefined>;
   scenariosDir?: string;
 }
@@ -33,23 +36,6 @@ export interface RunnerDeps {
 export function gitCommit(): string {
   const result = spawnSync("git", ["rev-parse", "HEAD"], { encoding: "utf8", cwd: REPO_ROOT });
   return result.status === 0 ? result.stdout.trim() : "unknown";
-}
-
-export function sdkVersions(): { sdk: string; cli: string } {
-  const base = join(HARNESS_DIR, "node_modules", "@github", "copilot-sdk");
-  let sdk = "unknown";
-  let cli = "unknown";
-  try {
-    sdk = (JSON.parse(readFileSync(join(base, "package.json"), "utf8")) as { version: string }).version;
-  } catch {
-    // Reported as unknown; the run continues and the header says so.
-  }
-  try {
-    cli = /COPILOT_CLI_VERSION\s*=\s*"([^"]+)"/.exec(readFileSync(join(base, "dist", "cliVersion.js"), "utf8"))?.[1] ?? "unknown";
-  } catch {
-    // Reported as unknown, as above.
-  }
-  return { sdk, cli };
 }
 
 /** Runs harness/bin/fixture-check.sh; returns the problems of each fixture that has any. */
@@ -68,14 +54,13 @@ export function fixtureCheck(fixtures: readonly string[]): Map<string, string[]>
 }
 
 export const defaultDeps: RunnerDeps = {
-  driver: copilotDriver,
-  makeAsk: copilotAsk,
+  agents: AGENTS,
   build: buildPlugin,
   fixtureCheck,
   out: (line) => process.stdout.write(line + "\n"),
+  err: (line) => process.stderr.write(line + "\n"),
   now: () => new Date(),
   commit: gitCommit,
-  versions: sdkVersions,
   env: () => loadEnv(),
 };
 
@@ -92,13 +77,15 @@ interface Context {
   run: Run;
   config: Config;
   deps: RunnerDeps;
+  agent: Agent;
   redact: Redactor;
+  log: OrderedLog;
   baseDir: string;
   plugin: PluginSource;
   workRoot: string;
   total: number;
   ask?: Ask;
-  fallbackAsk: Ask;
+  fallbackAsk?: Ask;
   stop?: RunStop;
 }
 
@@ -106,8 +93,8 @@ function print(ctx: Pick<Context, "deps" | "redact">, text: string): void {
   for (const line of text.split("\n")) ctx.deps.out(ctx.redact(line));
 }
 
-function printFailure(ctx: Context, failure: Failure): void {
-  print(ctx, formatFailure(failure, ctx.run.id, ctx.redact));
+function progress(ctx: Context, text: string): void {
+  ctx.deps.err(ctx.redact(text));
 }
 
 interface AttemptOutput {
@@ -134,39 +121,52 @@ function driveFailures(drive: DriveResult): { kind: FailureKind; check: string; 
   }
 }
 
-async function runAttempt(ctx: Context, scenario: Scenario, attempt: number, attempts: number, source: ProjectSourceSpec, stage: number | null, keep: boolean): Promise<AttemptOutput> {
+async function runAttempt(ctx: Context, scenario: Scenario, index: number, attempt: number, attempts: number, source: ProjectSourceSpec, stage: number | null, keep: boolean): Promise<AttemptOutput> {
   const started = Date.now();
-  const folder = join(ctx.run.folder, scenario.id);
-  mkdirSync(folder, { recursive: true });
-  const rawFile = join(folder, `attempt-${attempt}.raw.jsonl`);
-  const logFile = join(folder, `attempt-${attempt}.jsonl`);
-  writeFileSync(rawFile, "");
-  writeFileSync(logFile, "");
+  const folder = ctx.run.folder ? join(ctx.run.folder, scenario.id) : undefined;
+  const rawFile = folder ? join(folder, `attempt-${attempt}.raw.jsonl`) : undefined;
+  const logFile = folder ? join(folder, `attempt-${attempt}.jsonl`) : undefined;
+  if (folder) {
+    mkdirSync(folder, { recursive: true });
+    writeFileSync(rawFile!, "");
+    writeFileSync(logFile!, "");
+  }
   const transcript: TranscriptEntry[] = [];
+  const turnFiles: TurnFiles[] = [];
 
   const projectDir = createProject({ baseDir: ctx.baseDir, fixture: source.fixture ?? scenario.fixture, fromDir: source.fromDir }, ctx.workRoot, `${scenario.id}-${attempt}`);
   mkdirSync(join(ctx.workRoot, "homes"), { recursive: true });
-  const copilotHome = mkdtempSync(join(ctx.workRoot, "homes", `${scenario.id}-${attempt}-`));
+  const agentHome = mkdtempSync(join(ctx.workRoot, "homes", `${scenario.id}-${attempt}-`));
+  const rewrite = pathRewriter({ project: projectDir, home: agentHome, work: ctx.workRoot, tmp: tmpdir() });
   const before = snapshot(projectDir);
+  let previous = before;
   let keepProject = false;
 
   try {
     let drive: DriveResult;
     try {
-      drive = await ctx.deps.driver({
+      drive = await ctx.agent.driver({
         scenario,
         projectDir,
-        copilotHome,
+        agentHome,
+        readRoots: ctx.agent.readRoots(agentHome),
         plugin: ctx.plugin,
-        token: ctx.config.token!,
+        key: ctx.config.key!,
         model: ctx.config.model,
         maxTurns: ctx.config.maxTurns,
         timeoutMs: ctx.config.timeoutMs,
         pickFallback: makeFallbackPicker(ctx.fallbackAsk, scenario),
-        raw: (event) => appendFileSync(rawFile, ctx.redact(JSON.stringify(event)) + "\n"),
+        raw: (event) => {
+          if (rawFile) appendFileSync(rawFile, ctx.redact(JSON.stringify(event)) + "\n");
+        },
         log: (entry) => {
           transcript.push(entry);
-          appendFileSync(logFile, ctx.redact(JSON.stringify(entry)) + "\n");
+          if (logFile) appendFileSync(logFile, ctx.redact(JSON.stringify(entry)) + "\n");
+          if (entry.role !== "agent") return;
+          const now = snapshot(projectDir);
+          const turn = diffSnapshots(previous, now);
+          previous = now;
+          if (changedPaths(turn).length > 0) turnFiles.push({ afterIndex: transcript.length - 1, ...turn });
         },
       });
     } catch (error) {
@@ -176,7 +176,7 @@ async function runAttempt(ctx: Context, scenario: Scenario, attempt: number, att
         turns: 0,
         rejected: [],
         warnings: [],
-        usage: { calls: 0, inputTokens: 0, outputTokens: 0, cacheReadTokens: 0, cacheWriteTokens: 0, cost: 0 },
+        usage: emptyUsage(),
         usedReplies: [],
         skillsInvoked: [],
         skillsBeforeOutput: [],
@@ -220,7 +220,6 @@ async function runAttempt(ctx: Context, scenario: Scenario, attempt: number, att
       const agentText = transcript.filter((e) => e.role === "agent").map((e) => e.text).join("\n");
       for (const f of showsFailures(agentText, scenario.shows)) failures.push({ ...where, kind: "assertion", ...f, line: null });
     }
-    for (const f of failures) printFailure(ctx, f);
 
     const status = failures.length === 0 ? "pass" : "fail";
     const final = status === "pass" || attempt === attempts;
@@ -239,7 +238,9 @@ async function runAttempt(ctx: Context, scenario: Scenario, attempt: number, att
     const result: AttemptResult = {
       scenario: scenario.id,
       attempt,
+      agent: ctx.config.agent,
       model: ctx.config.model,
+      judgeAgent: ctx.config.judge ? ctx.config.judgeAgent : null,
       judgeModel: ctx.config.judge ? ctx.config.judgeModel : null,
       judge,
       status,
@@ -253,11 +254,26 @@ async function runAttempt(ctx: Context, scenario: Scenario, attempt: number, att
       skillsInvoked: drive.skillsInvoked,
       repliesUsed: drive.usedReplies.map((i) => ({ line: scenario.replies[i].line, kind: scenario.replies[i].kind })),
     };
-    writeFileSync(join(folder, `attempt-${attempt}.result.json`), ctx.redact(JSON.stringify(result, null, 2)) + "\n");
+    if (folder) writeFileSync(join(folder, `attempt-${attempt}.result.json`), ctx.redact(JSON.stringify(result, null, 2)) + "\n");
+
+    const block = renderBlock({
+      scenario: scenario.id,
+      skill: scenario.skill,
+      attempt,
+      transcript,
+      files: turnFiles,
+      failures,
+      verdicts,
+      warnings: drive.warnings,
+      usage: drive.usage,
+      verbose: ctx.config.verbose,
+    });
+    ctx.log.add(index, block.map((line) => ctx.redact(rewrite(line))));
+
     keepProject = keep && status === "pass";
     return { result, projectDir: keepProject ? projectDir : undefined };
   } finally {
-    rmSync(copilotHome, { recursive: true, force: true });
+    rmSync(agentHome, { recursive: true, force: true });
     if (!keepProject) removeProject(projectDir);
   }
 }
@@ -278,26 +294,30 @@ async function runScenario(ctx: Context, scenario: Scenario, index: number, reas
     failure,
   });
 
-  for (let attempt = 1; attempt <= 2; attempt++) {
-    const out = await runAttempt(ctx, scenario, attempt, 2, source, stage, keep);
-    attempts.push(out.result);
-    warnings.push(...out.result.warnings);
-    if (out.result.status === "pass") {
-      print(ctx, `${label} PASS ${scenario.id} (attempt ${attempt}, ${out.result.turns} turns, ${duration(out.result.durationMs)})`);
-      if (attempt === 2) {
-        const flaky: Warning = { kind: "flaky", message: "failed attempt 1, passed attempt 2" };
-        warnings.push(flaky);
-        out.result.warnings.push(flaky);
-        writeFileSync(join(ctx.run.folder, scenario.id, `attempt-2.result.json`), ctx.redact(JSON.stringify(out.result, null, 2)) + "\n");
+  try {
+    for (let attempt = 1; attempt <= 2; attempt++) {
+      progress(ctx, `${label} start ${scenario.id} attempt ${attempt}`);
+      const out = await runAttempt(ctx, scenario, index, attempt, 2, source, stage, keep);
+      attempts.push(out.result);
+      warnings.push(...out.result.warnings);
+      if (out.result.status === "pass") {
+        progress(ctx, `${label} PASS ${scenario.id} (attempt ${attempt}, ${out.result.turns} turns, ${duration(out.result.durationMs)})`);
+        if (attempt === 2) {
+          const flaky: Warning = { kind: "flaky", message: "failed attempt 1, passed attempt 2" };
+          warnings.push(flaky);
+          out.result.warnings.push(flaky);
+          if (ctx.run.folder) writeFileSync(join(ctx.run.folder, scenario.id, `attempt-2.result.json`), ctx.redact(JSON.stringify(out.result, null, 2)) + "\n");
+        }
+        return { outcome: outcome("pass"), projectDir: out.projectDir };
       }
-      for (const w of warnings.filter((w) => w.kind === "paraphrased-question")) print(ctx, `${label} WARN ${scenario.id}: ${w.message}`);
-      return { outcome: outcome("pass"), projectDir: out.projectDir };
+      progress(ctx, `${label} FAIL ${scenario.id} (attempt ${attempt}) -> ${out.result.failures[0]?.kind ?? "unclassified"}`);
     }
-    print(ctx, `${label} FAIL ${scenario.id} (attempt ${attempt}) -> ${out.result.failures[0]?.kind ?? "unclassified"}`);
+    const last = attempts[attempts.length - 1];
+    if (last.failures.length > 0 && last.failures.every((f) => f.kind === "service-error")) return { outcome: outcome("blocked", last.failures[0]) };
+    return { outcome: outcome("fail", last.failures[0]) };
+  } finally {
+    ctx.log.close(index);
   }
-  const last = attempts[attempts.length - 1];
-  if (last.failures.length > 0 && last.failures.every((f) => f.kind === "service-error")) return { outcome: outcome("blocked", last.failures[0]) };
-  return { outcome: outcome("fail", last.failures[0]) };
 }
 
 async function pool<T>(items: readonly T[], size: number, stopped: () => boolean, work: (item: T, index: number) => Promise<void>): Promise<void> {
@@ -348,11 +368,14 @@ export async function main(argv: readonly string[], deps: RunnerDeps = defaultDe
 
   let config: Config;
   try {
-    config = resolveConfig(options, readFileConfig(), env);
+    config = resolveConfig(options, readFileConfig(), env, deps.agents);
   } catch (error) {
     print(out, `Configuration error: ${errorText(error)}`);
+    print(out, USAGE_POINTER);
     return 2;
   }
+  const agent = deps.agents.get(config.agent)!;
+  const judgeAgent = deps.agents.get(config.judgeAgent)!;
 
   const loaded = loadScenarios(deps.scenariosDir);
   if (loaded.errors.length > 0) {
@@ -385,44 +408,77 @@ export async function main(argv: readonly string[], deps: RunnerDeps = defaultDe
 
   const start = deps.now();
   const commit = deps.commit();
-  const versions = deps.versions();
-  const id = runId(start, type, commit);
+  const versions = agent.versions();
+  const id = runId(start, type, commit, config.agent);
+  const judgeOn = config.judge;
+  const fallback = config.judgeKey ? `${config.judgeAgent}/${config.judgeModel}` : "off";
   const run: Run = {
     id,
     type,
     commit,
+    agent: config.agent,
     model: config.model,
-    judgeModel: config.judge ? config.judgeModel : null,
+    judgeAgent: judgeOn ? config.judgeAgent : null,
+    judgeModel: judgeOn ? config.judgeModel : null,
+    fallback,
     sdkVersion: versions.sdk,
-    cliVersion: versions.cli,
+    runtimeVersion: versions.runtime,
     startedAt: start.toISOString(),
-    folder: join(config.transcripts, id),
+    folder: config.transcripts ? join(config.transcripts, id) : undefined,
     outcomes: [],
     runFailures: [],
   };
-  print(out, `HARNESS run=${id} commit=${commit} type=${type} model=${config.model} judge=${config.judge ? config.judgeModel : "off"} sdk=${versions.sdk} cli=${versions.cli}`);
+  const judgeLabel = judgeOn ? `${config.judgeAgent}/${config.judgeModel}` : "off";
+  print(out, `HARNESS run=${id} commit=${commit} type=${type} agent=${config.agent} model=${config.model} judge=${judgeLabel} fallback=${fallback} sdk=${versions.sdk} runtime=${versions.runtime} started=${run.startedAt}`);
   print(out, `Selected ${selection.length} scenario(s):`);
   for (const s of selection) print(out, `  ${s.scenario}: ${s.reasons.join("; ")}`);
 
+  const log = new OrderedLog(selection.length, (lines) => {
+    for (const line of lines) deps.out(line);
+  });
+  let workRoot: string | undefined;
+  let chainPassed = false;
+  const printRunBlock = (failure: Failure): void => {
+    const rewrite = pathRewriter({ work: workRoot, tmp: tmpdir() });
+    for (const line of renderRunBlock(failure)) deps.out(redact(rewrite(line)));
+  };
   const finish = (): number => {
-    try {
-      run.coverage = coverageSection(readInventory(), loaded.scenarios, readTreatments());
-    } catch (error) {
-      run.coverage = `## Coverage\n\nThe coverage section could not be built: ${errorText(error)}`;
+    log.finish();
+    if (run.outcomes.length === 0) {
+      const skillOf = new Map(loaded.scenarios.map((s) => [s.id, s.skill]));
+      run.outcomes = selection.map((s) => ({ scenario: s.scenario, file: s.file, skill: skillOf.get(s.scenario) ?? "-", status: "not-run", reasons: s.reasons, attempts: [], warnings: [] }));
     }
-    writeRunReports(run, selection, redact);
-    print(out, summaryText(run));
+    if (run.folder) {
+      try {
+        run.coverage = coverageSection(readInventory(), loaded.scenarios, readTreatments());
+      } catch (error) {
+        run.coverage = `## Coverage\n\nThe coverage section could not be built: ${errorText(error)}`;
+      }
+      writeRunReports(run, selection, redact);
+    }
+    const missingSnapshots = type === "full" && chainPassed && !run.folder;
+    for (const line of renderSummary(run, { cwd: process.cwd(), missingSnapshots })) print(out, line);
     return exitCode(run);
   };
   const runFailure = (failure: Failure): number => {
     run.runFailures.push(failure);
-    print(out, formatFailure(failure, id, redact));
+    printRunBlock(failure);
     return finish();
   };
 
-  if (!config.token) return runFailure({ kind: "missing-token", check: "token", expected: "GITHUB_TOKEN or COPILOT_GITHUB_TOKEN", actual: "neither is set in the environment or harness/.env" });
+  const keyHolder = agent.keys[agent.keys.length - 1];
+  if (!config.key) {
+    return runFailure({
+      kind: "missing-token",
+      check: "token",
+      expected: agent.keys.join(" or "),
+      actual: `${agent.keys.length === 1 ? "it is not" : agent.keys.length === 2 ? "neither is" : "none is"} set in the environment or harness/.env`,
+      service: agent.service,
+      key: keyHolder,
+    });
+  }
 
-  const workRoot = mkdtempSync(join(tmpdir(), "highway-harness-"));
+  workRoot = mkdtempSync(join(tmpdir(), "highway-harness-"));
   try {
     const built = deps.build(workRoot);
     if (!built.ok) return runFailure({ kind: "build-failed", check: "plugin", detail: built.tail });
@@ -431,35 +487,42 @@ export async function main(argv: readonly string[], deps: RunnerDeps = defaultDe
       run,
       config,
       deps,
+      agent,
       redact,
+      log,
       baseDir: built.dir,
       plugin: built.plugin,
       workRoot,
       total: selection.length,
-      ask: config.judge ? deps.makeAsk(config.token, config.judgeModel) : undefined,
-      fallbackAsk: deps.makeAsk(config.token, config.judgeModel),
+      ask: judgeOn && config.judgeKey ? judgeAgent.ask!(config.judgeKey, config.judgeModel) : undefined,
+      fallbackAsk: config.judgeKey ? judgeAgent.ask!(config.judgeKey, config.judgeModel) : undefined,
     };
     const byId = new Map(loaded.scenarios.map((s) => [s.id, s]));
     const indexOf = new Map(selection.map((s, i) => [s.scenario, i]));
     const outcomes = new Map<string, ScenarioOutcome>();
     const reasonsOf = (sid: string): string[] => selection.find((s) => s.scenario === sid)?.reasons ?? [];
-    const placeholder = (s: Scenario, status: ScenarioOutcome["status"], failure?: Failure): ScenarioOutcome => ({
-      scenario: s.id,
-      file: relative(REPO_ROOT, s.file),
-      skill: s.skill,
-      status,
-      reasons: reasonsOf(s.id),
-      attempts: [],
-      warnings: [],
-      failure,
-    });
+    const settle = (s: Scenario, status: ScenarioOutcome["status"], failure?: Failure): void => {
+      outcomes.set(s.id, {
+        scenario: s.id,
+        file: relative(REPO_ROOT, s.file),
+        skill: s.skill,
+        status,
+        reasons: reasonsOf(s.id),
+        attempts: [],
+        warnings: [],
+        failure,
+      });
+      const i = indexOf.get(s.id);
+      if (i !== undefined) log.close(i);
+    };
 
     const stopWith = (error: RunStop): void => {
       if (ctx.stop) return;
       ctx.stop = error;
-      const failure: Failure = { kind: error.kind, check: "copilot", actual: error.message };
+      const failure: Failure = { kind: error.kind, check: agent.id, actual: error.message };
+      if (error.kind === "no-access") Object.assign(failure, { service: agent.service, key: config.keyName ?? keyHolder });
       run.runFailures.push(failure);
-      print(out, formatFailure(failure, id, redact));
+      printRunBlock(failure);
     };
 
     // Chain first, one stage at a time (FR-021, FR-037).
@@ -471,20 +534,21 @@ export async function main(argv: readonly string[], deps: RunnerDeps = defaultDe
           chain,
           (s, source, stage) => runScenario(ctx, s, indexOf.get(s.id) ?? 0, reasonsOf(s.id), source, stage, true),
           built.dir,
-          join(run.folder, "candidates"),
+          run.folder ? join(run.folder, "candidates") : undefined,
         );
         for (const o of result.outcomes) outcomes.set(o.scenario, o);
         if (result.failedStage !== undefined) {
           const failed = chain[result.failedStage - 1];
           const failure: Failure = { kind: "chain-stage", stage: result.failedStage, scenario: failed.id, file: relative(REPO_ROOT, failed.file), check: "chain", actual: `stage ${result.failedStage} (${failed.id}) failed after its retry` };
           run.runFailures.push(failure);
-          print(out, formatFailure(failure, id, redact));
+          printRunBlock(failure);
           for (const s of selection) {
             if (outcomes.has(s.scenario)) continue;
-            outcomes.set(s.scenario, placeholder(byId.get(s.scenario)!, "skipped", { kind: "chain-stage", stage: result.failedStage }));
+            settle(byId.get(s.scenario)!, "skipped", { kind: "chain-stage", stage: result.failedStage });
           }
         } else {
-          run.candidates = result.candidates.map((c) => relative(REPO_ROOT, c));
+          chainPassed = true;
+          if (result.candidates.length > 0) run.candidates = result.candidates.map((c) => relative(REPO_ROOT, c));
         }
       } catch (error) {
         if (!(error instanceof RunStop)) throw error;
@@ -504,8 +568,8 @@ export async function main(argv: readonly string[], deps: RunnerDeps = defaultDe
         continue;
       }
       const failure: Failure = { kind: "fixture-blocked", scenario: s.id, file: relative(REPO_ROOT, s.file), check: "fixture", path: s.fixture, detail: p.join("\n"), covers: s.covers };
-      printFailure(ctx, failure);
-      outcomes.set(s.id, placeholder(s, "blocked", failure));
+      log.add(indexOf.get(s.id)!, renderBlockedBlock(s.id, s.skill, failure).map((line) => redact(line)));
+      settle(s, "blocked", failure);
     }
 
     await pool(runnable, config.parallel, () => ctx.stop !== undefined, async (s) => {
@@ -515,12 +579,12 @@ export async function main(argv: readonly string[], deps: RunnerDeps = defaultDe
       } catch (error) {
         if (!(error instanceof RunStop)) throw error;
         stopWith(error);
-        outcomes.set(s.id, placeholder(s, "not-run"));
+        settle(s, "not-run");
       }
     });
 
     for (const s of selection) {
-      if (!outcomes.has(s.scenario)) outcomes.set(s.scenario, placeholder(byId.get(s.scenario)!, "not-run"));
+      if (!outcomes.has(s.scenario)) settle(byId.get(s.scenario)!, "not-run");
     }
     run.outcomes = selection.map((s) => outcomes.get(s.scenario)!);
     return finish();

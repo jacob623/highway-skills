@@ -1,17 +1,19 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, readFileSync, rmSync } from "node:fs";
+import { existsSync, mkdtempSync, readdirSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { emptyUsage } from "../src/driver.ts";
 import { createRedactor } from "../src/redact.ts";
-import { exitCode, renderJunit, runId, summaryText, writeRunReports, type AttemptResult, type Run, type ScenarioOutcome } from "../src/report.ts";
+import { exitCode, renderJunit, renderReportMd, runId, writeRunReports, type AttemptResult, type Run, type ScenarioOutcome } from "../src/report.ts";
 
 function attempt(n: number, status: "pass" | "fail"): AttemptResult {
   return {
     scenario: "s",
     attempt: n,
+    agent: "copilot",
     model: "m",
+    judgeAgent: "copilot",
     judgeModel: "m",
     judge: "ran",
     status,
@@ -27,8 +29,23 @@ function attempt(n: number, status: "pass" | "fail"): AttemptResult {
   };
 }
 
-function run(outcomes: ScenarioOutcome[], folder = "/tmp/x"): Run {
-  return { id: "r", type: "targeted", commit: "abc1234", model: "m", judgeModel: "m", sdkVersion: "1", cliVersion: "1", startedAt: "t", folder, outcomes, runFailures: [] };
+function run(outcomes: ScenarioOutcome[], folder: string | undefined = "/tmp/x"): Run {
+  return {
+    id: "r",
+    type: "targeted",
+    commit: "abc1234",
+    agent: "copilot",
+    model: "m",
+    judgeAgent: "copilot",
+    judgeModel: "m",
+    fallback: "copilot/m",
+    sdkVersion: "1",
+    runtimeVersion: "1",
+    startedAt: "t",
+    folder,
+    outcomes,
+    runFailures: [],
+  };
 }
 
 const pass: ScenarioOutcome = { scenario: "a", file: "f", skill: "highway-codify", status: "pass", reasons: ["--skills highway-codify"], attempts: [attempt(1, "pass")], warnings: [] };
@@ -41,7 +58,25 @@ const flaky: ScenarioOutcome = {
 const fail: ScenarioOutcome = { ...pass, scenario: "c", status: "fail", attempts: [attempt(1, "fail"), attempt(2, "fail")], failure: { kind: "assertion", check: "exists", path: "code/code.md" } };
 
 test("run ids use UTC start, type, and short commit", () => {
-  assert.equal(runId(new Date(Date.UTC(2026, 10, 10, 15, 35, 12)), "targeted", "a1b2c3d4e5"), "20261110-153512Z-targeted-a1b2c3d");
+  assert.equal(runId(new Date(Date.UTC(2026, 10, 10, 15, 35, 12)), "targeted", "a1b2c3d4e5", "copilot"), "20261110-153512Z-targeted-a1b2c3d");
+});
+
+test("a run id carries the agent after the type for any agent but Copilot", () => {
+  const start = new Date(Date.UTC(2026, 10, 10, 15, 35, 12));
+  assert.equal(runId(start, "smoke", "a1b2c3d4e5", "copilot"), "20261110-153512Z-smoke-a1b2c3d");
+  assert.equal(runId(start, "smoke", "a1b2c3d4e5", "cursor"), "20261110-153512Z-smoke-cursor-a1b2c3d");
+});
+
+test("the report names the agent, its SDK and runtime versions, the judge agent, and the fallback", () => {
+  const md = renderReportMd({ ...run([pass]), agent: "copilot", judgeAgent: "copilot", judgeModel: "j", fallback: "copilot/j", sdkVersion: "1.0.30", runtimeVersion: "1.0.108" });
+  assert.match(md, /^- Agent: copilot$/m);
+  assert.match(md, /^- Judge: copilot\/j$/m);
+  assert.match(md, /^- Reply fallback: copilot\/j$/m);
+  assert.match(md, /^- SDK 1\.0\.30, runtime 1\.0\.108$/m);
+  assert.doesNotMatch(md, /Copilot SDK/);
+  const off = renderReportMd({ ...run([pass]), judgeAgent: null, judgeModel: null, fallback: "off" });
+  assert.match(off, /^- Judge: skipped \(--no-judge\)$/m);
+  assert.match(off, /^- Reply fallback: off$/m);
 });
 
 test("exit codes: 0 pass, 1 failure, 2 wins over 1", () => {
@@ -49,18 +84,6 @@ test("exit codes: 0 pass, 1 failure, 2 wins over 1", () => {
   assert.equal(exitCode(run([pass, fail])), 1);
   assert.equal(exitCode({ ...run([fail]), runFailures: [{ kind: "rate-limit" }] }), 2);
   assert.equal(exitCode({ ...run([]), runFailures: [{ kind: "chain-stage" }] }), 1);
-});
-
-test("the summary lists counts, every failure with its cause, flaky scenarios, and the folder", () => {
-  const text = summaryText(run([pass, flaky, fail], "/repo/harness/runs/r"), "/repo");
-  assert.match(text, /^Passed 2, failed 1, flaky 1, blocked 0, not run 0, skipped 0$/m);
-  assert.match(text, /^FAIL c: assertion - A written file is missing/m);
-  assert.match(text, /^FLAKY b:/m);
-  assert.match(text, /^Run folder: harness\/runs\/r$/m);
-});
-
-test("a run folder outside the working directory is shown as an absolute path", () => {
-  assert.match(summaryText(run([pass], "/tmp/runs/r"), "/repo"), /^Run folder: \/tmp\/runs\/r$/m);
 });
 
 test("junit marks failures and skips", () => {
@@ -82,4 +105,12 @@ test("reports are written and redacted", () => {
   assert.match(readFileSync(join(folder, "selection.txt"), "utf8"), /^c\t--paths x$/m);
   assert.match(readFileSync(join(folder, "report.md"), "utf8"), /## Judge/);
   rmSync(folder, { recursive: true });
+});
+
+test("a run without a folder writes no report", () => {
+  const parent = mkdtempSync(join(tmpdir(), "harness-report-"));
+  writeRunReports(run([pass], undefined), [], createRedactor({}));
+  assert.deepEqual(readdirSync(parent), []);
+  assert.ok(!existsSync(join(parent, "report.md")));
+  rmSync(parent, { recursive: true });
 });

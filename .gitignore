@@ -11,8 +11,7 @@ specs/243-harness-failure-resolutions/harness/*
 specs/244-harness-failure-followups/harness/*
 specs/246-agent-plugins-package/harness/*
 
-# Behavioral test harness: run output, dependencies, and secrets
-harness/runs/
+# Behavioral test harness: dependencies and secrets
 harness/node_modules/
 harness/.env
 .env

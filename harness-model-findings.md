@@ -159,8 +159,8 @@ under `specs/242-standard-alignment-progressive-disclosure/harness/post-smoke/`.
 
 ## Affected run for spec 242 (Option B)
 
-Run `20261112-171321Z-targeted-49ab958`, `--changed-since main`, on `gpt-5.6-luna`. Transcripts
-are under `harness/runs/`. It selected 50 scenarios. 33 passed (7 of them flaky) and 17 failed.
+Run `20261112-171321Z-targeted-49ab958`, `--changed-since main`, on `gpt-5.6-luna`. Its
+transcripts were not kept: spec 247 retired the default run folder and deleted it. It selected 50 scenarios. 33 passed (7 of them flaky) and 17 failed.
 Only the 16 smoke scenarios have a baseline. For the rest, each failing attempt is matched to a
 finding.
 
@@ -349,6 +349,37 @@ and most of those attempts passed.
 
 Every other scenario passed its first attempt in both runs.
 
+## Groundwork smoke for spec 247
+
+Two smoke runs on `gpt-5.6-luna`, after the harness split into a shared runner and a Copilot
+driver. Before each, the full suite passed 87 of 87 and the harness unit tests passed (145, then
+147). Neither run used `--transcripts`, so no run folder was written. The second run's log is
+committed at `specs/247-multi-agent-harness-groundwork/harness/smoke.log`. It is 70 KB and holds
+no token and no temporary path.
+
+| Run | Selection | Passed | Flaky | Failed | Blocked |
+| --- | --- | --- | --- | --- | --- |
+| `20261114-115258Z-smoke-40844ce` | `--smoke` (16) | 16 | 0 | 0 | 0 |
+| `20261114-121007Z-smoke-40844ce` | `--smoke` (16) | 15 | 2 | 1 | 0 |
+
+Passed includes flaky. All 35 attempts installed the plugin with 16 skills, and no attempt failed
+with `plugin-install`.
+
+The first run found one defect from this spec. Four rejected reads printed a raw `/var/folders/…`
+path, because Luna had dropped the `T/highway-harness-…/` segment (F20) and the path was under
+none of the project, the agent home, or the work root. The log now rewrites any other path under
+the temporary folder to `<tmp>`. The first run's log was replaced by the second.
+
+| Scenario | Run 2 attempt 1 | Run 2 attempt 2 | Findings |
+| --- | --- | --- | --- |
+| codify-smoke | assertion (`plan.md` without `## Decisions`) | pass | F18 |
+| discovery-smoke | assertion (Example Realization Matrix without its header row) | same | F18 |
+| onboarding-smoke | repeated-question (a third `Unknown` provider, Customer Support Management) | pass | F21 |
+
+Every other scenario passed its first attempt in both runs. Each run had 9 rejected reads at a
+path with a dropped segment (F20), all in attempts that passed. In both runs the judge marked 6
+of codify-smoke's 7 bullets not met. The judge is advisory and did not fail the scenario.
+
 # Harness Failures
 
 Resolved findings are removed: S1 in spec 242; F2, F4, F6, F9, F10, F11, F12, F13, and F14 in
@@ -359,7 +390,7 @@ confirming run ids are in the final runs sections above.
 
 ## F18: A required section or table is dropped from the record
 
-**Skill**: highway-discovery, highway-adr (through highway-onboarding)
+**Skill**: highway-discovery, highway-adr (through highway-onboarding), highway-codify
 
 **Runs**:
 
@@ -368,6 +399,7 @@ confirming run ids are in the final runs sections above.
 - Spec 244 final `20261113-064237Z-targeted-42a0569`: discovery-smoke (both attempts)
 - Plugin install smoke (GPT-5.6 Luna) `20261113-141852Z-smoke-be6a1d0`: discovery-smoke (both attempts)
 - Plugin install smoke (GPT-5.6 Luna) `20261113-142757Z-smoke-be6a1d0`: discovery-smoke (both attempts)
+- Groundwork smoke (GPT-5.6 Luna) `20261114-121007Z-smoke-40844ce`: discovery-smoke (both attempts), codify-smoke (attempt 1)
 
 **Category**: Skill
 
@@ -380,6 +412,10 @@ Spec 246's plugin runs show the same case in all four discovery-smoke attempts. 
 run's attempt 1, the constraint table also lost its `| Candidate ID | Candidate Title | … |`
 header row.
 
+Spec 247's second groundwork run shows it in highway-codify too. codify-smoke attempt 1 wrote
+`plan.md` with no `## Decisions` heading, where `assets/codify-plan.md` says Decisions reads
+`None` when nothing was left open. Attempt 2 kept it.
+
 **Proposed resolution**: Fix in the skill, in highway-discovery `references/options.md`. After the keep-every-heading bullet, name the case: "Under `## Example Realization Matrix`, keep its header row even when there are no examples. Write `None` after it."
 
 ## F21: An accept on an `Unknown` provider has no scripted reply
@@ -391,6 +427,7 @@ header row.
 - Final smoke `20261113-051531Z-smoke-fe522b4`: onboarding-smoke attempt 1
 - Final changed `20261113-052407Z-targeted-fe522b4`: implementation-onboards-platform attempt 1
 - Spec 244 final `20261113-064237Z-targeted-42a0569`: onboarding-smoke attempt 2
+- Groundwork smoke (GPT-5.6 Luna) `20261114-121007Z-smoke-40844ce`: onboarding-smoke attempt 1
 
 **Category**: Scenario
 
@@ -506,6 +543,7 @@ Not seen in spec 244's final runs: chain-implementation and implementation-onboa
 - Spec 244 final `20261113-064237Z-targeted-42a0569`: chain-architecture attempt 1, codify-controls-conflict attempt 1
 - Plugin install smoke (GPT-5.6 Luna) `20261113-141852Z-smoke-be6a1d0`: setup-smoke (attempt 1)
 - Plugin install smoke (GPT-5.6 Luna) `20261113-142757Z-smoke-be6a1d0`: codify-smoke (attempt 2)
+- Groundwork smoke (GPT-5.6 Luna) `20261114-115258Z-smoke-40844ce` and `20261114-121007Z-smoke-40844ce`: 9 rejected reads each, all in attempts that passed
 
 **Category**: Model
 

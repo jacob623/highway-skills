@@ -19,6 +19,13 @@ test("GitHub and OpenAI-style token patterns are redacted without an environment
   assert.equal(redact(`${gh} ${pat} ${sk}`), `${REDACTED} ${REDACTED} ${REDACTED}`);
 });
 
+test("Cursor and Google key formats are redacted without an environment value", () => {
+  const redact = createRedactor({});
+  const cursor = "cursor_" + "D".repeat(32);
+  const google = "AIza" + "e".repeat(35);
+  assert.equal(redact(`key ${cursor} and ${google}.`), `key ${REDACTED} and ${REDACTED}.`);
+});
+
 test("cap keeps the last lines and shortens long ones", () => {
   const text = ["one", "two", "three", "x".repeat(50)].join("\n");
   const out = cap(text, 2, 10);

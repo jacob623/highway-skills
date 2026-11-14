@@ -1,7 +1,8 @@
 {
-  "model": "gpt-5.6-luna",
+  "agent": "copilot",
+  "models": { "copilot": "gpt-5.6-luna" },
+  "judge": { "agent": "copilot", "model": "gpt-5.6-luna" },
   "parallel": 4,
   "maxTurns": 40,
-  "timeoutMinutes": 20,
-  "transcripts": "harness/runs"
+  "timeoutMinutes": 20
 }

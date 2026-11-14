@@ -108,6 +108,35 @@ test("promote refuses a run folder without all five candidates and changes nothi
   rmSync(fixtures, { recursive: true });
 });
 
+test("a passing chain with no candidates folder saves nothing", async () => {
+  const baseDir = base();
+  const { runner } = fakeStages(baseDir);
+  const result = await runChain([1, 2, 3, 4, 5, 6].map(scenario), runner, baseDir);
+  assert.equal(result.failedStage, undefined);
+  assert.deepEqual(result.candidates, []);
+  rmSync(baseDir, { recursive: true });
+});
+
+test("promote refuses another agent's run folder and changes nothing; a Copilot folder is accepted", () => {
+  const root = mkdtempSync(join(tmpdir(), "harness-runs-"));
+  const fixtures = mkdtempSync(join(tmpdir(), "harness-fixtures-"));
+  const seed = (name: string): string => {
+    const run = join(root, name);
+    for (const stage of ["setup", "request", "discovery", "architecture", "implementation"]) {
+      mkdirSync(join(run, "candidates", stage), { recursive: true });
+      writeFileSync(join(run, "candidates", stage, "new.md"), stage);
+    }
+    return run;
+  };
+  mkdirSync(join(fixtures, "stages", "setup"), { recursive: true });
+  writeFileSync(join(fixtures, "stages", "setup", "old.md"), "old");
+  assert.throws(() => promote(seed("20261110-120000Z-full-cursor-abcdef1"), fixtures), /only from Copilot runs until Phase 16.*cursor/);
+  assert.deepEqual(readdirSync(join(fixtures, "stages", "setup")), ["old.md"]);
+  assert.equal(promote(seed("20261110-120000Z-full-abcdef1"), fixtures).length, 5);
+  rmSync(root, { recursive: true });
+  rmSync(fixtures, { recursive: true });
+});
+
 test("saveCandidate skips the base skills", () => {
   const baseDir = base();
   const project = mkdtempSync(join(tmpdir(), "harness-project-"));

@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-# The behavioral test harness stays out of the distribution, its run output and secrets stay out of
-# version control, and the development constitution declares its toolchain as development-only.
+# The behavioral test harness stays out of the distribution, its dependencies and secrets stay out
+# of version control, and the development constitution declares its toolchain as development-only.
+# The harness writes run output only to a folder named by --transcripts, so none is ignored here.
 set -u
 # Instrument class: static-document-contract
 # Artifact classes: distribution-manifest, gitignore, development-constitution
@@ -31,7 +32,7 @@ for rel in harness harness/src/cli.ts harness/scenarios/highway-codify/codify-pl
 	fi
 done
 
-for entry in 'harness/runs/' 'harness/node_modules/' 'harness/.env' '.env'; do
+for entry in 'harness/node_modules/' 'harness/.env' '.env'; do
 	if ! grep -qxF -- "$entry" "$GITIGNORE"; then
 		echo "FAIL: .gitignore does not ignore $entry"
 		fail=1

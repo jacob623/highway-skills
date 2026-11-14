@@ -1,5 +1,5 @@
 import { mkdirSync, writeFileSync } from "node:fs";
-import { join, relative } from "node:path";
+import { join } from "node:path";
 import { addUsage, emptyUsage, type Usage, type Warning } from "./driver.ts";
 import { EXIT_2_KINDS, likelyCause, type Failure } from "./failure.ts";
 import type { Verdict } from "./judge.ts";
@@ -11,7 +11,9 @@ export type Status = "pass" | "fail" | "blocked" | "not-run" | "skipped";
 export interface AttemptResult {
   scenario: string;
   attempt: number;
+  agent: string;
   model: string;
+  judgeAgent: string | null;
   judgeModel: string | null;
   judge: "ran" | "skipped" | "not-run";
   status: "pass" | "fail";
@@ -47,22 +49,30 @@ export interface Run {
   id: string;
   type: RunType;
   commit: string;
+  agent: string;
   model: string;
+  /** Null when the judge is off (--no-judge). */
+  judgeAgent: string | null;
   judgeModel: string | null;
+  /** The reply fallback's `<agent>/<model>`, or `off` when the judge agent's key is absent. */
+  fallback: string;
   sdkVersion: string;
-  cliVersion: string;
+  runtimeVersion: string;
   startedAt: string;
-  folder: string;
+  /** Set only with --transcripts. */
+  folder?: string;
   outcomes: ScenarioOutcome[];
   runFailures: Failure[];
   coverage?: string;
   candidates?: string[];
 }
 
-export function runId(start: Date, type: RunType, commit: string): string {
+/** `<UTC start>-<type>-<short commit>` for Copilot; any other agent's id follows the type (FR-020). */
+export function runId(start: Date, type: RunType, commit: string, agent: string): string {
   const p = (n: number): string => String(n).padStart(2, "0");
   const stamp = `${start.getUTCFullYear()}${p(start.getUTCMonth() + 1)}${p(start.getUTCDate())}-${p(start.getUTCHours())}${p(start.getUTCMinutes())}${p(start.getUTCSeconds())}Z`;
-  return `${stamp}-${type}-${commit.slice(0, 7) || "nocommit"}`;
+  const tag = agent === "copilot" ? "" : `${agent}-`;
+  return `${stamp}-${type}-${tag}${commit.slice(0, 7) || "nocommit"}`;
 }
 
 export function isFlaky(outcome: ScenarioOutcome): boolean {
@@ -92,25 +102,6 @@ export function counts(run: Run): Record<"passed" | "failed" | "flaky" | "blocke
     notRun: of("not-run"),
     skipped: of("skipped"),
   };
-}
-
-/** FR-039 and FR-039e: the end-of-run summary, every failure and skip with its likely cause. */
-export function summaryText(run: Run, cwd = process.cwd()): string {
-  const c = counts(run);
-  const lines = ["==== SUMMARY ====", `Passed ${c.passed}, failed ${c.failed}, flaky ${c.flaky}, blocked ${c.blocked}, not run ${c.notRun}, skipped ${c.skipped}`];
-  for (const f of run.runFailures) lines.push(`FAIL run: ${f.kind} - ${likelyCause(f)}`);
-  for (const o of run.outcomes) {
-    if (o.status === "pass") continue;
-    const label = o.status === "fail" ? "FAIL" : o.status === "blocked" ? "BLOCKED" : o.status === "not-run" ? "NOT RUN" : "SKIPPED";
-    if (o.failure) lines.push(`${label} ${o.scenario}: ${o.failure.kind} - ${likelyCause(o.failure)}`);
-    else lines.push(`${label} ${o.scenario}`);
-  }
-  for (const o of run.outcomes.filter(isFlaky)) lines.push(`FLAKY ${o.scenario}: failed attempt 1, passed attempt 2`);
-  const usage = totalUsage(run);
-  lines.push(`Usage: ${usage.calls} model calls, ${usage.inputTokens} input tokens, ${usage.outputTokens} output tokens`);
-  const shown = relative(cwd, run.folder);
-  lines.push(`Run folder: ${shown === "" || shown.startsWith("..") ? run.folder : shown}`);
-  return lines.join("\n");
 }
 
 function escapeXml(text: string): string {
@@ -156,9 +147,11 @@ export function renderReportMd(run: Run): string {
     "",
     `- Type: ${run.type}`,
     `- Commit: ${run.commit}`,
+    `- Agent: ${run.agent}`,
     `- Model: ${run.model}`,
-    `- Judge: ${run.judgeModel ?? "skipped (--no-judge)"}`,
-    `- Copilot SDK ${run.sdkVersion}, CLI ${run.cliVersion}`,
+    `- Judge: ${run.judgeAgent && run.judgeModel ? `${run.judgeAgent}/${run.judgeModel}` : "skipped (--no-judge)"}`,
+    `- Reply fallback: ${run.fallback}`,
+    `- SDK ${run.sdkVersion}, runtime ${run.runtimeVersion}`,
     `- Started: ${run.startedAt}`,
     `- Exit code: ${exitCode(run)}`,
     "",
@@ -227,8 +220,9 @@ export function renderJson(run: Run): string {
   return JSON.stringify({ ...run, exitCode: exitCode(run), counts: counts(run), usage: totalUsage(run) }, null, 2) + "\n";
 }
 
-/** Writes report.md, report.json, junit.xml, and selection.txt, redacted (FR-032, FR-034). */
+/** Writes report.md, report.json, junit.xml, and selection.txt, redacted, into the run folder (FR-020). */
 export function writeRunReports(run: Run, selection: readonly Selection[], redact: Redactor): void {
+  if (!run.folder) return;
   mkdirSync(run.folder, { recursive: true });
   writeFileSync(join(run.folder, "report.md"), redact(renderReportMd(run)));
   writeFileSync(join(run.folder, "report.json"), redact(renderJson(run)));

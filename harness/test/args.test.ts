@@ -25,7 +25,7 @@ test("--smoke with a targeted switch is a conflict", () => {
 });
 
 test("--promote with --smoke is a conflict", () => {
-  const r = parseArgs(["--promote", "harness/runs/x", "--smoke"]);
+  const r = parseArgs(["--promote", "/tmp/harness/x", "--smoke"]);
   assert.equal(r.ok, false);
 });
 
@@ -36,6 +36,19 @@ test("unknown switches, missing values, and non-positive numbers are errors", ()
   assert.equal(parseArgs(["--parallel", "0"]).ok, false);
   assert.equal(parseArgs(["--timeout", "1.5"]).ok, false);
   assert.equal(parseArgs(["--smoke=yes"]).ok, false);
+});
+
+test("--agent, --judge-agent, and --verbose parse; --transcripts needs a folder", () => {
+  const r = parseArgs(["--agent", "copilot", "--judge-agent", "copilot", "--verbose", "--transcripts", "/tmp/x"]);
+  assert.ok(r.ok);
+  assert.equal(r.options.agent, "copilot");
+  assert.equal(r.options.judgeAgent, "copilot");
+  assert.equal(r.options.verbose, true);
+  assert.equal(r.options.transcripts, "/tmp/x");
+  const bare = parseArgs(["--transcripts"]);
+  assert.equal(bare.ok, false);
+  if (!bare.ok) assert.equal(bare.error, "--transcripts needs <dir>");
+  assert.equal(parseArgs(["--verbose=yes"]).ok, false);
 });
 
 test("numbers parse", () => {
