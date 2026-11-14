@@ -1,44 +1,9 @@
-import { mkdtempSync, rmSync } from "node:fs";
-import { tmpdir } from "node:os";
-import { join } from "node:path";
-import { CopilotClient } from "@github/copilot-sdk";
-import { RunStop, withRateLimit, type FallbackPicker } from "./driver.ts";
+import { RunStop, type FallbackPicker } from "./driver.ts";
 import { keyText, normalize } from "./replies.ts";
 import type { Cover, Scenario } from "./scenario.ts";
 
 /** One prompt in a new session with no tools, returning the reply text. */
 export type Ask = (prompt: string) => Promise<string>;
-
-export function copilotAsk(token: string, model: string): Ask {
-  return async (prompt) => {
-    const home = mkdtempSync(join(tmpdir(), "harness-judge-"));
-    const client = new CopilotClient({ baseDirectory: home, gitHubToken: token, useLoggedInUser: false, workingDirectory: home, logLevel: "error" });
-    try {
-      await withRateLimit(() => client.start());
-      const session = await withRateLimit(() =>
-        client.createSession({
-          model,
-          workingDirectory: home,
-          clientName: "highway-harness-judge",
-          enableConfigDiscovery: false,
-          enableSessionStore: false,
-          enableSessionTelemetry: false,
-          enableSkills: false,
-          onPermissionRequest: () => ({ kind: "reject", feedback: "No tools are available. Answer from the text you were given." }),
-        }),
-      );
-      try {
-        const reply = await withRateLimit(() => session.sendAndWait({ prompt }, 300_000));
-        return reply?.data.content ?? "";
-      } finally {
-        await session.disconnect().catch(() => undefined);
-      }
-    } finally {
-      await client.stop().catch(() => undefined);
-      rmSync(home, { recursive: true, force: true });
-    }
-  };
-}
 
 // ---- Reply fallback (FR-009) ----
 
@@ -67,7 +32,9 @@ export function parseFallback(answer: string, candidates: readonly number[]): nu
   return n >= 1 && n <= candidates.length ? candidates[n - 1] : undefined;
 }
 
-export function makeFallbackPicker(ask: Ask, scenario: Scenario): FallbackPicker {
+/** With no ask (FR-017: the judge agent's key is absent), the fallback picks nothing. */
+export function makeFallbackPicker(ask: Ask | undefined, scenario: Scenario): FallbackPicker {
+  if (!ask) return async () => undefined;
   return async (message, candidates) => parseFallback(await ask(fallbackPrompt(message, scenario, candidates)), candidates);
 }
 

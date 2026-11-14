@@ -1,10 +1,11 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { AGENTS } from "../src/agents.ts";
 import { parseArgs } from "../src/args.ts";
 import { resolveConfig, type FileConfig } from "../src/config.ts";
 import { RunStop } from "../src/driver.ts";
-import { capFiles, judgePrompt, parseFallback, parseVerdicts, runJudge } from "../src/judge.ts";
-import type { Cover } from "../src/scenario.ts";
+import { capFiles, judgePrompt, makeFallbackPicker, parseFallback, parseVerdicts, runJudge } from "../src/judge.ts";
+import type { Cover, Scenario } from "../src/scenario.ts";
 
 const covers: Cover[] = [
   { hash: "aaaaaaaaaaaa", text: "The menu offers Review the plan and Continue to code the solution.", line: 1 },
@@ -12,7 +13,14 @@ const covers: Cover[] = [
 ];
 const sources = "Agent: The plan is complete for feature 001-send-alert. **Would you like to:**\n1. Review the plan?\n2. Continue to code the solution?";
 const line = (hash: string, verdict: string, evidence: string) => JSON.stringify({ hash, verdict, evidence, reason: "Shown in the transcript." });
-const fileConfig: FileConfig = { model: "claude-sonnet-4.5", parallel: 4, maxTurns: 40, timeoutMinutes: 20, transcripts: "harness/runs" };
+const fileConfig: FileConfig = {
+  agent: "copilot",
+  models: { copilot: "claude-sonnet-4.5" },
+  judge: { agent: "copilot", model: "claude-opus-4" },
+  parallel: 4,
+  maxTurns: 40,
+  timeoutMinutes: 20,
+};
 
 test("a met verdict whose quote appears in the transcript stays met", () => {
   const answer = line("aaaaaaaaaaaa", "met", "1. Review the plan? 2. Continue to code the solution?");
@@ -75,25 +83,31 @@ test("file content sent to the judge is capped per file and in total", () => {
 test("--no-judge skips the judge: no ask is made and no verdict is recorded", async () => {
   const parsed = parseArgs(["--no-judge"]);
   assert.ok(parsed.ok);
-  const config = resolveConfig(parsed.options, fileConfig, {});
+  const config = resolveConfig(parsed.options, fileConfig, {}, AGENTS);
   assert.equal(config.judge, false);
   const result = await runJudge(undefined, config.judgeModel, "transcript", [], covers);
   assert.deepEqual(result, { skipped: true, verdicts: [] });
 });
 
-test("the judge model defaults to the scenario model, and --judge-model overrides it", () => {
+test("the judge model comes from the judge block, not the run's model, and --judge-model overrides it", () => {
   const plain = parseArgs([]);
   assert.ok(plain.ok);
-  assert.equal(resolveConfig(plain.options, fileConfig, {}).judgeModel, "claude-sonnet-4.5");
+  assert.equal(resolveConfig(plain.options, fileConfig, {}, AGENTS).judgeModel, "claude-opus-4");
   const model = parseArgs(["--model", "gpt-5"]);
   assert.ok(model.ok);
-  assert.equal(resolveConfig(model.options, fileConfig, {}).judgeModel, "gpt-5");
-  const judge = parseArgs(["--model", "gpt-5", "--judge-model", "claude-opus-4"]);
+  assert.equal(resolveConfig(model.options, fileConfig, {}, AGENTS).judgeModel, "claude-opus-4");
+  const judge = parseArgs(["--model", "gpt-5", "--judge-model", "gpt-5-mini"]);
   assert.ok(judge.ok);
-  const config = resolveConfig(judge.options, fileConfig, {});
+  const config = resolveConfig(judge.options, fileConfig, {}, AGENTS);
   assert.equal(config.model, "gpt-5");
-  assert.equal(config.judgeModel, "claude-opus-4");
+  assert.equal(config.judgeModel, "gpt-5-mini");
   assert.equal(config.judge, true);
+});
+
+test("with no ask, the reply fallback picks nothing", async () => {
+  const scenario = { replies: [{ key: { type: "text", text: "Shall I go on?" }, say: "Yes", line: 1 }] } as unknown as Scenario;
+  assert.equal(await makeFallbackPicker(undefined, scenario)("Shall I go on?", [0]), undefined);
+  assert.equal(await makeFallbackPicker(async () => "1", scenario)("Shall I go on?", [0]), 0);
 });
 
 test("the judge runs in its own ask with the judge model, and a scenario with no covers asks nothing", async () => {

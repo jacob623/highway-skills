@@ -5,6 +5,8 @@ const SECRET_PATTERNS: readonly RegExp[] = [
   /gh[pousr]_[A-Za-z0-9]{20,}/g,
   /github_pat_[A-Za-z0-9_]{20,}/g,
   /sk-[A-Za-z0-9_-]{16,}/g,
+  /cursor_[A-Za-z0-9_-]{20,}/g,
+  /AIza[0-9A-Za-z_-]{35}/g,
 ];
 const MIN_SECRET_LENGTH = 8;
 

@@ -5,13 +5,16 @@ export interface Options {
   changedSince?: string;
   paths: string[];
   skills: string[];
+  agent?: string;
   model?: string;
+  judgeAgent?: string;
   judgeModel?: string;
   noJudge: boolean;
   parallel?: number;
   maxTurns?: number;
   timeout?: number;
   transcripts?: string;
+  verbose: boolean;
   promote?: string;
   help: boolean;
 }
@@ -27,7 +30,7 @@ function find(token: string): Switch | undefined {
 }
 
 export function parseArgs(argv: readonly string[]): ParseResult {
-  const options: Options = { smoke: false, paths: [], skills: [], noJudge: false, help: false };
+  const options: Options = { smoke: false, paths: [], skills: [], noJudge: false, verbose: false, help: false };
   const seen: string[] = [];
 
   for (let i = 0; i < argv.length; i++) {
@@ -53,6 +56,15 @@ export function parseArgs(argv: readonly string[]): ParseResult {
         break;
       case "--no-judge":
         options.noJudge = true;
+        break;
+      case "--verbose":
+        options.verbose = true;
+        break;
+      case "--agent":
+        options.agent = value;
+        break;
+      case "--judge-agent":
+        options.judgeAgent = value;
         break;
       case "--help":
         options.help = true;
@@ -127,6 +139,9 @@ export function helpText(): string {
   }
   lines.push("Examples:");
   for (const example of EXAMPLES) lines.push(`  ${example}`);
+  lines.push("");
+  lines.push("Standard output carries only the run log; progress notes go to standard error.");
+  lines.push("Without --transcripts, the run writes no files.");
   lines.push("");
   lines.push("Exit codes: 0 every gated check passed or nothing was selected; 1 a gated check failed;");
   lines.push("2 the run could not start, a switch was invalid, or a rate limit or allowance stopped it.");

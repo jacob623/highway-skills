@@ -15,7 +15,7 @@ The harness is a development tool. `harness/` is excluded from the distribution,
 For each attempt, the runner builds a new project in a temporary folder:
 
 1. The base, made once per run: an empty folder. The skills are not copied into the project; each
-   attempt installs the Agent Plugins build, `highway-agent-plugin/`, into its own Copilot home,
+   attempt installs the Agent Plugins build, `highway-agent-plugin/`, into its own agent home,
    as a person installs the plugin. The project holds nothing from `framework/`, `tests/`,
    `harness/`, or the plugin.
 2. The scenario's fixture on top: a stage snapshot from `harness/fixtures/stages/`, or an overlay
@@ -27,11 +27,49 @@ Before any scenario runs, the runner checks the plugin with
 `framework/generate-agent-plugin.sh --check`. A missing or stale plugin stops the run with
 `build-failed` and exit 2, so a run never tests skills older than their sources.
 
+### Agents and drivers
+
+The harness tests one agent per run, chosen with `--agent` or the `agent` field of
+`harness/harness.config.json`. `harness/src/agents.ts` holds the registry: each entry maps an
+agent id to everything the runner needs from that agent. The runner imports no driver; it takes
+all of these from the selected entry.
+
+| Field | What it supplies |
+|---|---|
+| `id` | The registry key, used by `--agent`, `--judge-agent`, and the `models` map |
+| `service` | The service name used in the `missing-token` and `no-access` messages |
+| `keys` | The key variables, read in order; the last is the one a person sets in `harness/.env` |
+| `driver` | Runs one attempt; see below |
+| `ask` | Optional. A one-shot question with no tools, in its own throwaway home with no plugin and no project; required of a judge agent |
+| `classify` | Maps the agent's errors to failure kinds, so the shared rate-limit and service-error retries use the agent's own error text |
+| `readRoots` | The folders under the attempt's agent home where the installed plugin sits; reads there are approved |
+| `versions` | The SDK and runtime versions for the header and the report; `unknown` when a version cannot be read |
+
+A driver spec adds `harness/src/drivers/<id>.ts` and one registry entry, and changes nothing else
+in `harness/src/`. Its driver:
+
+1. Starts the agent with the attempt's agent home as its configuration home and the test project
+   as its working folder.
+2. Installs the plugin by adapting its plugin interface to `PluginRpc` and calling the shared
+   `installPlugin`, which runs the shared checks: plugin name, skill count, no warning, and
+   enabled. A failed install returns outcome `error` with kind `plugin-install`.
+3. Maps each native permission request to an `AccessRequest` (`read`, `write`, `shell`, `memory`,
+   `url`, or `other`, with a path, command, or URL), decides it with the shared `permissionPolicy`
+   and the attempt's read roots, records rejections, and maps the decision back.
+4. Logs transcript entries: `user`, `agent` once at the end of each turn, `question`, `answer`,
+   `permission` with the decision's summary, `skill` as `invoked <name>`, and `system`.
+5. Wraps service calls in `withRateLimit` and `retryServiceError` with its classifier, and throws
+   `RunStop("no-access")` when the service refuses the key.
+
+The runner creates and removes the agent home for each attempt. `harness/test/runner.test.ts`
+registers a fake second agent and runs a scenario end to end through the runner, which shows the
+contract is enough.
+
 ### The Copilot driver and its permissions
 
-The driver is GitHub Copilot through `@github/copilot-sdk`, local runtime. Each attempt gets its
-own client, its own temporary Copilot home, and one session whose working directory is the test
-project. Before the session starts, the client installs `highway-agent-plugin/` into that home
+The Copilot driver, `harness/src/drivers/copilot.ts`, is GitHub Copilot through
+`@github/copilot-sdk`, local runtime. Each attempt gets its own client, its own temporary agent
+home, and one session whose working directory is the test project. Before the session starts, the client installs `highway-agent-plugin/` into that home
 with its plugin install, enabling the plugin if it is not enabled. The transcript's first
 `system` entry names the plugin and the number of skills installed, and the install's deprecation
 warning when it gives one. The attempt fails with `plugin-install`, and no session starts, when
@@ -44,14 +82,14 @@ Every permission request is decided by a fixed policy:
 | Request | Decision | Ends the attempt |
 |---|---|---|
 | Read inside the project | approved | no |
-| Read of the installed plugin, under `<Copilot home>/installed-plugins/` | approved | no |
+| Read of the installed plugin, under a read root (Copilot: `<home>/installed-plugins/`) | approved | no |
 | Write inside the project | approved | no |
 | Read anywhere else | rejected | no |
 | Web (URL) access | approved when the scenario says `web: yes`, otherwise rejected | no |
 | Write outside the project, including the installed plugin | rejected | yes |
 | Shell command | rejected | yes |
 | Memory | rejected | yes |
-| Any other tool | rejected | no |
+| Any other tool (`other`) | rejected, named by its native kind | no |
 
 Shell, memory, and outside writes are fatal because the storage contract
 (`skills/highway-experience/references/storage-contract.md`) forbids them. A rejected request that ends the attempt is a
@@ -67,13 +105,14 @@ A scenario's replies are keyed by the question the skill asks:
 
 Replies are used in file order, and each is used once, so the same question can get a different
 reply each time it is asked. After each agent turn, the driver sends the first unused reply whose
-key appears in the message. When no key appears and the message asks something, the judge model
-decides, in a new session that sees only the agent's last message, whether the earliest unused
+key appears in the message. When no key appears and the message asks something, the judge agent
+and model decide, in a new session that sees only the agent's last message, whether the earliest unused
 reply answers it. No later reply is offered, so a reply written for a later question is never
 spent early. That pick records a **paraphrased question** warning with the expected and actual
 question. When the fallback answers "none", the attempt fails as `unmatched-question`, or as
 `repeated-question` when the same question was already answered in the attempt. A message that
-asks nothing ends the conversation. `--no-judge` does not turn the fallback off.
+asks nothing ends the conversation. `--no-judge` does not turn the fallback off; only a missing
+judge agent key does, and the header then reads `fallback=off`.
 
 A question the agent asks through the input tool is answered inside the turn. At the end of that
 turn, only the text after the last such answer is judged, so an answered question is not matched
@@ -87,7 +126,8 @@ again.
    highway-experience was activated before the first output the person sees. The first output is
    the first question sent to the person, or the first top-level message that requests no tool.
    An approved read of `highway-experience/SKILL.md` counts as its activation.
-3. **Judge** (advisory): a new session with the same model, or `--judge-model`, reads the
+3. **Judge** (advisory): a one-shot question to the judge agent and model from the `judge` block
+   (or `--judge-agent` and `--judge-model`), in its own throwaway home, reads the
    finished transcript, the written files, and the text of the bullets the scenario covers. It
    answers met or not met for each bullet, with a quote. A met verdict without a quote, or with a
    quote that is not in the transcript or files, counts as not met. The judge never changes the
@@ -113,8 +153,8 @@ Warnings (paraphrased question, flaky) never change the exit code.
    GITHUB_TOKEN=<token>
    ```
 
-   `COPILOT_GITHUB_TOKEN` is read first when both are set. `harness/.env`, `harness/runs/`, and
-   `harness/node_modules/` are gitignored.
+   `COPILOT_GITHUB_TOKEN` is read first when both are set. Each agent names its own key
+   variables in the registry. `harness/.env` and `harness/node_modules/` are gitignored.
 
 Unit tests and the type check need no token: `npm --prefix harness test` and
 `npm --prefix harness run typecheck`.
@@ -140,20 +180,52 @@ Run from the repository root with `node harness/src/cli.ts [switches]`, or
 | Selection | `--changed-since` | `<ref>` | — | Run scenarios affected by files changed since `<ref>` |
 | Selection | `--paths` | `<files>` | — | Run scenarios affected by these comma-separated paths |
 | Selection | `--skills` | `<ids>` | — | Run scenarios for these comma-separated skill ids |
-| Agent | `--model` | `<id>` | `harness.config.json` `model` | Model for scenario sessions |
-| Agent | `--judge-model` | `<id>` | the run's model | Model for the judge and the reply fallback |
+| Agent | `--agent` | `<id>` | `harness.config.json` `agent` | Agent under test |
+| Agent | `--model` | `<id>` | `harness.config.json` `models` entry | Model for the agent under test |
+| Agent | `--judge-agent` | `<id>` | `harness.config.json` `judge.agent` | Agent for the judge and the reply fallback |
+| Agent | `--judge-model` | `<id>` | `harness.config.json` `judge.model` | Model for the judge and the reply fallback |
 | Agent | `--no-judge` | — | off | Skip the judge |
 | Execution | `--parallel` | `<n>` | 4 | Scenarios run at once |
 | Execution | `--max-turns` | `<n>` | 40 | Turn limit per attempt |
 | Execution | `--timeout` | `<minutes>` | 20 | Time limit per attempt, in minutes |
-| Output | `--transcripts` | `<dir>` | `harness/runs/` | Folder that receives run folders |
+| Output | `--transcripts` | `<dir>` | — | Write a run folder (transcripts, reports, candidate snapshots) under `<dir>`; the folder is required |
+| Output | `--verbose` | — | off | Add approved permission requests and usage to the run log |
 | Fixtures | `--promote` | `<run folder>` | — | Replace stage fixtures with a run's candidate snapshots |
 | Help | `--help`, `-h` | — | — | Print the help and exit 0 |
 
 No selection switch runs the full suite. `--changed-since`, `--paths`, and `--skills` combine as a
 union, and each scenario keeps every reason it was selected. `--smoke` and `--promote` are used
-alone. Defaults for the model, parallelism, limits, and transcript folder come from
-`harness/harness.config.json`. The chain always runs one stage at a time.
+alone. The chain always runs one stage at a time.
+
+### Configuration
+
+`harness/harness.config.json` holds the defaults the switches override for one run:
+
+```json
+{
+  "agent": "copilot",
+  "models": { "copilot": "gpt-5.6-luna" },
+  "judge": { "agent": "copilot", "model": "gpt-5.6-luna" },
+  "parallel": 4,
+  "maxTurns": 40,
+  "timeoutMinutes": 20
+}
+```
+
+| Field | Meaning |
+|---|---|
+| `agent` | The agent under test, a registered id |
+| `models` | A map from agent id to model id; the selected agent needs an entry, or `--model` |
+| `judge` | The agent and model for the judge and the reply fallback; the judge agent needs a one-shot question |
+| `parallel`, `maxTurns`, `timeoutMinutes` | Execution defaults |
+
+Every setting is checked before the header prints. An unregistered agent, a missing `models`
+entry, a missing or empty `judge` field, an unregistered judge agent or one with no one-shot
+question, or a missing judge key prints `Configuration error: ...` and the `--help` pointer, and
+exits 2. The judge key is not checked under `--no-judge`, or when the judge agent is the agent
+under test (that key's absence is a `missing-token` failure). A file that still holds the old
+`model` field is refused with a pointer to `models`, and one that still holds `transcripts` with a
+pointer to `--transcripts <dir>`.
 
 ### Exit codes
 
@@ -161,18 +233,97 @@ alone. Defaults for the model, parallelism, limits, and transcript folder come f
 |---|---|
 | 0 | Every gated check passed, or the selection was empty |
 | 1 | A scenario failed or was blocked, or a chain stage failed |
-| 2 | The run could not start or was stopped: an invalid switch, a missing token, no Copilot access, a missing or stale plugin, a persistent rate limit, or a used-up premium-request allowance |
+| 2 | The run could not start or was stopped: an invalid switch or setting, a missing key, no access to the agent's service, a missing or stale plugin, a persistent rate limit, or a used-up premium-request allowance |
 
 Exit 2 takes precedence over exit 1.
 
 ## Reading results
 
-Each run writes a folder under `harness/runs/` (or `--transcripts`), named
-`<UTC start>-<run type>-<short commit>`, for example `20261110-153512Z-targeted-a1b2c3d`.
+### The run log
+
+Standard output carries only the run log; progress notes (`[ 3/16] start ...`, `PASS`, `FAIL`)
+go to standard error. The log is small and stable enough to commit, so a spec can keep the
+evidence of its own run:
+
+```bash
+node harness/src/cli.ts --smoke > specs/<spec>/harness/smoke.log
+```
+
+The path is an example, not a naming rule. The log has no color codes, and no timestamp other
+than the header's start time. Paths inside the test project are relative to it, the agent home
+is `<home>`, the run's work folder is `<work>`, and any other path under the system temporary
+folder is `<tmp>`. Keys and tokens are redacted.
 
 ```text
-harness/runs/20261110-153512Z-targeted-a1b2c3d/
-  report.md            Run report: results, warnings, judge verdicts, usage totals, coverage
+HARNESS run=20261114-120000Z-smoke-a1b2c3d commit=<sha> type=smoke agent=copilot model=gpt-5.6-luna judge=copilot/gpt-5.6-luna fallback=copilot/gpt-5.6-luna sdk=1.0.30 runtime=1.0.108 started=2026-11-14T12:00:00.000Z
+Selected 16 scenario(s):
+  help-smoke: --smoke
+
+== help-smoke (highway-help) attempt 1 ==
+system: installed plugin highway (16 skills)
+  Direct plugin installs (repos, URLs, local paths) are deprecated. ...
+user: /highway-help
+skill: highway-experience
+skill: highway-help
+denied: read <home>/config.json
+agent: Highway needs setup.
+  Run /highway-setup to get started.
+files: out/answer.md (created)
+result: pass
+
+== summary ==
+| Scenario | Skill | Status | Attempts | Turns | Summary |
+|---|---|---|---|---|---|
+| help-smoke | highway-help | pass | 1 | 1 | judge 2/2 met |
+Passed 1, failed 0, flaky 0, blocked 0, not run 0, skipped 0
+Usage: 6 model calls, 120000 input tokens, 900 output tokens
+Exit code: 0
+```
+
+Each attempt prints one block, whole, when it ends. Blocks appear in selection order, then
+attempt order, whatever order the attempts finish in. A block reads as the conversation, one
+labeled entry per line, with continuation lines indented two spaces:
+
+| Label | Entry |
+|---|---|
+| `user:` | The person's message, from the scenario |
+| `agent:` | The agent's reply for the turn, in full |
+| `files:` | After a reply that changed the project: each path with `(created)`, `(changed)`, or `(deleted)`; no contents |
+| `skill:` | A skill the agent invoked |
+| `question:` / `answer:` | A question through the input tool, and the reply sent |
+| `denied:` | A rejected permission request |
+| `system:` | The plugin install, a session error, or a retry |
+| `warning:` | A paraphrased question the fallback answered |
+| `result: pass` | The attempt passed |
+| `fail:` | One per failure: kind, check, path, expected, and actual |
+| `not met:` | One per bullet the judge marked not met, with its one-sentence reason |
+
+A run-level failure (missing key, failed build, rate limit, failed chain stage) prints a
+`== run ==` block with its `fail:` line and its likely cause. A scenario whose fixture fails
+validation prints a `blocked` block with the fixture's problems.
+
+The closing table has one row per selected scenario. Its Summary is the failure kind and check
+for a failure, the reason for a blocked, skipped, or not-run scenario, and otherwise the met
+judge verdicts, or `-` when the judge is off or covers no bullet. Counts, usage, and the exit
+code follow it.
+
+`--verbose` adds `approved:` lines for approved permission requests and a `usage:` line per
+attempt, and changes nothing else.
+
+### Run folders
+
+Without `--transcripts`, a run writes no file outside its throwaway work folder, which it
+removes. Add `--transcripts <dir>` for a deep dive into a failure the log does not explain, or to
+save a full run's candidate snapshots for `--promote`. Point it outside the repository, for
+example `"$TMPDIR/harness"`.
+
+The run folder is named `<UTC start>-<run type>-<short commit>` for Copilot, for example
+`20261110-153512Z-targeted-a1b2c3d`. Any other agent's id follows the run type, as in
+`20261110-153512Z-targeted-cursor-a1b2c3d`.
+
+```text
+<dir>/20261110-153512Z-targeted-a1b2c3d/
+  report.md            Run report: agent, versions, judge, results, warnings, verdicts, usage, coverage
   report.json          The same data as JSON
   junit.xml            JUnit XML, one test case per scenario
   selection.txt        Each selected scenario and why it was selected
@@ -180,12 +331,12 @@ harness/runs/20261110-153512Z-targeted-a1b2c3d/
   <scenario id>/
     attempt-1.raw.jsonl     Every SDK event, redacted
     attempt-1.jsonl         The conversation: user, agent, question, answer, permission, skill
-    attempt-1.result.json   Outcome, checks, warnings, judge verdicts, usage, models
+    attempt-1.result.json   Outcome, checks, warnings, judge verdicts, usage, agent and models
     attempt-2.*             Present when the first attempt failed
 ```
 
-Tokens and keys are redacted before any file is written and from all stdout. Usage reported by
-the SDK is recorded per attempt and totaled in the run report.
+Tokens and keys are redacted before any file is written. A full run whose chain passes without
+`--transcripts` says that no candidate snapshots were saved.
 
 ## Writing tests
 
@@ -283,12 +434,16 @@ reported as blocked and does not run.
 A full run runs the six chain scenarios first, in order: setup, request, discovery, architecture
 (through the decision), implementation, and codify. Stage 1 starts from an empty project, and
 each later stage starts from the previous stage's output. When every stage passes, each stage's
-output is saved under the run folder's `candidates/`. Review them, then replace the stage
-fixtures:
+output is saved under the run folder's `candidates/`, so the full run needs `--transcripts <dir>`.
+Review them, then replace the stage fixtures:
 
 ```bash
-node harness/src/cli.ts --promote harness/runs/<run folder>
+node harness/src/cli.ts --transcripts "$TMPDIR/harness"
+node harness/src/cli.ts --promote "$TMPDIR/harness/<run folder>"
 ```
+
+Fixtures are promoted only from Copilot runs until Phase 16 (Agent hardening): a run folder named
+with another agent is refused, and no fixture changes.
 
 Nothing else changes a stage fixture. Outside a full run, chain scenarios start from their
 fixtures like any other scenario.
@@ -352,7 +507,7 @@ beside the old tag. Retag it by replacing the old hash and text with the new one
 
 | Check | Fails when | How to fix |
 |---|---|---|
-| `harness-placement.test.sh` | `harness/` is not excluded in `framework/.distribution-manifest`, run output, `node_modules`, or `.env` is not gitignored, or the development constitution lacks the harness toolchain | Restore the manifest line, the `.gitignore` entries, or the constitution paragraph |
+| `harness-placement.test.sh` | `harness/` is not excluded in `framework/.distribution-manifest`, `node_modules` or `.env` is not gitignored, or the development constitution lacks the harness toolchain | Restore the manifest line, the `.gitignore` entries, or the constitution paragraph |
 | `harness-path-map.test.sh` | A shipped skill asset or highway-experience file maps to no skill and is not in `harness/selection/shared.txt`, or a mapping rule changed | Move the file into the skill that reads it, or add it to `shared.txt` as `smoke` or `none` |
 | `harness-fixtures.test.sh` | A fixture file lacks a part of its current template, or an overlay names no stage | Promote a fresh chain run, or fix the fixture by hand |
 | `harness-coverage.test.sh` | A highway-codify bullet has no scenario tag, invariant, or waiver | Retag the reworded bullet, add a scenario, or add a treatment |
@@ -361,53 +516,46 @@ beside the old tag. Retag it by replacing the old hash and text with the new one
 
 ## Diagnosing failures
 
-Everything needed to diagnose a failure is printed to stdout, so a pipeline log is enough after
-the runner's files are gone.
-
-The run prints one header line with the run id, commit, run type, model, judge model, and the
-Copilot SDK and CLI versions, then one progress line per attempt. Each failure prints a block as
-it happens:
+The run log is enough to diagnose most failures, so a captured log or a pipeline log is enough
+after the runner's files are gone. Start from the closing table: its Summary names the failure
+kind and check. Then read that scenario's block: the `fail:` line says what was expected and what
+was found, and the conversation above it shows the exchange where it went wrong and the files
+each turn touched. A `fail:` line from a scenario's `expect:` ends with the scenario line that
+declared it:
 
 ```text
-==== FAILURE codify-smoke (attempt 2 of 2) ====
-Where:   harness/scenarios/highway-codify/codify-smoke.scenario; stage -; turn 6; step menu
-What:    expect template code/*/.highway/features/001-*/plan.md :: codify-plan.md
-         expected: ## Functional Requirements; actual: missing
-         declared at line 17
-Covers:  f840f259ec7b An exact title selects that accepted implementation, and the title is what the person sees.
-Recent:  (last turns, at most 20 lines of 200 characters, redacted)
-Rejected: none
-Likely cause: A written file is missing a required part. ...
-HARNESS-FAILURE {"run":"...","scenario":"codify-smoke","attempt":2,"kind":"assertion",...}
+fail: assertion template code/*/.highway/features/001-*/plan.md: expected ## Functional Requirements; actual missing (scenario line 17)
 ```
 
-The `HARNESS-FAILURE` line holds the same fields as one line of JSON, so a pipeline can parse
-failures from the log. The final summary lists every failure and skipped scenario with its likely
-cause, then the run folder.
+When the log does not explain a failure, rerun that scenario with
+`--transcripts "$TMPDIR/harness" --verbose` and read its `attempt-N.jsonl`, `attempt-N.raw.jsonl`,
+and `report.md`.
 
 ### Likely causes
 
 The likely cause comes from a fixed table, so the same failure always prints the same sentence.
+A run-level failure prints its cause on the `cause:` line of its `== run ==` block, and
+`report.md` gives the cause of every failure.
 
 | Kind | Likely cause | What to check |
 |---|---|---|
-| `unmatched-question` | The skill's question changed, or the agent left the workflow at this step. | Compare the last question in Recent with the scenario's `ask:` lines and the skill's bold question text. |
-| `repeated-question` | The agent asked again a question whose reply was already spent; the skill re-asks after that reply's class. | What names the question and the spent reply. Key a reply the skill accepts, or find why the answer did not move the skill on. |
-| `rejected-request` | The agent tried to run a shell command, use memory, or write outside the project. | The Rejected line names the request. Find the skill step that led the agent there. |
-| `outside-writes` | The agent changed a file outside the scenario's `writes:` patterns. | The path in What; compare it with the skill's output paths and the scenario's `writes:`. |
+| `unmatched-question` | The skill's question changed, or the agent left the workflow at this step. | Compare the last `agent:` or `question:` entry with the scenario's `ask:` lines and the skill's bold question text. |
+| `repeated-question` | The agent asked again a question whose reply was already spent; the skill re-asks after that reply's class. | The `fail:` line names the question and the spent reply. Key a reply the skill accepts, or find why the answer did not move the skill on. |
+| `rejected-request` | The agent tried to run a shell command, use memory, or write outside the project. | The `denied:` entry and the `fail:` line name the request. Find the skill step that led the agent there. |
+| `outside-writes` | The agent changed a file outside the scenario's `writes:` patterns. | The `files:` entries show the turn that wrote it; compare it with the skill's output paths and the scenario's `writes:`. |
 | `experience-order` | The agent showed output before activating highway-experience. | The skills listed as actual; check that the skill's Procedure opens with the activation step. |
 | `turn-limit` | The agent kept going past the turn limit, naming a repeated question when one repeats. | A repeated question usually means a reply does not satisfy that step. Check the reply's kind and text. |
-| `timeout` | The attempt ran past its time limit. | The model may be slow; raise `--timeout`, or look for a stalled step in Recent. |
+| `timeout` | The attempt ran past its time limit. | The model may be slow; raise `--timeout`, or look for a stalled step in the block. |
 | `assertion` | A written file is missing a required part. For check `shows`, the agent did not show the expected text. | If it is a template heading, the template changed after the fixture was promoted, or the skill skipped its template. |
 | `fixture-blocked` | The fixture no longer matches its template. | Run `bash harness/bin/fixture-check.sh <fixture>`; promote a fresh chain run or fix the fixture. |
-| `missing-token` | No Copilot token was found. | Set `GITHUB_TOKEN` in `harness/.env`. |
-| `no-access` | The token has no Copilot access. | Check the account's Copilot plan. |
-| `build-failed` | `highway-agent-plugin/` is missing or differs from its sources, or the base project could not be made. | The block shows the DRIFT lines; run `framework/generate-agent-plugin.sh`. |
+| `missing-token` | No key was found for the agent under test; for Copilot, "No Copilot token was found. Set GITHUB_TOKEN in harness/.env." | Set the key variable the cause names in `harness/.env`. |
+| `no-access` | The key has no access to the agent's service; for Copilot, "The GITHUB_TOKEN key has no Copilot access. Check the account's Copilot plan." | Check the account's plan for that service. |
+| `build-failed` | `highway-agent-plugin/` is missing or differs from its sources, or the base project could not be made. | The run block shows the DRIFT lines; run `framework/generate-agent-plugin.sh`. |
 | `rate-limit` | Copilot kept rate limiting after 3 retries. | Lower `--parallel`, or wait and rerun. |
 | `allowance` | The premium-request allowance is used up. | Wait for the reset, or raise the limit. |
-| `chain-stage` | A chain stage failed, so later stages and every scenario were skipped. | Diagnose the failed stage's own block above it. |
+| `chain-stage` | A chain stage failed, so later stages and every scenario were skipped. | Diagnose the failed stage's own blocks above it. |
 | `service-error` | The Copilot service returned no response (code -32603); the turn was retried once and failed again. | Not a skill failure. A scenario whose last attempt has only this kind is `blocked`; rerun it. |
-| `plugin-install` | The plugin did not install or load from `highway-agent-plugin/`. | The attempt's first `system` entry names what the install reported; run `framework/validate-plugin.sh highway-agent-plugin`. |
+| `plugin-install` | The plugin did not install or load from `highway-agent-plugin/`. | The block's first `system:` entry names what the install reported; run `framework/validate-plugin.sh highway-agent-plugin`. |
 | `unclassified` | The raw error follows. | Read the raw error; add a kind to `harness/src/failure.ts` if it recurs. |
 
 A blocked scenario counts as a failure for the exit code. Scenarios not run because the run

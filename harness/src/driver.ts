@@ -1,10 +1,7 @@
 import { realpathSync } from "node:fs";
-import { isAbsolute, join, resolve, sep } from "node:path";
-import { CopilotClient, type CopilotSession, type PermissionRequest, type PermissionRequestResult } from "@github/copilot-sdk";
-import { EXPERIENCE_SKILL, isExperienceSkillRead } from "./checks.ts";
-import { classifyError, errorText, retryServiceError, type FailureKind } from "./failure.ts";
+import { isAbsolute, resolve, sep } from "node:path";
+import { errorText, type FailureKind } from "./failure.ts";
 import type { PluginSource } from "./project.ts";
-import { decide, keyText, lastQuestion, nextUnused, normalize, spentReply, textAfterAnswers } from "./replies.ts";
 import type { Scenario } from "./scenario.ts";
 
 export interface TranscriptEntry {
@@ -61,9 +58,12 @@ export type FallbackPicker = (message: string, candidates: number[]) => Promise<
 export interface DriveOptions {
   scenario: Scenario;
   projectDir: string;
-  copilotHome: string;
+  /** The attempt's own agent configuration home, removed when the attempt ends. */
+  agentHome: string;
+  /** The folders under the agent home where the installed plugin sits. */
+  readRoots: string[];
   plugin: PluginSource;
-  token: string;
+  key: string;
   model: string;
   maxTurns: number;
   timeoutMs: number;
@@ -74,6 +74,8 @@ export interface DriveOptions {
 }
 
 export type Driver = (options: DriveOptions) => Promise<DriveResult>;
+
+export type Classifier = (error: unknown) => FailureKind;
 
 export function emptyUsage(): Usage {
   return { calls: 0, inputTokens: 0, outputTokens: 0, cacheReadTokens: 0, cacheWriteTokens: 0, cost: 0 };
@@ -107,8 +109,20 @@ export function insideProject(projectDir: string, path: string | undefined): boo
   return roots(projectDir).some((root) => full === root || full.startsWith(root + sep));
 }
 
-export interface PolicyDecision {
-  result: PermissionRequestResult;
+/** A driver's native permission request, mapped to the shape the policy decides (FR-007). */
+export interface AccessRequest {
+  kind: "read" | "write" | "shell" | "memory" | "url" | "other";
+  path?: string;
+  command?: string;
+  url?: string;
+  detail?: string;
+  /** For `other`: the native kind, which names the rejection. */
+  tool?: string;
+}
+
+export interface AccessDecision {
+  approved: boolean;
+  feedback?: string;
   rejection?: Rejection;
   summary: string;
 }
@@ -120,19 +134,18 @@ const SHELL_FEEDBACK = "Shell commands are not available in this session. Highwa
  * Reads are also approved inside each read root, where the installed plugin's skills sit; a write
  * there is an outside write.
  */
-export function permissionPolicy(request: PermissionRequest, projectDir: string, web: boolean, readRoots: readonly string[] = []): PolicyDecision {
-  const r = request as unknown as Record<string, unknown>;
-  const approve: PermissionRequestResult = { kind: "approve-once" };
-  const reject = (kind: string, detail: string, fatal: boolean, feedback: string): PolicyDecision => ({
-    result: { kind: "reject", feedback },
+export function permissionPolicy(request: AccessRequest, projectDir: string, web: boolean, readRoots: readonly string[] = []): AccessDecision {
+  const reject = (kind: string, detail: string, fatal: boolean, feedback: string): AccessDecision => ({
+    approved: false,
+    feedback,
     rejection: { kind, detail, fatal },
     summary: `rejected ${kind}: ${detail}`,
   });
   switch (request.kind) {
     case "read": {
-      const path = String(r.resolvedPath ?? r.path ?? "");
+      const path = request.path ?? "";
       if (insideProject(projectDir, path) || readRoots.some((root) => insideProject(root, path))) {
-        return { result: approve, summary: `approved read: ${path}` };
+        return { approved: true, summary: `approved read: ${path}` };
       }
       const feedback =
         readRoots.length > 0
@@ -141,25 +154,27 @@ export function permissionPolicy(request: PermissionRequest, projectDir: string,
       return reject("read", path, false, feedback);
     }
     case "write": {
-      const path = String(r.resolvedPath ?? r.fileName ?? "");
-      if (insideProject(projectDir, path)) return { result: approve, summary: `approved write: ${path}` };
+      const path = request.path ?? "";
+      if (insideProject(projectDir, path)) return { approved: true, summary: `approved write: ${path}` };
       return reject("outside-write", path, true, "Writes outside the project are not available in this session.");
     }
     case "shell":
-      return reject("shell", String(r.fullCommandText ?? r.intention ?? "command"), true, SHELL_FEEDBACK);
+      return reject("shell", request.command ?? "command", true, SHELL_FEEDBACK);
     case "memory":
-      return reject("memory", String(r.fact ?? r.intention ?? "memory"), true, "Memory is not available in this session.");
+      return reject("memory", request.detail ?? "memory", true, "Memory is not available in this session.");
     case "url": {
-      const url = String(r.url ?? r.intention ?? "url");
-      if (web) return { result: approve, summary: `approved url: ${url}` };
+      const url = request.url ?? "url";
+      if (web) return { approved: true, summary: `approved url: ${url}` };
       return reject("url", url, false, "Web access is not available in this session.");
     }
-    default:
-      return reject(String(request.kind), String(r.toolName ?? r.intention ?? request.kind), false, "This tool is not available in this session.");
+    default: {
+      const tool = request.tool ?? "other";
+      return reject(tool, request.detail ?? tool, false, "This tool is not available in this session.");
+    }
   }
 }
 
-/** The part of the client's plugin RPC an install uses. */
+/** The part of an agent's plugin interface an install uses; each driver adapts its own to it. */
 export interface PluginRpc {
   install(params: { source: string; workingDirectory?: string }): Promise<{
     plugin: { name: string; enabled: boolean };
@@ -174,9 +189,9 @@ export interface PluginRpc {
 export type InstallOutcome = { ok: true; summary: string; notes: string[] } | { ok: false; message: string };
 
 /**
- * FR-013 and FR-021: installs the plugin into the attempt's agent home through the client's plugin
- * install. A throw, a warning, a skill count short of the build's, or a plugin left disabled fails
- * the attempt. A deprecation warning is only noted: every local-path install carries one.
+ * FR-010: installs the plugin into the attempt's agent home through the driver's plugin install.
+ * A throw, a warning, a skill count short of the build's, or a plugin left disabled fails the
+ * attempt. A deprecation warning is only noted: every local-path install carries one.
  */
 export async function installPlugin(rpc: PluginRpc, plugin: PluginSource, projectDir: string): Promise<InstallOutcome> {
   let installed: Awaited<ReturnType<PluginRpc["install"]>>;
@@ -207,13 +222,6 @@ export async function installPlugin(rpc: PluginRpc, plugin: PluginSource, projec
   };
 }
 
-/** A skill's own name: a plugin skill may be reported as `<plugin>:<skill>`. */
-export function skillName(data: Record<string, unknown>): string {
-  const name = String(data.name ?? data.skillName ?? "skill");
-  const plugin = typeof data.pluginName === "string" ? data.pluginName : "";
-  return plugin !== "" && name.startsWith(`${plugin}:`) ? name.slice(plugin.length + 1) : name;
-}
-
 export type StopKind = "rate-limit" | "allowance" | "no-access";
 
 /** Stops the run: no new scenario starts, and the run exits 2 (FR-036b). */
@@ -227,15 +235,15 @@ export class RunStop extends Error {
 
 export const RATE_LIMIT_WAITS_MS: readonly number[] = [5_000, 20_000, 60_000];
 
-const realSleep = (ms: number): Promise<void> => new Promise((done) => setTimeout(done, ms));
+export const realSleep = (ms: number): Promise<void> => new Promise((done) => setTimeout(done, ms));
 
 /** R11 and FR-036b: retry a rate-limited call after 5, 20, and 60 seconds; then stop the run. */
-export async function withRateLimit<T>(call: () => Promise<T>, sleep: (ms: number) => Promise<void> = realSleep, onWait?: (ms: number) => void): Promise<T> {
+export async function withRateLimit<T>(call: () => Promise<T>, classify: Classifier, sleep: (ms: number) => Promise<void> = realSleep, onWait?: (ms: number) => void): Promise<T> {
   for (let attempt = 0; ; attempt++) {
     try {
       return await call();
     } catch (error) {
-      const kind = classifyError(error);
+      const kind = classify(error);
       if (kind === "allowance") throw new RunStop("allowance", errorText(error));
       if (kind !== "rate-limit") throw error;
       if (attempt >= RATE_LIMIT_WAITS_MS.length) throw new RunStop("rate-limit", errorText(error));
@@ -244,232 +252,3 @@ export async function withRateLimit<T>(call: () => Promise<T>, sleep: (ms: numbe
     }
   }
 }
-
-class Timeout extends Error {}
-
-function usageFrom(data: Record<string, unknown>): Partial<Usage> {
-  const num = (v: unknown): number => (typeof v === "number" && Number.isFinite(v) ? v : 0);
-  return {
-    calls: 1,
-    inputTokens: num(data.inputTokens),
-    outputTokens: num(data.outputTokens),
-    cacheReadTokens: num(data.cacheReadTokens),
-    cacheWriteTokens: num(data.cacheWriteTokens),
-    cost: num(data.cost),
-  };
-}
-
-/** The Copilot SDK driver: one client and one session per attempt (FR-006, FR-007). */
-export const copilotDriver: Driver = async (options) => {
-  const { scenario, projectDir, log, raw } = options;
-  const sleep = options.sleep ?? realSleep;
-  const deadline = Date.now() + options.timeoutMs;
-  const rejected: Rejection[] = [];
-  const warnings: Warning[] = [];
-  const used = new Set<number>();
-  const skillsInvoked: string[] = [];
-  const skillsBeforeOutput: string[] = [];
-  let outputSeen = false;
-  const askedCount = new Map<string, number>();
-  let usage = emptyUsage();
-  let turn = 0;
-  let turnMessages: string[] = [];
-  let answeredAt = 0;
-  let unmatched: string | undefined;
-  let respent: DriveResult["respent"];
-  const answered = new Map<string, string>();
-
-  const noReply = (question: string): void => {
-    unmatched = question;
-    const reply = spentReply(question, answered);
-    if (reply !== undefined) respent = { question, reply };
-  };
-
-  const pickReply = async (message: string, question: string): Promise<number | undefined> => {
-    const decision = decide(message, scenario.replies, used);
-    if (decision.type === "reply") return decision.index;
-    const candidates = decision.type === "fallback" ? decision.candidates : nextUnused(scenario.replies, used);
-    if (candidates.length === 0) return undefined;
-    const picked = await options.pickFallback(message, candidates);
-    if (picked !== undefined) {
-      warnings.push({
-        kind: "paraphrased-question",
-        expected: keyText(scenario.replies[picked]),
-        actual: question,
-        message: `Paraphrased question at turn ${turn}: expected "${keyText(scenario.replies[picked])}", got "${question}"`,
-      });
-    }
-    return picked;
-  };
-
-  const client = new CopilotClient({
-    baseDirectory: options.copilotHome,
-    gitHubToken: options.token,
-    useLoggedInUser: false,
-    workingDirectory: projectDir,
-    logLevel: "error",
-  });
-  let session: CopilotSession | undefined;
-
-  const result = (outcome: DriveOutcome, extra: Partial<DriveResult> = {}): DriveResult => {
-    let repeated: DriveResult["repeated"];
-    for (const [question, count] of askedCount) if (count > 1 && (!repeated || count > repeated.count)) repeated = { question, count };
-    return {
-      outcome,
-      turns: turn,
-      rejected,
-      warnings,
-      usage,
-      usedReplies: [...used],
-      skillsInvoked,
-      skillsBeforeOutput,
-      unmatched,
-      respent,
-      repeated,
-      lastMessage: turnMessages.join("\n\n"),
-      ...extra,
-    };
-  };
-
-  try {
-    await withRateLimit(() => client.start(), sleep);
-    const installed = await installPlugin(client.rpc.plugins, options.plugin, projectDir);
-    if (!installed.ok) {
-      log({ turn, role: "system", text: installed.message });
-      return result("error", { error: { kind: "plugin-install", message: installed.message } });
-    }
-    log({ turn, role: "system", text: [installed.summary, ...installed.notes].join("\n") });
-    const readRoots = [join(options.copilotHome, "installed-plugins")];
-    session = await withRateLimit(
-      () =>
-        client.createSession({
-          model: options.model,
-          workingDirectory: projectDir,
-          clientName: "highway-harness",
-          enableConfigDiscovery: true,
-          enableSessionStore: false,
-          enableSessionTelemetry: false,
-          onPermissionRequest: (request) => {
-            const decision = permissionPolicy(request, projectDir, scenario.web, readRoots);
-            if (decision.rejection) rejected.push(decision.rejection);
-            if (!decision.rejection && request.kind === "read" && !outputSeen && !skillsBeforeOutput.includes(EXPERIENCE_SKILL)) {
-              const r = request as unknown as Record<string, unknown>;
-              if (isExperienceSkillRead(String(r.resolvedPath ?? r.path ?? ""))) skillsBeforeOutput.push(EXPERIENCE_SKILL);
-            }
-            log({ turn, role: "permission", text: decision.summary });
-            return decision.result;
-          },
-          onUserInputRequest: async (request) => {
-            outputSeen = true;
-            const question = request.question;
-            log({ turn, role: "question", text: [question, ...(request.choices ?? []).map((c, i) => `${i + 1}. ${c}`)].join("\n") });
-            const index = await pickReply(question, lastQuestion(question));
-            if (index === undefined) {
-              noReply(lastQuestion(question));
-              log({ turn, role: "answer", text: "(no keyed reply; the scenario fails here)" });
-              return { answer: "Stop here.", wasFreeform: true };
-            }
-            used.add(index);
-            const answer = scenario.replies[index].say;
-            answered.set(normalize(lastQuestion(question)), answer);
-            answeredAt = turnMessages.length;
-            log({ turn, role: "answer", text: answer });
-            return { answer, wasFreeform: !(request.choices ?? []).includes(answer) };
-          },
-        }),
-      sleep,
-    );
-
-    session.on((event) => {
-      raw(event);
-      const data = (event as { data?: Record<string, unknown> }).data ?? {};
-      switch (event.type) {
-        case "assistant.message":
-          if (!data.parentToolCallId && typeof data.content === "string" && data.content.trim() !== "") {
-            turnMessages.push(data.content);
-            if (!Array.isArray(data.toolRequests) || data.toolRequests.length === 0) outputSeen = true;
-          }
-          break;
-        case "assistant.usage":
-          usage = addUsage(usage, usageFrom(data));
-          break;
-        case "skill.invoked": {
-          const name = skillName(data);
-          skillsInvoked.push(name);
-          if (!outputSeen) skillsBeforeOutput.push(name);
-          log({ turn, role: "skill", text: `invoked ${name}` });
-          break;
-        }
-        case "session.error":
-          log({ turn, role: "system", text: `session error: ${String(data.message ?? data.errorType ?? "")}` });
-          break;
-      }
-    });
-
-    const stuck = (): DriveResult => result(respent ? "repeated-question" : "unmatched-question");
-    let message = scenario.open;
-    while (true) {
-      if (unmatched) return stuck();
-      if (turn >= options.maxTurns) return result("turn-limit");
-      const remaining = deadline - Date.now();
-      if (remaining <= 0) return result("timeout");
-      turn++;
-      turnMessages = [];
-      answeredAt = 0;
-      log({ turn, role: "user", text: message });
-
-      const prompt = message;
-      let timer: NodeJS.Timeout | undefined;
-      const timeout = new Promise<never>((_, fail) => {
-        timer = setTimeout(() => fail(new Timeout("attempt time limit")), remaining);
-      });
-      try {
-        const send = (): Promise<unknown> => withRateLimit(() => session!.sendAndWait({ prompt }, Math.max(1, deadline - Date.now())), sleep);
-        const retried = retryServiceError(send, () => {
-          log({ turn, role: "system", text: "retrying turn after service error" });
-          turnMessages = [];
-          answeredAt = 0;
-        });
-        await Promise.race([retried, timeout]);
-      } catch (error) {
-        if (error instanceof Timeout || /timeout|timed out/i.test(errorText(error))) return result("timeout");
-        throw error;
-      } finally {
-        clearTimeout(timer);
-      }
-
-      log({ turn, role: "agent", text: turnMessages.join("\n\n") });
-      if (unmatched) return stuck();
-
-      const text = textAfterAnswers(turnMessages, answeredAt);
-      const decision = decide(text, scenario.replies, used);
-      if (decision.type === "end") return result("ended");
-      const question = lastQuestion(text);
-      askedCount.set(question, (askedCount.get(question) ?? 0) + 1);
-      const index = decision.type === "reply" ? decision.index : await pickReply(text, question);
-      if (index === undefined) {
-        noReply(question);
-        return stuck();
-      }
-      used.add(index);
-      message = scenario.replies[index].say;
-      answered.set(normalize(question), message);
-    }
-  } catch (error) {
-    if (error instanceof RunStop) throw error;
-    const kind = classifyError(error);
-    if (kind === "no-access") throw new RunStop("no-access", errorText(error));
-    return result("error", { error: { kind, message: errorText(error) } });
-  } finally {
-    try {
-      await session?.disconnect();
-    } catch {
-      // A failed disconnect leaves nothing to clean in the project; the client stops next.
-    }
-    try {
-      await client.stop();
-    } catch {
-      // The temporary Copilot home is removed by the runner either way.
-    }
-  }
-};

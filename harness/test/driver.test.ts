@@ -3,14 +3,63 @@ import assert from "node:assert/strict";
 import { mkdirSync, mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import type { PermissionRequest } from "@github/copilot-sdk";
-import { installPlugin, permissionPolicy, skillName, type PluginRpc } from "../src/driver.ts";
+import type { PermissionRequest, PermissionRequestResult } from "@github/copilot-sdk";
+import { installPlugin, permissionPolicy as decide, type AccessDecision, type PluginRpc } from "../src/driver.ts";
+import { skillName, toAccessRequest, toPermissionResult } from "../src/drivers/copilot.ts";
 import type { PluginSource } from "../src/project.ts";
 
 const PLUGIN: PluginSource = { dir: "/repo/highway-agent-plugin", name: "highway", skills: 16 };
 
-const read = (path: string): PermissionRequest => ({ kind: "read", path }) as unknown as PermissionRequest;
-const write = (fileName: string): PermissionRequest => ({ kind: "write", fileName }) as unknown as PermissionRequest;
+const native = (fields: Record<string, unknown>): PermissionRequest => fields as unknown as PermissionRequest;
+const read = (path: string): PermissionRequest => native({ kind: "read", path });
+const write = (fileName: string): PermissionRequest => native({ kind: "write", fileName });
+
+/** A Copilot request through the neutral policy and back, as the driver decides it. */
+function permissionPolicy(request: PermissionRequest, projectDir: string, web: boolean, readRoots: readonly string[] = []): AccessDecision & { result: PermissionRequestResult } {
+  const decision = decide(toAccessRequest(request), projectDir, web, readRoots);
+  return { ...decision, result: toPermissionResult(decision) };
+}
+
+test("every Copilot request kind gets the same decision, rejection, summary, and feedback as before the neutral request", () => {
+  const work = mkdtempSync(join(tmpdir(), "harness-driver-"));
+  try {
+    const project = join(work, "project");
+    mkdirSync(project, { recursive: true });
+    const inside = join(project, "a.md");
+    const outside = join(work, "elsewhere.md");
+    const shellFeedback = "Shell commands are not available in this session. Highway skills read and write files only.";
+    const cases: [PermissionRequest, boolean, PermissionRequestResult, string, { kind: string; detail: string; fatal: boolean } | undefined][] = [
+      [native({ kind: "read", path: inside }), false, { kind: "approve-once" }, `approved read: ${inside}`, undefined],
+      [native({ kind: "read", path: "x", resolvedPath: inside }), false, { kind: "approve-once" }, `approved read: ${inside}`, undefined],
+      [native({ kind: "read", path: outside }), false, { kind: "reject", feedback: "Reads outside the project are not available in this session." }, `rejected read: ${outside}`, { kind: "read", detail: outside, fatal: false }],
+      [native({ kind: "write", fileName: inside }), false, { kind: "approve-once" }, `approved write: ${inside}`, undefined],
+      [native({ kind: "write", fileName: outside }), false, { kind: "reject", feedback: "Writes outside the project are not available in this session." }, `rejected outside-write: ${outside}`, { kind: "outside-write", detail: outside, fatal: true }],
+      [native({ kind: "shell", fullCommandText: "ls -la" }), false, { kind: "reject", feedback: shellFeedback }, "rejected shell: ls -la", { kind: "shell", detail: "ls -la", fatal: true }],
+      [native({ kind: "shell", intention: "list files" }), false, { kind: "reject", feedback: shellFeedback }, "rejected shell: list files", { kind: "shell", detail: "list files", fatal: true }],
+      [native({ kind: "memory", fact: "likes tea" }), false, { kind: "reject", feedback: "Memory is not available in this session." }, "rejected memory: likes tea", { kind: "memory", detail: "likes tea", fatal: true }],
+      [native({ kind: "url", url: "https://example.com" }), false, { kind: "reject", feedback: "Web access is not available in this session." }, "rejected url: https://example.com", { kind: "url", detail: "https://example.com", fatal: false }],
+      [native({ kind: "url", url: "https://example.com" }), true, { kind: "approve-once" }, "approved url: https://example.com", undefined],
+      [native({ kind: "mcp", toolName: "deploy" }), false, { kind: "reject", feedback: "This tool is not available in this session." }, "rejected mcp: deploy", { kind: "mcp", detail: "deploy", fatal: false }],
+      [native({ kind: "custom-tool", intention: "publish" }), false, { kind: "reject", feedback: "This tool is not available in this session." }, "rejected custom-tool: publish", { kind: "custom-tool", detail: "publish", fatal: false }],
+      [native({ kind: "hook" }), false, { kind: "reject", feedback: "This tool is not available in this session." }, "rejected hook: hook", { kind: "hook", detail: "hook", fatal: false }],
+    ];
+    for (const [request, web, result, summary, rejection] of cases) {
+      const decision = permissionPolicy(request, project, web);
+      assert.deepEqual(decision.result, result, summary);
+      assert.equal(decision.summary, summary);
+      assert.deepEqual(decision.rejection, rejection, summary);
+    }
+  } finally {
+    rmSync(work, { recursive: true, force: true });
+  }
+});
+
+test("a request of kind other is rejected, named by its native kind", () => {
+  const decision = decide({ kind: "other", tool: "computer", detail: "click" }, "/p", true);
+  assert.equal(decision.approved, false);
+  assert.deepEqual(decision.rejection, { kind: "computer", detail: "click", fatal: false });
+  assert.equal(decision.feedback, "This tool is not available in this session.");
+});
 
 test("reads are approved in the project and in a read root; writes only in the project", () => {
   const work = mkdtempSync(join(tmpdir(), "harness-driver-"));
