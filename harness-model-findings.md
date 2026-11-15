@@ -380,6 +380,32 @@ Every other scenario passed its first attempt in both runs. Each run had 9 rejec
 path with a dropped segment (F20), all in attempts that passed. In both runs the judge marked 6
 of codify-smoke's 7 bullets not met. The judge is advisory and did not fail the scenario.
 
+## Agent manifests smoke for spec 248
+
+One smoke run on `gpt-5.6-luna`, after the plugin gained a manifest for Claude Code, Codex,
+Cursor, Antigravity, and Gemini CLI beside its root `plugin.json`. Before it, the full suite passed
+87 of 87 and the harness unit tests 147 of 147. The run used no `--transcripts`. Its log is
+committed at `specs/248-agent-manifests/harness/smoke.log`; it is 63 KB and holds no token and no
+temporary path.
+
+| Run | Selection | Passed | Flaky | Failed | Blocked |
+| --- | --- | --- | --- | --- | --- |
+| `20261114-203043Z-smoke-557dddb` | `--smoke` (16) | 14 | 1 | 2 | 0 |
+
+Passed includes flaky. All 19 attempts reported `installed plugin highway (16 skills)`, so Copilot
+still reads the root `plugin.json` with the other manifests present, and no attempt failed with
+`plugin-install`.
+
+| Scenario | Attempt 1 | Attempt 2 | Findings |
+| --- | --- | --- | --- |
+| discovery-smoke | assertion (Example Realization Matrix without its header row) | same | F18 |
+| onboarding-smoke | assertion (ADR without `## Decision Confidence`) | unmatched-question (a Continue or Stop choice the skill does not ask) | F18, F25 |
+| setup-smoke | rejected-request (write to `requests/requests.md` with the temporary folder segment dropped) | pass | F20 |
+
+Every other scenario passed its first attempt. Five reads were rejected at a path with a dropped
+segment (F20), all in attempts that passed. The judge marked 6 of codify-smoke's 7 bullets not
+met, as in spec 247; it is advisory and did not fail the scenario.
+
 # Harness Failures
 
 Resolved findings are removed: S1 in spec 242; F2, F4, F6, F9, F10, F11, F12, F13, and F14 in
@@ -400,6 +426,7 @@ confirming run ids are in the final runs sections above.
 - Plugin install smoke (GPT-5.6 Luna) `20261113-141852Z-smoke-be6a1d0`: discovery-smoke (both attempts)
 - Plugin install smoke (GPT-5.6 Luna) `20261113-142757Z-smoke-be6a1d0`: discovery-smoke (both attempts)
 - Groundwork smoke (GPT-5.6 Luna) `20261114-121007Z-smoke-40844ce`: discovery-smoke (both attempts), codify-smoke (attempt 1)
+- Agent manifests smoke (GPT-5.6 Luna) `20261114-203043Z-smoke-557dddb`: discovery-smoke (both attempts), onboarding-smoke (attempt 1)
 
 **Category**: Skill
 
@@ -415,6 +442,10 @@ header row.
 Spec 247's second groundwork run shows it in highway-codify too. codify-smoke attempt 1 wrote
 `plan.md` with no `## Decisions` heading, where `assets/codify-plan.md` says Decisions reads
 `None` when nothing was left open. Attempt 2 kept it.
+
+Spec 248's run shows both discovery-smoke attempts again with the same Example Realization Matrix
+case. onboarding-smoke attempt 1 wrote its ADR, through highway-adr, without the
+`## Decision Confidence` heading. Attempt 2 failed earlier, on F25.
 
 **Proposed resolution**: Fix in the skill, in highway-discovery `references/options.md`. After the keep-every-heading bullet, name the case: "Under `## Example Realization Matrix`, keep its header row even when there are no examples. Write `None` after it."
 
@@ -544,6 +575,7 @@ Not seen in spec 244's final runs: chain-implementation and implementation-onboa
 - Plugin install smoke (GPT-5.6 Luna) `20261113-141852Z-smoke-be6a1d0`: setup-smoke (attempt 1)
 - Plugin install smoke (GPT-5.6 Luna) `20261113-142757Z-smoke-be6a1d0`: codify-smoke (attempt 2)
 - Groundwork smoke (GPT-5.6 Luna) `20261114-115258Z-smoke-40844ce` and `20261114-121007Z-smoke-40844ce`: 9 rejected reads each, all in attempts that passed
+- Agent manifests smoke (GPT-5.6 Luna) `20261114-203043Z-smoke-557dddb`: setup-smoke (attempt 1, a rejected write to `requests/requests.md` with the temporary folder segment dropped), and 5 rejected reads in attempts that passed, at installed-plugin paths without `homes/<attempt>/` and at skill paths with no plugin folder
 
 **Category**: Model
 
@@ -599,7 +631,7 @@ Not seen in spec 244's final runs: setup-smoke and chain-setup pass, and every P
 
 ## F25: A question the skill does not ask, put through the input tool
 
-**Skill**: highway-codify, highway-implementation (through highway-codify), highway-adr
+**Skill**: highway-codify, highway-implementation (through highway-codify), highway-adr, highway-onboarding
 
 **Runs**:
 
@@ -607,6 +639,7 @@ Not seen in spec 244's final runs: setup-smoke and chain-setup pass, and every P
 - Spec 244 final `20261113-064237Z-targeted-42a0569`: codify-needed-language attempt 1
 - Plugin install smoke (GPT-5.6 Luna) `20261113-141852Z-smoke-be6a1d0`: adr-smoke (attempt 1)
 - Plugin install smoke (GPT-5.6 Luna) `20261113-142757Z-smoke-be6a1d0`: codify-smoke (attempt 1)
+- Agent manifests smoke (GPT-5.6 Luna) `20261114-203043Z-smoke-557dddb`: onboarding-smoke (attempt 2)
 
 **Category**: Model
 
@@ -618,6 +651,10 @@ Spec 246's plugin runs add two. adr-smoke asked "If this proposal is accurate, s
 it?" with Accept, Edit, Ask a question, and Decline, after the option was chosen. codify-smoke
 asked "should the workflow send the warehouse lead an explicit 'no restock needed' email?" with
 two choices, the same question codify-no-governance asked in spec 243.
+
+Spec 248's run adds onboarding. Before its opening, onboarding-smoke attempt 2 asked "Would you
+like to continue to the technology capability starting point?" with Continue and Stop. The
+harness gave no reply, and Luna showed the opening and stopped without writing anything.
 
 **Proposed resolution**: Investigate before changing anything. Check whether highway-experience's experience standard says a skill's question is asked in its own words and not through a choice list. If it does, this is a model rule break to watch. If it does not, decide whether it should.
 

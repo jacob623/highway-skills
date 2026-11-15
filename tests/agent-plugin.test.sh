@@ -1,13 +1,15 @@
 #!/usr/bin/env bash
 # Tests the Agent Plugins build of the skills, highway-agent-plugin/ (Phase 16):
 #
-#   - the committed folder holds exactly the shipped set: plugin.json, skills/, README.md, LICENSE;
+#   - the committed folder holds exactly the shipped set: plugin.json, the five agent manifests,
+#     skills/, assets/, README.md, LICENSE;
 #   - each plugin skill is byte-identical to its source, and the README names every skill;
 #   - no development path or repository path reaches the plugin;
 #   - the committed folder passes framework/validate-plugin.sh and matches a fresh build;
-#   - two builds are byte-identical, and the generator refuses a folder it did not produce and
-#     writes nothing when a skill is invalid;
-#   - --check names each stale, extra, and missing file;
+#   - two builds are byte-identical, a changed shared field reaches every manifest and nothing
+#     else, and the generator refuses a folder it did not produce and writes nothing when a skill
+#     or the listing file is invalid;
+#   - --check names each stale, extra, and missing file, and a hand-edited manifest;
 #   - the validator fails on a seeded defect of each kind it checks;
 #   - the distribution excludes the plugin.
 #
@@ -56,8 +58,12 @@ source_skills() {
 
 # --- The shipped set ---------------------------------------------------------------------------
 entries="$(cd "$HW_PLUGIN" && find . -mindepth 1 -maxdepth 1 | sed 's|^\./||' | LC_ALL=C sort | tr '\n' ' ')"
-[[ "$entries" == "LICENSE README.md plugin.json skills " ]] \
-	|| problem "$PLUGIN_NAME/ holds '$entries'; expected exactly LICENSE, README.md, plugin.json, skills"
+[[ "$entries" == ".antigravity-plugin .claude-plugin .codex-plugin .cursor-plugin LICENSE README.md assets gemini-extension.json plugin.json skills " ]] \
+	|| problem "$PLUGIN_NAME/ holds '$entries'; expected exactly the five agent manifests, LICENSE, README.md, assets, plugin.json, skills"
+for folder in .antigravity-plugin .claude-plugin .codex-plugin .cursor-plugin; do
+	held="$(cd "$HW_PLUGIN/$folder" 2>/dev/null && find . -mindepth 1 | sed 's|^\./||' | tr '\n' ' ')"
+	[[ "$held" == "plugin.json " ]] || problem "$PLUGIN_NAME/$folder holds '$held'; expected only plugin.json"
+done
 
 plugin_skills="$(cd "$HW_PLUGIN_SKILLS" 2>/dev/null && find . -mindepth 1 -maxdepth 1 | sed 's|^\./||' | LC_ALL=C sort)"
 [[ "$plugin_skills" == "$(source_skills)" ]] \
@@ -71,7 +77,7 @@ while IFS= read -r id; do
 		|| problem "$(hw_rel "$HW_PLUGIN_SOURCE")/README.md does not name the skill $id"
 done < <(source_skills)
 
-for file in plugin.json README.md LICENSE; do
+for file in plugin.json README.md LICENSE assets/logo.svg; do
 	diff -q "$HW_PLUGIN_SOURCE/$file" "$HW_PLUGIN/$file" >/dev/null 2>&1 \
 		|| problem "$PLUGIN_NAME/$file is not a copy of $(hw_rel "$HW_PLUGIN_SOURCE")/$file"
 done
@@ -104,12 +110,14 @@ cp -R "$HW_PLUGIN" "$(hw_at "$repo" "$HW_PLUGIN")"
 copy_generate="$(hw_at "$repo" "$GENERATE")"
 copy_plugin="$(hw_at "$repo" "$HW_PLUGIN")"
 copy_skills="$(hw_at "$repo" "$HW_SKILLS")"
+copy_source="$(hw_at "$repo" "$HW_PLUGIN_SOURCE")"
 pristine="$tmp_root/pristine"
 cp -R "$HW_PLUGIN" "$pristine"
 
 restore_copy() {
-	rm -rf "$copy_plugin" "$copy_skills"
+	rm -rf "$copy_plugin" "$copy_skills" "$copy_source"
 	cp -R "$HW_SKILLS" "$copy_skills"
+	cp -R "$HW_PLUGIN_SOURCE" "$copy_source"
 	cp -R "$pristine" "$copy_plugin"
 }
 
@@ -145,6 +153,42 @@ fi
 [[ "$(tail -n 1 "$copy_plugin/LICENSE")" == "stale" ]] || problem "the generator wrote the plugin although a skill was invalid"
 restore_copy
 
+# A changed shared field reaches every manifest, and nothing else changes.
+sed 's|"description": "Highway: |"description": "Changed: |' "$HW_PLUGIN_SOURCE/plugin.json" >"$copy_source/plugin.json"
+if bash "$copy_generate" >/dev/null 2>&1; then
+	changed="$(diff -rq "$pristine" "$copy_plugin" 2>&1 | sed -n "s|^Files $pristine/\(.*\) and .* differ$|\1|p" | LC_ALL=C sort | tr '\n' ' ')"
+	[[ "$changed" == ".antigravity-plugin/plugin.json .claude-plugin/plugin.json .codex-plugin/plugin.json .cursor-plugin/plugin.json gemini-extension.json plugin.json " ]] \
+		|| problem "a changed description changed '$changed'; expected exactly the six manifests"
+	[[ "$(diff -rq "$pristine" "$copy_plugin" 2>&1 | grep -vc '^Files ')" -eq 0 ]] \
+		|| problem "a changed description added or removed a file in the plugin"
+else
+	problem "building the plugin with a changed description failed"
+fi
+restore_copy
+
+# An invalid listing file stops the build before anything is written, and fails --check.
+# Usage: expect_listing_error <label> <sed expression> <field>
+expect_listing_error() {
+	local label="$1" expr="$2" field="$3" out
+	sed "$expr" "$HW_PLUGIN_SOURCE/listing.json" >"$copy_source/listing.json"
+	if out="$(bash "$copy_generate" 2>&1)"; then
+		problem "the generator built the plugin with $label"
+	elif ! printf '%s\n' "$out" | grep -q "^ERROR: \[LISTING\] $field:"; then
+		problem "the generator did not name $field for $label: $(printf '%s' "$out" | tr '\n' '|')"
+	fi
+	diff -r "$pristine" "$copy_plugin" >/dev/null 2>&1 || problem "the generator wrote the plugin although $label"
+	if out="$(bash "$copy_generate" --check 2>&1)"; then
+		problem "--check passed with $label"
+	elif ! printf '%s\n' "$out" | grep -q "^ERROR: \[LISTING\] $field:"; then
+		problem "--check did not name $field for $label: $(printf '%s' "$out" | tr '\n' '|')"
+	fi
+	restore_copy
+}
+expect_listing_error "a shared field in the listing file" \
+	's|"logo": "assets/logo.svg"$|"logo": "assets/logo.svg", "homepage": "https://example.com"|' 'cursor\.homepage'
+expect_listing_error "a derived field in the listing file" \
+	's|"category"|"websiteURL": "https://example.com", "category"|' 'codex\.interface\.websiteURL'
+
 # --check names each kind of drift.
 # Usage: expect_drift <label> <kind> <path>
 expect_drift() {
@@ -162,6 +206,8 @@ printf 'extra\n' >"$copy_plugin/NOTES.md"
 expect_drift "an extra top-level file" extra NOTES.md
 printf 'extra\n' >"$copy_plugin/$SKILLS_REL/highway-help/notes.md"
 expect_drift "an extra file inside a skill" extra skills/highway-help/notes.md
+printf ' ' >>"$copy_plugin/.codex-plugin/plugin.json"
+expect_drift "a hand-edited manifest" differs .codex-plugin/plugin.json
 rm -f "$copy_plugin/LICENSE"
 expect_drift "a missing file" missing LICENSE
 rm -rf "$copy_plugin"
@@ -185,6 +231,10 @@ expect_invalid() {
 }
 manifest_with() {
 	sed "$1" "$HW_PLUGIN/plugin.json" >"$case_dir/plugin.json"
+}
+# Usage: file_with <path in the plugin> <sed expression>
+file_with() {
+	sed "$2" "$HW_PLUGIN/$1" >"$case_dir/$1"
 }
 
 new_case no-name
@@ -216,11 +266,11 @@ manifest_with 's|"version": "0.1.0"|"version": 1|'
 expect_invalid "a version that is not a string" '^ERROR: \[MANIFEST\] version:'
 
 new_case author
-manifest_with 's|^{$|{ "author": { "nick": "x" },|'
+manifest_with 's|"name": "Highway"|"nick": "Highway"|'
 expect_invalid "an author field outside name, email, and url" '^ERROR: \[MANIFEST\] author'
 
 new_case keywords
-manifest_with 's|^{$|{ "keywords": [1],|'
+manifest_with 's|"governance"|1|'
 expect_invalid "keywords that are not strings" '^ERROR: \[MANIFEST\] keywords:'
 
 new_case extensions
@@ -248,6 +298,50 @@ expect_invalid "a skill folder without SKILL.md" '^ERROR: \[LAYOUT\] skills/empt
 new_case invalid-skill
 sed 's/^name: highway-help$/name: highway-helpx/' "$HW_PLUGIN_SKILLS/highway-help/SKILL.md" >"$case_dir/$SKILLS_REL/highway-help/SKILL.md"
 expect_invalid "a skill that fails Agent Skills validation" '^ERROR: \[SKILL\] skills/highway-help:'
+
+new_case no-agent-manifest
+rm -f "$case_dir/.claude-plugin/plugin.json"
+expect_invalid "a missing agent manifest" '^ERROR: \[AGENT\] \.claude-plugin/plugin\.json: is missing'
+
+new_case agent-required
+file_with .cursor-plugin/plugin.json '/"license":/d'
+expect_invalid "an agent manifest missing a required field" '^ERROR: \[AGENT\] \.cursor-plugin/plugin\.json: license: is required'
+
+new_case agent-shared
+file_with .claude-plugin/plugin.json 's|"version": "0.1.0"|"version": "0.2.0"|'
+expect_invalid "a shared field that differs from plugin.json" '^ERROR: \[AGENT\] \.claude-plugin/plugin\.json: version: must equal'
+
+new_case agent-derived
+file_with .codex-plugin/plugin.json 's|"websiteURL": "[^"]*"|"websiteURL": "https://example.com"|'
+expect_invalid "a derived field that differs from plugin.json" '^ERROR: \[AGENT\] \.codex-plugin/plugin\.json: interface\.websiteURL: must equal'
+
+new_case agent-skills
+file_with .codex-plugin/plugin.json 's|"skills": "./skills/"|"skills": "./skill/"|'
+expect_invalid "a skills path that leads nowhere" '^ERROR: \[AGENT\] \.codex-plugin/plugin\.json: skills:'
+
+new_case agent-logo
+rm -f "$case_dir/assets/logo.svg"
+expect_invalid "a logo path that names no file" '^ERROR: \[AGENT\] \.cursor-plugin/plugin\.json: logo:'
+
+new_case agent-forbidden
+file_with .claude-plugin/plugin.json 's|^{$|{ "hooks": {},|'
+expect_invalid "a hooks declaration" '^ERROR: \[AGENT\] \.claude-plugin/plugin\.json: hooks: is not accepted'
+
+new_case agent-context
+file_with gemini-extension.json 's|^{$|{ "contextFileName": "GEMINI.md",|'
+expect_invalid "a context file" '^ERROR: \[AGENT\] gemini-extension\.json: contextFileName: is not accepted'
+
+new_case unlisted
+printf 'extra\n' >"$case_dir/NOTES.md"
+expect_invalid "a top-level file outside the shipped set" '^ERROR: \[LAYOUT\] NOTES\.md: is not in the shipped set'
+
+new_case agent-folder-extra
+printf 'extra\n' >"$case_dir/.claude-plugin/notes.md"
+expect_invalid "an extra file in an agent folder" '^ERROR: \[LAYOUT\] \.claude-plugin/notes\.md: is not in the shipped set'
+
+new_case unnamed-asset
+printf 'extra\n' >"$case_dir/assets/old.png"
+expect_invalid "an asset no manifest names" '^ERROR: \[LAYOUT\] assets/old\.png: is not named by any manifest'
 
 if [[ $fail -eq 0 ]]; then
 	echo "OK: agent-plugin"

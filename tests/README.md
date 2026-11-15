@@ -13,8 +13,10 @@ Feature 038 adds separate evidence classes:
 
 The canonical behavior sources remain under `skills/`. Generated agent trees, catalogs, and the
 Agent Plugins build in `highway-agent-plugin/` are validation targets and must not be edited
-directly. `agent-plugin.test.sh` checks the plugin's shipped set, its currency, the generator's
-refusals, and `framework/validate-plugin.sh` against a seeded defect of each kind; it works in a
+directly. `agent-plugin.test.sh` checks the plugin's shipped set, including the five agent
+manifests and the logo, its currency, that a changed shared field reaches every manifest and
+nothing else, the generator's refusals (including a listing file that repeats a shared or derived
+field), and `framework/validate-plugin.sh` against a seeded defect of each kind; it works in a
 copy of the repository, so it never writes the working tree. Shared Feature 038 fixture operations live
 in `feature-038-helpers.sh`.
 

@@ -15,6 +15,9 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/paths.sh"
 # Assembled so this file does not name the folder it forbids.
 TOKEN=".""highway"
+# The folder name starts a path segment; inside a host name such as www.highway.systems it is not
+# the folder.
+TOKEN_NAMED='(^|[^A-Za-z0-9_])[.]highway'
 # Assembled because shipped-tree-independence.test.sh scans this file for development-folder tokens.
 DEV_CONSTITUTION=".""specify/memory/constitution.md"
 # A code product's records keep the folder name inside the product (code/<folder>/.highway/).
@@ -49,7 +52,7 @@ check_skill() {
 		rel="${f#"$dir"/}"
 		grep -nE '\.\./|skills/highway-|(^|[^A-Za-z0-9_.-])(framework|tests|harness)/' "$f" \
 			| sed "s#^#$name: $rel:#; s#\$# -- names a path outside the skill#"
-		grep -nF "$TOKEN" "$f" | grep -vE "$CODE_PRODUCT" \
+		grep -nE "$TOKEN_NAMED" "$f" | grep -vE "$CODE_PRODUCT" \
 			| sed "s#^#$name: $rel:#; s#\$# -- names $TOKEN outside a code product#"
 	done
 }
@@ -80,7 +83,7 @@ check_root() {
 		case "$f" in
 		*/constitution.md) strip_history "$root/$f" ;;
 		*) cat "$root/$f" ;;
-		esac | grep -nF "$TOKEN" | grep -vE "$CODE_PRODUCT" | sed "s#^#$f:#"
+		esac | grep -nE "$TOKEN_NAMED" | grep -vE "$CODE_PRODUCT" | sed "s#^#$f:#"
 	done < <(cd "$root" && find framework tests harness README.md "$DEV_CONSTITUTION" \
 		\( -name node_modules -o -name .git \) -prune -o -type f -print 2>/dev/null | LC_ALL=C sort)
 }
@@ -143,11 +146,16 @@ probe "setup copy" "$setup_out" "assets/unseeded.md is named but is not a seeded
 mkdir -p "$WORK/root/$TOKEN" "$WORK/root/framework" "$WORK/root/tests"
 printf 'Read %s/catalog/index.json.\n' "$TOKEN" >"$WORK/root/framework/tool.sh"
 printf 'The product keeps code/x/%s/metadata.md.\n' "$TOKEN" >"$WORK/root/tests/ok.sh"
+printf '{ "homepage": "https://www%s.systems" }\n' "$TOKEN" >"$WORK/root/framework/site.json"
 root_out="$(check_root "$WORK/root")"
 probe "root folder" "$root_out" "$TOKEN/ exists at the repository root"
 probe "live file" "$root_out" "framework/tool.sh:1:"
 if [[ "$root_out" == *"tests/ok.sh"* ]]; then
 	echo "FAIL: probe 'code product' -- a code product's record path was reported"
+	fail=1
+fi
+if [[ "$root_out" == *"framework/site.json"* ]]; then
+	echo "FAIL: probe 'host name' -- a host name holding the folder name was reported"
 	fail=1
 fi
 
