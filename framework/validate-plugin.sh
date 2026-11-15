@@ -1,12 +1,19 @@
 #!/usr/bin/env bash
-# Validates one plugin folder against Agent Plugins 1.0.0, then validates each of its skills against
+# Validates one plugin folder against Agent Plugins 1.0.0, checks each agent manifest beside its
+# plugin.json and the closed list of shipped entries, then validates each of its skills against
 # Agent Skills through framework/validate-skill.sh.
+#
+# Each agent manifest (.claude-plugin/, .codex-plugin/, .cursor-plugin/, .antigravity-plugin/, and
+# gemini-extension.json) must exist, hold only the keys its format accepts, carry every shared field
+# its format accepts with the plugin.json value, and point its skills and logo paths at files in the
+# plugin. The formats are defined once, in lib/plugin-manifest.sh.
 #
 # Usage: framework/validate-plugin.sh <plugin-dir>
 #
-# Prints one line per finding, manifest first, then layout, then skills:
+# Prints one line per finding: the manifest, the agent manifests, the layout, then skills:
 #   ERROR: [MANIFEST] <field or file>: <problem> (Agent Plugins §<clause>)
-#   ERROR: [LAYOUT] <relative path>: <problem> (Agent Plugins §<clause>)
+#   ERROR: [AGENT] <manifest>: <field>: <problem>
+#   ERROR: [LAYOUT] <relative path>: <problem>[ (Agent Plugins §<clause>)]
 #   ERROR: [SKILL] skills/<name>: <first validator ERROR line>
 # then "OK: <plugin-dir> (<n> skill(s))" or "FAIL: <plugin-dir> (<k> finding(s))".
 #
@@ -52,6 +59,15 @@ else
 		[[ -n "$line" ]] && report "${line#ERROR: }"
 	done <<<"$out"
 fi
+
+out="$(pm_check_agents "$plugin" "$SKILLS_REL")"
+if [[ $? -eq 2 ]]; then
+	echo "ERROR: [AGENT] the agent manifest check failed: framework/validate-plugin.sh needs python3"
+	exit 2
+fi
+while IFS= read -r line; do
+	[[ -n "$line" ]] && report "${line#ERROR: }"
+done <<<"$out"
 
 while IFS= read -r link; do
 	[[ -n "$link" ]] && report "[LAYOUT] ${link#"$plugin"/}: is a symbolic link, which may resolve outside the plugin root (Agent Plugins §4.1)"

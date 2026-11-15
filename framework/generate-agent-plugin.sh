@@ -2,18 +2,24 @@
 # Builds highway-agent-plugin/, the Agent Plugins 1.0.0 plugin of the skills (Phase 16), or checks
 # that the committed folder matches a fresh build.
 #
-# The plugin holds exactly plugin.json, README.md, and LICENSE, copied from framework/plugin/, and
-# skills/<id>/ for each skill under skills/, with every file except dotfiles. The generator owns
+# The plugin holds plugin.json, README.md, LICENSE, and assets/, copied from framework/plugin/;
+# skills/<id>/ for each skill under skills/, with every file except dotfiles; and one manifest per
+# agent format (.claude-plugin/, .codex-plugin/, .cursor-plugin/, .antigravity-plugin/, and
+# gemini-extension.json), rendered by lib/plugin-manifest.sh from plugin.json, which holds the
+# shared fields, and listing.json, which holds the fields only one agent reads. The generator owns
 # the folder whole: a build replaces it, and refuses when the folder exists but its plugin.json is
-# missing or does not name highway. Files are copied with cp in LC_ALL=C order, and nothing in the
-# output depends on time or the host, so two builds from unchanged sources are byte-identical.
+# missing or does not name highway. Files are copied with cp in LC_ALL=C order, manifests are
+# rendered in a fixed key order, and nothing in the output depends on time or the host, so two
+# builds from unchanged sources are byte-identical.
 #
 # Usage:
 #   framework/generate-agent-plugin.sh            build highway-agent-plugin/
 #   framework/generate-agent-plugin.sh --check    compare highway-agent-plugin/ with a fresh build
 #
-# Build exit 0: the plugin was written. Exit 1: a skill failed validation or the target was not
-# produced by this generator; nothing was written.
+# Both modes first check listing.json and print one "ERROR: [LISTING] <agent>.<field>: <problem>"
+# line per finding, such as a shared field it repeats; then they exit 1 with nothing written.
+# Build exit 0: the plugin was written. Exit 1: the listing file or a skill failed validation, or
+# the target was not produced by this generator; nothing was written.
 # Check exit 0: no difference. Exit 1: one "DRIFT<TAB><differs|missing|extra><TAB><path>" line per
 # difference, sorted, then the command that rebuilds the plugin. Check mode writes only under
 # ${TMPDIR:-/tmp}.
@@ -22,6 +28,8 @@ set -u
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=lib/paths.sh
 source "$SCRIPT_DIR/lib/paths.sh"
+# shellcheck source=lib/plugin-manifest.sh
+source "$HW_LIB/plugin-manifest.sh"
 
 mode="build"
 case "${1:-}" in
@@ -36,6 +44,8 @@ esac
 PLUGIN_NAME="$(basename "$HW_PLUGIN")"
 SKILLS_REL="${HW_PLUGIN_SKILLS#"$HW_PLUGIN"/}"
 SHIPPED_FILES=(plugin.json README.md LICENSE)
+SHIPPED_FOLDERS=(assets)
+LISTING="$HW_PLUGIN_SOURCE/listing.json"
 
 # Prints every file in a folder, relative to it, in a fixed order. Dotfiles are not skill content.
 skill_files() {
@@ -54,6 +64,13 @@ build_into() {
 	for file in "${SHIPPED_FILES[@]}"; do
 		cp "$HW_PLUGIN_SOURCE/$file" "$dest/$file"
 	done
+	for dir in "${SHIPPED_FOLDERS[@]}"; do
+		while IFS= read -r file; do
+			mkdir -p "$(dirname "$dest/$dir/$file")"
+			cp "$HW_PLUGIN_SOURCE/$dir/$file" "$dest/$dir/$file"
+		done < <(skill_files "$HW_PLUGIN_SOURCE/$dir")
+	done
+	pm_render "$HW_PLUGIN_SOURCE/plugin.json" "$LISTING" "$dest" || return 1
 	for dir in "$HW_SKILLS"/*/; do
 		dir="${dir%/}"
 		[[ -f "$dir/SKILL.md" ]] || continue
@@ -65,6 +82,16 @@ build_into() {
 	done
 }
 
+pm_listing_check "$HW_PLUGIN_SOURCE/plugin.json" "$LISTING"
+case $? in
+	0) ;;
+	1) exit 1 ;;
+	*)
+		echo "ERROR: framework/generate-agent-plugin.sh needs python3 to render the agent manifests" >&2
+		exit 1
+		;;
+esac
+
 if [[ "$mode" == "check" ]]; then
 	if [[ ! -d "$HW_PLUGIN" ]]; then
 		printf 'DRIFT\tmissing\t.\n'
@@ -73,7 +100,7 @@ if [[ "$mode" == "check" ]]; then
 	fi
 	work="$(mktemp -d "${TMPDIR:-/tmp}/agent-plugin-check.XXXXXX")"
 	trap 'rm -rf "$work"' EXIT
-	build_into "$work/$PLUGIN_NAME"
+	build_into "$work/$PLUGIN_NAME" || exit 1
 	tree_files "$work/$PLUGIN_NAME" >"$work/expected"
 	tree_files "$HW_PLUGIN" >"$work/actual"
 	{
@@ -114,7 +141,7 @@ fi
 staging="$(dirname "$HW_PLUGIN")/.$PLUGIN_NAME.build.$$"
 trap 'rm -rf "$staging"' EXIT
 rm -rf "$staging"
-build_into "$staging"
+build_into "$staging" || exit 1
 rm -rf "$HW_PLUGIN"
 mv "$staging" "$HW_PLUGIN"
 

@@ -1,0 +1,28 @@
+{
+  "$schema": "https://antigravity.google/schemas/v1/plugin.json",
+  "name": "highway",
+  "version": "0.1.0",
+  "description": "Highway: Git-native governance, architecture, traceability, and platform engineering skills that carry business intent through decisions, architectures, and implementations to working code.",
+  "author": {
+    "name": "Highway",
+    "url": "https://www.highway.systems"
+  },
+  "homepage": "https://www.highway.systems",
+  "repository": "https://github.com/jacob623/highway-skills",
+  "license": "Apache-2.0",
+  "keywords": [
+    "governance",
+    "architecture",
+    "adr",
+    "traceability",
+    "platform-engineering",
+    "agent-skills"
+  ],
+  "displayName": "Highway",
+  "logo": "assets/logo.svg",
+  "suggestedPrompts": [
+    "Set up Highway in this repository",
+    "Record a new business request",
+    "Show me the Highway skills I can run"
+  ]
+}

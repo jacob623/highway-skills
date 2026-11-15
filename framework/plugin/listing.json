@@ -1,0 +1,34 @@
+{
+  "codex": {
+    "interface": {
+      "displayName": "Highway",
+      "shortDescription": "Governance, architecture, and traceability skills",
+      "longDescription": "Carry business intent from a request to working code. Highway records objectives, controls, and NFRs, explores options, records architecture decisions, and produces reference architectures, implementations, and code, each traced to the decisions and requirements behind it.",
+      "category": "Developer Tools",
+      "capabilities": [
+        "Interactive",
+        "Read",
+        "Write"
+      ],
+      "defaultPrompt": [
+        "Set up Highway in this repository",
+        "Record a new business request",
+        "Show me the Highway skills I can run"
+      ],
+      "composerIcon": "./assets/logo.svg",
+      "logo": "./assets/logo.svg"
+    }
+  },
+  "cursor": {
+    "logo": "assets/logo.svg"
+  },
+  "antigravity": {
+    "displayName": "Highway",
+    "logo": "assets/logo.svg",
+    "suggestedPrompts": [
+      "Set up Highway in this repository",
+      "Record a new business request",
+      "Show me the Highway skills I can run"
+    ]
+  }
+}

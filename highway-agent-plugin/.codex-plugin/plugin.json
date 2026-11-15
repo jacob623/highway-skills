@@ -1,0 +1,41 @@
+{
+  "name": "highway",
+  "version": "0.1.0",
+  "description": "Highway: Git-native governance, architecture, traceability, and platform engineering skills that carry business intent through decisions, architectures, and implementations to working code.",
+  "author": {
+    "name": "Highway",
+    "url": "https://www.highway.systems"
+  },
+  "homepage": "https://www.highway.systems",
+  "repository": "https://github.com/jacob623/highway-skills",
+  "license": "Apache-2.0",
+  "keywords": [
+    "governance",
+    "architecture",
+    "adr",
+    "traceability",
+    "platform-engineering",
+    "agent-skills"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Highway",
+    "shortDescription": "Governance, architecture, and traceability skills",
+    "longDescription": "Carry business intent from a request to working code. Highway records objectives, controls, and NFRs, explores options, records architecture decisions, and produces reference architectures, implementations, and code, each traced to the decisions and requirements behind it.",
+    "developerName": "Highway",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Interactive",
+      "Read",
+      "Write"
+    ],
+    "websiteURL": "https://www.highway.systems",
+    "defaultPrompt": [
+      "Set up Highway in this repository",
+      "Record a new business request",
+      "Show me the Highway skills I can run"
+    ],
+    "composerIcon": "./assets/logo.svg",
+    "logo": "./assets/logo.svg"
+  }
+}

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-label="Highway">
+  <title>Highway</title>
+  <rect width="512" height="512" rx="96" fill="#1f2937"/>
+  <path d="M176 400 L224 112 M336 400 L288 112" stroke="#f9fafb" stroke-width="24" stroke-linecap="round"/>
+  <path d="M256 368 V336 M256 288 V256 M256 208 V176" stroke="#facc15" stroke-width="16" stroke-linecap="round"/>
+  <text x="256" y="472" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="56" font-weight="700" fill="#f9fafb">Highway</text>
+</svg>

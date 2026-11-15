@@ -10,7 +10,8 @@ content is never duplicated or hand-adapted per agent.
 skills/                Skill sources, one directory per skill
 framework/             Validators, generators, and the rules every skill is validated against
 tests/                 The bash test suite for the framework
-highway-agent-plugin/  The Agent Plugins build of the skills, generated from skills/
+highway-agent-plugin/  The Agent Plugins build of the skills, with each agent's manifest, generated
+                       from skills/ and framework/plugin/
 ```
 
 Each skill is self-contained: it reads only its own folder. Whatever it needs beyond `SKILL.md`
@@ -172,33 +173,81 @@ no namespace prefix of its own.
 ### `framework/generate-agent-plugin.sh [--check]`
 
 Builds `highway-agent-plugin/`, an [Agent Plugins](https://agent-plugins.org) 1.0.0 plugin of the
-skills. The folder holds exactly `plugin.json`, `README.md`, and `LICENSE`, copied from
-`framework/plugin/`, and `skills/<id>/` for each skill under `skills/`, with every file except
-dotfiles. Two builds from unchanged sources are byte-identical. The generator owns the folder
-whole: each build replaces it.
+skills that each supported agent can also install from its own manifest. The folder holds:
+
+- `plugin.json`, `README.md`, `LICENSE`, and `assets/`, copied from `framework/plugin/`;
+- `skills/<id>/` for each skill under `skills/`, with every file except dotfiles;
+- one manifest per agent format, rendered from `framework/plugin/`:
+
+| Manifest | Read by |
+| --- | --- |
+| `plugin.json` | Copilot, VS Code, and Kiro (Agent Plugins 1.0.0) |
+| `.claude-plugin/plugin.json` | Claude Code |
+| `.codex-plugin/plugin.json` | Codex |
+| `.cursor-plugin/plugin.json` | Cursor |
+| `.antigravity-plugin/plugin.json` | Antigravity |
+| `gemini-extension.json` | Gemini CLI |
+
+Two builds from unchanged sources are byte-identical: each manifest is written in a fixed key
+order with two-space indentation. The generator owns the folder whole: each build replaces it.
+Never edit a file under `highway-agent-plugin/`; change its source and rebuild.
+
+Where each manifest field comes from:
+
+- **Shared fields** (`name`, `version`, `description`, `author`, `homepage`, `repository`,
+  `license`, `keywords`) live only in `framework/plugin/plugin.json`. Each agent manifest carries
+  the ones its format accepts, with the same values: Cursor's `author` keeps only `name` and
+  `email`, and `gemini-extension.json` carries only `name`, `version`, and `description`. A release
+  changes `version` there, and nowhere else.
+- **Agent-only fields** live in `framework/plugin/listing.json`, keyed by agent: Codex's
+  `interface` block (display name, descriptions, category, capabilities, default prompts, and
+  logo), Cursor's `logo`, and Antigravity's `displayName`, `logo`, and `suggestedPrompts`. The
+  listing file never holds a shared field.
+- **Derived fields** are rendered from a shared field: Codex's `interface.developerName` from
+  `author.name`, and `interface.websiteURL` from `homepage`.
+- **Format constants** are set by the generator: `"skills": "./skills/"` for Codex and Cursor, and
+  Antigravity's `$schema`.
+- **The logo** is `framework/plugin/assets/logo.svg`, a placeholder. Replace the file under the
+  same name to replace it in every manifest.
+
+The formats are defined once, in `framework/lib/plugin-manifest.sh`, which both this generator and
+the validator read. No manifest declares hooks, MCP servers, rules, commands, agents, or a context
+file.
 
 - **Exit 0**: the plugin was written.
-- **Exit 1**: a skill fails validation, or `highway-agent-plugin/` exists but its `plugin.json`
-  is missing or does not name `highway` (refuses to overwrite, names the folder). Nothing is
-  written.
+- **Exit 1**: `listing.json` holds a shared field, a derived field, or a field its agent does not
+  read (one `ERROR: [LISTING] <agent>.<field>: <problem>` line each); a skill fails validation; or
+  `highway-agent-plugin/` exists but its `plugin.json` is missing or does not name `highway`
+  (refuses to overwrite, names the folder). Nothing is written.
 
-With `--check`, it builds into a temporary folder and compares that with `highway-agent-plugin/`
-without writing in the repository. It prints one `DRIFT<TAB><differs|missing|extra><TAB><path>`
-line per difference and exits 1, or exits 0 when there is none. The harness runs it before every
-run, so it never tests a stale plugin.
+With `--check`, it checks `listing.json` the same way, then builds into a temporary folder and
+compares that with `highway-agent-plugin/` without writing in the repository. It prints one
+`DRIFT<TAB><differs|missing|extra><TAB><path>` line per difference and exits 1, or exits 0 when
+there is none. The harness runs it before every run, so it never tests a stale plugin.
 
-The plugin is not part of the distribution below. To change its manifest, README, or license, edit
-the file in `framework/plugin/` and rebuild.
+The plugin is not part of the distribution below. To change a shared field, edit
+`framework/plugin/plugin.json`; to change an agent-only field, edit `framework/plugin/listing.json`;
+to change the README, license, or logo, edit the file in `framework/plugin/`. Then rebuild.
 
 ### `framework/validate-plugin.sh <plugin-dir>`
 
-Validates a plugin folder against Agent Plugins 1.0.0, then validates each of its skills with
-`framework/validate-skill.sh`. It prints one line per finding, `ERROR: [MANIFEST]`,
-`ERROR: [LAYOUT]`, or `ERROR: [SKILL]`, each naming the field or path and the specification
-clause, then `OK` or `FAIL` with a count. The manifest checks cover the closed set of fields, the
-1.0.0 `$schema`, the name rules, each field's type, the `author` sub-fields, and `extensions`; a
-file that is not JSON or repeats a key fails. The layout checks reject a symbolic link anywhere in
-the folder, a `skills` entry that is not a folder, and a skill folder with no `SKILL.md`.
+Validates a plugin folder against Agent Plugins 1.0.0, checks its agent manifests, then validates
+each of its skills with `framework/validate-skill.sh`. It prints one line per finding,
+`ERROR: [MANIFEST]`, `ERROR: [AGENT]`, `ERROR: [LAYOUT]`, or `ERROR: [SKILL]`, each naming the
+file, field, or path, then `OK` or `FAIL` with a count.
+
+- **Manifest**: the closed set of fields, the 1.0.0 `$schema`, the name rules, each field's type,
+  the `author` sub-fields, and `extensions`, each naming its specification clause; a file that is
+  not JSON or repeats a key fails.
+- **Agent**: each of the five agent manifests exists and is valid JSON; holds only the keys its
+  format accepts; carries each shared field its format accepts, equal to the plugin's
+  `plugin.json`, and each field its format requires; has the format's constants and Codex's
+  derived fields; and points its `skills` path at the plugin's skills folder and each logo path at
+  an image in the plugin.
+- **Layout**: no symbolic link anywhere in the folder, a `skills` entry that is a folder, and a
+  `SKILL.md` in each skill folder. The folder holds only the shipped set: the six manifests,
+  `skills/`, `assets/`, `README.md`, and `LICENSE`; each agent folder holds only `plugin.json`;
+  and `assets/` holds only files a manifest names.
 
 - **Exit 0**: no finding.
 - **Exit 1**: at least one finding.
@@ -280,7 +329,7 @@ template or document to its folder (development constitution D2.5).
 | `lib/paths.sh` | The paths helper described above. |
 | `lib/frontmatter.sh` | Reads the YAML frontmatter block and body of a `SKILL.md` with line readers, for the generators and rule checks. |
 | `lib/yaml-frontmatter.sh` | Parses a `SKILL.md` frontmatter block with a strict YAML parser (`python3` with PyYAML). |
-| `lib/plugin-manifest.sh` | Checks a `plugin.json` against the Agent Plugins 1.0.0 manifest rules, reading it with `python3`'s standard-library `json` module and rejecting a repeated key. |
+| `lib/plugin-manifest.sh` | Checks a `plugin.json` against the Agent Plugins 1.0.0 manifest rules; defines the agent manifest formats, renders the agent manifests from `plugin.json` and `listing.json`, and checks them and the plugin's closed list. It reads every file with `python3`'s standard-library `json` module and rejects a repeated key. |
 | `lib/frontmatter-contract.sh` | Reads the permitted frontmatter keys and value constraints from `.frontmatter-contract`. |
 | `lib/constitution.sh` | Parses the rule inventory, rule fields, and token lists from the constitution. |
 | `lib/body-scan.sh` | Annotates each body line with its section, fenced-block state, and list membership, so no check parses Markdown for itself. |
@@ -311,6 +360,7 @@ id namespace alignment) for the full contract. Procedure:
 
 Bash and standard command-line utilities, as shipped with macOS and Linux, plus `python3` with the
 PyYAML module (`python3 -c 'import yaml'` exits 0). The skill validator uses it only to parse
-skill frontmatter strictly, and the plugin validator only to read `plugin.json`. No package
+skill frontmatter strictly, and the plugin generator and validator only to read, render, and check
+the plugin's JSON manifests. No package
 manager and no network access. The skills themselves need none of
 this: the framework does not ship.
