@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { AGENTS, agentIds, keyOf } from "../src/agents.ts";
 
 test("the registry holds Copilot with its keys, service, read roots, ask, and versions", () => {
-  assert.deepEqual([...AGENTS.keys()], ["copilot"]);
+  assert.deepEqual([...AGENTS.keys()], ["copilot", "cursor"]);
   const copilot = AGENTS.get("copilot")!;
   assert.equal(copilot.id, "copilot");
   assert.equal(copilot.service, "Copilot");
@@ -14,7 +14,17 @@ test("the registry holds Copilot with its keys, service, read roots, ask, and ve
   assert.match(versions.sdk, /^\d+\.\d+\.\d+|unknown$/);
   assert.match(versions.runtime, /^\d+\.\d+\.\d+|unknown$/);
   assert.equal(copilot.classify(new Error("HTTP 429 Too Many Requests")), "rate-limit");
-  assert.equal(agentIds(AGENTS), "copilot");
+  assert.equal(agentIds(AGENTS), "copilot, cursor");
+});
+
+test("the registry holds Cursor with CURSOR_API_KEY, local read roots, ask, and versions", () => {
+  const cursor = AGENTS.get("cursor")!;
+  assert.equal(cursor.service, "Cursor");
+  assert.deepEqual(cursor.keys, ["CURSOR_API_KEY"]);
+  assert.deepEqual(cursor.readRoots("/work/homes/x"), ["/work/homes/x/.cursor/plugins/local/highway"]);
+  assert.equal(typeof cursor.ask, "function");
+  assert.equal(cursor.versions().runtime, "local");
+  assert.equal(cursor.classify(new Error("HTTP 429 Too Many Requests")), "rate-limit");
 });
 
 test("a key is read from the agent's variables in order, ignoring empty values", () => {

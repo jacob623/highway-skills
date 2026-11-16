@@ -1,6 +1,7 @@
 import { join } from "node:path";
 import type { Classifier, Driver } from "./driver.ts";
 import { classifyCopilotError, copilotAsk, copilotDriver, copilotVersions } from "./drivers/copilot.ts";
+import { classifyCursorError, cursorAsk, cursorDriver, cursorVersions } from "./drivers/cursor.ts";
 import type { Ask } from "./judge.ts";
 
 /** Everything the runner needs from one agent; a driver spec adds one entry (FR-006). */
@@ -33,6 +34,19 @@ export const AGENTS: Registry = new Map<string, Agent>([
       classify: classifyCopilotError,
       readRoots: (home) => [join(home, "installed-plugins")],
       versions: copilotVersions,
+    },
+  ],
+  [
+    "cursor",
+    {
+      id: "cursor",
+      service: "Cursor",
+      keys: ["CURSOR_API_KEY"],
+      driver: cursorDriver,
+      ask: cursorAsk,
+      classify: classifyCursorError,
+      readRoots: (home) => [join(home, ".cursor", "plugins", "local", "highway")],
+      versions: cursorVersions,
     },
   ],
 ]);

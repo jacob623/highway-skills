@@ -13,6 +13,7 @@
     "typecheck": "tsc -p tsconfig.json"
   },
   "dependencies": {
+    "@cursor/sdk": "^1.4.0",
     "@github/copilot-sdk": "^1.0.30"
   },
   "devDependencies": {

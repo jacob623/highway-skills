@@ -6,7 +6,8 @@ then checks the files against the scenario's expectations, the storage contract,
 LLM judge.
 
 The harness is a development tool. `harness/` is excluded from the distribution, and its toolchain
-(Node, TypeScript, the Copilot SDK, and `git`) is never a runtime dependency of Highway.
+(Node, TypeScript, the Copilot SDK, the Cursor SDK, and `git`) is never a runtime dependency of
+Highway.
 
 ## How it works
 
@@ -82,7 +83,7 @@ Every permission request is decided by a fixed policy:
 | Request | Decision | Ends the attempt |
 |---|---|---|
 | Read inside the project | approved | no |
-| Read of the installed plugin, under a read root (Copilot: `<home>/installed-plugins/`) | approved | no |
+| Read of the installed plugin, under a read root (Copilot: `<home>/installed-plugins/`; Cursor: `<home>/.cursor/plugins/local/highway/`) | approved | no |
 | Write inside the project | approved | no |
 | Read anywhere else | rejected | no |
 | Web (URL) access | approved when the scenario says `web: yes`, otherwise rejected | no |
@@ -94,6 +95,27 @@ Every permission request is decided by a fixed policy:
 Shell, memory, and outside writes are fatal because the storage contract
 (`skills/highway-experience/references/storage-contract.md`) forbids them. A rejected request that ends the attempt is a
 `rejected-request` failure.
+
+### The Cursor driver
+
+The Cursor driver, `harness/src/drivers/cursor.ts`, uses `@cursor/sdk` on the **local** runtime
+only (`--agent cursor`). Auth is `CURSOR_API_KEY` in `harness/.env`. The model is `models.cursor`
+in `harness.config.json` (today `gpt-5.6-luna`, same as Copilot).
+
+Each attempt:
+
+1. Points `HOME` at the throwaway agent home (serialized with a mutex so parallel attempts do not
+   race).
+2. Copies `highway-agent-plugin/` into `<home>/.cursor/plugins/local/highway/` and runs the shared
+   install checks (name `highway`, 16 skills, enabled).
+3. Loads plugins with `local.settingSources: ["plugins"]` only — no personal user/project/team
+   settings.
+4. Offers no shell tool; home-scoped hooks deny shell and outside writes; completed forbidden
+   tools fail the attempt afterward (effects-based enforcement). Cloud/remote Cursor is Phase 20,
+   not this driver.
+
+`cursorAsk` is registered so `judge.agent` can be set to `cursor` later; the default judge stays
+Copilot.
 
 ### Keyed replies and the model fallback
 
@@ -147,14 +169,16 @@ Warnings (paraphrased question, flaky) never change the exit code.
 
 1. Node 24 or later on the `PATH`.
 2. Install dependencies: `npm --prefix harness ci`.
-3. For live runs, a GitHub token with Copilot access in `harness/.env`:
+3. For live runs, put the agent key in `harness/.env`:
 
    ```text
    GITHUB_TOKEN=<token>
+   CURSOR_API_KEY=<token>
    ```
 
-   `COPILOT_GITHUB_TOKEN` is read first when both are set. Each agent names its own key
-   variables in the registry. `harness/.env` and `harness/node_modules/` are gitignored.
+   Copilot reads `COPILOT_GITHUB_TOKEN` then `GITHUB_TOKEN`. Cursor reads `CURSOR_API_KEY`.
+   Each agent names its own key variables in the registry. `harness/.env` and
+   `harness/node_modules/` are gitignored.
 
 Unit tests and the type check need no token: `npm --prefix harness test` and
 `npm --prefix harness run typecheck`.
@@ -548,8 +572,8 @@ A run-level failure prints its cause on the `cause:` line of its `== run ==` blo
 | `timeout` | The attempt ran past its time limit. | The model may be slow; raise `--timeout`, or look for a stalled step in the block. |
 | `assertion` | A written file is missing a required part. For check `shows`, the agent did not show the expected text. | If it is a template heading, the template changed after the fixture was promoted, or the skill skipped its template. |
 | `fixture-blocked` | The fixture no longer matches its template. | Run `bash harness/bin/fixture-check.sh <fixture>`; promote a fresh chain run or fix the fixture. |
-| `missing-token` | No key was found for the agent under test; for Copilot, "No Copilot token was found. Set GITHUB_TOKEN in harness/.env." | Set the key variable the cause names in `harness/.env`. |
-| `no-access` | The key has no access to the agent's service; for Copilot, "The GITHUB_TOKEN key has no Copilot access. Check the account's Copilot plan." | Check the account's plan for that service. |
+| `missing-token` | No key was found for the agent under test; for Copilot, "No Copilot token was found. Set GITHUB_TOKEN in harness/.env."; for Cursor, set `CURSOR_API_KEY`. | Set the key variable the cause names in `harness/.env`. |
+| `no-access` | The key has no access to the agent's service; for Copilot, "The GITHUB_TOKEN key has no Copilot access. Check the account's Copilot plan."; for Cursor, an invalid or refused `CURSOR_API_KEY`. | Check the account's plan for that service. |
 | `build-failed` | `highway-agent-plugin/` is missing or differs from its sources, or the base project could not be made. | The run block shows the DRIFT lines; run `framework/generate-agent-plugin.sh`. |
 | `rate-limit` | Copilot kept rate limiting after 3 retries. | Lower `--parallel`, or wait and rerun. |
 | `allowance` | The premium-request allowance is used up. | Wait for the reset, or raise the limit. |
