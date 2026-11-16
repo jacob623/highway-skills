@@ -66,11 +66,55 @@ export function classifyCursorError(error: unknown): FailureKind {
 function pathFromArgs(args: unknown): string {
   if (!args || typeof args !== "object") return "";
   const a = args as Record<string, unknown>;
-  for (const key of ["path", "filePath", "file_path", "target", "filename", "fileName", "uri"]) {
+  for (const key of [
+    "path",
+    "filePath",
+    "file_path",
+    "target",
+    "filename",
+    "fileName",
+    "uri",
+    "target_directory",
+    "targetDirectory",
+    "glob",
+    "pattern",
+  ]) {
     if (typeof a[key] === "string" && a[key]) return String(a[key]);
   }
   if (typeof a.target_file === "string") return a.target_file;
   return "";
+}
+
+const PLUGIN_HIGHWAY_MARKER = ".cursor/plugins/local/highway/";
+
+/**
+ * Remaps workspace-rooted or collapsed plugin paths onto the attempt's install read root
+ * (research R4). Paths without the highway plugin marker are unchanged.
+ */
+export function normalizeCursorPluginPath(path: string, readRoot: string): string {
+  if (!path || !readRoot) return path;
+  const normalized = path.replace(/\\/g, "/");
+  const idx = normalized.toLowerCase().indexOf(PLUGIN_HIGHWAY_MARKER);
+  if (idx < 0) return path;
+  const suffix = normalized.slice(idx + PLUGIN_HIGHWAY_MARKER.length);
+  return join(readRoot, suffix);
+}
+
+/**
+ * Skill id from a Cursor tool_call. Prefer `/skills/<id>/` in the path; never treat the
+ * `highway/skills` directory name as a skill id (F29 false positive).
+ */
+export function skillIdFromCursorTool(name: string, args: unknown): string | undefined {
+  const a = args && typeof args === "object" ? (args as Record<string, unknown>) : {};
+  for (const key of ["skill", "skillName", "skillId", "skill_id", "name"]) {
+    const v = a[key];
+    if (typeof v === "string" && /^highway-[a-z0-9-]+$/i.test(v)) return v.toLowerCase();
+  }
+  if (/^highway-[a-z0-9-]+$/i.test(name)) return name.toLowerCase();
+  const path = pathFromArgs(args) || "";
+  const fromPath = /(?:^|\/)skills\/(highway-[a-z0-9-]+)(?:\/|$)/i.exec(path.replace(/\\/g, "/"));
+  if (fromPath) return fromPath[1].toLowerCase();
+  return undefined;
 }
 
 function commandFromArgs(args: unknown): string {
@@ -86,6 +130,10 @@ export function toolCallToAccessRequest(name: string, args: unknown): AccessRequ
   const n = name.toLowerCase();
   if (n === "shell" || n.includes("shell")) return { kind: "shell", command: commandFromArgs(args) };
   if (n === "read" || n.includes("read_file") || n === "readfile") return { kind: "read", path: pathFromArgs(args) };
+  // Allowlisted filesystem tools: treat as reads so shared policy can approve project/read-root paths.
+  if (n === "glob" || n === "grep" || n === "ls" || n === "semsearch" || n === "readlints") {
+    return { kind: "read", path: pathFromArgs(args) || "." };
+  }
   if (n === "edit" || n === "write" || n === "delete" || n.includes("write") || n.includes("strreplace") || n.includes("apply_patch")) {
     return { kind: "write", path: pathFromArgs(args) };
   }
@@ -167,13 +215,21 @@ export function writeCursorHooks(agentHome: string, projectDir: string, readRoot
   writeFileSync(
     script,
     `#!/usr/bin/env node
-import { readFileSync } from "node:fs";
-import { isAbsolute, resolve, sep } from "node:path";
+import { isAbsolute, join, resolve, sep } from "node:path";
 const cfg = ${payload};
 const roots = [cfg.projectDir, ...cfg.readRoots].map((p) => resolve(p));
+const marker = ".cursor/plugins/local/highway/";
+const remap = (path) => {
+  if (!path) return path;
+  const norm = String(path).replace(/\\\\/g, "/");
+  const i = norm.toLowerCase().indexOf(marker);
+  if (i < 0 || !cfg.readRoots[0]) return path;
+  return join(cfg.readRoots[0], norm.slice(i + marker.length));
+};
 const inside = (path) => {
   if (!path) return false;
-  const full = isAbsolute(path) ? resolve(path) : resolve(cfg.projectDir, path);
+  const mapped = remap(path);
+  const full = isAbsolute(mapped) ? resolve(mapped) : resolve(cfg.projectDir, mapped);
   return roots.some((root) => full === root || full.startsWith(root + sep));
 };
 const inProject = (path) => {
@@ -190,8 +246,7 @@ process.stdin.on("end", () => {
   try { event = JSON.parse(raw || "{}"); } catch { /* deny on bad input */ }
   const tool = String(event.tool_name ?? event.hook_event_name ?? "");
   const args = event.tool_input ?? event.arguments ?? event;
-  const path = String(args.path ?? args.file_path ?? args.filePath ?? args.target_file ?? "");
-  const command = String(args.command ?? args.cmd ?? "");
+  const path = String(args.path ?? args.file_path ?? args.filePath ?? args.target_file ?? args.target_directory ?? "");
   const deny = (msg) => {
     process.stdout.write(JSON.stringify({ permission: "deny", user_message: msg }));
     process.exit(0);
@@ -203,7 +258,7 @@ process.stdin.on("end", () => {
   if (/write|edit|delete|strreplace/i.test(tool) && path && !inProject(path)) {
     deny("Writes outside the project are not available in this session.");
   }
-  if (/read/i.test(tool) && path && !inside(path) && !inProject(path)) {
+  if (/read|glob|grep|^ls$/i.test(tool) && path && !inside(path) && !inProject(path)) {
     deny("Reads are available inside the project and the installed plugin only.");
   }
   process.stdout.write(JSON.stringify({ permission: "allow" }));
@@ -367,6 +422,10 @@ export function createCursorDriver(api: CursorAgentApi = defaultApi): Driver {
 
     const noteTool = (name: string, args: unknown, status: string): void => {
       const access = toolCallToAccessRequest(name, args);
+      const readRoot = options.readRoots[0] ?? "";
+      if ((access.kind === "read" || access.kind === "write") && access.path) {
+        access.path = normalizeCursorPluginPath(access.path, readRoot);
+      }
       const decision = permissionPolicy(access, projectDir, scenario.web, options.readRoots);
       if (decision.rejection) rejected.push(decision.rejection);
       if (decision.approved && access.kind === "read" && !outputSeen && !skillsBeforeOutput.includes(EXPERIENCE_SKILL)) {
@@ -376,11 +435,12 @@ export function createCursorDriver(api: CursorAgentApi = defaultApi): Driver {
       if (!decision.approved && decision.rejection?.fatal && status === "completed") {
         effectsFatalMessage = `storage invariant violated after tool ran: ${decision.rejection.kind}: ${decision.rejection.detail}`;
       }
-      const skillMatch = /(?:skill[:\s-]+|highway[:/])([a-z0-9-]+)/i.exec(name + " " + JSON.stringify(args ?? {}));
-      if (skillMatch) {
-        const skill = skillMatch[1];
+      const skill =
+        skillIdFromCursorTool(name, args) ??
+        (access.path ? skillIdFromCursorTool(name, { path: access.path }) : undefined);
+      if (skill) {
         skillsInvoked.push(skill);
-        if (!outputSeen) skillsBeforeOutput.push(skill);
+        if (!outputSeen && !skillsBeforeOutput.includes(skill)) skillsBeforeOutput.push(skill);
         log({ turn, role: "skill", text: `invoked ${skill}` });
       }
     };
@@ -443,11 +503,13 @@ export function createCursorDriver(api: CursorAgentApi = defaultApi): Driver {
                   switch (e.type) {
                     case "assistant": {
                       // Stream events may be token-sized; append into one buffer per turn.
+                      // Do not set outputSeen here: Cursor often emits text tokens before
+                      // tool_call events for the same turn, which falsely emptied
+                      // skillsBeforeOutput (F29). Commit output after wait + agent log.
                       const text = textFromAssistant((e.message as { content?: unknown }) ?? {});
                       if (text) {
                         if (turnMessages.length === 0) turnMessages.push(text);
                         else turnMessages[turnMessages.length - 1] += text;
-                        if (text.trim()) outputSeen = true;
                       }
                       break;
                     }
@@ -474,7 +536,6 @@ export function createCursorDriver(api: CursorAgentApi = defaultApi): Driver {
                 // Prefer the completed run's final text over streamed chunks (avoids token-sized log bloat).
                 if (typeof finished.result === "string" && finished.result.trim() !== "") {
                   turnMessages = [finished.result];
-                  outputSeen = true;
                 }
               };
               const retried = retryServiceError(send, classifyCursorError, () => {
@@ -490,7 +551,10 @@ export function createCursorDriver(api: CursorAgentApi = defaultApi): Driver {
               clearTimeout(timer);
             }
 
-            log({ turn, role: "agent", text: turnMessages.join("\n\n") });
+            const agentText = turnMessages.join("\n\n");
+            log({ turn, role: "agent", text: agentText });
+            // First person-visible output for experience-order (after this turn's tool_call mapping).
+            if (agentText.trim()) outputSeen = true;
             if (effectsFatalMessage) {
               return result("error", { error: { kind: "unclassified", message: effectsFatalMessage } });
             }
