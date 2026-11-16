@@ -1936,3 +1936,10 @@ copy used since Phase 16.
 Exit: one release command or job publishes the plugin, the public repository's root matches
 `highway-agent-plugin/` byte for byte, and the published plugin installs in an agent that
 supports Agent Plugins.
+
+# Rollout note: Cursor driver (rollout Phase 7)
+
+Agent rollout Phase 7 is complete in `specs/249-cursor-driver/`: the harness drives Cursor locally
+with `@cursor/sdk`, model `gpt-5.6-luna`, and committed run logs under that spec's `harness/`
+folder. Skill content and this document's own phases are unchanged. Cloud Cursor is rollout
+Phase 20.

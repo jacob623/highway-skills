@@ -406,6 +406,57 @@ Every other scenario passed its first attempt. Five reads were rejected at a pat
 segment (F20), all in attempts that passed. The judge marked 6 of codify-smoke's 7 bullets not
 met, as in spec 247; it is advisory and did not fail the scenario.
 
+## Cursor driver smoke for spec 249
+
+Three live runs on Cursor local runtime (`@cursor/sdk` 1.4.0) with `models.cursor` =
+`gpt-5.6-luna` (same as Copilot). Judge stayed Copilot/`gpt-5.6-luna`. Before the runs, the full
+suite passed 87 of 87 and the harness unit tests 157 of 157. No `--transcripts`. Logs:
+
+| Log | Run id | Bytes |
+| --- | --- | --- |
+| `specs/249-cursor-driver/harness/smoke-1.log` | `20261116-140947Z-smoke-cursor-8fe482f` | 108 KB |
+| `specs/249-cursor-driver/harness/smoke-2.log` | `20261116-144422Z-smoke-cursor-8fe482f` | 110 KB |
+| `specs/249-cursor-driver/harness/codify.log` | `20261116-151541Z-targeted-cursor-8fe482f` | 160 KB |
+
+No token or `CURSOR_API_KEY` appears. A few fail lines still name a `/var/folders/…` path inside
+an outside-write detail (F20). Logs sit slightly over the 100 KB guidance because Cursor turn
+text is longer than Copilot's; Phase 18 can tighten size rules.
+
+| Run | Selection | Passed | Flaky | Failed | Blocked |
+| --- | --- | --- | --- | --- | --- |
+| smoke-1 | `--agent cursor --smoke` (16) | 0 | 0 | 16 | 0 |
+| smoke-2 | `--agent cursor --smoke` (16) | 1 | 0 | 15 | 0 |
+| codify | `--agent cursor --skills highway-codify` (28) | 4 | 1 | 24 | 0 |
+
+Passed includes flaky. Every attempt that reached install reported `installed plugin highway (16
+skills)` (32, 31, and 53 install lines respectively). No `plugin-install` failure.
+
+Smoke map (both smoke runs; smoke-2 notes in parentheses when different):
+
+| Scenario | Failure | Findings |
+| --- | --- | --- |
+| adr-smoke | experience-order | F27, F29 |
+| architecture-smoke | experience-order | F27, F29 |
+| assessment-smoke | experience-order | F27, F29 |
+| codify-config-smoke | experience-order | F27, F29 |
+| codify-smoke | experience-order | F27, F29 |
+| controls-smoke | experience-order | F27, F29 |
+| discovery-smoke | experience-order | F27, F29 |
+| experience-smoke | experience-order (smoke-2: pass) | F27, F29 |
+| help-smoke | experience-order | F27, F29 |
+| implementation-smoke | experience-order | F27, F29 |
+| nfrs-smoke | experience-order | F27, F29 |
+| objectives-smoke | unclassified / experience-order | F29 |
+| onboarding-smoke | experience-order | F27, F29 |
+| profile-smoke | experience-order | F27, F29 |
+| request-smoke | experience-order | F27, F29 |
+| setup-smoke | experience-order | F27, F29 |
+
+Codify: `codify-catalog`, `codify-no-architecture`, `codify-no-implementations` (flaky), and
+`codify-standards` passed. Most other scenarios failed `experience-order` (F27, F29).
+`codify-existing-product` and `codify-folder-taken` failed `unmatched-question` (script/model
+drift, not a new Cursor finding). `codify-code-project` had an unclassified session error once.
+
 # Harness Failures
 
 Resolved findings are removed: S1 in spec 242; F2, F4, F6, F9, F10, F11, F12, F13, and F14 in
@@ -676,16 +727,40 @@ harness gave no reply, and Luna showed the opening and stopped without writing a
 
 ## F27: Output before highway-experience is activated
 
-**Skill**: highway-implementation
+**Skill**: highway-implementation (and, under Cursor, most skills)
 
 **Runs**:
 
 - Plugin install smoke (GPT-5.6 Luna) `20261113-142757Z-smoke-be6a1d0`: implementation-smoke (attempt 2)
+- Cursor driver smoke for spec 249 (`gpt-5.6-luna` on Cursor): nearly every smoke and highway-codify attempt; see the Cursor section and F29
 
 **Category**: Model
 
 **Confirmed**: Yes
 
-**Basis**: Luna invoked highway-implementation, read the catalogs, and listed the Reference Architectures without invoking highway-experience or reading its `SKILL.md`. The harness reported `experience-order`. Every other attempt in both plugin runs activated highway-experience first, from the installed plugin, so the plugin install does not hide the skill. The same attempt also failed on F1.
+**Basis**: Luna invoked highway-implementation, read the catalogs, and listed the Reference Architectures without invoking highway-experience or reading its `SKILL.md`. The harness reported `experience-order`. Every other attempt in both plugin runs activated highway-experience first, from the installed plugin, so the plugin install does not hide the skill. The same attempt also failed on F1. On Cursor, the same kind dominates; F29 covers the Cursor-specific pattern (install succeeds, activation almost never recorded).
 
-**Proposed resolution**: No skill or harness change. highway-implementation's Procedure opens with the activation step, and Luna skipped it once in 40 attempts. Watch for it in later runs; if it recurs, compare the opening of the skills that show it.
+**Proposed resolution**: No skill or harness change for the rare Copilot case. For Cursor, see F29.
+
+## F29: Cursor runs rarely record highway-experience before output
+
+**Skill**: all (Cursor local driver)
+
+**Runs**:
+
+- Cursor driver smoke for spec 249: `20261116-140947Z-smoke-cursor-8fe482f`, `20261116-144422Z-smoke-cursor-8fe482f`, `20261116-151541Z-targeted-cursor-8fe482f`
+
+**Category**: Harness / agent
+
+**Confirmed**: Yes
+
+**Basis**: Every attempt installed `highway` with 16 skills. Almost every attempt still failed
+`experience-order` with `actual no skill` (smoke-2's `experience-smoke` passed once; a few
+codify scenarios passed). The driver loads plugins via `settingSources: ["plugins"]` after a
+filesystem copy into the throwaway home. Either Cursor is not surfacing installed skills to the
+model the way Copilot does, or skill invocations are not visible on the stream events the driver
+maps. Not a skill-text change.
+
+**Proposed resolution**: In a follow-up harness change, confirm how local Cursor reports skill
+use (tool name, system init tools list, or read of `SKILL.md`), tighten mapping / install if
+needed, and re-run smoke. Do not change skills for this finding.

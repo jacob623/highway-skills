@@ -1,6 +1,6 @@
 {
   "agent": "copilot",
-  "models": { "copilot": "gpt-5.6-luna" },
+  "models": { "copilot": "gpt-5.6-luna", "cursor": "gpt-5.6-luna" },
   "judge": { "agent": "copilot", "model": "gpt-5.6-luna" },
   "parallel": 4,
   "maxTurns": 40,
