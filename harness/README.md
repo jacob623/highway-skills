@@ -113,6 +113,12 @@ Each attempt:
 4. Offers no shell tool; home-scoped hooks deny shell and outside writes; completed forbidden
    tools fail the attempt afterward (effects-based enforcement). Cloud/remote Cursor is Phase 20,
    not this driver.
+5. Maps skill activation from `tool_call` reads under `…/skills/<skill-id>/` (including
+   `highway-experience/SKILL.md`), remapping `.cursor/plugins/local/highway/…` paths onto the
+   install read root so workspace-rooted plugin paths still count. Does not treat the
+   `highway/skills` directory name as a skill id. Commits “first output” for experience-order
+   only after the turn’s `agent` log line (streamed text tokens before tools do not clear
+   `skillsBeforeOutput`).
 
 `cursorAsk` is registered so `judge.agent` can be set to `cursor` later; the default judge stays
 Copilot.

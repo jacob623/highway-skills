@@ -11,19 +11,49 @@ import {
   cursorPluginRpc,
   cursorVersions,
   installCursorPluginForTest,
+  normalizeCursorPluginPath,
+  skillIdFromCursorTool,
   toolCallToAccessRequest,
   withCursorHome,
   writeCursorHooks,
 } from "../src/drivers/cursor.ts";
+import { EXPERIENCE_SKILL, experienceInvariant } from "../src/checks.ts";
+import { permissionPolicy } from "../src/driver.ts";
 import type { PluginSource } from "../src/project.ts";
 import type { Scenario } from "../src/scenario.ts";
 
-test("toolCallToAccessRequest maps shell, read, write, url, and other", () => {
+test("toolCallToAccessRequest maps shell, read, write, url, glob, and other", () => {
   assert.deepEqual(toolCallToAccessRequest("shell", { command: "rm -rf /" }), { kind: "shell", command: "rm -rf /" });
   assert.deepEqual(toolCallToAccessRequest("read", { path: "/p/a.md" }), { kind: "read", path: "/p/a.md" });
   assert.deepEqual(toolCallToAccessRequest("edit", { path: "/p/a.md" }), { kind: "write", path: "/p/a.md" });
   assert.deepEqual(toolCallToAccessRequest("webFetch", { url: "https://example.com" }), { kind: "url", url: "https://example.com" });
-  assert.equal(toolCallToAccessRequest("semSearch", {}).kind, "other");
+  assert.equal(toolCallToAccessRequest("glob", { path: "/p" }).kind, "read");
+  assert.equal(toolCallToAccessRequest("askQuestion", {}).kind, "other");
+});
+
+test("skillIdFromCursorTool reads highway-* under /skills/ and never returns bare skills", () => {
+  const experiencePath = "/tmp/home/.cursor/plugins/local/highway/skills/highway-experience/SKILL.md";
+  assert.equal(skillIdFromCursorTool("read", { path: experiencePath }), "highway-experience");
+  assert.equal(
+    skillIdFromCursorTool("read", { path: "/work/.cursor/plugins/local/highway/skills/highway-adr/references/proposal.md" }),
+    "highway-adr",
+  );
+  assert.equal(skillIdFromCursorTool("read", { path: "/work/.cursor/plugins/local/highway/skills" }), undefined);
+  assert.equal(skillIdFromCursorTool("skills", { path: "/x" }), undefined);
+  assert.equal(skillIdFromCursorTool("read", { skill: "highway-help" }), "highway-help");
+});
+
+test("normalizeCursorPluginPath remaps workspace plugin paths onto the install read root", () => {
+  const readRoot = "/tmp/agent/.cursor/plugins/local/highway";
+  const workPath = "/proj/.cursor/plugins/local/highway/skills/highway-experience/SKILL.md";
+  assert.equal(
+    normalizeCursorPluginPath(workPath, readRoot),
+    join(readRoot, "skills/highway-experience/SKILL.md"),
+  );
+  assert.equal(normalizeCursorPluginPath("/proj/adrs/a.md", readRoot), "/proj/adrs/a.md");
+  const normalized = normalizeCursorPluginPath(workPath, readRoot);
+  const decision = permissionPolicy({ kind: "read", path: normalized }, "/proj", false, [readRoot]);
+  assert.equal(decision.approved, true);
 });
 
 test("classifyCursorError maps rate-limit, no-access, allowance, and retryable", () => {
@@ -189,6 +219,172 @@ test("createCursorDriver maps a one-turn fake SDK run through the reply loop", a
     assert.equal(outcome.outcome, "ended");
     assert.ok(logs.some((l) => l.startsWith("system:installed plugin highway")));
     assert.ok(logs.some((l) => l.includes("rejected shell")));
+  } finally {
+    rmSync(home, { recursive: true, force: true });
+    rmSync(project, { recursive: true, force: true });
+    rmSync(src, { recursive: true, force: true });
+  }
+});
+
+test("createCursorDriver records highway-experience from a plugin SKILL.md read before output", async () => {
+  const scenario: Scenario = {
+    file: "fake.md",
+    id: "fake-experience",
+    skill: "help",
+    through: [],
+    fixture: "empty",
+    smoke: true,
+    web: false,
+    open: "hi",
+    replies: [],
+    writes: [],
+    expects: [],
+    covers: [],
+    reaches: [],
+    shows: [],
+  };
+  const home = mkdtempSync(join(tmpdir(), "cursor-exp-"));
+  const project = mkdtempSync(join(tmpdir(), "cursor-expp-"));
+  const src = mkdtempSync(join(tmpdir(), "cursor-exppl-"));
+  mkdirSync(join(src, "skills", "s1"), { recursive: true });
+  mkdirSync(join(src, ".cursor-plugin"), { recursive: true });
+  writeFileSync(join(src, ".cursor-plugin", "plugin.json"), JSON.stringify({ name: "highway" }));
+  const readRoot = join(home, ".cursor", "plugins", "local", "highway");
+  const workSkill = join(project, ".cursor", "plugins", "local", "highway", "skills", "highway-experience", "SKILL.md");
+  try {
+    const driver = createCursorDriver({
+      create: async () =>
+        ({
+          agentId: "a",
+          async send() {
+            return {
+              id: "r",
+              agentId: "a",
+              status: "running",
+              async *stream() {
+                yield {
+                  type: "tool_call",
+                  name: "read",
+                  status: "completed",
+                  args: { path: workSkill },
+                };
+                yield { type: "assistant", message: { role: "assistant", content: [{ type: "text", text: "hello" }] } };
+              },
+              wait: async () => ({ id: "r", status: "finished" as const, result: "hello" }),
+              supports: () => true,
+              unsupportedReason: () => undefined,
+              conversation: async () => [],
+              cancel: async () => undefined,
+              onDidChangeStatus: () => () => undefined,
+            };
+          },
+          [Symbol.asyncDispose]: async () => undefined,
+        }) as never,
+      prompt: async () => ({ id: "x", status: "finished" as const }),
+    });
+    const outcome = await driver({
+      scenario,
+      projectDir: project,
+      agentHome: home,
+      readRoots: [readRoot],
+      plugin: { dir: src, name: "highway", skills: 1 },
+      key: "k",
+      model: "composer-2",
+      maxTurns: 3,
+      timeoutMs: 30_000,
+      pickFallback: async () => undefined,
+      raw: () => undefined,
+      log: () => undefined,
+    });
+    assert.equal(outcome.outcome, "ended");
+    assert.ok(outcome.skillsBeforeOutput.includes(EXPERIENCE_SKILL));
+    assert.deepEqual(experienceInvariant(outcome.skillsBeforeOutput), []);
+  } finally {
+    rmSync(home, { recursive: true, force: true });
+    rmSync(project, { recursive: true, force: true });
+    rmSync(src, { recursive: true, force: true });
+  }
+});
+
+test("createCursorDriver ignores skill activation after the first person-visible agent turn", async () => {
+  const scenario: Scenario = {
+    file: "fake.md",
+    id: "fake-late",
+    skill: "help",
+    through: [],
+    fixture: "empty",
+    smoke: true,
+    web: false,
+    open: "hi",
+    replies: [{ key: { type: "text", text: "Continue?" }, say: "yes", line: 1 }],
+    writes: [],
+    expects: [],
+    covers: [],
+    reaches: [],
+    shows: [],
+  };
+  const home = mkdtempSync(join(tmpdir(), "cursor-late-"));
+  const project = mkdtempSync(join(tmpdir(), "cursor-latep-"));
+  const src = mkdtempSync(join(tmpdir(), "cursor-latepl-"));
+  mkdirSync(join(src, "skills", "s1"), { recursive: true });
+  mkdirSync(join(src, ".cursor-plugin"), { recursive: true });
+  writeFileSync(join(src, ".cursor-plugin", "plugin.json"), JSON.stringify({ name: "highway" }));
+  const readRoot = join(home, ".cursor", "plugins", "local", "highway");
+  const skillPath = join(readRoot, "skills", "highway-experience", "SKILL.md");
+  let sends = 0;
+  try {
+    const driver = createCursorDriver({
+      create: async () =>
+        ({
+          agentId: "a",
+          async send() {
+            sends++;
+            const n = sends;
+            return {
+              id: `r${n}`,
+              agentId: "a",
+              status: "running",
+              async *stream() {
+                if (n === 1) {
+                  yield { type: "assistant", message: { role: "assistant", content: [{ type: "text", text: "Continue?" }] } };
+                } else {
+                  yield { type: "tool_call", name: "read", status: "completed", args: { path: skillPath } };
+                  yield { type: "assistant", message: { role: "assistant", content: [{ type: "text", text: "done" }] } };
+                }
+              },
+              wait: async () => ({
+                id: `r${n}`,
+                status: "finished" as const,
+                result: n === 1 ? "Continue?" : "done",
+              }),
+              supports: () => true,
+              unsupportedReason: () => undefined,
+              conversation: async () => [],
+              cancel: async () => undefined,
+              onDidChangeStatus: () => () => undefined,
+            };
+          },
+          [Symbol.asyncDispose]: async () => undefined,
+        }) as never,
+      prompt: async () => ({ id: "x", status: "finished" as const }),
+    });
+    const outcome = await driver({
+      scenario,
+      projectDir: project,
+      agentHome: home,
+      readRoots: [readRoot],
+      plugin: { dir: src, name: "highway", skills: 1 },
+      key: "k",
+      model: "composer-2",
+      maxTurns: 5,
+      timeoutMs: 30_000,
+      pickFallback: async () => undefined,
+      raw: () => undefined,
+      log: () => undefined,
+    });
+    assert.equal(outcome.outcome, "ended");
+    assert.ok(!outcome.skillsBeforeOutput.includes(EXPERIENCE_SKILL));
+    assert.ok(experienceInvariant(outcome.skillsBeforeOutput).length > 0);
   } finally {
     rmSync(home, { recursive: true, force: true });
     rmSync(project, { recursive: true, force: true });

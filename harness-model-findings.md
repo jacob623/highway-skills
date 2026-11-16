@@ -457,13 +457,39 @@ Codify: `codify-catalog`, `codify-no-architecture`, `codify-no-implementations` 
 `codify-existing-product` and `codify-folder-taken` failed `unmatched-question` (script/model
 drift, not a new Cursor finding). `codify-code-project` had an unclassified session error once.
 
+## Cursor experience-order fix for spec 250
+
+Three confirmation runs after the Cursor driver mapped skill ids from `/skills/<id>/` reads,
+normalized `.cursor/plugins/local/highway/…` paths onto the install read root, and deferred
+`outputSeen` until the turn’s agent log (so streamed text tokens no longer emptied
+`skillsBeforeOutput`). Before the runs: suite 87/87, harness tests 161/161. Logs:
+
+| Log | Run id | Bytes |
+| --- | --- | --- |
+| `specs/250-cursor-experience-order/harness/smoke-1.log` | `20261116-183431Z-smoke-cursor-db3d54c` | 59 KB |
+| `specs/250-cursor-experience-order/harness/smoke-2.log` | `20261116-185430Z-smoke-cursor-db3d54c` | 61 KB |
+| `specs/250-cursor-experience-order/harness/codify.log` | `20261116-191450Z-targeted-cursor-db3d54c` | 110 KB |
+
+No token or `CURSOR_API_KEY`. Zero attempts across all three logs failed experience-order with
+`actual no skill` (F29 close gate). Zero `fail: experience-order` lines in any of the three logs.
+
+| Run | Selection | Passed | Flaky | Failed | Blocked |
+| --- | --- | --- | --- | --- | --- |
+| smoke-1 | `--agent cursor --smoke` (16) | 14 | 0 | 2 | 0 |
+| smoke-2 | `--agent cursor --smoke` (16) | 15 | 1 | 1 | 0 |
+| codify | `--agent cursor --skills highway-codify` (28) | 25 | 4 | 3 | 0 |
+
+Passed includes flaky. Remaining smoke failures: discovery-smoke (both runs) and request-smoke
+(smoke-1 only) on assertion/template (F18). Codify failures: chain-codify, codify-code-project,
+codify-plan-review — assertion/template (F18), not experience-order.
+
 # Harness Failures
 
 Resolved findings are removed: S1 in spec 242; F2, F4, F6, F9, F10, F11, F12, F13, and F14 in
-spec 243; and F3, F5, F7 (with F8), F15, F16, and F17 in spec 244. Spec 244 removed the catch-all
-from 10 scenarios (codify-choose's is intentional, not 11 as F3 listed). The run tables above
-keep their ids as a record. Each resolution is in the resolving spec's `research.md`; the
-confirming run ids are in the final runs sections above.
+spec 243; F3, F5, F7 (with F8), F15, F16, and F17 in spec 244; and F29 in spec 250. Spec 244
+removed the catch-all from 10 scenarios (codify-choose's is intentional, not 11 as F3 listed).
+The run tables above keep their ids as a record. Each resolution is in the resolving spec's
+`research.md`; the confirming run ids are in the final runs sections above.
 
 ## F18: A required section or table is dropped from the record
 
@@ -478,6 +504,7 @@ confirming run ids are in the final runs sections above.
 - Plugin install smoke (GPT-5.6 Luna) `20261113-142757Z-smoke-be6a1d0`: discovery-smoke (both attempts)
 - Groundwork smoke (GPT-5.6 Luna) `20261114-121007Z-smoke-40844ce`: discovery-smoke (both attempts), codify-smoke (attempt 1)
 - Agent manifests smoke (GPT-5.6 Luna) `20261114-203043Z-smoke-557dddb`: discovery-smoke (both attempts), onboarding-smoke (attempt 1)
+- Cursor experience-order fix for spec 250: discovery-smoke (smoke-1 and smoke-2), request-smoke (smoke-1), chain-codify / codify-code-project / codify-plan-review (codify run)
 
 **Category**: Skill
 
@@ -732,35 +759,13 @@ harness gave no reply, and Luna showed the opening and stopped without writing a
 **Runs**:
 
 - Plugin install smoke (GPT-5.6 Luna) `20261113-142757Z-smoke-be6a1d0`: implementation-smoke (attempt 2)
-- Cursor driver smoke for spec 249 (`gpt-5.6-luna` on Cursor): nearly every smoke and highway-codify attempt; see the Cursor section and F29
+- Cursor driver smoke for spec 249 (`gpt-5.6-luna` on Cursor): nearly every smoke and highway-codify attempt under the broken mapping (see Cursor section for spec 249); resolved for Cursor systemic `actual no skill` in spec 250 (F29). Spec 250 confirmation runs had zero experience-order failures.
 
 **Category**: Model
 
 **Confirmed**: Yes
 
-**Basis**: Luna invoked highway-implementation, read the catalogs, and listed the Reference Architectures without invoking highway-experience or reading its `SKILL.md`. The harness reported `experience-order`. Every other attempt in both plugin runs activated highway-experience first, from the installed plugin, so the plugin install does not hide the skill. The same attempt also failed on F1. On Cursor, the same kind dominates; F29 covers the Cursor-specific pattern (install succeeds, activation almost never recorded).
+**Basis**: Luna invoked highway-implementation, read the catalogs, and listed the Reference Architectures without invoking highway-experience or reading its `SKILL.md`. The harness reported `experience-order`. Every other attempt in both plugin runs activated highway-experience first, from the installed plugin, so the plugin install does not hide the skill. The same attempt also failed on F1. Spec 249’s Cursor runs looked like the same failure mode but were mostly F29 (harness mapping); after spec 250, Cursor confirmation logs show no experience-order fails.
 
-**Proposed resolution**: No skill or harness change for the rare Copilot case. For Cursor, see F29.
+**Proposed resolution**: No skill or harness change for the rare Copilot case. Cursor systemic `actual no skill` is closed under F29 / spec 250.
 
-## F29: Cursor runs rarely record highway-experience before output
-
-**Skill**: all (Cursor local driver)
-
-**Runs**:
-
-- Cursor driver smoke for spec 249: `20261116-140947Z-smoke-cursor-8fe482f`, `20261116-144422Z-smoke-cursor-8fe482f`, `20261116-151541Z-targeted-cursor-8fe482f`
-
-**Category**: Harness / agent
-
-**Confirmed**: Yes
-
-**Basis**: Every attempt installed `highway` with 16 skills. Almost every attempt still failed
-`experience-order` with `actual no skill` (smoke-2's `experience-smoke` passed once; a few
-codify scenarios passed). The driver loads plugins via `settingSources: ["plugins"]` after a
-filesystem copy into the throwaway home. Either Cursor is not surfacing installed skills to the
-model the way Copilot does, or skill invocations are not visible on the stream events the driver
-maps. Not a skill-text change.
-
-**Proposed resolution**: In a follow-up harness change, confirm how local Cursor reports skill
-use (tool name, system init tools list, or read of `SKILL.md`), tighten mapping / install if
-needed, and re-run smoke. Do not change skills for this finding.
