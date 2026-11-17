@@ -85,7 +85,7 @@ export function copilotVersions(): { sdk: string; runtime: string } {
 /** One prompt in a new session with no tools, in its own throwaway home, returning the reply text. */
 export function copilotAsk(key: string, model: string): Ask {
   return async (prompt) => {
-    const home = mkdtempSync(join(tmpdir(), "harness-judge-"));
+    const home = mkdtempSync(join(tmpdir(), "hj-"));
     const client = new CopilotClient({ baseDirectory: home, gitHubToken: key, useLoggedInUser: false, workingDirectory: home, logLevel: "error" });
     try {
       await withRateLimit(() => client.start(), classifyCopilotError);

@@ -98,7 +98,7 @@ require_in highway-discovery '### write' "$(keep_line discovery-record.md)"
 require_in highway-adr '### write' "$(keep_line adr-record.md)"
 require_in highway-adr '### onboarding' '- The record keeps every heading of a Discovery-backed ADR, as `write` says, including `## Decision Confidence`.'
 reject_in highway-adr '### onboarding' '- The record uses every section a Discovery-backed ADR uses.'
-version_is highway-discovery 5.8.0
+version_is highway-discovery 5.9.0
 version_is highway-adr 6.8.0
 
 # --- F15 and F5: a refused edit re-shows the proposal; a bare invocation is not a catalog request ---

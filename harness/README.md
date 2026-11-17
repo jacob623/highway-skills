@@ -419,7 +419,7 @@ reaches: close
 | `expect` | `<assertion> <path-glob>[ :: <argument>]` (repeatable) |
 | `covers` | `<hash> <bullet text>` for a bullet the scenario exercises (repeatable) |
 | `reaches` | A `###` step of the skill the conversation reaches (repeatable) |
-| `shows` | Text the agent must show in its messages, checked after a run that ended (repeatable); whitespace is collapsed and emphasis (`*` runs, and `_` runs at a word boundary) is not compared, superseding the exact comparison; a miss fails as `assertion` with check `shows` |
+| `shows` | Text the agent must show in its messages, checked after a run that ended (repeatable); whitespace is collapsed and emphasis (`*` runs, and `_` runs at a word boundary) and backticks are not compared, superseding the exact comparison; a miss fails as `assertion` with check `shows` |
 
 In path patterns, `*` matches within one folder and `**` across folders.
 
@@ -431,7 +431,7 @@ In path patterns, `*` matches within one folder and `**` across folders.
 | `field` | `Name=Value` | a line `Name: Value`, `**Name:** Value`, or `- **Name:** Value` exists |
 | `row` | cell text | a table row contains the text |
 | `contains` | text | the text appears in every match |
-| `contains-any` | text | the text appears in at least one match |
+| `contains-any` | text | the text appears in at least one match (comparison ignores case) |
 | `template` | template file name | the structural template check passes |
 
 A reported "step" in results and failure blocks is the skill step of the last keyed question the

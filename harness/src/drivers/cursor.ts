@@ -328,7 +328,7 @@ const defaultApi: CursorAgentApi = {
 /** One-shot text ask with no tools, for judge / reply fallback (R8). */
 export function cursorAsk(key: string, model: string, api: CursorAgentApi = defaultApi): Ask {
   return async (prompt) => {
-    const home = mkdtempSync(join(tmpdir(), "harness-cursor-judge-"));
+    const home = mkdtempSync(join(tmpdir(), "hcj-"));
     try {
       return await withCursorHome(home, async () => {
         const result = await withRateLimit(

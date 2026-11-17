@@ -104,8 +104,8 @@ export interface ProjectSource {
 
 /** A new temporary project per attempt: the base, then the fixture or previous stage (FR-005). */
 export function createProject(source: ProjectSource, workRoot: string, label: string): string {
-  mkdirSync(join(workRoot, "projects"), { recursive: true });
-  const dir = mkdtempSync(join(workRoot, "projects", `${label}-`));
+  mkdirSync(join(workRoot, "p"), { recursive: true });
+  const dir = mkdtempSync(join(workRoot, "p", `${label}-`));
   cpSync(source.baseDir, dir, { recursive: true });
   if (source.fromDir) {
     cpSync(source.fromDir, dir, { recursive: true });
