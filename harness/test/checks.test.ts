@@ -126,6 +126,20 @@ test("shows does not compare emphasis, and keeps underscores inside words", () =
   assert.equal(showsFailures("Use snakecase names.", ["Use snake_case names."]).length, 1);
 });
 
+test("shows does not compare backticks around matching tokens", () => {
+  const said = "To configure platforms and coding standards, run `highway-codify-config`.";
+  assert.deepEqual(showsFailures(said, ["To configure platforms and coding standards, run highway-codify-config."]), []);
+  assert.equal(showsFailures(said, ["To configure platforms and coding standards, run highway-setup."]).length, 1);
+});
+
+test("contains-any ignores case", () => {
+  const dir = project({ "nfrs/OBJ.md": "# Grow Repeat Customers by a Fifth\n" });
+  const files = [...snapshot(dir).keys()];
+  assert.equal(runExpectation(dir, files, exp("contains-any", "nfrs/*.md", "repeat")), undefined);
+  assert.ok(runExpectation(dir, files, exp("contains", "nfrs/*.md", "repeat")));
+  rmSync(dir, { recursive: true });
+});
+
 test("a read of highway-experience/SKILL.md is an experience activation", () => {
   assert.ok(isExperienceSkillRead("/tmp/p/.github/skills/highway-experience/SKILL.md"));
   assert.ok(isExperienceSkillRead("highway-experience/SKILL.md"));

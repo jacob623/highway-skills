@@ -76,7 +76,8 @@ export function writesNothing(diff: SnapshotDiff): CheckFailure[] {
 
 /** `shows:`: each value must appear in the agent's messages. Runs of whitespace compare as one space. */
 export function showsFailures(agentText: string, shows: readonly string[]): CheckFailure[] {
-  const flat = (s: string): string => s.replace(/\*+|(?<![A-Za-z0-9])_+|_+(?![A-Za-z0-9])/g, "").replace(/\s+/g, " ").trim();
+  const flat = (s: string): string =>
+    s.replace(/\*+|(?<![A-Za-z0-9])_+|_+(?![A-Za-z0-9])/g, "").replace(/`+/g, "").replace(/\s+/g, " ").trim();
   const said = flat(agentText);
   return shows
     .filter((text) => !said.includes(flat(text)))
@@ -152,7 +153,8 @@ export function runExpectation(projectDir: string, files: Iterable<string>, exp:
 
   const arg = exp.argument ?? "";
   if (exp.assertion === "contains-any") {
-    if (matches.some((rel) => readFileSync(join(projectDir, rel), "utf8").includes(arg))) return undefined;
+    const needle = arg.toLowerCase();
+    if (matches.some((rel) => readFileSync(join(projectDir, rel), "utf8").toLowerCase().includes(needle))) return undefined;
     return fail(`text "${arg}" in at least one file`, `no file among ${matches.join(", ")} contains it`);
   }
   for (const rel of matches) {

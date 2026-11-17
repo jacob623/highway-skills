@@ -139,7 +139,7 @@ test("cursorAsk uses tools: [] and a throwaway home via the fake API", async () 
   const opts = (seen[0] as { options: { tools: unknown[]; local: { cwd: string; settingSources: string[] } } }).options;
   assert.deepEqual(opts.tools, []);
   assert.deepEqual(opts.local.settingSources, []);
-  assert.ok(opts.local.cwd.includes("harness-cursor-judge-"));
+  assert.ok(opts.local.cwd.includes("hcj-"));
 });
 
 test("createCursorDriver maps a one-turn fake SDK run through the reply loop", async () => {

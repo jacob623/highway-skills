@@ -134,9 +134,9 @@ async function runAttempt(ctx: Context, scenario: Scenario, index: number, attem
   const transcript: TranscriptEntry[] = [];
   const turnFiles: TurnFiles[] = [];
 
-  const projectDir = createProject({ baseDir: ctx.baseDir, fixture: source.fixture ?? scenario.fixture, fromDir: source.fromDir }, ctx.workRoot, `${scenario.id}-${attempt}`);
-  mkdirSync(join(ctx.workRoot, "homes"), { recursive: true });
-  const agentHome = mkdtempSync(join(ctx.workRoot, "homes", `${scenario.id}-${attempt}-`));
+  const projectDir = createProject({ baseDir: ctx.baseDir, fixture: source.fixture ?? scenario.fixture, fromDir: source.fromDir }, ctx.workRoot, `${attempt}`);
+  mkdirSync(join(ctx.workRoot, "h"), { recursive: true });
+  const agentHome = mkdtempSync(join(ctx.workRoot, "h", `${attempt}-`));
   const rewrite = pathRewriter({ project: projectDir, home: agentHome, work: ctx.workRoot, tmp: tmpdir() });
   const before = snapshot(projectDir);
   let previous = before;
@@ -478,7 +478,7 @@ export async function main(argv: readonly string[], deps: RunnerDeps = defaultDe
     });
   }
 
-  workRoot = mkdtempSync(join(tmpdir(), "highway-harness-"));
+  workRoot = mkdtempSync(join(tmpdir(), "hh-"));
   try {
     const built = deps.build(workRoot);
     if (!built.ok) return runFailure({ kind: "build-failed", check: "plugin", detail: built.tail });
