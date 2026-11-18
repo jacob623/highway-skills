@@ -31,7 +31,11 @@ test("the registry holds Codex with API keys, plugin read roots, ask, and versio
   const codex = AGENTS.get("codex")!;
   assert.equal(codex.service, "Codex");
   assert.deepEqual(codex.keys, ["OPENAI_API_KEY", "CODEX_API_KEY"]);
-  assert.deepEqual(codex.readRoots("/work/homes/x"), ["/work/homes/x/plugins/highway"]);
+  assert.deepEqual(codex.readRoots("/work/homes/x"), [
+    "/work/homes/x",
+    "/work/homes/x/plugins/highway",
+    "/work/homes/x/plugins/cache/highway-local/highway",
+  ]);
   assert.equal(typeof codex.ask, "function");
   assert.equal(codex.versions().runtime, "cli");
   assert.equal(codex.classify(new Error("HTTP 429 Too Many Requests")), "rate-limit");

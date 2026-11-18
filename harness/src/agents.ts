@@ -1,6 +1,6 @@
 import { join } from "node:path";
 import type { Classifier, Driver } from "./driver.ts";
-import { classifyCodexError, codexAsk, codexDriver, codexVersions, pluginDirUnderHome } from "./drivers/codex.ts";
+import { classifyCodexError, codexAsk, codexDriver, codexReadRoots, codexVersions } from "./drivers/codex.ts";
 import { classifyCopilotError, copilotAsk, copilotDriver, copilotVersions } from "./drivers/copilot.ts";
 import { classifyCursorError, cursorAsk, cursorDriver, cursorVersions } from "./drivers/cursor.ts";
 import type { Ask } from "./judge.ts";
@@ -59,7 +59,7 @@ export const AGENTS: Registry = new Map<string, Agent>([
       driver: codexDriver,
       ask: codexAsk,
       classify: classifyCodexError,
-      readRoots: (home) => [pluginDirUnderHome(home)],
+      readRoots: codexReadRoots,
       versions: codexVersions,
     },
   ],

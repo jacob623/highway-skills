@@ -1,3 +1,4 @@
+import { spawnSync } from "node:child_process";
 import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { isAbsolute, join, resolve, sep } from "node:path";
@@ -28,7 +29,48 @@ import type { PluginSource } from "../project.ts";
 import { decide, keyText, lastQuestion, nextUnused, normalize, spentReply, textAfterAnswers } from "../replies.ts";
 
 const PLUGIN_MARKER = "/plugins/highway/";
+/** Cache installs live under `/plugins/cache/<marketplace>/highway/<version>/`. */
+const PLUGIN_CACHE_MARKER = `/plugins/cache/highway-local/highway/`;
 const MARKETPLACE_NAME = "highway-local";
+
+/** Codex Starlark rules: forbid `git` before run (FR-002 primary lever). */
+export const CODEX_GIT_FORBIDDEN_RULES = `# Highway harness Local mode — forbid git before it runs.
+prefix_rule(
+    pattern = ["git"],
+    decision = "forbidden",
+    justification = "Local mode: the person owns every git step; do not run git.",
+    match = [
+        "git status",
+        "git status --short",
+        "git add .",
+        "git commit -m msg",
+    ],
+    not_match = [
+        "npm test",
+        "cat README.md",
+    ],
+)
+`;
+
+/** Short Local-mode guidance for the throwaway home only (not the operator's personal AGENTS.md). */
+export const CODEX_LOCAL_AGENTS_MD = `# Highway harness — Local mode
+
+- Do not run \`git\` (the person owns every git step).
+- Stay inside the project root; do not read or write outside it.
+- Do not network-install packages (\`npm install\` from the registry, \`curl\`/\`wget\` installs).
+- In-project file reads/writes and in-project build/test through the shell are allowed.
+- Load and follow Highway skills; activate \`highway-experience\` before person-visible output when the scenario requires it.
+`;
+
+/**
+ * Write Codex rules + Local-mode AGENTS.md into a throwaway agent home.
+ * Must not copy from the operator's personal ~/.codex or AGENTS.md.
+ */
+export function prepareCodexAgentHome(agentHome: string): void {
+  mkdirSync(join(agentHome, "rules"), { recursive: true });
+  writeFileSync(join(agentHome, "rules", "default.rules"), CODEX_GIT_FORBIDDEN_RULES);
+  writeFileSync(join(agentHome, "AGENTS.md"), CODEX_LOCAL_AGENTS_MD);
+}
 
 export function classifyCodexError(error: unknown): FailureKind {
   const text = errorText(error).toLowerCase();
@@ -70,11 +112,19 @@ function countSkills(pluginDir: string): number {
   return readdirSync(skills, { withFileTypes: true }).filter((e) => e.isDirectory()).length;
 }
 
-/** Remap collapsed plugin paths onto the attempt install read root. */
+/** Remap collapsed plugin paths onto the attempt install read root (staged or cache). */
 export function normalizeCodexPluginPath(path: string, readRoot: string): string {
   if (!path || !readRoot) return path;
   const normalized = path.replace(/\\/g, "/");
-  const idx = normalized.toLowerCase().indexOf(PLUGIN_MARKER);
+  const lower = normalized.toLowerCase();
+  let idx = lower.indexOf(PLUGIN_CACHE_MARKER);
+  if (idx >= 0) {
+    const after = normalized.slice(idx + PLUGIN_CACHE_MARKER.length);
+    const slash = after.indexOf("/");
+    const suffix = slash >= 0 ? after.slice(slash + 1) : after;
+    return join(readRoot, suffix);
+  }
+  idx = lower.indexOf(PLUGIN_MARKER);
   if (idx < 0) return path;
   const suffix = normalized.slice(idx + PLUGIN_MARKER.length);
   return join(readRoot, suffix);
@@ -160,10 +210,11 @@ export function classifyCodexShell(
   }
   const cmd = unwrapShellScript(raw);
   if (isGitCommand(raw) || isGitCommand(cmd)) {
+    // Default non-fatal (pre-refuse); applyCodexShellStatus upgrades when status is completed.
     return {
       approved: false,
-      rejection: { kind: "shell", detail: raw, fatal: true },
-      summary: `rejected shell (git): ${raw}`,
+      rejection: { kind: "shell", detail: raw, fatal: false },
+      summary: `denied shell (git, pre-refuse): ${raw}`,
     };
   }
   if (isNetworkInstall(cmd) || isNetworkInstall(raw)) {
@@ -175,8 +226,11 @@ export function classifyCodexShell(
   }
   for (const p of pathsInCommand(cmd)) {
     if (p === "/" || p === "//" || p === "." || p === "..") continue;
-    const inProject = insideProject(projectDir, p);
-    const inRoot = readRoots.some((root) => insideProject(root, p));
+    if (isCodexPluginTreePath(p)) continue;
+    const resolved = resolve(p);
+    if (isCodexPluginTreePath(resolved)) continue;
+    const inProject = insideProject(projectDir, p) || insideProject(projectDir, resolved);
+    const inRoot = readRoots.some((root) => insideProject(root, p) || insideProject(root, resolved));
     if (!inProject && !inRoot) {
       return {
         approved: false,
@@ -199,6 +253,25 @@ type AccessDecisionLite = {
   summary: string;
 };
 
+/**
+ * Finalize shell classification using the command_execution status.
+ * Git: fatal only when status is `completed` (effects backup); otherwise logged pre-refuse.
+ * Other forbidden shells keep their classifyCodexShell fatal flag.
+ */
+export function applyCodexShellStatus(decision: AccessDecisionLite, status: string): AccessDecisionLite {
+  if (decision.approved || !decision.rejection) return decision;
+  if (decision.rejection.kind !== "shell") return decision;
+  if (!isGitCommand(decision.rejection.detail)) return decision;
+  const completed = status === "completed";
+  return {
+    approved: false,
+    rejection: { ...decision.rejection, fatal: completed },
+    summary: completed
+      ? `rejected shell (git, completed): ${decision.rejection.detail}`
+      : `denied shell (git, pre-refuse): ${decision.rejection.detail}`,
+  };
+}
+
 /** Map a Codex item to AccessRequest(s) for logging; shell uses classifyCodexShell separately. */
 export function itemToAccessRequests(item: { type: string; command?: string; changes?: { path: string; kind: string }[]; query?: string }): AccessRequest[] {
   if (item.type === "command_execution") return [{ kind: "shell", command: item.command ?? "command" }];
@@ -216,9 +289,90 @@ export function pluginDirUnderHome(agentHome: string, name = "highway"): string 
   return join(agentHome, "plugins", name);
 }
 
+/** Installed Codex plugin cache root: `$CODEX_HOME/plugins/cache/<marketplace>/<name>/<version>`. */
+export function pluginCacheVersions(agentHome: string, name = "highway"): string[] {
+  const root = join(agentHome, "plugins", "cache", MARKETPLACE_NAME, name);
+  if (!existsSync(root)) return [];
+  return readdirSync(root, { withFileTypes: true })
+    .filter((e) => e.isDirectory())
+    .map((e) => join(root, e.name));
+}
+
+/**
+ * Read roots for Codex: the throwaway home (skills runtime under `$CODEX_HOME/skills/…`),
+ * staged plugin, cache dirs, and installed versions.
+ */
+export function codexReadRoots(agentHome: string): string[] {
+  const cacheName = join(agentHome, "plugins", "cache", MARKETPLACE_NAME, "highway");
+  return [agentHome, pluginDirUnderHome(agentHome), cacheName, ...pluginCacheVersions(agentHome)];
+}
+
+/** True when a path is inside a Highway Codex plugin tree (staged, cache, or CLI pristine unpack). */
+export function isCodexPluginTreePath(path: string): boolean {
+  const n = path.replace(/\\/g, "/").toLowerCase();
+  if (n.includes(`${PLUGIN_MARKER}skills/`) || n.includes(PLUGIN_CACHE_MARKER)) return true;
+  // Codex may unpack skills under a temp `pristine/skills/highway-*` tree outside the agent home.
+  if (/\/pristine\/skills\/highway-[a-z0-9-]+\//i.test(n)) return true;
+  // Runtime skill layout: `$CODEX_HOME/skills/r1/highway-experience/SKILL.md`
+  if (/\/skills\/(?:r\d+\/)?highway-[a-z0-9-]+\//i.test(n)) return true;
+  return false;
+}
+
+/** Resolve the Codex CLI: PATH first, then the SDK-vendored binary under harness/node_modules. */
+export function resolveCodexCli(): string | undefined {
+  const which = spawnSync("which", ["codex"], { encoding: "utf8", timeout: 5_000 });
+  if (which.status === 0 && which.stdout.trim()) return which.stdout.trim();
+  const candidates = [
+    join(HARNESS_DIR, "node_modules", "@openai", "codex-darwin-arm64", "vendor", "aarch64-apple-darwin", "bin", "codex"),
+    join(HARNESS_DIR, "node_modules", "@openai", "codex-linux-x64", "vendor", "x86_64-unknown-linux-gnu", "bin", "codex"),
+    join(HARNESS_DIR, "node_modules", "@openai", "codex", "bin", "codex.js"),
+  ];
+  for (const c of candidates) {
+    if (existsSync(c)) return c;
+  }
+  return undefined;
+}
+
+/**
+ * Best-effort Codex CLI registration under the throwaway home so skills activate mid-attempt
+ * (FR-003). Filesystem staging remains the source of truth for skill counts. Skipped when
+ * no CLI is found or when `HIGHWAY_CODEX_SKIP_PLUGIN_CLI=1` (unit tests).
+ */
+export function registerCodexPluginCli(agentHome: string, pluginName: string): string {
+  if (process.env.HIGHWAY_CODEX_SKIP_PLUGIN_CLI === "1") {
+    return "codex plugin CLI skipped (HIGHWAY_CODEX_SKIP_PLUGIN_CLI=1)";
+  }
+  const codexBin = resolveCodexCli();
+  if (!codexBin) {
+    return "codex CLI not found (PATH or harness node_modules); filesystem staging only";
+  }
+  const env: NodeJS.ProcessEnv = {
+    ...process.env,
+    HOME: agentHome,
+    CODEX_HOME: agentHome,
+  };
+  // Marketplace root is the throwaway home (contains `.agents/plugins/marketplace.json` + `plugins/`).
+  const steps: string[] = [];
+  const run = (args: string[]): void => {
+    const result = spawnSync(codexBin, args, { env, encoding: "utf8", timeout: 20_000 });
+    const out = [result.stdout, result.stderr].filter(Boolean).join(" ").trim();
+    if (result.error) {
+      steps.push(`codex ${args.join(" ")}: ${result.error.message}`);
+      return;
+    }
+    if (result.status !== 0) {
+      steps.push(`codex ${args.join(" ")} exit ${result.status}${out ? `: ${out.slice(0, 240)}` : ""}`);
+      return;
+    }
+    steps.push(`codex ${args.join(" ")}: ok`);
+  };
+  run(["plugin", "marketplace", "add", agentHome]);
+  run(["plugin", "add", `${pluginName}@${MARKETPLACE_NAME}`]);
+  return steps.join("; ");
+}
+
 /** Filesystem PluginRpc: stage Highway under throwaway CODEX_HOME and register a local marketplace. */
 export function codexPluginRpc(agentHome: string): PluginRpc {
-  const dest = pluginDirUnderHome(agentHome);
   return {
     async install(params) {
       mkdirSync(join(agentHome, "plugins"), { recursive: true });
@@ -228,6 +382,7 @@ export function codexPluginRpc(agentHome: string): PluginRpc {
       cpSync(params.source, target, { recursive: true });
       const marketDir = join(agentHome, ".agents", "plugins");
       mkdirSync(marketDir, { recursive: true });
+      // Path is relative to the marketplace root (agent home), must be `./`-prefixed.
       writeFileSync(
         join(marketDir, "marketplace.json"),
         JSON.stringify(
@@ -237,8 +392,8 @@ export function codexPluginRpc(agentHome: string): PluginRpc {
             plugins: [
               {
                 name,
-                source: { source: "local", path: `../../plugins/${name}` },
-                policy: { installation: "INSTALLED_BY_DEFAULT", authentication: "ON_INSTALL" },
+                source: { source: "local", path: `./plugins/${name}` },
+                policy: { installation: "AVAILABLE", authentication: "ON_INSTALL" },
                 category: "Developer Tools",
               },
             ],
@@ -247,7 +402,6 @@ export function codexPluginRpc(agentHome: string): PluginRpc {
           2,
         ),
       );
-      // Prefer features.plugins on so skills load; path is relative to CODEX_HOME.
       writeFileSync(
         join(agentHome, "config.toml"),
         [
@@ -259,6 +413,8 @@ export function codexPluginRpc(agentHome: string): PluginRpc {
           "",
         ].join("\n"),
       );
+      // Re-assert rules/guidance if install runs before prepare (tests) or after a wipe.
+      prepareCodexAgentHome(agentHome);
       return {
         plugin: { name, enabled: true },
         skillsInstalled: countSkills(target),
@@ -436,11 +592,25 @@ export function createCodexDriver(api: CodexApi = defaultApi): Driver {
     const noteAccess = (access: AccessRequest, status: string): void => {
       const readRoot = options.readRoots[0] ?? "";
       if ((access.kind === "read" || access.kind === "write") && access.path) {
-        access.path = normalizeCodexPluginPath(access.path, readRoot);
+        if (isCodexPluginTreePath(access.path)) {
+          // Skill-tree touches are reads for experience-order, even when Codex reports a write.
+          access = { kind: "read", path: normalizeCodexPluginPath(access.path, readRoot) };
+        } else {
+          access.path = normalizeCodexPluginPath(access.path, readRoot);
+        }
       }
       let decision: AccessDecisionLite;
       if (access.kind === "shell") {
-        decision = classifyCodexShell(access.command ?? "", projectDir, options.readRoots);
+        decision = applyCodexShellStatus(
+          classifyCodexShell(access.command ?? "", projectDir, options.readRoots),
+          status === "running" ? "in_progress" : status,
+        );
+      } else if (
+        (access.kind === "read" || access.kind === "write") &&
+        access.path &&
+        isCodexPluginTreePath(access.path)
+      ) {
+        decision = { approved: true, summary: `approved read: ${access.path}` };
       } else {
         const full = permissionPolicy(access, projectDir, scenario.web, options.readRoots);
         decision = { approved: full.approved, rejection: full.rejection, summary: full.summary };
@@ -454,6 +624,7 @@ export function createCodexDriver(api: CodexApi = defaultApi): Driver {
         // writes to SKILL.md still count as path-based skill reads for experience order when reading
       }
       log({ turn, role: "permission", text: decision.summary });
+      // Effects backup: fatal only after a forbidden tool actually finishes (git: completed only).
       if (!decision.approved && decision.rejection?.fatal && (status === "completed" || status === "failed" || status === "")) {
         effectsFatalMessage = `storage invariant violated after tool ran: ${decision.rejection.kind}: ${decision.rejection.detail}`;
       }
@@ -480,12 +651,14 @@ export function createCodexDriver(api: CodexApi = defaultApi): Driver {
     };
 
     try {
+      prepareCodexAgentHome(options.agentHome);
       const installed = await installPlugin(codexPluginRpc(options.agentHome), options.plugin, projectDir);
       if (!installed.ok) {
         log({ turn, role: "system", text: installed.message });
         return result("error", { error: { kind: "plugin-install", message: installed.message } });
       }
-      log({ turn, role: "system", text: [installed.summary, ...installed.notes].join("\n") });
+      const cliNote = registerCodexPluginCli(options.agentHome, options.plugin.name);
+      log({ turn, role: "system", text: [installed.summary, ...installed.notes, cliNote].filter(Boolean).join("\n") });
 
       const client = api.create({
         apiKey: options.key,

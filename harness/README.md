@@ -132,16 +132,19 @@ reads `OPENAI_API_KEY` then `CODEX_API_KEY` in `harness/.env`. The model is `mod
 Each attempt:
 
 1. Sets throwaway `CODEX_HOME` and `HOME` to the agent home via a fully controlled SDK `env` bag
-   (no personal `~/.codex` or `~/.agents`).
-2. Copies `highway-agent-plugin/` into `<home>/plugins/highway/`, writes a local marketplace under
-   `<home>/.agents/plugins/`, enables plugins in `<home>/config.toml`, and runs shared install
-   checks (name `highway`, 16 skills, enabled). Accepts `.codex-plugin/plugin.json` with its
-   `interface` block.
+   (no personal `~/.codex` or `~/.agents`). Writes harness-authored Local-mode `AGENTS.md` and
+   `$CODEX_HOME/rules/default.rules` that **forbid `git` before run** (not the operator's personal
+   config).
+2. Copies `highway-agent-plugin/` into `<home>/plugins/highway/` (absolute local marketplace path),
+   enables plugins in `<home>/config.toml`, best-effort `codex plugin marketplace add` /
+   `codex plugin add` under that home (skip with `HIGHWAY_CODEX_SKIP_PLUGIN_CLI=1` in unit tests),
+   and runs shared install checks (name `highway`, 16 skills, enabled). Accepts
+   `.codex-plugin/plugin.json` with its `interface` block.
 3. Starts threads with `sandboxMode: workspace-write`, network access off,
    `skipGitRepoCheck: true`, and `approvalPolicy: never`.
-4. Enforces storage **effects-based**: allow in-project reads/writes and in-project build/test
-   shell; fail `git`, outside paths, and network-facing installs (before run when the sandbox
-   refuses; otherwise after the command item completes).
+4. Enforces storage: **pre-refuse `git`** (logged, non-fatal so the attempt may continue); **effects
+   backup** fails the attempt if `git` still completes; outside paths and network-facing installs
+   still fail after effects. In-project reads/writes and in-project build/test shell remain allowed.
 5. Maps `command_execution`, `file_change`, agent messages, and `turn.completed` usage into the
    shared transcript, skills lists (including `highway-experience/SKILL.md` path reads), and usage.
 
