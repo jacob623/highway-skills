@@ -644,3 +644,50 @@ reply.
 **Proposed resolution**: Watch whether stronger cwd guidance or denying work-root path tokens
 without weakening in-project shell-as-file-tool use is needed; not a reopen of F31.
 
+## Claude Code driver for spec 254
+
+Three confirmation runs after the Claude Code driver (`@anthropic-ai/claude-agent-sdk`), Haiku
+pin `claude-haiku-5-5`, judge Cursor/Luna, and `canUseTool` deny-all-Bash. Before the runs: suite
+87/87, harness tests 193/193. Logs:
+
+| Log | Run id | Bytes |
+| --- | --- | --- |
+| `specs/254-claude-code-driver/harness/smoke-1.log` | `20261118-213144Z-smoke-claude-e809308` | ~110 KB |
+| `specs/254-claude-code-driver/harness/smoke-2.log` | `20261118-214040Z-smoke-claude-e809308` | ~113 KB |
+| `specs/254-claude-code-driver/harness/codify.log` | `20261118-214817Z-targeted-claude-e809308` | ~285 KB |
+
+Every attempt printed `installed plugin highway (16 skills)`. Model `claude-haiku-5-5`; judge
+`cursor/gpt-5.6-luna`. No API key material in the logs. No numeric pass floor this phase.
+
+| Run | Selection | Passed | Failed |
+| --- | --- | --- | --- |
+| smoke-1 | `--agent claude --smoke` (16) | 13 | 3 |
+| smoke-2 | `--agent claude --smoke` (16) | 13 | 3 |
+| codify | `--agent claude --skills highway-codify` (28) | 18 | 10 |
+
+Dominant failure: Claude explores with `Bash` (`ls`/`cat`/`find`/`grep` pipelines) even though
+Read/Write/Edit are available. `canUseTool` denies every Bash request; the storage invariant then
+fails the attempt as `rejected-request` (F33). Secondary: assertion template misses on profile /
+setup / some codify scenarios; intermittent experience-order and unmatched-question on codify.
+
+## F33: Claude explores with Bash despite file tools
+
+**Skill**: intermittent on smoke (onboarding, discovery, request) and highway-codify
+
+**Runs**:
+
+- Spec 254 smoke-1 / smoke-2 / codify (`--agent claude`, model `claude-haiku-5-5`)
+
+**Category**: Model
+
+**Confirmed**: Yes
+
+**Basis**: After install, Haiku often issues `Bash` for listing and reading repository files. The
+driver denies every Bash request before run (clarify FR-010). Denied shells still fail the attempt
+via the shared storage invariant (`rejected-request`), same family as Codex shell probes but with
+pre-refuse rather than effects-only. Not a skill edit this phase.
+
+**Proposed resolution**: Watch whether Haiku learns to prefer Read/Glob after denials; if Bash
+keeps dominating, consider stronger Local-mode prompt guidance in the throwaway home without
+weakening the deny-all-Bash rule. Do not allow in-project Bash for Claude (unlike Codex).
+

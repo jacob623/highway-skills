@@ -1944,6 +1944,15 @@ with `@cursor/sdk`, model `gpt-5.6-luna`, and committed run logs under that spec
 folder. Skill content and this document's own phases are unchanged. Cloud Cursor is rollout
 Phase 20.
 
+# Rollout note: Claude Code driver (rollout Phase 8)
+
+Agent rollout Phase 8 is complete in `specs/254-claude-code-driver/`: the harness drives Claude
+Code through `@anthropic-ai/claude-agent-sdk`, model `claude-haiku-5-5`, deny-all-Bash via
+`canUseTool`, throwaway `CLAUDE_CONFIG_DIR`, and committed run logs under that spec's `harness/`
+folder. Configured judge stays Cursor/Luna. Confirming smokes were 13/16 twice; codify 18/28; every
+attempt installed `highway` with 16 skills; Bash exploration is classified as F33. No skill
+content change.
+
 # Rollout note: Codex driver (rollout Phase 9)
 
 Agent rollout Phase 9 is complete in `specs/252-codex-driver/`: the harness drives Codex through

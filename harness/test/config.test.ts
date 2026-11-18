@@ -101,6 +101,8 @@ test("the shipped configuration reads, with agent, models, and judge", () => {
   assert.equal(typeof file.models.copilot, "string");
   assert.equal(typeof file.models.cursor, "string");
   assert.equal(typeof file.models.codex, "string");
+  assert.equal(typeof file.models.claude, "string");
+  assert.equal(file.models.claude, "claude-haiku-5-5");
   assert.equal(file.judge?.agent, "cursor");
   assert.equal(file.judge?.model, file.models.cursor);
 });
