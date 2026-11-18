@@ -74,10 +74,24 @@ interface Captured {
 
 type Overrides = Partial<RunnerDeps> & { driver?: Driver; ask?: Agent["ask"] };
 
+const CURSOR_TOKEN = "cursor_" + "t".repeat(40);
+
 function deps(overrides: Overrides, cap: Pick<Captured, "out" | "err">): RunnerDeps {
   const { driver = writingDriver, ask, ...rest } = overrides;
+  const judgeAsk = ask ?? (() => async () => "none");
   return {
-    agents: new Map([["copilot", fakeAgent("copilot", driver, ask ? { ask } : {})]]),
+    // Include cursor so shipped harness.config.json judge.agent=cursor resolves in unit tests.
+    agents: new Map([
+      ["copilot", fakeAgent("copilot", driver, ask ? { ask } : {})],
+      [
+        "cursor",
+        fakeAgent("cursor", driver, {
+          service: "Cursor",
+          keys: ["CURSOR_API_KEY"],
+          ask: judgeAsk,
+        }),
+      ],
+    ]),
     build: (workRoot) => {
       const dir = join(workRoot, "base");
       mkdirSync(dir, { recursive: true });
@@ -88,7 +102,7 @@ function deps(overrides: Overrides, cap: Pick<Captured, "out" | "err">): RunnerD
     err: (line) => cap.err.push(line),
     now: () => new Date(Date.UTC(2026, 10, 10, 12, 0, 0)),
     commit: () => "abcdef1234567",
-    env: () => ({ GITHUB_TOKEN: TOKEN }),
+    env: () => ({ GITHUB_TOKEN: TOKEN, CURSOR_API_KEY: CURSOR_TOKEN }),
     ...rest,
   };
 }
@@ -122,8 +136,11 @@ test("help exits 0 and an unknown switch exits 2 with a pointer to --help", asyn
 
 test("an unregistered agent exits 2 before the header, naming the registered agents", async () => {
   const cap = setup({ "highway-help/help-smoke.scenario": SCENARIO("help-smoke") });
-  assert.equal(await run(["--smoke", "--agent", "cursor"], {}, cap), 2);
-  assert.deepEqual(cap.out, ['Configuration error: unknown agent "cursor"; registered agents: copilot', "Run with --help for usage."]);
+  assert.equal(await run(["--smoke", "--agent", "not-an-agent"], {}, cap), 2);
+  assert.deepEqual(cap.out, [
+    'Configuration error: unknown agent "not-an-agent"; registered agents: copilot, cursor',
+    "Run with --help for usage.",
+  ]);
   clean(cap);
 });
 
@@ -133,7 +150,7 @@ test("a passing smoke scenario with --transcripts prints the header, the block, 
   assert.equal(code, 0, text(cap));
   assert.match(
     cap.out[0],
-    /^HARNESS run=20261110-120000Z-smoke-abcdef1 commit=abcdef1234567 type=smoke agent=copilot model=\S+ judge=off fallback=copilot\/\S+ sdk=1\.0\.30 runtime=1\.0\.108 started=2026-11-10T12:00:00\.000Z$/,
+    /^HARNESS run=20261110-120000Z-smoke-abcdef1 commit=abcdef1234567 type=smoke agent=copilot model=\S+ judge=off fallback=cursor\/\S+ sdk=1\.0\.30 runtime=1\.0\.108 started=2026-11-10T12:00:00\.000Z$/,
   );
   const blockStart = cap.out.indexOf("== help-smoke (highway-help) attempt 1 ==");
   assert.ok(blockStart > 0, text(cap));
@@ -172,7 +189,7 @@ test("standard output holds no progress note, and standard error holds nothing e
 
 test("a missing token exits 2 with a run block naming the key variables and the cause", async () => {
   const cap = setup({ "highway-help/help-smoke.scenario": SCENARIO("help-smoke") });
-  const code = await run(["--smoke"], { env: () => ({}) }, cap);
+  const code = await run(["--smoke"], { env: () => ({ CURSOR_API_KEY: CURSOR_TOKEN }) }, cap);
   assert.equal(code, 2);
   const run_ = cap.out.indexOf("== run ==");
   assert.ok(run_ > 0, text(cap));
@@ -377,16 +394,28 @@ test("a fake second agent runs a scenario end to end through the registry, with 
   };
   const agents = new Map([
     ["copilot", fakeAgent("copilot", writingDriver)],
+    [
+      "cursor",
+      fakeAgent("cursor", writingDriver, {
+        service: "Cursor",
+        keys: ["CURSOR_API_KEY"],
+        ask: () => async () => "none",
+      }),
+    ],
     ["fake", fakeAgent("fake", fakeDriver, { versions: () => ({ sdk: "9.9.9", runtime: "unknown" }) })],
   ]);
-  const code = await run(["--smoke", "--agent", "fake", "--model", "fake-model", "--transcripts", cap.transcripts], { agents, env: () => ({ GITHUB_TOKEN: TOKEN, FAKE_API_KEY: "fake-key-value" }) }, cap);
+  const code = await run(
+    ["--smoke", "--agent", "fake", "--model", "fake-model", "--transcripts", cap.transcripts],
+    { agents, env: () => ({ GITHUB_TOKEN: TOKEN, FAKE_API_KEY: "fake-key-value", CURSOR_API_KEY: CURSOR_TOKEN }) },
+    cap,
+  );
   assert.equal(code, 0, text(cap));
   assert.equal(seen.length, 1);
   assert.equal(seen[0].key, "fake-key-value");
   assert.equal(seen[0].model, "fake-model");
   assert.deepEqual(seen[0].readRoots, [join(seen[0].agentHome, "fake-plugins")]);
   assert.ok(!existsSync(seen[0].agentHome));
-  assert.match(cap.out[0], / agent=fake model=fake-model judge=copilot\/\S+ fallback=copilot\/\S+ sdk=9\.9\.9 runtime=unknown /);
+  assert.match(cap.out[0], / agent=fake model=fake-model judge=cursor\/\S+ fallback=cursor\/\S+ sdk=9\.9\.9 runtime=unknown /);
   assert.ok(existsSync(join(cap.transcripts, "20261110-120000Z-smoke-fake-abcdef1", "help-smoke", "attempt-1.jsonl")));
   assert.ok(cap.out.includes("denied: read <home>/secret.txt"), text(cap));
   assert.ok(!cap.out.some((l) => l.startsWith("approved:")));

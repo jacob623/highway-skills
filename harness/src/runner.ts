@@ -589,6 +589,10 @@ export async function main(argv: readonly string[], deps: RunnerDeps = defaultDe
     run.outcomes = selection.map((s) => outcomes.get(s.scenario)!);
     return finish();
   } finally {
-    rmSync(workRoot, { recursive: true, force: true });
+    try {
+      rmSync(workRoot, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
+    } catch {
+      // Best-effort cleanup; leftover temp dirs are OK after a live run abort.
+    }
   }
 }

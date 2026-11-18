@@ -1,6 +1,6 @@
 # Highway Storage Contract
 
-Version `1.2.0`.
+Version `1.3.0`.
 
 ## Scope
 
@@ -19,6 +19,9 @@ home folder.
 ## Modes
 
 - **Local**: the repository is the person's working tree. The person handles every git step.
+  When the agent's file tool is the shell, in-project reads and writes may go through that shell.
+  The skill still must not run `git`, use paths outside the repository root, or treat network or
+  package installs as storage operations.
 - **Remote (Option A)**: a local clone of the person's repository that Highway commits to and
   pushes.
 - **Chat (Option B)**: calls to the git host's API, for a surface with no working tree.
@@ -54,7 +57,9 @@ A folder is created by writing a file in it.
 ## What a skill does not do
 
 - Run a script.
-- Run a shell command.
+- Run a shell command except when Local mode uses the agent's shell as the file tool for
+  in-project reads and writes (see Modes). Arbitrary scripts and network or package installs are
+  still out of scope for storage.
 - Run a `git` command.
 - Decide that a file is absent from a search or pattern result.
 - Use a path that starts at the filesystem root or the home folder.

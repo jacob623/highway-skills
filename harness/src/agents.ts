@@ -1,5 +1,6 @@
 import { join } from "node:path";
 import type { Classifier, Driver } from "./driver.ts";
+import { classifyCodexError, codexAsk, codexDriver, codexReadRoots, codexVersions } from "./drivers/codex.ts";
 import { classifyCopilotError, copilotAsk, copilotDriver, copilotVersions } from "./drivers/copilot.ts";
 import { classifyCursorError, cursorAsk, cursorDriver, cursorVersions } from "./drivers/cursor.ts";
 import type { Ask } from "./judge.ts";
@@ -47,6 +48,19 @@ export const AGENTS: Registry = new Map<string, Agent>([
       classify: classifyCursorError,
       readRoots: (home) => [join(home, ".cursor", "plugins", "local", "highway")],
       versions: cursorVersions,
+    },
+  ],
+  [
+    "codex",
+    {
+      id: "codex",
+      service: "Codex",
+      keys: ["OPENAI_API_KEY", "CODEX_API_KEY"],
+      driver: codexDriver,
+      ask: codexAsk,
+      classify: classifyCodexError,
+      readRoots: codexReadRoots,
+      versions: codexVersions,
     },
   ],
 ]);

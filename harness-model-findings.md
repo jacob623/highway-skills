@@ -530,6 +530,31 @@ below) were removed after they stopped matching the confirmation evidence or wer
 resolving spec. Run tables above keep historical ids. Each resolution is in the resolving spec's
 `research.md`. Spec 251 closed F18, F20, F23, and F28.
 
+## Codex driver smoke for spec 252
+
+Three confirmation runs after the Codex driver, storage-contract MINOR 1.3.0, judge Cursor/Luna,
+and effects-based shell enforcement. Before the runs: suite 87/87, harness tests 175/175. Logs:
+
+| Log | Run id | Bytes |
+| --- | --- | --- |
+| `specs/252-codex-driver/harness/smoke-1.log` | `20261118-143908Z-smoke-codex-130aaf8` | 57 KB |
+| `specs/252-codex-driver/harness/smoke-2.log` | `20261118-144703Z-smoke-codex-130aaf8` | 63 KB |
+| `specs/252-codex-driver/harness/codify.log` | `20261118-145347Z-targeted-codex-130aaf8` | 127 KB |
+
+Every attempt printed `installed plugin highway (16 skills)`. Model `gpt-5.6-luna`; judge
+`cursor/gpt-5.6-luna`. No API key material in the logs.
+
+| Run | Selection | Passed | Failed |
+| --- | --- | --- | --- |
+| smoke-1 | `--agent codex --smoke` (16) | 0 | 16 |
+| smoke-2 | `--agent codex --smoke` (16) | 0 | 16 |
+| codify | `--agent codex --skills highway-codify` (28) | 0 | 28 |
+
+Dominant failure: Codex wraps exploration in `/bin/zsh -lc '… git …'` (status/log/diff). Effects
+enforcement fails the attempt (F31). Secondary: experience-order when highway-experience is not
+activated before first agent text; unmatched-question when Codex does not load Highway skills as
+slash commands.
+
 ## F30: Cursor looks for skill assets under the project instead of the plugin
 
 **Skill**: highway-discovery (observed); may affect other skills that read `assets/`
@@ -551,4 +576,71 @@ miss.
 **Proposed resolution**: No skill change yet. Watch whether Cursor keeps resolving skill `assets/`
 against the project root. If it recurs, consider harness or install layout guidance so the model
 sees the plugin asset path clearly; do not move templates into the project fixture.
+
+## Codex smoke recovery for spec 253
+
+Three confirmation runs after git pre-refuse, throwaway Local-mode guidance, and Codex plugin
+marketplace/CLI load fixes. Before the runs: suite 87/87, harness tests 179/179. Logs:
+
+| Log | Run id | Bytes |
+| --- | --- | --- |
+| `specs/253-codex-smoke-failures/harness/smoke-1.log` | `20261118-175613Z-smoke-codex-eea091c` | ~72 KB |
+| `specs/253-codex-smoke-failures/harness/smoke-2.log` | `20261118-180232Z-smoke-codex-eea091c` | ~62 KB |
+| `specs/253-codex-smoke-failures/harness/codify.log` | `20261118-180721Z-targeted-codex-eea091c` | ~129 KB |
+
+Every attempt printed `installed plugin highway (16 skills)` and
+`codex plugin marketplace add` / `plugin add highway@highway-local: ok`. Model `gpt-5.6-luna`;
+judge `cursor/gpt-5.6-luna`.
+
+| Run | Selection | Passed | Failed |
+| --- | --- | --- | --- |
+| smoke-1 | `--agent codex --smoke` (16) | 15 | 1 |
+| smoke-2 | `--agent codex --smoke` (16) | 14 | 2 |
+| codify | `--agent codex --skills highway-codify` (28) | 21 | 7 |
+
+Git-driven storage fails dropped from Phase 9 baseline (~40 git shell rejects on smoke-1) to ~0 on
+confirming smokes. Remaining fails are mostly outside-path probes of `<work>`/`<tmp>`, assertion
+template misses, or unmatched-question — see F32.
+
+## F31: Codex explores with `git` through the shell — closed
+
+**Skill**: all (observed on smoke and highway-codify)
+
+**Runs**:
+
+- Spec 252 smoke-1 / smoke-2 / codify (`--agent codex`, model `gpt-5.6-luna`) — open basis
+- Spec 253 smoke-1 / smoke-2 (≥9/16 each: 15/16 and 14/16) — closed
+
+**Category**: Model + enforcement
+
+**Confirmed**: Yes (Phase 9); resolved in spec 253
+
+**Basis**: Phase 9: after install, Codex typically ran `/bin/zsh -lc "… git …"` and effects
+enforcement failed the attempt. Spec 253: throwaway `$CODEX_HOME/rules/default.rules` forbids
+`git` before run; harness treats non-completed git as logged non-fatal pre-refuse and completed
+git as fatal; Local-mode `AGENTS.md` ships in the throwaway home. Confirming smokes meet FR-005
+and show far fewer git-driven fails than the Phase 9 baseline.
+
+**Resolution**: Closed. Keep forbidding completed `git` (FR-001); pre-refuse remains the primary
+lever.
+
+## F32: Codex still probes `<work>` / `<tmp>` outside the project
+
+**Skill**: intermittent on smoke (request) and highway-codify
+
+**Runs**:
+
+- Spec 253 smoke-1 request-smoke; smoke-2 discovery-smoke / request-smoke; several codify fails
+
+**Category**: Model + enforcement
+
+**Confirmed**: Yes
+
+**Basis**: With git pre-refuse in place, some attempts still shell into the harness work root or
+OS temp (`outside-write: <work>` / `<tmp>`), which effects enforcement fails. Separate residual
+fails are assertion template misses or unmatched-question when Codex does not follow a scripted
+reply.
+
+**Proposed resolution**: Watch whether stronger cwd guidance or denying work-root path tokens
+without weakening in-project shell-as-file-tool use is needed; not a reopen of F31.
 

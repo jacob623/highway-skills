@@ -1943,3 +1943,12 @@ Agent rollout Phase 7 is complete in `specs/249-cursor-driver/`: the harness dri
 with `@cursor/sdk`, model `gpt-5.6-luna`, and committed run logs under that spec's `harness/`
 folder. Skill content and this document's own phases are unchanged. Cloud Cursor is rollout
 Phase 20.
+
+# Rollout note: Codex driver (rollout Phase 9)
+
+Agent rollout Phase 9 is complete in `specs/252-codex-driver/`: the harness drives Codex through
+`@openai/codex-sdk`, model `gpt-5.6-luna`, effects-based shell enforcement, storage-contract MINOR
+1.3.0 for shell-as-file-tool Local mode, and committed run logs under that spec's `harness/`
+folder. Configured judge is Cursor/Luna. Scenario pass rates on live smoke/codify are low while
+Codex continues to invoke `git` via shell (enforcement fails those attempts); install and
+toolchain exit criteria hold.

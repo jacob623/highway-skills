@@ -14,7 +14,8 @@
   },
   "dependencies": {
     "@cursor/sdk": "^1.4.0",
-    "@github/copilot-sdk": "^1.0.30"
+    "@github/copilot-sdk": "^1.0.30",
+    "@openai/codex-sdk": "^0.170.0"
   },
   "devDependencies": {
     "@types/node": "^24.19.2",
