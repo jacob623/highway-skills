@@ -99,8 +99,10 @@ test("the shipped configuration reads, with agent, models, and judge", () => {
   const file = readFileConfig();
   assert.equal(file.agent, "copilot");
   assert.equal(typeof file.models.copilot, "string");
-  assert.equal(file.judge?.agent, "copilot");
-  assert.equal(file.judge?.model, file.models.copilot);
+  assert.equal(typeof file.models.cursor, "string");
+  assert.equal(typeof file.models.codex, "string");
+  assert.equal(file.judge?.agent, "cursor");
+  assert.equal(file.judge?.model, file.models.cursor);
 });
 
 test("the judge comes from the judge block, and each switch overrides its field", () => {

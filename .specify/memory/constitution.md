@@ -1,5 +1,20 @@
 <!--
 Sync Impact Report
+Version change: 3.8.0 → 3.9.0 (MINOR), 2026-11-18
+Bump rationale: the behavioral harness gains a Codex driver that depends on `@openai/codex-sdk`
+under `harness/` only. The Harness Toolchain names that SDK beside `@github/copilot-sdk` and
+`@cursor/sdk`. No Declared Toolchain change, and no obligation is removed, redefined, or
+strengthened.
+Changed elements:
+- Version line: 3.8.0 → 3.9.0
+- Last Amended date: 2026-11-15 → 2026-11-18
+- Harness Toolchain: adds `@openai/codex-sdk`
+Unchanged: every rule's text, Observable, keyword, and tier; the Definitions; every Enforcement
+Map row; every gate; the Declared Toolchain.
+Self-application review: D1.3 PASS; D1.4 PASS; D5.3 PASS (the three changed elements are listed
+above and every unlisted element carries forward).
+
+Sync Impact Report
 Version change: 3.7.0 → 3.8.0 (MINOR), 2026-11-15
 Bump rationale: the behavioral harness gains a Cursor driver that depends on `@cursor/sdk` under
 `harness/` only. The Harness Toolchain names that SDK beside `@github/copilot-sdk`. No Declared
@@ -610,11 +625,11 @@ Version control is not on this list. The toolchain must run in a distributed tre
 repository.
 
 **Harness Toolchain** (development-only). The behavioral test harness in `harness/` runs on Node
-24 with TypeScript, `@github/copilot-sdk`, and `@cursor/sdk`, and reads changed files with `git`.
-These tools are used only under `harness/`. `harness/` is excluded from the distribution, so none
-of them is a runtime dependency, and D2.2 and D2.4 govern only the Declared Toolchain above. A
-script under `framework/` or `tests/` never invokes them. Bash scripts under `harness/bin/` that
-the test suite runs use only the Declared Toolchain.
+24 with TypeScript, `@github/copilot-sdk`, `@cursor/sdk`, and `@openai/codex-sdk`, and reads
+changed files with `git`. These tools are used only under `harness/`. `harness/` is excluded from
+the distribution, so none of them is a runtime dependency, and D2.2 and D2.4 govern only the
+Declared Toolchain above. A script under `framework/` or `tests/` never invokes them. Bash scripts
+under `harness/bin/` that the test suite runs use only the Declared Toolchain.
 
 Rationale: The toolchain must run unmodified on the default shell and utilities of the target
 platform. D2.3 tests portability across the two platforms actually targeted rather than
@@ -759,4 +774,4 @@ enforce it, and Highway's own rules may only narrow it.
 This document is subject to D1.3, D1.4, and D5.3. Every amendment records a review against those
 rule IDs.
 
-**Version**: 3.8.0 | **Ratified**: 2026-09-08 | **Last Amended**: 2026-11-15
+**Version**: 3.9.0 | **Ratified**: 2026-09-08 | **Last Amended**: 2026-11-18

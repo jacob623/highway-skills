@@ -6,7 +6,7 @@ then checks the files against the scenario's expectations, the storage contract,
 LLM judge.
 
 The harness is a development tool. `harness/` is excluded from the distribution, and its toolchain
-(Node, TypeScript, the Copilot SDK, the Cursor SDK, and `git`) is never a runtime dependency of
+(Node, TypeScript, the Copilot SDK, the Cursor SDK, the Codex SDK, and `git`) is never a runtime dependency of
 Highway.
 
 ## How it works
@@ -120,8 +120,33 @@ Each attempt:
    only after the turn’s `agent` log line (streamed text tokens before tools do not clear
    `skillsBeforeOutput`).
 
-`cursorAsk` is registered so `judge.agent` can be set to `cursor` later; the default judge stays
-Copilot.
+`cursorAsk` is registered. The configured judge for Phase 9+ confirmation is Cursor with Luna
+(`judge.agent=cursor`).
+
+### The Codex driver
+
+The Codex driver, `harness/src/drivers/codex.ts`, uses `@openai/codex-sdk` (`--agent codex`). Auth
+reads `OPENAI_API_KEY` then `CODEX_API_KEY` in `harness/.env`. The model is `models.codex` in
+`harness.config.json` (today `gpt-5.6-luna`, or the closest Luna/GPT-5.6 id research pinned).
+
+Each attempt:
+
+1. Sets throwaway `CODEX_HOME` and `HOME` to the agent home via a fully controlled SDK `env` bag
+   (no personal `~/.codex` or `~/.agents`).
+2. Copies `highway-agent-plugin/` into `<home>/plugins/highway/`, writes a local marketplace under
+   `<home>/.agents/plugins/`, enables plugins in `<home>/config.toml`, and runs shared install
+   checks (name `highway`, 16 skills, enabled). Accepts `.codex-plugin/plugin.json` with its
+   `interface` block.
+3. Starts threads with `sandboxMode: workspace-write`, network access off,
+   `skipGitRepoCheck: true`, and `approvalPolicy: never`.
+4. Enforces storage **effects-based**: allow in-project reads/writes and in-project build/test
+   shell; fail `git`, outside paths, and network-facing installs (before run when the sandbox
+   refuses; otherwise after the command item completes).
+5. Maps `command_execution`, `file_change`, agent messages, and `turn.completed` usage into the
+   shared transcript, skills lists (including `highway-experience/SKILL.md` path reads), and usage.
+
+`codexAsk` is registered (no plugin, throwaway home) so `judge.agent` can be set to `codex`
+later; the configured judge remains Cursor with Luna.
 
 ### Keyed replies and the model fallback
 
@@ -183,6 +208,7 @@ Warnings (paraphrased question, flaky) never change the exit code.
    ```
 
    Copilot reads `COPILOT_GITHUB_TOKEN` then `GITHUB_TOKEN`. Cursor reads `CURSOR_API_KEY`.
+   Codex reads `OPENAI_API_KEY` then `CODEX_API_KEY`.
    Each agent names its own key variables in the registry. `harness/.env` and
    `harness/node_modules/` are gitignored.
 
@@ -234,8 +260,8 @@ alone. The chain always runs one stage at a time.
 ```json
 {
   "agent": "copilot",
-  "models": { "copilot": "gpt-5.6-luna" },
-  "judge": { "agent": "copilot", "model": "gpt-5.6-luna" },
+  "models": { "copilot": "gpt-5.6-luna", "cursor": "gpt-5.6-luna", "codex": "gpt-5.6-luna" },
+  "judge": { "agent": "cursor", "model": "gpt-5.6-luna" },
   "parallel": 4,
   "maxTurns": 40,
   "timeoutMinutes": 20
@@ -578,7 +604,7 @@ A run-level failure prints its cause on the `cause:` line of its `== run ==` blo
 | `timeout` | The attempt ran past its time limit. | The model may be slow; raise `--timeout`, or look for a stalled step in the block. |
 | `assertion` | A written file is missing a required part. For check `shows`, the agent did not show the expected text. | If it is a template heading, the template changed after the fixture was promoted, or the skill skipped its template. |
 | `fixture-blocked` | The fixture no longer matches its template. | Run `bash harness/bin/fixture-check.sh <fixture>`; promote a fresh chain run or fix the fixture. |
-| `missing-token` | No key was found for the agent under test; for Copilot, "No Copilot token was found. Set GITHUB_TOKEN in harness/.env."; for Cursor, set `CURSOR_API_KEY`. | Set the key variable the cause names in `harness/.env`. |
+| `missing-token` | No key was found for the agent under test; for Copilot, "No Copilot token was found. Set GITHUB_TOKEN in harness/.env."; for Cursor, set `CURSOR_API_KEY`; for Codex, set `OPENAI_API_KEY` (or `CODEX_API_KEY`). | Set the key variable the cause names in `harness/.env`. |
 | `no-access` | The key has no access to the agent's service; for Copilot, "The GITHUB_TOKEN key has no Copilot access. Check the account's Copilot plan."; for Cursor, an invalid or refused `CURSOR_API_KEY`. | Check the account's plan for that service. |
 | `build-failed` | `highway-agent-plugin/` is missing or differs from its sources, or the base project could not be made. | The run block shows the DRIFT lines; run `framework/generate-agent-plugin.sh`. |
 | `rate-limit` | Copilot kept rate limiting after 3 retries. | Lower `--parallel`, or wait and rerun. |

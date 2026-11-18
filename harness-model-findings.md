@@ -530,6 +530,31 @@ below) were removed after they stopped matching the confirmation evidence or wer
 resolving spec. Run tables above keep historical ids. Each resolution is in the resolving spec's
 `research.md`. Spec 251 closed F18, F20, F23, and F28.
 
+## Codex driver smoke for spec 252
+
+Three confirmation runs after the Codex driver, storage-contract MINOR 1.3.0, judge Cursor/Luna,
+and effects-based shell enforcement. Before the runs: suite 87/87, harness tests 175/175. Logs:
+
+| Log | Run id | Bytes |
+| --- | --- | --- |
+| `specs/252-codex-driver/harness/smoke-1.log` | `20261118-143908Z-smoke-codex-130aaf8` | 57 KB |
+| `specs/252-codex-driver/harness/smoke-2.log` | `20261118-144703Z-smoke-codex-130aaf8` | 63 KB |
+| `specs/252-codex-driver/harness/codify.log` | `20261118-145347Z-targeted-codex-130aaf8` | 127 KB |
+
+Every attempt printed `installed plugin highway (16 skills)`. Model `gpt-5.6-luna`; judge
+`cursor/gpt-5.6-luna`. No API key material in the logs.
+
+| Run | Selection | Passed | Failed |
+| --- | --- | --- | --- |
+| smoke-1 | `--agent codex --smoke` (16) | 0 | 16 |
+| smoke-2 | `--agent codex --smoke` (16) | 0 | 16 |
+| codify | `--agent codex --skills highway-codify` (28) | 0 | 28 |
+
+Dominant failure: Codex wraps exploration in `/bin/zsh -lc '… git …'` (status/log/diff). Effects
+enforcement fails the attempt (F31). Secondary: experience-order when highway-experience is not
+activated before first agent text; unmatched-question when Codex does not load Highway skills as
+slash commands.
+
 ## F30: Cursor looks for skill assets under the project instead of the plugin
 
 **Skill**: highway-discovery (observed); may affect other skills that read `assets/`
@@ -551,4 +576,26 @@ miss.
 **Proposed resolution**: No skill change yet. Watch whether Cursor keeps resolving skill `assets/`
 against the project root. If it recurs, consider harness or install layout guidance so the model
 sees the plugin asset path clearly; do not move templates into the project fixture.
+
+## F31: Codex explores with `git` through the shell
+
+**Skill**: all (observed on smoke and highway-codify)
+
+**Runs**:
+
+- Spec 252 smoke-1 / smoke-2 / codify (`--agent codex`, model `gpt-5.6-luna`)
+
+**Category**: Model + enforcement
+
+**Confirmed**: Yes
+
+**Basis**: After a clean install of `highway` (16 skills), Codex typically runs
+`/bin/zsh -lc "… git status|log|diff …"` (often mixed with `sed`/`find`/`rg` on project paths).
+Effects-based enforcement correctly fails those attempts (`rejected shell (git)` → storage
+invariant / rejected-request). In-project reads/writes without `git` are allowed; the live model
+rarely stays on that path for a full smoke scenario.
+
+**Proposed resolution**: Keep failing `git` (FR-001). Optional later work: stronger pre-refuse via
+Codex approval hooks if the SDK exposes them, or skill/prompt guidance that Codex must not run
+`git` under Local mode — not required to close Phase 9.
 
