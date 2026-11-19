@@ -160,10 +160,12 @@ The Claude Code driver, `harness/src/drivers/claude.ts`, uses `@anthropic-ai/cla
 Each attempt:
 
 1. Sets throwaway `HOME` and `CLAUDE_CONFIG_DIR` under the agent home via the SDK `env` bag, with
-   auto-memory disabled. Drive sessions use `settingSources: ["user"]` only so the attempt loads
-   throwaway-home Local-mode / no-Bash guidance from `<home>/.claude/CLAUDE.md` (written each
-   attempt; not the operator’s personal Claude config). Project and local setting sources stay
-   off. `claudeAsk` still uses `settingSources: []`.
+   auto-memory disabled and `settingSources: []` so personal Claude config does not reach the run.
+   Drive sessions append Local-mode / no-Bash guidance through
+   `systemPrompt: { type: "preset", preset: "claude_code", append }` so the model always receives
+   it at session start. A supporting `<home>/.claude/CLAUDE.md` is still written each attempt but
+   is not relied on alone (it does not load with empty setting sources). `claudeAsk` stays
+   `settingSources: []` without that append.
 2. Copies `highway-agent-plugin/` into `<home>/plugins/highway/` and loads it with
    `plugins: [{ type: "local", path }]`. Claude Code reads `.claude-plugin/plugin.json`. Shared
    install checks require name `highway`, 16 skills, enabled.

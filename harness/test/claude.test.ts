@@ -138,7 +138,7 @@ test("prepareClaudeAgentHome writes throwaway .claude/CLAUDE.md Local-mode guida
   }
 });
 
-test("drive sessions use settingSources user and prepare throwaway CLAUDE.md; claudeAsk stays empty", async () => {
+test("drive sessions append Local-mode guidance via systemPrompt; settingSources empty; home file supporting", async () => {
   const home = mkdtempSync(join(tmpdir(), "claude-src-"));
   const project = mkdtempSync(join(tmpdir(), "claude-srcp-"));
   const src = mkdtempSync(join(tmpdir(), "claude-srcpl-"));
@@ -147,9 +147,11 @@ test("drive sessions use settingSources user and prepare throwaway CLAUDE.md; cl
     writeFileSync(join(src, ".claude-plugin", "plugin.json"), JSON.stringify({ name: "highway" }));
     for (let i = 0; i < 16; i++) mkdirSync(join(src, "skills", `highway-s${i}`), { recursive: true });
     let seenSources: unknown;
+    let seenPrompt: unknown;
     const api: ClaudeApi = {
       query: ({ options }) => {
         seenSources = options?.settingSources;
+        seenPrompt = options?.systemPrompt;
         return (async function* () {
           yield {
             type: "assistant",
@@ -176,13 +178,18 @@ test("drive sessions use settingSources user and prepare throwaway CLAUDE.md; cl
       log: () => undefined,
     });
     assert.equal(out.outcome, "ended");
-    assert.deepEqual(seenSources, ["user"]);
+    assert.deepEqual(seenSources, []);
+    assert.deepEqual(seenPrompt, { type: "preset", preset: "claude_code", append: CLAUDE_LOCAL_GUIDANCE });
+    assert.match(CLAUDE_LOCAL_GUIDANCE, /Read/);
+    assert.match(CLAUDE_LOCAL_GUIDANCE, /Bash/i);
     assert.equal(readFileSync(join(home, ".claude", "CLAUDE.md"), "utf8"), CLAUDE_LOCAL_GUIDANCE);
 
     let askSources: unknown;
+    let askPrompt: unknown;
     const askApi: ClaudeApi = {
       query: ({ options }) => {
         askSources = options?.settingSources;
+        askPrompt = options?.systemPrompt;
         return (async function* () {
           yield { type: "result", subtype: "success", result: "ask-ok", session_id: "a1" };
         })();
@@ -190,6 +197,7 @@ test("drive sessions use settingSources user and prepare throwaway CLAUDE.md; cl
     };
     assert.equal(await claudeAsk("key", "claude-haiku-5-5", askApi)("hi"), "ask-ok");
     assert.deepEqual(askSources, []);
+    assert.equal(askPrompt, undefined);
   } finally {
     rmSync(home, { recursive: true, force: true });
     rmSync(project, { recursive: true, force: true });

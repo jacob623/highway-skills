@@ -675,56 +675,59 @@ setup / some codify scenarios; intermittent experience-order and unmatched-quest
 Three confirmation runs after throwaway-home Local-mode / no-Bash guidance
 (`prepareClaudeAgentHome` → `<home>/.claude/CLAUDE.md`, drive `settingSources: ["user"]`,
 optional `CLAUDE_BASH_DENY_MESSAGE`). Before the runs: suite 87/87, harness tests 194/194.
-Model `claude-haiku-5-5`; judge `cursor/gpt-5.6-luna`. Logs:
+Model `claude-haiku-5-5`; judge `cursor/gpt-5.6-luna`. Logs under
+`specs/255-claude-bash-failures/harness/`. Smoke 12/16 and 11/16; Bash denials 8 / 10 (not
+fewer than Phase 8). Codify 18/28. F33 stayed open; next lever was session-start delivery.
+
+## Claude session-start guidance for spec 256
+
+Three confirmation runs after drive `systemPrompt: { type: "preset", preset: "claude_code",
+append: CLAUDE_LOCAL_GUIDANCE }` with `settingSources: []` (supporting home file still written).
+Before the runs: suite 87/87, harness tests 194/194. Model `claude-haiku-5-5`; judge
+`cursor/gpt-5.6-luna`. Logs:
 
 | Log | Bytes |
 | --- | --- |
-| `specs/255-claude-bash-failures/harness/smoke-1.log` | ~119 KB |
-| `specs/255-claude-bash-failures/harness/smoke-2.log` | ~119 KB |
-| `specs/255-claude-bash-failures/harness/codify.log` | ~274 KB |
+| `specs/256-claude-bash-prompt/harness/smoke-1.log` | ~85 KB |
+| `specs/256-claude-bash-prompt/harness/smoke-2.log` | ~90 KB |
+| `specs/256-claude-bash-prompt/harness/codify.log` | ~217 KB |
 
 Every attempt printed `installed plugin highway (16 skills)`. No API key material in the logs.
-Smoke exit bar was ≥14/16 (clarify); neither smoke met it. Codify has no numeric floor.
+Smoke bar ≥14/16 met on both runs. Codify has no numeric floor.
 
-| Run | Selection | Passed | Failed |
-| --- | --- | --- | --- |
-| smoke-1 | `--agent claude --smoke` (16) | 12 | 4 |
-| smoke-2 | `--agent claude --smoke` (16) | 11 | 5 |
-| codify | `--agent claude --skills highway-codify` (28) | 18 | 10 |
+| Run | Selection | Passed | Failed | `denied: shell` |
+| --- | --- | --- | --- | --- |
+| smoke-1 | `--agent claude --smoke` (16) | 16 | 0 | 0 |
+| smoke-2 | `--agent claude --smoke` (16) | 16 | 0 | 0 |
+| codify | `--agent claude --skills highway-codify` (28) | 27 | 1 | 0 |
 
-Bash-driven `rejected-request` remains dominant (F33 stays open). Secondary: profile assertion
-template misses; codify experience-order / unmatched-question / assertion noise unchanged in
-skill-edit scope.
+Bash-driven fails dropped vs Phase 8 (F33 closed). Remaining codify fail: assertion template on
+`codify-code-project` (skill-behavior noise; not Bash).
 
-## F33: Claude explores with Bash despite file tools
+## F33: Claude explores with Bash despite file tools — closed
 
-**Skill**: intermittent on smoke (architecture, discovery, request, onboarding, implementation)
-and highway-codify
+**Skill**: was intermittent on smoke and highway-codify under Phase 8 / Spec 255
 
 **Runs**:
 
-- Spec 254 smoke-1 / smoke-2 / codify (`--agent claude`, model `claude-haiku-5-5`) — baseline
-  13/16, 13/16, 18/28; `denied: shell` counts 5 / 5 on smoke
-- Spec 255 smoke-1 / smoke-2 / codify after throwaway-home `.claude/CLAUDE.md` guidance +
-  `settingSources: ["user"]` + clearer Bash deny message — 12/16, 11/16, 18/28; `denied: shell`
-  counts 8 / 10 on smoke (not fewer than baseline). Smoke bar ≥14/16 missed on both confirming
-  smokes. Logs under `specs/255-claude-bash-failures/harness/`.
+- Spec 254 smoke-1 / smoke-2 / codify — baseline 13/16, 13/16, 18/28; `denied: shell` 5 / 5
+- Spec 255 after throwaway-home CLAUDE.md + `settingSources: ["user"]` — 12/16, 11/16, 18/28;
+  `denied: shell` 8 / 10 (did not close)
+- Spec 256 after session-start `systemPrompt` append + `settingSources: []` — smoke **16/16** and
+  **16/16** (0 Bash denials); codify **27/28** (0 Bash denials; remaining fail is assertion
+  template on `codify-code-project`, skill-behavior noise). Logs under
+  `specs/256-claude-bash-prompt/harness/`.
 
 **Category**: Model
 
-**Confirmed**: Yes
+**Confirmed**: Yes (closed)
 
-**Basis**: After install, Haiku often issues `Bash` for listing and reading repository files. The
-driver denies every Bash request before run (clarify FR-010). Denied shells still fail the attempt
-via the shared storage invariant (`rejected-request`). Spec 255 shipped required throwaway-home
-Local-mode / no-Bash guidance and optional denial wording that names Read/Write/Edit/Glob/Grep;
-some turns show the model acknowledging Bash is unavailable and switching to Glob/Read, but
-overall Bash-driven `rejected-request` fails did not drop vs Phase 8, and the ≥14/16 smoke bar
-was not met. Not a skill edit this phase. Deny-all-Bash remains.
+**Basis**: Phase 8 Haiku explored with Bash; deny-all-Bash correctly refused and failed attempts
+as `rejected-request`. Spec 255 home-file guidance did not reduce Bash fails. Spec 256 appends
+the same Local-mode / no-Bash text via `systemPrompt` preset `claude_code` append so it reaches
+session start; confirming smokes met ≥14/16 with **fewer** Bash-driven fails than Phase 8
+(zero vs five denials per smoke). Deny-all-Bash remains; refuse stays fatal if Bash is requested.
 
-**Proposed resolution**: Keep F33 open. Next lever: confirm whether `"user"` CLAUDE.md is
-actually injected under remapped `HOME`/`CLAUDE_CONFIG_DIR` (SDK docs vs live), and/or append the
-same guidance via `systemPrompt: { type: "preset", preset: "claude_code", append }` while keeping
-`settingSources` isolation. Do not weaken deny-all-Bash or adopt Codex continue-after-refuse for
-Claude Bash.
+**Resolution**: Closed by Spec 256 session-start guidance. Do not reopen for assertion /
+unmatched-question codify noise unless a new Bash-driven pattern appears.
 

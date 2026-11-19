@@ -467,7 +467,8 @@ export function createClaudeDriver(api: ClaudeApi = defaultApi): Driver {
       const baseOptions = (): SdkOptions => ({
         model: options.model,
         cwd: projectDir,
-        settingSources: ["user"],
+        settingSources: [],
+        systemPrompt: { type: "preset", preset: "claude_code", append: CLAUDE_LOCAL_GUIDANCE },
         plugins: [{ type: "local", path: pluginPath }],
         env: controlledClaudeEnv(options.agentHome, options.key),
         canUseTool,
