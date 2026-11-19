@@ -1,5 +1,6 @@
 import { join } from "node:path";
 import type { Classifier, Driver } from "./driver.ts";
+import { classifyClaudeError, claudeAsk, claudeDriver, claudeReadRoots, claudeVersions } from "./drivers/claude.ts";
 import { classifyCodexError, codexAsk, codexDriver, codexReadRoots, codexVersions } from "./drivers/codex.ts";
 import { classifyCopilotError, copilotAsk, copilotDriver, copilotVersions } from "./drivers/copilot.ts";
 import { classifyCursorError, cursorAsk, cursorDriver, cursorVersions } from "./drivers/cursor.ts";
@@ -61,6 +62,19 @@ export const AGENTS: Registry = new Map<string, Agent>([
       classify: classifyCodexError,
       readRoots: codexReadRoots,
       versions: codexVersions,
+    },
+  ],
+  [
+    "claude",
+    {
+      id: "claude",
+      service: "Claude",
+      keys: ["ANTHROPIC_API_KEY"],
+      driver: claudeDriver,
+      ask: claudeAsk,
+      classify: classifyClaudeError,
+      readRoots: claudeReadRoots,
+      versions: claudeVersions,
     },
   ],
 ]);

@@ -644,3 +644,90 @@ reply.
 **Proposed resolution**: Watch whether stronger cwd guidance or denying work-root path tokens
 without weakening in-project shell-as-file-tool use is needed; not a reopen of F31.
 
+## Claude Code driver for spec 254
+
+Three confirmation runs after the Claude Code driver (`@anthropic-ai/claude-agent-sdk`), Haiku
+pin `claude-haiku-5-5`, judge Cursor/Luna, and `canUseTool` deny-all-Bash. Before the runs: suite
+87/87, harness tests 193/193. Logs:
+
+| Log | Run id | Bytes |
+| --- | --- | --- |
+| `specs/254-claude-code-driver/harness/smoke-1.log` | `20261118-213144Z-smoke-claude-e809308` | ~110 KB |
+| `specs/254-claude-code-driver/harness/smoke-2.log` | `20261118-214040Z-smoke-claude-e809308` | ~113 KB |
+| `specs/254-claude-code-driver/harness/codify.log` | `20261118-214817Z-targeted-claude-e809308` | ~285 KB |
+
+Every attempt printed `installed plugin highway (16 skills)`. Model `claude-haiku-5-5`; judge
+`cursor/gpt-5.6-luna`. No API key material in the logs. No numeric pass floor this phase.
+
+| Run | Selection | Passed | Failed |
+| --- | --- | --- | --- |
+| smoke-1 | `--agent claude --smoke` (16) | 13 | 3 |
+| smoke-2 | `--agent claude --smoke` (16) | 13 | 3 |
+| codify | `--agent claude --skills highway-codify` (28) | 18 | 10 |
+
+Dominant failure: Claude explores with `Bash` (`ls`/`cat`/`find`/`grep` pipelines) even though
+Read/Write/Edit are available. `canUseTool` denies every Bash request; the storage invariant then
+fails the attempt as `rejected-request` (F33). Secondary: assertion template misses on profile /
+setup / some codify scenarios; intermittent experience-order and unmatched-question on codify.
+
+## Claude Bash guidance for spec 255
+
+Three confirmation runs after throwaway-home Local-mode / no-Bash guidance
+(`prepareClaudeAgentHome` → `<home>/.claude/CLAUDE.md`, drive `settingSources: ["user"]`,
+optional `CLAUDE_BASH_DENY_MESSAGE`). Before the runs: suite 87/87, harness tests 194/194.
+Model `claude-haiku-5-5`; judge `cursor/gpt-5.6-luna`. Logs under
+`specs/255-claude-bash-failures/harness/`. Smoke 12/16 and 11/16; Bash denials 8 / 10 (not
+fewer than Phase 8). Codify 18/28. F33 stayed open; next lever was session-start delivery.
+
+## Claude session-start guidance for spec 256
+
+Three confirmation runs after drive `systemPrompt: { type: "preset", preset: "claude_code",
+append: CLAUDE_LOCAL_GUIDANCE }` with `settingSources: []` (supporting home file still written).
+Before the runs: suite 87/87, harness tests 194/194. Model `claude-haiku-5-5`; judge
+`cursor/gpt-5.6-luna`. Logs:
+
+| Log | Bytes |
+| --- | --- |
+| `specs/256-claude-bash-prompt/harness/smoke-1.log` | ~85 KB |
+| `specs/256-claude-bash-prompt/harness/smoke-2.log` | ~90 KB |
+| `specs/256-claude-bash-prompt/harness/codify.log` | ~217 KB |
+
+Every attempt printed `installed plugin highway (16 skills)`. No API key material in the logs.
+Smoke bar ≥14/16 met on both runs. Codify has no numeric floor.
+
+| Run | Selection | Passed | Failed | `denied: shell` |
+| --- | --- | --- | --- | --- |
+| smoke-1 | `--agent claude --smoke` (16) | 16 | 0 | 0 |
+| smoke-2 | `--agent claude --smoke` (16) | 16 | 0 | 0 |
+| codify | `--agent claude --skills highway-codify` (28) | 27 | 1 | 0 |
+
+Bash-driven fails dropped vs Phase 8 (F33 closed). Remaining codify fail: assertion template on
+`codify-code-project` (skill-behavior noise; not Bash).
+
+## F33: Claude explores with Bash despite file tools — closed
+
+**Skill**: was intermittent on smoke and highway-codify under Phase 8 / Spec 255
+
+**Runs**:
+
+- Spec 254 smoke-1 / smoke-2 / codify — baseline 13/16, 13/16, 18/28; `denied: shell` 5 / 5
+- Spec 255 after throwaway-home CLAUDE.md + `settingSources: ["user"]` — 12/16, 11/16, 18/28;
+  `denied: shell` 8 / 10 (did not close)
+- Spec 256 after session-start `systemPrompt` append + `settingSources: []` — smoke **16/16** and
+  **16/16** (0 Bash denials); codify **27/28** (0 Bash denials; remaining fail is assertion
+  template on `codify-code-project`, skill-behavior noise). Logs under
+  `specs/256-claude-bash-prompt/harness/`.
+
+**Category**: Model
+
+**Confirmed**: Yes (closed)
+
+**Basis**: Phase 8 Haiku explored with Bash; deny-all-Bash correctly refused and failed attempts
+as `rejected-request`. Spec 255 home-file guidance did not reduce Bash fails. Spec 256 appends
+the same Local-mode / no-Bash text via `systemPrompt` preset `claude_code` append so it reaches
+session start; confirming smokes met ≥14/16 with **fewer** Bash-driven fails than Phase 8
+(zero vs five denials per smoke). Deny-all-Bash remains; refuse stays fatal if Bash is requested.
+
+**Resolution**: Closed by Spec 256 session-start guidance. Do not reopen for assertion /
+unmatched-question codify noise unless a new Bash-driven pattern appears.
+

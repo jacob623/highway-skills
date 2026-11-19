@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { AGENTS, agentIds, keyOf } from "../src/agents.ts";
 
 test("the registry holds Copilot with its keys, service, read roots, ask, and versions", () => {
-  assert.deepEqual([...AGENTS.keys()], ["copilot", "cursor", "codex"]);
+  assert.deepEqual([...AGENTS.keys()], ["copilot", "cursor", "codex", "claude"]);
   const copilot = AGENTS.get("copilot")!;
   assert.equal(copilot.id, "copilot");
   assert.equal(copilot.service, "Copilot");
@@ -14,7 +14,7 @@ test("the registry holds Copilot with its keys, service, read roots, ask, and ve
   assert.match(versions.sdk, /^\d+\.\d+\.\d+|unknown$/);
   assert.match(versions.runtime, /^\d+\.\d+\.\d+|unknown$/);
   assert.equal(copilot.classify(new Error("HTTP 429 Too Many Requests")), "rate-limit");
-  assert.equal(agentIds(AGENTS), "copilot, cursor, codex");
+  assert.equal(agentIds(AGENTS), "copilot, cursor, codex, claude");
 });
 
 test("the registry holds Cursor with CURSOR_API_KEY, local read roots, ask, and versions", () => {
@@ -39,6 +39,16 @@ test("the registry holds Codex with API keys, plugin read roots, ask, and versio
   assert.equal(typeof codex.ask, "function");
   assert.equal(codex.versions().runtime, "cli");
   assert.equal(codex.classify(new Error("HTTP 429 Too Many Requests")), "rate-limit");
+});
+
+test("the registry holds Claude with ANTHROPIC_API_KEY, plugin read roots, ask, and versions", () => {
+  const claude = AGENTS.get("claude")!;
+  assert.equal(claude.service, "Claude");
+  assert.deepEqual(claude.keys, ["ANTHROPIC_API_KEY"]);
+  assert.deepEqual(claude.readRoots("/work/homes/x"), ["/work/homes/x/plugins/highway"]);
+  assert.equal(typeof claude.ask, "function");
+  assert.equal(claude.versions().runtime, "cli");
+  assert.equal(claude.classify(new Error("HTTP 429 Too Many Requests")), "rate-limit");
 });
 
 test("a key is read from the agent's variables in order, ignoring empty values", () => {

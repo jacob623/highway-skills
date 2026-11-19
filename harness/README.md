@@ -6,8 +6,8 @@ then checks the files against the scenario's expectations, the storage contract,
 LLM judge.
 
 The harness is a development tool. `harness/` is excluded from the distribution, and its toolchain
-(Node, TypeScript, the Copilot SDK, the Cursor SDK, the Codex SDK, and `git`) is never a runtime dependency of
-Highway.
+(Node, TypeScript, the Copilot SDK, the Cursor SDK, the Codex SDK, the Claude Agent SDK, and `git`)
+is never a runtime dependency of Highway.
 
 ## How it works
 
@@ -151,6 +151,36 @@ Each attempt:
 `codexAsk` is registered (no plugin, throwaway home) so `judge.agent` can be set to `codex`
 later; the configured judge remains Cursor with Luna.
 
+### The Claude Code driver
+
+The Claude Code driver, `harness/src/drivers/claude.ts`, uses `@anthropic-ai/claude-agent-sdk`
+(`--agent claude`). Auth is `ANTHROPIC_API_KEY` in `harness/.env`. The model is `models.claude` in
+`harness.config.json` (pinned to current Haiku, today `claude-haiku-5-5`).
+
+Each attempt:
+
+1. Sets throwaway `HOME` and `CLAUDE_CONFIG_DIR` under the agent home via the SDK `env` bag, with
+   auto-memory disabled and `settingSources: []` so personal Claude config does not reach the run.
+   Drive sessions append Local-mode / no-Bash guidance through
+   `systemPrompt: { type: "preset", preset: "claude_code", append }` so the model always receives
+   it at session start. A supporting `<home>/.claude/CLAUDE.md` is still written each attempt but
+   is not relied on alone (it does not load with empty setting sources). `claudeAsk` stays
+   `settingSources: []` without that append.
+2. Copies `highway-agent-plugin/` into `<home>/plugins/highway/` and loads it with
+   `plugins: [{ type: "local", path }]`. Claude Code reads `.claude-plugin/plugin.json`. Shared
+   install checks require name `highway`, 16 skills, enabled.
+3. Enforces storage through `canUseTool`: project and plugin reads/writes are allowed; **every
+   Bash request is denied** (Claude has Read/Write/Edit/Glob/Grep — no Codex-style in-project
+   shell allow; refuse still fails the attempt as `rejected-request`); memory and out-of-project
+   writes are denied. If a forbidden tool still runs, effects backup fails the attempt.
+4. Resumes the same session id for each scripted reply. `AskUserQuestion` is answered from
+   scripted replies when present; otherwise the reply loop handles text questions.
+5. Maps assistant text, tool uses (including Skill / `/highway:…`), and result usage/cost into the
+   shared transcript.
+
+`claudeAsk` is registered (no plugin, throwaway home) so `judge.agent` can be set to `claude`
+later; the configured judge remains Cursor with Luna.
+
 ### Keyed replies and the model fallback
 
 A scenario's replies are keyed by the question the skill asks:
@@ -208,10 +238,11 @@ Warnings (paraphrased question, flaky) never change the exit code.
    ```text
    GITHUB_TOKEN=<token>
    CURSOR_API_KEY=<token>
+   ANTHROPIC_API_KEY=<token>
    ```
 
    Copilot reads `COPILOT_GITHUB_TOKEN` then `GITHUB_TOKEN`. Cursor reads `CURSOR_API_KEY`.
-   Codex reads `OPENAI_API_KEY` then `CODEX_API_KEY`.
+   Codex reads `OPENAI_API_KEY` then `CODEX_API_KEY`. Claude reads `ANTHROPIC_API_KEY`.
    Each agent names its own key variables in the registry. `harness/.env` and
    `harness/node_modules/` are gitignored.
 
@@ -607,8 +638,8 @@ A run-level failure prints its cause on the `cause:` line of its `== run ==` blo
 | `timeout` | The attempt ran past its time limit. | The model may be slow; raise `--timeout`, or look for a stalled step in the block. |
 | `assertion` | A written file is missing a required part. For check `shows`, the agent did not show the expected text. | If it is a template heading, the template changed after the fixture was promoted, or the skill skipped its template. |
 | `fixture-blocked` | The fixture no longer matches its template. | Run `bash harness/bin/fixture-check.sh <fixture>`; promote a fresh chain run or fix the fixture. |
-| `missing-token` | No key was found for the agent under test; for Copilot, "No Copilot token was found. Set GITHUB_TOKEN in harness/.env."; for Cursor, set `CURSOR_API_KEY`; for Codex, set `OPENAI_API_KEY` (or `CODEX_API_KEY`). | Set the key variable the cause names in `harness/.env`. |
-| `no-access` | The key has no access to the agent's service; for Copilot, "The GITHUB_TOKEN key has no Copilot access. Check the account's Copilot plan."; for Cursor, an invalid or refused `CURSOR_API_KEY`. | Check the account's plan for that service. |
+| `missing-token` | No key was found for the agent under test; for Copilot, "No Copilot token was found. Set GITHUB_TOKEN in harness/.env."; for Cursor, set `CURSOR_API_KEY`; for Codex, set `OPENAI_API_KEY` (or `CODEX_API_KEY`); for Claude, set `ANTHROPIC_API_KEY`. | Set the key variable the cause names in `harness/.env`. |
+| `no-access` | The key has no access to the agent's service; for Copilot, "The GITHUB_TOKEN key has no Copilot access. Check the account's Copilot plan."; for Cursor, an invalid or refused `CURSOR_API_KEY`; for Claude, an invalid or refused `ANTHROPIC_API_KEY`. | Check the account's plan for that service. |
 | `build-failed` | `highway-agent-plugin/` is missing or differs from its sources, or the base project could not be made. | The run block shows the DRIFT lines; run `framework/generate-agent-plugin.sh`. |
 | `rate-limit` | Copilot kept rate limiting after 3 retries. | Lower `--parallel`, or wait and rerun. |
 | `allowance` | The premium-request allowance is used up. | Wait for the reset, or raise the limit. |
