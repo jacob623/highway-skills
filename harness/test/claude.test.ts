@@ -1,17 +1,20 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import {
   answerAskUserQuestion,
   classifyClaudeError,
+  CLAUDE_BASH_DENY_MESSAGE,
+  CLAUDE_LOCAL_GUIDANCE,
   claudeAsk,
   claudePluginRpc,
   claudeVersions,
   createClaudeDriver,
   installClaudePluginForTest,
   normalizeClaudePluginPath,
+  prepareClaudeAgentHome,
   skillIdFromClaudeTool,
   toolToAccessRequest,
   type ClaudeApi,
@@ -112,6 +115,85 @@ test("PluginRpc install copies the plugin and shared checks cover success and sh
     rmSync(home, { recursive: true, force: true });
     rmSync(src, { recursive: true, force: true });
     rmSync(project, { recursive: true, force: true });
+  }
+});
+
+test("prepareClaudeAgentHome writes throwaway .claude/CLAUDE.md Local-mode guidance", () => {
+  const home = mkdtempSync(join(tmpdir(), "claude-guide-"));
+  try {
+    prepareClaudeAgentHome(home);
+    const path = join(home, ".claude", "CLAUDE.md");
+    assert.equal(existsSync(path), true);
+    const body = readFileSync(path, "utf8");
+    assert.equal(body, CLAUDE_LOCAL_GUIDANCE);
+    assert.match(body, /Read/);
+    assert.match(body, /Write/);
+    assert.match(body, /Edit/);
+    assert.match(body, /Glob/);
+    assert.match(body, /Grep/);
+    assert.match(body, /Bash/i);
+    assert.match(body, /highway-experience/);
+  } finally {
+    rmSync(home, { recursive: true, force: true });
+  }
+});
+
+test("drive sessions use settingSources user and prepare throwaway CLAUDE.md; claudeAsk stays empty", async () => {
+  const home = mkdtempSync(join(tmpdir(), "claude-src-"));
+  const project = mkdtempSync(join(tmpdir(), "claude-srcp-"));
+  const src = mkdtempSync(join(tmpdir(), "claude-srcpl-"));
+  try {
+    mkdirSync(join(src, ".claude-plugin"), { recursive: true });
+    writeFileSync(join(src, ".claude-plugin", "plugin.json"), JSON.stringify({ name: "highway" }));
+    for (let i = 0; i < 16; i++) mkdirSync(join(src, "skills", `highway-s${i}`), { recursive: true });
+    let seenSources: unknown;
+    const api: ClaudeApi = {
+      query: ({ options }) => {
+        seenSources = options?.settingSources;
+        return (async function* () {
+          yield {
+            type: "assistant",
+            session_id: "s",
+            message: { content: [{ type: "text", text: "ok" }] },
+          };
+          yield { type: "result", subtype: "success", result: "ok", session_id: "s" };
+        })();
+      },
+    };
+    const driver = createClaudeDriver(api);
+    const out = await driver({
+      scenario: scenarioStub({ open: "go" }),
+      projectDir: project,
+      agentHome: home,
+      readRoots: [join(home, "plugins", "highway")],
+      plugin: { name: "highway", dir: src, skills: 16 },
+      key: "k",
+      model: "claude-haiku-5-5",
+      maxTurns: 5,
+      timeoutMs: 10_000,
+      pickFallback: async () => undefined,
+      raw: () => undefined,
+      log: () => undefined,
+    });
+    assert.equal(out.outcome, "ended");
+    assert.deepEqual(seenSources, ["user"]);
+    assert.equal(readFileSync(join(home, ".claude", "CLAUDE.md"), "utf8"), CLAUDE_LOCAL_GUIDANCE);
+
+    let askSources: unknown;
+    const askApi: ClaudeApi = {
+      query: ({ options }) => {
+        askSources = options?.settingSources;
+        return (async function* () {
+          yield { type: "result", subtype: "success", result: "ask-ok", session_id: "a1" };
+        })();
+      },
+    };
+    assert.equal(await claudeAsk("key", "claude-haiku-5-5", askApi)("hi"), "ask-ok");
+    assert.deepEqual(askSources, []);
+  } finally {
+    rmSync(home, { recursive: true, force: true });
+    rmSync(project, { recursive: true, force: true });
+    rmSync(src, { recursive: true, force: true });
   }
 });
 
@@ -239,6 +321,11 @@ test("driver denies Bash through canUseTool and records rejection", async () => 
             requestId: "1",
           });
           assert.equal(decision?.behavior, "deny");
+          if (decision && "message" in decision) {
+            assert.match(String(decision.message), /Read/);
+            assert.match(String(decision.message), /Bash/i);
+            assert.equal(decision.message, CLAUDE_BASH_DENY_MESSAGE);
+          }
           yield {
             type: "assistant",
             session_id: "s",

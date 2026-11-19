@@ -160,15 +160,17 @@ The Claude Code driver, `harness/src/drivers/claude.ts`, uses `@anthropic-ai/cla
 Each attempt:
 
 1. Sets throwaway `HOME` and `CLAUDE_CONFIG_DIR` under the agent home via the SDK `env` bag, with
-   `settingSources: []` and auto-memory disabled, so personal `CLAUDE.md`, settings, and memory do
-   not reach the run.
+   auto-memory disabled. Drive sessions use `settingSources: ["user"]` only so the attempt loads
+   throwaway-home Local-mode / no-Bash guidance from `<home>/.claude/CLAUDE.md` (written each
+   attempt; not the operator’s personal Claude config). Project and local setting sources stay
+   off. `claudeAsk` still uses `settingSources: []`.
 2. Copies `highway-agent-plugin/` into `<home>/plugins/highway/` and loads it with
    `plugins: [{ type: "local", path }]`. Claude Code reads `.claude-plugin/plugin.json`. Shared
    install checks require name `highway`, 16 skills, enabled.
 3. Enforces storage through `canUseTool`: project and plugin reads/writes are allowed; **every
-   Bash request is denied** (Claude has Read/Write/Edit — no Codex-style in-project shell allow);
-   memory and out-of-project writes are denied. If a forbidden tool still runs, effects backup
-   fails the attempt.
+   Bash request is denied** (Claude has Read/Write/Edit/Glob/Grep — no Codex-style in-project
+   shell allow; refuse still fails the attempt as `rejected-request`); memory and out-of-project
+   writes are denied. If a forbidden tool still runs, effects backup fails the attempt.
 4. Resumes the same session id for each scripted reply. `AskUserQuestion` is answered from
    scripted replies when present; otherwise the reply loop handles text questions.
 5. Maps assistant text, tool uses (including Skill / `/highway:…`), and result usage/cost into the

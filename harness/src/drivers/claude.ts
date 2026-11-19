@@ -1,4 +1,4 @@
-import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve, sep, isAbsolute } from "node:path";
 import { query as sdkQuery, type Options as SdkOptions, type SDKMessage } from "@anthropic-ai/claude-agent-sdk";
@@ -27,6 +27,29 @@ import type { PluginSource } from "../project.ts";
 import { decide, keyText, lastQuestion, nextUnused, normalize, spentReply, textAfterAnswers } from "../replies.ts";
 
 const PLUGIN_MARKER = "/plugins/highway/";
+
+/** Short Local-mode guidance for the throwaway home only (not the operator's personal CLAUDE.md). */
+export const CLAUDE_LOCAL_GUIDANCE = `# Highway harness — Local mode
+
+- Prefer Read, Write, Edit, Glob, and Grep for in-project listing and file work.
+- Do not use Bash for exploration or file I/O; the harness refuses every Bash request and the attempt fails.
+- Stay inside the project root; do not read or write outside it; do not use memory.
+- Load and follow Highway skills; activate \`highway-experience\` before person-visible output when the scenario requires it.
+`;
+
+/** Optional Bash deny text naming file tools (does not soften the refuse). */
+export const CLAUDE_BASH_DENY_MESSAGE =
+  "Bash is not available in this session. Use Read, Write, Edit, Glob, or Grep for in-project file work instead.";
+
+/**
+ * Write Local-mode / no-Bash CLAUDE.md into a throwaway agent home.
+ * Must not copy from the operator's personal ~/.claude.
+ */
+export function prepareClaudeAgentHome(agentHome: string): void {
+  const dir = join(agentHome, ".claude");
+  mkdirSync(dir, { recursive: true });
+  writeFileSync(join(dir, "CLAUDE.md"), CLAUDE_LOCAL_GUIDANCE);
+}
 
 export function classifyClaudeError(error: unknown): FailureKind {
   const text = errorText(error).toLowerCase();
@@ -425,10 +448,15 @@ export function createClaudeDriver(api: ClaudeApi = defaultApi): Driver {
       }
       const decision = noteAccess(toolToAccessRequest(toolName, input), "prompt", toolName, input);
       if (decision.approved) return { behavior: "allow", updatedInput: input };
+      const n = toolName.toLowerCase();
+      if (n === "bash" || n.includes("bash")) {
+        return { behavior: "deny", message: CLAUDE_BASH_DENY_MESSAGE };
+      }
       return { behavior: "deny", message: decision.feedback ?? decision.summary };
     };
 
     try {
+      prepareClaudeAgentHome(options.agentHome);
       const installed = await installPlugin(claudePluginRpc(options.agentHome), options.plugin, projectDir);
       if (!installed.ok) {
         log({ turn, role: "system", text: installed.message });
@@ -439,7 +467,7 @@ export function createClaudeDriver(api: ClaudeApi = defaultApi): Driver {
       const baseOptions = (): SdkOptions => ({
         model: options.model,
         cwd: projectDir,
-        settingSources: [],
+        settingSources: ["user"],
         plugins: [{ type: "local", path: pluginPath }],
         env: controlledClaudeEnv(options.agentHome, options.key),
         canUseTool,
