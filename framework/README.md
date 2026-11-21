@@ -37,8 +37,25 @@ framework/generate-agent-plugin.sh
 
 The validator reports one line per rule that failed, each naming the rule id that decided it. The
 catalog generator refreshes highway-help's index; the adapter generator writes the per-agent
-copies; the plugin generator rebuilds `highway-agent-plugin/`. Run all four after any change to a
-skill.
+copies; the plugin generator rebuilds `highway-agent-plugin/`. Run validation/catalog/adapters as
+you implement; for a Spec Kit feature that changes covered plugin-build inputs (`skills/` or
+`framework/plugin/`), close with the finish order below rather than bumping on the first edit.
+
+### Finish order when plugin-build inputs change
+
+After the feature's work is ready:
+
+1. `bash tests/run-all.sh --exclude-plugin-gen` — full suite without the plugin generation–specific
+   checks (must exit 0).
+2. Harness — only if that feature already requires harness (not mandated by this packaging rule).
+3. Bump `version` in `framework/plugin/plugin.json` to a strictly greater `MAJOR.MINOR.PATCH` than
+   the `main` merge-base.
+4. `bash framework/generate-agent-plugin.sh` — regenerate so the package carries the new version.
+5. `bash tests/run-all.sh --plugin-gen-only` — runs only `plugin-version-bump.test.sh` and
+   `agent-plugin.test.sh` (must exit 0).
+
+Public promote remains separate: `framework/publish-agent-plugin.sh` when you choose to publish.
+Do not treat publish as required to finish ordinary skill work.
 
 Every generator refuses to overwrite a file or folder it did not produce, naming it rather than
 replacing it. If you see that message, the file was hand-edited — move it aside if regenerating is
@@ -240,8 +257,9 @@ the public repository is not the source of truth. Refuses to push when the stage
 the build, when contents reference Spec Kit feature folders or Spec Kit config folders, or when a
 simple secret scan fails.
 The first publish may keep version `0.1.0` and tag `v0.1.0`. Later releases must bump
-`framework/plugin/plugin.json` `version` first. `--dry-run` runs every gate and local commit/tag
-step without pushing. Auth uses your git credentials for the `highway-systems` remote.
+`framework/plugin/plugin.json` `version` first (normally via the finish order above when skills or
+plugin sources change). `--dry-run` runs every gate and local commit/tag step without pushing.
+Auth uses your git credentials for the `highway-systems` remote.
 
 ### `framework/validate-plugin.sh <plugin-dir>`
 

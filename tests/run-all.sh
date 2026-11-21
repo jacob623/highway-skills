@@ -1,11 +1,38 @@
 #!/usr/bin/env bash
 # Discovers and runs every *.test.sh under tools/tests/, prints a pass/fail summary, and exits
 # non-zero if any test fails.
+#
+# Plugin generation–specific closed list (feature 259):
+#   plugin-version-bump.test.sh
+#   agent-plugin.test.sh
+# Flags (mutually exclusive):
+#   --exclude-plugin-gen   skip the closed list
+#   --plugin-gen-only      run only the closed list
 set -u
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=paths.sh
 source "$SCRIPT_DIR/paths.sh"
+
+PLUGIN_GEN_TESTS=(
+	plugin-version-bump.test.sh
+	agent-plugin.test.sh
+)
+
+mode="all"
+case "${1:-}" in
+	"") ;;
+	--exclude-plugin-gen) mode="exclude-plugin-gen" ;;
+	--plugin-gen-only) mode="plugin-gen-only" ;;
+	-h|--help)
+		echo "Usage: tests/run-all.sh [--exclude-plugin-gen|--plugin-gen-only]" >&2
+		exit 0
+		;;
+	*)
+		echo "Usage: tests/run-all.sh [--exclude-plugin-gen|--plugin-gen-only]" >&2
+		exit 2
+		;;
+esac
 
 # Feature 092 checks are included by the existing *.test.sh discovery below; no separate dispatch
 # list is required. Two tests seed probes into the live tree, because what they check -- packaging and adapter
@@ -40,6 +67,14 @@ pass=0
 fail=0
 failed_names=()
 
+is_plugin_gen() {
+	local name="$1" t
+	for t in "${PLUGIN_GEN_TESTS[@]}"; do
+		[[ "$name" == "$t" ]] && return 0
+	done
+	return 1
+}
+
 run_test() {
 	local test_file="$1" name
 	name="$(basename "$test_file")"
@@ -56,9 +91,28 @@ run_test() {
 }
 
 shopt -s nullglob
-for test_file in "$HW_TESTS"/*.test.sh; do
-	run_test "$test_file"
-done
+if [[ "$mode" == "plugin-gen-only" ]]; then
+	for name in "${PLUGIN_GEN_TESTS[@]}"; do
+		test_file="$HW_TESTS/$name"
+		if [[ ! -f "$test_file" ]]; then
+			echo "FAIL: missing plugin-gen test $name"
+			fail=$((fail + 1))
+			failed_names+=("$name")
+			continue
+		fi
+		run_test "$test_file"
+	done
+else
+	for test_file in "$HW_TESTS"/*.test.sh; do
+		name="$(basename "$test_file")"
+		if [[ "$mode" == "exclude-plugin-gen" ]] && is_plugin_gen "$name"; then
+			echo "==> Skipping $name (--exclude-plugin-gen)"
+			echo
+			continue
+		fi
+		run_test "$test_file"
+	done
+fi
 shopt -u nullglob
 
 echo "--------------------------------------"
