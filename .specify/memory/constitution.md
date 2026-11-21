@@ -1,5 +1,23 @@
 <!--
 Sync Impact Report
+Version change: 3.10.0 → 3.11.0 (MINOR), 2026-11-21
+Bump rationale: D4.8 requires a greater plugin source version when covered plugin-build inputs
+change, with finish order (excluded suite → bump → regenerate → plugin-gen checks) documented for
+Correspondence. Enforcement is `plugin-version-bump.test.sh` plus existing plugin drift via
+`agent-plugin.test.sh`. No previously conforming closed tree fails without an input change; adding
+a rule is MINOR. Highway Skills Constitution is unchanged.
+Changed elements:
+- Version line: 3.10.0 → 3.11.0
+- Last Amended date: 2026-11-18 → 2026-11-21
+- Principle IV: D4.1–D4.7 → D4.1–D4.8; rule D4.8 added ([auto])
+- Enforcement Map: D4.8 row for plugin-version-bump.test.sh
+- Correspondence Gate: rules D4.5–D4.8
+Unchanged: every other rule's text, Observable, keyword, and tier; Declared Toolchain; Harness
+Toolchain; Highway Skills Constitution.
+Self-application review: D1.3 PASS; D1.4 PASS; D5.3 PASS (changed elements listed; unlisted carry
+forward).
+
+Sync Impact Report
 Version change: 3.9.0 → 3.10.0 (MINOR), 2026-11-18
 Bump rationale: the behavioral harness gains a Claude Code driver that depends on
 `@anthropic-ai/claude-agent-sdk` under `harness/` only. The Harness Toolchain names that SDK
@@ -594,6 +612,7 @@ table cannot silently go stale.
 | D4.5 | adapter-coverage.test.sh | Asserts every skill present has a catalog entry, an adapter in each declared agent tree, an adapter manifest row for each adapter, and an included distribution manifest row for each adapter |
 | D4.6 | adapter-coverage.test.sh | Asserts no catalog entry, adapter file, adapter manifest row, or distribution manifest row names a skill with no source directory |
 | D4.7 | adapter-coverage.test.sh | Regenerates into a temporary tree and asserts no diff against the committed artifacts, including `highway-agent-plugin/` and its agent manifests from `generate-agent-plugin.sh` |
+| D4.8 | plugin-version-bump.test.sh | Asserts that when covered plugin-build inputs (`skills/`, `framework/plugin/`) differ from the `main` merge-base in the working tree, `framework/plugin/plugin.json` version is a strictly greater MAJOR.MINOR.PATCH than the baseline (version-only exempt); package drift remains `agent-plugin.test.sh` |
 | D3.7 | constitution-inventory.test.sh | Executes each mapped test's declared probe per artifact class and requires a non-zero exit; requires a zero exit when the same probe is invoked neutralised |
 | D3.9 | agent-skills-format.test.sh | Seeds a violation of each Agent Skills specification rule into a copy of a conforming skill and requires `framework/validate-skill.sh` to reject it; also requires every skill to pass |
 
@@ -682,9 +701,13 @@ artifact already in the repository.
 | D4.5 | Every skill in the source MUST have its generated artifacts. | Each directory under `skills/` has a catalog entry, an adapter in each declared agent tree, an adapter manifest row for each adapter, and a distribution manifest row for each adapter. | [auto] |
 | D4.6 | A generated artifact MUST NOT name a skill absent from the source. | No catalog entry, adapter file, adapter manifest row, or distribution manifest row names a skill with no directory under `skills/`. | [auto] |
 | D4.7 | A change to a generator's input MUST be followed by regeneration. | Re-running every declared generator leaves no diff against the committed artifacts. | [auto] |
+| D4.8 | A change to covered plugin-build inputs MUST raise the plugin source version before close. | When `skills/` or `framework/plugin/` differs from the `main` merge-base (working tree), `framework/plugin/plugin.json` version is a greater MAJOR.MINOR.PATCH than the baseline, except a version-only edit. | [auto] |
 
 Rationale: Generated artifacts are the product surface; drift between source and output ships
-directly to users.
+directly to users. D4.8 is the plugin package identity sibling: covered input changes close with
+finish order `tests/run-all.sh --exclude-plugin-gen` → bump `framework/plugin/plugin.json` →
+`generate-agent-plugin.sh` → `tests/run-all.sh --plugin-gen-only` (harness only if already
+required; public publish separate). D4.7 still owns regeneration currency.
 
 D4.4 and D4.7 are siblings and neither subsumes the other: D4.4 covers a changed generator, D4.7 a
 changed input. D4.7 is also distinct from D4.1, which prohibits editing a generated artifact;
@@ -753,7 +776,7 @@ A gate applies only when its trigger evaluates true. A gate whose trigger is fal
 | **Packaging Gate** | The change touches a shipped path. | D1.1, D1.2, D6.2 |
 | **Toolchain Gate** | The change touches a file under `framework/`, `tests/`, or `harness/bin/`. | D2.1–D2.5 |
 | **Generator Gate** | The change touches a `generate-*.sh` script. | D4.1–D4.4 |
-| **Correspondence Gate** | The change adds, removes, or modifies a directory under `skills/`, or any other input to a declared generator. | D4.5–D4.7 |
+| **Correspondence Gate** | The change adds, removes, or modifies a directory under `skills/`, or any other input to a declared generator. | D4.5–D4.8 |
 | **Validation Gate** | The change adds or modifies a validation check. | D3.4, D3.5 |
 | **Skill Content Gate** | The change creates or modifies a file under `skills/`. | Delegated to the Highway Skills Constitution per D1.5 |
 
@@ -790,4 +813,4 @@ enforce it, and Highway's own rules may only narrow it.
 This document is subject to D1.3, D1.4, and D5.3. Every amendment records a review against those
 rule IDs.
 
-**Version**: 3.10.0 | **Ratified**: 2026-09-08 | **Last Amended**: 2026-11-18
+**Version**: 3.11.0 | **Ratified**: 2026-09-08 | **Last Amended**: 2026-11-21

@@ -31,6 +31,7 @@ VALIDATE="$HW_FRAMEWORK/validate-plugin.sh"
 PLUGIN_NAME="$(basename "$HW_PLUGIN")"
 PLUGIN_SKILLS="$(hw_rel "$HW_PLUGIN_SKILLS")"
 SKILLS_REL="${HW_PLUGIN_SKILLS#"$HW_PLUGIN"/}"
+PLUGIN_VERSION="$(python3 -c "import json; print(json.load(open('$HW_PLUGIN/plugin.json'))['version'])")"
 
 tmp_root="$(mktemp -d)"
 trap 'rm -rf "$tmp_root"' EXIT
@@ -272,7 +273,7 @@ manifest_with 's|"name": "highway"|"name": "Highway--Skills"|'
 expect_invalid "a name outside the name constraints" '^ERROR: \[MANIFEST\] name:'
 
 new_case version-type
-manifest_with 's|"version": "0.1.0"|"version": 1|'
+manifest_with "s|\"version\": \"$PLUGIN_VERSION\"|\"version\": 1|"
 expect_invalid "a version that is not a string" '^ERROR: \[MANIFEST\] version:'
 
 new_case author
@@ -318,7 +319,7 @@ file_with .cursor-plugin/plugin.json '/"license":/d'
 expect_invalid "an agent manifest missing a required field" '^ERROR: \[AGENT\] \.cursor-plugin/plugin\.json: license: is required'
 
 new_case agent-shared
-file_with .claude-plugin/plugin.json 's|"version": "0.1.0"|"version": "0.2.0"|'
+file_with .claude-plugin/plugin.json "s|\"version\": \"$PLUGIN_VERSION\"|\"version\": \"9.9.9\"|"
 expect_invalid "a shared field that differs from plugin.json" '^ERROR: \[AGENT\] \.claude-plugin/plugin\.json: version: must equal'
 
 new_case agent-derived
