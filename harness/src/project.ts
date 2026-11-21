@@ -17,6 +17,13 @@ export interface PluginSource {
 
 export type BuildResult = { ok: true; dir: string; plugin: PluginSource } | { ok: false; tail: string };
 
+export const PUBLIC_PLUGIN_REMOTE = "https://github.com/highway-systems/agent-plugin.git";
+
+export interface BuildPluginOptions {
+  source?: "local" | "public";
+  ref?: string;
+}
+
 /** A repository-relative location from the paths helper, read through `path-map.sh --location`. */
 export function location(name: "skills" | "framework" | "plugin"): string {
   const result = spawnSync("bash", [join(HARNESS_DIR, "bin", "path-map.sh"), "--location", name], {
@@ -27,12 +34,57 @@ export function location(name: "skills" | "framework" | "plugin"): string {
   return result.stdout.trim();
 }
 
+function pluginFromDir(pluginDir: string): PluginSource {
+  const { name } = JSON.parse(readFileSync(join(pluginDir, "plugin.json"), "utf8")) as { name: string };
+  const skillsDir = join(pluginDir, "skills");
+  const skills = readdirSync(skillsDir).filter((id) => existsSync(join(skillsDir, id, "SKILL.md"))).length;
+  return { dir: pluginDir, name, skills };
+}
+
 /**
- * Prepares a run once: refuses a missing or stale plugin build, then makes <workRoot>/base, an
- * empty project. Each attempt installs the plugin into its own agent home, so no test project
- * holds a skill folder.
+ * Clones the public plugin repository at a pinned tag or commit into <workRoot>/public-plugin.
  */
-export function buildPlugin(workRoot: string, repoRoot = REPO_ROOT): BuildResult {
+export function clonePublicPlugin(workRoot: string, ref: string, remote = PUBLIC_PLUGIN_REMOTE): BuildResult {
+  const dest = join(workRoot, "public-plugin");
+  mkdirSync(workRoot, { recursive: true });
+  rmSync(dest, { recursive: true, force: true });
+  const clone = spawnSync("git", ["clone", "--depth", "1", "--branch", ref, remote, dest], { encoding: "utf8" });
+  if (clone.status !== 0) {
+    // Tag/branch shallow clone failed; try full fetch + checkout (commit SHAs need this).
+    const init = spawnSync("git", ["clone", remote, dest], { encoding: "utf8" });
+    if (init.status !== 0) {
+      return { ok: false, tail: `${clone.stderr}${init.stderr}`.trim() || `git clone ${remote} failed` };
+    }
+    const checkout = spawnSync("git", ["-C", dest, "checkout", "--detach", ref], { encoding: "utf8" });
+    if (checkout.status !== 0) {
+      return { ok: false, tail: `${checkout.stderr}`.trim() || `git checkout ${ref} failed` };
+    }
+  }
+  try {
+    return { ok: true, dir: join(workRoot, "base"), plugin: pluginFromDir(dest) };
+  } catch (err) {
+    return { ok: false, tail: String(err) };
+  }
+}
+
+/**
+ * Prepares a run once: refuses a missing or stale plugin build (local), or clones a pinned public
+ * ref, then makes <workRoot>/base, an empty project. Each attempt installs the plugin into its own
+ * agent home, so no test project holds a skill folder.
+ */
+export function buildPlugin(workRoot: string, repoRoot = REPO_ROOT, opts: BuildPluginOptions = {}): BuildResult {
+  const source = opts.source ?? "local";
+  if (source === "public") {
+    if (!opts.ref) return { ok: false, tail: "--plugin-source public requires --plugin-ref <tag|sha>" };
+    const cloned = clonePublicPlugin(workRoot, opts.ref);
+    if (!cloned.ok) return cloned;
+    try {
+      mkdirSync(cloned.dir, { recursive: true });
+      return cloned;
+    } catch (err) {
+      return { ok: false, tail: String(err) };
+    }
+  }
   const check = spawnSync("bash", [join(repoRoot, location("framework"), "generate-agent-plugin.sh"), "--check"], {
     encoding: "utf8",
     cwd: repoRoot,
@@ -44,10 +96,7 @@ export function buildPlugin(workRoot: string, repoRoot = REPO_ROOT): BuildResult
   try {
     mkdirSync(dir, { recursive: true });
     const pluginDir = join(repoRoot, location("plugin"));
-    const { name } = JSON.parse(readFileSync(join(pluginDir, "plugin.json"), "utf8")) as { name: string };
-    const skillsDir = join(pluginDir, "skills");
-    const skills = readdirSync(skillsDir).filter((id) => existsSync(join(skillsDir, id, "SKILL.md"))).length;
-    return { ok: true, dir, plugin: { dir: pluginDir, name, skills } };
+    return { ok: true, dir, plugin: pluginFromDir(pluginDir) };
   } catch (err) {
     return { ok: false, tail: String(err) };
   }

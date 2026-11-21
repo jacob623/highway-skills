@@ -1,0 +1,32 @@
+[ 1/16] start adr-smoke attempt 1
+[ 2/16] start architecture-smoke attempt 1
+[ 3/16] start assessment-smoke attempt 1
+[ 4/16] start codify-config-smoke attempt 1
+[ 1/16] PASS adr-smoke (attempt 1, 3 turns, 0m41s)
+[ 5/16] start codify-smoke attempt 1
+[ 4/16] PASS codify-config-smoke (attempt 1, 5 turns, 0m43s)
+[ 6/16] start controls-smoke attempt 1
+[ 3/16] PASS assessment-smoke (attempt 1, 4 turns, 0m57s)
+[ 7/16] start discovery-smoke attempt 1
+[ 2/16] PASS architecture-smoke (attempt 1, 2 turns, 1m11s)
+[ 8/16] start experience-smoke attempt 1
+[ 6/16] PASS controls-smoke (attempt 1, 3 turns, 0m31s)
+[ 9/16] start help-smoke attempt 1
+[ 8/16] PASS experience-smoke (attempt 1, 1 turns, 0m08s)
+[10/16] start implementation-smoke attempt 1
+[ 9/16] PASS help-smoke (attempt 1, 1 turns, 0m14s)
+[11/16] start nfrs-smoke attempt 1
+[11/16] PASS nfrs-smoke (attempt 1, 3 turns, 0m31s)
+[12/16] start objectives-smoke attempt 1
+[12/16] PASS objectives-smoke (attempt 1, 3 turns, 0m28s)
+[13/16] start onboarding-smoke attempt 1
+[ 7/16] PASS discovery-smoke (attempt 1, 2 turns, 1m37s)
+[14/16] start profile-smoke attempt 1
+[10/16] PASS implementation-smoke (attempt 1, 3 turns, 1m34s)
+[15/16] start request-smoke attempt 1
+[ 5/16] PASS codify-smoke (attempt 1, 4 turns, 2m20s)
+[16/16] start setup-smoke attempt 1
+[15/16] PASS request-smoke (attempt 1, 2 turns, 0m37s)
+[14/16] PASS profile-smoke (attempt 1, 8 turns, 1m00s)
+[13/16] PASS onboarding-smoke (attempt 1, 9 turns, 2m08s)
+[16/16] PASS setup-smoke (attempt 1, 8 turns, 1m37s)

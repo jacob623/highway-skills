@@ -377,16 +377,41 @@ def check(plugin, skills_rel):
             finding("interface", "is required")
 
     folders = sorted(set(f["path"].split("/")[0] for f in FORMATS if "/" in f["path"]))
-    shipped = set(["plugin.json", "README.md", "LICENSE", skills_rel, "assets"] + folders +
+    # Marketplace catalogs ship beside agent overlays (Phase 10 / publish-public-install).
+    marketplaces = {
+        ".cursor-plugin": set(["plugin.json", "marketplace.json"]),
+        ".claude-plugin": set(["plugin.json", "marketplace.json"]),
+        ".codex-plugin": set(["plugin.json"]),
+        ".antigravity-plugin": set(["plugin.json"]),
+        ".agents": set(["plugins"]),
+        ".github": set(["plugin"]),
+    }
+    shipped = set(["plugin.json", "README.md", "LICENSE", skills_rel, "assets",
+                   ".agents", ".github"] + folders +
                   [f["path"] for f in FORMATS if "/" not in f["path"]])
     for entry in sorted(os.listdir(plugin)):
         if entry not in shipped:
             found.append("ERROR: [LAYOUT] %s: is not in the shipped set" % entry)
     for folder in folders:
         if os.path.isdir(os.path.join(plugin, folder)):
+            allowed = marketplaces.get(folder, set(["plugin.json"]))
             for entry in sorted(os.listdir(os.path.join(plugin, folder))):
-                if entry != "plugin.json":
+                if entry not in allowed:
                     found.append("ERROR: [LAYOUT] %s/%s: is not in the shipped set" % (folder, entry))
+    agents_plugins = os.path.join(plugin, ".agents", "plugins")
+    if os.path.isdir(agents_plugins):
+        for entry in sorted(os.listdir(agents_plugins)):
+            if entry != "marketplace.json":
+                found.append("ERROR: [LAYOUT] .agents/plugins/%s: is not in the shipped set" % entry)
+    elif os.path.isdir(os.path.join(plugin, ".agents")):
+        found.append("ERROR: [LAYOUT] .agents/plugins: is missing")
+    github_plugin = os.path.join(plugin, ".github", "plugin")
+    if os.path.isdir(github_plugin):
+        for entry in sorted(os.listdir(github_plugin)):
+            if entry != "marketplace.json":
+                found.append("ERROR: [LAYOUT] .github/plugin/%s: is not in the shipped set" % entry)
+    elif os.path.isdir(os.path.join(plugin, ".github")):
+        found.append("ERROR: [LAYOUT] .github/plugin: is missing")
     assets = os.path.join(plugin, "assets")
     if os.path.isdir(assets) and not os.path.islink(assets):
         for base, dirs, files in os.walk(assets):

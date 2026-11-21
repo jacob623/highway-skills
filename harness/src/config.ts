@@ -32,6 +32,10 @@ export interface Config {
   /** Set only by --transcripts: the folder that receives the run folder. */
   transcripts?: string;
   verbose: boolean;
+  /** local (default) or public pinned install source. */
+  pluginSource: "local" | "public";
+  /** Required when pluginSource is public. */
+  pluginRef?: string;
   env: Record<string, string | undefined>;
 }
 
@@ -119,6 +123,10 @@ export function resolveConfig(options: Options, file: FileConfig, env: Record<st
   }
 
   const transcripts = options.transcripts;
+  const pluginSource = options.pluginSource ?? "local";
+  if (pluginSource === "public" && !options.pluginRef) {
+    throw new Error("--plugin-source public requires --plugin-ref <tag|sha>");
+  }
   return {
     agent: agentId,
     model,
@@ -133,6 +141,8 @@ export function resolveConfig(options: Options, file: FileConfig, env: Record<st
     timeoutMs: (options.timeout ?? file.timeoutMinutes) * 60_000,
     transcripts: transcripts === undefined ? undefined : isAbsolute(transcripts) ? transcripts : resolve(REPO_ROOT, transcripts),
     verbose: options.verbose,
+    pluginSource,
+    pluginRef: options.pluginRef,
     env,
   };
 }

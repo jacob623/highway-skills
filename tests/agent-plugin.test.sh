@@ -58,12 +58,21 @@ source_skills() {
 
 # --- The shipped set ---------------------------------------------------------------------------
 entries="$(cd "$HW_PLUGIN" && find . -mindepth 1 -maxdepth 1 | sed 's|^\./||' | LC_ALL=C sort | tr '\n' ' ')"
-[[ "$entries" == ".antigravity-plugin .claude-plugin .codex-plugin .cursor-plugin LICENSE README.md assets gemini-extension.json plugin.json skills " ]] \
-	|| problem "$PLUGIN_NAME/ holds '$entries'; expected exactly the five agent manifests, LICENSE, README.md, assets, plugin.json, skills"
-for folder in .antigravity-plugin .claude-plugin .codex-plugin .cursor-plugin; do
+[[ "$entries" == ".agents .antigravity-plugin .claude-plugin .codex-plugin .cursor-plugin .github LICENSE README.md assets gemini-extension.json plugin.json skills " ]] \
+	|| problem "$PLUGIN_NAME/ holds '$entries'; expected agent manifests, marketplace roots, LICENSE, README.md, assets, plugin.json, skills"
+for folder in .antigravity-plugin .codex-plugin; do
 	held="$(cd "$HW_PLUGIN/$folder" 2>/dev/null && find . -mindepth 1 | sed 's|^\./||' | tr '\n' ' ')"
 	[[ "$held" == "plugin.json " ]] || problem "$PLUGIN_NAME/$folder holds '$held'; expected only plugin.json"
 done
+for folder in .claude-plugin .cursor-plugin; do
+	held="$(cd "$HW_PLUGIN/$folder" 2>/dev/null && find . -mindepth 1 | sed 's|^\./||' | LC_ALL=C sort | tr '\n' ' ')"
+	[[ "$held" == "marketplace.json plugin.json " ]] \
+		|| problem "$PLUGIN_NAME/$folder holds '$held'; expected marketplace.json and plugin.json"
+done
+held="$(cd "$HW_PLUGIN/.agents/plugins" 2>/dev/null && find . -mindepth 1 | sed 's|^\./||' | tr '\n' ' ')"
+[[ "$held" == "marketplace.json " ]] || problem "$PLUGIN_NAME/.agents/plugins holds '$held'; expected marketplace.json"
+held="$(cd "$HW_PLUGIN/.github/plugin" 2>/dev/null && find . -mindepth 1 | sed 's|^\./||' | tr '\n' ' ')"
+[[ "$held" == "marketplace.json " ]] || problem "$PLUGIN_NAME/.github/plugin holds '$held'; expected marketplace.json"
 
 plugin_skills="$(cd "$HW_PLUGIN_SKILLS" 2>/dev/null && find . -mindepth 1 -maxdepth 1 | sed 's|^\./||' | LC_ALL=C sort)"
 [[ "$plugin_skills" == "$(source_skills)" ]] \
