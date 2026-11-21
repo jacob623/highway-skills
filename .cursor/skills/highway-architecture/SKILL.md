@@ -56,11 +56,7 @@ The complete structure is `assets/architecture-record.md`. `adrs/adrs.md` and `a
 Activate the highway-experience skill before any output the person sees, and follow it for Highway's identity, the Experience Standard, and the storage contract.
 
 Before the first question, confirm these seeded files exist: `adrs/adrs.md`, `architectures/architectures.md`.
-When any is absent, emit the message below exactly, stop, and write nothing.
-
-**Oops... we need to setup your repository.**
-
-Highway needs to gather your organizational preferences and set up your repository. Run highway-setup to get started.
+When any is absent after highway-experience returned ready, stop, write nothing, name the missing seeded file(s), and say highway-setup can repair the catalogs. Do not emit the repository dual gate; highway-experience owns that gate.
 
 Emit only the active template. Follow this order: `onboarding` when `highway-onboarding` hands off an accepted ADR id; `choose` when no ADR id is supplied; otherwise `start`, then `identifier`, `title` when needed, `write`, `name`, and `close`. The ADR remains the decision. Inherit its decision, rationale, alternatives, consequences, and constraints without changing their meaning. Describe the architecture in conceptual terms. A platform, product, vendor, or specific technology stays in the inherited decision and is not part of the architecture. A missing Profile, Objective, Control, or NFR continues without invented evidence. A malformed one of those baselines stops the skill and writes nothing.
 

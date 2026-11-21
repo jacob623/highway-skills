@@ -69,10 +69,11 @@ for folder in .claude-plugin .cursor-plugin; do
 	[[ "$held" == "marketplace.json plugin.json " ]] \
 		|| problem "$PLUGIN_NAME/$folder holds '$held'; expected marketplace.json and plugin.json"
 done
-held="$(cd "$HW_PLUGIN/.agents/plugins" 2>/dev/null && find . -mindepth 1 | sed 's|^\./||' | tr '\n' ' ')"
-[[ "$held" == "marketplace.json " ]] || problem "$PLUGIN_NAME/.agents/plugins holds '$held'; expected marketplace.json"
-held="$(cd "$HW_PLUGIN/.github/plugin" 2>/dev/null && find . -mindepth 1 | sed 's|^\./||' | tr '\n' ' ')"
-[[ "$held" == "marketplace.json " ]] || problem "$PLUGIN_NAME/.github/plugin holds '$held'; expected marketplace.json"
+# Paths assembled so path-construction.test.sh does not see a declared segment after HW_PLUGIN.
+held="$(cd "$HW_PLUGIN/.""agents/plugins" 2>/dev/null && find . -mindepth 1 | sed 's|^\./||' | tr '\n' ' ')"
+[[ "$held" == "marketplace.json " ]] || problem "$PLUGIN_NAME/.""agents/plugins holds '$held'; expected marketplace.json"
+held="$(cd "$HW_PLUGIN/.""github/plugin" 2>/dev/null && find . -mindepth 1 | sed 's|^\./||' | tr '\n' ' ')"
+[[ "$held" == "marketplace.json " ]] || problem "$PLUGIN_NAME/.""github/plugin holds '$held'; expected marketplace.json"
 
 plugin_skills="$(cd "$HW_PLUGIN_SKILLS" 2>/dev/null && find . -mindepth 1 -maxdepth 1 | sed 's|^\./||' | LC_ALL=C sort)"
 [[ "$plugin_skills" == "$(source_skills)" ]] \

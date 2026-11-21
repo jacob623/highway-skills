@@ -70,7 +70,7 @@ fail=0
 
 # --- highway-experience holds exactly its skill file and three references ------------------------
 
-expected="$(printf '%s\n' SKILL.md references/experience-standard.md references/highway-identity.md references/storage-contract.md)"
+expected="$(printf '%s\n' SKILL.md assets/repository-gate.md references/experience-standard.md references/highway-identity.md references/storage-contract.md)"
 actual="$(cd "$HW_EXPERIENCE" 2>/dev/null && find . -type f | sed 's|^\./||' | LC_ALL=C sort)"
 if [[ "$actual" != "$expected" ]]; then
 	echo "FAIL: $(hw_rel "$HW_EXPERIENCE") holds:"
@@ -93,7 +93,9 @@ for text in \
 	'Do not treat Highway identity or experience guidance as organizational facts' \
 	'Read `references/experience-standard.md` before any output the person sees' \
 	'Read `references/storage-contract.md` before the first repository read or write.' \
-	'Start no workflow. Write no file.'; do
+	'Start no repository gate. Write no file.' \
+	'assets/repository-gate.md' \
+	'Resolve the effective Highway knowledge root'; do
 	if ! grep -Fq -- "$text" "$SKILL" 2>/dev/null; then
 		echo "FAIL: $(hw_rel "$SKILL") omits: $text"
 		fail=1

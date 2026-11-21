@@ -14,9 +14,9 @@ source "$SCRIPT_DIR/paths.sh"
 fail=0
 TAB="$(printf '\t')"
 
-INSTRUCTION='When any is absent, emit the message below exactly, stop, and write nothing.'
-HEADLINE='**Oops... we need to setup your repository.**'
-BODY='Highway needs to gather your organizational preferences and set up your repository. Run highway-setup to get started.'
+INSTRUCTION='When any is absent after highway-experience returned ready, stop, write nothing, name the missing seeded file(s), and say highway-setup can repair the catalogs. Do not emit the repository dual gate; highway-experience owns that gate.'
+FORBIDDEN_OOPS='**Oops... we need to setup your repository.**'
+FORBIDDEN_BODY='Highway needs to gather your organizational preferences and set up your repository. Run highway-setup to get started.'
 
 # `<skill>\t<files>`: the seeded files each skill confirms, in the order its check names them.
 CHECKS="highway-request${TAB}requests/requests.md
@@ -33,14 +33,14 @@ seeded_paths="$(hw_seeded | cut -f2)"
 seeded_assets="$(hw_seeded | cut -f1)"
 seeded_folders="$(printf '%s\n' "$seeded_paths" | sed -E 's#/[^/]+$#/#' | sort -u)"
 
-# The block an entry check must be: the check line, the instruction, and the message.
+# The block an entry check must be: the check line and the domain-safe absent instruction (no dual gate).
 expected_block() {
 	local files="$1" list="" f
 	for f in $files; do
 		list="${list:+$list, }\`$f\`"
 	done
-	printf 'Before the first question, confirm these seeded files exist: %s.\n%s\n\n%s\n\n%s\n' \
-		"$list" "$INSTRUCTION" "$HEADLINE" "$BODY"
+	printf 'Before the first question, confirm these seeded files exist: %s.\n%s\n' \
+		"$list" "$INSTRUCTION"
 }
 
 # The Procedure text before its first `### ` heading.
@@ -60,6 +60,9 @@ check_entry() {
 	case "$head" in
 	*"$block"*) ;;
 	*) echo "$name: the entry check before the first step is not exactly the contract block for: $files" ;;
+	esac
+	case "$head" in
+	*"$FORBIDDEN_OOPS"*|*"$FORBIDDEN_BODY"*) echo "$name: still embeds the old setup-only Oops gate; experience owns the dual gate" ;;
 	esac
 }
 
@@ -178,9 +181,23 @@ fi
 probe_dir="$(mktemp -d)"
 trap 'rm -rf "$probe_dir"' EXIT
 src="$HW_SKILLS/highway-request/SKILL.md"
-sed 's/Oops\.\.\. we need/Oops... we needs/' "$src" >"$probe_dir/byte.md"
+sed 's/after highway-experience returned ready/after highway-experience returned readys/' "$src" >"$probe_dir/byte.md"
 if [[ -z "$(check_entry probe "$probe_dir/byte.md" requests/requests.md)" ]]; then
-	report "probe: a one-byte change to the setup message was not caught"
+	report "probe: a one-byte change to the seeded-file absent instruction was not caught"
+fi
+awk -v oops="$FORBIDDEN_OOPS" '
+	/^When any is absent after highway-experience/ {
+		print
+		print ""
+		print oops
+		print ""
+		print "Highway needs to gather your organizational preferences and set up your repository. Run highway-setup to get started."
+		next
+	}
+	{ print }
+' "$src" >"$probe_dir/oops.md"
+if [[ -z "$(check_entry probe "$probe_dir/oops.md" requests/requests.md)" ]]; then
+	report "probe: a reintroduced Oops gate was not caught"
 fi
 { cat "$src"; printf '\nCreate `requests/` when it is absent.\n'; } >"$probe_dir/create.md"
 if [[ -z "$(check_no_create probe "$probe_dir/create.md")" ]]; then

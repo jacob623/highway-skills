@@ -67,11 +67,7 @@ The complete structure is `assets/codify-record.md`, `assets/codify-plan.md`, `a
 Activate the highway-experience skill before any output the person sees, and follow it for Highway's identity, the Experience Standard, and the storage contract.
 
 Before the first question, confirm these seeded files exist: `code/code.md`, `code/integrations.md`.
-When any is absent, emit the message below exactly, stop, and write nothing.
-
-**Oops... we need to setup your repository.**
-
-Highway needs to gather your organizational preferences and set up your repository. Run highway-setup to get started.
+When any is absent after highway-experience returned ready, stop, write nothing, name the missing seeded file(s), and say highway-setup can repair the catalogs. Do not emit the repository dual gate; highway-experience owns that gate.
 
 Emit only the active template. `catalog` runs alone. Otherwise follow this order: `choose` when no implementation is named; `record check`; `code project` for a code project, or `rank`, with `codified`, when no action is named; then `suggest`, `draft`, `code tasks` for a code project, `provider`, `standards`, `align`, `govern`, `resume`, `join`, `folder`, `layout`, `propose`, `revise`, `identifier`, `title` when needed, `write`, `index`, `plan`, `check`, `menu`, `review` when chosen, `tasks`, `code`, and `close`. Follow the Highway Experience Standard for attribution and acceptance wording. A current implementation is an accepted row in `implementations/implementations.md`. A removed row does not match and does not block a new automation.
 
