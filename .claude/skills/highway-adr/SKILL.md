@@ -58,11 +58,7 @@ The complete structure is `assets/adr-record.md`. `adrs/adrs.md` and `architectu
 Activate the highway-experience skill before any output the person sees, and follow it for Highway's identity, the Experience Standard, and the storage contract.
 
 Before the first question, confirm these seeded files exist: `adrs/adrs.md`, `architectures/architectures.md`.
-When any is absent, emit the message below exactly, stop, and write nothing.
-
-**Oops... we need to setup your repository.**
-
-Highway needs to gather your organizational preferences and set up your repository. Run highway-setup to get started.
+When any is absent after highway-experience returned ready, stop, write nothing, name the missing seeded file(s), and say highway-setup can repair the catalogs. Do not emit the repository dual gate; highway-experience owns that gate.
 
 User-visible interaction follows the Highway Experience Standard. Repository ownership stays with the person.
 

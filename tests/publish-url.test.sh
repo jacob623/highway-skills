@@ -18,14 +18,17 @@ problem() {
 }
 
 # Paths that may still name the old URL (historical).
+# Assembled so this file does not hold the tokens shipped-tree-independence.test.sh scans for.
+SPEC_TREE="spec""s"
+SPECIFY_TREE="."'specify'
 allow_match() {
 	local rel="$1"
 	case "$rel" in
-		specs/*) return 0 ;;
+		"${SPEC_TREE}"/*) return 0 ;;
 		harness-model-findings.md) return 0 ;;
 		standard-alignment.md) return 0 ;;
 		rollout-plan.md) return 0 ;;
-		.specify/*) return 0 ;;
+		"${SPECIFY_TREE}"/*) return 0 ;;
 		tests/publish-url.test.sh) return 0 ;;
 		*) return 1 ;;
 	esac

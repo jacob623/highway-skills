@@ -68,23 +68,28 @@ if [[ "${unsupported_rows:-0}" -ne 4 ]]; then
 	fail=1
 fi
 for text in \
-	'Every path is relative to the repository root.' \
+	'Every storage-operation path is relative to the effective Highway knowledge root.' \
+	'## Effective Highway knowledge root' \
+	'## Pointer files' \
+	'`hw-repository.md`' \
+	'`hw-repository.local.md`' \
+	'Highway knowledge' \
 	'Only Local is supported.' \
 	'Nothing is committed.' \
 	'The person handles any git step.' \
 	'A failed write names the files already written and the file that failed.' \
 	'Content a skill writes into a file' \
-	'The four operations govern every read and write of the project.' \
-	'A skill reading its own bundled' \
-	'files, and a skill activating highway-experience, are not repository operations.' \
+	'The four operations govern every read and write of Highway knowledge records.' \
+	'own bundled files, and a skill activating highway-experience, are not repository operations.' \
 	'A run uses Local unless the mode record names another mode.' \
 	'## Mode record' \
-	'The project records its mode in `library/knowledge/storage.md`.' \
+	'library/knowledge/storage.md' \
 	'a skill reads that file with "Read a file".' \
 	'- An absent record means Local.' \
 	'- A record that names a mode other than Local stops the skill before any other repository read or' \
 	'The skill says the recorded mode is not supported yet and names Local as the supported' \
-	'mode.'; do
+	'mode.' \
+	'Version `1.4.0`.'; do
 	require "$STORAGE" "$text"
 done
 

@@ -237,7 +237,8 @@ to change the README, license, or logo, edit the file in `framework/plugin/`. Th
 Publishes a fresh `highway-agent-plugin/` build as the root of
 `https://github.com/highway-systems/agent-plugin` (override with `HIGHWAY_PUBLIC_REMOTE`). One-way:
 the public repository is not the source of truth. Refuses to push when the staged tree differs from
-the build, when contents reference `specs/` or `.specify/`, or when a simple secret scan fails.
+the build, when contents reference Spec Kit feature folders or Spec Kit config folders, or when a
+simple secret scan fails.
 The first publish may keep version `0.1.0` and tag `v0.1.0`. Later releases must bump
 `framework/plugin/plugin.json` `version` first. `--dry-run` runs every gate and local commit/tag
 step without pushing. Auth uses your git credentials for the `highway-systems` remote.

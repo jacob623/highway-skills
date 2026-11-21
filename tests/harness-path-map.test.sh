@@ -43,6 +43,7 @@ expect skills/highway-experience/SKILL.md smoke smoke
 expect skills/highway-experience/references/experience-standard.md smoke smoke
 expect skills/highway-experience/references/storage-contract.md smoke smoke
 expect skills/highway-experience/references/highway-identity.md smoke smoke
+expect skills/highway-experience/assets/repository-gate.md smoke smoke
 expect harness/src/runner.ts smoke smoke
 expect harness/harness.config.json smoke smoke
 expect harness/scenarios/highway-codify/codify-plan-review.scenario scenario codify-plan-review
@@ -68,7 +69,7 @@ fi
 shipped=()
 while IFS= read -r rel; do
 	shipped+=("$rel")
-done < <(cd "$HW_ROOT" && { find "$(hw_rel "$HW_EXPERIENCE")" -type f ! -name '.*'; find "$(hw_rel "$HW_SKILLS")" -path '*/assets/*' -type f ! -name '.*'; } | LC_ALL=C sort)
+done < <(cd "$HW_ROOT" && { find "$(hw_rel "$HW_EXPERIENCE")" -type f ! -name '.*'; find "$(hw_rel "$HW_SKILLS")" -path '*/assets/*' -type f ! -name '.*'; } | LC_ALL=C sort -u)
 if [[ "${#shipped[@]}" -lt 30 ]]; then
 	echo "FAIL: found only ${#shipped[@]} shipped highway-experience and skill asset files"
 	fail=1

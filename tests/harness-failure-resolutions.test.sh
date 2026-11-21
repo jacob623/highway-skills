@@ -76,7 +76,7 @@ require_in highway-profile '## Error Handling' '- A link with no other text and 
 
 # --- F6, F10, F12: the storage contract decides absence by exact path ---------------------------
 
-require_file "$STORAGE" 'Version `1.3.0`.'
+require_file "$STORAGE" 'Version `1.4.0`.'
 require_file "$STORAGE" '"Read a file" and "Check a file exists" act on the exact path. A search or pattern tool does not decide whether a file exists. A file is absent only when one of those two operations reports it absent at its path.'
 require_file "$STORAGE" 'A folder is created by writing a file in it.'
 section "$STORAGE" '## What a skill does not do' | grep -Eq -- '- Run a shell command' || {
@@ -87,7 +87,7 @@ section "$STORAGE" '## What a skill does not do' | grep -Fxq -- '- Decide that a
 	echo 'FAIL: the storage contract does not list deciding absence from a search'
 	fail=1
 }
-version_is highway-experience 1.3.0
+version_is highway-experience 1.4.0
 
 require_in highway-objectives '### Entry' '1. Read `library/governance/objectives.md`. Then read each record it indexes at `library/objectives/[ID].md`, with "Read a file".'
 require_in highway-controls '### Entry' '1. Read `library/governance/controls.md`. Then read each active record it indexes at `library/governance/controls/[ID].md`, with "Read a file".'

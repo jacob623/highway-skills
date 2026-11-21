@@ -61,11 +61,7 @@ The complete structure is `assets/implementation-record.md`. `implementations/im
 Activate the highway-experience skill before any output the person sees, and follow it for Highway's identity, the Experience Standard, and the storage contract.
 
 Before the first question, confirm these seeded files exist: `implementations/implementations.md`, `implementations/capabilities.md`, `library/coding-standards/codify-platforms.md`.
-When any is absent, emit the message below exactly, stop, and write nothing.
-
-**Oops... we need to setup your repository.**
-
-Highway needs to gather your organizational preferences and set up your repository. Run highway-setup to get started.
+When any is absent after highway-experience returned ready, stop, write nothing, name the missing seeded file(s), and say highway-setup can repair the catalogs. Do not emit the repository dual gate; highway-experience owns that gate.
 
 Emit only the active template. Follow this order: `onboarding` when `highway-onboarding` hands off an accepted Reference Architecture id; `add capabilities` when `highway-codify-config` passes new realized capabilities; `delivery platforms`, with `delivery decline`, when `highway-codify` hands off an accepted implementation; `choose` when no architecture id is supplied; otherwise `start`, which follows `execution`, then `identifier`, `title` when needed, `write`, `platforms`, and `close`. The accepted Reference Architecture remains authoritative. A realization cannot redesign it or override the ADR. A missing Profile, Objective, Control, or NFR continues without invented evidence. A malformed one of those baselines stops the skill and writes nothing. Clarification is read-only. An open finding can inform a risk. It cannot block the proposal.
 
