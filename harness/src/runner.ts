@@ -21,7 +21,7 @@ import { loadScenarios, selectAll, selectSmoke, selectTargeted } from "./select.
 
 export interface RunnerDeps {
   agents: Registry;
-  build: (workRoot: string) => BuildResult;
+  build: (workRoot: string, repoRoot?: string, opts?: { source?: "local" | "public"; ref?: string }) => BuildResult;
   fixtureCheck: (fixtures: readonly string[]) => Map<string, string[]>;
   /** Standard output: the run log only (FR-022). */
   out: (line: string) => void;
@@ -480,7 +480,7 @@ export async function main(argv: readonly string[], deps: RunnerDeps = defaultDe
 
   workRoot = mkdtempSync(join(tmpdir(), "hh-"));
   try {
-    const built = deps.build(workRoot);
+    const built = deps.build(workRoot, REPO_ROOT, { source: config.pluginSource, ref: config.pluginRef });
     if (!built.ok) return runFailure({ kind: "build-failed", check: "plugin", detail: built.tail });
 
     const ctx: Context = {

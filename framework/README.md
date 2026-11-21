@@ -177,6 +177,9 @@ skills that each supported agent can also install from its own manifest. The fol
 
 - `plugin.json`, `README.md`, `LICENSE`, and `assets/`, copied from `framework/plugin/`;
 - `skills/<id>/` for each skill under `skills/`, with every file except dotfiles;
+- marketplace catalogs at `.cursor-plugin/marketplace.json`, `.claude-plugin/marketplace.json`,
+  `.agents/plugins/marketplace.json`, and `.github/plugin/marketplace.json` (each lists `highway`
+  with source `./`);
 - one manifest per agent format, rendered from `framework/plugin/`:
 
 | Manifest | Read by |
@@ -229,6 +232,16 @@ The plugin is not part of the distribution below. To change a shared field, edit
 `framework/plugin/plugin.json`; to change an agent-only field, edit `framework/plugin/listing.json`;
 to change the README, license, or logo, edit the file in `framework/plugin/`. Then rebuild.
 
+### `framework/publish-agent-plugin.sh [--dry-run]`
+
+Publishes a fresh `highway-agent-plugin/` build as the root of
+`https://github.com/highway-systems/agent-plugin` (override with `HIGHWAY_PUBLIC_REMOTE`). One-way:
+the public repository is not the source of truth. Refuses to push when the staged tree differs from
+the build, when contents reference `specs/` or `.specify/`, or when a simple secret scan fails.
+The first publish may keep version `0.1.0` and tag `v0.1.0`. Later releases must bump
+`framework/plugin/plugin.json` `version` first. `--dry-run` runs every gate and local commit/tag
+step without pushing. Auth uses your git credentials for the `highway-systems` remote.
+
 ### `framework/validate-plugin.sh <plugin-dir>`
 
 Validates a plugin folder against Agent Plugins 1.0.0, checks its agent manifests, then validates
@@ -246,8 +259,9 @@ file, field, or path, then `OK` or `FAIL` with a count.
   an image in the plugin.
 - **Layout**: no symbolic link anywhere in the folder, a `skills` entry that is a folder, and a
   `SKILL.md` in each skill folder. The folder holds only the shipped set: the six manifests,
-  `skills/`, `assets/`, `README.md`, and `LICENSE`; each agent folder holds only `plugin.json`;
-  and `assets/` holds only files a manifest names.
+  marketplace catalogs (`.agents/`, `.github/`, and `marketplace.json` beside Claude/Cursor
+  overlays), `skills/`, `assets/`, `README.md`, and `LICENSE`; and `assets/` holds only files a
+  manifest names.
 
 - **Exit 0**: no finding.
 - **Exit 1**: at least one finding.

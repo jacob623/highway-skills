@@ -6,6 +6,8 @@ export interface Options {
   paths: string[];
   skills: string[];
   agent?: string;
+  pluginSource?: "local" | "public";
+  pluginRef?: string;
   model?: string;
   judgeAgent?: string;
   judgeModel?: string;
@@ -63,6 +65,15 @@ export function parseArgs(argv: readonly string[]): ParseResult {
       case "--agent":
         options.agent = value;
         break;
+      case "--plugin-source":
+        if (value !== "local" && value !== "public") {
+          return { ok: false, error: `--plugin-source needs local or public, got ${value}` };
+        }
+        options.pluginSource = value;
+        break;
+      case "--plugin-ref":
+        options.pluginRef = value;
+        break;
       case "--judge-agent":
         options.judgeAgent = value;
         break;
@@ -104,6 +115,12 @@ export function parseArgs(argv: readonly string[]): ParseResult {
   }
 
   if (options.help) return { ok: true, options };
+
+  const source = options.pluginSource ?? "local";
+  options.pluginSource = source;
+  if (source === "public" && !options.pluginRef) {
+    return { ok: false, error: "--plugin-source public requires --plugin-ref <tag|sha>" };
+  }
 
   const targeted = TARGETED.filter((t) => seen.includes(t));
   for (const alone of ["--smoke", "--promote"]) {

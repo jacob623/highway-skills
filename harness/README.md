@@ -271,6 +271,8 @@ Run from the repository root with `node harness/src/cli.ts [switches]`, or
 | Selection | `--paths` | `<files>` | — | Run scenarios affected by these comma-separated paths |
 | Selection | `--skills` | `<ids>` | — | Run scenarios for these comma-separated skill ids |
 | Agent | `--agent` | `<id>` | `harness.config.json` `agent` | Agent under test |
+| Agent | `--plugin-source` | `local\|public` | `local` | Install from the local `highway-agent-plugin/` build, or from a pinned public clone of `highway-systems/agent-plugin` |
+| Agent | `--plugin-ref` | `<tag\|sha>` | — | Required with `--plugin-source public`: git tag or commit to clone |
 | Agent | `--model` | `<id>` | `harness.config.json` `models` entry | Model for the agent under test |
 | Agent | `--judge-agent` | `<id>` | `harness.config.json` `judge.agent` | Agent for the judge and the reply fallback |
 | Agent | `--judge-model` | `<id>` | `harness.config.json` `judge.model` | Model for the judge and the reply fallback |

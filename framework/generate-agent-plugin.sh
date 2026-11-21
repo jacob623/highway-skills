@@ -71,6 +71,7 @@ build_into() {
 		done < <(skill_files "$HW_PLUGIN_SOURCE/$dir")
 	done
 	pm_render "$HW_PLUGIN_SOURCE/plugin.json" "$LISTING" "$dest" || return 1
+	write_marketplaces "$dest" || return 1
 	for dir in "$HW_SKILLS"/*/; do
 		dir="${dir%/}"
 		[[ -f "$dir/SKILL.md" ]] || continue
@@ -80,6 +81,42 @@ build_into() {
 			cp "$dir/$file" "$dest/$SKILLS_REL/$id/$file"
 		done < <(skill_files "$dir")
 	done
+}
+
+# Writes the four host marketplace catalogs at the plugin root (contracts/marketplace-catalogs.md).
+write_marketplaces() {
+	local dest="$1"
+	if ! command -v python3 >/dev/null 2>&1; then
+		echo "ERROR: framework/generate-agent-plugin.sh needs python3 to write marketplace catalogs" >&2
+		return 1
+	fi
+	python3 - "$dest" <<'PY'
+import json, os, sys
+dest = sys.argv[1]
+catalog = {
+    "name": "highway",
+    "interface": {"displayName": "Highway"},
+    "plugins": [
+        {
+            "name": "highway",
+            "source": {"source": "local", "path": "./"},
+            "policy": {"installation": "AVAILABLE", "authentication": "ON_INSTALL"},
+            "category": "Developer Tools",
+        }
+    ],
+}
+text = json.dumps(catalog, indent=2, ensure_ascii=False) + "\n"
+paths = [
+    os.path.join(dest, ".cursor-plugin", "marketplace.json"),
+    os.path.join(dest, ".claude-plugin", "marketplace.json"),
+    os.path.join(dest, ".agents", "plugins", "marketplace.json"),
+    os.path.join(dest, ".github", "plugin", "marketplace.json"),
+]
+for path in paths:
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, "w", encoding="utf-8", newline="\n") as f:
+        f.write(text)
+PY
 }
 
 pm_listing_check "$HW_PLUGIN_SOURCE/plugin.json" "$LISTING"

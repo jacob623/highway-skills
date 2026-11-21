@@ -731,3 +731,21 @@ session start; confirming smokes met ≥14/16 with **fewer** Bash-driven fails t
 **Resolution**: Closed by Spec 256 session-start guidance. Do not reopen for assertion /
 unmatched-question codify noise unless a new Bash-driven pattern appears.
 
+## Public-install smoke for spec 257
+
+Four `--plugin-source public --plugin-ref v0.1.0` smoke runs after publishing
+`highway-systems/agent-plugin` at tag `v0.1.0`. Every attempt printed
+`installed plugin highway (16 skills)` (no `plugin-install` / `build-failed`). Logs under
+`specs/257-publish-public-install/harness/public-smoke-*.log`.
+
+| Agent | Exit | Passed | Failed | Install |
+| --- | --- | --- | --- | --- |
+| copilot | 1 | 15 | 1 (onboarding assertion template; setup flaky) | 16 skills each attempt |
+| cursor | 1 | 14 | 2 (codify / onboarding assertion template) | 16 skills each attempt |
+| claude | 0 | 16 | 0 | 16 skills each attempt |
+| codex | 1 | 14 | 2 (architecture unclassified session; codify assertion) | 16 skills each attempt |
+
+Skill-behavior fails match existing residual patterns (assertion template / F18-family,
+unclassified session / F32-adjacent). They do not block Phase 10 (FR-014). No new finding
+opened for public-source install itself.
+

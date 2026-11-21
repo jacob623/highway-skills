@@ -18,6 +18,8 @@ export const SWITCHES: readonly Switch[] = [
   { name: "--paths", arg: "<files>", value: "list", group: "Selection", def: "-", usage: "Run scenarios affected by these comma-separated paths" },
   { name: "--skills", arg: "<ids>", value: "list", group: "Selection", def: "-", usage: "Run scenarios for these comma-separated skill ids" },
   { name: "--agent", arg: "<id>", value: "string", group: "Agent", def: "harness.config.json agent", usage: "Agent under test" },
+  { name: "--plugin-source", arg: "<local|public>", value: "string", group: "Agent", def: "local", usage: "Install the plugin from the local build or a pinned public repository ref" },
+  { name: "--plugin-ref", arg: "<tag|sha>", value: "string", group: "Agent", def: "-", usage: "Public git tag or commit (required with --plugin-source public)" },
   { name: "--model", arg: "<id>", value: "string", group: "Agent", def: "harness.config.json models entry", usage: "Model for the agent under test" },
   { name: "--judge-agent", arg: "<id>", value: "string", group: "Agent", def: "harness.config.json judge.agent", usage: "Agent for the judge and the reply fallback" },
   { name: "--judge-model", arg: "<id>", value: "string", group: "Agent", def: "harness.config.json judge.model", usage: "Model for the judge and the reply fallback" },
@@ -39,4 +41,5 @@ export const EXAMPLES: readonly string[] = [
   "node harness/src/cli.ts --skills highway-codify",
   "node harness/src/cli.ts --smoke > specs/<spec>/harness/smoke.log",
   'node harness/src/cli.ts --skills highway-codify --transcripts "$TMPDIR/harness" --verbose',
+  "node harness/src/cli.ts --smoke --plugin-source public --plugin-ref v0.1.0",
 ];
