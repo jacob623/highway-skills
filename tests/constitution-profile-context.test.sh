@@ -10,11 +10,11 @@ fail=0
 for token in 'Repository Context' 'highway-identity.md' 'profile.md'; do
 	grep -Fq "$token" "$(hw_doc constitution)" || { echo "FAIL: constitution missing $token"; fail=1; }
 done
-for token in '## Purpose' '## What Highway Is' '## User Experience'; do
+for token in '## What Highway is' '## Knowledge chain' '## Boundaries'; do
 	grep -Fq "$token" "$(hw_doc highway-identity)" || { echo "FAIL: identity knowledge missing $token"; fail=1; }
 done
-if grep -Fq '5. Repository governance artifacts' "$(hw_doc highway-identity)"; then
-	echo 'FAIL: governance artifacts must not be listed as a fifth Repository Context Document'
+if grep -Fq 'contextual intelligence' "$(hw_doc highway-identity)"; then
+	echo 'FAIL: slim identity must not restore the contextual intelligence essay'
 	fail=1
 fi
 if [[ $fail -ne 0 ]]; then exit 1; fi

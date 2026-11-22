@@ -87,7 +87,7 @@ section "$STORAGE" '## What a skill does not do' | grep -Fxq -- '- Decide that a
 	echo 'FAIL: the storage contract does not list deciding absence from a search'
 	fail=1
 }
-version_is highway-experience 1.4.0
+version_is highway-experience 1.5.0
 
 require_in highway-objectives '### Entry' '1. Read `library/governance/objectives.md`. Then read each record it indexes at `library/objectives/[ID].md`, with "Read a file".'
 require_in highway-controls '### Entry' '1. Read `library/governance/controls.md`. Then read each active record it indexes at `library/governance/controls/[ID].md`, with "Read a file".'
