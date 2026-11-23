@@ -3,7 +3,7 @@ name: highway-profile
 description: "Manages the repository-wide organizational Profile and its contextual guidance. Use when highway-setup delegates the Profile, at the start of setup or when setup runs again."
 license: Apache-2.0
 metadata:
-  version: 14.5.0
+  version: 14.6.0
   usage: "Run highway-profile."
 ---
 
@@ -49,7 +49,7 @@ User-visible interaction follows the Highway Experience Standard. Repository own
 
 X2.21 does not apply. The accepted proposal bullets are the retained domain, so Profile does not show a second capture heading.
 
-Emit only the active template. Follow this order: `review` when `profile.md` exists; otherwise `name`, `offer`, Identity, Vision, Competitive Path, Guiding Principles, then `write`. Follow the Highway Experience Standard for attribution and acceptance wording. Use accepted Organization Name in templates. Use Repository Name until an Organization Name is accepted. Repository Name does not become Organization Name.
+Emit only the active template. Follow this order: `review` when `profile.md` exists; otherwise `name`, `offer`, `organization-name` when Organization Name is not accepted, Identity, Vision, Competitive Path, Guiding Principles, `split`, then `write`. Follow the Highway Experience Standard for attribution and acceptance wording. Use accepted Organization Name in templates. Use Repository Name until an Organization Name is accepted. Repository Name does not become Organization Name. Do not store Repository Name as Organization Name.
 
 ### Entry
 
@@ -105,10 +105,10 @@ Emit:
 
 You can share a website link, an overview or description, a strategy document, or an assistant export. If you don't have anything handy, say so and we can work through it together.
 
-- The person has nothing: go to `identity.ask`.
-- Text, with or without a link: the text is supplied material for every domain. Store a link in it as Organization URL and retrieve it. When the link cannot be read, say so once and continue with the text. Go to `identity.review` when the material supports at least one Identity finding. Otherwise go to `identity.ask`.
-- A link or document with no other text: retrieve it. Store a supplied link as Organization URL. Go to `identity.review` when it supports at least one Identity finding. Otherwise go to `identity.ask`.
-- A link with no other text, when retrieval is unavailable: go to `identity.ask`. Do not mention the missing retrieval.
+- The person has nothing: go to `organization-name`, then `identity.ask`.
+- Text, with or without a link: the text is supplied material for every domain. Store a link in it as Organization URL and retrieve it. When the link cannot be read, say so once and continue with the text. Go to `organization-name`, then `identity.review` when the material supports at least one Identity finding. Otherwise go to `organization-name`, then `identity.ask`.
+- A link or document with no other text: retrieve it. Store a supplied link as Organization URL. Go to `organization-name`, then `identity.review` when it supports at least one Identity finding. Otherwise go to `organization-name`, then `identity.ask`.
+- A link with no other text, when retrieval is unavailable: go to `organization-name`, then `identity.ask`. Do not mention the missing retrieval.
 
 Facts from supplied material stay proposed until accepted in that domain's proposal.
 
@@ -118,15 +118,17 @@ Use supplied material across every later domain. Do not ask the person to repeat
 
 Run Identity, Vision, Competitive Path, then Guiding Principles.
 
-Each domain uses `start` when a proposal can be shown. Identity uses `ask` only when no supported starting point exists. Vision, Competitive Path, and Guiding Principles always use `start`. Do not put a question template in the same message as a starting point.
+Each domain uses `start` when a proposal can be shown. Identity uses `ask` only when no supported starting point exists. Vision, Competitive Path, and Guiding Principles use `start` except when the organization and an offering are mixed and the subject is neither one alone. Do not put a question template in the same message as a starting point.
 
-1. `identity.review` or `identity.ask`
-2. `vision.start`
-3. `path.start`
-4. `principles.start`
-5. `write`
+1. `organization-name` when Organization Name is not accepted
+2. `identity.review` or `identity.ask`
+3. `vision.start`
+4. `path.start`
+5. `principles.start`
+6. `split`
+7. `write`
 
-Hold each accepted bullet list until `write`. Do not write the file before `write`.
+Hold each accepted bullet list until `write`. Do not write the file before `split` is accepted.
 
 ### Shared replies
 
@@ -144,9 +146,13 @@ Apply these on every domain step.
 
 ### Domain rules
 
-Identity states who the organization is and what it provides. Omit a technology inventory.
+Identity states who the organization is and what it provides. State who the organization is in one finding. State each offering in its own finding. Omit a technology inventory. Do not add a finding to reach a count.
 
-Vision states the future the organization is creating. Omit method, sequencing, and organizational approach. When the person supplies those, emit this sentence, hold that material for Competitive Path, and stay on Vision:
+Name an offering with the person's words for the kind of thing. Drop the product's proper name, its feature list, and how it is built. One kind is one offering. Different kinds are separate offerings. When no category word remains, ask one question. Do not coin a category.
+
+Do not store a product as the organization or as the offering unless the person says they are the same subject.
+
+Vision states the future the organization is creating. Name the organization in Future State. Do not infer Vision from offering language alone. Omit method, sequencing, and organizational approach. When the person supplies those, emit this sentence, hold that material for Competitive Path, and stay on Vision:
 
 **That is an important part of how you will get there. I will carry it forward when we reach Competitive Path, and return to Vision.**
 
@@ -154,7 +160,19 @@ Competitive Path states the broad approach toward the accepted Vision. Omit Cont
 
 Guiding Principles state enduring decision-making values. Do not write an enforceable Control.
 
-Open Vision, Competitive Path, and Guiding Principles by naming accepted substance from the previous captured domain. Always emit the proposal. Infer a slot, including the Competitive Path tradeoff, from accepted context when the person has not stated it. Do not replace the proposal with a question.
+Open Vision, Competitive Path, and Guiding Principles by naming accepted substance from the previous captured domain. Always emit the proposal, except when the organization and an offering are mixed and the subject is neither one alone. When the organization and an offering are mixed and the subject is neither one alone, ask one question. Do not emit a proposal in that message. After the answer, resume the proposal with the organization as the subject unless the person said they are the same subject. Infer a slot, including the Competitive Path tradeoff, from accepted context when the person has not stated it. Do not put a question in the same message as a proposal.
+
+When the organization name contains an offering's distinguishing name, put the full organization name in an organizational sentence. Put the short name only on the offering.
+
+### organization-name
+
+When Organization Name is already accepted, go to the Identity step `offer` selected.
+
+Otherwise emit:
+
+**What is the organization's name?**
+
+Store the reply as Organization Name. Do not store Repository Name as Organization Name. Go to the Identity step `offer` selected.
 
 ### Templates
 
@@ -165,7 +183,7 @@ Here's what Highway believes [Name] does.
 **[Short activity name]:**
 [One sentence: who receives it, and what they receive.]
 
-Emit 3 to 6 findings. Omit a finding the source does not support.
+Emit one finding for who the organization is, then one finding for each offering. Omit a finding the source does not support. Do not add a finding to reach a count.
 
 Identity question:
 
@@ -249,6 +267,19 @@ When the previous domain was declined, replace the bracketed accepted substance 
 
 Bold only the question in each block.
 
+### split
+
+Restate who the organization is and each offering.
+
+**What would you add, correct, or remove?**
+
+If this is accurate, just say so.
+
+- `accept`: go to `write`.
+- `edit` that keeps the organization and each offering separate: restate. Stay.
+- A merge that does not say they are the same subject does not write. Stay.
+- `decline`: do not write. Stay.
+
 ### write
 
 Write `library/knowledge/profile.md` from the repository root once, in the shape required by `assets/profile-record.md`. Create `library/knowledge/` when it is absent.
@@ -267,7 +298,8 @@ Write `library/knowledge/profile.md` from the repository root once, in the shape
 - A review edit rewrites the file and shows the updated body with the same question.
 - An absent `profile.md` begins at the repository-name template.
 - A starting-point message contains no canonical question.
-- The file is written once, after Guiding Principles is captured or declined.
+- The file is written once, after `split` is accepted.
+- A merge that does not say they are the same subject does not write.
 - A successful guided write returns `Finished` and emits nothing else.
 - The written file matches `assets/profile-record.md`.
 - Setup receives `Finished` and the person does not see that word.
@@ -278,7 +310,7 @@ Write `library/knowledge/profile.md` from the repository root once, in the shape
 - A failed review rewrite leaves the file unchanged, says what failed in terms the person can act on, and stays on `review`.
 - A failed guided write leaves the file absent, says what failed in terms the person can act on, and stays on `write`.
 - Pasted text is supplied material. A link in it that cannot be read is named once, and the skill continues with the text.
-- A link with no other text and no retrieval continues at `identity.ask` without mentioning the missing capability.
+- A link with no other text and no retrieval continues at `organization-name`, then `identity.ask`, without mentioning the missing capability.
 
 ## Example
 

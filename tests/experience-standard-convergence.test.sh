@@ -39,8 +39,8 @@ for token in \
 	require_text "$token"
 done
 
-if [[ "$(grep -cE '^\| X[0-9]+\.[0-9]+ \|' "$STANDARD")" -ne 64 ]]; then
-	echo 'FAIL: Experience Standard rule inventory must contain 64 rules'
+if [[ "$(grep -cE '^\| X[0-9]+\.[0-9]+ \|' "$STANDARD")" -ne 65 ]]; then
+	echo 'FAIL: Experience Standard rule inventory must contain 65 rules'
 	fail=1
 fi
 

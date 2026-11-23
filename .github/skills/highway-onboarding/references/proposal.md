@@ -27,7 +27,7 @@ Then go to `capabilities`.
 
 Build a starting point from accepted repository context. Do not ask the person to invent the list.
 
-A technology capability is something software, a platform, a service, or infrastructure does for the organization. For each business activity that accepted context names, propose the technology capability that activity relies on, including when context names no system. Title it for what the technology does, such as Online Payments, not for the business function, such as Sales. The title is not a product or vendor. Leave out an activity that no technology supports. When two activities rely on one technology, propose each as its own capability. Follow `capability title` in `highway-implementation` for each title, then return to `capabilities`.
+A technology capability is something software, a platform, a service, or infrastructure does for the organization. For each business activity that accepted context names, propose the technology capability that activity relies on, including when context names no system. Title it for what the technology does, such as Online Payments, not for the business function, such as Sales. The title is not a product or vendor. Leave out an activity that no technology supports. When two activities rely on one technology, propose each as its own capability. Follow `capability title` in `highway-implementation` for each title, then return to `capabilities`. Do not propose a product behavior, feature, or packaging choice as a capability unless the person says the organization operates it.
 
 On an edit, re-emit only the starting point.
 

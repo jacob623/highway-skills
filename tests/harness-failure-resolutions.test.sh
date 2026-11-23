@@ -65,14 +65,14 @@ require_in highway-implementation '### Entry' '3. Read the invocation for one Re
 
 # --- F2: pasted material is supplied material ---------------------------------------------------
 
-require_in highway-profile '### offer' '- The person has nothing: go to `identity.ask`.'
-require_in highway-profile '### offer' '- Text, with or without a link: the text is supplied material for every domain. Store a link in it as Organization URL and retrieve it. When the link cannot be read, say so once and continue with the text. Go to `identity.review` when the material supports at least one Identity finding. Otherwise go to `identity.ask`.'
-require_in highway-profile '### offer' '- A link or document with no other text: retrieve it. Store a supplied link as Organization URL. Go to `identity.review` when it supports at least one Identity finding. Otherwise go to `identity.ask`.'
-require_in highway-profile '### offer' '- A link with no other text, when retrieval is unavailable: go to `identity.ask`. Do not mention the missing retrieval.'
+require_in highway-profile '### offer' '- The person has nothing: go to `organization-name`, then `identity.ask`.'
+require_in highway-profile '### offer' '- Text, with or without a link: the text is supplied material for every domain. Store a link in it as Organization URL and retrieve it. When the link cannot be read, say so once and continue with the text. Go to `organization-name`, then `identity.review` when the material supports at least one Identity finding. Otherwise go to `organization-name`, then `identity.ask`.'
+require_in highway-profile '### offer' '- A link or document with no other text: retrieve it. Store a supplied link as Organization URL. Go to `organization-name`, then `identity.review` when it supports at least one Identity finding. Otherwise go to `organization-name`, then `identity.ask`.'
+require_in highway-profile '### offer' '- A link with no other text, when retrieval is unavailable: go to `organization-name`, then `identity.ask`. Do not mention the missing retrieval.'
 require_in highway-profile '### offer' "Facts from supplied material stay proposed until accepted in that domain's proposal."
 reject_in highway-profile '### offer' '- Retrieval is unavailable: go to `identity.ask`.'
 require_in highway-profile '## Error Handling' '- Pasted text is supplied material. A link in it that cannot be read is named once, and the skill continues with the text.'
-require_in highway-profile '## Error Handling' '- A link with no other text and no retrieval continues at `identity.ask` without mentioning the missing capability.'
+require_in highway-profile '## Error Handling' '- A link with no other text and no retrieval continues at `organization-name`, then `identity.ask`, without mentioning the missing capability.'
 
 # --- F6, F10, F12: the storage contract decides absence by exact path ---------------------------
 
@@ -87,7 +87,7 @@ section "$STORAGE" '## What a skill does not do' | grep -Fxq -- '- Decide that a
 	echo 'FAIL: the storage contract does not list deciding absence from a search'
 	fail=1
 }
-version_is highway-experience 1.5.0
+version_is highway-experience 1.6.0
 
 require_in highway-objectives '### Entry' '1. Read `library/governance/objectives.md`. Then read each record it indexes at `library/objectives/[ID].md`, with "Read a file".'
 require_in highway-controls '### Entry' '1. Read `library/governance/controls.md`. Then read each active record it indexes at `library/governance/controls/[ID].md`, with "Read a file".'

@@ -21,7 +21,7 @@
       "name": "highway-assessment",
       "description": "Assesses accepted repository context. Use when the person wants to see how the accepted architectures, implementations, or whole portfolio stand.",
       "usage": "Run highway-assessment.",
-      "version": "5.5.0",
+      "version": "5.6.0",
       "example": "/highway-assessment portfolio"
     },
     {
@@ -61,7 +61,7 @@
       "name": "highway-experience",
       "description": "Holds highway identity, the experience standard, and the storage contract. Use when another highway skill loads it as its first step, or when the person asks what highway is. Not for a request unrelated to highway.",
       "usage": "Loaded by every other highway skill. Run highway-experience directly for a summary of highway.",
-      "version": "1.5.0",
+      "version": "1.6.0",
       "example": "/highway-experience"
     },
     {
@@ -93,7 +93,7 @@
       "name": "highway-objectives",
       "description": "Manages the repository-wide business objective baseline and its stable traceability references. Use when highway-setup delegates the objective baseline, after Profile finishes or when setup runs again.",
       "usage": "Run highway-objectives.",
-      "version": "8.8.0",
+      "version": "8.9.0",
       "example": "/highway-setup"
     },
     {
@@ -101,7 +101,7 @@
       "name": "highway-onboarding",
       "description": "Manages one decision, one reference architecture, and one reference implementation. Use when the person wants to onboard one capability in a single pass, grounded in accepted setup or architecture records.",
       "usage": "Run highway-onboarding.",
-      "version": "10.13.0",
+      "version": "10.14.0",
       "example": "/highway-onboarding"
     },
     {
@@ -109,7 +109,7 @@
       "name": "highway-profile",
       "description": "Manages the repository-wide organizational Profile and its contextual guidance. Use when highway-setup delegates the Profile, at the start of setup or when setup runs again.",
       "usage": "Run highway-profile.",
-      "version": "14.5.0",
+      "version": "14.6.0",
       "example": "/highway-setup"
     },
     {
