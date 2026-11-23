@@ -3,7 +3,7 @@ name: highway-objectives
 description: "Manages the repository-wide business objective baseline and its stable traceability references. Use when highway-setup delegates the objective baseline, after Profile finishes or when setup runs again."
 license: Apache-2.0
 metadata:
-  version: 8.8.0
+  version: 8.9.0
   usage: "Run highway-objectives."
 ---
 
@@ -48,6 +48,8 @@ The complete structure is `assets/objective-record.md` and `assets/objective-cat
 ## Procedure
 
 Activate the highway-experience skill before any output the person sees, and follow it for Highway's identity, the Experience Standard, and the storage contract.
+
+When the person separates the organization from an offering the accepted Profile fuses, stop. Do not add a record that depends on the fused subject. Offer to revise the Profile. On accept, stop this skill and run highway-profile review before any other record. On decline, stay stopped.
 
 User-visible interaction follows the Highway Experience Standard. Repository ownership stays with the person.
 

@@ -81,7 +81,7 @@ governance() {
 	version_is "$skill" "$version"
 }
 
-governance highway-objectives Objective Objectives 8.8.0
+governance highway-objectives Objective Objectives 8.9.0
 governance highway-controls Control Controls 8.8.0
 governance highway-nfrs NFR NFRs 9.9.0
 

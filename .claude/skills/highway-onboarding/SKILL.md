@@ -3,7 +3,7 @@ name: highway-onboarding
 description: "Manages one decision, one reference architecture, and one reference implementation. Use when the person wants to onboard one capability in a single pass, grounded in accepted setup or architecture records."
 license: Apache-2.0
 metadata:
-  version: 10.13.0
+  version: 10.14.0
   usage: "Run highway-onboarding."
 ---
 
@@ -48,6 +48,10 @@ Do not report Status, Summary, Next Action, Blocking Reason, Missing, Complete, 
 ## Procedure
 
 Activate the highway-experience skill before any output the person sees, and follow it for Highway's identity, the Experience Standard, and the storage contract.
+
+When the person separates the organization from an offering the accepted Profile fuses, stop. Do not add a record that depends on the fused subject. Offer to revise the Profile. On accept, stop this skill and run highway-profile review before any other record. On decline, stay stopped.
+
+Do not propose a product behavior, feature, or packaging choice as a capability unless the person says the organization operates it.
 
 Before the first question, confirm these seeded files exist: `adrs/adrs.md`, `architectures/architectures.md`, `implementations/implementations.md`, `implementations/capabilities.md`, `library/coding-standards/codify-platforms.md`.
 When any is absent after highway-experience returned ready, stop, write nothing, name the missing seeded file(s), and say highway-setup can repair the catalogs. Do not emit the repository dual gate; highway-experience owns that gate.

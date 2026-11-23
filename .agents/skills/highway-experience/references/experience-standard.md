@@ -1,6 +1,6 @@
 # Highway Experience Standard
 
-**Layer 2 - Experience.** Version `11.1.0`.
+**Layer 2 - Experience.** Version `11.2.0`.
 
 ## Scope
 
@@ -151,6 +151,7 @@ workflow's observable.
 | X2.70 | Text opening a domain MUST name accepted substance carried forward from the preceding domain. | The opening restates or quotes accepted material and connects it to the question being asked; a transition naming no accepted substance does not satisfy it. |
 | X2.71 | Opening text MUST state that nothing has been accepted yet when no accepted substance exists. | The opening says so rather than fabricating a carry-forward. |
 | X2.72 | An invitation to react where nothing has been captured MUST use the heading "Here is a proposed starting point for your [domain]:". | The invitation appears under that heading and no acceptance request follows it. |
+| X2.73 | When the organization name contains an offering's distinguishing name, an organizational sentence MUST use the full organization name. | The short name appears only for the offering. |
 
 An acceptance, rejection, or selection without new information does not independently trigger
 substantive-contribution handling. Acceptance plus new substantive information applies both the
@@ -251,7 +252,7 @@ recommendations once no useful grounded non-duplicate remains.
 
 ## Version and Amendment Provenance
 
-**Version**: `11.1.0` | **Ratified**: 2026-09-08 | **Last Amended**: 2026-10-09
+**Version**: `11.2.0` | **Ratified**: 2026-09-08 | **Last Amended**: 2026-11-23
 
 This document's runtime content is self-contained. Development governance records the amendment and
 stable X-rule retirement mapping outside the runtime interaction contract. An earlier amendment
@@ -268,4 +269,6 @@ contribution is consequential. Both rule texts are unchanged. The current amendm
 X2.69, X2.70, X2.71, and X2.72, covering the contribution of one grounded addition, its bound,
 continuity of accepted substance into an opening, the case where nothing has been accepted, and the
 heading an invitation to react uses. It amends the Observable of X2.56 to name the inline form of a
-marked change; that rule text is unchanged. It retires no identifier.
+marked change; that rule text is unchanged. It retires no identifier. The current amendment adds
+X2.73, covering the full organization name when that name contains an offering's distinguishing
+name. It retires no identifier.
