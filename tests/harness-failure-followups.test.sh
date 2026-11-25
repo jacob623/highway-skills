@@ -81,9 +81,9 @@ governance() {
 	version_is "$skill" "$version"
 }
 
-governance highway-objectives Objective Objectives 8.9.0
-governance highway-controls Control Controls 8.8.0
-governance highway-nfrs NFR NFRs 9.9.0
+governance highway-objectives Objective Objectives 8.10.0
+governance highway-controls Control Controls 8.9.0
+governance highway-nfrs NFR NFRs 9.10.0
 
 require_in highway-codify-config '### How would you like to configure Highway Codify?' '- `decline`: when a return step is held, go to that step in its skill. Otherwise emit `Your platforms and coding standards are up to date.` Write nothing. Stop.'
 version_is highway-codify-config 3.12.0

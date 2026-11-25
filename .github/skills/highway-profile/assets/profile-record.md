@@ -2,7 +2,7 @@
 name: Organizational Profile
 description: "Complete output skeleton for retained organizational Profile evidence."
 metadata:
-  version: 3.1.0
+  version: 3.2.0
 ---
 
 ## File Frontmatter
@@ -36,9 +36,6 @@ domains:
 <accepted Guiding Principles bullets when the guiding_principles state permits narrative>
 
 ## Context
-
-### Repository Name
-<accepted Repository Name>
 
 ### Organization Name
 <accepted Organization Name>

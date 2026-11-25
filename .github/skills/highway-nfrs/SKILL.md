@@ -3,7 +3,7 @@ name: highway-nfrs
 description: "Manages the repository-wide nfr baseline. Use when highway-setup delegates the nfr baseline, after Controls finish or when setup runs again."
 license: Apache-2.0
 metadata:
-  version: 9.9.0
+  version: 9.10.0
   usage: "Run highway-nfrs."
 ---
 
@@ -53,7 +53,7 @@ Activate the highway-experience skill before any output the person sees, and fol
 
 User-visible interaction follows the Highway Experience Standard. Repository ownership stays with the person.
 
-Emit only the active template. Follow this order: `review` when the catalog exists; otherwise `recommend`, then `queue` or `ask`, then `capture`, then `identifier`, `title` when needed, and `write`. Both paths end at `close`. Follow the Highway Experience Standard for attribution and acceptance wording. Use the accepted Organization Name from the Profile. Use Repository Name when no Organization Name is accepted. Do not ask for Profile, Objective, or Control facts already accepted.
+Emit only the active template. Follow this order: `review` when the catalog exists; otherwise `recommend`, then `queue` or `ask`, then `capture`, then `identifier`, `title` when needed, and `write`. Both paths end at `close`. Follow the Highway Experience Standard for attribution and acceptance wording. Use the accepted Organization Name from the Profile. Do not ask for Profile, Objective, or Control facts already accepted.
 
 An NFR is an operational expectation: how a solution needs to behave. Do not write an enforceable safeguard, an Objective, or an implementation plan.
 

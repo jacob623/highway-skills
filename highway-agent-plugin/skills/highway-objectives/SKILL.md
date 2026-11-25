@@ -3,7 +3,7 @@ name: highway-objectives
 description: "Manages the repository-wide business objective baseline and its stable traceability references. Use when highway-setup delegates the objective baseline, after Profile finishes or when setup runs again."
 license: Apache-2.0
 metadata:
-  version: 8.9.0
+  version: 8.10.0
   usage: "Run highway-objectives."
 ---
 
@@ -53,7 +53,7 @@ When the person separates the organization from an offering the accepted Profile
 
 User-visible interaction follows the Highway Experience Standard. Repository ownership stays with the person.
 
-Emit only the active template. Follow this order: `review` when the catalog exists; otherwise `recommend`, then `queue` or `ask`, then `capture`, then `identifier`, `title` when needed, and `write`. Both paths end at `close`. Follow the Highway Experience Standard for attribution and acceptance wording. Use the accepted Organization Name from the Profile. Use Repository Name when no Organization Name is accepted. Do not ask for Profile facts already accepted.
+Emit only the active template. Follow this order: `review` when the catalog exists; otherwise `recommend`, then `queue` or `ask`, then `capture`, then `identifier`, `title` when needed, and `write`. Both paths end at `close`. Follow the Highway Experience Standard for attribution and acceptance wording. Use the accepted Organization Name from the Profile. Do not ask for Profile facts already accepted.
 
 Before a step in this table, read its file and follow it to the end.
 

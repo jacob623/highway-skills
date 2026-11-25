@@ -2,7 +2,7 @@
 
 ### overview
 
-Emit the lines below once, before the first capability list. Emit "Let's get to know your technology landscape" as a level-3 heading. Emit every other line as written. [Name] is the accepted Organization Name. Use the Repository Name when no Organization Name has been accepted.
+Emit the lines below once, before the first capability list. Emit "Let's get to know your technology landscape" as a level-3 heading. Emit every other line as written. [Name] is the accepted Organization Name.
 
 Let's get to know your technology landscape
 

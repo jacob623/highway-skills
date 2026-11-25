@@ -185,11 +185,15 @@ if [[ -f "$PROFILE_TEMPLATE" ]]; then
 		echo "FAIL: $PROFILE_TEMPLATE still names highway_role"
 		fail=1
 	fi
-	# Superseded behavior: optional context used sibling headings ## Repository Name, ## Organization Name, ## Organization URL, and ## Organizational Context.
+	# Context children: Organization Name, Organization URL, Organizational Context. Repository Name is removed.
 	require_text "$PROFILE_TEMPLATE" "## Context"
-	for heading in '### Repository Name' '### Organization Name' '### Organization URL' '### Organizational Context'; do
+	for heading in '### Organization Name' '### Organization URL' '### Organizational Context'; do
 		require_text "$PROFILE_TEMPLATE" "$heading"
 	done
+	if grep -Fq -- '### Repository Name' "$PROFILE_TEMPLATE"; then
+		echo "FAIL: $PROFILE_TEMPLATE still contains ### Repository Name"
+		fail=1
+	fi
 	if grep -Fq -- '- ## Repository Name' "$PROFILE_TEMPLATE"; then
 		echo "FAIL: $PROFILE_TEMPLATE still uses the superseded sibling Repository Name heading"
 		fail=1

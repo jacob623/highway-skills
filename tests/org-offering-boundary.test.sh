@@ -32,9 +32,8 @@ require "$STANDARD" 'The short name appears only for the offering.'
 require "$STANDARD" 'Version `11.2.0`.'
 require "$EXPERIENCE" 'version: 1.6.0'
 
-require "$PROFILE" 'version: 14.6.0'
+require "$PROFILE" 'version: 14.7.0'
 require "$PROFILE" '**What is the organization'"'"'s name?**'
-require "$PROFILE" 'Do not store Repository Name as Organization Name.'
 require "$PROFILE" 'State who the organization is in one finding.'
 require "$PROFILE" 'State each offering in its own finding.'
 require "$PROFILE" 'Do not add a finding to reach a count.'
@@ -62,8 +61,8 @@ done
 CAPABILITY='Do not propose a product behavior, feature, or packaging choice as a capability unless the person says the organization operates it.'
 require "$ONBOARDING" "$CAPABILITY"
 require "$PROPOSAL" "$CAPABILITY"
-require "$ONBOARDING" 'version: 10.14.0'
-require "$OBJECTIVES" 'version: 8.9.0'
+require "$ONBOARDING" 'version: 10.15.0'
+require "$OBJECTIVES" 'version: 8.10.0'
 require "$ASSESSMENT" 'version: 5.6.0'
 
 if [[ "$fail" -ne 0 ]]; then

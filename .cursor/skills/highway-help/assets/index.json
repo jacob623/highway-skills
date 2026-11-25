@@ -45,7 +45,7 @@
       "name": "highway-controls",
       "description": "Manages the repository-wide control baseline. Use when highway-setup delegates the control baseline, after Objectives finish or when setup runs again.",
       "usage": "Run highway-controls.",
-      "version": "8.8.0",
+      "version": "8.9.0",
       "example": "/highway-setup"
     },
     {
@@ -85,7 +85,7 @@
       "name": "highway-nfrs",
       "description": "Manages the repository-wide nfr baseline. Use when highway-setup delegates the nfr baseline, after Controls finish or when setup runs again.",
       "usage": "Run highway-nfrs.",
-      "version": "9.9.0",
+      "version": "9.10.0",
       "example": "/highway-setup"
     },
     {
@@ -93,7 +93,7 @@
       "name": "highway-objectives",
       "description": "Manages the repository-wide business objective baseline and its stable traceability references. Use when highway-setup delegates the objective baseline, after Profile finishes or when setup runs again.",
       "usage": "Run highway-objectives.",
-      "version": "8.9.0",
+      "version": "8.10.0",
       "example": "/highway-setup"
     },
     {
@@ -101,7 +101,7 @@
       "name": "highway-onboarding",
       "description": "Manages one decision, one reference architecture, and one reference implementation. Use when the person wants to onboard one capability in a single pass, grounded in accepted setup or architecture records.",
       "usage": "Run highway-onboarding.",
-      "version": "10.14.0",
+      "version": "10.15.0",
       "example": "/highway-onboarding"
     },
     {
@@ -109,7 +109,7 @@
       "name": "highway-profile",
       "description": "Manages the repository-wide organizational Profile and its contextual guidance. Use when highway-setup delegates the Profile, at the start of setup or when setup runs again.",
       "usage": "Run highway-profile.",
-      "version": "14.6.0",
+      "version": "14.7.0",
       "example": "/highway-setup"
     },
     {
